@@ -1,0 +1,58 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+}
+
+#airplanes-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+#airplanes-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.airplane-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.airplane-card:hover {
+    transform: translateY(-5px);
+}
+
+.airplane-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.airplane-card h3 {
+    margin: 10px;
+    font-size: 1.2em;
+}
+
+.airplane-card p {
+    margin: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
