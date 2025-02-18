@@ -40,6 +40,79 @@ app.get('/airplanes', async (req, res) => {
   }
 });
 
+app.get('/api/airplanes/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+      const result = await pool.query(
+          `SELECT airplanes.*, 
+                  manufacturer.name AS manufacturer_name, 
+                  generation.generation, 
+                  type.name AS type_name, 
+                  countries.name AS country_name
+           FROM airplanes
+           LEFT JOIN manufacturer ON airplanes.id_manufacturer = manufacturer.id
+           LEFT JOIN generation ON airplanes.id_generation = generation.id
+           LEFT JOIN type ON airplanes.type = type.id
+           LEFT JOIN countries ON airplanes.country_id = countries.id
+           WHERE airplanes.id = $1`, [id]
+      );
+      if (result.rows.length === 0) {
+          return res.status(404).json({ message: "Avion non trouvé" });
+      }
+      res.json(result.rows[0]);
+  } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+// Route pour récupérer l'armement d'un avion
+app.get('/api/airplanes/:id/armament', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT armement.name, armement.description
+       FROM airplane_armement
+       JOIN armement ON airplane_armement.id_armement = armement.id
+       WHERE airplane_armement.id_airplane = $1`, [id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+// Route pour récupérer les technologies d'un avion
+app.get('/api/airplanes/:id/tech', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT tech.name, tech.description
+       FROM airplanes
+       JOIN tech ON airplanes.id_tech = tech.id
+       WHERE airplanes.id = $1`, [id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+// Route pour récupérer les guerres auxquelles l'avion a participé
+app.get('/api/airplanes/:id/wars', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT wars.name, wars.date_start, wars.date_end, wars.description
+       FROM airplane_wars
+       JOIN wars ON airplane_wars.id_wars = wars.id
+       WHERE airplane_wars.id_airplane = $1`, [id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
 // Lancer le serveur
 app.listen(port, () => {
   console.log(`Serveur démarré sur http://localhost:${port}`);
