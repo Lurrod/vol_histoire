@@ -1,0 +1,40 @@
+:root {
+    --bg-color: #e6e8e6; /* Gris clair militaire */
+    --card-bg: #c3c6c3; /* Vert militaire très clair */
+    --text-color: #2b2d2b; /* Gris foncé */
+    --accent-color: #6e7f6e; /* Vert kaki doux */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    text-align: center;
+    padding: 20px;
+}
+
+#airplanes-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--accent-color);
+    padding: 15px;
+    width: 250px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.card h2 {
+    font-size: 18px;
+    margin: 10px 0;
+}
