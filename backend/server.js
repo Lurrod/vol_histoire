@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 // Route pour récupérer tous les avions
 app.get('/airplanes', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM airplanes');
+    const result = await pool.query('SELECT id, name, complete_name, little_description, image_url FROM airplanes');
     res.json(result.rows);
   } catch (err) {
     console.error('Erreur lors de la récupération des avions', err);
