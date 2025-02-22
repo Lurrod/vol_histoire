@@ -6,12 +6,28 @@
     <title>Vol d'Histoire - Liste des avions</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
         <h1>Vol d'Histoire</h1>
         <p>Découvrez tous les avions de chasse</p>
     </header>
+
+    <!-- Section de tri -->
+    <section class="sorting-controls">
+        <div class="custom-select">
+            <select id="sort-select">
+                <option value="default">Trier par</option>
+                <option value="nation">Nation</option>
+                <option value="service-date">Date d'entrée en service</option>
+                <option value="alphabetical">Ordre alphabétique</option>
+                <option value="generation">Génération</option>
+                <option value="type">Type</option>
+            </select>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
 
     <main>
         <section id="airplanes-list">
@@ -20,7 +36,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2025   Vol d'Histoire. Tous droits réservés.</p>
+        <p>&copy; 2025 Vol d'Histoire. Tous droits réservés.</p>
     </footer>
 
     <script src="script.js"></script>

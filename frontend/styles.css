@@ -15,7 +15,7 @@ body {
     line-height: 1.6;
 }
 
-/* HEADER DYNAMIQUE */
+/* HEADER */
 header {
     background: linear-gradient(45deg, var(--primary), var(--accent));
     padding: 2rem;
@@ -31,6 +31,52 @@ h1 {
     text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
     mix-blend-mode: overlay;
     margin: 0;
+}
+
+/* TRI */
+.sorting-controls {
+    max-width: 1200px;
+    margin: -1rem auto 2rem;
+    padding: 0 20px;
+    text-align: right;
+}
+
+.custom-select {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+}
+
+#sort-select {
+    background: var(--secondary);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-family: 'Space Grotesk', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    appearance: none;
+    width: 100%;
+    padding-right: 2.5rem; /* Espace pour l'icône */
+}
+
+#sort-select:hover {
+    background-color: var(--primary);
+}
+
+.custom-select .fa-chevron-down {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    pointer-events: none;
+    transition: transform 0.3s ease;
+}
+
+.custom-select.open .fa-chevron-down {
+    transform: translateY(-50%) rotate(180deg);
 }
 
 /* GRILLE DES AVIONS */
@@ -88,6 +134,41 @@ h1 {
     margin: 0;
 }
 
+/* Badges améliorés */
+.airplane-info {
+    margin-top: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-badge {
+    background: rgba(0,0,0,0.05);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    color: var(--secondary);
+    border: 1px solid rgba(0,0,0,0.1);
+    margin: 0.2rem;
+    display: inline-block;
+}
+
+.separator {
+    color: var(--primary);
+    padding: 0 0.3rem;
+    font-weight: bold;
+}
+
+.country-badge {
+    background: rgba(0, 209, 178, 0.1);
+    border-color: var(--accent);
+}
+
+.type-badge {
+    background: rgba(255, 77, 77, 0.1);
+    border-color: var(--primary);
+}
+
 /* ANIMATIONS */
 .airplane-card:hover {
     transform: scale(1.05);
@@ -98,7 +179,7 @@ h1 {
     transform: scale(1.1);
 }
 
-/* FOOTER CYBERPUNK */
+/* FOOTER */
 footer {
     background: var(--secondary);
     color: white;
@@ -142,5 +223,23 @@ footer::before {
     
     .image-container {
         height: 120px;
+    }
+
+    .info-badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.6rem;
+    }
+    .separator {
+        padding: 0 0.2rem;
+    }
+
+    .sorting-controls {
+        text-align: center;
+        margin-top: 1rem;
+    }
+    
+    #sort-select {
+        width: 90%;
+        max-width: 300px;
     }
 }
