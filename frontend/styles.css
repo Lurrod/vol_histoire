@@ -1,58 +1,146 @@
+:root {
+    --primary: #FF4D4D;
+    --secondary: #2A2F35;
+    --accent: #00D1B2;
+    --bg: #F9F9F9;
+    --text: #2A2F35;
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    line-height: 1.6;
 }
 
+/* HEADER DYNAMIQUE */
 header {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
+    background: linear-gradient(45deg, var(--primary), var(--accent));
+    padding: 2rem;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    margin-bottom: 2rem;
     text-align: center;
+    color: white;
 }
 
-main {
-    padding: 20px;
+h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+    mix-blend-mode: overlay;
+    margin: 0;
 }
 
-#airplanes-list {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
+/* GRILLE DES AVIONS */
 #airplanes-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    gap: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
+/* CARTES EN VOL */
 .airplane-card {
-    background-color: #fff;
+    width: 250px;
+    height: 350px;
+    background: white;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
-    transition: transform 0.2s;
+    margin: 10px;
+    cursor: pointer;
 }
 
-.airplane-card:hover {
-    transform: translateY(-5px);
+.image-container {
+    height: 150px;
+    background: #f0f0f0;
+    overflow: hidden;
 }
 
 .airplane-card img {
     width: 100%;
-    height: 150px;
+    height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.airplane-content {
+    padding: 10px;
 }
 
 .airplane-card h3 {
-    margin: 10px;
-    font-size: 1.2em;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--primary);
+    margin: 10px 0;
+    font-size: 1.2rem;
 }
 
 .airplane-card p {
-    margin: 10px;
-    font-size: 0.9em;
-    color: #666;
+    color: var(--text);
+    opacity: 0.9;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* ANIMATIONS */
+.airplane-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.airplane-card:hover img {
+    transform: scale(1.1);
+}
+
+/* FOOTER CYBERPUNK */
+footer {
+    background: var(--secondary);
+    color: white;
+    padding: 2rem;
+    margin-top: 2rem;
+    text-align: center;
+    clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+    position: relative;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    header {
+        padding: 1.5rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    #airplanes-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        padding: 10px;
+    }
+    
+    .airplane-card {
+        width: 100%;
+        height: auto;
+        margin: 5px 0;
+    }
+    
+    .image-container {
+        height: 120px;
+    }
 }
