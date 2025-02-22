@@ -85,12 +85,12 @@ app.get('/api/airplanes/:id/armament', async (req, res) => {
 app.get('/api/airplanes/:id/tech', async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query(
-      `SELECT tech.name, tech.description
-       FROM airplanes
-       JOIN tech ON airplanes.id_tech = tech.id
-       WHERE airplanes.id = $1`, [id]
-    );
+    const result = await pool.query(`
+      SELECT t.name, t.description 
+      FROM airplane_tech at
+      JOIN tech t ON at.id_tech = t.id
+      WHERE at.id_airplane = $1
+    `, [id]);
     res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: "Erreur serveur" });
@@ -107,6 +107,62 @@ app.get('/api/airplanes/:id/wars', async (req, res) => {
        JOIN wars ON airplane_wars.id_wars = wars.id
        WHERE airplane_wars.id_airplane = $1`, [id]
     );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+// Route corrigée pour les technologies (many-to-many)
+app.get('/api/airplanes/:id/tech', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT tech.name, tech.description
+       FROM airplane_tech
+       JOIN tech ON airplane_tech.id_tech = tech.id
+       WHERE airplane_tech.id_airplane = $1`, [id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+// Route pour les missions
+app.get('/api/airplanes/:id/missions', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT missions.name, missions.description
+       FROM airplane_missions
+       JOIN missions ON airplane_missions.id_mission = missions.id
+       WHERE airplane_missions.id_airplane = $1`, [id]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+// Route pour les pays
+app.get('/api/countries', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM countries');
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+// Route pour les constructeurs
+app.get('/api/manufacturers', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT m.*, c.name as country_name 
+      FROM manufacturer m
+      JOIN countries c ON m.country_id = c.id
+    `);
     res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: "Erreur serveur" });
