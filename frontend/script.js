@@ -1,24 +1,73 @@
-document.addEventListener("DOMContentLoaded", async function() {
-    const listContainer = document.getElementById("airplanes-list");
+document.addEventListener('DOMContentLoaded', () => {
+    const airplanesContainer = document.getElementById('airplanes-container');
 
-    try {
-        const response = await fetch("http://localhost:3000/airplanes");
-        const airplanes = await response.json();
+    // Fonction pour récupérer les avions depuis l'API
+    async function fetchAirplanes() {
+        try {
+            const response = await fetch('http://localhost:3000/airplanes');
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des données');
+            }
+            const airplanes = await response.json();
+            displayAirplanes(airplanes);
+        } catch (error) {
+            console.error('Erreur:', error);
+            airplanesContainer.innerHTML = '<p>Erreur lors du chargement des avions. Veuillez réessayer plus tard.</p>';
+        }
+    }
+
+    function displayAirplanes(airplanes) {
+        airplanesContainer.innerHTML = '';
+        
+        if (airplanes.length === 0) {
+            airplanesContainer.innerHTML = '<p>Aucun avion disponible pour le moment.</p>';
+            return;
+        }
 
         airplanes.forEach(airplane => {
-            const card = document.createElement("div");
-            card.classList.add("card");
+            const airplaneCard = document.createElement('div');
+            airplaneCard.classList.add('airplane-card');
 
-            card.innerHTML = `
-                <img src="${airplane.image_url || 'placeholder.jpg'}" alt="${airplane.name}">
-                <h2>${airplane.name}</h2>
-                <p>${airplane.little_description}</p>
-            `;
+            // Conteneur d'image
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-container');
 
-            listContainer.appendChild(card);
+            // Image de l'avion
+            const airplaneImage = document.createElement('img');
+            airplaneImage.src = airplane.image_url;
+            airplaneImage.alt = airplane.name;
+            airplaneImage.loading = 'lazy'; // Chargement différé
+
+            // Informations texte
+            const airplaneContent = document.createElement('div');
+            airplaneContent.classList.add('airplane-content');
+
+            const airplaneName = document.createElement('h3');
+            airplaneName.textContent = airplane.name;
+
+            const airplaneDescription = document.createElement('p');
+            airplaneDescription.textContent = airplane.little_description;
+
+            // Gestion du clic
+            airplaneCard.addEventListener('click', () => {
+                window.location.href = `details.html?id=${airplane.id}`;
+            });
+
+            // Construction de la carte
+            imageContainer.appendChild(airplaneImage);
+            airplaneContent.appendChild(airplaneName);
+            airplaneContent.appendChild(airplaneDescription);
+            
+            airplaneCard.appendChild(imageContainer);
+            airplaneCard.appendChild(airplaneContent);
+
+            airplanesContainer.appendChild(airplaneCard);
         });
-    } catch (error) {
-        console.error("Erreur lors de la récupération des avions :", error);
-        listContainer.innerHTML = "<p>Impossible de charger les avions.</p>";
     }
+
+    // Chargement initial
+    fetchAirplanes();
+
+    // Rafraîchissement périodique (optionnel)
+    setInterval(fetchAirplanes, 300000); // Toutes les 5 minutes
 });
