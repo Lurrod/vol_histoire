@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             airplaneInfo.innerHTML = '<p>Erreur lors du chargement des détails de l\'avion.</p>';
         }
     }
-
+    
     // Fonction pour afficher les détails de l'avion
     function displayAirplaneDetails(airplane, armament, tech, wars) {
         // Afficher les informations de base de l'avion
