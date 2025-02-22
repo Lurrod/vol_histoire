@@ -32,10 +32,41 @@ app.get('/', (req, res) => {
 // Route pour récupérer tous les avions
 app.get('/airplanes', async (req, res) => {
   try {
-    const result = await pool.query('SELECT id, name, complete_name, little_description, image_url FROM airplanes');
+    const sort = req.query.sort || 'default';
+    let query = `
+      SELECT a.id, a.name, a.complete_name, a.little_description, a.image_url, 
+             c.name as country_name, g.generation, t.name as type_name,
+             a.date_operationel
+      FROM airplanes a
+      LEFT JOIN countries c ON a.country_id = c.id
+      LEFT JOIN generation g ON a.id_generation = g.id
+      LEFT JOIN type t ON a.type = t.id
+    `;
+
+    switch(sort) {
+      case 'nation':
+        query += ' ORDER BY c.name ASC';
+        break;
+      case 'service-date':
+        query += ' ORDER BY a.date_operationel DESC';
+        break;
+      case 'alphabetical':
+        query += ' ORDER BY a.name ASC';
+        break;
+      case 'generation':
+        query += ' ORDER BY g.generation DESC';
+        break;
+      case 'type':
+        query += ' ORDER BY t.name ASC';
+        break;
+      default:
+        query += ' ORDER BY a.id ASC';
+    }
+
+    const result = await pool.query(query);
     res.json(result.rows);
   } catch (err) {
-    console.error('Erreur lors de la récupération des avions', err);
+    console.error('Erreur:', err);
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });
