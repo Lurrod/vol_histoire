@@ -45,14 +45,18 @@ header p {
     margin-top: 0.5rem;
 }
 
+.back-button i {
+    margin-right: 0.5rem;
+}
+
 /* STRUCTURE PRINCIPALE */
 #airplane-details {
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
-    gap: 2rem;
-    max-width: 1400px;
+    gap: 1.5rem;
+    max-width: 1800px;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 1rem;
 }
 
 /* CARTES EN VOL */
@@ -93,17 +97,46 @@ header p {
 .core-panel {
     grid-column: 2 / 3;
     min-height: 80vh;
+    padding: 2rem;
+    box-sizing: border-box;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 15px;
+    margin: 1rem auto 2rem;
+    display: block;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.core-panel p {
+    margin: 0.8rem 0;
+    line-height: 1.7;
+}
+
+.core-panel h2 {
+    text-align: center;
+    margin-bottom: 2rem !important;
 }
 
 /* PANEAUX LATÉRAUX */
 .armement-panel,
 .guerres-panel {
-    height: fit-content;
+    width: 100%;
+    min-height: 60vh;
+    padding: 1.5rem;
+    box-sizing: border-box;
     position: sticky;
     top: 2rem;
+    margin: 0;
 }
 
-/* TYPOGRAPHIE DYNAMIQUE */
+/* TYPOGRAPHIE */
 h2, h3 {
     font-family: 'Orbitron', sans-serif;
     position: relative;
@@ -129,8 +162,8 @@ h2::after {
 
 .armement-list li {
     background: rgba(0,209,178,0.05);
-    padding: 1rem;
-    margin: 1rem 0;
+    padding: 1.2rem;
+    margin: 1.2rem 0;
     border-radius: 8px;
     transition: 0.3s;
 }
@@ -140,17 +173,37 @@ h2::after {
     background: rgba(0,209,178,0.1);
 }
 
-/* TIMELINE CYBERPUNK */
+/* TECHNOLOGIES */
+.tech-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+}
+
+.tech-list li {
+    background: rgba(255,77,77,0.05);
+    padding: 1.2rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+    transition: 0.3s;
+}
+
+.tech-list li:hover {
+    transform: translateX(5px);
+    background: rgba(255,77,77,0.1);
+}
+
+/* GUERRES TIMELINE */
 .guerres-timeline {
     position: relative;
-    padding-left: 3rem;
     border-left: 4px solid var(--accent);
 }
 
 .war-event {
     background: rgba(0,209,178,0.05);
-    padding: 1.5rem;
-    margin: 2rem 0;
+    padding: 1.8rem;
+    margin: 1.8rem 0;
     position: relative;
     clip-path: polygon(0 0, 100% 0, 100% 80%, 98% 100%, 0 100%);
 }
@@ -162,6 +215,25 @@ h2::after {
     top: 0;
     font-size: 2rem;
     filter: drop-shadow(0 0 5px var(--accent));
+}
+
+/* MISSIONS */
+.missions-list {
+    margin-top: 2rem;
+}
+
+.mission-item {
+    background: rgba(42,47,53,0.03);
+    padding: 1.2rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    border-left: 4px solid var(--secondary);
+    transition: 0.3s;
+}
+
+.mission-item:hover {
+    transform: translateY(-3px);
+    background: rgba(42,47,53,0.05);
 }
 
 /* BOUTON DE RETOUR */
@@ -195,24 +267,38 @@ h2::after {
     
     #airplane-details {
         grid-template-columns: 1fr;
-        padding: 0 1rem;
+        gap: 1rem;
+        padding: 0 0.5rem;
     }
     
     .core-panel {
         grid-column: 1 / -1;
         order: 2;
+        padding: 1rem;
     }
     
     .armement-panel,
     .guerres-panel {
-        position: static;
         width: 100%;
+        min-height: auto;
+        padding: 1rem;
         order: 1;
     }
     
-    .back-button {
-        position: static;
-        margin: 0;
+    .hero-image {
+        max-width: 100%;
+        margin: 1rem auto;
+    }
+    
+    .core-panel h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .tech-list li,
+    .mission-item {
+        padding: 1rem;
+        margin: 0.8rem 0;
     }
 }
 
@@ -228,6 +314,21 @@ h2::after {
         justify-content: center;
     }
     
+    .armement-panel h3,
+    .guerres-panel h3 {
+        font-size: 1.3rem;
+    }
+    
+    .armement-list li {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .war-event {
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
     .airplane-card {
         transform: rotate(-1deg);
         margin: 1rem 0;
@@ -235,5 +336,9 @@ h2::after {
     
     .airplane-card:nth-child(even) {
         transform: rotate(1deg);
+    }
+
+    .mission-item {
+        padding: 1rem;
     }
 }
