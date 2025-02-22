@@ -255,6 +255,27 @@ h2::after {
     box-shadow: 0 6px 20px rgba(255,77,77,0.4);
 }
 
+/* FOOTER CYBERPUNK */
+footer {
+    background: var(--secondary);
+    color: white;
+    padding: 2rem;
+    margin-top: 2rem;
+    text-align: center;
+    clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+    position: relative;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+
 /* RESPONSIVE */
 @media (max-width: 1200px) {
     header {
