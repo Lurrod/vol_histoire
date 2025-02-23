@@ -5,13 +5,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const techList = document.getElementById('tech-list');
     const missionsList = document.getElementById('missions-list');
 
+    // Récupérer l'ID de l'avion depuis l'URL
     const urlParams = new URLSearchParams(window.location.search);
     const airplaneId = urlParams.get('id');
 
+    // Fonction pour formater les dates au format dd/mm/aaaa
     function formatDate(dateString) {
         if (!dateString) return 'Date inconnue';
         const date = new Date(dateString);
-        return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
     }
 
     async function fetchAirplaneDetails() {
@@ -37,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayAirplaneDetails(airplane, armament, wars, tech, missions) {
-        // Informations principales
+        // Afficher les informations de base de l'avion
         airplaneInfo.innerHTML = `
             <h2>${airplane.complete_name}</h2>
             <img src="${airplane.image_url}" alt="${airplane.name}" class="hero-image">
@@ -48,14 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Type : </strong> ${airplane.type_name}</p>
             <p><strong>Date de conception : </strong> ${formatDate(airplane.date_concept)}</p>
             <p><strong>Premier vol : </strong> ${formatDate(airplane.date_first_fly)}</p>
-            <p><strong>Mise en service : </strong> ${formatDate(airplane.date_operationel)}</p>
-            <p><strong>Vitesse max : </strong> ${airplane.max_speed} km/h</p>
-            <p><strong>Portée : </strong> ${airplane.max_range} km</p>
+            <p><strong>Date de mise en service : </strong> ${formatDate(airplane.date_operationel)}</p>
+            <p><strong>Vitesse maximale : </strong> ${airplane.max_speed} km/h</p>
+            <p><strong>Portée maximale : </strong> ${airplane.max_range} km</p>
             <p><strong>Statut : </strong> ${airplane.status}</p>
             <p><strong>Poids : </strong> ${airplane.weight} kg</p>
         `;
 
-        // Armement
+        // Afficher l'armement de l'avion
         armament.forEach(weapon => {
             armementList.innerHTML += `
                 <li>
@@ -65,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Technologies
+        // Afficher les technologies de l'avion
         tech.forEach(technology => {
             techList.innerHTML += `
                 <li>
@@ -75,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Guerres
+        // Afficher les guerres auxquelles l'avion a participé
         wars.forEach(war => {
             guerresList.innerHTML += `
                 <div class="war-event">
@@ -86,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Missions
+        // Afficher les missions de l'avion
         missions.forEach(mission => {
             missionsList.innerHTML += `
                 <div class="mission-item">
