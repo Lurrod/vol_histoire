@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchAirplanes() {
         try {
             const sortValue = sortSelect.value;
-            const response = await fetch(`http://localhost:3000/airplanes?sort=${sortValue}`);
+            const response = await fetch(`http://localhost:3000/api/airplanes?sort=${sortValue}`);
             
             if (!response.ok) {
                 throw new Error('Erreur lors de la récupération des données');
@@ -113,4 +113,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Chargement initial
     fetchAirplanes();
+
 });
