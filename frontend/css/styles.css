@@ -219,6 +219,194 @@ header p {
     transform: scale(1.1);
 }
 
+/* Lecteur de musique - Réduit et masqué par défaut */
+.music-player {
+    position: fixed;
+    top: 50%;
+    right: -300px; /* Réduit pour un décalage plus discret */
+    transform: translateY(-50%);
+    background: white;
+    padding: 1rem; /* Réduit le padding */
+    border-radius: 10px; /* Réduit légèrement le border-radius */
+    box-shadow: 0 8px 20px rgba(0, 209, 178, 0.3);
+    transition: right 0.5s ease;
+    z-index: 1000;
+    width: 220px; /* Réduit la largeur */
+}
+
+.music-player:hover {
+    box-shadow: 0 12px 30px rgba(0, 209, 178, 0.5);
+}
+
+.music-player.visible {
+    right: 10px; /* Position visible, ajustée pour laisser de la place au bouton */
+}
+
+.player-toggle {
+    position: fixed;
+    top: 50%;
+    right: 0; /* Par défaut à droite de l'écran */
+    transform: translateY(-50%);
+    background: var(--accent);
+    color: white;
+    padding: 0.8rem; /* Réduit légèrement */
+    border-radius: 10px 0 0 10px;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: -4px 0 10px rgba(0, 209, 178, 0.3);
+    transition: all 0.3s ease;
+}
+
+/* Lorsque le lecteur est visible, le bouton est accroché à sa gauche */
+.music-player.visible + .player-toggle {
+    right: 260px;
+    border-radius: 10px 0px 0px 10px;
+    box-shadow: 4px 0 10px rgba(0, 209, 178, 0.3); /* Ombre à droite */
+}
+
+.player-toggle:hover {
+    background: var(--primary);
+}
+
+.player-container {
+    margin: 0 auto;
+}
+
+.song-info {
+    text-align: center;
+    margin-bottom: 0.8rem; /* Réduit légèrement */
+}
+
+.song-info h3 {
+    color: var(--primary);
+    margin: 0;
+    font-size: 1rem; /* Réduit */
+}
+
+.song-info p {
+    color: var(--secondary);
+    margin: 0.2rem 0;
+    font-size: 0.8rem; /* Réduit */
+}
+
+.progress-container {
+    margin-bottom: 0.8rem; /* Réduit */
+}
+
+.progress-bar {
+    background: rgba(0,0,0,0.1);
+    height: 3px; /* Réduit légèrement */
+    border-radius: 1.5px;
+    cursor: pointer;
+    margin-bottom: 0.4rem;
+}
+
+#progress {
+    background: var(--primary);
+    height: 100%;
+    border-radius: 1.5px;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+.time-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem; /* Réduit */
+    color: var(--secondary);
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem; /* Réduit légèrement */
+    margin-bottom: 0.8rem; /* Réduit */
+}
+
+.control-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--secondary);
+    font-size: 1rem; /* Réduit */
+    transition: color 0.3s;
+}
+
+.control-button:hover {
+    color: var(--primary);
+}
+
+.play-button {
+    width: 32px; /* Réduit */
+    height: 32px; /* Réduit */
+    background: var(--primary);
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s;
+}
+
+.play-button:hover {
+    transform: scale(1.1);
+    color: white;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem; /* Réduit */
+    color: var(--secondary);
+}
+
+#volume {
+    width: 80px; /* Réduit */
+    height: 3px; /* Réduit */
+    -webkit-appearance: none;
+    background: rgba(0,0,0,0.1);
+    border-radius: 1.5px;
+    outline: none;
+}
+
+#volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; /* Réduit */
+    height: 10px; /* Réduit */
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .music-player {
+        padding: 0.6rem; /* Réduit encore pour mobile */
+        width: 200px; /* Réduit pour mobile */
+    }
+
+    .music-player.visible {
+        right: 30px; /* Ajusté pour mobile */
+    }
+
+    .music-player.visible + .player-toggle {
+        right: 230px; /* Ajusté pour mobile (30px + 200px) */
+    }
+
+    .controls {
+        gap: 0.4rem;
+    }
+
+    .play-button {
+        width: 28px;
+        height: 28px;
+    }
+
+    .volume-control {
+        display: none;
+    }
+}
+
 /* FOOTER */
 footer {
     background: var(--secondary);
