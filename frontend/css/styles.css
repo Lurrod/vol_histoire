@@ -8,6 +8,52 @@
     --shadow-hover: rgba(0, 209, 178, 0.4);
 }
 
+#intro-video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#intro-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#skip-button {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: var(--primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+#skip-button:hover {
+    transform: scale(1.1);
+    background: var(--accent);
+}
+
+body.video-playing main,
+body.video-playing header,
+body.video-playing footer,
+body.video-playing .sorting-controls,
+body.video-playing .music-player,
+body.video-playing .player-toggle {
+    display: none;
+}
+
 body {
     font-family: 'Space Grotesk', sans-serif;
     background: var(--bg);
@@ -81,6 +127,9 @@ header p {
     margin: -1rem auto 2rem;
     padding: 0 20px;
     text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
 }
 
 .custom-select {
@@ -89,7 +138,7 @@ header p {
     width: 200px;
 }
 
-#sort-select {
+#sort-select, #country-select {
     background: var(--secondary);
     color: white;
     border: none;
@@ -100,10 +149,10 @@ header p {
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     appearance: none;
     width: 100%;
-    padding-right: 2.5rem; /* Espace pour l'icône */
+    padding-right: 2.5rem;
 }
 
-#sort-select:hover {
+#sort-select:hover, #country-select:hover {
     background-color: var(--primary);
 }
 
@@ -229,7 +278,7 @@ header p {
     background: white;
     padding: 1rem;
     border-radius: 10px;
-    box-shadow: 0 4px 15px var(--shadow-color); 
+    box-shadow: 0 4px 15px var(--shadow-color);
     transition: right 0.3s ease, box-shadow 0.3s ease;
     z-index: 1000;
     width: 180px;
@@ -285,11 +334,11 @@ header p {
 .song-info h3 {
     color: var(--primary);
     margin: 0;
-    font-size: 0.9rem; /* Réduit encore */
+    font-size: 0.9rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 160px; /* Limite la largeur */
+    max-width: 160px;
 }
 
 .song-info p {
@@ -365,6 +414,7 @@ header p {
 
 .play-button:hover {
     transform: scale(1.1);
+    background-color: var(--secondary);
 }
 
 .volume-control {
@@ -485,9 +535,11 @@ footer::before {
     .sorting-controls {
         text-align: center;
         margin-top: 1rem;
+        flex-direction: column;
+        align-items: center;
     }
     
-    #sort-select {
+    #sort-select, #country-select {
         width: 90%;
         max-width: 300px;
     }

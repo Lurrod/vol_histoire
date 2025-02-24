@@ -29,6 +29,8 @@ app.use('/js', express.static(path.join(__dirname, '../frontend/js')));
 app.get('/api/airplanes', async (req, res) => {
   try {
     const sort = req.query.sort || 'default';
+    const country = req.query.country || '';
+
     let query = `
       SELECT a.id, a.name, a.complete_name, a.little_description, a.image_url, 
              c.name as country_name, g.generation, t.name as type_name,
@@ -38,19 +40,41 @@ app.get('/api/airplanes', async (req, res) => {
       LEFT JOIN generation g ON a.id_generation = g.id
       LEFT JOIN type t ON a.type = t.id
     `;
+    const queryParams = [];
 
-    switch(sort) {
-      case 'nation': query += ' ORDER BY c.name ASC'; break;
-      case 'service-date': query += ' ORDER BY a.date_operationel DESC'; break;
-      case 'alphabetical': query += ' ORDER BY a.name ASC'; break;
-      case 'generation': query += ' ORDER BY g.generation DESC'; break;
-      case 'type': query += ' ORDER BY t.name ASC'; break;
-      default: query += ' ORDER BY a.id ASC';
+    // Filtrer par pays si spécifié
+    if (country) {
+      query += ` WHERE c.name = $1`;
+      queryParams.push(country);
     }
 
-    const result = await pool.query(query);
+    // Appliquer le tri
+    switch (sort) {
+      case 'nation':
+        query += ' ORDER BY c.name ASC';
+        break;
+      case 'service-date':
+        query += ' ORDER BY a.date_operationel DESC';
+        break;
+      case 'alphabetical':
+        query += ' ORDER BY a.name ASC';
+        break;
+      case 'generation':
+        query += ' ORDER BY g.generation DESC';
+        break;
+      case 'type':
+        query += ' ORDER BY t.name ASC';
+        break;
+      default:
+        query += ' ORDER BY a.id ASC';
+    }
+
+    console.log('Query:', query); // Débogage
+    console.log('Params:', queryParams); // Débogage
+    const result = await pool.query(query, queryParams);
     res.json(result.rows);
   } catch (err) {
+    console.error('Erreur serveur:', err.stack); // Afficher l’erreur complète dans la console
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });
