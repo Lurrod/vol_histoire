@@ -12,20 +12,23 @@ document.addEventListener("DOMContentLoaded", () => {
     // Gestion vidéo d'intro
     body.classList.add("video-playing");
 
-    introVideo.addEventListener("ended", () => {
-        introContainer.style.display = "none";
+    // Fonction pour lancer l'animation de swipe
+    function triggerSwipeAnimation() {
+        introContainer.classList.add("swipe-out");
         body.classList.remove("video-playing");
-    });
+        introContainer.addEventListener("transitionend", () => {
+            introContainer.style.display = "none";
+        }, { once: true });
+    }
+
+    introVideo.addEventListener("ended", triggerSwipeAnimation);
 
     skipButton.addEventListener("click", () => {
-        introContainer.style.display = "none";
-        body.classList.remove("video-playing");
+        introVideo.pause(); 
+        triggerSwipeAnimation();
     });
 
-    introVideo.addEventListener("error", () => {
-        introContainer.style.display = "none";
-        body.classList.remove("video-playing");
-    });
+    introVideo.addEventListener("error", triggerSwipeAnimation);
 
     // Fonction pour récupérer les avions depuis l'API
     async function fetchAirplanes(sort = "default", country = "") {
