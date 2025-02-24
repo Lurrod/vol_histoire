@@ -41,6 +41,46 @@
         </section>
     </main>
 
+    <!-- Lecteur de musique -->
+    <div id="music-player" class="music-player">
+        <div class="player-container">
+            <div class="song-info">
+                <h3 id="song-title">Titre de la chanson</h3>
+                <p id="song-artist">Artiste</p>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div id="progress"></div>
+                </div>
+                <div class="time-info">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="prev" class="control-button">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="play" class="control-button play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button id="next" class="control-button">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+            <div class="volume-control">
+                <i class="fas fa-volume-up" id="volume-icon"></i>
+                <input type="range" id="volume" min="0" max="100" value="100">
+            </div>
+            <audio id="audio" src=""></audio>
+        </div>
+    </div>
+
+    <!-- Bouton de contrôle du lecteur -->
+    <div class="player-toggle" id="player-toggle">
+        <i class="fas fa-music"></i>
+    </div>
+
     <footer>
         <p>&copy; 2025 Vol d'Histoire. Tous droits réservés.</p>
     </footer>

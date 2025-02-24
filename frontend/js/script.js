@@ -113,5 +113,147 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Chargement initial
     fetchAirplanes();
+// Lecteur de musique
+const audio = document.getElementById('audio');
+const playBtn = document.getElementById('play');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+const progressBar = document.querySelector('.progress-bar');
+const progress = document.getElementById('progress');
+const currentTimeEl = document.getElementById('current-time');
+const durationEl = document.getElementById('duration');
+const volumeSlider = document.getElementById('volume');
+const volumeIcon = document.getElementById('volume-icon');
+const playerToggle = document.getElementById('player-toggle');
+const musicPlayer = document.getElementById('music-player');
+
+// Liste de lecture
+const playlist = [
+    {
+        title: "Trampoline",
+        artist: "SHAED",
+        src: "../frontend/audio/trampoline.mp3"
+    },
+    {
+        title: "Right Round",
+        artist: "Flo Rida",
+        src: "../frontend/audio/right_round.mp3"
+    },
+    {
+        title: "I Ain’t Worried",
+        artist: "OneRepublic",
+        src: "../frontend/audio/i_ain_t_worried.mp3"
+    },
+    {
+        title: "Danger Zone",
+        artist: "Kenny Loggins",
+        src: "../frontend/audio/danger_zone.mp3"
+    }
+];
+
+let currentSongIndex = 0;
+let isPlayerVisible = false; // Lecteur caché par défaut
+
+// Charger la chanson
+function loadSong(song) {
+    document.getElementById('song-title').textContent = song.title;
+    document.getElementById('song-artist').textContent = song.artist;
+    audio.src = song.src;
+}
+
+// Play/Pause
+function togglePlay() {
+    if (audio.paused) {
+        audio.play();
+        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    } else {
+        audio.pause();
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    }
+}
+
+// Mettre à jour la progression
+function updateProgress(e) {
+    const { duration, currentTime } = e.srcElement;
+    const progressPercent = (currentTime / duration) * 100;
+    progress.style.width = `${progressPercent}%`;
+    currentTimeEl.textContent = formatTime(currentTime);
+    if (!isNaN(duration)) {
+        durationEl.textContent = formatTime(duration);
+    }
+}
+
+// Formater le temps
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
+// Définir la progression
+function setProgress(e) {
+    const width = this.clientWidth;
+    const clickX = e.offsetX;
+    const duration = audio.duration;
+    audio.currentTime = (clickX / width) * duration;
+}
+
+// Chanson suivante
+function nextSong() {
+    currentSongIndex++;
+    if (currentSongIndex > playlist.length - 1) {
+        currentSongIndex = 0;
+    }
+    loadSong(playlist[currentSongIndex]);
+    audio.play();
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+}
+
+// Chanson précédente
+function prevSong() {
+    currentSongIndex--;
+    if (currentSongIndex < 0) {
+        currentSongIndex = playlist.length - 1;
+    }
+    loadSong(playlist[currentSongIndex]);
+    audio.play();
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+}
+
+// Gérer le volume
+function handleVolume() {
+    audio.volume = volumeSlider.value / 100;
+    updateVolumeIcon();
+}
+
+function updateVolumeIcon() {
+    if (audio.volume === 0) {
+        volumeIcon.className = 'fas fa-volume-mute';
+    } else if (audio.volume < 0.5) {
+        volumeIcon.className = 'fas fa-volume-down';
+    } else {
+        volumeIcon.className = 'fas fa-volume-up';
+    }
+}
+
+// Basculer le lecteur
+function togglePlayer() {
+    isPlayerVisible = !isPlayerVisible;
+    musicPlayer.classList.toggle('visible', isPlayerVisible);
+    playerToggle.innerHTML = isPlayerVisible ? '<i class="fas fa-times"></i>' : '<i class="fas fa-music"></i>';
+}
+
+// Événements
+playBtn.addEventListener('click', togglePlay);
+prevBtn.addEventListener('click', prevSong);
+nextBtn.addEventListener('click', nextSong);
+audio.addEventListener('timeupdate', updateProgress);
+progressBar.addEventListener('click', setProgress);
+volumeSlider.addEventListener('input', handleVolume);
+audio.addEventListener('ended', nextSong);
+playerToggle.addEventListener('click', togglePlayer);
+
+// Charger la première chanson
+loadSong(playlist[0]);
 
 });
