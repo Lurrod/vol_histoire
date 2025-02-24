@@ -19,6 +19,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 1s ease-in-out; /* Animation de swipe */
+}
+
+#intro-video-container.swipe-out {
+    transform: translateY(-100%); /* Swipe vers le haut */
 }
 
 #intro-video {
@@ -45,13 +50,25 @@
     background: var(--accent);
 }
 
+/* Cacher le contenu principal pendant la vidéo */
 body.video-playing main,
 body.video-playing header,
 body.video-playing footer,
 body.video-playing .sorting-controls,
 body.video-playing .music-player,
 body.video-playing .player-toggle {
-    display: none;
+    opacity: 0; /* Contenu invisible au départ */
+    transition: opacity 1s ease-in-out; /* Synchronisé avec le swipe */
+}
+
+/* Révélation du contenu pendant le swipe */
+body:not(.video-playing) main,
+body:not(.video-playing) header,
+body:not(.video-playing) footer,
+body:not(.video-playing) .sorting-controls,
+body:not(.video-playing) .music-player,
+body:not(.video-playing) .player-toggle {
+    opacity: 1;
 }
 
 body {
