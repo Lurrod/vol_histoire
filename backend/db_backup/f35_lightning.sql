@@ -1,21 +1,3 @@
-INSERT INTO tech (name, description) VALUES
-('AN/APG-81', 'Radar AESA (Active Electronically Scanned Array) avec capacités avancées de détection'),
-('F135-PW-100', 'Moteur Pratt & Whitney avec option de poussée vectorielle pour le STOVL'),
-('EOTS', 'Système de ciblage électro-optique pour frappes de précision et reconnaissance');
-
-INSERT INTO armement (name, description) 
-SELECT 'GBU-31 JDAM', 'Bombe guidée par GPS (907 kg)' 
-WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'GBU-31 JDAM');
-
-INSERT INTO armement (name, description) 
-SELECT 'GAU-22/A', 'Canon interne de 25 mm (180-220 coups)' 
-WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'GAU-22/A');
-
-INSERT INTO missions (name, description) VALUES
-('Supériorité aérienne furtive', 'Domination de l’espace aérien avec technologie stealth'),
-('Frappe multirôle', 'Attaques au sol et missions air-air combinées'),
-('ISR', 'Intelligence, surveillance et reconnaissance');
-
 INSERT INTO airplanes (
     name, 
     complete_name, 
@@ -29,7 +11,6 @@ INSERT INTO airplanes (
     max_speed, 
     max_range, 
     id_manufacturer,
-    id_tech,
     id_generation, 
     type, 
     status, 
@@ -44,23 +25,22 @@ INSERT INTO airplanes (
     '1996-01-01',
     '2006-12-15',
     '2016-08-02',
-    1960, -- Mach 1.6
-    2200, -- env. 1370 miles
+    1960,
+    2200,
     (SELECT id FROM manufacturer WHERE code = 'LM'),
-    (SELECT id FROM tech WHERE name = 'AN/APG-81'),
     (SELECT id FROM generation WHERE generation = 5),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'En service',
-    13200 -- poids à vide en kg
+    13200
 );
 
--- Technologies (ajout des autres techs au-delà de AN/APG-81)
+-- Technologies
 INSERT INTO airplane_tech (id_airplane, id_tech)
 SELECT 
     (SELECT id FROM airplanes WHERE name = 'F-35 Lightning II'), 
     id 
 FROM tech 
-WHERE name IN ('F135-PW-100', 'EOTS');
+WHERE name IN ('F135-PW-100', 'EOTS', 'AN/APG-81');
 
 -- Armements (réutilisation des existants + nouveaux)
 INSERT INTO airplane_armement (id_airplane, id_armement)
@@ -84,5 +64,12 @@ SELECT
     (SELECT id FROM airplanes WHERE name = 'F-35 Lightning II'), 
     id 
 FROM missions 
-WHERE name IN ('Supériorité aérienne furtive', 'Frappe multirôle', 'ISR');
+WHERE name IN (
+    'Supériorité aérienne', 
+    'Frappe tactique',             
+    'Reconnaissance stratégique',
+    'Interception',              
+    'Appui aérien rapproché',
+    'Guerre électronique'   
+);
 

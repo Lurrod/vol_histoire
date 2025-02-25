@@ -1,23 +1,3 @@
-INSERT INTO tech (name, description) VALUES
-('AN/APG-77', 'Radar AESA (Active Electronically Scanned Array) avec capacité de détection furtive'),
-('F119-PW-100', 'Moteurs à poussée vectorielle permettant la supercroisière'),
-('IRST', 'Système de recherche et de suivi infrarouge pour la détection passive');
-
-INSERT INTO armement (name, description) VALUES
-('AIM-120 AMRAAM', 'Missile air-air à guidage radar actif (portée 120 km)'),
-('AIM-9X Sidewinder', 'Missile air-air à guidage infrarouge (portée 35 km)'),
-('GBU-32 JDAM', 'Bombe guidée par GPS (907 kg)'),
-('GBU-39 SDB', 'Petite bombe guidée de précision (113 kg)'),
-('M61A2 Vulcan', 'Canon rotatif de 20 mm (480 coups)');
-
-INSERT INTO wars (name, date_start, date_end, description) VALUES
-('Opération Inherent Resolve', '2014-08-08', NULL, 'Campagne aérienne contre l’État islamique en Irak et en Syrie');
-
-INSERT INTO missions (name, description) VALUES
-('Supériorité aérienne furtive', 'Domination de l’espace aérien avec technologie stealth'),
-('Frappe de précision', 'Attaques ciblées avec armement guidé'),
-('Reconnaissance tactique', 'Collecte de données en environnement hostile');
-
 INSERT INTO airplanes (
     name, 
     complete_name, 
@@ -31,7 +11,6 @@ INSERT INTO airplanes (
     max_speed, 
     max_range, 
     id_manufacturer,
-    id_tech,
     id_generation, 
     type, 
     status, 
@@ -46,23 +25,22 @@ INSERT INTO airplanes (
     '1981-01-01',
     '1997-09-07',
     '2005-12-15',
-    2410, -- Mach 2.25
-    2960, -- env. 1840 miles
+    2410,
+    2960,
     (SELECT id FROM manufacturer WHERE code = 'LM'),
-    (SELECT id FROM tech WHERE name = 'AN/APG-77'), -- Une seule tech ici, les autres via airplane_tech
     (SELECT id FROM generation WHERE generation = 5),
     (SELECT id FROM type WHERE name = 'Chasseur'),
     'En service',
-    19700 -- poids à vide en kg
+    19700
 );
 
--- Technologies (ajout des autres techs au-delà de AN/APG-77)
+-- Technologies
 INSERT INTO airplane_tech (id_airplane, id_tech)
 SELECT 
     (SELECT id FROM airplanes WHERE name = 'F-22 Raptor'), 
     id 
 FROM tech 
-WHERE name IN ('F119-PW-100', 'IRST');
+WHERE name IN ('F119-PW-100', 'IRST', 'AN/APG-77');
 
 -- Armements
 INSERT INTO airplane_armement (id_airplane, id_armement)
@@ -86,4 +64,10 @@ SELECT
     (SELECT id FROM airplanes WHERE name = 'F-22 Raptor'), 
     id 
 FROM missions 
-WHERE name IN ('Supériorité aérienne furtive', 'Frappe de précision', 'Reconnaissance tactique');
+WHERE name IN (
+    'Supériorité aérienne', 
+    'Frappe tactique',              
+    'Reconnaissance tactique',      
+    'Interception',                  
+    'Guerre électronique'            
+);
