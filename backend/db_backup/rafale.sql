@@ -1,27 +1,3 @@
-INSERT INTO tech (name, description) VALUES
-('RBE2-AA Radar', 'Radar AESA (Active Electronically Scanned Array) de dernière génération'),
-('SPECTRA', 'Système de guerre électronique intégré'),
-('OSF', 'Système optronique secteur frontal avec capacités IR et TV');
-
-INSERT INTO armement (name, description) VALUES
-('MICA IR', 'Missile air-air à guidage infrarouge (portée 80 km)'),
-('MICA EM', 'Missile air-air à guidage radar actif (portée 80 km)'),
-('Meteor', 'Missile air-air longue portée (100-150 km)'),
-('SCALP EG', 'Missile de croisière (portée 500 km)'),
-('AM39 Exocet', 'Missile anti-navire (portée 70 km)'),
-('GBU-12 Paveway II', 'Bombe guidée laser (224 kg)'),
-('30M791', 'Canon interne de 30 mm (125 coups)');
-
-INSERT INTO wars (name, date_start, date_end, description) VALUES
-('Intervention en Libye', '2011-03-19', '2011-10-31', 'Opération Harmattan : Intervention de la coalition internationale en Libye'),
-('Opération Serval', '2013-01-11', '2014-07-15', 'Intervention française au Mali contre les groupes djihadistes'),
-('Opération Chammal', '2014-09-19', NULL, 'Opération française contre l’État islamique en Irak et en Syrie');
-
-INSERT INTO missions (name, description) VALUES
-('Supériorité aérienne', 'Contrôle de l’espace aérien'),
-('Frappe stratégique', 'Attaques de précision sur des cibles stratégiques'),
-('Reconnaissance armée', 'Surveillance avec capacité d’engagement');
-
 INSERT INTO airplanes (
     name, 
     complete_name, 
@@ -35,7 +11,6 @@ INSERT INTO airplanes (
     max_speed, 
     max_range, 
     id_manufacturer,
-    id_tech,
     id_generation, 
     type, 
     status, 
@@ -50,23 +25,22 @@ INSERT INTO airplanes (
     '1983-01-01',
     '1986-07-04',
     '2001-05-18',
-    1912, -- Mach 1.8 environ
-    3700, -- env. 2300 miles
+    1912,
+    3700,
     (SELECT id FROM manufacturer WHERE code = 'DAS'),
-    (SELECT id FROM tech WHERE name = 'RBE2-AA Radar'), -- Une seule tech ici, les autres via airplane_tech
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'En service',
-    10000 -- poids à vide en kg
+    10000
 );
 
--- Technologies (ajout des autres techs au-delà de RBE2-AA)
+-- Technologies
 INSERT INTO airplane_tech (id_airplane, id_tech)
 SELECT 
     (SELECT id FROM airplanes WHERE name = 'Rafale'), 
     id 
 FROM tech 
-WHERE name IN ('SPECTRA', 'OSF');
+WHERE name IN ('SPECTRA', 'OSF', 'RBE2-AA Radar');
 
 -- Armements
 INSERT INTO airplane_armement (id_airplane, id_armement)
@@ -90,4 +64,9 @@ SELECT
     (SELECT id FROM airplanes WHERE name = 'Rafale'), 
     id 
 FROM missions 
-WHERE name IN ('Supériorité aérienne', 'Frappe stratégique', 'Reconnaissance armée');
+WHERE name IN (
+    'Supériorité aérienne', 
+    'Frappe stratégique', 
+    'Frappe tactique',  
+    'Dissuasion nucléaire'
+);
