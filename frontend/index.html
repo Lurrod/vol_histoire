@@ -19,12 +19,21 @@
     <header>
         <div class="header-content">
             <h1>Vol d'Histoire</h1>
-            <div>
-                <a href="timeline.html" class="back-button" style="margin-left: 1rem;">
+            <div class="header-buttons">
+                <a href="timeline.html" class="back-button">
                     <i class="fas fa-history"></i> Frise
                 </a>
+                <div id="user-info">
+                    <a href="login.html" class="login-button" id="login-button">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <span id="user-name" class="hidden"></span>
+                    <a href="#" id="logout-icon" class="login-button hidden">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
             </div>
-        </div>
+        </div>        
         <p>Hangar</p>
     </header>
 
@@ -32,6 +41,18 @@
         <div class="custom-select country-select" id="country-select-container" style="display: none;">
             <select id="country-select" aria-label="Choisir un pays">
                 <option value="">Choisir un pays</option>
+            </select>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="custom-select generation-select" id="generation-select-container" style="display: none;">
+            <select id="generation-select" aria-label="Choisir une génération">
+                <option value="">Choisir une génération</option>
+            </select>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="custom-select type-select" id="type-select-container" style="display: none;">
+            <select id="type-select" aria-label="Choisir un type">
+                <option value="">Choisir un type</option>
             </select>
             <i class="fas fa-chevron-down"></i>
         </div>
@@ -52,6 +73,7 @@
         <section id="airplanes-list">
             <div id="airplanes-container"></div>
         </section>
+        <div id="pagination-container"></div>
     </main>
 
     <!-- Lecteur de musique -->
