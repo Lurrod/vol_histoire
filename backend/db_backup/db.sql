@@ -309,6 +309,7 @@ INSERT INTO armement (name, description) VALUES
 ('AGM-45 Shrike', 'Missile anti-radar, portée 40 km'),
 ('AGM-78 Standard ARM', 'Missile anti-radar, portée 90 km'),
 ('AGM-84 Harpoon', 'Missile antinavire, portée 124 km'),
+('AGM-86 ALCM', 'Missile de croisière à lancement aérien, portée 2400 km'),
 ('AGM-88 HARM', 'Missile anti-radar, portée 150 km'),
 ('AGM-114 Hellfire', 'Missile air-sol, guidage laser, 8 km'),
 ('AGM-130', 'Missile air-sol guidé, portée 64 km'),
@@ -345,6 +346,7 @@ INSERT INTO armement (name, description) VALUES
 -- Armement nucléaire
 ('AN-11', 'Bombe nucléaire à chute libre'),
 ('AN-22', 'Bombe nucléaire à chute libre'),
+('AGM-69 SRAM', 'Missile nucléaire à courte portée, portée 170 km'),
 ('ASMP', 'Missile nucléaire, portée 300 km'),
 ('ASMP-A', 'Missile nucléaire amélioré, portée 500 km'),
 ('B28', 'Bombe nucléaire à chute libre, 1.45 Mt'),
