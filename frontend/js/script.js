@@ -15,6 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginButton = document.getElementById("login-button");
     const userNameSpan = document.getElementById("user-name");
     const logoutIcon = document.getElementById("logout-icon");
+    const addModal = document.getElementById("add-modal");
+    const addButton = document.getElementById("add-airplane-btn");
+    const closeAddModal = addModal.querySelector(".close-btn");
 
     // Vérifier si un token JWT est stocké
     const token = localStorage.getItem("token");
@@ -24,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Décoder le token JWT (partie payload)
             const payload = JSON.parse(atob(token.split(".")[1])); 
             const userName = payload.name; 
+            const userRole = payload.role;
 
             // Afficher le nom et masquer le bouton Connexion
             loginButton.classList.add("hidden");
@@ -38,6 +42,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.removeItem("token"); // Supprimer le token
                 window.location.reload(); // Recharger la page
             });
+            if (userRole === 1 || userRole === 2) {
+                addButton.classList.remove("hidden");
+                addButton.style.display = "inline-block";
+            }            
         } catch (error) {
             console.error("Erreur lors de la lecture du token:", error);
             localStorage.removeItem("token"); // Nettoyer un token invalide
@@ -48,6 +56,65 @@ document.addEventListener("DOMContentLoaded", () => {
         loginButton.classList.remove("hidden");
         userNameSpan.classList.add("hidden");
     }
+
+    addButton.addEventListener("click", () => {
+        addModal.classList.add("show");
+        addModal.classList.remove("hidden");
+    });
+    
+    closeAddModal.addEventListener("click", () => {
+        addModal.classList.remove("show");
+        addModal.classList.add("hidden");
+    });
+
+    // Gestion de la soumission du formulaire
+    document.getElementById("add-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const newAirplane = {
+        name: document.getElementById("add-name").value,
+        complete_name: document.getElementById("add-complete-name").value,
+        little_description: document.getElementById("add-little-description").value,
+        image_url: document.getElementById("add-image-url").value,
+        description: document.getElementById("add-description").value,
+        date_concept: document.getElementById("add-date-concept").value || null,
+        date_first_fly: document.getElementById("add-date-first-fly").value || null,
+        date_operationel: document.getElementById("add-date-operationel").value || null,
+        max_speed: parseFloat(document.getElementById("add-max-speed").value) || null,
+        max_range: parseFloat(document.getElementById("add-max-range").value) || null,
+        weight: parseFloat(document.getElementById("add-weight").value) || null,
+        status: document.getElementById("add-status").value,
+        country_id: 1,
+        id_manufacturer: 1,
+        id_generation: 1,
+        type: 1
+    };
+
+    try {
+        const response = await fetch("http://localhost:3000/api/airplanes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(newAirplane)
+        });
+
+        if (response.ok) {
+            alert("Avion créé avec succès !");
+            addModal.classList.remove("show");
+            // Recharger la liste
+            const response = await fetchAirplanes(sortSelect.value);
+            displayAirplanes(response);
+        } else {
+            const error = await response.json();
+            alert(`Erreur: ${error.message || "Création impossible"}`);
+        }
+        } catch (error) {
+            console.error("Erreur:", error);
+            alert("Erreur réseau - Impossible de créer l'avion");
+        }
+    });
 
     // Gestion vidéo d'intro
     body.classList.add("video-playing");
