@@ -2,11 +2,19 @@ DROP DATABASE vol_histoire;
 
 CREATE DATABASE vol_histoire;
 
+CREATE TABLE roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+INSERT INTO roles (name) VALUES ('admin'), ('editeur'), ('utilisateur');
+
 CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password TEXT NOT NULL
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role_id INTEGER REFERENCES roles(id) ON DELETE SET NULL DEFAULT 3
 );
 
 CREATE TABLE countries (

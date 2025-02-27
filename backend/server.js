@@ -32,27 +32,26 @@ app.use('/js', express.static(path.join(__dirname, '../frontend/js')));
 // Route d'inscription
 app.post('/api/register', async (req, res) => {
   const { name, email, password } = req.body;
-  
+
   try {
-    // Vérifier si l'email existe déjà
-    const userExists = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-    if (userExists.rows.length > 0) {
-      return res.status(400).json({ message: 'Email déjà utilisé' });
-    }
+      const userExists = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+      if (userExists.rows.length > 0) {
+          return res.status(400).json({ message: 'Email déjà utilisé' });
+      }
 
-    // Hacher le mot de passe
-    const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const defaultRole = 3;
 
-    // Insérer l'utilisateur dans la base de données
-    await pool.query(
-      'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
-      [name, email, hashedPassword]
-    );
+      await pool.query(
+          'INSERT INTO users (name, email, password, role_id) VALUES ($1, $2, $3, $4)',
+          [name, email, hashedPassword, defaultRole]
+      );
 
-    res.status(201).json({ message: 'Utilisateur créé avec succès' });
+      res.status(201).json({ message: 'Utilisateur créé avec succès' });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erreur serveur' });
+      console.error(error);
+      res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -61,29 +60,34 @@ app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Vérifier si l'utilisateur existe
-    const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-    if (user.rows.length === 0) {
-      return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
-    }
+      // Vérifier si l'utilisateur existe
+      const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+      if (user.rows.length === 0) {
+          return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
+      }
 
-    // Vérifier le mot de passe
-    const validPassword = await bcrypt.compare(password, user.rows[0].password);
-    if (!validPassword) {
-      return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
-    }
+      // Vérifier le mot de passe
+      const validPassword = await bcrypt.compare(password, user.rows[0].password);
+      if (!validPassword) {
+          return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
+      }
 
-    // Générer un token JWT
-    const token = jwt.sign(
-      { id: user.rows[0].id, name: user.rows[0].name },
-      process.env.JWT_SECRET,
-      { expiresIn: '2h' }
-    );
+      // Générer un token JWT avec le rôle
+      const token = jwt.sign(
+          { 
+              id: user.rows[0].id, 
+              name: user.rows[0].name, 
+              role: user.rows[0].role_id 
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: '2h' }
+      );
 
-    res.json({ message: 'Connexion réussie', token });
+      res.json({ message: 'Connexion réussie', token });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Erreur serveur' });
+      console.error(error);
+      res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -323,6 +327,110 @@ app.get('/api/manufacturers', async (req, res) => {
     res.json(result.rows);
   } catch (error) {
     res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+// CRUD ADMIN
+const authorize = (roles) => {
+  return (req, res, next) => {
+      const token = req.headers.authorization?.split(" ")[1];
+      if (!token) return res.status(403).json({ message: "Accès interdit" });
+
+      try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          
+          if (!roles.includes(decoded.role)) {
+              return res.status(403).json({ message: "Accès non autorisé" });
+          }
+
+          req.user = decoded;
+          next();
+      } catch (error) {
+          res.status(401).json({ message: "Token invalide" });
+      }
+  };
+};
+
+app.post('/api/airplanes', authorize([1, 2]), async (req, res) => {
+  const {
+      name, complete_name, little_description, image_url, description,
+      country_id, date_concept, date_first_fly, date_operationel,
+      max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+  } = req.body;
+
+  try {
+      const result = await pool.query(
+          `INSERT INTO airplanes 
+          (name, complete_name, little_description, image_url, description, country_id, 
+          date_concept, date_first_fly, date_operationel, max_speed, max_range, 
+          id_manufacturer, id_generation, type, status, weight) 
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) 
+          RETURNING *`,
+          [name, complete_name, little_description, image_url, description, country_id, 
+          date_concept, date_first_fly, date_operationel, max_speed, max_range, 
+          id_manufacturer, id_generation, type, status, weight]
+      );
+
+      res.status(201).json(result.rows[0]);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Erreur lors de l’ajout de l’avion' });
+  }
+});
+
+app.put('/api/airplanes/:id', authorize([1, 2]), async (req, res) => {
+  const { id } = req.params;
+  console.log("Données reçues :", req.body);
+
+  const {
+      name, complete_name, little_description, image_url, description,
+      date_concept, date_first_fly, date_operationel,
+      max_speed, max_range, weight, status
+  } = req.body;
+
+  // Convertir les dates vides en NULL
+  const cleanDateConcept = date_concept === "" ? null : date_concept;
+  const cleanDateFirstFly = date_first_fly === "" ? null : date_first_fly;
+  const cleanDateOperationel = date_operationel === "" ? null : date_operationel;
+
+  try {
+      const result = await pool.query(
+          `UPDATE airplanes SET 
+              name = $1, complete_name = $2, little_description = $3, image_url = $4, 
+              description = $5, date_concept = $6, date_first_fly = $7, 
+              date_operationel = $8, max_speed = $9, max_range = $10, 
+              weight = $11, status = $12
+          WHERE id = $13 RETURNING *`,
+          [name, complete_name, little_description, image_url, description, 
+           cleanDateConcept, cleanDateFirstFly, cleanDateOperationel, max_speed, 
+           max_range, weight, status, id]
+      );
+
+      if (result.rows.length === 0) {
+          return res.status(404).json({ message: "Avion non trouvé" });
+      }
+
+      res.json(result.rows[0]);
+  } catch (error) {
+      console.error("Erreur lors de la mise à jour :", error);
+      res.status(500).json({ error: 'Erreur lors de la mise à jour de l’avion' });
+  }
+});
+
+app.delete('/api/airplanes/:id', authorize([1, 2]), async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const result = await pool.query('DELETE FROM airplanes WHERE id = $1 RETURNING *', [id]);
+
+      if (result.rows.length === 0) {
+          return res.status(404).json({ message: "Avion non trouvé" });
+      }
+
+      res.json({ message: "Avion supprimé avec succès" });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Erreur lors de la suppression de l’avion' });
   }
 });
 

@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const switchToRegister = document.getElementById("switch-to-register");
     const switchToLogin = document.getElementById("switch-to-login");
 
-    // Vérification que les éléments existent avant d'ajouter des événements
     if (!loginForm || !registerForm || !switchToRegister || !switchToLogin) {
         console.error("Un ou plusieurs éléments du formulaire sont introuvables.");
         return;
@@ -49,19 +48,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = document.getElementById("register-name").value;
         const email = document.getElementById("register-email").value;
         const password = document.getElementById("register-password").value;
-
+    
         const response = await fetch("http://localhost:3000/api/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, email, password })
         });
-
+    
         const data = await response.json();
         if (response.ok) {
             alert("Inscription réussie ! Connectez-vous.");
-            switchToLogin.click(); // Revenir à la connexion
+            switchToLogin.click();
         } else {
             alert("Erreur : " + data.message);
-        }
+        }    
     });
 });
