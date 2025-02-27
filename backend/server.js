@@ -291,10 +291,15 @@ app.get('/api/airplanes/:id/missions', async (req, res) => {
 // Route pour les pays
 app.get('/api/countries', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM countries');
-    res.json(result.rows);
+      const result = await pool.query(`
+          SELECT DISTINCT c.name 
+          FROM countries c
+          JOIN airplanes a ON c.id = a.country_id
+      `);
+      res.json(result.rows);
   } catch (error) {
-    res.status(500).json({ error: "Erreur serveur" });
+      console.error("Erreur serveur:", error);
+      res.status(500).json({ error: "Erreur serveur" });
   }
 });
 

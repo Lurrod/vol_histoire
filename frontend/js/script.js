@@ -30,17 +30,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const userRole = payload.role;
 
             // Afficher le nom et masquer le bouton Connexion
-            loginButton.classList.add("hidden");
-            userNameSpan.textContent = `${userName}`;
-            userNameSpan.classList.remove("hidden");
+            loginButton.style.display = "none";
+            document.getElementById("user-info-container").style.display = "flex";
+            userNameSpan.textContent = userName;
 
-            // Afficher l'icône de déconnexion
-            logoutIcon.classList.remove("hidden");
+            logoutIcon.style.display = "inline-block";
 
             // Gestion de la déconnexion
             logoutIcon.addEventListener("click", () => {
-                localStorage.removeItem("token"); // Supprimer le token
-                window.location.reload(); // Recharger la page
+            localStorage.removeItem("token"); // Supprimer le token
+            window.location.reload(); // Recharger la page
             });
             if (userRole === 1 || userRole === 2) {
                 addButton.classList.remove("hidden");
@@ -52,9 +51,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     } else {
         // Si l'utilisateur n'est pas connecté, masquer l'icône de déconnexion
-        logoutIcon.classList.add("hidden");
-        loginButton.classList.remove("hidden");
-        userNameSpan.classList.add("hidden");
+        logoutIcon.style.display = "none";
+        loginButton.style.display = "inline-block";
+        userNameSpan.style.display = "none";
+        document.getElementById("user-info-container").style.display = "none";     
     }
 
     addButton.addEventListener("click", () => {
@@ -167,11 +167,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Fonction pour récupérer la liste des pays uniques
-    async function fetchCountries() {
-        const response = await fetchAirplanes("nation");
-        const countries = [...new Set(response.data.map(airplane => airplane.country_name))].sort();
-        populateCountrySelect(countries);
-    }
+    function populateCountrySelect(countries) {
+        countrySelect.innerHTML = '<option value="">Choisir un pays</option>';
+        countries.forEach(country => {
+            const option = document.createElement("option");
+            option.value = country;  // Assure-toi que c'est bien le nom complet
+            option.textContent = country;
+            countrySelect.appendChild(option);
+        });
+    }    
 
     // Fonction pour récupérer la liste des générations disponibles
     async function fetchGenerations() {
@@ -217,6 +221,18 @@ document.addEventListener("DOMContentLoaded", () => {
             option.textContent = `Génération ${generation}`;
             generationSelect.appendChild(option);
         });
+    }
+
+    async function fetchCountries() {
+        try {
+            const response = await fetch("http://localhost:3000/api/countries");
+            if (!response.ok) throw new Error("Erreur lors de la récupération des pays");
+            const countriesData = await response.json();
+            const countries = countriesData.map(c => c.name).sort();
+            populateCountrySelect(countries);
+        } catch (error) {
+            console.error("Erreur:", error);
+        }
     }
 
     // Remplir le menu des types

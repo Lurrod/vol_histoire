@@ -168,8 +168,10 @@ header {
 }
 
 /* NOM UTILISATEUR (SI CONNECTÉ) */
-#user-name {
+#user-info-container {
     display: flex;
+    align-items: center;
+    gap: 0.5rem;
     background: var(--primary);
     color: white;
     padding: 0.8rem 1.5rem;
@@ -179,16 +181,21 @@ header {
     transition: all 0.3s ease;
 }
 
-#user-name:hover {
+#user-info-container i {
+    font-size: 1.2rem;
+}
+
+#user-info-container:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(255, 77, 77, 0.4);
 }
 
+
 /* CLASSE HIDDEN (POUR MASQUER DES ÉLÉMENTS) */
 .hidden {
-    opacity: 0;
-    pointer-events: none;
+    display: none;
 }
+
 
 /* RESPONSIVE - PETITS ÉCRANS */
 @media (max-width: 768px) {
