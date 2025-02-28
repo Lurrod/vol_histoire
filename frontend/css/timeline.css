@@ -4,6 +4,8 @@
     --accent: #00D1B2;
     --bg: #F9F9F9;
     --text: #2A2F35;
+    --shadow-color: rgba(0, 209, 178, 0.2);
+    --shadow-hover: rgba(0, 209, 178, 0.4);
 }
 
 body {

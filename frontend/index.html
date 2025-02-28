@@ -134,8 +134,27 @@
                 <label>Portée max (km) : <input type="number" id="add-max-range"></label>
                 <label>Poids (kg) : <input type="number" id="add-weight"></label>
                 <label>Statut : <input type="text" id="add-status"></label>
+                <label>Pays :
+                    <select id="add-country-id" required>
+                        <option value="">Choisir un pays</option>
+                    </select>
+                </label>
+                <label>Fabricant :
+                    <select id="add-manufacturer-id" required>
+                        <option value="">Choisir un fabricant</option>
+                    </select>
+                </label>
+                <label>Génération :
+                    <select id="add-generation-id" required>
+                        <option value="">Choisir une génération</option>
+                    </select>
+                </label>
+                <label>Type :
+                    <select id="add-type" required>
+                        <option value="">Choisir un type</option>
+                    </select>
+                </label>
                 <label>Description : <textarea id="add-description"></textarea></label>
-    
                 <button type="submit" class="save-btn">Créer l'avion</button>
             </form>
         </div>
