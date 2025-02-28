@@ -1,11 +1,20 @@
 :root {
-    --primary: #FF4D4D;
-    --secondary: #2A2F35;
-    --accent: #00D1B2;
-    --bg: #F9F9F9;
-    --text: #2A2F35;
-    --shadow-color: rgba(0, 209, 178, 0.2);
-    --shadow-hover: rgba(0, 209, 178, 0.4);
+    --primary: #3F3D56;
+    --primary-rgb: 63, 61, 86;
+    --primary-dark: #2E2C40;
+    --secondary: #1E1E1E;
+    --secondary-rgb: 30, 30, 30;
+    --secondary-light: #282828;
+    --accent: #5A5A89;
+    --accent-rgb: 90, 90, 137;
+    --accent-dark: #484872;
+    --bg: #F0F0F5;
+    --text: #5A5A89;
+    --shadow-color: rgba(63, 61, 86, 0.2);
+    --shadow-hover: rgba(63, 61, 86, 0.4);
+    --white: #FFFFFF;
+    --black: #000000;
+    --black-rgb: 0, 0, 0;
 }
 
 #intro-video-container {
@@ -14,16 +23,16 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: black;
+    background: var(--black);
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 1s ease-in-out; /* Animation de swipe */
+    transition: transform 1s ease-in-out;
 }
 
 #intro-video-container.swipe-out {
-    transform: translateY(-100%); /* Swipe vers le haut */
+    transform: translateY(-100%);
 }
 
 #intro-video {
@@ -37,7 +46,7 @@
     bottom: 20px;
     right: 20px;
     background: var(--primary);
-    color: white;
+    color: var(--white);
     padding: 0.5rem 1rem;
     border-radius: 20px;
     cursor: pointer;
@@ -50,18 +59,16 @@
     background: var(--accent);
 }
 
-/* Cacher le contenu principal pendant la vidéo */
 body.video-playing main,
 body.video-playing header,
 body.video-playing footer,
 body.video-playing .sorting-controls,
 body.video-playing .music-player,
 body.video-playing .player-toggle {
-    opacity: 0; /* Contenu invisible au départ */
-    transition: opacity 1s ease-in-out; /* Synchronisé avec le swipe */
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
 }
 
-/* Révélation du contenu pendant le swipe */
 body:not(.video-playing) main,
 body:not(.video-playing) header,
 body:not(.video-playing) footer,
@@ -80,7 +87,6 @@ body {
     line-height: 1.6;
 }
 
-/* HEADER DYNAMIQUE */
 /* HEADER */
 header {
     background: linear-gradient(45deg, var(--primary), var(--accent));
@@ -98,31 +104,29 @@ header {
 
 .header-content h1 {
     font-size: 3rem;
-    text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
-    color: white;
+    text-shadow: 3px 3px 0 var(--shadow-color);
+    color: var(--white);
     margin: 0;
     flex: 1;
     text-align: left;
 }
 
-/* CONTAINER DES BOUTONS */
 .header-buttons {
     display: flex;
     align-items: center;
     gap: 1.5rem;
 }
 
-/* BOUTON DE RETOUR */
 .back-button {
     display: flex;
     align-items: center;
     background: var(--primary);
-    color: white;
+    color: var(--white);
     padding: 0.8rem 1.2rem;
     border-radius: 30px;
     text-decoration: none;
     font-size: 1rem;
-    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
+    box-shadow: 0 4px 10px var(--shadow-color);
     transition: all 0.3s ease;
 }
 
@@ -133,51 +137,48 @@ header {
 
 .back-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 77, 77, 0.4);
+    box-shadow: 0 6px 15px var(--shadow-hover);
 }
 
 .back-button:hover i {
     transform: translateX(-3px);
 }
 
-/* INFOS UTILISATEUR */
 #user-info {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-/* BOUTON DE CONNEXION/DÉCONNEXION */
 #login-button, #logout-icon {
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--primary);
-    color: white;
+    color: var(--white);
     padding: 0.6rem 1.2rem;
     border-radius: 25px;
     text-decoration: none;
     font-size: 1rem;
-    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
+    box-shadow: 0 4px 10px var(--shadow-color);
     transition: all 0.3s ease;
 }
 
 #login-button:hover, #logout-icon:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 77, 77, 0.4);
+    box-shadow: 0 6px 15px var(--shadow-hover);
 }
 
-/* NOM UTILISATEUR (SI CONNECTÉ) */
 #user-info-container {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     background: var(--primary);
-    color: white;
+    color: var(--white);
     padding: 0.8rem 1.5rem;
     border-radius: 30px;
     font-size: 1rem;
-    box-shadow: 0 4px 10px rgba(255, 77, 77, 0.3);
+    box-shadow: 0 4px 10px var(--shadow-color);
     transition: all 0.3s ease;
 }
 
@@ -187,17 +188,13 @@ header {
 
 #user-info-container:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(255, 77, 77, 0.4);
+    box-shadow: 0 6px 15px var(--shadow-hover);
 }
 
-
-/* CLASSE HIDDEN (POUR MASQUER DES ÉLÉMENTS) */
 .hidden {
     display: none;
 }
 
-
-/* RESPONSIVE - PETITS ÉCRANS */
 @media (max-width: 768px) {
     header {
         padding: 1rem;
@@ -219,17 +216,16 @@ header {
     }
 }
 
-
 h1 {
     font-size: 3.5rem;
     text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
-    color: white;
+    color: var(--white);
     mix-blend-mode: overlay;
     margin: 0;
 }
 
 header p {
-    color: white;
+    color: var(--white);
     opacity: 0.9;
     font-size: 1.2rem;
     margin-top: 0.5rem;
@@ -250,7 +246,7 @@ header p {
 
 #add-airplane-btn {
     background: var(--accent);
-    color: white;
+    color: var(--white);
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 30px;
@@ -262,17 +258,16 @@ header p {
 #add-airplane-btn:hover {
     background: var(--accent);
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 209, 178, 0.3);
+    box-shadow: 0 4px 15px var(--shadow-hover);
 }
 
-/* Styles communs pour les modales */
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(var(--black-rgb), 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -283,13 +278,13 @@ header p {
 }
 
 .modal-content {
-    background: white;
+    background: var(--white);
     padding: 2rem;
     border-radius: 15px;
     width: 800px;
     max-width: 80%;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px var(--shadow-color);
 }
 
 .modal-content h2 {
@@ -299,10 +294,9 @@ header p {
     text-align: center;
 }
 
-/* Formulaire en grille */
 .modal-form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 2rem;
 }
 
@@ -327,7 +321,25 @@ header p {
 .modal-form textarea:focus {
     border-color: var(--primary);
     outline: none;
-    box-shadow: 0 0 8px rgba(255,77,77,0.2);
+    box-shadow: 0 0 8px var(--shadow-color);
+}
+
+.modal-form select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-form select:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 8px var(--shadow-color);
 }
 
 textarea {
@@ -339,7 +351,7 @@ textarea {
 .save-btn {
     grid-column: span 2;
     background: linear-gradient(45deg, var(--primary), var(--accent));
-    color: white;
+    color: var(--white);
     padding: 1rem;
     border: none;
     border-radius: 8px;
@@ -350,7 +362,7 @@ textarea {
 
 .save-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255,77,77,0.3);
+    box-shadow: 0 4px 15px var(--shadow-hover);
 }
 
 .close-btn {
@@ -372,7 +384,6 @@ textarea {
     opacity: 1;
 }
 
-/* TRI */
 .sorting-controls {
     max-width: 1200px;
     margin: -1rem auto 2rem;
@@ -391,13 +402,13 @@ textarea {
 
 #sort-select, #country-select {
     background: var(--secondary);
-    color: white;
+    color: var(--white);
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 30px;
     font-family: 'Space Grotesk', sans-serif;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px var(--shadow-color);
     appearance: none;
     width: 100%;
     padding-right: 2.5rem;
@@ -412,7 +423,7 @@ textarea {
     right: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: white;
+    color: var(--white);
     pointer-events: none;
     transition: transform 0.3s ease;
 }
@@ -429,13 +440,13 @@ textarea {
 
 #generation-select {
     background: var(--secondary);
-    color: white;
+    color: var(--white);
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 30px;
     font-family: 'Space Grotesk', sans-serif;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px var(--shadow-color);
     appearance: none;
     width: 100%;
     padding-right: 2.5rem;
@@ -450,7 +461,7 @@ textarea {
     right: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: white;
+    color: var(--white);
     pointer-events: none;
     transition: transform 0.3s ease;
 }
@@ -467,13 +478,13 @@ textarea {
 
 #type-select {
     background: var(--secondary);
-    color: white;
+    color: var(--white);
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 30px;
     font-family: 'Space Grotesk', sans-serif;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px var(--shadow-color);
     appearance: none;
     width: 100%;
     padding-right: 2.5rem;
@@ -488,7 +499,7 @@ textarea {
     right: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: white;
+    color: var(--white);
     pointer-events: none;
     transition: transform 0.3s ease;
 }
@@ -497,7 +508,6 @@ textarea {
     transform: translateY(-50%) rotate(180deg);
 }
 
-/* GRILLE DES AVIONS */
 #airplanes-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -511,9 +521,9 @@ textarea {
 .airplane-card {
     width: 250px;
     height: 350px;
-    background: white;
+    background: var(--white);
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px var(--shadow-color);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
     margin: 10px;
@@ -522,7 +532,7 @@ textarea {
 
 .image-container {
     height: 150px;
-    background: #f0f0f0;
+    background: var(--bg);
     overflow: hidden;
 }
 
@@ -552,7 +562,6 @@ textarea {
     margin: 0;
 }
 
-/* Badges améliorés */
 .airplane-info {
     margin-top: 0.8rem;
     display: flex;
@@ -561,12 +570,12 @@ textarea {
 }
 
 .info-badge {
-    background: rgba(0,0,0,0.05);
+    background: rgba(var(--secondary-rgb), 0.05);
     padding: 0.3rem 0.8rem;
     border-radius: 15px;
     font-size: 0.8rem;
     color: var(--secondary);
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 1px solid rgba(var(--secondary-rgb), 0.1);
     margin: 0.2rem;
     display: inline-block;
 }
@@ -578,19 +587,18 @@ textarea {
 }
 
 .country-badge {
-    background: rgba(0, 209, 178, 0.1);
+    background: rgba(var(--accent-rgb), 0.1);
     border-color: var(--accent);
 }
 
 .type-badge {
-    background: rgba(255, 77, 77, 0.1);
+    background: rgba(var(--primary-rgb), 0.1);
     border-color: var(--primary);
 }
 
-/* ANIMATIONS */
 .airplane-card:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 16px var(--shadow-hover);
 }
 
 .airplane-card:hover img {
@@ -602,7 +610,7 @@ textarea {
     top: 50%;
     right: -250px;
     transform: translateY(-50%);
-    background: white;
+    background: var(--white);
     padding: 1rem;
     border-radius: 10px;
     box-shadow: 0 4px 15px var(--shadow-color);
@@ -628,7 +636,7 @@ textarea {
     right: 0;
     transform: translateY(-50%);
     background: var(--accent);
-    color: white;
+    color: var(--white);
     padding: 0.8rem;
     border-radius: 10px 0 0 10px;
     cursor: pointer;
@@ -684,7 +692,7 @@ textarea {
 }
 
 .progress-bar {
-    background: rgba(0,0,0,0.1);
+    background: rgba(var(--secondary-rgb), 0.1);
     height: 3px;
     border-radius: 1.5px;
     cursor: pointer;
@@ -732,7 +740,7 @@ textarea {
     height: 30px;
     background: var(--primary);
     border-radius: 50%;
-    color: white;
+    color: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -755,7 +763,7 @@ textarea {
     width: 80px;
     height: 3px;
     -webkit-appearance: none;
-    background: rgba(0,0,0,0.1);
+    background: rgba(var(--secondary-rgb), 0.1);
     border-radius: 1.5px;
     outline: none;
 }
@@ -812,37 +820,37 @@ textarea {
     gap: 1rem;
     margin: 2rem 0;
     padding: 1rem;
-  }
-  
-  .pagination button {
+}
+
+.pagination button {
     background: var(--secondary);
-    color: white;
+    color: var(--white);
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
-  }
-  
-  .pagination button:hover:not(:disabled) {
+}
+
+.pagination button:hover:not(:disabled) {
     background: var(--primary);
-  }
-  
-  .pagination button:disabled {
+}
+
+.pagination button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-  }
-  
-  .pagination span {
+}
+
+.pagination span {
     align-self: center;
     font-weight: bold;
     color: var(--text);
-  }
+}
 
 /* FOOTER */
 footer {
     background: var(--secondary);
-    color: white;
+    color: var(--white);
     padding: 2rem;
     margin-top: 2rem;
     text-align: center;
@@ -860,7 +868,6 @@ footer::before {
     background: linear-gradient(90deg, var(--primary), var(--accent));
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
     header {
         padding: 1.5rem;

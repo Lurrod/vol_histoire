@@ -57,9 +57,23 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("user-info-container").style.display = "none";     
     }
 
-    addButton.addEventListener("click", () => {
+    addButton.addEventListener("click", async () => {
         addModal.classList.add("show");
         addModal.classList.remove("hidden");
+        
+        // Vider les menus déroulants précédents pour éviter les doublons
+        document.getElementById("add-country-id").innerHTML = '<option value="">Choisir un pays</option>';
+        document.getElementById("add-manufacturer-id").innerHTML = '<option value="">Choisir un fabricant</option>';
+        document.getElementById("add-generation-id").innerHTML = '<option value="">Choisir une génération</option>';
+        document.getElementById("add-type").innerHTML = '<option value="">Choisir un type</option>';
+        
+        // Remplir les menus déroulants
+        await Promise.all([
+            populateCountriesSelect(),
+            populateManufacturersSelect(),
+            populateGenerationsSelect(),
+            populateTypesSelect()
+        ]);
     });
     
     closeAddModal.addEventListener("click", () => {
@@ -67,8 +81,75 @@ document.addEventListener("DOMContentLoaded", () => {
         addModal.classList.add("hidden");
     });
 
+    async function populateCountriesSelect() {
+        const select = document.getElementById("add-country-id");
+        try {
+            const response = await fetch("http://localhost:3000/api/countries");
+            const countries = await response.json();
+            countries.forEach(country => {
+                const option = document.createElement("option");
+                option.value = country.id; // Assurez-vous que l'API renvoie l'ID
+                option.textContent = country.name;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Erreur lors du chargement des pays:", error);
+        }
+    }
+    
+    // Fonction pour remplir le menu des fabricants
+    async function populateManufacturersSelect() {
+        const select = document.getElementById("add-manufacturer-id");
+        try {
+            const response = await fetch("http://localhost:3000/api/manufacturers");
+            const manufacturers = await response.json();
+            manufacturers.forEach(manufacturer => {
+                const option = document.createElement("option");
+                option.value = manufacturer.id;
+                option.textContent = manufacturer.name;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Erreur lors du chargement des fabricants:", error);
+        }
+    }
+    
+    // Fonction pour remplir le menu des générations
+    async function populateGenerationsSelect() {
+        const select = document.getElementById("add-generation-id");
+        try {
+            const response = await fetch("http://localhost:3000/api/generations");
+            const generations = await response.json();
+            generations.forEach(generation => {
+                const option = document.createElement("option");
+                option.value = generation; // L'API renvoie directement la génération comme valeur
+                option.textContent = `Génération ${generation}`;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Erreur lors du chargement des générations:", error);
+        }
+    }
+    
+    // Fonction pour remplir le menu des types
+    async function populateTypesSelect() {
+        const select = document.getElementById("add-type");
+        try {
+            const response = await fetch("http://localhost:3000/api/types");
+            const types = await response.json();
+            types.forEach(type => {
+                const option = document.createElement("option");
+                option.value = type.id;
+                option.textContent = type.name;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Erreur lors du chargement des types:", error);
+        }
+    }
+
     // Gestion de la soumission du formulaire
-    document.getElementById("add-form").addEventListener("submit", async (e) => {
+document.getElementById("add-form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const newAirplane = {
@@ -84,11 +165,36 @@ document.addEventListener("DOMContentLoaded", () => {
         max_range: parseFloat(document.getElementById("add-max-range").value) || null,
         weight: parseFloat(document.getElementById("add-weight").value) || null,
         status: document.getElementById("add-status").value,
-        country_id: 1,
-        id_manufacturer: 1,
-        id_generation: 1,
-        type: 1
+        country_id: parseInt(document.getElementById("add-country-id").value) || null,
+        id_manufacturer: parseInt(document.getElementById("add-manufacturer-id").value) || null,
+        id_generation: parseInt(document.getElementById("add-generation-id").value) || null,
+        type: parseInt(document.getElementById("add-type").value) || null
     };
+
+    try {
+        const response = await fetch("http://localhost:3000/api/airplanes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(newAirplane)
+        });
+
+        if (response.ok) {
+            alert("Avion créé avec succès !");
+            addModal.classList.remove("show");
+            addModal.classList.add("hidden"); // Cacher le modal après succès
+            const response = await fetchAirplanes(sortSelect.value);
+            displayAirplanes(response);
+        } else {
+            const error = await response.json();
+            alert(`Erreur: ${error.message || "Création impossible"}`);
+        }
+    } catch (error) {
+        console.error("Erreur:", error);
+        alert("Erreur réseau - Impossible de créer l'avion");
+    }
 
     try {
         const response = await fetch("http://localhost:3000/api/airplanes", {
