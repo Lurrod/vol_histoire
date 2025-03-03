@@ -1,82 +1,41 @@
+-- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, 
-    complete_name, 
-    little_description, 
-    description, 
-    country_id,
-    date_concept, 
-    date_first_fly, 
-    date_operationel, 
-    max_speed, 
-    max_range, 
-    id_manufacturer,
-    id_generation, 
-    type, 
-    status, 
-    weight,
-    image_url
+    name, complete_name, little_description, image_url, description, 
+    country_id, date_concept, date_first_fly, date_operationel, 
+    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
 ) VALUES (
-    'Mirage III',
-    'Dassault Mirage III',
-    'Chasseur-intercepteur de 2ème génération',
-    'Le Mirage III est un avion de combat légendaire développé par Dassault Aviation dans les années 1950. Premier chasseur européen à atteindre Mach 2, il a marqué l''histoire de l''aéronautique militaire avec son aile delta caractéristique. Exporté dans 21 pays et produit à 1422 exemplaires, il a participé à de nombreux conflits majeurs de la Guerre Froide.',
-    (SELECT id FROM countries WHERE code = 'FRA'),
-    '1952-01-01',
-    '1956-11-17',
-    '1961-07-09',
-    2350,
-    2400,
-    (SELECT id FROM manufacturer WHERE code = 'DAS'),
-    (SELECT id FROM generation WHERE generation = 2),
-    (SELECT id FROM type WHERE name = 'Intercepteur'),
-    'Retiré du service actif',
-    7050,
-    'https://i.postimg.cc/cCFqSbZ2/mirage3.jpg'
+    'Mirage III', 'Dassault Mirage III', 'Chasseur français de 3e génération', 
+    'https://i.postimg.cc/cCFqSbZ2/mirage3.jpg', 
+    'Le Dassault Mirage III est un avion de chasse emblématique développé par Dassault Aviation pour l''Armée de l''Air française. Premier avion de combat européen à dépasser Mach 2, il est classé dans la 3e génération et a été conçu principalement pour l''interception et la supériorité aérienne. Avec son aile delta, il a été largement exporté et employé dans de nombreux conflits, notamment au Moyen-Orient.', 
+    (SELECT id FROM countries WHERE code = 'FRA'), '1953-01-01', '1956-11-17', '1961-07-12', 
+    2350.0, 2400.0, (SELECT id FROM manufacturer WHERE code = 'DAS'), 
+    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Intercepteur'), 
+    'Retiré', 7050.0
 );
 
-INSERT INTO tech (name, description) VALUES
-('Cyrano II', 'Premier radar monopulse aéroporté français (1959)'),
-('SEPR 844', 'Moteur-fusée d''appoint pour interception rapide'),
-('Sirène IV', 'Système d''alerte radar primitif');
+-- Insertion des technologies
+INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM tech WHERE name = 'Aile delta')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM tech WHERE name = 'Radar Cyrano')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM tech WHERE name = 'Réacteur à postcombustion')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM tech WHERE name = 'Système de navigation semi-automatique'));
 
-INSERT INTO airplane_tech (id_airplane, id_tech)
-SELECT 
-    (SELECT id FROM airplanes WHERE name = 'Mirage III'), 
-    id 
-FROM tech 
-WHERE name IN ('Cyrano II', 'SEPR 844', 'Sirène IV');
+-- Insertion des armements
+INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM armement WHERE name = 'DEFA 552')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM armement WHERE name = 'Matra R530')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM armement WHERE name = 'Matra R550 Magic')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM armement WHERE name = 'Bombe lisse 400 kg'));
 
-INSERT INTO armement (name, description) VALUES
-('Matra R.530', 'Premier missile air-air français à guidage radar (1962)'),
-('DEFA 552', 'Canon de 30 mm (125 coups par canon)'),
-('Bombe AN-52', 'Arme nucléaire tactique (1972)');
+-- Insertion des guerres
+INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM wars WHERE name = 'Guerre des Six Jours')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM wars WHERE name = 'Guerre du Kippour')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM wars WHERE name = 'Conflit israélo-arabe'));
 
-INSERT INTO airplane_armement (id_airplane, id_armement)
-SELECT 
-    (SELECT id FROM airplanes WHERE name = 'Mirage III'), 
-    id 
-FROM armement 
-WHERE name IN ('Matra R.530', 'DEFA 552', 'Bombe AN-52');
-
-INSERT INTO wars (name, date_start, date_end, description) VALUES
-('Guerre des Six Jours', '1967-06-05', '1967-06-10', 'Utilisation par Israël contre forces arabes'),
-('Guerre du Kippour', '1973-10-06', '1973-10-25', 'Combats aériens intensifs'),
-('Guerre des Malouines', '1982-04-02', '1982-06-14', 'Engagé par l''Argentine');
-
-INSERT INTO airplane_wars (id_airplane, id_wars)
-SELECT 
-    (SELECT id FROM airplanes WHERE name = 'Mirage III'), 
-    id 
-FROM wars 
-WHERE name IN ('Guerre des Six Jours', 'Guerre du Kippour', 'Guerre des Malouines');
-
-INSERT INTO missions (name, description) VALUES
-('Alerte nucléaire', 'Mise en œuvre de la dissuasion nucléaire'),
-('Interception haute-altitude', 'Défense aérienne territoire national');
-
-INSERT INTO airplane_missions (id_airplane, id_mission)
-SELECT 
-    (SELECT id FROM airplanes WHERE name = 'Mirage III'), 
-    id 
-FROM missions 
-WHERE name IN ('Alerte nucléaire', 'Interception haute-altitude', 'Supériorité aérienne');
+-- Insertion des missions
+INSERT INTO airplane_missions (id_airplane, id_mission) VALUES
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM missions WHERE name = 'Supériorité aérienne')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM missions WHERE name = 'Interception')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM missions WHERE name = 'Frappe tactique')),
+((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM missions WHERE name = 'Reconnaissance stratégique'));

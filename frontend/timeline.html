@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vol d'Histoire - Frise Chronologique</title>
+    <link rel="stylesheet" href="css/timeline.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Vol d'Histoire</h1>
+            <div>
+                <a href="index.html" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Retour au Hangar
+                </a>
+            </div>
+        </div>
+        <p>Frise Chronologique</p>
+    </header>
+
+    <div class="timeline-controls">
+        <div class="filter-section">
+            <select id="country-filter">
+                <option value="all">Tous les pays</option>
+            </select>
+            <select id="type-filter">
+                <option value="all">Tous les types</option>
+            </select>
+            <select id="generation-filter">
+                <option value="all">Toutes les générations</option>
+            </select>
+        </div>
+        <div id="timeline-dates">
+            <span id="start-date"></span>
+            <span id="end-date"></span>
+        </div>
+    </div>
+
+    <div class="timeline-container">
+        <div class="timeline-axis">
+            <div class="timeline-markers" id="timeline-markers"></div>
+        </div>
+        <div class="timeline-events" id="timeline-events"></div>
+    </div>
+
+    <template id="event-template">
+        <div class="timeline-event">
+            <div class="event-dot"></div>
+            <div class="event-card">
+                <div class="event-image">
+                    <img src="" alt="">
+                </div>
+                <div class="event-content">
+                    <h3></h3>
+                    <div class="event-badges">
+                        <span class="badge country-badge"></span>
+                        <span class="badge type-badge"></span>
+                        <span class="badge generation-badge"></span>
+                    </div>
+                    <p class="event-description"></p>
+                    <div class="event-date"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="js/timeline.js"></script>
+</body>
+</html>
