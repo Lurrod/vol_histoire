@@ -20,7 +20,7 @@
 body {
     background: var(--bg);
     font-family: 'Space Grotesk', sans-serif;
-    color: var(--text); /* Changement de #2A2F35 à var(--text) */
+    color: var(--text);
     line-height: 1.6;
     margin: 0;
     padding: 0;
@@ -28,7 +28,7 @@ body {
 
 /* HEADER DYNAMIQUE */
 header {
-    background: linear-gradient(45deg, var(--primary), var(--accent)); /* Mise à jour des couleurs */
+    background: linear-gradient(45deg, var(--primary), var(--accent));
     padding: 2rem;
     clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
     margin-bottom: 4rem;
@@ -45,31 +45,31 @@ header {
 .back-button {
     display: inline-flex;
     align-items: center;
-    background: var(--primary); /* Remplace #FF4D4D */
-    color: var(--white) !important; /* Mise à jour vers --white */
+    background: var(--primary);
+    color: var(--white) !important;
     padding: 0.8rem 1.5rem;
     border-radius: 30px;
     text-decoration: none;
     transition: 0.3s;
     font-size: 0.9rem;
-    box-shadow: 0 4px 15px var(--shadow-color); /* Remplace rgba(255,77,77,0.3) */
+    box-shadow: 0 4px 15px var(--shadow-color);
 }
 
 .back-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px var(--shadow-hover); /* Remplace rgba(255,77,77,0.4) */
+    box-shadow: 0 6px 20px var(--shadow-hover);
 }
 
 h1 {
     font-size: 3.5rem;
-    text-shadow: 3px 3px 0 var(--shadow-color); /* Remplace rgba(0,0,0,0.1) */
-    color: var(--white); /* Mise à jour vers --white */
+    text-shadow: 3px 3px 0 var(--shadow-color);
+    color: var(--white);
     mix-blend-mode: overlay;
     margin: 0;
 }
 
 header p {
-    color: var(--white); /* Mise à jour vers --white */
+    color: var(--white);
     opacity: 0.9;
     font-size: 1.2rem;
     margin-top: 0.5rem;
@@ -94,8 +94,8 @@ header p {
 }
 
 #edit-airplane-btn, #delete-airplane-btn {
-    background-color: var(--primary); /* Remplace #FF4D4D */
-    color: var(--white); /* Mise à jour vers --white */
+    background-color: var(--primary);
+    color: var(--white);
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
@@ -104,11 +104,11 @@ header p {
 }
 
 #delete-airplane-btn {
-    background-color: var(--primary-dark); /* Remplace #D94444, utilise une variation plus foncée */
+    background-color: var(--primary-dark);
 }
 
 #edit-airplane-btn:hover, #delete-airplane-btn:hover {
-    background-color: var(--accent); /* Remplace #C53030, utilise --accent pour le hover */
+    background-color: var(--accent);
 }
 
 /* STRUCTURE PRINCIPALE */
@@ -123,12 +123,12 @@ header p {
 
 /* CARTES EN VOL */
 .airplane-card {
-    background: var(--white); /* Remplace 'white' */
+    background: var(--white);
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 
-        0 10px 30px var(--shadow-color), /* Remplace rgba(0,0,0,0.1) */
-        inset 0 -4px 0 var(--accent); /* Mise à jour vers --accent */
+        0 10px 30px var(--shadow-color),
+        inset 0 -4px 0 var(--accent);
     transition: 0.3s transform;
     position: relative;
     overflow: hidden;
@@ -144,7 +144,7 @@ header p {
     background: linear-gradient(
         45deg,
         transparent 45%,
-        rgba(var(--accent-rgb), 0.1) 50%, /* Remplace rgba(0,209,178,0.1) */
+        rgba(var(--accent-rgb), 0.1) 50%,
         transparent 55%
     );
     animation: cardScan 6s linear infinite;
@@ -173,7 +173,7 @@ header p {
     border-radius: 15px;
     margin: 1rem auto 2rem;
     display: block;
-    box-shadow: 0 8px 20px var(--shadow-color); /* Remplace rgba(0,0,0,0.1) */
+    box-shadow: 0 8px 20px var(--shadow-color);
 }
 
 .core-panel p {
@@ -213,7 +213,7 @@ h2::after {
     left: 0;
     width: 60%;
     height: 4px;
-    background: var(--primary); /* Mise à jour vers --primary */
+    background: var(--primary);
 }
 
 /* LISTE D'ARMEMENT */
@@ -223,7 +223,7 @@ h2::after {
 }
 
 .armement-list li {
-    background: rgba(var(--accent-rgb), 0.05); /* Remplace rgba(0,209,178,0.05) */
+    background: rgba(var(--accent-rgb), 0.05);
     padding: 1.2rem;
     margin: 1.2rem 0;
     border-radius: 8px;
@@ -232,7 +232,7 @@ h2::after {
 
 .armement-list li:hover {
     transform: translateX(10px);
-    background: rgba(var(--accent-rgb), 0.1); /* Remplace rgba(0,209,178,0.1) */
+    background: rgba(var(--accent-rgb), 0.1);
 }
 
 /* TECHNOLOGIES */
@@ -243,27 +243,27 @@ h2::after {
 }
 
 .tech-list li {
-    background: rgba(var(--primary-rgb), 0.05); /* Remplace rgba(255,77,77,0.05) */
+    background: rgba(var(--primary-rgb), 0.05);
     padding: 1.2rem;
     margin: 1rem 0;
     border-radius: 8px;
-    border-left: 4px solid var(--primary); /* Mise à jour vers --primary */
+    border-left: 4px solid var(--primary);
     transition: 0.3s;
 }
 
 .tech-list li:hover {
     transform: translateX(5px);
-    background: rgba(var(--primary-rgb), 0.1); /* Remplace rgba(255,77,77,0.1) */
+    background: rgba(var(--primary-rgb), 0.1);
 }
 
 /* GUERRES TIMELINE */
 .guerres-timeline {
     position: relative;
-    border-left: 4px solid var(--accent); /* Mise à jour vers --accent */
+    border-left: 4px solid var(--accent);
 }
 
 .war-event {
-    background: rgba(var(--accent-rgb), 0.05); /* Remplace rgba(0,209,178,0.05) */
+    background: rgba(var(--accent-rgb), 0.05);
     padding: 0.3rem 1rem;
     margin: 1rem 0;
     position: relative;
@@ -276,7 +276,7 @@ h2::after {
     left: -2.5rem;
     top: 0;
     font-size: 2rem;
-    filter: drop-shadow(0 0 5px var(--accent)); /* Mise à jour vers --accent */
+    filter: drop-shadow(0 0 5px var(--accent));
 }
 
 /* MISSIONS */
@@ -285,17 +285,17 @@ h2::after {
 }
 
 .mission-item {
-    background: rgba(var(--secondary-rgb), 0.03); /* Remplace rgba(42,47,53,0.03) */
+    background: rgba(var(--secondary-rgb), 0.03);
     padding: 0.3rem 1rem;
     margin: 1rem 0;
     border-radius: 8px;
-    border-left: 4px solid var(--secondary); /* Mise à jour vers --secondary */
+    border-left: 4px solid var(--secondary);
     transition: 0.3s;
 }
 
 .mission-item:hover {
     transform: translateY(-3px);
-    background: rgba(var(--secondary-rgb), 0.05); /* Remplace rgba(42,47,53,0.05) */
+    background: rgba(var(--secondary-rgb), 0.05);
 }
 
 /* Styles communs pour les modales */
@@ -305,7 +305,7 @@ h2::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(var(--black-rgb), 0.5); /* Remplace rgba(0,0,0,0.5) */
+    background: rgba(var(--black-rgb), 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -316,17 +316,17 @@ h2::after {
 }
 
 .modal-content {
-    background: var(--white); /* Remplace 'white' */
+    background: var(--white);
     padding: 2rem;
     border-radius: 15px;
     width: 800px;
     max-width: 80%;
     position: relative;
-    box-shadow: 0 10px 30px var(--shadow-color); /* Remplace rgba(0,0,0,0.2) */
+    box-shadow: 0 10px 30px var(--shadow-color);
 }
 
 .modal-content h2 {
-    color: var(--primary); /* Mise à jour vers --primary */
+    color: var(--primary);
     font-family: 'Orbitron', sans-serif;
     margin-bottom: 2rem;
     text-align: center;
@@ -343,14 +343,14 @@ h2::after {
     display: block;
     font-weight: bold;
     margin-bottom: 0.5rem;
-    color: var(--secondary); /* Mise à jour vers --secondary */
+    color: var(--secondary);
 }
 
 .modal-form input,
 .modal-form textarea {
     width: 100%;
     padding: 0.8rem;
-    border: 2px solid var(--accent); /* Mise à jour vers --accent */
+    border: 2px solid var(--accent);
     border-radius: 8px;
     font-family: 'Space Grotesk', sans-serif;
     transition: all 0.3s ease;
@@ -358,9 +358,9 @@ h2::after {
 
 .modal-form input:focus,
 .modal-form textarea:focus {
-    border-color: var(--primary); /* Mise à jour vers --primary */
+    border-color: var(--primary);
     outline: none;
-    box-shadow: 0 0 8px var(--shadow-color); /* Remplace rgba(255,77,77,0.2) */
+    box-shadow: 0 0 8px var(--shadow-color);
 }
 
 .modal-form select {
@@ -389,8 +389,8 @@ textarea {
 
 .save-btn {
     grid-column: span 2;
-    background: linear-gradient(45deg, var(--primary), var(--accent)); /* Mise à jour des couleurs */
-    color: var(--white); /* Mise à jour vers --white */
+    background: linear-gradient(45deg, var(--primary), var(--accent));
+    color: var(--white);
     padding: 1rem;
     border: none;
     border-radius: 8px;
@@ -401,7 +401,7 @@ textarea {
 
 .save-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px var(--shadow-hover); /* Remplace rgba(255,77,77,0.3) */
+    box-shadow: 0 4px 15px var(--shadow-hover);
 }
 
 .close-btn {
@@ -409,7 +409,7 @@ textarea {
     top: 1rem;
     right: 1.5rem;
     font-size: 1.5rem;
-    color: var(--primary); /* Mise à jour vers --primary */
+    color: var(--primary);
     cursor: pointer;
     transition: transform 0.3s ease;
 }
@@ -435,8 +435,8 @@ textarea {
 
 /* FOOTER CYBERPUNK */
 footer {
-    background: var(--secondary); /* Mise à jour vers --secondary */
-    color: var(--white); /* Mise à jour vers --white */
+    background: var(--secondary);
+    color: var(--white);
     padding: 2rem;
     margin-top: 2rem;
     text-align: center;
@@ -451,7 +451,7 @@ footer::before {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent)); /* Mise à jour des couleurs */
+    background: linear-gradient(90deg, var(--primary), var(--accent));
 }
 
 /* RESPONSIVE */
