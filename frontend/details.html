@@ -55,28 +55,47 @@
     </main>
 
     <!-- MODALE D'ÉDITION -->
-<div id="edit-modal" class="modal hidden">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>Modifier l'Avion</h2>
-        <form id="edit-form" class="modal-form">
-            <label>Nom : <input type="text" id="edit-name"></label>
-            <label>Nom complet : <input type="text" id="edit-complete-name"></label>
-            <label>Description courte : <input type="text" id="edit-little-description"></label>
-            <label>URL de l'image : <input type="text" id="edit-image-url"></label>
-            <label>Date de conception : <input type="date" id="edit-date-concept"></label>
-            <label>Premier vol : <input type="date" id="edit-date-first-fly"></label>
-            <label>Date de mise en service : <input type="date" id="edit-date-operationel"></label>
-            <label>Vitesse max (km/h) : <input type="number" id="edit-max-speed"></label>
-            <label>Portée max (km) : <input type="number" id="edit-max-range"></label>
-            <label>Poids (kg) : <input type="number" id="edit-weight"></label>
-            <label>Statut : <input type="text" id="edit-status"></label>
-            <label>Description : <textarea id="edit-description"></textarea></label>
-
-            <button type="submit" class="save-btn">Enregistrer</button>
-        </form>
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Modifier l'Avion</h2>
+            <form id="edit-form" class="modal-form">
+                <label>Nom : <input type="text" id="edit-name" required></label>
+                <label>Nom complet : <input type="text" id="edit-complete-name"></label>
+                <label>Description courte : <input type="text" id="edit-little-description"></label>
+                <label>URL de l'image : <input type="text" id="edit-image-url"></label>
+                <label>Date de conception : <input type="date" id="edit-date-concept"></label>
+                <label>Premier vol : <input type="date" id="edit-date-first-fly"></label>
+                <label>Date de mise en service : <input type="date" id="edit-date-operationel"></label>
+                <label>Vitesse max (km/h) : <input type="number" id="edit-max-speed"></label>
+                <label>Portée max (km) : <input type="number" id="edit-max-range"></label>
+                <label>Poids (kg) : <input type="number" id="edit-weight"></label>
+                <label>Statut : <input type="text" id="edit-status"></label>
+                <label>Pays :
+                    <select id="edit-country-id" required>
+                        <option value="">Choisir un pays</option>
+                    </select>
+                </label>
+                <label>Fabricant :
+                    <select id="edit-manufacturer-id" required>
+                        <option value="">Choisir un fabricant</option>
+                    </select>
+                </label>
+                <label>Génération :
+                    <select id="edit-generation-id" required>
+                        <option value="">Choisir une génération</option>
+                    </select>
+                </label>
+                <label>Type :
+                    <select id="edit-type" required>
+                        <option value="">Choisir un type</option>
+                    </select>
+                </label>
+                <label>Description : <textarea id="edit-description"></textarea></label>
+                <button type="submit" class="save-btn">Enregistrer</button>
+            </form>
+        </div>
     </div>
-</div>
 
 
     <footer>

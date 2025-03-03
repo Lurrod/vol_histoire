@@ -385,8 +385,8 @@ app.put('/api/airplanes/:id', authorize([1, 2]), async (req, res) => {
 
   const {
       name, complete_name, little_description, image_url, description,
-      date_concept, date_first_fly, date_operationel,
-      max_speed, max_range, weight, status
+      country_id, date_concept, date_first_fly, date_operationel,
+      max_speed, max_range, id_manufacturer, id_generation, type, status, weight
   } = req.body;
 
   // Convertir les dates vides en NULL
@@ -398,13 +398,13 @@ app.put('/api/airplanes/:id', authorize([1, 2]), async (req, res) => {
       const result = await pool.query(
           `UPDATE airplanes SET 
               name = $1, complete_name = $2, little_description = $3, image_url = $4, 
-              description = $5, date_concept = $6, date_first_fly = $7, 
-              date_operationel = $8, max_speed = $9, max_range = $10, 
-              weight = $11, status = $12
-          WHERE id = $13 RETURNING *`,
+              description = $5, country_id = $6, date_concept = $7, date_first_fly = $8, 
+              date_operationel = $9, max_speed = $10, max_range = $11, 
+              id_manufacturer = $12, id_generation = $13, type = $14, status = $15, weight = $16
+          WHERE id = $17 RETURNING *`,
           [name, complete_name, little_description, image_url, description, 
-           cleanDateConcept, cleanDateFirstFly, cleanDateOperationel, max_speed, 
-           max_range, weight, status, id]
+           country_id, cleanDateConcept, cleanDateFirstFly, cleanDateOperationel, 
+           max_speed, max_range, id_manufacturer, id_generation, type, status, weight, id]
       );
 
       if (result.rows.length === 0) {

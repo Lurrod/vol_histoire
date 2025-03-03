@@ -335,7 +335,7 @@ h2::after {
 /* Formulaire en grille */
 .modal-form {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 2rem;
 }
 
@@ -361,6 +361,24 @@ h2::after {
     border-color: var(--primary); /* Mise à jour vers --primary */
     outline: none;
     box-shadow: 0 0 8px var(--shadow-color); /* Remplace rgba(255,77,77,0.2) */
+}
+
+.modal-form select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-form select:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 8px var(--shadow-color);
 }
 
 textarea {
