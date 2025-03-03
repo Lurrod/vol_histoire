@@ -209,6 +209,7 @@ INSERT INTO manufacturer (name, country_id, code) VALUES
 ('Boeing', (SELECT id FROM countries WHERE code = 'USA'), 'BOE'),
 ('Sukhoi', (SELECT id FROM countries WHERE code = 'RUS'), 'SUK'),
 ('Mikoyan (MiG)', (SELECT id FROM countries WHERE code = 'RUS'), 'MIG'),
+('Tupolev', (SELECT id FROM countries WHERE code = 'RUS'), 'TUP'),
 ('Chengdu Aerospace Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'CAC'),
 ('Shenyang Aircraft Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'SAC'),
 ('Dassault Aviation', (SELECT id FROM countries WHERE code = 'FRA'), 'DAS'),
@@ -342,6 +343,11 @@ INSERT INTO armement (name, description) VALUES
 ('ASM-1', 'Missile antinavire, guidage radar actif, portée 50 km'),
 ('ASM-2', 'Missile antinavire, guidage radar actif, portée 100 km'),
 ('Marte Mk2A', 'Missile antinavire, portée 30 km'),
+('Kh-32', 'Missile antinavire supersonique, portée 600-1000 km'),
+('Kh-35U', 'Missile antinavire subsonique, portée 260 km'),
+('Kh-20', 'Missile de croisière nucléaire, portée 600 km'),
+('Kh-65', 'Missile de croisière conventionnel, portée 500 km'),
+('Kh-555', 'Missile de croisière conventionnel, portée 2500 km'),
 
 -- Armement nucléaire
 ('AN-11', 'Bombe nucléaire à chute libre'),
@@ -356,6 +362,8 @@ INSERT INTO armement (name, description) VALUES
 ('WE.177', 'Bombe nucléaire à chute libre, 10-400 kt'),
 ('RN-28', 'Bombe nucléaire tactique à chute libre'),
 ('TN-1000', 'Bombe nucléaire à chute libre, 1 Mt'),
+('RN-40', 'Bombe nucléaire à chute libre'),
+('Kh-47M2 Kinzhal', 'Missile balistique hypersonique, portée 2000 km'),
 
 -- Bombes
 ('Bombe lisse 250 kg', 'Bombe conventionnelle non guidée, 250 kg'),
@@ -398,7 +406,10 @@ INSERT INTO armement (name, description) VALUES
 ('OFAB-250', 'Bombe lisse 250 kg'),
 ('OFAB-500', 'Bombe lisse 500 kg'),
 ('FAB-1500', 'Bombe lisse 1500 kg, capacité stratégique'),
+('FAB-3000', 'Bombe lisse conventionnelle, 3000 kg'),
+('FAB-5000', 'Bombe lisse conventionnelle, 5000 kg'),
 ('BAP 100', 'Bombe anti-piste'),
+('KAB-1500Kr', 'Bombe guidée TV, 1500 kg'),
 
 -- Roquettes
 ('SNEB 68 mm', 'Roquettes non guidées, pod de 68 mm'),
