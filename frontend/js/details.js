@@ -10,11 +10,78 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = document.querySelector('.close-btn');
     const editForm = document.getElementById('edit-form');
 
-    // Récupérer l'ID de l'avion depuis l'URL
     const urlParams = new URLSearchParams(window.location.search);
     const airplaneId = urlParams.get('id');
-
     const token = localStorage.getItem("token");
+
+    // Fonctions pour remplir les menus déroulants
+    async function populateCountriesSelect(currentCountryId) {
+        const select = document.getElementById("edit-country-id");
+        try {
+            const response = await fetch("http://localhost:3000/api/countries");
+            const countries = await response.json();
+            countries.forEach(country => {
+                const option = document.createElement("option");
+                option.value = country.id;
+                option.textContent = country.name;
+                if (country.id === currentCountryId) option.selected = true;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Erreur lors du chargement des pays:", error);
+        }
+    }
+
+    async function populateManufacturersSelect(currentManufacturerId) {
+        const select = document.getElementById("edit-manufacturer-id");
+        try {
+            const response = await fetch("http://localhost:3000/api/manufacturers");
+            const manufacturers = await response.json();
+            manufacturers.forEach(manufacturer => {
+                const option = document.createElement("option");
+                option.value = manufacturer.id;
+                option.textContent = manufacturer.name;
+                if (manufacturer.id === currentManufacturerId) option.selected = true;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Erreur lors du chargement des fabricants:", error);
+        }
+    }
+
+    async function populateGenerationsSelect(currentGeneration) {
+        const select = document.getElementById("edit-generation-id");
+        try {
+            const response = await fetch("http://localhost:3000/api/generations");
+            const generations = await response.json();
+            generations.forEach(generation => {
+                const option = document.createElement("option");
+                option.value = generation;
+                option.textContent = `Génération ${generation}`;
+                if (generation === currentGeneration) option.selected = true;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Erreur lors du chargement des générations:", error);
+        }
+    }
+
+    async function populateTypesSelect(currentTypeId) {
+        const select = document.getElementById("edit-type");
+        try {
+            const response = await fetch("http://localhost:3000/api/types");
+            const types = await response.json();
+            types.forEach(type => {
+                const option = document.createElement("option");
+                option.value = type.id;
+                option.textContent = type.name;
+                if (type.id === currentTypeId) option.selected = true;
+                select.appendChild(option);
+            });
+        } catch (error) {
+            console.error("Erreur lors du chargement des types:", error);
+        }
+    }
 
     if (token) {
         try {
@@ -22,13 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const userRole = payload.role;
 
             if (userRole === 1 || userRole === 2) {
-                // Afficher les boutons Modifier et Supprimer
                 editButton.classList.remove("hidden");
                 editButton.style.display = "block";
                 deleteButton.classList.remove("hidden");
                 deleteButton.style.display = "block";
 
-                // Ouvrir la modale
                 editButton.addEventListener("click", async () => {
                     modal.classList.add("show");
 
@@ -41,21 +106,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById("edit-little-description").value = airplane.little_description;
                     document.getElementById("edit-image-url").value = airplane.image_url;
                     document.getElementById("edit-description").value = airplane.description;
-                    document.getElementById("edit-date-concept").value = airplane.date_concept;
-                    document.getElementById("edit-date-first-fly").value = airplane.date_first_fly;
-                    document.getElementById("edit-date-operationel").value = airplane.date_operationel;
-                    document.getElementById("edit-max-speed").value = airplane.max_speed;
-                    document.getElementById("edit-max-range").value = airplane.max_range;
-                    document.getElementById("edit-weight").value = airplane.weight;
+                    document.getElementById("edit-date-concept").value = airplane.date_concept || '';
+                    document.getElementById("edit-date-first-fly").value = airplane.date_first_fly || '';
+                    document.getElementById("edit-date-operationel").value = airplane.date_operationel || '';
+                    document.getElementById("edit-max-speed").value = airplane.max_speed || '';
+                    document.getElementById("edit-max-range").value = airplane.max_range || '';
+                    document.getElementById("edit-weight").value = airplane.weight || '';
                     document.getElementById("edit-status").value = airplane.status;
+
+                    // Vider les menus déroulants précédents pour éviter les doublons
+                    document.getElementById("edit-country-id").innerHTML = '<option value="">Choisir un pays</option>';
+                    document.getElementById("edit-manufacturer-id").innerHTML = '<option value="">Choisir un fabricant</option>';
+                    document.getElementById("edit-generation-id").innerHTML = '<option value="">Choisir une génération</option>';
+                    document.getElementById("edit-type").innerHTML = '<option value="">Choisir un type</option>';
+
+                    // Remplir les menus déroulants avec les valeurs actuelles sélectionnées
+                    await Promise.all([
+                        populateCountriesSelect(airplane.country_id),
+                        populateManufacturersSelect(airplane.id_manufacturer),
+                        populateGenerationsSelect(airplane.generation),
+                        populateTypesSelect(airplane.type)
+                    ]);
                 });
 
-                // Fermer la modale
                 closeModal.addEventListener("click", () => {
                     modal.classList.remove("show");
                 });
 
-                // Envoyer les modifications
                 editForm.addEventListener("submit", async (event) => {
                     event.preventDefault();
 
@@ -71,7 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         max_speed: parseFloat(document.getElementById("edit-max-speed").value) || null,
                         max_range: parseFloat(document.getElementById("edit-max-range").value) || null,
                         weight: parseFloat(document.getElementById("edit-weight").value) || null,
-                        status: document.getElementById("edit-status").value
+                        status: document.getElementById("edit-status").value,
+                        country_id: parseInt(document.getElementById("edit-country-id").value) || null,
+                        id_manufacturer: parseInt(document.getElementById("edit-manufacturer-id").value) || null,
+                        id_generation: parseInt(document.getElementById("edit-generation-id").value) || null,
+                        type: parseInt(document.getElementById("edit-type").value) || null
                     };
 
                     try {
@@ -89,7 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             modal.classList.remove("show");
                             location.reload();
                         } else {
-                            alert("Erreur lors de la mise à jour.");
+                            const error = await response.json();
+                            alert(`Erreur lors de la mise à jour : ${error.message || "Erreur inconnue"}`);
                         }
                     } catch (error) {
                         console.error("Erreur lors de la mise à jour :", error);
@@ -97,11 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                // Suppression de l'avion
                 deleteButton.addEventListener("click", async () => {
-                    console.log("Bouton supprimer cliqué"); // Vérification
-                    console.log("ID avion :", airplaneId);
-
                     if (!airplaneId) {
                         alert("Erreur : ID de l'avion introuvable.");
                         return;
@@ -122,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             alert("Avion supprimé avec succès.");
                             window.location.href = "index.html";
-
                         } catch (error) {
                             console.error("Erreur:", error);
                             alert("Impossible de supprimer cet avion.");
@@ -135,8 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-    // Fonction pour formater les dates au format dd/mm/aaaa
     function formatDate(dateString) {
         if (!dateString) return 'Date inconnue';
         const date = new Date(dateString);
@@ -169,7 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayAirplaneDetails(airplane, armament, wars, tech, missions) {
-        // Afficher les informations de base de l'avion
         airplaneInfo.innerHTML = `
             <h2>${airplane.complete_name}</h2>
             <img src="${airplane.image_url}" alt="${airplane.name}" class="hero-image">
@@ -187,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <p><strong>Poids : </strong> ${airplane.weight} kg</p>
         `;
 
-        // Afficher l'armement de l'avion
         armament.forEach(weapon => {
             armementList.innerHTML += `
                 <li>
@@ -197,7 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Afficher les technologies de l'avion
         tech.forEach(technology => {
             techList.innerHTML += `
                 <li>
@@ -207,7 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Afficher les guerres auxquelles l'avion a participé
         wars.forEach(war => {
             guerresList.innerHTML += `
                 <div class="war-event">
@@ -218,7 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Afficher les missions de l'avion
         missions.forEach(mission => {
             missionsList.innerHTML += `
                 <div class="mission-item">
