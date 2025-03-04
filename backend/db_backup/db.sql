@@ -183,6 +183,8 @@ INSERT INTO wars (name, date_start, date_end, country_id, description) VALUES
 -- Guerre d''Indochine (1946-1954)
 ('Guerre d''Indochine', '1946-12-19', '1954-07-20', (SELECT id FROM countries WHERE code = 'VNM'), 'Conflit entre la France et le Viet Minh pour le contrôle de l''Indochine.'),
 
+('Guerre Indo-Pakistanaise de 1971', '1971-12-03', '1971-12-16', (SELECT id FROM countries WHERE code = 'IND'), 'Conflit entre l''Inde et le Pakistan entraînant la création du Bangladesh.'),
+
 -- Guerre d''Algérie (1954-1962)
 ('Guerre d''Algérie', '1954-11-01', '1962-03-19', (SELECT id FROM countries WHERE code = 'DZA'), 'Conflit entre la France et le Front de libération nationale (FLN) pour l''indépendance de l''Algérie.');
 
@@ -296,6 +298,10 @@ INSERT INTO armement (name, description) VALUES
 ('AAM-4', 'Missile moyenne/longue portée, guidage radar actif'),
 ('AAM-5', 'Missile courte portée, guidage infrarouge'),
 ('IRIS-T', 'Missile courte portée, guidage infrarouge, 25 km'),
+('PL-2', 'Missile air-air courte portée, guidage infrarouge, 8 km'),
+('PL-5', 'Missile air-air courte portée, guidage infrarouge, 16-20 km'),
+('PL-8', 'Missile air-air courte portée, guidage infrarouge, 20 km'),
+('PL-12', 'Missile air-air moyenne/longue portée, guidage radar actif, 70-100 km'),
 
 -- Missiles air-sol
 ('AS-30', 'Missile air-sol, guidage radio'),
@@ -346,7 +352,11 @@ INSERT INTO armement (name, description) VALUES
 ('Kh-32', 'Missile antinavire supersonique, portée 600-1000 km'),
 ('Kh-35U', 'Missile antinavire subsonique, portée 260 km'),
 ('Kh-20', 'Missile de croisière nucléaire, portée 600 km'),
+('Kh-22', 'Missile antinavire supersonique, portée 600 km'),
+('Kh-55', 'Missile de croisière subsonique, portée 2500 km'),
 ('Kh-65', 'Missile de croisière conventionnel, portée 500 km'),
+('Kh-101', 'Missile de croisière furtif conventionnel, portée 4500-5500 km'),
+('Kh-102', 'Missile de croisière furtif nucléaire, portée 4500-5500 km'),
 ('Kh-555', 'Missile de croisière conventionnel, portée 2500 km'),
 
 -- Armement nucléaire
@@ -405,7 +415,6 @@ INSERT INTO armement (name, description) VALUES
 ('GBU-49', 'Bombe guidée laser/GPS, 227 kg'),
 ('OFAB-250', 'Bombe lisse 250 kg'),
 ('OFAB-500', 'Bombe lisse 500 kg'),
-('FAB-1500', 'Bombe lisse 1500 kg, capacité stratégique'),
 ('FAB-3000', 'Bombe lisse conventionnelle, 3000 kg'),
 ('FAB-5000', 'Bombe lisse conventionnelle, 5000 kg'),
 ('BAP 100', 'Bombe anti-piste'),
