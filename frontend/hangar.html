@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vol d'Histoire - Hangar</title>
+    <link rel="stylesheet" href="css/hangar.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Hangar</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="hangar.html">Hangar</a></li>
+        <li><a href="timeline.html">Frise Chronologique</a></li>
+        <li>
+          <a href="login.html" id="login-icon" class="login-icon">
+            <i class="fas fa-user"></i>
+          </a>
+          <div id="user-info-container" class="hidden">
+            <i class="fas fa-user-circle"></i>
+            <span id="user-name"></span>
+            <a href="#" id="logout-icon" class="hidden">
+              <i class="fas fa-sign-out-alt"></i>
+            </a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+    <section class="sorting-controls">
+        <div class="custom-select country-select" id="country-select-container" style="display: none;">
+            <select id="country-select" aria-label="Choisir un pays">
+                <option value="">Choisir un pays</option>
+            </select>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="custom-select generation-select" id="generation-select-container" style="display: none;">
+            <select id="generation-select" aria-label="Choisir une génération">
+                <option value="">Choisir une génération</option>
+            </select>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="custom-select type-select" id="type-select-container" style="display: none;">
+            <select id="type-select" aria-label="Choisir un type">
+                <option value="">Choisir un type</option>
+            </select>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="custom-select">
+            <select id="sort-select" aria-label="Trier les avions">
+                <option value="default">Trier par</option>
+                <option value="nation">Nation</option>
+                <option value="service-date">Date d'entrée en service</option>
+                <option value="alphabetical">Ordre alphabétique</option>
+                <option value="generation">Génération</option>
+                <option value="type">Type</option>
+            </select>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <button id="add-airplane-btn" class="hidden"><i class="fa-solid fa-plus"></i> Ajouter un avion</button>
+    </section>
+
+    <main>
+        <section id="airplanes-list">
+            <div id="airplanes-container"></div>
+        </section>
+        <div id="pagination-container"></div>
+    </main>
+
+    <!-- Lecteur de musique -->
+    <div id="music-player" class="music-player">
+        <div class="player-container">
+            <div class="song-info">
+                <h3 id="song-title">Titre de la chanson</h3>
+                <p id="song-artist">Artiste</p>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div id="progress"></div>
+                </div>
+                <div class="time-info">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+            </div>
+            <div class="controls">
+                <button id="prev" class="control-button">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button id="play" class="control-button play-button">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button id="next" class="control-button">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+            <div class="volume-control">
+                <i class="fas fa-volume-up" id="volume-icon"></i>
+                <input type="range" id="volume" min="0" max="100" value="100">
+            </div>
+            <audio id="audio" src=""></audio>
+        </div>
+    </div>
+
+    <!-- Bouton de contrôle du lecteur -->
+    <div class="player-toggle" id="player-toggle">
+        <i class="fas fa-music"></i>
+    </div>
+
+    <div id="add-modal" class="modal hidden" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+        <div class="modal-content">
+          <button class="close-btn" aria-label="Fermer">&times;</button>
+          <h2 id="modal-title">Créer un nouvel avion</h2>
+          <form id="add-form" class="modal-form">
+            <div class="form-group">
+              <label for="add-name">Nom</label>
+              <input type="text" id="add-name" placeholder="Ex: F-16 Fighting Falcon" required>
+            </div>
+            <div class="form-group">
+              <label for="add-complete-name">Nom complet</label>
+              <input type="text" id="add-complete-name" placeholder="Ex: General Dynamics F-16 Fighting Falcon">
+            </div>
+            <div class="form-group">
+              <label for="add-little-description">Description courte</label>
+              <input type="text" id="add-little-description" placeholder="Ex: Avion de chasse polyvalent">
+            </div>
+            <div class="form-group">
+              <label for="add-image-url">URL de l'image</label>
+              <input type="url" id="add-image-url" placeholder="Ex: https://exemple.com/avion.jpg">
+            </div>
+            <div class="form-group">
+              <label for="add-date-concept">Date de conception</label>
+              <input type="date" id="add-date-concept">
+            </div>
+            <div class="form-group">
+              <label for="add-date-first-fly">Premier vol</label>
+              <input type="date" id="add-date-first-fly">
+            </div>
+            <div class="form-group">
+              <label for="add-date-operationel">Date de mise en service</label>
+              <input type="date" id="add-date-operationel">
+            </div>
+            <div class="form-group">
+              <label for="add-max-speed">Vitesse max (km/h)</label>
+              <input type="number" id="add-max-speed" placeholder="Ex: 2400">
+            </div>
+            <div class="form-group">
+              <label for="add-max-range">Portée max (km)</label>
+              <input type="number" id="add-max-range" placeholder="Ex: 4000">
+            </div>
+            <div class="form-group">
+              <label for="add-weight">Poids (kg)</label>
+              <input type="number" id="add-weight" placeholder="Ex: 8000">
+            </div>
+            <div class="form-group">
+              <label for="add-status">Statut</label>
+              <input type="text" id="add-status" placeholder="Ex: En service">
+            </div>
+            <div class="form-group">
+              <label for="add-country-id">Pays</label>
+              <select id="add-country-id" required>
+                <option value="">Choisir un pays</option>
+                <!-- Options dynamiques -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="add-manufacturer-id">Fabricant</label>
+              <select id="add-manufacturer-id" required>
+                <option value="">Choisir un fabricant</option>
+                <!-- Options dynamiques -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="add-generation-id">Génération</label>
+              <select id="add-generation-id" required>
+                <option value="">Choisir une génération</option>
+                <!-- Options dynamiques -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="add-type">Type</label>
+              <select id="add-type" required>
+                <option value="">Choisir un type</option>
+                <!-- Options dynamiques -->
+              </select>
+            </div>
+            <div class="form-group form-group-full">
+              <label for="add-description">Description</label>
+              <textarea id="add-description" placeholder="Détails supplémentaires"></textarea>
+            </div>
+            <div class="form-group form-group-full">
+              <button type="submit" class="save-btn">Créer l'avion</button>
+            </div>
+          </form>
+        </div>
+      </div>      
+
+    <footer>
+        <p>© 2025 Vol d'Histoire. Tous droits réservés.</p>
+    </footer>
+
+    <script src="js/hangar.js"></script>
+</body>
+</html>
