@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
 
                             alert("Avion supprimé avec succès.");
-                            window.location.href = "index.html";
+                            window.location.href = "hangar.html";
                         } catch (error) {
                             console.error("Erreur:", error);
                             alert("Impossible de supprimer cet avion.");

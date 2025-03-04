@@ -17,6 +17,13 @@
     --black-rgb: 0, 0, 0;
 }
 
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
 body {
     background: var(--bg);
     font-family: 'Space Grotesk', sans-serif;
@@ -28,60 +35,62 @@ body {
 
 /* HEADER DYNAMIQUE */
 header {
-    background: linear-gradient(45deg, var(--primary), var(--accent));
-    padding: 2rem;
-    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    position: static;
+    top: 0;
+    width: 100%;
+    background: rgba(63, 61, 86, 0.8);
+    padding: 1rem 2rem;
+    z-index: 100;
     margin-bottom: 4rem;
 }
 
-.header-content {
+nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.logo {
+    font-family: "Orbitron", sans-serif;
+    font-size: 1.5rem;
+    color: var(--white);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+    color: var(--accent);
+}
+
+/* Style pour la nouvelle section page-header */
+.page-header {
+    max-width: 1800px;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    color: var(--primary);
     margin-bottom: 1rem;
 }
 
-/* BOUTON DE RETOUR */
-.back-button {
-    display: inline-flex;
-    align-items: center;
-    background: var(--primary);
-    color: var(--white) !important;
-    padding: 0.8rem 1.5rem;
-    border-radius: 30px;
-    text-decoration: none;
-    transition: 0.3s;
-    font-size: 0.9rem;
-    box-shadow: 0 4px 15px var(--shadow-color);
-}
-
-.back-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px var(--shadow-hover);
-}
-
-h1 {
-    font-size: 3.5rem;
-    text-shadow: 3px 3px 0 var(--shadow-color);
-    color: var(--white);
-    mix-blend-mode: overlay;
-    margin: 0;
-}
-
-header p {
-    color: var(--white);
-    opacity: 0.9;
-    font-size: 1.2rem;
-    margin-top: 0.5rem;
-}
-
-.back-button i {
-    margin-right: 0.5rem;
-    transition: transform 0.3s;
-}
-
-.back-button:hover i {
-    transform: translateX(-3px);
+.page-header div {
+    display: flex;
+    gap: 1rem;
 }
 
 .edit-buttons {
