@@ -261,117 +261,55 @@ header p {
     box-shadow: 0 4px 15px var(--shadow-hover);
 }
 
+/* Styles de la modal */
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(var(--black-rgb), 0.5);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
-    visibility: hidden;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out, visibility 0.3s;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 1000;
 }
 
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Contenu de la modal */
 .modal-content {
     background: var(--white);
     padding: 2rem;
-    border-radius: 15px;
-    width: 800px;
-    max-width: 80%;
-    position: relative;
-    box-shadow: 0 10px 30px var(--shadow-color);
-}
-
-.modal-content h2 {
-    color: var(--primary);
-    font-family: 'Orbitron', sans-serif;
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-.modal-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 2rem;
-}
-
-.modal-form label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    color: var(--secondary);
-}
-
-.modal-form input,
-.modal-form textarea {
-    width: 100%;
-    padding: 0.8rem;
-    border: 2px solid var(--accent);
-    border-radius: 8px;
-    font-family: 'Space Grotesk', sans-serif;
-    transition: all 0.3s ease;
-}
-
-.modal-form input:focus,
-.modal-form textarea:focus {
-    border-color: var(--primary);
-    outline: none;
-    box-shadow: 0 0 8px var(--shadow-color);
-}
-
-.modal-form select {
-    width: 100%;
-    padding: 0.8rem;
-    border: 2px solid var(--accent);
-    border-radius: 8px;
-    font-family: 'Space Grotesk', sans-serif;
-    background: var(--white);
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.modal-form select:focus {
-    border-color: var(--primary);
-    outline: none;
-    box-shadow: 0 0 8px var(--shadow-color);
-}
-
-textarea {
-    resize: vertical;
-    min-height: 100px;
-    grid-column: span 2;
-}
-
-.save-btn {
-    grid-column: span 2;
-    background: linear-gradient(45deg, var(--primary), var(--accent));
-    color: var(--white);
-    padding: 1rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    cursor: pointer;
+    border-radius: 10px;
+    max-width: 800px;
+    width: 90%;
+    transform: translateY(-20px);
     transition: transform 0.3s ease;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.save-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px var(--shadow-hover);
+.modal.show .modal-content {
+    transform: translateY(0);
 }
 
+/* Bouton de fermeture */
 .close-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.8rem;
     position: absolute;
     top: 1rem;
     right: 1.5rem;
-    font-size: 1.5rem;
-    color: var(--primary);
     cursor: pointer;
+    color: #3F3D56;
     transition: transform 0.3s ease;
 }
 
@@ -379,9 +317,111 @@ textarea {
     transform: rotate(90deg);
 }
 
-.modal.show {
-    visibility: visible;
-    opacity: 1;
+/* Titre */
+.modal-content h2 {
+    color: #3F3D56;
+    font-family: 'Orbitron', sans-serif;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+/* Formulaire de la modal */
+.modal-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+/* Styles des groupes de champs */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+    color: #3F3D56;
+}
+
+/* Champs de formulaire */
+.modal-form input,
+.modal-form select,
+.modal-form textarea {
+    padding: 0.8rem;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.modal-form input:focus,
+.modal-form select:focus,
+.modal-form textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 8px rgba(63, 61, 86, 0.4);
+}
+
+/* Styles pour le textarea */
+textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Champs qui occupent toute la largeur */
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+/* Bouton de soumission */
+.save-btn {
+    grid-column: 1 / -1;
+    background: linear-gradient(45deg, #3F3D56, #5A5A89);
+    color: var(--white);
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-weight: bold;
+    text-align: center;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(63, 61, 86, 0.4);
+}
+
+/* Animation d'apparition */
+@keyframes modalFadeIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 1.5rem;
+    }
+
+    .modal-form {
+        grid-template-columns: 1fr;
+    }
+
+    .save-btn {
+        font-size: 1rem;
+        padding: 0.8rem;
+    }
 }
 
 .sorting-controls {

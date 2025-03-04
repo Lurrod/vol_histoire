@@ -118,47 +118,93 @@
         <i class="fas fa-music"></i>
     </div>
 
-    <div id="add-modal" class="modal hidden">
+    <div id="add-modal" class="modal hidden" role="dialog" aria-labelledby="modal-title" aria-modal="true">
         <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Créer un nouvel avion</h2>
-            <form id="add-form" class="modal-form">
-                <label>Nom : <input type="text" id="add-name" required></label>
-                <label>Nom complet : <input type="text" id="add-complete-name"></label>
-                <label>Description courte : <input type="text" id="add-little-description"></label>
-                <label>URL de l'image : <input type="text" id="add-image-url"></label>
-                <label>Date de conception : <input type="date" id="add-date-concept"></label>
-                <label>Premier vol : <input type="date" id="add-date-first-fly"></label>
-                <label>Date de mise en service : <input type="date" id="add-date-operationel"></label>
-                <label>Vitesse max (km/h) : <input type="number" id="add-max-speed"></label>
-                <label>Portée max (km) : <input type="number" id="add-max-range"></label>
-                <label>Poids (kg) : <input type="number" id="add-weight"></label>
-                <label>Statut : <input type="text" id="add-status"></label>
-                <label>Pays :
-                    <select id="add-country-id" required>
-                        <option value="">Choisir un pays</option>
-                    </select>
-                </label>
-                <label>Fabricant :
-                    <select id="add-manufacturer-id" required>
-                        <option value="">Choisir un fabricant</option>
-                    </select>
-                </label>
-                <label>Génération :
-                    <select id="add-generation-id" required>
-                        <option value="">Choisir une génération</option>
-                    </select>
-                </label>
-                <label>Type :
-                    <select id="add-type" required>
-                        <option value="">Choisir un type</option>
-                    </select>
-                </label>
-                <label>Description : <textarea id="add-description"></textarea></label>
-                <button type="submit" class="save-btn">Créer l'avion</button>
-            </form>
+          <button class="close-btn" aria-label="Fermer">&times;</button>
+          <h2 id="modal-title">Créer un nouvel avion</h2>
+          <form id="add-form" class="modal-form">
+            <div class="form-group">
+              <label for="add-name">Nom</label>
+              <input type="text" id="add-name" placeholder="Ex: F-16 Fighting Falcon" required>
+            </div>
+            <div class="form-group">
+              <label for="add-complete-name">Nom complet</label>
+              <input type="text" id="add-complete-name" placeholder="Ex: General Dynamics F-16 Fighting Falcon">
+            </div>
+            <div class="form-group">
+              <label for="add-little-description">Description courte</label>
+              <input type="text" id="add-little-description" placeholder="Ex: Avion de chasse polyvalent">
+            </div>
+            <div class="form-group">
+              <label for="add-image-url">URL de l'image</label>
+              <input type="url" id="add-image-url" placeholder="Ex: https://exemple.com/avion.jpg">
+            </div>
+            <div class="form-group">
+              <label for="add-date-concept">Date de conception</label>
+              <input type="date" id="add-date-concept">
+            </div>
+            <div class="form-group">
+              <label for="add-date-first-fly">Premier vol</label>
+              <input type="date" id="add-date-first-fly">
+            </div>
+            <div class="form-group">
+              <label for="add-date-operationel">Date de mise en service</label>
+              <input type="date" id="add-date-operationel">
+            </div>
+            <div class="form-group">
+              <label for="add-max-speed">Vitesse max (km/h)</label>
+              <input type="number" id="add-max-speed" placeholder="Ex: 2400">
+            </div>
+            <div class="form-group">
+              <label for="add-max-range">Portée max (km)</label>
+              <input type="number" id="add-max-range" placeholder="Ex: 4000">
+            </div>
+            <div class="form-group">
+              <label for="add-weight">Poids (kg)</label>
+              <input type="number" id="add-weight" placeholder="Ex: 8000">
+            </div>
+            <div class="form-group">
+              <label for="add-status">Statut</label>
+              <input type="text" id="add-status" placeholder="Ex: En service">
+            </div>
+            <div class="form-group">
+              <label for="add-country-id">Pays</label>
+              <select id="add-country-id" required>
+                <option value="">Choisir un pays</option>
+                <!-- Options dynamiques -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="add-manufacturer-id">Fabricant</label>
+              <select id="add-manufacturer-id" required>
+                <option value="">Choisir un fabricant</option>
+                <!-- Options dynamiques -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="add-generation-id">Génération</label>
+              <select id="add-generation-id" required>
+                <option value="">Choisir une génération</option>
+                <!-- Options dynamiques -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="add-type">Type</label>
+              <select id="add-type" required>
+                <option value="">Choisir un type</option>
+                <!-- Options dynamiques -->
+              </select>
+            </div>
+            <div class="form-group form-group-full">
+              <label for="add-description">Description</label>
+              <textarea id="add-description" placeholder="Détails supplémentaires"></textarea>
+            </div>
+            <div class="form-group form-group-full">
+              <button type="submit" class="save-btn">Créer l'avion</button>
+            </div>
+          </form>
         </div>
-    </div>
+      </div>      
 
     <footer>
         <p>© 2025 Vol d'Histoire. Tous droits réservés.</p>
