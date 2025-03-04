@@ -1,14 +1,14 @@
 {
-  "name": "backend",
+  "name": "Vol d'histoire",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Titouan Borde",
+  "license": "SEE LICENSE IN LICENSE",
+  "description": "Vol d'histoire",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",

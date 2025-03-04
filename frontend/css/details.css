@@ -139,7 +139,7 @@ header p {
     transition: 0.3s transform;
     position: relative;
     overflow: hidden;
-}
+}       
 
 /* PANEAU CENTRAL */
 .core-panel {
