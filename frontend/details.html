@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vol d'Histoire - Détails de l'avion</title>
-    <link rel="stylesheet" href="details.css">
+    <title>Vol d'Histoire - Cockpit</title>
+    <link rel="stylesheet" href="css/details.css">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -12,15 +12,26 @@
     <header>
         <div class="header-content">
             <h1>Vol d'Histoire</h1>
-            <a href="index.html" class="back-button">
-                <i class="fas fa-arrow-left"></i> Retour au Hangar
-            </a>
+            <div>
+                <a href="index.html" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Retour au Hangar
+                </a>
+                <a href="timeline.html" class="back-button" style="margin-left: 1rem;">
+                    <i class="fas fa-history"></i> Frise
+                </a>
+            </div>
         </div>
-        <p>Détails de l'avion</p>
+        <p>Cockpit de l'avion</p>
     </header>
-
+    
+    <div class="edit-buttons">
+        <button id="edit-airplane-btn" class="hidden">Modifier</button>
+        <button id="delete-airplane-btn" class="hidden">Supprimer</button>
+    </div>
+    
     <main>
         <section id="airplane-details">
+            <!-- PANEL GAUCHE - ARMEMENT & TECHNOS -->
             <div class="airplane-card armement-panel">
                 <h3>Configuration Armement</h3>
                 <ul class="armement-list" id="armement-list"></ul>
@@ -28,10 +39,11 @@
                 <h3 style="margin-top: 2rem;">Technologies Clés</h3>
                 <ul class="tech-list" id="tech-list"></ul>
             </div>
-
-            <div class="airplane-card core-panel" id="airplane-info">
-            </div>
-
+    
+            <!-- CENTRE - FICHE TECHNIQUE -->
+            <div class="airplane-card core-panel" id="airplane-info"></div>
+    
+            <!-- PANEL DROIT - GUERRES & MISSIONS -->
             <div class="airplane-card guerres-panel">
                 <h3>Engagements Historiques</h3>
                 <div class="guerres-timeline" id="guerres-list"></div>
@@ -42,10 +54,54 @@
         </section>
     </main>
 
+    <!-- MODALE D'ÉDITION -->
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Modifier l'Avion</h2>
+            <form id="edit-form" class="modal-form">
+                <label>Nom : <input type="text" id="edit-name" required></label>
+                <label>Nom complet : <input type="text" id="edit-complete-name"></label>
+                <label>Description courte : <input type="text" id="edit-little-description"></label>
+                <label>URL de l'image : <input type="text" id="edit-image-url"></label>
+                <label>Date de conception : <input type="date" id="edit-date-concept"></label>
+                <label>Premier vol : <input type="date" id="edit-date-first-fly"></label>
+                <label>Date de mise en service : <input type="date" id="edit-date-operationel"></label>
+                <label>Vitesse max (km/h) : <input type="number" id="edit-max-speed"></label>
+                <label>Portée max (km) : <input type="number" id="edit-max-range"></label>
+                <label>Poids (kg) : <input type="number" id="edit-weight"></label>
+                <label>Statut : <input type="text" id="edit-status"></label>
+                <label>Pays :
+                    <select id="edit-country-id" required>
+                        <option value="">Choisir un pays</option>
+                    </select>
+                </label>
+                <label>Fabricant :
+                    <select id="edit-manufacturer-id" required>
+                        <option value="">Choisir un fabricant</option>
+                    </select>
+                </label>
+                <label>Génération :
+                    <select id="edit-generation-id" required>
+                        <option value="">Choisir une génération</option>
+                    </select>
+                </label>
+                <label>Type :
+                    <select id="edit-type" required>
+                        <option value="">Choisir un type</option>
+                    </select>
+                </label>
+                <label>Description : <textarea id="edit-description"></textarea></label>
+                <button type="submit" class="save-btn">Enregistrer</button>
+            </form>
+        </div>
+    </div>
+
+
     <footer>
-        <p>&copy; 2025   Vol d'Histoire. Tous droits réservés.</p>
+        <p>&copy; 2025 Vol d'Histoire. Tous droits réservés.</p>
     </footer>
 
-    <script src="details.js"></script>
+    <script src="js/details.js"></script>
 </body>
 </html>
