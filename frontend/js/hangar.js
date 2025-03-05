@@ -9,44 +9,72 @@ document.addEventListener("DOMContentLoaded", () => {
     const generationSelect = document.getElementById("generation-select");
     const typeSelectContainer = document.getElementById("type-select-container");
     const typeSelect = document.getElementById("type-select");
-    const loginIcon = document.getElementById("login-icon");
-    const userNameSpan = document.getElementById("user-name");
-    const logoutIcon = document.getElementById("logout-icon");
-    const userInfoContainer = document.getElementById("user-info-container");
     const addModal = document.getElementById("add-modal");
     const addButton = document.getElementById("add-airplane-btn");
     const closeAddModal = addModal.querySelector(".close-btn");
+    const loginIcon = document.getElementById("login-icon");
+    const userToggle = document.querySelector(".user-toggle");
+    const userDropdown = document.getElementById("user-info-container");
 
     // Vérifier si un token JWT est stocké
     const token = localStorage.getItem("token");
 
-    if (token) {
-        try {
-          const payload = JSON.parse(atob(token.split(".")[1]));
-          const userName = payload.name;
+    const updateAuthUI = () => {
+        const token = localStorage.getItem("token");
     
-          // Masquer l'icône de connexion et afficher les infos utilisateur
-          loginIcon.classList.add("hidden");
-          userInfoContainer.classList.remove("hidden");
-          userNameSpan.textContent = userName;
-          logoutIcon.classList.remove("hidden");
-    
-          // Gestion de la déconnexion
-          logoutIcon.addEventListener("click", () => {
+        // Redirige vers login si non authentifié lors du clic sur l'icône
+        loginIcon.addEventListener("click", (e) => {
+          if (!token) {
+            e.preventDefault();
+            window.location.href = "login.html";
+          }
+        });
+        
+        if (token) {
+          try {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            // Met à jour le nom et le rôle de l'utilisateur dans le dropdown
+            document.getElementById("user-name").textContent = payload.name;
+            document.querySelector(".user-role").textContent =
+              payload.role === 1 ? "Administrateur" :
+              payload.role === 2 ? "Éditeur" : "Membre";
+            if (payload.role === 1 || payload.role === 2) {
+                addButton.classList.remove("hidden");
+            } else {
+                addButton.classList.add("hidden");
+            }
+            userDropdown.classList.remove("hidden");
+          } catch (error) {
+            console.error("Token error:", error);
             localStorage.removeItem("token");
-            window.location.reload();
-            userInfoContainer.classList.add("hidden");
-          });
-        } catch (error) {
-          console.error("Erreur lors de la lecture du token:", error);
-          localStorage.removeItem("token");
+          }
         }
-      } else {
-        loginIcon.classList.remove("hidden");
-        userInfoContainer.classList.add("hidden");
-      }
+      };
+    
+      // Permet d'ouvrir/fermer le dropdown lors du clic sur le conteneur utilisateur
+      userToggle.addEventListener("click", (e) => {
+        e.preventDefault();
+        userDropdown.classList.toggle("show");
+      });
+    
+      // Ferme le dropdown si l'utilisateur clique en dehors
+      document.addEventListener("click", (e) => {
+        if (!userToggle.contains(e.target)) {
+          userDropdown.classList.remove("show");
+        }
+      });
+    
+      // Gestion de la déconnexion
+      document.getElementById("logout-icon").addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        window.location.href = "hangar.html";
+      });
+    
+      updateAuthUI();
+    
 
-    addButton.addEventListener("click", async () => {
+        addButton.addEventListener("click", async () => {
         addModal.classList.add("show");
         addModal.classList.remove("hidden");
         

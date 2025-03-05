@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (response.ok) {
             alert("Connexion réussie !");
             localStorage.setItem("token", data.token);
-            window.location.href = "hangar.html"; 
+            window.location.href = "index.html"; 
         } else {
             alert("Erreur : " + data.message);
         }
