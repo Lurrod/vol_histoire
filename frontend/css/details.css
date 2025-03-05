@@ -33,7 +33,7 @@ body {
     padding: 0;
 }
 
-/* HEADER DYNAMIQUE */
+/* Header et navigation */
 header {
     position: static;
     top: 0;
@@ -42,38 +42,183 @@ header {
     padding: 1rem 2rem;
     z-index: 100;
     margin-bottom: 4rem;
-}
-
-nav {
+  }
+  
+  /* Styles pour la navigation */
+  nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.logo {
+  }
+  
+  /* Style du logo */
+  .logo {
     font-family: "Orbitron", sans-serif;
     font-size: 1.5rem;
     color: var(--white);
-}
-
-.nav-links {
+  }
+  
+  /* Styles pour la liste de liens */
+  .nav-links {
     list-style: none;
     display: flex;
     gap: 1rem;
     margin: 0;
     padding: 0;
-}
-
-.nav-links li a {
+  }
+  
+  /* Styles des éléments de la liste */
+  .nav-links li {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Styles des liens */
+  .nav-links li a {
     color: var(--white);
     text-decoration: none;
     font-size: 1rem;
+    font-family: "Space Grotesk", sans-serif;
     transition: color 0.3s ease;
-}
-
-.nav-links li a:hover {
+    padding: 5px 10px;
+  }
+  
+  .nav-links li a:hover {
+    background-color: rgba(255, 255, 255, 0.103);
+    border-radius: 20px;
+  }
+  
+  /* User menu */
+  .user-menu {
+    position: relative;
+  }
+  
+  .user-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .user-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    min-width: 220px;
+    margin-top: 1rem;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 999;
+  }
+  
+  .user-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .user-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: var(--bg);
+  }
+  
+  .user-avatar {
+    font-size: 2.5rem;
+    margin-right: 1rem;
+    color: var(--primary);
+  }
+  
+  .user-details {
+    line-height: 1.4;
+  }
+  
+  .user-name {
+    font-weight: 600;
+    display: block;
+    color: var(--primary);
+  }
+  
+  .user-role {
+    font-size: 0.8rem;
     color: var(--accent);
-}
+  }
+  
+  .dropdown-divider {
+    border-top: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: center ;
+    padding: 0.75rem 1rem;
+    color: var(--accent) !important;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .dropdown-item:hover {
+    background: var(--bg);
+  }
+  
+  .dropdown-item i {
+    margin-right: 0.75rem;
+    width: 20px;
+    text-align: center;
+  }
+  
+  .login-icon {
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .login-icon:hover {
+    background: rgba(255,255,255,0.15);
+  }
+  
+  /* Classe pour masquer les éléments */
+  .hidden {
+    display: none !important;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    header {
+      padding: 1rem;
+    }
+  
+    nav {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .nav-links {
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      text-align: center;
+    }
+  
+    .nav-links li {
+      width: 100%;
+    }
+  
+    .login-icon {
+      padding: 0.5rem;
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+  
+    .user-dropdown {
+      position: static;
+      margin-top: 0.5rem;
+    }
+  }
 
 /* Style pour la nouvelle section page-header */
 .page-header {
@@ -96,7 +241,6 @@ nav {
 .edit-buttons {
     position: absolute;
     top: -50px;
-    right: 10px;
     display: flex;
     gap: 10px;
     z-index: 10;
@@ -362,7 +506,7 @@ h2::after {
 /* Formulaire de la modal */
 .modal-form {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
 }
 
@@ -457,27 +601,13 @@ textarea {
     }
 }
 
-
-/* FOOTER CYBERPUNK */
 footer {
-    background: var(--secondary);
-    color: var(--white);
-    padding: 2rem;
-    margin-top: 2rem;
+    background: var(--primary);
     text-align: center;
-    clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
-    position: relative;
-}
-
-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-}
+    padding: 1rem;
+    color: var(--white);
+    font-size: 0.9rem;
+  }
 
 /* RESPONSIVE */
 @media (max-width: 1200px) {

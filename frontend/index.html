@@ -12,12 +12,32 @@
   <!-- Header avec navigation -->
   <header>
     <nav>
-      <div class="logo">Vol d'Histoire</div>
+      <div class="logo">Hangar</div>
       <ul class="nav-links">
         <li><a href="index.html">Accueil</a></li>
         <li><a href="hangar.html">Hangar</a></li>
         <li><a href="timeline.html">Frise Chronologique</a></li>
-        <li><a href="login.html">Connexion</a></li>
+        <li class="user-menu">
+          <div class="user-toggle">
+            <a href="login.html" id="login-icon" class="login-icon">
+              <i class="fas fa-user"></i>
+            </a>
+            <div id="user-info-container" class="user-dropdown hidden">
+              <div class="user-header">
+                <i class="fas fa-user-circle user-avatar"></i>
+                <div class="user-details">
+                  <span id="user-name" class="user-name"></span>
+                  <span class="user-role">Membre</span>
+                </div>
+              </div>
+              <div class="dropdown-divider"></div>
+              <a href="#" id="logout-icon" class="dropdown-item">
+                <i class="fas fa-sign-out-alt"></i>
+                Déconnexion
+              </a>
+            </div>
+          </div>
+        </li>
       </ul>
     </nav>
   </header>

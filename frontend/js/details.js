@@ -9,10 +9,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('edit-modal');
     const closeModal = document.querySelector('.close-btn');
     const editForm = document.getElementById('edit-form');
+    const loginIcon = document.getElementById("login-icon");
+    const userToggle = document.querySelector(".user-toggle");
+    const userDropdown = document.getElementById("user-info-container");
 
     const urlParams = new URLSearchParams(window.location.search);
     const airplaneId = urlParams.get('id');
     const token = localStorage.getItem("token");
+
+    const updateAuthUI = () => {
+        const token = localStorage.getItem("token");
+        
+        if (token) {
+          try {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            // Met à jour le nom et le rôle de l'utilisateur dans le dropdown
+            document.getElementById("user-name").textContent = payload.name;
+            document.querySelector(".user-role").textContent =
+              payload.role === 1 ? "Administrateur" :
+              payload.role === 2 ? "Éditeur" : "Membre";
+            userDropdown.classList.remove("hidden");
+          } catch (error) {
+            console.error("Token error:", error);
+            localStorage.removeItem("token");
+          }
+        }
+      };
+    
+      // Permet d'ouvrir/fermer le dropdown lors du clic sur le conteneur utilisateur
+      userToggle.addEventListener("click", (e) => {
+        e.preventDefault();
+        userDropdown.classList.toggle("show");
+      });
+    
+      // Ferme le dropdown si l'utilisateur clique en dehors
+      document.addEventListener("click", (e) => {
+        if (!userToggle.contains(e.target)) {
+          userDropdown.classList.remove("show");
+        }
+      });
+    
+      // Gestion de la déconnexion
+      document.getElementById("logout-icon").addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        window.location.href = "hangar.html";
+      });
+    
+      updateAuthUI();
 
     // Fonctions pour remplir les menus déroulants
     async function populateCountriesSelect(currentCountryId) {
@@ -95,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 deleteButton.style.display = "block";
 
                 editButton.addEventListener("click", async () => {
+                    modal.classList.remove("hidden");
                     modal.classList.add("show");
 
                     // Charger les données de l'avion et pré-remplir le formulaire

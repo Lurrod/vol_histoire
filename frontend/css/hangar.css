@@ -27,11 +27,10 @@ body {
     font-family: 'Space Grotesk', sans-serif;
     background: var(--bg);
     color: var(--text);
-    margin: 0;
-    padding: 0;
     line-height: 1.6;
 }
 
+/* Header et navigation */
 header {
     position: static;
     top: 0;
@@ -78,70 +77,104 @@ header {
     font-size: 1rem;
     font-family: "Space Grotesk", sans-serif;
     transition: color 0.3s ease;
+    padding: 5px 10px;
   }
   
   .nav-links li a:hover {
+    background-color: rgba(255, 255, 255, 0.103);
+    border-radius: 20px;
+  }
+  
+  /* User menu */
+  .user-menu {
+    position: relative;
+  }
+  
+  .user-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .user-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    min-width: 220px;
+    margin-top: 1rem;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+  }
+  
+  .user-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .user-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: var(--bg);
+  }
+  
+  .user-avatar {
+    font-size: 2.5rem;
+    margin-right: 1rem;
+    color: var(--primary);
+  }
+  
+  .user-details {
+    line-height: 1.4;
+  }
+  
+  .user-name {
+    font-weight: 600;
+    display: block;
+    color: var(--primary);
+  }
+  
+  .user-role {
+    font-size: 0.8rem;
     color: var(--accent);
   }
   
-  /* Styles pour l'icône de connexion */
-  .login-icon {
+  .dropdown-divider {
+    border-top: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  .dropdown-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background: var(--primary);
-    color: var(--white);
-    padding: 0.6rem;
-    border-radius: 50%;
-    width: 2rem;
-    height: 2rem;
-    box-shadow: 0 4px 10px var(--shadow-color);
+    justify-content: center ;
+    padding: 0.75rem 1rem;
+    color: var(--accent) !important;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .dropdown-item:hover {
+    background: var(--bg);
+  }
+  
+  .dropdown-item i {
+    margin-right: 0.75rem;
+    width: 20px;
+    text-align: center;
+  }
+  
+  .login-icon {
+    padding: 0.5rem;
     transition: all 0.3s ease;
   }
   
   .login-icon:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px var(--shadow-hover);
-    color: var(--accent);
-  }
-  
-  /* Styles pour les informations utilisateur */
-  #user-info-container {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--primary);
-    color: var(--white);
-    padding: 0.6rem 1.2rem;
-    border-radius: 25px;
-    box-shadow: 0 4px 10px var(--shadow-color);
-    transition: all 0.3s ease;
-  }
-  
-  #user-info-container:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px var(--shadow-hover);
-  }
-  
-  #user-info-container i {
-    font-size: 1.2rem;
-  }
-  
-  #user-info-container span {
-    font-size: 1rem;
-  }
-  
-  #logout-icon {
-    color: var(--white);
-    text-decoration: none;
-    font-size: 1rem;
-    padding: 0.6rem;
-    transition: all 0.3s ease;
-  }
-  
-  #logout-icon:hover {
-    color: var(--accent);
-    transform: translateY(-2px);
+    background: rgba(255,255,255,0.15);
   }
   
   /* Classe pour masquer les éléments */
@@ -177,12 +210,9 @@ header {
       height: 1.8rem;
     }
   
-    #user-info-container {
-      padding: 0.5rem 1rem;
-    }
-  
-    #logout-icon {
-      padding: 0.5rem;
+    .user-dropdown {
+      position: static;
+      margin-top: 0.5rem;
     }
   }
 
@@ -199,19 +229,6 @@ header p {
     opacity: 0.9;
     font-size: 1.2rem;
     margin-top: 0.5rem;
-}
-
-.back-button i {
-    margin-right: 0.5rem;
-    transition: transform 0.3s;
-}
-
-.back-button:hover i {
-    transform: translateX(-3px);
-}
-
-.hidden {
-    display: none;
 }
 
 #add-airplane-btn {
@@ -299,7 +316,7 @@ header p {
 /* Formulaire de la modal */
 .modal-form {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
 }
 
@@ -857,26 +874,13 @@ textarea {
     color: var(--text);
 }
 
-/* FOOTER */
 footer {
-    background: var(--secondary);
-    color: var(--white);
-    padding: 2rem;
-    margin-top: 2rem;
+    background: var(--primary);
     text-align: center;
-    clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
-    position: relative;
-}
-
-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--accent));
-}
+    padding: 1rem;
+    color: var(--white);
+    font-size: 0.9rem;
+  }
 
 @media (max-width: 768px) {
     header {

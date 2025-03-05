@@ -1,8 +1,63 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Exemple d'effet simple : ajuster l'opacité de la section hero lors du défilement
-  const heroContent = document.querySelector(".hero-content");
-  window.addEventListener("scroll", () => {
-    const scrollPos = window.scrollY;
-    heroContent.style.opacity = 1 - scrollPos / 300;
+  const loginIcon = document.getElementById("login-icon");
+  const userToggle = document.querySelector(".user-toggle");
+  const userDropdown = document.querySelector(".user-dropdown");
+
+  // Gestion de l'état de connexion
+  const updateAuthUI = () => {
+  const token = localStorage.getItem("token");
+
+  loginIcon.addEventListener("click", (e) => {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+      e.preventDefault();
+      window.location.href = "login.html";
+    }
+  })
+    
+    
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        document.getElementById("user-name").textContent = payload.name;
+        document.querySelector(".user-role").textContent = 
+          payload.role === 1 ? "Administrateur" : 
+          payload.role === 2 ? "Éditeur" : "Membre";
+        
+        userDropdown.classList.remove("hidden");
+        if (payload.role === 1 || payload.role === 2) {
+          addButton.classList.remove("hidden");
+      } else {
+          addButton.classList.add("hidden");
+      }
+      } catch (error) {
+        console.error("Token error:", error);
+        localStorage.removeItem("token");
+      }
+    }
+  };
+
+  // Gestion du dropdown
+  userToggle?.addEventListener("click", (e) => {
+    e.preventDefault();
+    userDropdown.classList.toggle("show");
   });
+
+  // Fermer le dropdown en cliquant ailleurs
+  document.addEventListener("click", (e) => {
+    if (!userToggle?.contains(e.target)) {
+      userDropdown?.classList.remove("show");
+    }
+  });
+
+  // Gestion déconnexion
+  document.getElementById("logout-icon")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    window.location.href = "index.html";
+  });
+
+  // Initialisation
+  updateAuthUI();
 });
