@@ -3,21 +3,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const registerForm = document.getElementById("register-form");
     const switchToRegister = document.getElementById("switch-to-register");
     const switchToLogin = document.getElementById("switch-to-login");
+    const formInner = document.querySelector('.form-inner');
 
-    if (!loginForm || !registerForm || !switchToRegister || !switchToLogin) {
-        console.error("Un ou plusieurs éléments du formulaire sont introuvables.");
+    if (!loginForm || !registerForm || !switchToRegister || !switchToLogin || !formInner) {
+        console.error("Un ou plusieurs éléments sont introuvables.");
         return;
     }
 
-    // Basculer entre connexion et inscription
+    // Basculer entre connexion et inscription avec animation
     switchToRegister.addEventListener("click", () => {
-        loginForm.classList.add("hidden");
-        registerForm.classList.remove("hidden");
+        formInner.classList.add('flipped');
     });
 
     switchToLogin.addEventListener("click", () => {
-        registerForm.classList.add("hidden");
-        loginForm.classList.remove("hidden");
+        formInner.classList.remove('flipped');
     });
 
     // Gestion de la connexion
@@ -34,9 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const data = await response.json();
         if (response.ok) {
-            alert("Connexion réussie !");
             localStorage.setItem("token", data.token);
-            window.location.href = "index.html"; 
+            window.location.href = "index.html";
         } else {
             alert("Erreur : " + data.message);
         }
@@ -48,19 +46,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = document.getElementById("register-name").value;
         const email = document.getElementById("register-email").value;
         const password = document.getElementById("register-password").value;
-    
+
         const response = await fetch("http://localhost:3000/api/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name, email, password })
         });
-    
+
         const data = await response.json();
         if (response.ok) {
             alert("Inscription réussie ! Connectez-vous.");
-            switchToLogin.click();
+            formInner.classList.remove('flipped');
         } else {
             alert("Erreur : " + data.message);
-        }    
+        }
     });
 });

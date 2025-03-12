@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/login.css">
     <script defer src="js/login.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk&family=Orbitron&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
@@ -30,6 +31,11 @@
                 </div>
               </div>
               <div class="dropdown-divider"></div>
+              <a href="settings.html" id="settings-icon" class="dropdown-item">
+                <i class="fa-solid fa-gear"></i>
+                Mon Compte
+              </a>
+              <div class="dropdown-divider"></div>
               <a href="#" id="logout-icon" class="dropdown-item">
                 <i class="fas fa-sign-out-alt"></i>
                 Déconnexion
@@ -41,18 +47,18 @@
     </nav>
   </header>
 
-    <main>
-        <div class="login-container">
-            <div class="form-container">
-                <form id="login-form">
+  <main>
+    <div class="login-container">
+        <div class="form-wrapper">
+            <div class="form-inner">
+                <form id="login-form" class="form-front">
                     <h2>Connexion</h2>
                     <input type="email" id="login-email" placeholder="Email" required>
                     <input type="password" id="login-password" placeholder="Mot de passe" required>
                     <button type="submit">Se connecter</button>
                     <p class="toggle-message">Pas encore de compte ? <span id="switch-to-register">S'inscrire</span></p>
                 </form>
-
-                <form id="register-form" class="hidden">
+                <form id="register-form" class="form-back hidden">
                     <h2>Inscription</h2>
                     <input type="text" id="register-name" placeholder="Nom ou Pseudo" required>
                     <input type="email" id="register-email" placeholder="Email" required>
@@ -62,7 +68,8 @@
                 </form>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
   <footer>
     <p>&copy; 2025 Vol d'Histoire. Tous droits réservés.</p>

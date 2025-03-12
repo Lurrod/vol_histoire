@@ -28,6 +28,9 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Header et navigation */
@@ -41,21 +44,18 @@ header {
   margin-bottom: 2rem;
 }
 
-/* Styles pour la navigation */
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Style du logo */
 .logo {
   font-family: "Orbitron", sans-serif;
   font-size: 1.5rem;
   color: var(--white);
 }
 
-/* Styles pour la liste de liens */
 .nav-links {
   list-style: none;
   display: flex;
@@ -64,13 +64,11 @@ nav {
   padding: 0;
 }
 
-/* Styles des éléments de la liste */
 .nav-links li {
   display: flex;
   align-items: center;
 }
 
-/* Styles des liens */
 .nav-links li a {
   color: var(--white);
   text-decoration: none;
@@ -151,7 +149,7 @@ nav {
 .dropdown-item {
   display: flex;
   align-items: center;
-  justify-content: center ;
+  justify-content: center;
   padding: 0.75rem 1rem;
   color: var(--accent) !important;
   text-decoration: none;
@@ -177,120 +175,173 @@ nav {
   background: rgba(255,255,255,0.15);
 }
 
-/* Classe pour masquer les éléments */
-.hidden {
-  display: none !important;
+/* Main content */
+main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  header {
-    padding: 1rem;
-  }
-
-  nav {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    text-align: center;
-  }
-
-  .nav-links li {
-    width: 100%;
-  }
-
-  .login-icon {
-    padding: 0.5rem;
-    width: 1.8rem;
-    height: 1.8rem;
-  }
-
-  .user-dropdown {
-    position: static;
-    margin-top: 0.5rem;
-  }
-}
-
+/* Styles pour le conteneur de connexion */
 .login-container {
-    max-width: 400px;
-    margin: 3rem auto;
-    padding: 2rem;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
+  max-width: 400px;
+  width: 100%;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: linear-gradient(to bottom right, var(--bg), var(--white));
+  border: 3px solid var(--primary);
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-
-.form-toggle {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 1rem;
+/* Animation de retournement */
+.form-wrapper {
+  perspective: 1000px; /* Ajoute une profondeur à l'animation */
+  min-height: 300px; /* Hauteur minimale pour éviter l'écrasement */
 }
 
-.form-toggle button {
-    background: var(--secondary);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    flex: 1;
+.form-inner {
+  position: relative;
+  width: 100%;
+  min-height: 300px; /* Hauteur minimale pour l'animation */
+  transition: transform 0.6s; /* Durée de l'animation */
+  transform-style: preserve-3d; /* Permet une rotation 3D */
 }
 
-.form-toggle button.active {
-    background: var(--primary);
+.form-front, .form-back {
+  backface-visibility: hidden; /* Cache l'arrière du formulaire */
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  background: var(--white);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
+.form-front {
+  transform: rotateY(0deg); /* Face visible par défaut */
+}
+
+.form-back {
+  transform: rotateY(180deg); /* Face cachée tournée à 180° */
+}
+
+.form-inner.flipped {
+  transform: rotateY(180deg); /* Rotation lorsqu'activé */
+}
+
+/* Styles des formulaires */
 form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+}
+
+h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  text-transform: uppercase;
 }
 
 input {
-    margin: 0.5rem 0;
-    padding: 0.8rem;
-    border: 1px solid var(--secondary);
-    border-radius: 5px;
+  border: 2px solid var(--accent);
+  border-radius: 5px;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  font-family: 'Space Grotesk', sans-serif;
+  width: 100%;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary);
 }
 
 button {
-    background: var(--primary);
-    color: white;
-    border: none;
-    padding: 0.8rem;
-    border-radius: 5px;
-    cursor: pointer;
+  background: var(--primary);
+  color: var(--white);
+  border: none;
+  padding: 0.8rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: bold;
+  margin-top: 0.5rem;
 }
 
 button:hover {
-    background: var(--accent);
-}
-
-.hidden {
-    display: none;
+  background: var(--accent);
 }
 
 .toggle-message {
-    margin-top: 1rem;
-    font-size: 0.9rem;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
 }
 
 .toggle-message span {
-    color: var(--primary);
-    cursor: pointer;
-    font-weight: bold;
+  color: var(--primary);
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s ease;
 }
 
-/* FOOTER */
+.toggle-message span:hover {
+  color: var(--accent);
+}
+
+/* Footer */
 footer {
   background: var(--primary);
   text-align: center;
   padding: 1rem;
   color: var(--white);
   font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header {
+      padding: 1rem;
+  }
+
+  nav {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .nav-links {
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      text-align: center;
+  }
+
+  .nav-links li {
+      width: 100%;
+  }
+
+  .login-icon {
+      padding: 0.5rem;
+      width: 1.8rem;
+      height: 1.8rem;
+  }
+
+  .user-dropdown {
+      position: static;
+      margin-top: 0.5rem;
+  }
+
+  .login-container {
+      margin: 1rem;
+      padding: 1rem;
+  }
 }

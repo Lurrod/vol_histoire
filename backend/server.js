@@ -77,7 +77,8 @@ app.post('/api/login', async (req, res) => {
           { 
               id: user.rows[0].id, 
               name: user.rows[0].name, 
-              role: user.rows[0].role_id 
+              role: user.rows[0].role_id,
+              email: user.rows[0].email
           },
           process.env.JWT_SECRET,
           { expiresIn: '2h' }
@@ -88,6 +89,132 @@ app.post('/api/login', async (req, res) => {
   } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+app.get('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query("SELECT id, name, email FROM users WHERE id = $1", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
+app.put('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, email, password } = req.body;
+
+  try {
+    let hashedPassword;
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10);
+    }
+
+    const fields = [];
+    const values = [];
+    let i = 1;
+    
+    if (name) {
+      fields.push(`name = $${i++}`);
+      values.push(name);
+    }
+    if (email) {
+      fields.push(`email = $${i++}`);
+      values.push(email);
+    }
+    if (password) {
+      fields.push(`password = $${i++}`);
+      values.push(hashedPassword);
+    }
+    
+    if (fields.length === 0) {
+      return res.status(400).json({ message: "Aucune donnée à mettre à jour" });
+    }
+    
+    // Ajouter l'ID en dernier argument
+    values.push(id);
+    const query = `UPDATE users SET ${fields.join(', ')} WHERE id = $${i} RETURNING id, name, email`;
+
+    const result = await pool.query(query, values);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    res.json({ message: "Mise à jour réussie", user: result.rows[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
+app.delete('/api/users/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query("DELETE FROM users WHERE id = $1 RETURNING id", [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+    res.json({ message: "Compte supprimé avec succès" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
+const authorize = (roles) => {
+  return (req, res, next) => {
+      const token = req.headers.authorization?.split(" ")[1];
+      if (!token) return res.status(403).json({ message: "Accès interdit" });
+
+      try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          
+          if (!roles.includes(decoded.role)) {
+              return res.status(403).json({ message: "Accès non autorisé" });
+          }
+
+          req.user = decoded;
+          next();
+      } catch (error) {
+          res.status(401).json({ message: "Token invalide" });
+      }
+  };
+};
+
+// Route pour récupérer la liste des utilisateurs (admin seulement)
+app.get('/api/users', authorize([1]), async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, name, email, role_id FROM users');
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+// Route pour mettre à jour un utilisateur (admin seulement)
+app.put('/api/users/:id', authorize([1]), async (req, res) => {
+  const { id } = req.params;
+  const { name, role_id } = req.body;
+
+  try {
+    const result = await pool.query(
+      'UPDATE users SET name = $1, role_id = $2 WHERE id = $3 RETURNING id, name, email, role_id',
+      [name, role_id, id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -332,26 +459,6 @@ app.get('/api/manufacturers', async (req, res) => {
 });
 
 // CRUD ADMIN
-const authorize = (roles) => {
-  return (req, res, next) => {
-      const token = req.headers.authorization?.split(" ")[1];
-      if (!token) return res.status(403).json({ message: "Accès interdit" });
-
-      try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          
-          if (!roles.includes(decoded.role)) {
-              return res.status(403).json({ message: "Accès non autorisé" });
-          }
-
-          req.user = decoded;
-          next();
-      } catch (error) {
-          res.status(401).json({ message: "Token invalide" });
-      }
-  };
-};
-
 app.post('/api/airplanes', authorize([1, 2]), async (req, res) => {
   const {
       name, complete_name, little_description, image_url, description,
