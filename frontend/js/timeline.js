@@ -1,222 +1,126 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const timelineEvents = document.getElementById('timeline-events');
-    const timelineMarkers = document.getElementById('timeline-markers');
-    const countryFilter = document.getElementById('country-filter');
-    const typeFilter = document.getElementById('type-filter');
-    const generationFilter = document.getElementById('generation-filter');
-    const startDateSpan = document.getElementById('start-date');
-    const endDateSpan = document.getElementById('end-date');
+document.addEventListener('DOMContentLoaded', async () => {
+    const loginIcon = document.getElementById("login-icon");
+    const userToggle = document.querySelector(".user-toggle");
+    const userDropdown = document.getElementById("user-info-container");
 
-    let airplanes = [];
-    let minDate, maxDate;
+    // Vérifier si un token JWT est stocké
+    const token = localStorage.getItem("token");
 
-    // Fonction pour formater les dates
-    function formatDate(dateString) {
-        if (!dateString) return 'Date inconnue';
-        const date = new Date(dateString);
-        return isNaN(date) ? 'Date invalide' : date.toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
+    const updateAuthUI = () => {
+        const token = localStorage.getItem("token");
+    
+        // Redirige vers login si non authentifié lors du clic sur l'icône
+        loginIcon.addEventListener("click", (e) => {
+          if (!token) {
+            e.preventDefault();
+            window.location.href = "login.html";
+          }
         });
-    }
-
-    // Fonction pour créer les marqueurs de l'axe temporel
-    function createTimelineMarkers(start, end) {
-        timelineMarkers.innerHTML = '';
         
-        const startYear = new Date(start).getFullYear();
-        const endYear = new Date(end).getFullYear();
-        const yearSpan = endYear - startYear;
-        
-        if (yearSpan === 0) return; // Pas de marqueurs si une seule année
-        
-        const markerCount = Math.min(10, yearSpan);
-        const yearInterval = Math.ceil(yearSpan / markerCount);
-
-        for (let i = 0; i <= markerCount; i++) {
-            const year = startYear + (i * yearInterval);
-            const marker = document.createElement('div');
-            marker.className = 'timeline-marker';
-            marker.setAttribute('data-year', year);
-            marker.style.left = `${(i / markerCount) * 100}%`;
-            timelineMarkers.appendChild(marker);
+        if (token) {
+          try {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            // Met à jour le nom et le rôle de l'utilisateur dans le dropdown
+            document.getElementById("user-name").textContent = payload.name;
+            document.querySelector(".user-role").textContent =
+              payload.role === 1 ? "Administrateur" :
+              payload.role === 2 ? "Éditeur" : "Membre";
+            userDropdown.classList.remove("hidden");
+          } catch (error) {
+            console.error("Token error:", error);
+            localStorage.removeItem("token");
+          }
         }
-    }
-
-    // Fonction pour calculer la position horizontale d'un événement
-    function calculatePosition(date, minDate, maxDate) {
-        const timeMin = minDate.getTime();
-        const timeMax = maxDate.getTime();
-        if (timeMax === timeMin) return '50%'; // Cas où toutes les dates sont identiques
-        
-        const position = (new Date(date).getTime() - timeMin) / (timeMax - timeMin);
-        return `${Math.max(0, Math.min(position, 1)) * 100}%`;
-    }
-
-    // Fonction pour créer un événement sur la frise
-    function createTimelineEvent(airplane, template) {
-        const event = template.content.cloneNode(true);
-        const eventElement = event.querySelector('.timeline-event');
-        const dot = event.querySelector('.event-dot');
-        const card = event.querySelector('.event-card');
-        const img = event.querySelector('img');
-        const title = event.querySelector('h3');
-        const countryBadge = event.querySelector('.country-badge');
-        const typeBadge = event.querySelector('.type-badge');
-        const generationBadge = event.querySelector('.generation-badge');
-        const description = event.querySelector('.event-description');
-        const date = event.querySelector('.event-date');
-
-        // Positionnement horizontal
-        dot.style.left = calculatePosition(airplane.date_operationel, minDate, maxDate);
-        
-        // Contenu
-        img.src = airplane.image_url;
-        img.alt = airplane.name;
-        title.textContent = airplane.name;
-        countryBadge.textContent = airplane.country_name;
-        typeBadge.textContent = airplane.type_name;
-        generationBadge.textContent = `Génération ${airplane.generation}`;
-        description.textContent = airplane.little_description;
-        date.textContent = `Mise en service : ${formatDate(airplane.date_operationel)}`;
-
-        // Gestion du clic sur le point
-        dot.addEventListener('click', (e) => {
-            e.stopPropagation(); // Empêcher la propagation du clic
-            const isActive = card.classList.contains('active');
-            
-            // Fermer toutes les cartes
-            document.querySelectorAll('.event-card.active').forEach(activeCard => {
-                activeCard.classList.remove('active');
-            });
-            
-            // Ouvrir la carte si elle n'était pas active
-            if (!isActive) {
-                card.classList.add('active');
-            }
-        });
-
-        // Fermer la carte quand on clique ailleurs
-        document.addEventListener('click', (e) => {
-            if (!card.contains(e.target)) {
-                card.classList.remove('active');
-            }
-        });
-
-        // Ajout d'un lien vers la page de détails
-        eventElement.addEventListener('click', () => {
-            window.location.href = `details.html?id=${airplane.id}`;
-        });
-
-        return event;
-    }
-
-    // Fonction pour mettre à jour les filtres
-    function updateFilters(airplanes) {
-        // Réinitialiser les filtres
-        countryFilter.innerHTML = '<option value="all">Tous les pays</option>';
-        typeFilter.innerHTML = '<option value="all">Tous les types</option>';
-        generationFilter.innerHTML = '<option value="all">Toutes les générations</option>';
-
-        // Remplir les nouvelles options
-        const countries = [...new Set(airplanes.map(a => a.country_name))];
-        const types = [...new Set(airplanes.map(a => a.type_name))];
-        const generations = [...new Set(airplanes.map(a => a.generation))].sort((a, b) => a - b);
-
-        countries.forEach(country => {
-            const option = document.createElement('option');
-            option.value = country;
-            option.textContent = country;
-            countryFilter.appendChild(option);
-        });
-
-        types.forEach(type => {
-            const option = document.createElement('option');
-            option.value = type;
-            option.textContent = type;
-            typeFilter.appendChild(option);
-        });
-
-        generations.forEach(gen => {
-            const option = document.createElement('option');
-            option.value = gen;
-            option.textContent = `Génération ${gen}`;
-            generationFilter.appendChild(option);
-        });
-    }
-
-    // Fonction pour afficher les avions filtrés
-    function displayFilteredAirplanes() {
-        const country = countryFilter.value;
-        const type = typeFilter.value;
-        const generationValue = generationFilter.value;
-        const generationNumber = generationValue === 'all' ? null : parseInt(generationValue.replace('Génération ', ''));
-
-        const filteredAirplanes = airplanes.filter(airplane => {
-            return (country === 'all' || airplane.country_name === country) &&
-                   (type === 'all' || airplane.type_name === type) &&
-                   (generationValue === 'all' || airplane.generation === generationNumber);
-        });
-
-        // Gestion des dates
-        let newMinDate = minDate;
-        let newMaxDate = maxDate;
-        
-        if (filteredAirplanes.length > 0) {
-            const dates = filteredAirplanes.map(a => new Date(a.date_operationel).getTime());
-            newMinDate = new Date(Math.min(...dates));
-            newMaxDate = new Date(Math.max(...dates));
+      };
+    
+      // Permet d'ouvrir/fermer le dropdown lors du clic sur le conteneur utilisateur
+      userToggle.addEventListener("click", (e) => {
+        e.preventDefault();
+        userDropdown.classList.toggle("show");
+      });
+    
+      // Ferme le dropdown si l'utilisateur clique en dehors
+      document.addEventListener("click", (e) => {
+        if (!userToggle.contains(e.target)) {
+          userDropdown.classList.remove("show");
         }
+      });
 
-        startDateSpan.textContent = formatDate(newMinDate);
-        endDateSpan.textContent = formatDate(newMaxDate);
+      document.getElementById("settings-icon")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = "settings.html";
+      });
+      
+      // Gestion de la déconnexion
+      document.getElementById("logout-icon").addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.removeItem("token");
+        window.location.href = "hangar.html";
+      });
+    
+      updateAuthUI();
 
-        // Recréer les marqueurs de timeline
-        createTimelineMarkers(newMinDate, newMaxDate);
-
-        // Vider les événements existants
-        timelineEvents.innerHTML = '';
-        
-        // Recréer les événements filtrés
-        const template = document.getElementById('event-template');
-        filteredAirplanes.forEach(airplane => {
-            const event = createTimelineEvent(airplane, template);
-            timelineEvents.appendChild(event);
+    try {
+      // Récupérer la première page pour obtenir le nombre total de pages
+      const page1Response = await fetch('http://localhost:3000/api/airplanes?sort=service-date&page=1');
+      const page1Data = await page1Response.json();
+      let airplanes = page1Data.data;
+      const totalPages = page1Data.pagination.totalPages;
+  
+      // Si plus d'une page, récupérer les pages restantes en parallèle
+      if (totalPages > 1) {
+        const fetchPromises = [];
+        for (let i = 2; i <= totalPages; i++) {
+          fetchPromises.push(fetch(`http://localhost:3000/api/airplanes?sort=service-date&page=${i}`));
+        }
+        const responses = await Promise.all(fetchPromises);
+        const pagesData = await Promise.all(responses.map(res => res.json()));
+        pagesData.forEach(pageData => {
+          airplanes = airplanes.concat(pageData.data);
         });
+      }
+  
+      // Trier les avions par date d'entrée en service (du plus ancien au plus récent)
+      airplanes.sort((a, b) => new Date(a.date_operationel) - new Date(b.date_operationel));
+  
+      const timelineContainer = document.getElementById('timeline-container');
+  
+      // Création des événements de la timeline en alternant la position (gauche/droite)
+      airplanes.forEach((airplane, index) => {
+        const eventDiv = document.createElement('div');
+        eventDiv.classList.add('timeline-event');
+        eventDiv.classList.add(index % 2 === 0 ? 'left' : 'right');
+  
+        // Création du contenu de l'événement
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('timeline-content');
+  
+        const dateElem = document.createElement('p');
+        dateElem.classList.add('timeline-date');
+        dateElem.textContent = new Date(airplane.date_operationel).toLocaleDateString();
+  
+        const titleElem = document.createElement('h3');
+        titleElem.textContent = airplane.name;
+  
+        const descElem = document.createElement('p');
+        descElem.textContent = airplane.little_description || "";
+  
+        // Assemblage du contenu
+        contentDiv.appendChild(dateElem);
+        contentDiv.appendChild(titleElem);
+        contentDiv.appendChild(descElem);
+  
+        // Redirection vers la page de détails lors du clic sur l'événement
+        contentDiv.addEventListener('click', () => {
+          window.location.href = `details.html?id=${airplane.id}`;
+        });
+  
+        eventDiv.appendChild(contentDiv);
+        timelineContainer.appendChild(eventDiv);
+      });
+    } catch (error) {
+      console.error("Erreur lors du chargement de la timeline :", error);
+      document.getElementById('timeline-container').innerHTML = "<p>Erreur lors du chargement des données.</p>";
     }
-
-    // Ajouter les écouteurs d'événements pour les filtres
-    countryFilter.addEventListener('change', displayFilteredAirplanes);
-    typeFilter.addEventListener('change', displayFilteredAirplanes);
-    generationFilter.addEventListener('change', displayFilteredAirplanes);
-
-    // Chargement initial des données
-    fetch('http://localhost:3000/api/airplanes')
-        .then(response => {
-            if (!response.ok) throw new Error('Erreur réseau');
-            return response.json();
-        })
-        .then(data => {
-            if (!data || !data.length) throw new Error('Aucune donnée disponible');
-            
-            airplanes = data.filter(a => a.date_operationel); // Filtrer les entrées sans date
-            const dates = airplanes.map(a => new Date(a.date_operationel).getTime());
-            
-            if (dates.length === 0) throw new Error('Aucune date valide');
-            
-            minDate = new Date(Math.min(...dates));
-            maxDate = new Date(Math.max(...dates));
-
-            startDateSpan.textContent = formatDate(minDate);
-            endDateSpan.textContent = formatDate(maxDate);
-
-            createTimelineMarkers(minDate, maxDate);
-            updateFilters(airplanes);
-            displayFilteredAirplanes();
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            timelineEvents.innerHTML = `<p class="error">${error.message}</p>`;
-        });
-});
+  });
+  

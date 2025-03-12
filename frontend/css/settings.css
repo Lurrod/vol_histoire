@@ -1,0 +1,378 @@
+:root {
+    --primary: #3F3D56;
+    --primary-rgb: 63, 61, 86;
+    --primary-dark: #2E2C40;
+    --secondary: #1E1E1E;
+    --secondary-rgb: 30, 30, 30;
+    --secondary-light: #282828;
+    --accent: #5A5A89;
+    --accent-rgb: 90, 90, 137;
+    --accent-dark: #484872;
+    --bg: #F0F0F5;
+    --text: #5A5A89;
+    --shadow-color: rgba(63, 61, 86, 0.2);
+    --shadow-hover: rgba(63, 61, 86, 0.4);
+    --white: #FFFFFF;
+    --black: #000000;
+    --black-rgb: 0, 0, 0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+/* Header et navigation */
+header {
+    position: static;
+    top: 0;
+    width: 100%;
+    background: rgba(63, 61, 86, 0.8);
+    padding: 1rem 2rem;
+    z-index: 100;
+    margin-bottom: 2rem;
+  }
+  
+  /* Styles pour la navigation */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Style du logo */
+  .logo {
+    font-family: "Orbitron", sans-serif;
+    font-size: 1.5rem;
+    color: var(--white);
+  }
+  
+  /* Styles pour la liste de liens */
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Styles des éléments de la liste */
+  .nav-links li {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Styles des liens */
+  .nav-links li a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: "Space Grotesk", sans-serif;
+    transition: color 0.3s ease;
+    padding: 5px 10px;
+  }
+  
+  .nav-links li a:hover {
+    background-color: rgba(255, 255, 255, 0.103);
+    border-radius: 20px;
+  }
+  
+  /* User menu */
+  .user-menu {
+    position: relative;
+  }
+  
+  .user-toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .user-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    min-width: 220px;
+    margin-top: 1rem;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+  }
+  
+  .user-dropdown.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .user-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: var(--bg);
+  }
+  
+  .user-avatar {
+    font-size: 2.5rem;
+    margin-right: 1rem;
+    color: var(--primary);
+  }
+  
+  .user-details {
+    line-height: 1.4;
+  }
+  
+  .user-name {
+    font-weight: 600;
+    display: block;
+    color: var(--primary);
+  }
+  
+  .user-role {
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+  
+  .dropdown-divider {
+    border-top: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: center ;
+    padding: 0.75rem 1rem;
+    color: var(--accent) !important;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .dropdown-item:hover {
+    background: var(--bg);
+  }
+  
+  .dropdown-item i {
+    margin-right: 0.75rem;
+    width: 20px;
+    text-align: center;
+  }
+  
+  .login-icon {
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .login-icon:hover {
+    background: rgba(255,255,255,0.15);
+  }
+  
+  /* Classe pour masquer les éléments */
+  .hidden {
+    display: none !important;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    header {
+      padding: 1rem;
+    }
+  
+    nav {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .nav-links {
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      text-align: center;
+    }
+  
+    .nav-links li {
+      width: 100%;
+    }
+  
+    .login-icon {
+      padding: 0.5rem;
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+  
+    .user-dropdown {
+      position: static;
+      margin-top: 0.5rem;
+    }
+  }
+
+/* Container principal pour la section des paramètres */
+.settings {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--white);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  /* Titre de la page */
+  .settings h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--primary);
+  }
+  
+  /* Style du formulaire */
+  .settings form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  /* Groupe de champs du formulaire */
+  .settings .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Labels du formulaire */
+  .settings .form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  
+  /* Champs de saisie (inputs) */
+  .settings .form-group input {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  /* Focus sur les inputs */
+  .settings .form-group input:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
+  
+  /* Bouton de soumission */
+  .settings form button.btn {
+    background-color: var(--accent);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Hover sur le bouton */
+  .settings form button.btn:hover {
+    background-color: var(--primary);
+  }
+  
+  /* Bouton de suppression du compte */
+.delete-btn {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+.delete-btn:hover{
+    background-color: #da0902;
+}
+
+.admin-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-item {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .update-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .update-user-form .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .update-user-form .form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  
+  .update-user-form .form-group input,
+  .update-user-form .form-group select {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .update-user-form .form-group input:focus,
+  .update-user-form .form-group select:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
+  
+  .update-user-form button.btn {
+    background-color: var(--accent);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .update-user-form button.btn:hover {
+    background-color: var(--primary);
+  }
+  
+/* FOOTER */
+footer {
+    background: var(--primary);
+    text-align: center;
+    padding: 1rem;
+    color: var(--white);
+    font-size: 0.9rem;
+  }

@@ -23,14 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("user-name").textContent = payload.name;
         document.querySelector(".user-role").textContent = 
           payload.role === 1 ? "Administrateur" : 
-          payload.role === 2 ? "Éditeur" : "Membre";
-        
+          payload.role === 2 ? "Éditeur" : "Membre";  
         userDropdown.classList.remove("hidden");
-        if (payload.role === 1 || payload.role === 2) {
-          addButton.classList.remove("hidden");
-      } else {
-          addButton.classList.add("hidden");
-      }
       } catch (error) {
         console.error("Token error:", error);
         localStorage.removeItem("token");
@@ -56,6 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     localStorage.removeItem("token");
     window.location.href = "index.html";
+  });
+
+  document.getElementById("settings-icon")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    window.location.href = "settings.html";
   });
 
   // Initialisation

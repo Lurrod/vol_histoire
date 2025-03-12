@@ -19,6 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateAuthUI = () => {
         const token = localStorage.getItem("token");
+        loginIcon.addEventListener("click", (e) => {
+            const token = localStorage.getItem("token");
+      
+            if (!token) {
+              e.preventDefault();
+              window.location.href = "login.html";
+            }
+          });    
         
         if (token) {
           try {
@@ -47,6 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!userToggle.contains(e.target)) {
           userDropdown.classList.remove("show");
         }
+      });
+
+      document.getElementById("settings-icon")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        window.location.href = "settings.html";
       });
     
       // Gestion de la déconnexion

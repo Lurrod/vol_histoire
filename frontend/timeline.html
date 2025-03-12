@@ -1,72 +1,63 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vol d'Histoire - Frise Chronologique</title>
-    <link rel="stylesheet" href="css/timeline.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/timeline.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Orbitron:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
     <header>
-        <div class="header-content">
-            <h1>Vol d'Histoire</h1>
-            <div>
-                <a href="hangar.html" class="back-button">
-                    <i class="fas fa-arrow-left"></i> Retour au Hangar
+      <nav>
+        <div class="logo">Frise Chronologique</div>
+        <ul class="nav-links">
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="hangar.html">Hangar</a></li>
+          <li><a href="timeline.html">Frise Chronologique</a></li>
+          <li class="user-menu">
+            <div class="user-toggle">
+              <a href="login.html" id="login-icon" class="login-icon">
+                <i class="fas fa-user"></i>
+              </a>
+              <div id="user-info-container" class="user-dropdown hidden">
+                <div class="user-header">
+                  <i class="fas fa-user-circle user-avatar"></i>
+                  <div class="user-details">
+                    <span id="user-name" class="user-name"></span>
+                    <span class="user-role">Membre</span>
+                  </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="settings.html" id="settings-icon" class="dropdown-item">
+                  <i class="fa-solid fa-gear"></i>
+                  Mon Compte
                 </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" id="logout-icon" class="dropdown-item">
+                  <i class="fas fa-sign-out-alt"></i>
+                  Déconnexion
+                </a>
+              </div>
             </div>
-        </div>
-        <p>Frise Chronologique</p>
+          </li>
+        </ul>
+      </nav>
     </header>
-
-    <div class="timeline-controls">
-        <div class="filter-section">
-            <select id="country-filter">
-                <option value="all">Tous les pays</option>
-            </select>
-            <select id="type-filter">
-                <option value="all">Tous les types</option>
-            </select>
-            <select id="generation-filter">
-                <option value="all">Toutes les générations</option>
-            </select>
-        </div>
-        <div id="timeline-dates">
-            <span id="start-date"></span>
-            <span id="end-date"></span>
-        </div>
-    </div>
-
-    <div class="timeline-container">
-        <div class="timeline-axis">
-            <div class="timeline-markers" id="timeline-markers"></div>
-        </div>
-        <div class="timeline-events" id="timeline-events"></div>
-    </div>
-
-    <template id="event-template">
-        <div class="timeline-event">
-            <div class="event-dot"></div>
-            <div class="event-card">
-                <div class="event-image">
-                    <img src="" alt="">
-                </div>
-                <div class="event-content">
-                    <h3></h3>
-                    <div class="event-badges">
-                        <span class="badge country-badge"></span>
-                        <span class="badge type-badge"></span>
-                        <span class="badge generation-badge"></span>
-                    </div>
-                    <p class="event-description"></p>
-                    <div class="event-date"></div>
-                </div>
-            </div>
-        </div>
-    </template>
-
+    
+    <main>
+      <div id="timeline-container" class="timeline-container">
+        <!-- Les événements de la timeline seront insérés ici par JavaScript -->
+      </div>
+    </main>
+    
     <script src="js/timeline.js"></script>
-</body>
+  </body>
 </html>
