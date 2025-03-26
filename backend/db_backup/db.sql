@@ -1,6 +1,8 @@
-DROP DATABASE vol_histoire;
-
 CREATE DATABASE vol_histoire;
+CREATE USER vol_user WITH ENCRYPTED PASSWORD 'Titouan1';
+GRANT ALL PRIVILEGES ON DATABASE vol_histoire TO vol_user;
+GRANT USAGE ON SCHEMA public TO vol_user;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO vol_user;
 
 CREATE TABLE roles (
     id SERIAL PRIMARY KEY,
@@ -581,9 +583,3 @@ INSERT INTO tech (name, description) VALUES
 ('Configuration bi-moteurs superposés', 'Moteurs empilés verticalement pour réduire la traînée'),
 ('Système de décollage et d''atterrissage sur porte-avions', 'Renforcement structurel et corrosion contrôlée pour porte-avions'),
 ('Conception aérodynamique pour haute altitude', 'Forme optimisée pour le vol à haute altitude et haute vitesse');
-
-CREATE USER admin WITH ENCRYPTED PASSWORD 'Titouan1.';
-GRANT ALL PRIVILEGES ON DATABASE vol_histoire TO admin;
-GRANT USAGE ON SCHEMA public TO admin;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO admin;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO admin;
