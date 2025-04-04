@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   
     // Récupérer les informations de l'utilisateur via une requête GET
     try {
-      const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+      const response = await fetch(`/api/users/${userId}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (password) updatedData.password = password;
   
       try {
-        const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+        const response = await fetch(`/api/users/${userId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("delete-account-btn").addEventListener("click", async () => {
       if (confirm("Voulez-vous vraiment supprimer votre compte ? Cette action est irréversible.")) {
         try {
-          const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+          const response = await fetch(`/api/users/${userId}`, {
             method: "DELETE",
             headers: {
               "Authorization": `Bearer ${token}`
@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Fonction pour charger la liste des utilisateurs
     async function loadUsers() {
       try {
-        const response = await fetch("http://localhost:3000/api/users", {
+        const response = await fetch("/api/users", {
           headers: {
             "Authorization": `Bearer ${token}`
           }
@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const role_id = document.getElementById(`role-${userId}`).value;
   
           try {
-            const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+            const response = await fetch(`/api/users/${userId}`, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
   
             alert("Utilisateur mis à jour avec succès !");
-            await loadUsers(); // Recharger la liste
+            await loadUsers();
           } catch (error) {
             console.error("Erreur :", error);
             alert(error.message);

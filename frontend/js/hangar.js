@@ -107,11 +107,11 @@ document.addEventListener("DOMContentLoaded", () => {
     async function populateCountriesSelect() {
         const select = document.getElementById("add-country-id");
         try {
-            const response = await fetch("http://localhost:3000/api/countries");
+            const response = await fetch("/api/countries");
             const countries = await response.json();
             countries.forEach(country => {
                 const option = document.createElement("option");
-                option.value = country.id; // Assurez-vous que l'API renvoie l'ID
+                option.value = country.id;
                 option.textContent = country.name;
                 select.appendChild(option);
             });
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function populateManufacturersSelect() {
         const select = document.getElementById("add-manufacturer-id");
         try {
-            const response = await fetch("http://localhost:3000/api/manufacturers");
+            const response = await fetch("/api/manufacturers");
             const manufacturers = await response.json();
             manufacturers.forEach(manufacturer => {
                 const option = document.createElement("option");
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function populateGenerationsSelect() {
         const select = document.getElementById("add-generation-id");
         try {
-            const response = await fetch("http://localhost:3000/api/generations");
+            const response = await fetch("/api/generations");
             const generations = await response.json();
             generations.forEach(generation => {
                 const option = document.createElement("option");
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function populateTypesSelect() {
         const select = document.getElementById("add-type");
         try {
-            const response = await fetch("http://localhost:3000/api/types");
+            const response = await fetch("/api/types");
             const types = await response.json();
             types.forEach(type => {
                 const option = document.createElement("option");
@@ -195,7 +195,7 @@ document.getElementById("add-form").addEventListener("submit", async (e) => {
     };
 
     try {
-        const response = await fetch("http://localhost:3000/api/airplanes", {
+        const response = await fetch("/api/airplanes", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -207,7 +207,7 @@ document.getElementById("add-form").addEventListener("submit", async (e) => {
         if (response.ok) {
             alert("Avion créé avec succès !");
             addModal.classList.remove("show");
-            addModal.classList.add("hidden"); // Cacher le modal après succès
+            addModal.classList.add("hidden");
             const response = await fetchAirplanes(sortSelect.value);
             displayAirplanes(response);
         } else {
@@ -220,7 +220,7 @@ document.getElementById("add-form").addEventListener("submit", async (e) => {
     }
 
     try {
-        const response = await fetch("http://localhost:3000/api/airplanes", {
+        const response = await fetch("/api/airplanes", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -248,7 +248,7 @@ document.getElementById("add-form").addEventListener("submit", async (e) => {
     // Fonction pour récupérer les avions depuis l'API
     async function fetchAirplanes(sort = "default", filterValue = "", page = 1) {
         try {
-            let url = `http://localhost:3000/api/airplanes?sort=${sort}&page=${page}`;
+            let url = `/api/airplanes?sort=${sort}&page=${page}`;
             if (filterValue) {
                 if (sort === "nation") {
                     url += `&country=${encodeURIComponent(filterValue)}`;
@@ -279,7 +279,7 @@ document.getElementById("add-form").addEventListener("submit", async (e) => {
         countrySelect.innerHTML = '<option value="">Choisir un pays</option>';
         countries.forEach(country => {
             const option = document.createElement("option");
-            option.value = country;  // Assure-toi que c'est bien le nom complet
+            option.value = country;
             option.textContent = country;
             countrySelect.appendChild(option);
         });
@@ -288,7 +288,7 @@ document.getElementById("add-form").addEventListener("submit", async (e) => {
     // Fonction pour récupérer la liste des générations disponibles
     async function fetchGenerations() {
         try {
-            const response = await fetch('http://localhost:3000/api/generations');
+            const response = await fetch('/api/generations');
             if (!response.ok) throw new Error("Erreur lors de la récupération des générations");
             const generations = await response.json();
             populateGenerationSelect(generations);
@@ -300,7 +300,7 @@ document.getElementById("add-form").addEventListener("submit", async (e) => {
     // Fonction pour récupérer la liste des types disponibles
     async function fetchTypes() {
         try {
-            const response = await fetch('http://localhost:3000/api/types');
+            const response = await fetch('/api/types');
             if (!response.ok) throw new Error("Erreur lors de la récupération des types");
             const types = await response.json();
             populateTypeSelect(types);
@@ -333,7 +333,7 @@ document.getElementById("add-form").addEventListener("submit", async (e) => {
 
     async function fetchCountries() {
         try {
-            const response = await fetch("http://localhost:3000/api/countries");
+            const response = await fetch("/api/countries");
             if (!response.ok) throw new Error("Erreur lors de la récupération des pays");
             const countriesData = await response.json();
             const countries = countriesData.map(c => c.name).sort();

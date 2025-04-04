@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
       // Récupérer la première page pour obtenir le nombre total de pages
-      const page1Response = await fetch('http://localhost:3000/api/airplanes?sort=service-date&page=1');
+      const page1Response = await fetch('/api/airplanes?sort=service-date&page=1');
       const page1Data = await page1Response.json();
       let airplanes = page1Data.data;
       const totalPages = page1Data.pagination.totalPages;
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (totalPages > 1) {
         const fetchPromises = [];
         for (let i = 2; i <= totalPages; i++) {
-          fetchPromises.push(fetch(`http://localhost:3000/api/airplanes?sort=service-date&page=${i}`));
+          fetchPromises.push(fetch(`/api/airplanes?sort=service-date&page=${i}`));
         }
         const responses = await Promise.all(fetchPromises);
         const pagesData = await Promise.all(responses.map(res => res.json()));
