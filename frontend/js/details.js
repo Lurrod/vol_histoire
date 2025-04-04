@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function populateCountriesSelect(currentCountryId) {
         const select = document.getElementById("edit-country-id");
         try {
-            const response = await fetch("http://localhost:3000/api/countries");
+            const response = await fetch("/api/countries");
             const countries = await response.json();
             countries.forEach(country => {
                 const option = document.createElement("option");
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function populateManufacturersSelect(currentManufacturerId) {
         const select = document.getElementById("edit-manufacturer-id");
         try {
-            const response = await fetch("http://localhost:3000/api/manufacturers");
+            const response = await fetch("/api/manufacturers");
             const manufacturers = await response.json();
             manufacturers.forEach(manufacturer => {
                 const option = document.createElement("option");
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function populateGenerationsSelect(currentGeneration) {
         const select = document.getElementById("edit-generation-id");
         try {
-            const response = await fetch("http://localhost:3000/api/generations");
+            const response = await fetch("/api/generations");
             const generations = await response.json();
             generations.forEach(generation => {
                 const option = document.createElement("option");
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function populateTypesSelect(currentTypeId) {
         const select = document.getElementById("edit-type");
         try {
-            const response = await fetch("http://localhost:3000/api/types");
+            const response = await fetch("/api/types");
             const types = await response.json();
             types.forEach(type => {
                 const option = document.createElement("option");
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     modal.classList.add("show");
 
                     // Charger les données de l'avion et pré-remplir le formulaire
-                    const response = await fetch(`http://localhost:3000/api/airplanes/${airplaneId}`);
+                    const response = await fetch(`/api/airplanes/${airplaneId}`);
                     const airplane = await response.json();
 
                     document.getElementById("edit-name").value = airplane.name;
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
 
                     try {
-                        const response = await fetch(`http://localhost:3000/api/airplanes/${airplaneId}`, {
+                        const response = await fetch(`/api/airplanes/${airplaneId}`, {
                             method: "PUT",
                             headers: {
                                 "Content-Type": "application/json",
@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (confirm("Voulez-vous vraiment supprimer cet avion ? Cette action est irréversible.")) {
                         try {
-                            const response = await fetch(`http://localhost:3000/api/airplanes/${airplaneId}`, {
+                            const response = await fetch(`/api/airplanes/${airplaneId}`, {
                                 method: "DELETE",
                                 headers: {
                                     "Authorization": `Bearer ${token}`
@@ -287,11 +287,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const [airplane, armament, wars, tech, missions] = await Promise.all([
-                fetch(`http://localhost:3000/api/airplanes/${airplaneId}`).then(res => res.json()),
-                fetch(`http://localhost:3000/api/airplanes/${airplaneId}/armament`).then(res => res.json()),
-                fetch(`http://localhost:3000/api/airplanes/${airplaneId}/wars`).then(res => res.json()),
-                fetch(`http://localhost:3000/api/airplanes/${airplaneId}/tech`).then(res => res.json()),
-                fetch(`http://localhost:3000/api/airplanes/${airplaneId}/missions`).then(res => res.json())
+                fetch(`/api/airplanes/${airplaneId}`).then(res => res.json()),
+                fetch(`/api/airplanes/${airplaneId}/armament`).then(res => res.json()),
+                fetch(`/api/airplanes/${airplaneId}/wars`).then(res => res.json()),
+                fetch(`/api/airplanes/${airplaneId}/tech`).then(res => res.json()),
+                fetch(`/api/airplanes/${airplaneId}/missions`).then(res => res.json())
             ]);
 
             displayAirplaneDetails(airplane, armament, wars, tech, missions);

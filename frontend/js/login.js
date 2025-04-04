@@ -9,7 +9,27 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("Un ou plusieurs éléments sont introuvables.");
     return;
   }
-  
+
+  // Fonction pour afficher un message d'erreur de type "toast"
+  function showError(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-error';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    // Forcer le recalcul de style pour déclencher la transition
+    window.getComputedStyle(toast).opacity;
+    toast.classList.add('visible');
+
+    // Supprimer le toast après 3 secondes
+    setTimeout(() => {
+      toast.classList.remove('visible');
+      setTimeout(() => {
+        document.body.removeChild(toast);
+      }, 500);
+    }, 3000);
+  }
+
   // S'assurer que le formulaire d'inscription soit visible pour l'animation 3D
   registerForm.classList.remove('hidden');
 
@@ -27,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("login-email").value;
     const password = document.getElementById("login-password").value;
 
-    const response = await fetch("http://localhost:3000/api/login", {
+    const response = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -38,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("token", data.token);
       window.location.href = "index.html";
     } else {
-      alert("Erreur : " + data.message);
+      showError("Erreur : " + data.message);
     }
   });
 
@@ -49,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("register-email").value;
     const password = document.getElementById("register-password").value;
 
-    const response = await fetch("http://localhost:3000/api/register", {
+    const response = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password })
@@ -60,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Inscription réussie ! Connectez-vous.");
       formInner.classList.remove('flipped');
     } else {
-      alert("Erreur : " + data.message);
+      showError("Erreur : " + data.message);
     }
   });
 });
