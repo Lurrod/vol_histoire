@@ -12,10 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginIcon = document.getElementById("login-icon");
     const userToggle = document.querySelector(".user-toggle");
     const userDropdown = document.getElementById("user-info-container");
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
 
     const urlParams = new URLSearchParams(window.location.search);
     const airplaneId = urlParams.get('id');
     const token = localStorage.getItem("token");
+
+    hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('show');
+    });
 
     const updateAuthUI = () => {
         const token = localStorage.getItem("token");

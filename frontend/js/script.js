@@ -2,10 +2,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginIcon = document.getElementById("login-icon");
   const userToggle = document.querySelector(".user-toggle");
   const userDropdown = document.querySelector(".user-dropdown");
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks = document.querySelector('.nav-links');
 
   // Gestion de l'état de connexion
   const updateAuthUI = () => {
   const token = localStorage.getItem("token");
+
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('show');
+  });
 
   loginIcon.addEventListener("click", (e) => {
     const token = localStorage.getItem("token");
