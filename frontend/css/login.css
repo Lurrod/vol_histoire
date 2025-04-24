@@ -198,20 +198,20 @@ main {
 
 /* Animation de retournement */
 .form-wrapper {
-    perspective: 1000px; /* Ajoute une profondeur à l'animation */
-    min-height: 300px; /* Hauteur minimale pour éviter l'écrasement */
+    perspective: 1000px;
+    min-height: 300px;
 }
 
 .form-inner {
     position: relative;
     width: 100%;
-    min-height: 300px; /* Hauteur minimale pour l'animation */
-    transition: transform 0.6s; /* Durée de l'animation */
-    transform-style: preserve-3d; /* Permet une rotation 3D */
+    min-height: 300px;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
 }
 
 .form-front, .form-back {
-    backface-visibility: hidden; /* Cache l'arrière du formulaire */
+    backface-visibility: hidden;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -222,15 +222,15 @@ main {
 }
 
 .form-front {
-    transform: rotateY(0deg); /* Face visible par défaut */
+    transform: rotateY(0deg);
 }
 
 .form-back {
-    transform: rotateY(180deg); /* Face cachée tournée à 180° */
+    transform: rotateY(180deg);
 }
 
 .form-inner.flipped {
-    transform: rotateY(180deg); /* Rotation lorsqu'activé */
+    transform: rotateY(180deg);
 }
 
 /* Styles des formulaires */
@@ -264,7 +264,7 @@ input:focus {
     border-color: var(--primary);
 }
 
-button {
+.action {
     background: var(--primary);
     color: var(--white);
     border: none;
@@ -278,7 +278,7 @@ button {
     margin-top: 0.5rem;
 }
 
-button:hover {
+.action:hover {
     background: var(--accent);
 }
 
@@ -311,12 +311,12 @@ button:hover {
     opacity: 0;
     transition: transform 0.5s ease, opacity 0.5s ease;
     z-index: 9999;
-  }
-  
-  .toast-error.visible {
+}
+
+.toast-error.visible {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
-  }
+}
 
 /* Footer */
 footer {
@@ -327,41 +327,80 @@ footer {
     font-size: 0.9rem;
 }
 
+/* Hamburger menu */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--white);
+    cursor: pointer;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
-    header {
-        padding: 1rem;
+    .hamburger {
+        display: block;
     }
-
-    nav {
-        flex-direction: column;
-        align-items: center;
-    }
-
     .nav-links {
+        display: none;
         flex-direction: column;
-        gap: 0.5rem;
-        margin-top: 1rem;
-        text-align: center;
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background: var(--primary);
+        padding: 1rem;
+        z-index: 1000;
     }
-
+    .nav-links.show {
+        display: flex;
+    }
     .nav-links li {
         width: 100%;
+        justify-content: center;
+        margin: 0.5rem 0;
     }
-
-    .login-icon {
-        padding: 0.5rem;
-        width: 1.8rem;
-        height: 1.8rem;
-    }
-
-    .user-dropdown {
-        position: static;
-        margin-top: 0.5rem;
-    }
-
     .login-container {
         margin: 1rem;
         padding: 1rem;
+    }
+    .form-inner {
+        min-height: 400px;
+    }
+    input, .action {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+    h2 {
+        font-size: 1.5rem;
+    }
+    .toggle-message {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.2rem;
+    }
+    .hamburger {
+        font-size: 1.2rem;
+    }
+    .nav-links li a {
+        font-size: 0.9rem;
+    }
+    .login-container {
+        padding: 0.5rem;
+    }
+    input, .action {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    h2 {
+        font-size: 1.2rem;
+    }
+    .toggle-message {
+        font-size: 0.7rem;
     }
 }

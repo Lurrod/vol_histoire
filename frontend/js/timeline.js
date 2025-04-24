@@ -2,6 +2,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loginIcon = document.getElementById("login-icon");
     const userToggle = document.querySelector(".user-toggle");
     const userDropdown = document.getElementById("user-info-container");
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('show');
+    });
 
     // Vérifier si un token JWT est stocké
     const token = localStorage.getItem("token");

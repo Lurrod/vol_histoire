@@ -4,24 +4,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const switchToRegister = document.getElementById("switch-to-register");
   const switchToLogin = document.getElementById("switch-to-login");
   const formInner = document.querySelector('.form-inner');
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks = document.querySelector('.nav-links');
 
-  if (!loginForm || !registerForm || !switchToRegister || !switchToLogin || !formInner) {
+  if (!loginForm || !registerForm || !switchToRegister || !switchToLogin || !formInner || !hamburger || !navLinks) {
     console.error("Un ou plusieurs éléments sont introuvables.");
     return;
   }
 
-  // Fonction pour afficher un message d'erreur de type "toast"
   function showError(message) {
     const toast = document.createElement('div');
     toast.className = 'toast-error';
     toast.textContent = message;
     document.body.appendChild(toast);
 
-    // Forcer le recalcul de style pour déclencher la transition
     window.getComputedStyle(toast).opacity;
     toast.classList.add('visible');
 
-    // Supprimer le toast après 3 secondes
     setTimeout(() => {
       toast.classList.remove('visible');
       setTimeout(() => {
@@ -30,10 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 
-  // S'assurer que le formulaire d'inscription soit visible pour l'animation 3D
   registerForm.classList.remove('hidden');
 
-  // Basculer entre connexion et inscription avec animation
   switchToRegister.addEventListener("click", () => {
     formInner.classList.add('flipped');
   });
@@ -41,7 +38,10 @@ document.addEventListener("DOMContentLoaded", () => {
     formInner.classList.remove('flipped');
   });
 
-  // Gestion de la connexion
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('show');
+  });
+
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const email = document.getElementById("login-email").value;
@@ -62,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Gestion de l'inscription
   registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const name = document.getElementById("register-name").value;

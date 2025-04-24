@@ -174,40 +174,6 @@ nav {
   display: none !important;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  header {
-    padding: 1rem;
-  }
-
-  nav {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .nav-links {
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    text-align: center;
-  }
-
-  .nav-links li {
-    width: 100%;
-  }
-
-  .login-icon {
-    padding: 0.5rem;
-    width: 1.8rem;
-    height: 1.8rem;
-  }
-
-  .user-dropdown {
-    position: static;
-    margin-top: 0.5rem;
-  }
-}
-
 /* Timeline Container */
 .timeline-container {
   position: relative;
@@ -294,24 +260,96 @@ nav {
   margin-bottom: 5px;
 }
 
-/* Responsive */
-@media screen and (max-width: 768px) {
+/* Style du bouton hamburger */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--white);
+  cursor: pointer;
+}
+
+/* Media Query pour écrans ≤ 768px */
+@media (max-width: 768px) {
+  header {
+    padding: 1rem;
+  }
+  .hamburger {
+    display: block;
+  }
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background: var(--primary);
+    padding: 1rem;
+    z-index: 1000;
+  }
+  .nav-links.show {
+    display: flex;
+  }
+  .nav-links li {
+    width: 100%;
+    justify-content: center;
+    margin: 0.5rem 0;
+  }
+  .login-icon {
+    padding: 0.5rem;
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+  .user-dropdown {
+    position: static;
+    margin-top: 0.5rem;
+  }
   .timeline-container::after {
     left: 31px;
   }
-
   .timeline-event {
     width: 100%;
     padding-left: 70px;
     padding-right: 25px;
   }
-
   .timeline-event.right {
     left: 0%;
   }
-
   .timeline-event.left::after,
   .timeline-event.right::after {
     left: 15px;
+  }
+  .timeline-content {
+    padding: 15px;
+  }
+  .timeline-content h3 {
+    font-size: 1.2rem;
+  }
+  .timeline-date {
+    font-size: 0.8rem;
+  }
+}
+
+/* Media Query pour écrans ≤ 480px */
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.2rem;
+  }
+  .hamburger {
+    font-size: 1.2rem;
+  }
+  .nav-links li a {
+    font-size: 0.9rem;
+  }
+  .timeline-content {
+    padding: 10px;
+  }
+  .timeline-content h3 {
+    font-size: 1rem;
+  }
+  .timeline-date {
+    font-size: 0.7rem;
   }
 }
