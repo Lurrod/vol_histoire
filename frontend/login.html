@@ -12,7 +12,7 @@
 <body>
   <header>
     <nav>
-      <div class="logo">Hangar</div>
+      <div class="logo">Embarquement</div>
       <button class="hamburger">&#9776;</button>
       <ul class="nav-links">
         <li><a href="index.html">Accueil</a></li>
@@ -55,7 +55,10 @@
           <form id="login-form" class="form-front">
             <h2>Connexion</h2>
             <input type="email" id="login-email" placeholder="Email" required>
-            <input type="password" id="login-password" placeholder="Mot de passe" required>
+            <div class="password-container">
+              <input type="password" id="login-password" placeholder="Mot de passe" required>
+              <i class="fas fa-eye-slash toggle-password" id="toggle-login-password"></i>
+            </div>
             <button class="action" type="submit">Se connecter</button>
             <p class="toggle-message">Pas encore de compte ? <span id="switch-to-register">S'inscrire</span></p>
           </form>
@@ -63,7 +66,10 @@
             <h2>Inscription</h2>
             <input type="text" id="register-name" placeholder="Nom ou Pseudo" required>
             <input type="email" id="register-email" placeholder="Email" required>
-            <input type="password" id="register-password" placeholder="Mot de passe" required>
+            <div class="password-container">
+              <input type="password" id="register-password" placeholder="Mot de passe" required>
+              <i class="fas fa-eye-slash toggle-password" id="toggle-register-password"></i>
+            </div>
             <button class="action" type="submit">Créer un compte</button>
             <p class="toggle-message">Déjà un compte ? <span id="switch-to-login">Se connecter</span></p>
           </form>
