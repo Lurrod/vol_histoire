@@ -4,20 +4,6 @@
 
 - **Les utilisateurs** du site web hébergé, qui souhaitent naviguer et utiliser ses fonctionnalités.
 - **Les développeurs** qui veulent installer, exécuter ou contribuer au projet en local.
-Afficher plus
-message.txt
-12 Ko
-Lurrod — 16:53
-Type de fichier joint : document
-1-dossier_professionnel_version_traitement_de_texte (1) (4).docx
-228.81 KB
-﻿
-# Documentation de Vol d'Histoire
-
-**Vol d'Histoire** est un projet web interactif dédié à l'histoire de l'aviation militaire, permettant aux utilisateurs d'explorer une collection d'avions de chasse historiques via un catalogue détaillé, une frise chronologique, et des fonctionnalités personnalisées. Cette documentation s'adresse à deux publics principaux :
-
-- **Les utilisateurs** du site web hébergé, qui souhaitent naviguer et utiliser ses fonctionnalités.
-- **Les développeurs** qui veulent installer, exécuter ou contribuer au projet en local.
 
 ---
 
