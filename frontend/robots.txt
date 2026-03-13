@@ -1,0 +1,18 @@
+# robots.txt — Vol d'Histoire
+# https://vol-histoire.titouan-borde.com
+
+User-agent: *
+Allow: /
+
+# Pages privées
+Disallow: /login.html
+Disallow: /settings.html
+Disallow: /favorites.html
+Disallow: /cookie-consent.html
+
+# Ressources
+Disallow: /js/
+Disallow: /css/
+
+# Sitemap
+Sitemap: https://vol-histoire.titouan-borde.com/sitemap.xml

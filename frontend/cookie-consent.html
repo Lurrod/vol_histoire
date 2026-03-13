@@ -1,0 +1,210 @@
+<!-- Cookie Consent Banner -->
+<div id="cookie-banner" class="cookie-banner hidden">
+  <div class="cookie-banner-content">
+    <div class="cookie-banner-text">
+      <div class="cookie-icon">
+        <i class="fas fa-cookie-bite"></i>
+      </div>
+      <div class="cookie-message">
+        <h3>🍪 Nous utilisons des cookies</h3>
+        <p>Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu. En cliquant sur "Tout accepter", vous consentez à l'utilisation de tous les cookies.</p>
+      </div>
+    </div>
+    <div class="cookie-banner-actions">
+      <button class="btn btn-secondary btn-sm" id="cookie-settings-btn">
+        <i class="fas fa-cog"></i>
+        <span>Personnaliser</span>
+      </button>
+      <button class="btn btn-outline btn-sm" id="cookie-reject-btn">
+        <span>Refuser</span>
+      </button>
+      <button class="btn btn-primary btn-sm" id="cookie-accept-btn">
+        <i class="fas fa-check"></i>
+        <span>Tout accepter</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Cookie Settings Modal -->
+<div id="cookie-modal" class="cookie-modal hidden">
+  <div class="cookie-modal-backdrop"></div>
+  <div class="cookie-modal-container">
+    <div class="cookie-modal-header">
+      <h2>
+        <i class="fas fa-cookie-bite"></i>
+        <span>Paramètres des cookies</span>
+      </h2>
+      <button class="cookie-modal-close" aria-label="Fermer">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <div class="cookie-modal-content">
+      <div class="cookie-intro">
+        <p>Nous utilisons des cookies pour améliorer votre expérience sur notre site. Vous pouvez choisir les catégories de cookies que vous souhaitez autoriser.</p>
+      </div>
+
+      <!-- Essential Cookies -->
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <div class="cookie-category-info">
+            <div class="cookie-category-icon essential">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <div>
+              <h3>Cookies essentiels</h3>
+              <p class="cookie-category-description">Nécessaires au fonctionnement du site. Ils ne peuvent pas être désactivés.</p>
+            </div>
+          </div>
+          <div class="cookie-toggle">
+            <input type="checkbox" id="cookie-essential" checked disabled>
+            <label for="cookie-essential" class="toggle-disabled">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="cookie-category-details">
+          <p><strong>Exemples :</strong></p>
+          <ul>
+            <li>Authentification et sécurité</li>
+            <li>Mémorisation de vos préférences</li>
+            <li>Panier d'achat (si applicable)</li>
+            <li>Cookies de consentement</li>
+          </ul>
+          <p class="cookie-duration"><i class="fas fa-clock"></i> Durée : Session à 1 an</p>
+        </div>
+      </div>
+
+      <!-- Analytics Cookies -->
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <div class="cookie-category-info">
+            <div class="cookie-category-icon analytics">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div>
+              <h3>Cookies analytiques</h3>
+              <p class="cookie-category-description">Nous aident à comprendre comment les visiteurs utilisent notre site.</p>
+            </div>
+          </div>
+          <div class="cookie-toggle">
+            <input type="checkbox" id="cookie-analytics">
+            <label for="cookie-analytics">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="cookie-category-details">
+          <p><strong>Exemples :</strong></p>
+          <ul>
+            <li>Google Analytics (mesure d'audience)</li>
+            <li>Pages visitées et durée de visite</li>
+            <li>Taux de rebond et parcours utilisateur</li>
+            <li>Statistiques d'utilisation anonymes</li>
+          </ul>
+          <p class="cookie-duration"><i class="fas fa-clock"></i> Durée : 13 mois maximum</p>
+        </div>
+      </div>
+
+      <!-- Preference Cookies -->
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <div class="cookie-category-info">
+            <div class="cookie-category-icon preference">
+              <i class="fas fa-sliders-h"></i>
+            </div>
+            <div>
+              <h3>Cookies de préférence</h3>
+              <p class="cookie-category-description">Permettent de mémoriser vos choix et personnaliser votre expérience.</p>
+            </div>
+          </div>
+          <div class="cookie-toggle">
+            <input type="checkbox" id="cookie-preference">
+            <label for="cookie-preference">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="cookie-category-details">
+          <p><strong>Exemples :</strong></p>
+          <ul>
+            <li>Langue et région préférées</li>
+            <li>Filtres de recherche enregistrés</li>
+            <li>Thème d'affichage (clair/sombre)</li>
+            <li>Paramètres d'accessibilité</li>
+          </ul>
+          <p class="cookie-duration"><i class="fas fa-clock"></i> Durée : 6 mois à 1 an</p>
+        </div>
+      </div>
+
+      <!-- Marketing Cookies (optionnel) -->
+      <div class="cookie-category">
+        <div class="cookie-category-header">
+          <div class="cookie-category-info">
+            <div class="cookie-category-icon marketing">
+              <i class="fas fa-bullhorn"></i>
+            </div>
+            <div>
+              <h3>Cookies marketing</h3>
+              <p class="cookie-category-description">Utilisés pour afficher des publicités pertinentes (actuellement non utilisés).</p>
+            </div>
+          </div>
+          <div class="cookie-toggle">
+            <input type="checkbox" id="cookie-marketing" disabled>
+            <label for="cookie-marketing" class="toggle-disabled">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="cookie-category-details">
+          <p><strong>Note :</strong> Nous n'utilisons actuellement pas de cookies marketing ou publicitaires sur ce site.</p>
+        </div>
+      </div>
+
+      <!-- Information -->
+      <div class="cookie-info-box">
+        <i class="fas fa-info-circle"></i>
+        <div>
+          <p><strong>Plus d'informations</strong></p>
+          <p>Pour en savoir plus sur notre utilisation des cookies et vos droits, consultez notre <a href="politique-confidentialite.html">Politique de confidentialité</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cookie-modal-footer">
+      <button class="btn btn-secondary" id="cookie-reject-all-btn">
+        <span>Tout refuser</span>
+      </button>
+      <button class="btn btn-primary" id="cookie-save-preferences-btn">
+        <i class="fas fa-check"></i>
+        <span>Enregistrer mes préférences</span>
+      </button>
+      <button class="btn btn-primary" id="cookie-accept-all-btn">
+        <i class="fas fa-check-double"></i>
+        <span>Tout accepter</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Cookie Settings Link (optional - pour footer) -->
+<style>
+  .cookie-settings-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: var(--transition);
+  }
+  
+  .cookie-settings-link:hover {
+    color: var(--secondary);
+  }
+  
+  .cookie-settings-link i {
+    font-size: 1rem;
+  }
+</style>
