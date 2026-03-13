@@ -1,577 +1,940 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const body = document.body;
-    const airplanesContainer = document.getElementById("airplanes-container");
-    const sortSelect = document.getElementById("sort-select");
-    const customSelect = document.querySelector(".custom-select");
-    const countrySelectContainer = document.getElementById("country-select-container");
-    const countrySelect = document.getElementById("country-select");
-    const generationSelectContainer = document.getElementById("generation-select-container");
-    const generationSelect = document.getElementById("generation-select");
-    const typeSelectContainer = document.getElementById("type-select-container");
-    const typeSelect = document.getElementById("type-select");
-    const addModal = document.getElementById("add-modal");
-    const addButton = document.getElementById("add-airplane-btn");
-    const closeAddModal = addModal.querySelector(".close-btn");
-    const loginIcon = document.getElementById("login-icon");
-    const userToggle = document.querySelector(".user-toggle");
-    const userDropdown = document.getElementById("user-info-container");
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
+document.addEventListener("DOMContentLoaded", async () => {
+  /* =========================================================================
+     STATE MANAGEMENT
+     ========================================================================= */
+  
+  const state = {
+    aircraft: [],
+    filteredAircraft: [],
+    currentPage: 1,
+    itemsPerPage: 6,
+    filters: {
+      country: null,
+      generation: null,
+      type: null,
+      search: ''
+    },
+    sort: 'default',
+    view: 'grid',
+    countries: [],
+    generations: [],
+    types: [],
+    manufacturers: []
+  };
 
-    // Vérifier si un token JWT est stocké
-    const token = localStorage.getItem("token");
-
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('show');
-    });
-
-    const updateAuthUI = () => {
-        const token = localStorage.getItem("token");
+  /* =========================================================================
+     UTILITIES
+     ========================================================================= */
+  
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
     
-        // Redirige vers login si non authentifié lors du clic sur l'icône
-        loginIcon.addEventListener("click", (e) => {
-          if (!token) {
-            e.preventDefault();
-            window.location.href = "login.html";
-          }
+    const icon = type === 'success' ? 'check-circle' : 
+                 type === 'error' ? 'exclamation-circle' : 
+                 'info-circle';
+    
+    toast.innerHTML = `
+      <i class="fas fa-${icon}"></i>
+      <span>${message}</span>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('fade-out');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  /* =========================================================================
+     NAVIGATION & AUTH
+     ========================================================================= */
+  
+  const header = document.querySelector('header');
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks = document.querySelector('.nav-links');
+  const loginIcon = document.getElementById('login-icon');
+  const userToggle = document.querySelector('.user-toggle');
+  const userDropdown = document.querySelector('.user-dropdown');
+
+  // Header scroll effect
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll > 100) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+    
+    lastScroll = currentScroll;
+  });
+
+  // Mobile menu toggle
+  hamburger?.addEventListener('click', () => {
+    navLinks?.classList.toggle('show');
+    hamburger.classList.toggle('active');
+    document.body.style.overflow = navLinks?.classList.contains('show') ? 'hidden' : '';
+  });
+
+  // Close mobile menu on link click (except login icon)
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', (e) => {
+      // Ne pas fermer le menu si c'est l'icône de login
+      if (link.id === 'login-icon') {
+        return;
+      }
+      navLinks?.classList.remove('show');
+      hamburger?.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // Close mobile menu on window resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (window.innerWidth > 992) {
+        navLinks?.classList.remove('show');
+        hamburger?.classList.remove('active');
+        document.body.style.overflow = '';
+        closeAllDropdowns();
+      }
+    }, 250); // Debounce resize events
+  });
+
+  // User Authentication & Menu
+  const updateAuthUI = () => {
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userNameEl = document.getElementById('user-name');
+        const userRoleEl = document.querySelector('.user-role');
+        
+        if (userNameEl) {
+          userNameEl.textContent = payload.name || 'Utilisateur';
+        }
+        
+        if (userRoleEl) {
+          const role = Number(payload.role);
+          userRoleEl.textContent = role === 1 ? 'Administrateur' :
+                                   role === 2 ? 'Éditeur' : 'Membre';
+        }
+        
+        userDropdown?.classList.remove('hidden');
+
+        // Show add button for admin/editor
+        const userRole = Number(payload.role);
+        if (userRole === 1 || userRole === 2) {
+          document.getElementById('add-airplane-btn')?.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Token parsing error:', error);
+        localStorage.removeItem('token');
+      }
+    }
+  };
+
+  // User dropdown toggle
+  userToggle?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Toggle the dropdown visibility
+    if (userDropdown?.classList.contains('show')) {
+      userDropdown.classList.remove('show');
+      setTimeout(() => {
+        userDropdown.classList.add('hidden');
+      }, 300); // Wait for animation to complete
+    } else {
+      userDropdown?.classList.remove('hidden');
+      setTimeout(() => {
+        userDropdown?.classList.add('show');
+      }, 10); // Small delay for smooth animation
+    }
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!userToggle?.contains(e.target) && !userDropdown?.contains(e.target)) {
+      userDropdown?.classList.remove('show');
+      userDropdown?.classList.add('hidden');
+    }
+  });
+
+  // Login redirect
+  loginIcon?.addEventListener('click', (e) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      e.preventDefault();
+      window.location.href = 'login.html';
+    }
+  });
+
+  // Settings navigation
+  document.getElementById('settings-icon')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = 'settings.html';
+  });
+
+  // Logout handlers
+  const logoutButtons = document.querySelectorAll('#logout-icon, #logout-btn');
+  logoutButtons.forEach(btn => {
+    btn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('token');
+      
+      // Show logout message
+      showToast('Déconnexion réussie', 'success');
+      
+      // Redirect after a short delay
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
+    });
+  });
+
+  // Keyboard navigation - ESC to close menus
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      navLinks?.classList.remove('show');
+      hamburger?.classList.remove('active');
+      userDropdown?.classList.remove('show');
+      userDropdown?.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  });
+
+  /* =========================================================================
+     DATA LOADING
+     ========================================================================= */
+  
+  async function loadReferentialData() {
+    try {
+      const [countriesRes, generationsRes, typesRes, manufacturersRes] = await Promise.all([
+        fetch('/api/countries'),
+        fetch('/api/generations'),
+        fetch('/api/types'),
+        fetch('/api/manufacturers')
+      ]);
+
+      state.countries = await countriesRes.json();
+      state.generations = await generationsRes.json();
+      state.types = await typesRes.json();
+      state.manufacturers = await manufacturersRes.json();
+
+      populateFilterOptions();
+      populateFormSelects();
+    } catch (error) {
+      console.error('Error loading referential data:', error);
+      showToast('Erreur lors du chargement des données', 'error');
+    }
+  }
+
+  function populateFilterOptions() {
+    const countryOptions = document.getElementById('country-options');
+    const generationOptions = document.getElementById('generation-options');
+    const typeOptions = document.getElementById('type-options');
+
+    if (countryOptions) {
+      countryOptions.innerHTML = state.countries.map(country => `
+        <div class="filter-option" data-value="${country.name}">
+          ${country.name}
+        </div>
+      `).join('');
+    }
+
+    if (generationOptions) {
+      generationOptions.innerHTML = state.generations.map(gen => `
+        <div class="filter-option" data-value="${gen}">
+          ${gen}e Génération
+        </div>
+      `).join('');
+    }
+
+    if (typeOptions) {
+      typeOptions.innerHTML = state.types.map(type => `
+        <div class="filter-option" data-value="${type.name}">
+          ${type.name}
+        </div>
+      `).join('');
+    }
+
+    // Add click handlers
+    document.querySelectorAll('.filter-option').forEach(option => {
+      option.addEventListener('click', function() {
+        const filterType = this.closest('.filter-dropdown').id.replace('-dropdown', '');
+        const value = this.dataset.value;
+        
+        state.filters[filterType] = state.filters[filterType] === value ? null : value;
+        state.currentPage = 1;
+        
+        applyFiltersAndRender();
+        closeAllDropdowns();
+        updateActiveFilters();
+      });
+    });
+  }
+
+  function populateFormSelects() {
+    const countrySelect = document.getElementById('aircraft-country');
+    const manufacturerSelect = document.getElementById('aircraft-manufacturer');
+    const generationSelect = document.getElementById('aircraft-generation');
+    const typeSelect = document.getElementById('aircraft-type');
+
+    if (countrySelect) {
+      countrySelect.innerHTML = '<option value="">Sélectionner...</option>' +
+        state.countries.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    }
+
+    if (manufacturerSelect) {
+      manufacturerSelect.innerHTML = '<option value="">Sélectionner...</option>' +
+        state.manufacturers.map(m => `<option value="${m.id}">${m.name}${m.country_name ? ` (${m.country_name})` : ''}</option>`).join('');
+    }
+
+    if (generationSelect) {
+      generationSelect.innerHTML = '<option value="">Sélectionner...</option>' +
+        state.generations.map((g, i) => `<option value="${i + 1}">${g}e Génération</option>`).join('');
+    }
+
+    if (typeSelect) {
+      typeSelect.innerHTML = '<option value="">Sélectionner...</option>' +
+        state.types.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+    }
+  }
+
+  async function loadAircraft() {
+    showSkeletonLoaders();
+    
+    try {
+      const params = new URLSearchParams({
+        sort: state.sort,
+        ...(state.filters.country && { country: state.filters.country }),
+        ...(state.filters.generation && { generation: state.filters.generation }),
+        ...(state.filters.type && { type: state.filters.type })
+      });
+
+      const response = await fetch(`/api/airplanes?${params}`);
+      const data = await response.json();
+      
+      state.aircraft = data.data || [];
+      applyFiltersAndRender();
+      updateStats();
+      
+    } catch (error) {
+      console.error('Error loading aircraft:', error);
+      showToast('Erreur lors du chargement des avions', 'error');
+      hideSkeletonLoaders();
+    }
+  }
+
+  function showSkeletonLoaders() {
+    const container = document.getElementById('airplanes-container');
+    container.innerHTML = Array(8).fill(0).map(() => `
+      <div class="aircraft-card skeleton">
+        <div class="skeleton-image"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-title"></div>
+          <div class="skeleton-text"></div>
+          <div class="skeleton-text short"></div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function hideSkeletonLoaders() {
+    const skeletons = document.querySelectorAll('.skeleton');
+    skeletons.forEach(skeleton => skeleton.remove());
+  }
+
+  function animateNumber(el, target) {
+    if (!el) return;
+    const duration = 1400;
+    const start = performance.now();
+    function step(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target);
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function updateStats() {
+    const uniqueCountries = new Set(state.aircraft.map(a => a.country_name).filter(Boolean));
+    const uniqueGenerations = new Set(state.aircraft.map(a => a.generation).filter(Boolean));
+
+    animateNumber(document.getElementById('total-aircraft'), state.aircraft.length);
+    animateNumber(document.getElementById('total-countries'), uniqueCountries.size);
+    animateNumber(document.getElementById('total-generations'), uniqueGenerations.size);
+  }
+
+  /* =========================================================================
+     FILTERS & SEARCH
+     ========================================================================= */
+  
+  const searchInput = document.getElementById('search-input');
+
+  searchInput?.addEventListener('input', (e) => {
+    state.filters.search = e.target.value.toLowerCase();
+    state.currentPage = 1;
+    applyFiltersAndRender();
+  });
+
+
+  function applyFiltersAndRender() {
+    let filtered = [...state.aircraft];
+
+    // Apply search filter
+    if (state.filters.search) {
+      filtered = filtered.filter(aircraft => 
+        aircraft.name?.toLowerCase().includes(state.filters.search) ||
+        aircraft.complete_name?.toLowerCase().includes(state.filters.search) ||
+        aircraft.country_name?.toLowerCase().includes(state.filters.search) ||
+        aircraft.little_description?.toLowerCase().includes(state.filters.search)
+      );
+    }
+
+    // Apply country filter
+    if (state.filters.country) {
+      filtered = filtered.filter(aircraft => aircraft.country_name === state.filters.country);
+    }
+
+    // Apply generation filter
+    if (state.filters.generation) {
+      filtered = filtered.filter(aircraft => aircraft.generation === parseInt(state.filters.generation));
+    }
+
+    // Apply type filter
+    if (state.filters.type) {
+      filtered = filtered.filter(aircraft => aircraft.type_name === state.filters.type);
+    }
+
+    // Apply sorting
+    filtered = sortAircraft(filtered);
+
+    state.filteredAircraft = filtered;
+    renderAircraft();
+    renderPagination();
+    updateResultsCount();
+  }
+
+  function sortAircraft(aircraft) {
+    switch (state.sort) {
+      case 'alphabetical':
+        return aircraft.sort((a, b) => a.name.localeCompare(b.name));
+      case 'nation':
+        return aircraft.sort((a, b) => (a.country_name || '').localeCompare(b.country_name || ''));
+      case 'service-date':
+        return aircraft.sort((a, b) => {
+          const dateA = a.date_operationel ? new Date(a.date_operationel) : new Date(0);
+          const dateB = b.date_operationel ? new Date(b.date_operationel) : new Date(0);
+          return dateB - dateA;
         });
-        
-        if (token) {
-          try {
-            const payload = JSON.parse(atob(token.split(".")[1]));
-            // Met à jour le nom et le rôle de l'utilisateur dans le dropdown
-            document.getElementById("user-name").textContent = payload.name;
-            document.querySelector(".user-role").textContent =
-              payload.role === 1 ? "Administrateur" :
-              payload.role === 2 ? "Éditeur" : "Membre";
-            if (payload.role === 1 || payload.role === 2) {
-                addButton.classList.remove("hidden");
-            } else {
-                addButton.classList.add("hidden");
-            }
-            userDropdown.classList.remove("hidden");
-          } catch (error) {
-            console.error("Token error:", error);
-            localStorage.removeItem("token");
-          }
+      case 'generation':
+        return aircraft.sort((a, b) => (b.generation || 0) - (a.generation || 0));
+      case 'type':
+        return aircraft.sort((a, b) => (a.type_name || '').localeCompare(b.type_name || ''));
+      default:
+        return aircraft;
+    }
+  }
+
+  function updateResultsCount() {
+    const count = state.filteredAircraft.length;
+    const text = count === 0 ? 'Aucun avion trouvé' : 
+                 count === 1 ? '1 avion trouvé' : 
+                 `${count} avions trouvés`;
+    document.getElementById('results-count').textContent = text;
+  }
+
+  function updateActiveFilters() {
+    const container = document.getElementById('active-filters');
+    const filters = [];
+
+    if (state.filters.country) {
+      filters.push({ type: 'country', label: state.filters.country });
+    }
+    if (state.filters.generation) {
+      filters.push({ type: 'generation', label: `${state.filters.generation}e Génération` });
+    }
+    if (state.filters.type) {
+      filters.push({ type: 'type', label: state.filters.type });
+    }
+
+    if (filters.length === 0) {
+      container.classList.add('hidden');
+      return;
+    }
+
+    container.classList.remove('hidden');
+    container.innerHTML = `
+      <div class="active-filters-label">Filtres actifs:</div>
+      ${filters.map(filter => `
+        <div class="active-filter" data-type="${filter.type}">
+          <span>${filter.label}</span>
+          <button onclick="removeFilter('${filter.type}')">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `).join('')}
+      <button class="clear-all-filters" onclick="clearAllFilters()">
+        Effacer tout
+      </button>
+    `;
+  }
+
+  window.removeFilter = (type) => {
+    state.filters[type] = null;
+    state.currentPage = 1;
+    applyFiltersAndRender();
+    updateActiveFilters();
+  };
+
+  window.clearAllFilters = () => {
+    state.filters.country = null;
+    state.filters.generation = null;
+    state.filters.type = null;
+    state.currentPage = 1;
+    applyFiltersAndRender();
+    updateActiveFilters();
+  };
+
+  /* =========================================================================
+     FILTER DROPDOWNS
+     ========================================================================= */
+  
+  const filterButtons = {
+    'country-filter-btn': 'country-dropdown',
+    'generation-filter-btn': 'generation-dropdown',
+    'type-filter-btn': 'type-dropdown'
+  };
+
+  // Stocker les timeouts pour pouvoir les annuler
+  const dropdownTimeouts = new Map();
+
+  Object.entries(filterButtons).forEach(([btnId, dropdownId]) => {
+    document.getElementById(btnId)?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const dropdown = document.getElementById(dropdownId);
+      const isOpen = dropdown.classList.contains('show');
+      
+      // Fermer tous les autres dropdowns sauf celui-ci
+      closeAllDropdowns(dropdownId);
+      
+      if (!isOpen) {
+        // Annuler tout timeout existant pour ce dropdown
+        if (dropdownTimeouts.has(dropdownId)) {
+          clearTimeout(dropdownTimeouts.get(dropdownId));
+          dropdownTimeouts.delete(dropdownId);
         }
-      };
-    
-      // Permet d'ouvrir/fermer le dropdown lors du clic sur le conteneur utilisateur
-      userToggle.addEventListener("click", (e) => {
-        e.preventDefault();
-        userDropdown.classList.toggle("show");
-      });
-    
-      // Ferme le dropdown si l'utilisateur clique en dehors
-      document.addEventListener("click", (e) => {
-        if (!userToggle.contains(e.target)) {
-          userDropdown.classList.remove("show");
-        }
-      });
-
-      document.getElementById("settings-icon")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        window.location.href = "settings.html";
-      });
-    
-      // Gestion de la déconnexion
-      document.getElementById("logout-icon").addEventListener("click", (e) => {
-        e.preventDefault();
-        localStorage.removeItem("token");
-        window.location.href = "hangar.html";
-      });
-
-    
-      updateAuthUI();
-    
-
-        addButton.addEventListener("click", async () => {
-        addModal.classList.add("show");
-        addModal.classList.remove("hidden");
         
-        // Vider les menus déroulants précédents pour éviter les doublons
-        document.getElementById("add-country-id").innerHTML = '<option value="">Choisir un pays</option>';
-        document.getElementById("add-manufacturer-id").innerHTML = '<option value="">Choisir un fabricant</option>';
-        document.getElementById("add-generation-id").innerHTML = '<option value="">Choisir une génération</option>';
-        document.getElementById("add-type").innerHTML = '<option value="">Choisir un type</option>';
-        
-        // Remplir les menus déroulants
-        await Promise.all([
-            populateCountriesSelect(),
-            populateManufacturersSelect(),
-            populateGenerationsSelect(),
-            populateTypesSelect()
-        ]);
+        // Ouvrir le dropdown
+        dropdown.classList.remove('hidden');
+        setTimeout(() => dropdown.classList.add('show'), 10);
+      }
     });
-    
-    closeAddModal.addEventListener("click", () => {
-        addModal.classList.remove("show");
-        addModal.classList.add("hidden");
+  });
+
+  document.querySelectorAll('.close-dropdown').forEach(btn => {
+    btn.addEventListener('click', () => {
+      closeAllDropdowns();
     });
+  });
 
-    async function populateCountriesSelect() {
-        const select = document.getElementById("add-country-id");
-        try {
-            const response = await fetch("/api/countries");
-            const countries = await response.json();
-            countries.forEach(country => {
-                const option = document.createElement("option");
-                option.value = country.id;
-                option.textContent = country.name;
-                select.appendChild(option);
-            });
-        } catch (error) {
-            console.error("Erreur lors du chargement des pays:", error);
-        }
+  function closeAllDropdowns(exceptId = null) {
+    document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+      // Ne pas fermer le dropdown spécifié
+      if (exceptId && dropdown.id === exceptId) {
+        return;
+      }
+      
+      dropdown.classList.remove('show');
+      
+      // Annuler tout timeout existant pour ce dropdown
+      if (dropdownTimeouts.has(dropdown.id)) {
+        clearTimeout(dropdownTimeouts.get(dropdown.id));
+      }
+      
+      // Créer un nouveau timeout et le stocker
+      const timeoutId = setTimeout(() => {
+        dropdown.classList.add('hidden');
+        dropdownTimeouts.delete(dropdown.id);
+      }, 300);
+      
+      dropdownTimeouts.set(dropdown.id, timeoutId);
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.filter-btn') && !e.target.closest('.filter-dropdown')) {
+      closeAllDropdowns();
     }
-    
-    // Fonction pour remplir le menu des fabricants
-    async function populateManufacturersSelect() {
-        const select = document.getElementById("add-manufacturer-id");
-        try {
-            const response = await fetch("/api/manufacturers");
-            const manufacturers = await response.json();
-            manufacturers.forEach(manufacturer => {
-                const option = document.createElement("option");
-                option.value = manufacturer.id;
-                option.textContent = manufacturer.name;
-                select.appendChild(option);
-            });
-        } catch (error) {
-            console.error("Erreur lors du chargement des fabricants:", error);
-        }
+  });
+
+  // Prevent dropdown close when clicking inside
+  document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+    dropdown.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  });
+
+  /* =========================================================================
+     SORT & VIEW
+     ========================================================================= */
+  
+  const sortSelect = document.getElementById('sort-select');
+  sortSelect?.addEventListener('change', (e) => {
+    state.sort = e.target.value;
+    applyFiltersAndRender();
+  });
+
+  const viewButtons = document.querySelectorAll('.view-btn');
+  viewButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      state.view = view;
+
+      viewButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const container = document.getElementById('airplanes-container');
+      container.className = view === 'grid' ? 'aircraft-grid' : 'aircraft-list';
+
+      // Save view preference
+      localStorage.setItem('preferredView', view);
+    });
+  });
+
+  // Restore view preference on load
+  const savedView = localStorage.getItem('preferredView');
+  if (savedView && window.innerWidth > 768) {
+    const viewBtn = document.querySelector(`.view-btn[data-view="${savedView}"]`);
+    if (viewBtn) {
+      viewBtn.click();
     }
-    
-    // Fonction pour remplir le menu des générations
-    async function populateGenerationsSelect() {
-        const select = document.getElementById("add-generation-id");
-        try {
-            const response = await fetch("/api/generations");
-            const generations = await response.json();
-            generations.forEach(generation => {
-                const option = document.createElement("option");
-                option.value = generation; // L'API renvoie directement la génération comme valeur
-                option.textContent = `Génération ${generation}`;
-                select.appendChild(option);
-            });
-        } catch (error) {
-            console.error("Erreur lors du chargement des générations:", error);
-        }
-    }
-    
-    // Fonction pour remplir le menu des types
-    async function populateTypesSelect() {
-        const select = document.getElementById("add-type");
-        try {
-            const response = await fetch("/api/types");
-            const types = await response.json();
-            types.forEach(type => {
-                const option = document.createElement("option");
-                option.value = type.id;
-                option.textContent = type.name;
-                select.appendChild(option);
-            });
-        } catch (error) {
-            console.error("Erreur lors du chargement des types:", error);
-        }
+  }
+
+  /* =========================================================================
+     RENDERING
+     ========================================================================= */
+  
+  function renderAircraft() {
+    const container = document.getElementById('airplanes-container');
+    const startIndex = (state.currentPage - 1) * state.itemsPerPage;
+    const endIndex = startIndex + state.itemsPerPage;
+    const pageAircraft = state.filteredAircraft.slice(startIndex, endIndex);
+
+    hideSkeletonLoaders();
+
+    if (pageAircraft.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-plane-slash"></i>
+          <h3>Aucun avion trouvé</h3>
+          <p>Essayez de modifier vos filtres ou votre recherche</p>
+        </div>
+      `;
+      return;
     }
 
-    // Gestion de la soumission du formulaire
-document.getElementById("add-form").addEventListener("submit", async (e) => {
+    container.innerHTML = pageAircraft.map(aircraft => `
+      <article class="aircraft-card" data-id="${aircraft.id}">
+        <div class="aircraft-image">
+          <img src="${aircraft.image_url || 'https://via.placeholder.com/400x300?text=No+Image'}" 
+               alt="${aircraft.name}"
+               loading="lazy">
+          <div class="aircraft-overlay">
+            <div class="aircraft-badges">
+              ${aircraft.generation ? `<span class="aircraft-badge generation">${aircraft.generation}e Gén</span>` : ''}
+              ${aircraft.type_name ? `<span class="aircraft-badge type">${aircraft.type_name}</span>` : ''}
+            </div>
+          </div>
+        </div>
+        <div class="aircraft-content">
+          <div class="aircraft-header">
+            <div class="aircraft-title">
+              <h3>${aircraft.name}</h3>
+              ${aircraft.country_name ? `
+                <div class="aircraft-country">
+                  <i class="fas fa-globe"></i>
+                  <span>${aircraft.country_name}</span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+          <p class="aircraft-description">
+            ${aircraft.little_description || 'Description non disponible'}
+          </p>
+          <div class="aircraft-specs">
+            ${aircraft.max_speed ? `
+              <div class="spec-item">
+                <i class="fas fa-gauge-high"></i>
+                <span>${aircraft.max_speed} km/h</span>
+              </div>
+            ` : ''}
+            ${aircraft.date_operationel ? `
+              <div class="spec-item">
+                <i class="fas fa-calendar"></i>
+                <span>${new Date(aircraft.date_operationel).getFullYear()}</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      </article>
+    `).join('');
+
+    // Add click handlers - CORRECTED TO USE detail.html
+    document.querySelectorAll('.aircraft-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = card.dataset.id;
+        window.location.href = `details.html?id=${id}`;
+      });
+    });
+  }
+
+
+  function renderPagination() {
+    const container = document.getElementById('pagination-container');
+    const totalPages = Math.ceil(state.filteredAircraft.length / state.itemsPerPage);
+
+    // Toujours afficher la pagination pour un meilleur feedback visuel
+    if (totalPages === 0) {
+      container.innerHTML = '';
+      return;
+    }
+
+    container.innerHTML = `
+      <button ${state.currentPage === 1 || totalPages === 1 ? 'disabled' : ''} onclick="changePage(${state.currentPage - 1})">
+        <i class="fas fa-chevron-left"></i> Précédent
+      </button>
+      <span class="page-info">Page ${state.currentPage} sur ${totalPages}</span>
+      <button ${state.currentPage === totalPages || totalPages === 1 ? 'disabled' : ''} onclick="changePage(${state.currentPage + 1})">
+        Suivant <i class="fas fa-chevron-right"></i>
+      </button>
+    `;
+  }
+
+  window.changePage = (page) => {
+    state.currentPage = page;
+    renderAircraft();
+    renderPagination();
+
+    // Scroll to top of content, accounting for sticky header
+    const filtersSection = document.querySelector('.filters-section');
+    const offset = filtersSection ? filtersSection.offsetTop - 70 : 0;
+    window.scrollTo({ top: offset, behavior: 'smooth' });
+  };
+
+  /* =========================================================================
+     MODAL
+     ========================================================================= */
+  
+  const modal = document.getElementById('aircraft-modal');
+  const modalForm = document.getElementById('aircraft-form');
+  const addBtn = document.getElementById('add-airplane-btn');
+  const cancelBtn = document.getElementById('cancel-btn');
+  const modalClose = document.querySelector('.modal-close');
+
+  addBtn?.addEventListener('click', () => {
+    openModal();
+  });
+
+  [cancelBtn, modalClose].forEach(btn => {
+    btn?.addEventListener('click', () => closeModal());
+  });
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal || e.target.classList.contains('modal-backdrop')) {
+      closeModal();
+    }
+  });
+
+  function openModal() {
+    modal?.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal?.classList.remove('show');
+    document.body.style.overflow = '';
+    modalForm?.reset();
+  }
+
+  modalForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const newAirplane = {
-        name: document.getElementById("add-name").value,
-        complete_name: document.getElementById("add-complete-name").value,
-        little_description: document.getElementById("add-little-description").value,
-        image_url: document.getElementById("add-image-url").value,
-        description: document.getElementById("add-description").value,
-        date_concept: document.getElementById("add-date-concept").value || null,
-        date_first_fly: document.getElementById("add-date-first-fly").value || null,
-        date_operationel: document.getElementById("add-date-operationel").value || null,
-        max_speed: parseFloat(document.getElementById("add-max-speed").value) || null,
-        max_range: parseFloat(document.getElementById("add-max-range").value) || null,
-        weight: parseFloat(document.getElementById("add-weight").value) || null,
-        status: document.getElementById("add-status").value,
-        country_id: parseInt(document.getElementById("add-country-id").value) || null,
-        id_manufacturer: parseInt(document.getElementById("add-manufacturer-id").value) || null,
-        id_generation: parseInt(document.getElementById("add-generation-id").value) || null,
-        type: parseInt(document.getElementById("add-type").value) || null
+    const token = localStorage.getItem('token');
+    if (!token) {
+      showToast('Accès non autorisé', 'error');
+      return;
+    }
+
+    let userRole = null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      userRole = Number(payload.role);
+    } catch (error) {
+      showToast('Erreur d\'authentification', 'error');
+      return;
+    }
+
+    if (userRole !== 1 && userRole !== 2) {
+      showToast('Accès non autorisé', 'error');
+      return;
+    }
+
+    const formData = {
+      name: document.getElementById('aircraft-name').value,
+      complete_name: document.getElementById('aircraft-complete-name').value,
+      little_description: document.getElementById('aircraft-little-description').value,
+      image_url: document.getElementById('aircraft-image-url').value,
+      description: document.getElementById('aircraft-description').value,
+      country_id: parseInt(document.getElementById('aircraft-country').value),
+      id_manufacturer: parseInt(document.getElementById('aircraft-manufacturer').value) || null,
+      id_generation: parseInt(document.getElementById('aircraft-generation').value),
+      type: parseInt(document.getElementById('aircraft-type').value),
+      status: document.getElementById('aircraft-status').value,
+      date_concept: document.getElementById('aircraft-date-concept').value || null,
+      date_first_fly: document.getElementById('aircraft-date-first-fly').value || null,
+      date_operationel: document.getElementById('aircraft-date-operational').value || null,
+      max_speed: parseFloat(document.getElementById('aircraft-max-speed').value) || null,
+      max_range: parseFloat(document.getElementById('aircraft-max-range').value) || null,
+      weight: parseFloat(document.getElementById('aircraft-weight').value) || null
     };
 
     try {
-        const response = await fetch("/api/airplanes", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(newAirplane)
-        });
+      const response = await fetch('/api/airplanes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
 
-        if (response.ok) {
-            alert("Avion créé avec succès !");
-            addModal.classList.remove("show");
-            addModal.classList.add("hidden");
-            const response = await fetchAirplanes(sortSelect.value);
-            displayAirplanes(response);
-        } else {
-            const error = await response.json();
-            alert(`Erreur: ${error.message || "Création impossible"}`);
-        }
+      if (!response.ok) {
+        throw new Error('Erreur lors de la création');
+      }
+
+      showToast('Avion créé avec succès !', 'success');
+      closeModal();
+      loadAircraft();
+      
     } catch (error) {
-        console.error("Erreur:", error);
-        alert("Erreur réseau - Impossible de créer l'avion");
+      console.error('Error creating aircraft:', error);
+      showToast(error.message || 'Erreur lors de la création', 'error');
+    }
+  });
+
+  /* =========================================================================
+     KEYBOARD SHORTCUTS
+     ========================================================================= */
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeModal();
+      closeAllDropdowns();
+    }
+    
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      searchInput?.focus();
+    }
+  });
+
+  /* =========================================================================
+     ANIMATIONS & PERFORMANCE
+     ========================================================================= */
+
+  // Reduce animations on low-power devices
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const observeElements = () => {
+    // Skip animations if user prefers reduced motion
+    if (prefersReducedMotion) {
+      return;
     }
 
-    try {
-        const response = await fetch("/api/airplanes", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(newAirplane)
-        });
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
 
-        if (response.ok) {
-            alert("Avion créé avec succès !");
-            addModal.classList.remove("show");
-            // Recharger la liste
-            const response = await fetchAirplanes(sortSelect.value);
-            displayAirplanes(response);
-        } else {
-            const error = await response.json();
-            alert(`Erreur: ${error.message || "Création impossible"}`);
-        }
-        } catch (error) {
-            console.error("Erreur:", error);
-            alert("Erreur réseau - Impossible de créer l'avion");
-        }
+    document.querySelectorAll('.aircraft-card').forEach(card => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      card.style.transition = 'all 0.5s ease';
+      observer.observe(card);
     });
+  };
 
-    // Fonction pour récupérer les avions depuis l'API
-    async function fetchAirplanes(sort = "default", filterValue = "", page = 1) {
-        try {
-            let url = `/api/airplanes?sort=${sort}&page=${page}`;
-            if (filterValue) {
-                if (sort === "nation") {
-                    url += `&country=${encodeURIComponent(filterValue)}`;
-                } else if (sort === "generation") {
-                    url += `&generation=${encodeURIComponent(filterValue)}`;
-                } else if (sort === "type") {
-                    url += `&type=${encodeURIComponent(filterValue)}`;
-                }
-            }
-            const response = await fetch(url);
+  // Touch-friendly improvements
+  let touchStartY = 0;
+  let touchEndY = 0;
 
-            if (!response.ok) {
-                throw new Error("Erreur lors de la récupération des données");
-            }
+  // Add passive event listeners for better scroll performance
+  document.addEventListener('touchstart', (e) => {
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
 
-            const responseData = await response.json();
-            return responseData;
-        } catch (error) {
-            console.error("Erreur:", error);
-            airplanesContainer.innerHTML =
-                "<p>Erreur lors du chargement des avions. Veuillez réessayer plus tard.</p>";
-            return { data: [], pagination: null };
-        }
+  document.addEventListener('touchend', (e) => {
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+  }, { passive: true });
+
+  function handleSwipe() {
+    const swipeThreshold = 100;
+    const diff = touchStartY - touchEndY;
+
+    // Close mobile menu on swipe up (when menu is open)
+    if (diff > swipeThreshold && navLinks?.classList.contains('show')) {
+      navLinks.classList.remove('show');
+      hamburger?.classList.remove('active');
+      document.body.style.overflow = '';
     }
+  }
 
-    // Fonction pour récupérer la liste des pays uniques
-    function populateCountrySelect(countries) {
-        countrySelect.innerHTML = '<option value="">Choisir un pays</option>';
-        countries.forEach(country => {
-            const option = document.createElement("option");
-            option.value = country;
-            option.textContent = country;
-            countrySelect.appendChild(option);
-        });
-    }    
-
-    // Fonction pour récupérer la liste des générations disponibles
-    async function fetchGenerations() {
-        try {
-            const response = await fetch('/api/generations');
-            if (!response.ok) throw new Error("Erreur lors de la récupération des générations");
-            const generations = await response.json();
-            populateGenerationSelect(generations);
-        } catch (error) {
-            console.error("Erreur:", error);
-        }
+  // Optimize scroll performance
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        // Your scroll logic here (already exists above)
+        ticking = false;
+      });
+      ticking = true;
     }
+  }, { passive: true });
 
-    // Fonction pour récupérer la liste des types disponibles
-    async function fetchTypes() {
-        try {
-            const response = await fetch('/api/types');
-            if (!response.ok) throw new Error("Erreur lors de la récupération des types");
-            const types = await response.json();
-            populateTypeSelect(types);
-        } catch (error) {
-            console.error("Erreur:", error);
-        }
+  /* =========================================================================
+     INITIALIZE
+     ========================================================================= */
+  
+  // Initialize auth UI
+  updateAuthUI();
+  
+  await loadReferentialData();
+  await loadAircraft();
+  
+  // Observe cards for animations
+  const cardObserver = setInterval(() => {
+    if (document.querySelectorAll('.aircraft-card').length > 0) {
+      observeElements();
+      clearInterval(cardObserver);
     }
+  }, 100);
 
-    // Remplir le menu des pays
-    function populateCountrySelect(countries) {
-        countrySelect.innerHTML = '<option value="">Choisir un pays</option>';
-        countries.forEach(country => {
-            const option = document.createElement("option");
-            option.value = country;
-            option.textContent = country;
-            countrySelect.appendChild(option);
-        });
-    }
-
-    // Remplir le menu des générations
-    function populateGenerationSelect(generations) {
-        generationSelect.innerHTML = '<option value="">Choisir une génération</option>';
-        generations.forEach(generation => {
-            const option = document.createElement("option");
-            option.value = generation;
-            option.textContent = `Génération ${generation}`;
-            generationSelect.appendChild(option);
-        });
-    }
-
-    async function fetchCountries() {
-        try {
-            const response = await fetch("/api/countries");
-            if (!response.ok) throw new Error("Erreur lors de la récupération des pays");
-            const countriesData = await response.json();
-            const countries = countriesData.map(c => c.name).sort();
-            populateCountrySelect(countries);
-        } catch (error) {
-            console.error("Erreur:", error);
-        }
-    }
-
-    // Remplir le menu des types
-    function populateTypeSelect(types) {
-        typeSelect.innerHTML = '<option value="">Choisir un type</option>';
-        types.forEach(type => {
-            const option = document.createElement("option");
-            option.value = type.name;
-            option.textContent = type.name;
-            typeSelect.appendChild(option);
-        });
-    }
-
-    // Fonction pour afficher les avions
-    function displayAirplanes(response) {
-        const { data: airplanes, pagination } = response;
-        airplanesContainer.innerHTML = "";
-
-        if (airplanes.length === 0) {
-            airplanesContainer.innerHTML = "<p>Aucun avion disponible pour le moment.</p>";
-            return;
-        }
-
-        airplanes.forEach((airplane) => {
-            const airplaneCard = document.createElement("div");
-            airplaneCard.classList.add("airplane-card");
-
-            const imageContainer = document.createElement("div");
-            imageContainer.classList.add("image-container");
-
-            const airplaneImage = document.createElement("img");
-            airplaneImage.src = airplane.image_url;
-            airplaneImage.alt = airplane.name;
-            airplaneImage.loading = "lazy";
-
-            const airplaneContent = document.createElement("div");
-            airplaneContent.classList.add("airplane-content");
-
-            const airplaneName = document.createElement("h3");
-            airplaneName.textContent = airplane.name;
-
-            const airplaneDescription = document.createElement("p");
-            airplaneDescription.textContent = airplane.little_description;
-
-            const airplaneInfo = document.createElement("div");
-            airplaneInfo.classList.add("airplane-info");
-
-            const countryBadge = document.createElement("div");
-            countryBadge.classList.add("info-badge", "country-badge");
-            countryBadge.textContent = airplane.country_name;
-
-            const separator = document.createElement("div");
-            separator.classList.add("separator");
-            separator.textContent = "•";
-
-            const typeBadge = document.createElement("div");
-            typeBadge.classList.add("info-badge", "type-badge");
-            typeBadge.textContent = airplane.type_name;
-
-            airplaneInfo.appendChild(countryBadge);
-            airplaneInfo.appendChild(separator);
-            airplaneInfo.appendChild(typeBadge);
-
-            airplaneCard.addEventListener("click", () => {
-                window.location.href = `details.html?id=${airplane.id}`;
-            });
-
-            imageContainer.appendChild(airplaneImage);
-            airplaneContent.appendChild(airplaneName);
-            airplaneContent.appendChild(airplaneDescription);
-            airplaneContent.appendChild(airplaneInfo);
-
-            airplaneCard.appendChild(imageContainer);
-            airplaneCard.appendChild(airplaneContent);
-
-            airplanesContainer.appendChild(airplaneCard);
-        });
-
-        updatePaginationControls(pagination);
-    }
-
-    // Ajouter les contrôles de pagination
-    function updatePaginationControls(pagination) {
-        const existingPagination = document.getElementById('pagination-controls');
-        if (existingPagination) existingPagination.remove();
-
-        if (!pagination) return;
-
-        const paginationContainer = document.createElement('div');
-        paginationContainer.id = 'pagination-controls';
-        paginationContainer.className = 'pagination';
-
-        const prevButton = document.createElement('button');
-        prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
-        prevButton.disabled = pagination.currentPage === 1;
-        prevButton.onclick = () => handlePageChange(pagination.currentPage - 1);
-
-        const nextButton = document.createElement('button');
-        nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
-        nextButton.disabled = pagination.currentPage === pagination.totalPages;
-        nextButton.onclick = () => handlePageChange(pagination.currentPage + 1);
-
-        const pageInfo = document.createElement('span');
-        pageInfo.textContent = `Page ${pagination.currentPage} / ${pagination.totalPages}`;
-
-        paginationContainer.append(prevButton, pageInfo, nextButton);
-        document.querySelector('main').appendChild(paginationContainer);
-    }
-
-    // Gestion du changement de page
-    async function handlePageChange(newPage) {
-        const sortValue = sortSelect.value;
-        let filterValue = "";
-        if (sortValue === "nation") {
-            filterValue = countrySelect.value;
-        } else if (sortValue === "generation") {
-            filterValue = generationSelect.value;
-        } else if (sortValue === "type") {
-            filterValue = typeSelect.value;
-        }
-        const response = await fetchAirplanes(sortValue, filterValue, newPage);
-        displayAirplanes(response);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Gestion du tri principal
-    sortSelect.addEventListener("change", async () => {
-        const sortValue = sortSelect.value;
-        if (sortValue === "nation") {
-            countrySelectContainer.style.display = "inline-block";
-            generationSelectContainer.style.display = "none";
-            typeSelectContainer.style.display = "none";
-            await fetchCountries();
-            airplanesContainer.innerHTML = "<p>Veuillez sélectionner un pays.</p>";
-        } else if (sortValue === "generation") {
-            generationSelectContainer.style.display = "inline-block";
-            countrySelectContainer.style.display = "none";
-            typeSelectContainer.style.display = "none";
-            await fetchGenerations();
-            airplanesContainer.innerHTML = "<p>Veuillez sélectionner une génération.</p>";
-        } else if (sortValue === "type") {
-            typeSelectContainer.style.display = "inline-block";
-            countrySelectContainer.style.display = "none";
-            generationSelectContainer.style.display = "none";
-            await fetchTypes();
-            airplanesContainer.innerHTML = "<p>Veuillez sélectionner un type.</p>";
-        } else {
-            countrySelectContainer.style.display = "none";
-            generationSelectContainer.style.display = "none";
-            typeSelectContainer.style.display = "none";
-            const response = await fetchAirplanes(sortValue);
-            displayAirplanes(response);
-        }
-    });
-
-    // Gestion du tri par pays
-    countrySelect.addEventListener("change", async () => {
-        const country = countrySelect.value;
-        if (country) {
-            const response = await fetchAirplanes("nation", country);
-            displayAirplanes(response);
-        } else {
-            airplanesContainer.innerHTML = "<p>Veuillez sélectionner un pays.</p>";
-        }
-    });
-
-    // Gestion du tri par génération
-    generationSelect.addEventListener("change", async () => {
-        const generation = generationSelect.value;
-        if (generation) {
-            const response = await fetchAirplanes("generation", generation);
-            displayAirplanes(response);
-        } else {
-            airplanesContainer.innerHTML = "<p>Veuillez sélectionner une génération.</p>";
-        }
-    });
-
-    // Gestion du tri par type
-    typeSelect.addEventListener("change", async () => {
-        const type = typeSelect.value;
-        if (type) {
-            const response = await fetchAirplanes("type", type);
-            displayAirplanes(response);
-        } else {
-            airplanesContainer.innerHTML = "<p>Veuillez sélectionner un type.</p>";
-        }
-    });
-
-    // Animation flèche pour sort-select
-    sortSelect.addEventListener("click", () => {
-        customSelect.classList.toggle("open");
-    });
-
-    // Animation flèche pour country-select
-    countrySelect.addEventListener("click", () => {
-        countrySelectContainer.classList.toggle("open");
-    });
-
-    // Animation flèche pour generation-select
-    generationSelect.addEventListener("click", () => {
-        generationSelectContainer.classList.toggle("open");
-    });
-
-    // Animation flèche pour type-select
-    typeSelect.addEventListener("click", () => {
-        typeSelectContainer.classList.toggle("open");
-    });
-
-    // Fermer les menus quand on clique ailleurs
-    document.addEventListener("click", (e) => {
-        if (!customSelect.contains(e.target)) {
-            customSelect.classList.remove("open");
-        }
-        if (!countrySelectContainer.contains(e.target)) {
-            countrySelectContainer.classList.remove("open");
-        }
-        if (!generationSelectContainer.contains(e.target)) {
-            generationSelectContainer.classList.remove("open");
-        }
-        if (!typeSelectContainer.contains(e.target)) {
-            typeSelectContainer.classList.remove("open");
-        }
-    });
-
-    // Chargement initial
-    fetchAirplanes().then(displayAirplanes);
-    fetchTypes();
+  console.log('Hangar page initialized successfully');
 });

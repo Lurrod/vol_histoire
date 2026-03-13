@@ -2,84 +2,184 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paramètres du Compte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="theme-color" content="#080c14">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Paramètres du Compte | Vol d'Histoire</title>
+  <meta name="description" content="Gérez vos paramètres de compte, votre profil et vos préférences de sécurité.">
+  <link rel="canonical" href="https://vol-histoire.titouan-borde.com/settings.html">
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:title" content="Paramètres du Compte | Vol d'Histoire">
+  <meta property="og:description" content="Gérez vos paramètres de compte, votre profil et vos préférences de sécurité.">
+  <meta property="og:url" content="https://vol-histoire.titouan-borde.com/settings.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Vol d'Histoire">
+  <meta property="og:locale" content="fr_FR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Paramètres du Compte | Vol d'Histoire">
+  <meta name="twitter:description" content="Gérez vos paramètres de compte, votre profil et vos préférences de sécurité.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="css/settings.css">
+  <link rel="stylesheet" href="css/cookies.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+<!-- Cookies compact -->
+<div id="cookie-banner" class="cookie-banner hidden"><div class="cookie-banner-content"><div class="cookie-banner-text"><div class="cookie-icon"><i class="fas fa-cookie-bite"></i></div><div class="cookie-message"><h3>🍪 Nous utilisons des cookies</h3><p>Nous utilisons des cookies pour améliorer votre expérience.</p></div></div><div class="cookie-banner-actions"><button class="btn btn-secondary btn-sm" id="cookie-settings-btn"><i class="fas fa-cog"></i><span>Personnaliser</span></button><button class="btn btn-outline btn-sm" id="cookie-reject-btn"><span>Refuser</span></button><button class="btn btn-primary btn-sm" id="cookie-accept-btn"><i class="fas fa-check"></i><span>Tout accepter</span></button></div></div></div>
+<div id="cookie-modal" class="cookie-modal hidden"><div class="cookie-modal-backdrop"></div><div class="cookie-modal-container"><div class="cookie-modal-header"><h2><i class="fas fa-cookie-bite"></i><span>Paramètres des cookies</span></h2><button class="cookie-modal-close" aria-label="Fermer"><i class="fas fa-times"></i></button></div><div class="cookie-modal-content"><div class="cookie-intro"><p>Choisissez les catégories de cookies à autoriser.</p></div><div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon essential"><i class="fas fa-shield-alt"></i></div><div><h3>Cookies essentiels</h3><p class="cookie-category-description">Nécessaires au fonctionnement.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-essential" checked disabled><label for="cookie-essential" class="toggle-disabled"><span class="toggle-slider"></span></label></div></div></div><div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon analytics"><i class="fas fa-chart-line"></i></div><div><h3>Cookies analytiques</h3><p class="cookie-category-description">Mesure d'audience.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-analytics"><label for="cookie-analytics"><span class="toggle-slider"></span></label></div></div></div><div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon preference"><i class="fas fa-sliders-h"></i></div><div><h3>Cookies de préférence</h3><p class="cookie-category-description">Mémorisation de vos choix.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-preference"><label for="cookie-preference"><span class="toggle-slider"></span></label></div></div></div><div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon marketing"><i class="fas fa-bullhorn"></i></div><div><h3>Cookies marketing</h3><p class="cookie-category-description">Non utilisés.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-marketing" disabled><label for="cookie-marketing" class="toggle-disabled"><span class="toggle-slider"></span></label></div></div></div></div><div class="cookie-modal-footer"><button class="btn btn-secondary" id="cookie-reject-all-btn"><span>Tout refuser</span></button><button class="btn btn-primary" id="cookie-save-preferences-btn"><i class="fas fa-check"></i><span>Enregistrer</span></button><button class="btn btn-primary" id="cookie-accept-all-btn"><i class="fas fa-check-double"></i><span>Tout accepter</span></button></div></div></div>
+<style>.cookie-settings-link{display:inline-flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.45);text-decoration:none;font-size:.875rem;transition:var(--transition)}.cookie-settings-link:hover{color:var(--hud-cyan)}</style>
+
+  <!-- Header -->
   <header>
-    <nav>
-      <div class="logo">Hangar</div>
-      <button class="hamburger">&#9776;</button>
+    <nav class="container">
+      <div class="logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div>
+      <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
       <ul class="nav-links">
-        <li><a href="index.html">Accueil</a></li>
-        <li><a href="hangar.html">Hangar</a></li>
-        <li><a href="timeline.html">Frise Chronologique</a></li>
-        <li class="user-menu">
-          <div class="user-toggle">
-            <a href="login.html" id="login-icon" class="login-icon">
-              <i class="fas fa-user"></i>
-            </a>
-            <div id="user-info-container" class="user-dropdown hidden">
-              <div class="user-header">
-                <i class="fas fa-user-circle user-avatar"></i>
-                <div class="user-details">
-                  <span id="user-name" class="user-name"></span>
-                  <span class="user-role">Membre</span>
-                </div>
-              </div>
-              <div class="dropdown-divider"></div>
-              <a href="settings.html" id="settings-icon" class="dropdown-item">
-                <i class="fa-solid fa-gear"></i>
-                Mon Compte
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" id="logout-icon" class="dropdown-item">
-                <i class="fas fa-sign-out-alt"></i>
-                Déconnexion
-              </a>
-            </div>
+        <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+        <li><a href="hangar.html"><i class="fas fa-plane"></i> Hangar</a></li>
+        <li><a href="timeline.html"><i class="fas fa-timeline"></i> Chronologie</a></li>
+        <li><a href="favorites.html"><i class="fas fa-heart"></i> Favoris</a></li>
+        <li class="user-menu"><div class="user-toggle">
+          <a href="login.html" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
+          <div id="user-info-container" class="user-dropdown hidden">
+            <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name">Chargement...</span><span class="user-role">Membre</span></div></div>
+            <div class="dropdown-divider"></div>
+            <a href="settings.html" id="settings-icon" class="dropdown-item active"><i class="fas fa-cog"></i><span>Paramètres</span></a>
+            <div class="dropdown-divider"></div>
+            <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span>Déconnexion</span></a>
           </div>
-        </li>
+        </div></li>
       </ul>
     </nav>
   </header>
 
-  <!-- Contenu principal : Formulaire de configuration du compte -->
-  <main>
-    <section class="settings">
-      <h1>Paramètres du Compte</h1>
-      <form id="settings-form">
-        <div class="form-group">
-          <label for="name">Nom :</label>
-          <input type="text" id="name" name="name" required>
+  <main class="settings-page">
+    <!-- Page Header -->
+    <section class="page-hero">
+      <div class="hero-background"></div>
+      <div class="hero-hud-grid"></div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge"><span class="badge-pulse"></span><i class="fas fa-cog"></i><span>Paramètres</span></div>
+          <h1>Gestion du Compte</h1>
+          <p>Personnalisez votre expérience et gérez vos informations</p>
         </div>
-        <div class="form-group">
-          <label for="email">Email :</label>
-          <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Mot de passe :</label>
-          <input type="password" id="password" name="password" placeholder="Laissez vide pour ne pas changer">
-        </div>
-        <button type="submit" class="btn">Enregistrer les modifications</button>
-      </form>
-      <button id="delete-account-btn" class="btn delete-btn">Supprimer mon compte</button>
+      </div>
     </section>
 
-    <!-- Après le formulaire de modification du compte personnel -->
-    <section id="admin-section" class="admin-section hidden">
-        <h2>Gestion des utilisateurs</h2>
-        <div id="user-list"></div>
+    <!-- Settings Content -->
+    <section class="settings-section">
+      <div class="container">
+        <div class="settings-grid">
+          <!-- Sidebar -->
+          <aside class="settings-sidebar">
+            <nav class="sidebar-nav">
+              <a href="#profile" class="sidebar-link active" data-section="profile"><div class="link-icon"><i class="fas fa-user"></i></div><div class="link-content"><span class="link-title">Profil</span><span class="link-description">Informations personnelles</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#security" class="sidebar-link" data-section="security"><div class="link-icon"><i class="fas fa-shield"></i></div><div class="link-content"><span class="link-title">Sécurité</span><span class="link-description">Mot de passe & protection</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#privacy" class="sidebar-link" data-section="privacy"><div class="link-icon"><i class="fas fa-cookie-bite"></i></div><div class="link-content"><span class="link-title">Cookies & Confidentialité</span><span class="link-description">Gestion des cookies</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#admin" class="sidebar-link hidden" data-section="admin" id="admin-nav-link"><div class="link-icon"><i class="fas fa-users-cog"></i></div><div class="link-content"><span class="link-title">Administration</span><span class="link-description">Gestion utilisateurs</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#danger" class="sidebar-link danger-link" data-section="danger"><div class="link-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="link-content"><span class="link-title">Zone Danger</span><span class="link-description">Suppression du compte</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+            </nav>
+          </aside>
+
+          <!-- Main Content -->
+          <div class="settings-content">
+            <!-- Profile -->
+            <div id="profile" class="content-section active">
+              <div class="section-card">
+                <div class="section-header"><div class="header-icon"><i class="fas fa-user"></i></div><div class="header-text"><h2>Informations du Profil</h2><p>Mettez à jour vos informations personnelles</p></div></div>
+                <form id="profile-form" class="modern-form">
+                  <div class="form-grid">
+                    <div class="form-group"><label for="name"><i class="fas fa-signature"></i><span>Nom complet</span></label><input type="text" id="name" name="name" placeholder="Votre nom" autocomplete="name" required><span class="field-hint"><i class="fas fa-info-circle"></i> Votre nom tel qu'il apparaîtra sur le site</span></div>
+                    <div class="form-group"><label for="email"><i class="fas fa-envelope"></i><span>Adresse Email</span></label><input type="email" id="email" name="email" placeholder="votre@email.com" autocomplete="email" required><span class="field-hint"><i class="fas fa-lock"></i> Nous ne partagerons jamais votre email</span></div>
+                  </div>
+                  <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i><span>Enregistrer les modifications</span></button><button type="button" class="btn btn-secondary" id="reset-profile-btn"><i class="fas fa-undo"></i><span>Réinitialiser</span></button></div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Security -->
+            <div id="security" class="content-section">
+              <div class="section-card">
+                <div class="section-header"><div class="header-icon"><i class="fas fa-shield"></i></div><div class="header-text"><h2>Sécurité du Compte</h2><p>Protégez votre compte avec un mot de passe sécurisé</p></div></div>
+                <form id="security-form" class="modern-form">
+                  <div class="form-group">
+                    <label for="password"><i class="fas fa-key"></i><span>Nouveau mot de passe</span></label>
+                    <div class="password-wrapper"><input type="password" id="password" name="password" placeholder="Laissez vide pour ne pas changer" autocomplete="new-password"><button type="button" class="toggle-password" id="toggle-password"><i class="fas fa-eye-slash"></i></button></div>
+                    <div class="password-strength"><div class="strength-bars"><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div></div><span class="strength-text" id="strength-text">Force du mot de passe</span></div>
+                    <div class="password-requirements"><p class="requirements-title">Exigences du mot de passe :</p><ul><li id="req-length"><i class="fas fa-circle"></i><span>Au moins 4 caractères</span></li><li id="req-upper"><i class="fas fa-circle"></i><span>Une lettre majuscule</span></li><li id="req-lower"><i class="fas fa-circle"></i><span>Une lettre minuscule</span></li><li id="req-number"><i class="fas fa-circle"></i><span>Un chiffre</span></li></ul></div>
+                  </div>
+                  <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fas fa-shield-halved"></i><span>Mettre à jour le mot de passe</span></button></div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Privacy -->
+            <div id="privacy" class="content-section">
+              <div class="section-card">
+                <div class="section-header"><div class="header-icon"><i class="fas fa-cookie-bite"></i></div><div class="header-text"><h2>Cookies & Confidentialité</h2><p>Gérez vos préférences de cookies et de confidentialité</p></div></div>
+                <div class="privacy-overview"><div class="overview-header"><i class="fas fa-info-circle"></i><h3>État actuel de vos cookies</h3></div><div class="overview-content"><p>Vous contrôlez les données que nous collectons et la manière dont nous les utilisons.</p><div class="consent-date"><i class="fas fa-calendar-check"></i><span>Dernière modification : <strong id="consent-date">Jamais</strong></span></div></div></div>
+                <div class="cookie-preferences">
+                  <div class="cookie-preference-item"><div class="preference-header"><div class="preference-icon essential"><i class="fas fa-shield-alt"></i></div><div class="preference-info"><h4>Cookies essentiels</h4><p>Nécessaires au fonctionnement du site. Ne peuvent pas être désactivés.</p></div><div class="preference-toggle"><div class="toggle-switch disabled"><input type="checkbox" id="pref-essential" checked disabled><label for="pref-essential"><span class="toggle-slider"></span></label></div><span class="toggle-label always-on">Toujours activé</span></div></div><div class="preference-details"><div class="details-grid"><div class="detail-item"><i class="fas fa-key"></i><span>Authentification et session</span></div><div class="detail-item"><i class="fas fa-shield-halved"></i><span>Sécurité du compte</span></div><div class="detail-item"><i class="fas fa-sliders-h"></i><span>Préférences de base</span></div><div class="detail-item"><i class="fas fa-check-circle"></i><span>Consentement cookies</span></div></div><div class="duration-info"><i class="fas fa-clock"></i><span>Durée de conservation : Session à 1 an</span></div></div></div>
+                  <div class="cookie-preference-item"><div class="preference-header"><div class="preference-icon analytics"><i class="fas fa-chart-line"></i></div><div class="preference-info"><h4>Cookies analytiques</h4><p>Nous aident à comprendre comment vous utilisez le site pour l'améliorer.</p></div><div class="preference-toggle"><div class="toggle-switch"><input type="checkbox" id="pref-analytics"><label for="pref-analytics"><span class="toggle-slider"></span></label></div><span class="toggle-label" id="analytics-status">Désactivé</span></div></div><div class="preference-details"><div class="details-grid"><div class="detail-item"><i class="fas fa-eye"></i><span>Pages visitées</span></div><div class="detail-item"><i class="fas fa-clock"></i><span>Temps passé sur le site</span></div><div class="detail-item"><i class="fas fa-mouse-pointer"></i><span>Interactions avec le contenu</span></div><div class="detail-item"><i class="fas fa-chart-bar"></i><span>Statistiques d'utilisation</span></div></div><div class="duration-info"><i class="fas fa-clock"></i><span>Durée de conservation : 13 mois maximum</span></div><div class="info-note"><i class="fas fa-info-circle"></i><span>Les données collectées sont anonymisées et ne sont jamais vendues à des tiers.</span></div></div></div>
+                  <div class="cookie-preference-item"><div class="preference-header"><div class="preference-icon preference"><i class="fas fa-sliders-h"></i></div><div class="preference-info"><h4>Cookies de préférence</h4><p>Mémorisent vos choix pour personnaliser votre expérience.</p></div><div class="preference-toggle"><div class="toggle-switch"><input type="checkbox" id="pref-preference"><label for="pref-preference"><span class="toggle-slider"></span></label></div><span class="toggle-label" id="preference-status">Désactivé</span></div></div><div class="preference-details"><div class="details-grid"><div class="detail-item"><i class="fas fa-filter"></i><span>Filtres de recherche</span></div><div class="detail-item"><i class="fas fa-language"></i><span>Langue préférée</span></div><div class="detail-item"><i class="fas fa-palette"></i><span>Thème d'affichage</span></div><div class="detail-item"><i class="fas fa-sort"></i><span>Ordre de tri préféré</span></div></div><div class="duration-info"><i class="fas fa-clock"></i><span>Durée de conservation : 6 mois à 1 an</span></div></div></div>
+                  <div class="cookie-preference-item disabled-category"><div class="preference-header"><div class="preference-icon marketing"><i class="fas fa-bullhorn"></i></div><div class="preference-info"><h4>Cookies marketing</h4><p>Actuellement non utilisés sur ce site.</p></div><div class="preference-toggle"><div class="toggle-switch disabled"><input type="checkbox" id="pref-marketing" disabled><label for="pref-marketing"><span class="toggle-slider"></span></label></div><span class="toggle-label">Non utilisé</span></div></div></div>
+                </div>
+                <div class="privacy-actions"><button type="button" class="btn btn-primary" id="save-cookie-preferences"><i class="fas fa-save"></i><span>Enregistrer mes préférences</span></button><button type="button" class="btn btn-secondary" id="open-cookie-modal"><i class="fas fa-cog"></i><span>Paramètres avancés</span></button></div>
+                <div class="privacy-info-box"><div class="info-box-header"><i class="fas fa-shield-alt"></i><h4>Votre vie privée est importante</h4></div><p>Nous respectons votre vie privée et nous engageons à protéger vos données personnelles conformément au RGPD.</p><div class="info-links"><a href="politique-confidentialite.html" class="info-link"><i class="fas fa-file-shield"></i><span>Politique de confidentialité</span><i class="fas fa-arrow-right"></i></a><a href="cgu.html" class="info-link"><i class="fas fa-file-contract"></i><span>Conditions d'utilisation</span><i class="fas fa-arrow-right"></i></a></div></div>
+              </div>
+            </div>
+
+            <!-- Admin -->
+            <div id="admin" class="content-section hidden">
+              <div class="section-card">
+                <div class="section-header"><div class="header-icon"><i class="fas fa-users-cog"></i></div><div class="header-text"><h2>Gestion des Utilisateurs</h2><p>Administrez les comptes et permissions</p></div></div>
+                <div class="admin-tools"><div class="search-box"><i class="fas fa-search"></i><input type="search" id="user-filter" placeholder="Rechercher un utilisateur..." autocomplete="off"></div><div class="admin-stats"><div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><span class="stat-value" id="total-users">0</span><span class="stat-label">Utilisateurs</span></div></div></div></div>
+                <div id="user-list" class="user-list"></div>
+              </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div id="danger" class="content-section">
+              <div class="section-card danger-card">
+                <div class="section-header danger-header"><div class="header-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="header-text"><h2>Zone de Danger</h2><p>Actions irréversibles affectant votre compte</p></div></div>
+                <div class="danger-box"><div class="danger-content"><div class="danger-icon"><i class="fas fa-trash-alt"></i></div><div class="danger-text"><h3>Supprimer mon compte</h3><p>Cette action est <strong>définitive et irréversible</strong>. Toutes vos données, favoris et paramètres seront supprimés de manière permanente.</p><ul class="danger-list"><li><i class="fas fa-times"></i> Suppression de toutes vos données</li><li><i class="fas fa-times"></i> Perte de tous vos favoris</li><li><i class="fas fa-times"></i> Aucune récupération possible</li></ul></div></div><button id="delete-account-btn" class="btn btn-danger"><i class="fas fa-trash-alt"></i><span>Supprimer définitivement mon compte</span></button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
   <!-- Footer -->
   <footer>
-    <p>&copy; 2025 Vol d'Histoire. Tous droits réservés.</p>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p>Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
+        <div class="footer-section"><h3>Navigation</h3><ul><li><a href="index.html">Accueil</a></li><li><a href="hangar.html">Hangar</a></li><li><a href="timeline.html">Chronologie</a></li><li><a href="favorites.html">Favoris</a></li><li><a href="login.html">Connexion</a></li></ul></div>
+        <div class="footer-section"><h3>Ressources</h3><ul><li><a href="#">À propos (à venir)</a></li><li><a href="#">Contact (à venir)</a></li><li><a href="#">FAQ (à venir)</a></li><li><a href="#">Support (à venir)</a></li></ul></div>
+        <div class="footer-section"><h3>Légal</h3><ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="politique-confidentialite.html">Politique de confidentialité</a></li><li><a href="cgu.html">CGU</a></li><li><a href="#">Cookies</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p>Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
+    </div>
   </footer>
 
+  <!-- Logout Modal -->
+  <div id="logout-modal" class="logout-modal hidden">
+    <div class="logout-modal-backdrop"></div>
+    <div class="logout-modal-container">
+      <div class="logout-modal-icon"><i class="fas fa-sign-out-alt"></i></div>
+      <h3 class="logout-modal-title">Déconnexion</h3>
+      <p class="logout-modal-text">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+      <div class="logout-modal-actions"><button id="logout-cancel" class="logout-modal-btn logout-modal-btn-cancel">Annuler</button><button id="logout-confirm" class="logout-modal-btn logout-modal-btn-confirm">Se déconnecter</button></div>
+    </div>
+  </div>
+
+  <script src="js/cookies.js"></script>
   <script src="js/settings.js"></script>
 </body>
 </html>

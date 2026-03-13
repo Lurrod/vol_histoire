@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Vol d'Histoire</title>
+  <meta name="description" content="Contactez l'équipe Vol d'Histoire. Nous sommes là pour répondre à vos questions sur l'aviation militaire historique.">
+  <link rel="canonical" href="https://vol-histoire.titouan-borde.com/contact.html">
+  <meta name="robots" content="index, follow">
+  <meta name="keywords" content="contact, support, aide aviation militaire">
+  <meta property="og:title" content="Contact | Vol d'Histoire">
+  <meta property="og:description" content="Contactez l'équipe Vol d'Histoire. Nous sommes là pour répondre à vos questions sur l'aviation militaire historique.">
+  <meta property="og:url" content="https://vol-histoire.titouan-borde.com/contact.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Vol d'Histoire">
+  <meta property="og:locale" content="fr_FR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Contact | Vol d'Histoire">
+  <meta name="twitter:description" content="Contactez l'équipe Vol d'Histoire. Nous sommes là pour répondre à vos questions sur l'aviation militaire historique.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/legal.css">
+  <link rel="stylesheet" href="css/cookies.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* ── CONTACT PAGE STYLES ── */
+    .contact-hero {
+      position: relative;
+      padding: 140px 0 80px;
+      background: var(--night);
+      overflow: hidden;
+    }
+    .contact-hero .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 70% 40%, rgba(0,230,118,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 70%, rgba(0,229,255,0.05) 0%, transparent 50%);
+    }
+    .contact-hero .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridPulse 8s ease-in-out infinite;
+    }
+    @keyframes gridPulse { 0%,100%{opacity:.4}50%{opacity:.8} }
+    .contact-hero .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .contact-hero .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .5rem 1.25rem;
+      background: rgba(0,230,118,.08);
+      border: 1px solid rgba(0,230,118,.2);
+      border-radius: 50px;
+      color: var(--hud-green);
+      font-size: .8rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    .contact-hero h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2rem,5vw,3rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+    .contact-hero p { font-size: 1.1rem; color: rgba(255,255,255,.6); }
+
+    /* ── Layout ── */
+    .contact-section { padding: 4rem 0 6rem; background: var(--night); }
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* ── Info Cards (sidebar) ── */
+    .contact-info { display: flex; flex-direction: column; gap: 1.25rem; }
+    .contact-card {
+      padding: 1.5rem;
+      background: rgba(15,22,38,.7);
+      border: 1px solid rgba(0,229,255,.08);
+      border-radius: 14px;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      transition: var(--transition);
+    }
+    .contact-card:hover {
+      border-color: rgba(0,229,255,.2);
+      transform: translateX(4px);
+    }
+    .contact-card-icon {
+      width: 46px; height: 46px;
+      background: rgba(0,229,255,.08);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      color: var(--hud-cyan);
+      flex-shrink: 0;
+    }
+    .contact-card-icon.green { background: rgba(0,230,118,.08); color: var(--hud-green); }
+    .contact-card-icon.amber { background: rgba(255,171,0,.08); color: var(--hud-amber); }
+    .contact-card h3 { font-size: .95rem; font-weight: 600; color: var(--white); margin-bottom: .3rem; }
+    .contact-card p { font-size: .85rem; color: rgba(255,255,255,.45); line-height: 1.5; margin: 0; }
+    .contact-card a { color: var(--hud-cyan); text-decoration: none; font-size: .9rem; }
+    .contact-card a:hover { color: var(--white); }
+
+    .response-time {
+      padding: 1.25rem 1.5rem;
+      background: rgba(0,230,118,.04);
+      border: 1px solid rgba(0,230,118,.12);
+      border-radius: 12px;
+    }
+    .response-time-header {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--hud-green);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .rt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .5rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      font-size: .85rem;
+    }
+    .rt-row:last-child { border-bottom: none; }
+    .rt-label { color: rgba(255,255,255,.45); }
+    .rt-value { color: var(--white); font-weight: 500; }
+    .rt-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--hud-green);
+      box-shadow: 0 0 8px rgba(0,230,118,.6);
+      margin-right: .4rem;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+    /* ── Form ── */
+    .contact-form-wrapper {
+      background: rgba(15,22,38,.7);
+      border: 1px solid rgba(0,229,255,.08);
+      border-radius: 18px;
+      padding: 2.5rem;
+    }
+    .form-header { margin-bottom: 2rem; }
+    .form-header h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: .4rem;
+    }
+    .form-header p { color: rgba(255,255,255,.4); font-size: .9rem; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: .5rem;
+    }
+    .form-group label span { color: var(--hud-cyan); margin-left: 2px; }
+    .form-control {
+      width: 100%;
+      padding: .85rem 1rem;
+      background: rgba(8,12,20,.8);
+      border: 1px solid rgba(0,229,255,.1);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .95rem;
+      transition: var(--transition);
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: rgba(0,229,255,.4);
+      background: rgba(0,229,255,.03);
+      box-shadow: 0 0 0 3px rgba(0,229,255,.08);
+    }
+    .form-control::placeholder { color: rgba(255,255,255,.2); }
+    select.form-control { cursor: pointer; }
+    select.form-control option { background: #0f1626; }
+    textarea.form-control { resize: vertical; min-height: 130px; }
+
+    .subject-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      margin-bottom: 1.5rem;
+    }
+    .subject-chip {
+      padding: .4rem .9rem;
+      background: rgba(0,229,255,.06);
+      border: 1px solid rgba(0,229,255,.12);
+      border-radius: 50px;
+      color: rgba(255,255,255,.5);
+      font-size: .8rem;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .subject-chip:hover, .subject-chip.active {
+      background: rgba(0,229,255,.15);
+      border-color: rgba(0,229,255,.4);
+      color: var(--hud-cyan);
+    }
+
+    .form-submit {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .btn-send {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .85rem 2rem;
+      background: linear-gradient(135deg, rgba(0,229,255,.2), rgba(0,229,255,.1));
+      border: 1px solid rgba(0,229,255,.3);
+      border-radius: 10px;
+      color: var(--hud-cyan);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-send:hover {
+      background: linear-gradient(135deg, rgba(0,229,255,.3), rgba(0,229,255,.15));
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,229,255,.15);
+    }
+    .form-note { font-size: .8rem; color: rgba(255,255,255,.3); }
+
+    /* Success Toast */
+    .toast {
+      display: none;
+      align-items: center;
+      gap: .75rem;
+      padding: 1rem 1.5rem;
+      background: rgba(0,230,118,.08);
+      border: 1px solid rgba(0,230,118,.2);
+      border-radius: 10px;
+      color: var(--hud-green);
+      font-size: .9rem;
+      margin-top: 1rem;
+    }
+    .toast.show { display: flex; animation: fadeIn .4s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+    @media (max-width: 900px) {
+      .contact-layout { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Cookie Banner -->
+<div id="cookie-banner" class="cookie-banner hidden">
+  <div class="cookie-banner-content">
+    <div class="cookie-banner-text">
+      <div class="cookie-icon"><i class="fas fa-cookie-bite"></i></div>
+      <div class="cookie-message"><h3>🍪 Nous utilisons des cookies</h3><p>Nous utilisons des cookies pour améliorer votre expérience sur notre site.</p></div>
+    </div>
+    <div class="cookie-banner-actions">
+      <button class="btn btn-secondary btn-sm" id="cookie-settings-btn"><i class="fas fa-cog"></i><span>Personnaliser</span></button>
+      <button class="btn btn-outline btn-sm" id="cookie-reject-btn"><span>Refuser</span></button>
+      <button class="btn btn-primary btn-sm" id="cookie-accept-btn"><i class="fas fa-check"></i><span>Tout accepter</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header>
+  <nav class="container">
+    <a href="index.html" class="logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></a>
+    <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    <ul class="nav-links">
+      <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+      <li><a href="hangar.html"><i class="fas fa-plane"></i> Hangar</a></li>
+      <li><a href="timeline.html"><i class="fas fa-timeline"></i> Chronologie</a></li>
+      <li><a href="favorites.html"><i class="fas fa-heart"></i> Favoris</a></li>
+      <li class="user-menu"><div class="user-toggle">
+        <a href="login.html" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
+        <div id="user-info-container" class="user-dropdown hidden">
+          <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name">Utilisateur</span><span class="user-role">Membre</span></div></div>
+          <div class="dropdown-divider"></div>
+          <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i><span>Paramètres</span></a>
+          <div class="dropdown-divider"></div>
+          <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span>Déconnexion</span></a>
+        </div>
+      </div></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- Hero -->
+<section class="contact-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><i class="fas fa-satellite-dish"></i><span>Contact</span></div>
+    <h1>Entrez en <span style="color:var(--hud-cyan)">Communication</span></h1>
+    <p>Une question, une suggestion, un signalement ? Notre équipe vous répond dans les plus brefs délais.</p>
+  </div>
+</section>
+
+<!-- Content -->
+<section class="contact-section">
+  <div class="container">
+    <div class="contact-layout">
+
+      <!-- Sidebar -->
+      <div class="contact-info">
+        <div class="contact-card">
+          <div class="contact-card-icon"><i class="fas fa-envelope"></i></div>
+          <div>
+            <h3>Email général</h3>
+            <a href="mailto:contact@vol-histoire.fr">contact@vol-histoire.fr</a>
+            <p style="margin-top:.3rem">Pour toute question générale sur la plateforme</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon green"><i class="fas fa-bug"></i></div>
+          <div>
+            <h3>Signaler un bug</h3>
+            <a href="mailto:bugs@vol-histoire.fr" style="color:var(--hud-green)">bugs@vol-histoire.fr</a>
+            <p style="margin-top:.3rem">Erreur technique ou donnée incorrecte</p>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-card-icon amber"><i class="fas fa-pen-nib"></i></div>
+          <div>
+            <h3>Contribuer</h3>
+            <a href="mailto:contributions@vol-histoire.fr" style="color:var(--hud-amber)">contributions@vol-histoire.fr</a>
+            <p style="margin-top:.3rem">Proposer un appareil ou enrichir une fiche</p>
+          </div>
+        </div>
+
+        <!-- Response times -->
+        <div class="response-time">
+          <div class="response-time-header">
+            <span class="rt-dot"></span>
+            Délais de réponse estimés
+          </div>
+          <div class="rt-row">
+            <span class="rt-label">Questions générales</span>
+            <span class="rt-value">24 – 48h</span>
+          </div>
+          <div class="rt-row">
+            <span class="rt-label">Signalement de bugs</span>
+            <span class="rt-value">12 – 24h</span>
+          </div>
+          <div class="rt-row">
+            <span class="rt-label">Contributions</span>
+            <span class="rt-value">48 – 72h</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="contact-form-wrapper">
+        <div class="form-header">
+          <h2>Envoyer un Message</h2>
+          <p>Remplissez le formulaire ci-dessous, nous vous répondrons rapidement.</p>
+        </div>
+
+        <div class="subject-chips">
+          <div class="subject-chip active" onclick="selectChip(this)">Question générale</div>
+          <div class="subject-chip" onclick="selectChip(this)">Signaler une erreur</div>
+          <div class="subject-chip" onclick="selectChip(this)">Contribution</div>
+          <div class="subject-chip" onclick="selectChip(this)">Partenariat</div>
+          <div class="subject-chip" onclick="selectChip(this)">Autre</div>
+        </div>
+
+        <form id="contactForm" onsubmit="submitForm(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Prénom <span>*</span></label>
+              <input type="text" class="form-control" placeholder="Jean" required>
+            </div>
+            <div class="form-group">
+              <label>Nom <span>*</span></label>
+              <input type="text" class="form-control" placeholder="Dupont" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email <span>*</span></label>
+            <input type="email" class="form-control" placeholder="jean.dupont@exemple.fr" required>
+          </div>
+          <div class="form-group">
+            <label>Sujet <span>*</span></label>
+            <input type="text" class="form-control" id="subjectInput" placeholder="Décrivez votre sujet en quelques mots" required>
+          </div>
+          <div class="form-group">
+            <label>Message <span>*</span></label>
+            <textarea class="form-control" placeholder="Décrivez votre demande en détail..." required></textarea>
+          </div>
+
+          <div class="form-submit">
+            <button type="submit" class="btn-send">
+              <i class="fas fa-paper-plane"></i>
+              <span>Envoyer le message</span>
+            </button>
+            <span class="form-note"><i class="fas fa-lock" style="color:var(--hud-cyan)"></i> Vos données sont protégées</span>
+          </div>
+
+          <div class="toast" id="successToast">
+            <i class="fas fa-check-circle"></i>
+            <span>Message envoyé avec succès ! Nous vous répondrons sous 24–48h.</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p>Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
+      <div class="footer-section"><h3>Navigation</h3><ul><li><a href="index.html">Accueil</a></li><li><a href="hangar.html">Hangar</a></li><li><a href="timeline.html">Chronologie</a></li><li><a href="favorites.html">Favoris</a></li><li><a href="login.html">Connexion</a></li></ul></div>
+      <div class="footer-section"><h3>Ressources</h3><ul><li><a href="a-propos.html">À propos</a></li><li><a href="contact.html" class="active">Contact</a></li><li><a href="faq.html">FAQ</a></li><li><a href="support.html">Support</a></li></ul></div>
+      <div class="footer-section"><h3>Légal</h3><ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="politique-confidentialite.html">Politique de confidentialité</a></li><li><a href="cgu.html">CGU</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p>Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
+  </div>
+</footer>
+
+<script src="js/cookies.js"></script>
+<script src="js/script.js"></script>
+<script>
+  function selectChip(el) {
+    document.querySelectorAll('.subject-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('subjectInput').value = el.textContent;
+  }
+
+  function submitForm(e) {
+    e.preventDefault();
+    const toast = document.getElementById('successToast');
+    toast.classList.add('show');
+    e.target.reset();
+    setTimeout(() => toast.classList.remove('show'), 5000);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "testEnvironment": "node",
+  "testMatch": ["**/__tests__/**/*.test.js"],
+  "collectCoverageFrom": [
+    "validators.js",
+    "app.js"
+  ],
+  "coverageReporters": ["text", "lcov"],
+  "verbose": true
+}

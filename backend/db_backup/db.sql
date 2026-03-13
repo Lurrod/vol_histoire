@@ -68,6 +68,13 @@ CREATE TABLE airplanes (
     weight FLOAT
 );
 
+CREATE TABLE favorites (
+  user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  airplane_id INTEGER NOT NULL REFERENCES airplanes(id) ON DELETE CASCADE,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (user_id, airplane_id)
+);
+
 CREATE TABLE wars (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
