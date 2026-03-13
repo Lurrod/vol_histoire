@@ -254,6 +254,9 @@ class CookieConsent {
   }
   
   applyConsent() {
+    // Update GTM Consent Mode
+    this.updateGTMConsent();
+
     // Apply analytics cookies
     if (this.preferences.analytics) {
       this.enableAnalytics();
@@ -271,41 +274,48 @@ class CookieConsent {
     console.log('Cookie preferences applied:', this.preferences);
   }
   
-  enableAnalytics() {
-    // Enable Google Analytics or other analytics tools
-    // Example for Google Analytics 4:
-    /*
+  updateGTMConsent() {
+    // Update Google Consent Mode v2 via GTM dataLayer
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'GA_MEASUREMENT_ID');
-    */
+    function gtag(){window.dataLayer.push(arguments);}
     
+    gtag('consent', 'update', {
+      analytics_storage: this.preferences.analytics ? 'granted' : 'denied',
+      ad_storage: this.preferences.marketing ? 'granted' : 'denied',
+      ad_user_data: this.preferences.marketing ? 'granted' : 'denied',
+      ad_personalization: this.preferences.marketing ? 'granted' : 'denied',
+      functionality_storage: this.preferences.preference ? 'granted' : 'denied',
+      personalization_storage: this.preferences.preference ? 'granted' : 'denied',
+      security_storage: 'granted'
+    });
+
+    // Push consent event for GTM triggers
+    window.dataLayer.push({
+      event: 'cookie_consent_update',
+      cookie_consent_analytics: this.preferences.analytics,
+      cookie_consent_preference: this.preferences.preference,
+      cookie_consent_marketing: this.preferences.marketing
+    });
+
+    console.log('GTM Consent Mode updated:', this.preferences);
+  }
+
+  enableAnalytics() {
     console.log('Analytics cookies enabled');
-    
-    // You can also fire custom events
     this.fireEvent('analytics_enabled');
   }
   
   disableAnalytics() {
-    // Disable analytics tracking
-    // For Google Analytics:
-    /*
-    window['ga-disable-GA_MEASUREMENT_ID'] = true;
-    */
-    
     console.log('Analytics cookies disabled');
     this.fireEvent('analytics_disabled');
   }
   
   enablePreferences() {
-    // Enable preference cookies
     console.log('Preference cookies enabled');
     this.fireEvent('preferences_enabled');
   }
   
   disablePreferences() {
-    // Disable preference cookies (but keep essential ones)
     console.log('Preference cookies disabled');
     this.fireEvent('preferences_disabled');
   }
@@ -392,13 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('Type "resetCookieConsent()" in console to reset consent');
 });
 
-// Listen to cookie consent events (example for other scripts)
+// Listen to cookie consent events (GTM integration)
 document.addEventListener('cookieConsent', (e) => {
   console.log('Cookie consent event:', e.detail);
-  
-  // Example: Load analytics script when analytics are enabled
-  if (e.detail.event === 'analytics_enabled') {
-    // Load your analytics script here
-    console.log('Analytics script would be loaded here');
-  }
 });
