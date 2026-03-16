@@ -169,21 +169,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (token) {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      userRole = Number(payload.role);
-      
-      document.getElementById('user-name').textContent = payload.name;
-      document.querySelector('.user-role').textContent = 
-        userRole === 1 ? 'Administrateur' : userRole === 2 ? 'Éditeur' : 'Membre';
-      
-      userDropdown?.classList.remove('hidden');
-      
-      if (userRole === 1 || userRole === 2) {
-        document.getElementById('edit-btn')?.classList.remove('hidden');
-        document.getElementById('delete-btn')?.classList.remove('hidden');
+
+      // Check if token is expired
+      if (payload.exp && Date.now() >= payload.exp * 1000) {
+        console.warn('Token expiré, nettoyage de la session');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      } else {
+        userRole = Number(payload.role);
+        
+        document.getElementById('user-name').textContent = payload.name;
+        document.querySelector('.user-role').textContent = 
+          userRole === 1 ? 'Administrateur' : userRole === 2 ? 'Éditeur' : 'Membre';
+        
+        userDropdown?.classList.remove('hidden');
+        
+        if (userRole === 1 || userRole === 2) {
+          document.getElementById('edit-btn')?.classList.remove('hidden');
+          document.getElementById('delete-btn')?.classList.remove('hidden');
+        }
       }
     } catch (error) {
       console.error('Token error:', error);
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
     }
   }
 

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.0.0-00e5ff?style=for-the-badge&labelColor=080c14" alt="Version">
+  <img src="https://img.shields.io/badge/version-2.0.1-00e5ff?style=for-the-badge&labelColor=080c14" alt="Version">
   <img src="https://img.shields.io/badge/node-%3E%3D14-339933?style=for-the-badge&logo=node.js&labelColor=080c14" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D12-4169E1?style=for-the-badge&logo=postgresql&labelColor=080c14&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/licence-All%20Rights%20Reserved-e74c3c?style=for-the-badge&labelColor=080c14" alt="Licence">

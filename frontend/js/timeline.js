@@ -91,6 +91,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
+
+        // Check if token is expired
+        if (payload.exp && Date.now() >= payload.exp * 1000) {
+          console.warn('Token expiré, nettoyage de la session');
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          return;
+        }
+
         const userNameEl = document.getElementById('user-name');
         const userRoleEl = document.querySelector('.user-role');
         if (userNameEl) userNameEl.textContent = payload.name || 'Utilisateur';
@@ -101,6 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         userDropdown?.classList.remove('hidden');
       } catch (error) {
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
       }
     }
   };
