@@ -62,7 +62,7 @@ nav { display: flex; justify-content: space-between; align-items: center; }
 .hero-hud-grid { position: absolute; inset: 0; z-index: 0; background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px); background-size: 60px 60px; animation: gridPulse 8s ease-in-out infinite; }
 @keyframes gridPulse { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
 .page-hero-content { position: relative; z-index: 1; text-align: center; color: var(--white); }
-.hero-badge { display: inline-flex; align-items: center; gap: 0.6rem; background: rgba(0,229,255,0.08); backdrop-filter: blur(12px); padding: 0.55rem 1.4rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; border: 1px solid rgba(0,229,255,0.2); color: var(--hud-cyan); text-transform: uppercase; letter-spacing: 1.5px; position: relative; overflow: hidden; }
+.hero-badge { display: inline-flex; align-items: center; gap: 0.6rem; background: rgba(0,229,255,0.08); backdrop-filter: blur(12px); padding: 0.55rem 1.4rem 0.55rem 2.2rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; border: 1px solid rgba(0,229,255,0.2); color: var(--hud-cyan); text-transform: uppercase; letter-spacing: 1.5px; position: relative; overflow: hidden; }
 .badge-pulse { position: absolute; left: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--hud-cyan); animation: badgePulse 2s ease-in-out infinite; }
 @keyframes badgePulse { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,229,255,0.5); } 50% { opacity: 0.6; box-shadow: 0 0 0 6px rgba(0,229,255,0); } }
 .page-hero h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 1rem; }

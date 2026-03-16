@@ -136,7 +136,7 @@ nav { display: flex; justify-content: space-between; align-items: center; }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 0.6rem;
   background: rgba(0,229,255,0.08); backdrop-filter: blur(12px);
-  padding: 0.55rem 1.4rem; border-radius: 50px;
+  padding: 0.55rem 1.4rem 0.55rem 2.2rem; border-radius: 50px;
   font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem;
   border: 1px solid rgba(0,229,255,0.2);
   color: var(--hud-cyan); text-transform: uppercase; letter-spacing: 1.5px;
@@ -487,7 +487,7 @@ footer { background: var(--night); color: var(--white); padding: 4rem 0 2rem; bo
   .page-hero { padding: 5rem 0 2.5rem; }
   .page-hero h1 { font-size: clamp(1.75rem, 10vw, 2.5rem); margin-bottom: 0.75rem; }
   .page-hero p { font-size: 1rem; margin-bottom: 2rem; }
-  .hero-badge { font-size: 0.7rem; padding: 0.4rem 1rem; margin-bottom: 1rem; }
+  .hero-badge { font-size: 0.7rem; padding: 0.4rem 1rem 0.4rem 1.8rem; margin-bottom: 1rem; }
   .hero-stats { gap: 1.5rem; }
   .stat-number { font-size: 1.5rem; }
   .stat-label { font-size: 0.7rem; }

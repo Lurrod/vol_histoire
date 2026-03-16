@@ -256,11 +256,32 @@ document.addEventListener("DOMContentLoaded", () => {
   // AUTH CHECK & USER DATA
   // ========================================================================
   
+  // Token expiration check utility
+  function isTokenExpired(token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (!payload.exp) return false;
+      return Date.now() >= payload.exp * 1000;
+    } catch {
+      return true;
+    }
+  }
+
   async function checkAuth() {
     const token = localStorage.getItem('token');
     
     if (!token) {
       window.location.href = 'login.html';
+      return false;
+    }
+
+    // Check if token is expired
+    if (isTokenExpired(token)) {
+      console.warn('Token expiré, redirection vers login');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      showToast('Session expirée, veuillez vous reconnecter', 'error');
+      setTimeout(() => { window.location.href = 'login.html'; }, 1500);
       return false;
     }
 
@@ -604,10 +625,17 @@ document.addEventListener("DOMContentLoaded", () => {
         allUsers = await response.json();
         displayUsers(allUsers);
         updateUserStats();
+      } else if (response.status === 401 || response.status === 403) {
+        console.warn('Token expiré ou accès refusé:', response.status);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        showToast('Session expirée, veuillez vous reconnecter', 'error');
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
       } else {
         console.warn('Failed to load users:', response.status);
-        // Show empty state or mock data
-        userList.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">API non disponible. Connectez votre backend pour voir les utilisateurs.</p>';
+        if (userList) {
+          userList.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">API non disponible. Connectez votre backend pour voir les utilisateurs.</p>';
+        }
       }
     } catch (err) {
       console.warn('Network error loading users:', err);

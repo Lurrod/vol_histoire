@@ -91,9 +91,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 250);
   });
 
+  // Token expiration check utility
+  function isTokenExpired(token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (!payload.exp) return false;
+      // exp is in seconds, Date.now() in ms — add 30s buffer
+      return Date.now() >= payload.exp * 1000;
+    } catch {
+      return true;
+    }
+  }
+
   // User Authentication & Menu
-  const token = localStorage.getItem('token');
+  let token = localStorage.getItem('token');
   let currentUser = null;
+
+  // If the token exists but is expired, clean up and treat as logged out
+  if (token && isTokenExpired(token)) {
+    console.warn('Token expiré, nettoyage de la session');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    token = null;
+  }
 
   if (token) {
     try {
@@ -114,6 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error('Token parsing error:', error);
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
     }
   }
 
