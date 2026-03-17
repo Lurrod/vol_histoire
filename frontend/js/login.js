@@ -474,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      showToast('Déconnexion', 'success', 'À bientôt !');
+      showToast(i18n.t('login.toast_logout'), 'success', i18n.t('login.toast_logout_msg'));
       setTimeout(() => { window.location.reload(); }, 1500);
     });
   }

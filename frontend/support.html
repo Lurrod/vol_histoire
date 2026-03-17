@@ -22,7 +22,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Support | Vol d'Histoire</title>
+  <title data-i18n="support.title">Support | Vol d'Histoire</title>
   <meta name="description" content="Centre de support Vol d'Histoire — guides, ressources et assistance pour utiliser la plateforme.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/support.html">
   <meta name="robots" content="index, follow">
@@ -313,12 +313,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="cookie-banner-content">
     <div class="cookie-banner-text">
       <div class="cookie-icon"><i class="fas fa-cookie-bite"></i></div>
-      <div class="cookie-message"><h3>🍪 Nous utilisons des cookies</h3><p>Nous utilisons des cookies pour améliorer votre expérience sur notre site.</p></div>
+      <div class="cookie-message"><h3 data-i18n="cookie.title">🍪 Nous utilisons des cookies</h3><p data-i18n="cookie.intro_short">Nous utilisons des cookies pour améliorer votre expérience sur notre site.</p></div>
     </div>
     <div class="cookie-banner-actions">
-      <button class="btn btn-secondary btn-sm" id="cookie-settings-btn"><i class="fas fa-cog"></i><span>Personnaliser</span></button>
-      <button class="btn btn-outline btn-sm" id="cookie-reject-btn"><span>Refuser</span></button>
-      <button class="btn btn-primary btn-sm" id="cookie-accept-btn"><i class="fas fa-check"></i><span>Tout accepter</span></button>
+      <button class="btn btn-secondary btn-sm" id="cookie-settings-btn"><i class="fas fa-cog"></i><span data-i18n="cookie.customize">Personnaliser</span></button>
+      <button class="btn btn-outline btn-sm" id="cookie-reject-btn"><span data-i18n="cookie.reject">Refuser</span></button>
+      <button class="btn btn-primary btn-sm" id="cookie-accept-btn"><i class="fas fa-check"></i><span data-i18n="cookie.accept_all">Tout accepter</span></button>
     </div>
   </div>
 </div>
@@ -329,18 +329,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <a href="index.html" class="logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></a>
     <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
     <ul class="nav-links">
-      <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
-      <li><a href="hangar.html"><i class="fas fa-plane"></i> Hangar</a></li>
-      <li><a href="timeline.html"><i class="fas fa-timeline"></i> Chronologie</a></li>
-      <li><a href="favorites.html"><i class="fas fa-heart"></i> Favoris</a></li>
-      <li class="user-menu"><div class="user-toggle">
+      <li><a href="index.html"><i class="fas fa-home"></i data-i18n="nav.home"> Accueil</a></li>
+      <li><a href="hangar.html"><i class="fas fa-plane"></i data-i18n="nav.hangar"> Hangar</a></li>
+      <li><a href="timeline.html"><i class="fas fa-timeline"></i data-i18n="nav.timeline"> Chronologie</a></li>
+      <li><a href="favorites.html"><i class="fas fa-heart"></i data-i18n="nav.favorites"> Favoris</a></li>
+      <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
+        <li class="user-menu"><div class="user-toggle">
         <a href="login.html" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
         <div id="user-info-container" class="user-dropdown hidden">
-          <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name">Utilisateur</span><span class="user-role">Membre</span></div></div>
+          <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
           <div class="dropdown-divider"></div>
-          <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i><span>Paramètres</span></a>
+          <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
           <div class="dropdown-divider"></div>
-          <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span>Déconnexion</span></a>
+          <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
         </div>
       </div></li>
     </ul>
@@ -351,12 +352,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="support-hero">
   <div class="hero-bg"></div>
   <div class="hero-content">
-    <div class="hero-badge"><i class="fas fa-headset"></i><span>Centre de Support</span></div>
-    <h1>Comment pouvons-nous <span style="color:var(--hud-cyan)">vous aider ?</span></h1>
-    <p>Guides, ressources et assistance pour tirer le meilleur de Vol d'Histoire.</p>
+    <div class="hero-badge"><i class="fas fa-headset"></i><span data-i18n="support.badge">Centre de Support</span></div>
+    <h1 data-i18n="support.hero_title_1">Comment pouvons-nous <span style="color:var(--hud-cyan)" data-i18n="support.hero_title_2">vous aider ?</span></h1>
+    <p data-i18n="support.hero_desc">Guides, ressources et assistance pour tirer le meilleur de Vol d'Histoire.</p>
     <div class="support-search">
       <i class="fas fa-search"></i>
-      <input type="text" placeholder="Rechercher un guide, une réponse...">
+      <input type="text" placeholder="Rechercher un guide, une réponse..." data-i18n-placeholder="support.search_placeholder">
     </div>
   </div>
 </section>
@@ -368,51 +369,51 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- Status -->
     <div class="status-banner">
       <div class="status-dot"></div>
-      <div class="status-text"><strong>Tous les systèmes opérationnels</strong> — La plateforme fonctionne normalement.</div>
-      <div class="status-badge"><i class="fas fa-check" style="margin-right:.3rem"></i>Opérationnel</div>
+      <div class="status-text"><strong data-i18n="support.status_operational">Tous les systèmes opérationnels</strong> — <span data-i18n="support.status_desc">La plateforme fonctionne normalement.</span></div>
+      <div class="status-badge"><i class="fas fa-check" style="margin-right:.3rem"></i><span data-i18n="support.status_label">Opérationnel</span></div>
     </div>
 
     <!-- Guides -->
     <div class="support-section-title">
       <i class="fas fa-book-open"></i>
-      <h2>Guides & Documentation</h2>
+      <h2 data-i18n="support.guides_title">Guides & Documentation</h2>
     </div>
     <div class="guides-grid">
       <div class="guide-card">
         <div class="guide-icon"><i class="fas fa-rocket"></i></div>
-        <h3>Démarrage rapide</h3>
-        <p>Créez votre compte, explorez le hangar et enregistrez vos premiers favoris en moins de 5 minutes.</p>
-        <a href="#" class="guide-link">Lire le guide <i class="fas fa-arrow-right"></i></a>
+        <h3 data-i18n="support.guide_start_title">Démarrage rapide</h3>
+        <p data-i18n="support.guide_start_desc">Créez votre compte, explorez le hangar et enregistrez vos premiers favoris en moins de 5 minutes.</p>
+        <a href="#" class="guide-link"><span data-i18n="support.guide_start_link">Lire le guide</span> <i class="fas fa-arrow-right"></i></a>
       </div>
       <div class="guide-card">
         <div class="guide-icon"><i class="fas fa-plane"></i></div>
-        <h3>Explorer le Hangar</h3>
-        <p>Apprenez à utiliser les filtres avancés, la recherche en temps réel et les vues grille/liste.</p>
-        <a href="hangar.html" class="guide-link">Aller au hangar <i class="fas fa-arrow-right"></i></a>
+        <h3 data-i18n="support.guide_hangar_title">Explorer le Hangar</h3>
+        <p data-i18n="support.guide_hangar_desc">Apprenez à utiliser les filtres avancés, la recherche en temps réel et les vues grille/liste.</p>
+        <a href="hangar.html" class="guide-link"><span data-i18n="support.guide_hangar_link">Aller au hangar</span> <i class="fas fa-arrow-right"></i></a>
       </div>
       <div class="guide-card">
         <div class="guide-icon amber"><i class="fas fa-timeline"></i></div>
-        <h3>Chronologie interactive</h3>
-        <p>Naviguez dans l'histoire de l'aviation militaire avec notre frise chronologique illustrée.</p>
-        <a href="timeline.html" class="guide-link">Voir la chronologie <i class="fas fa-arrow-right"></i></a>
+        <h3 data-i18n="support.guide_timeline_title">Chronologie interactive</h3>
+        <p data-i18n="support.guide_timeline_desc">Naviguez dans l'histoire de l'aviation militaire avec notre frise chronologique illustrée.</p>
+        <a href="timeline.html" class="guide-link"><span data-i18n="support.guide_timeline_link">Voir la chronologie</span> <i class="fas fa-arrow-right"></i></a>
       </div>
       <div class="guide-card">
         <div class="guide-icon green"><i class="fas fa-heart"></i></div>
-        <h3>Gérer ses favoris</h3>
-        <p>Sauvegardez, organisez et retrouvez facilement vos appareils préférés depuis votre espace personnel.</p>
-        <a href="favorites.html" class="guide-link">Mes favoris <i class="fas fa-arrow-right"></i></a>
+        <h3 data-i18n="support.guide_favorites_title">Gérer ses favoris</h3>
+        <p data-i18n="support.guide_favorites_desc">Sauvegardez, organisez et retrouvez facilement vos appareils préférés depuis votre espace personnel.</p>
+        <a href="favorites.html" class="guide-link"><span data-i18n="support.guide_favorites_link">Mes favoris</span> <i class="fas fa-arrow-right"></i></a>
       </div>
       <div class="guide-card">
         <div class="guide-icon"><i class="fas fa-user-cog"></i></div>
-        <h3>Gérer son compte</h3>
-        <p>Modifiez votre profil, changez votre mot de passe et gérez les paramètres de confidentialité.</p>
-        <a href="settings.html" class="guide-link">Paramètres <i class="fas fa-arrow-right"></i></a>
+        <h3 data-i18n="support.guide_account_title">Gérer son compte</h3>
+        <p data-i18n="support.guide_account_desc">Modifiez votre profil, changez votre mot de passe et gérez les paramètres de confidentialité.</p>
+        <a href="settings.html" class="guide-link"><span data-i18n="support.guide_account_link">Paramètres</span> <i class="fas fa-arrow-right"></i></a>
       </div>
       <div class="guide-card">
         <div class="guide-icon amber"><i class="fas fa-shield-alt"></i></div>
-        <h3>Sécurité & Confidentialité</h3>
-        <p>Comprenez comment nous protégeons vos données et quels sont vos droits selon le RGPD.</p>
-        <a href="politique-confidentialite.html" class="guide-link">Politique de confidentialité <i class="fas fa-arrow-right"></i></a>
+        <h3 data-i18n="support.guide_security_title">Sécurité & Confidentialité</h3>
+        <p data-i18n="support.guide_security_desc">Comprenez comment nous protégeons vos données et quels sont vos droits selon le RGPD.</p>
+        <a href="politique-confidentialite.html" class="guide-link"><span data-i18n="support.guide_security_link">Politique de confidentialité</span> <i class="fas fa-arrow-right"></i></a>
       </div>
     </div>
 
@@ -420,35 +421,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="steps-section">
       <div class="support-section-title">
         <i class="fas fa-list-check"></i>
-        <h2>Prise en main en 4 étapes</h2>
+        <h2 data-i18n="support.steps_title">Prise en main en 4 étapes</h2>
       </div>
       <div class="steps-list">
         <div class="step-item">
           <div class="step-num">01</div>
           <div class="step-body">
-            <h4>Créez votre compte</h4>
-            <p>Rendez-vous sur la page <a href="login.html" style="color:var(--hud-cyan)">Connexion</a> et cliquez sur "Créer un compte". Renseignez vos informations et validez votre email.</p>
+            <h4 data-i18n="support.step1_title">Créez votre compte</h4>
+            <p data-i18n-html="support.step1_desc_html">Rendez-vous sur la page <a href="login.html" style="color:var(--hud-cyan)">Connexion</a> et cliquez sur "Créer un compte". Renseignez vos informations et validez votre email.</p>
           </div>
         </div>
         <div class="step-item">
           <div class="step-num">02</div>
           <div class="step-body">
-            <h4>Explorez le Hangar</h4>
-            <p>Accédez au <a href="hangar.html" style="color:var(--hud-cyan)">Hangar</a> pour parcourir notre catalogue d'appareils. Utilisez les filtres par nation, génération ou type pour affiner votre recherche.</p>
+            <h4 data-i18n="support.step2_title">Explorez le Hangar</h4>
+            <p data-i18n-html="support.step2_desc_html">Accédez au <a href="hangar.html" style="color:var(--hud-cyan)">Hangar</a> pour parcourir notre catalogue d'appareils. Utilisez les filtres par nation, génération ou type pour affiner votre recherche.</p>
           </div>
         </div>
         <div class="step-item">
           <div class="step-num">03</div>
           <div class="step-body">
-            <h4>Consultez les fiches détaillées</h4>
-            <p>Cliquez sur un appareil pour accéder à sa fiche complète : spécifications techniques, historique de service, conflits et galerie.</p>
+            <h4 data-i18n="support.guide_detail_title">Consultez les fiches détaillées</h4>
+            <p data-i18n="support.guide_detail_desc">Cliquez sur un appareil pour accéder à sa fiche complète : spécifications techniques, historique de service, conflits et galerie.</p>
           </div>
         </div>
         <div class="step-item">
           <div class="step-num">04</div>
           <div class="step-body">
-            <h4>Ajoutez à vos favoris</h4>
-            <p>Cliquez sur l'icône <i class="fas fa-heart" style="color:#e74c3c"></i> sur n'importe quelle fiche pour retrouver l'appareil dans votre espace <a href="favorites.html" style="color:var(--hud-cyan)">Favoris</a>.</p>
+            <h4 data-i18n="support.guide_favs_title">Ajoutez à vos favoris</h4>
+            <p data-i18n-html="support.step3_desc_html">Cliquez sur l'icône <i class="fas fa-heart" style="color:#e74c3c"></i> sur n'importe quelle fiche pour retrouver l'appareil dans votre espace <a href="favorites.html" style="color:var(--hud-cyan)">Favoris</a>.</p>
           </div>
         </div>
       </div>
@@ -457,14 +458,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- Contact -->
     <div class="support-section-title">
       <i class="fas fa-headset"></i>
-      <h2>Besoin d'aide supplémentaire ?</h2>
+      <h2 data-i18n="support.contact_title">Besoin d'aide supplémentaire ?</h2>
     </div>
     <div class="support-contact-cta">
       <div class="cta-card cyan">
         <div class="cta-card-icon"><i class="fas fa-envelope"></i></div>
         <div>
           <h3>Contacter le support</h3>
-          <p>Vous n'avez pas trouvé la réponse à votre question ? Notre équipe est disponible pour vous aider.</p>
+          <p data-i18n="support.contact_not_found">Vous n'avez pas trouvé la réponse à votre question ? Notre équipe est disponible pour vous aider.</p>
           <a href="contact.html"><i class="fas fa-paper-plane"></i> Envoyer un message</a>
         </div>
       </div>
@@ -472,7 +473,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="cta-card-icon"><i class="fas fa-question-circle"></i></div>
         <div>
           <h3>Consulter la FAQ</h3>
-          <p>Parcourez les questions fréquemment posées par notre communauté. Bientôt disponible.</p>
+          <p data-i18n="support.faq_link_desc">Parcourez les questions fréquemment posées par notre communauté. Bientôt disponible.</p>
           <a href="faq.html"><i class="fas fa-book"></i> Voir la FAQ</a>
         </div>
       </div>
@@ -485,16 +486,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <footer>
   <div class="container">
     <div class="footer-content">
-      <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p>Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
-      <div class="footer-section"><h3>Navigation</h3><ul><li><a href="index.html">Accueil</a></li><li><a href="hangar.html">Hangar</a></li><li><a href="timeline.html">Chronologie</a></li><li><a href="favorites.html">Favoris</a></li><li><a href="login.html">Connexion</a></li></ul></div>
-      <div class="footer-section"><h3>Ressources</h3><ul><li><a href="a-propos.html">À propos</a></li><li><a href="contact.html">Contact</a></li><li><a href="faq.html">FAQ</a></li><li><a href="support.html" class="active">Support</a></li></ul></div>
-      <div class="footer-section"><h3>Légal</h3><ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="politique-confidentialite.html">Politique de confidentialité</a></li><li><a href="cgu.html">CGU</a></li></ul></div>
+      <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
+      <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="index.html" data-i18n="nav.home">Accueil</a></li><li><a href="hangar.html" data-i18n="nav.hangar">Hangar</a></li><li><a href="timeline.html" data-i18n="nav.timeline">Chronologie</a></li><li><a href="favorites.html" data-i18n="nav.favorites">Favoris</a></li><li><a href="login.html" data-i18n="nav.login">Connexion</a></li></ul></div>
+      <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="a-propos.html" data-i18n="footer.about">À propos</a></li><li><a href="contact.html">Contact</a></li><li><a href="faq.html">FAQ</a></li><li><a href="support.html" class="active">Support</a></li></ul></div>
+      <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="mentions-legales.html" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="politique-confidentialite.html" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="cgu.html" data-i18n="footer.terms">CGU</a></li></ul></div>
     </div>
-    <div class="footer-bottom"><p>&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p>Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
+    <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
   </div>
 </footer>
 
-<script src="js/cookies.js"></script>
+<script src="js/i18n.js"></script>
+  <script src="js/cookies.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>

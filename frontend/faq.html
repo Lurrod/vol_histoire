@@ -22,7 +22,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FAQ | Vol d'Histoire</title>
+  <title data-i18n="faq.title">FAQ | Vol d'Histoire</title>
   <meta name="description" content="Foire aux questions — bientôt disponible sur Vol d'Histoire.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/faq.html">
   <meta name="robots" content="index, follow">
@@ -614,12 +614,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="cookie-banner-content">
     <div class="cookie-banner-text">
       <div class="cookie-icon"><i class="fas fa-cookie-bite"></i></div>
-      <div class="cookie-message"><h3>🍪 Nous utilisons des cookies</h3><p>Nous utilisons des cookies pour améliorer votre expérience sur notre site.</p></div>
+      <div class="cookie-message"><h3 data-i18n="cookie.title">🍪 Nous utilisons des cookies</h3><p data-i18n="cookie.intro_short">Nous utilisons des cookies pour améliorer votre expérience sur notre site.</p></div>
     </div>
     <div class="cookie-banner-actions">
-      <button class="btn btn-secondary btn-sm" id="cookie-settings-btn"><i class="fas fa-cog"></i><span>Personnaliser</span></button>
-      <button class="btn btn-outline btn-sm" id="cookie-reject-btn"><span>Refuser</span></button>
-      <button class="btn btn-primary btn-sm" id="cookie-accept-btn"><i class="fas fa-check"></i><span>Tout accepter</span></button>
+      <button class="btn btn-secondary btn-sm" id="cookie-settings-btn"><i class="fas fa-cog"></i><span data-i18n="cookie.customize">Personnaliser</span></button>
+      <button class="btn btn-outline btn-sm" id="cookie-reject-btn"><span data-i18n="cookie.reject">Refuser</span></button>
+      <button class="btn btn-primary btn-sm" id="cookie-accept-btn"><i class="fas fa-check"></i><span data-i18n="cookie.accept_all">Tout accepter</span></button>
     </div>
   </div>
 </div>
@@ -630,18 +630,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <a href="index.html" class="logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></a>
     <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
     <ul class="nav-links">
-      <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
-      <li><a href="hangar.html"><i class="fas fa-plane"></i> Hangar</a></li>
-      <li><a href="timeline.html"><i class="fas fa-timeline"></i> Chronologie</a></li>
-      <li><a href="favorites.html"><i class="fas fa-heart"></i> Favoris</a></li>
-      <li class="user-menu"><div class="user-toggle">
+      <li><a href="index.html"><i class="fas fa-home"></i data-i18n="nav.home"> Accueil</a></li>
+      <li><a href="hangar.html"><i class="fas fa-plane"></i data-i18n="nav.hangar"> Hangar</a></li>
+      <li><a href="timeline.html"><i class="fas fa-timeline"></i data-i18n="nav.timeline"> Chronologie</a></li>
+      <li><a href="favorites.html"><i class="fas fa-heart"></i data-i18n="nav.favorites"> Favoris</a></li>
+      <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
+        <li class="user-menu"><div class="user-toggle">
         <a href="login.html" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
         <div id="user-info-container" class="user-dropdown hidden">
-          <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name">Utilisateur</span><span class="user-role">Membre</span></div></div>
+          <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
           <div class="dropdown-divider"></div>
-          <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i><span>Paramètres</span></a>
+          <a href="settings.html" class="dropdown-item"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
           <div class="dropdown-divider"></div>
-          <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span>Déconnexion</span></a>
+          <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
         </div>
       </div></li>
     </ul>
@@ -664,24 +665,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- Badge -->
       <div class="cs-badge">
         <span class="blink"></span>
-        En cours de préparation
+        <span data-i18n="faq.badge_preparing">En cours de préparation</span>
       </div>
 
       <!-- Title -->
       <h1 class="cs-title">
-        La FAQ arrive<br>
-        <span class="highlight">bientôt !</span>
+        <span data-i18n="faq.coming_soon_title">La FAQ arrive</span><br>
+        <span class="highlight" data-i18n="faq.coming_soon_label">bientôt !</span>
       </h1>
 
       <!-- Subtitle -->
-      <p class="cs-subtitle">
+      <p class="cs-subtitle" data-i18n="faq.hero_desc">
         Notre équipe compile les questions les plus fréquentes de la communauté et prépare des réponses détaillées. La FAQ sera disponible très prochainement.
       </p>
 
       <!-- Progress -->
       <div class="cs-progress">
         <div class="progress-header">
-          <span>Avancement</span>
+          <span data-i18n="faq.progress_label">Avancement</span>
           <span class="progress-pct">35%</span>
         </div>
         <div class="progress-track">
@@ -693,15 +694,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="cs-checklist">
         <div class="check-item done">
           <div class="check-dot"><i class="fas fa-check"></i></div>
-          <span>Collecte des questions de la communauté</span>
+          <span data-i18n="faq.step1">Collecte des questions de la communauté</span>
         </div>
         <div class="check-item wip">
           <div class="check-dot"><i class="fas fa-spinner fa-spin"></i></div>
-          <span>Rédaction des réponses (en cours)</span>
+          <span data-i18n="faq.step2">Rédaction des réponses (en cours)</span>
         </div>
         <div class="check-item">
           <div class="check-dot"><i class="fas fa-clock"></i></div>
-          <span>Catégorisation et mise en page</span>
+          <span data-i18n="faq.step3">Catégorisation et mise en page</span>
         </div>
         <div class="check-item">
           <div class="check-dot"><i class="fas fa-clock"></i></div>
@@ -724,7 +725,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <!-- Notification opt-in -->
       <div class="cs-notify">
         <i class="fas fa-bell"></i>
-        <p>Être notifié à la mise en ligne de la FAQ :</p>
+        <p data-i18n="faq.notify_text">Être notifié à la mise en ligne de la FAQ :</p>
         <div class="notify-input-wrap">
           <input type="email" class="notify-input" placeholder="votre@email.fr" id="notifyEmail">
           <button class="notify-btn" onclick="submitNotify()"><i class="fas fa-paper-plane"></i></button>
@@ -739,16 +740,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <footer style="position:relative;z-index:1">
   <div class="container">
     <div class="footer-content">
-      <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p>Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
-      <div class="footer-section"><h3>Navigation</h3><ul><li><a href="index.html">Accueil</a></li><li><a href="hangar.html">Hangar</a></li><li><a href="timeline.html">Chronologie</a></li><li><a href="favorites.html">Favoris</a></li><li><a href="login.html">Connexion</a></li></ul></div>
-      <div class="footer-section"><h3>Ressources</h3><ul><li><a href="a-propos.html">À propos</a></li><li><a href="contact.html">Contact</a></li><li><a href="faq.html" class="active">FAQ</a></li><li><a href="support.html">Support</a></li></ul></div>
-      <div class="footer-section"><h3>Légal</h3><ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="politique-confidentialite.html">Politique de confidentialité</a></li><li><a href="cgu.html">CGU</a></li></ul></div>
+      <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
+      <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="index.html" data-i18n="nav.home">Accueil</a></li><li><a href="hangar.html" data-i18n="nav.hangar">Hangar</a></li><li><a href="timeline.html" data-i18n="nav.timeline">Chronologie</a></li><li><a href="favorites.html" data-i18n="nav.favorites">Favoris</a></li><li><a href="login.html" data-i18n="nav.login">Connexion</a></li></ul></div>
+      <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="a-propos.html" data-i18n="footer.about">À propos</a></li><li><a href="contact.html">Contact</a></li><li><a href="faq.html" class="active">FAQ</a></li><li><a href="support.html">Support</a></li></ul></div>
+      <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="mentions-legales.html" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="politique-confidentialite.html" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="cgu.html" data-i18n="footer.terms">CGU</a></li></ul></div>
     </div>
-    <div class="footer-bottom"><p>&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p>Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
+    <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
   </div>
 </footer>
 
-<script src="js/cookies.js"></script>
+<script src="js/i18n.js"></script>
+  <script src="js/cookies.js"></script>
 <script src="js/script.js"></script>
 <script>
   function submitNotify() {
@@ -764,7 +766,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     btn.style.borderColor = 'rgba(0,230,118,.3)';
     btn.style.color = '#00e676';
     email.value = '';
-    email.placeholder = 'Merci ! Vous serez notifié.';
+    email.placeholder = i18n ? i18n.t('faq.notify_success') : 'Merci ! Vous serez notifié.';
     setTimeout(() => {
       btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
       btn.style = '';

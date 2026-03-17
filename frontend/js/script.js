@@ -65,11 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const userNameEl = document.getElementById('user-name');
         const userRoleEl = document.querySelector('.user-role');
 
-        if (userNameEl) userNameEl.textContent = payload.name || 'Utilisateur';
+        if (userNameEl) userNameEl.textContent = payload.name || i18n.t('nav.user_default');
         if (userRoleEl) {
           const role = Number(payload.role);
-          userRoleEl.textContent = role === 1 ? 'Administrateur' :
-                                   role === 2 ? 'Éditeur' : 'Membre';
+          userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
+                                   role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
         }
       } catch (error) {
         console.error('Token parsing error:', error);
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn?.addEventListener('click', (e) => {
       e.preventDefault();
       localStorage.removeItem('token');
-      showToast('Déconnexion réussie', 'success');
+      showToast(i18n.t('common.logout_success'), 'success');
       setTimeout(() => { window.location.href = 'index.html'; }, 1000);
     });
   });
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data.earliest_year && data.latest_year) {
         const span = data.latest_year - data.earliest_year;
         animateNumber(elYears, span);
-        if (elYearsLbl) elYearsLbl.textContent = "Années d'Histoire";
+        if (elYearsLbl) elYearsLbl.textContent = i18n.t('home.stat_years');
       }
     } catch (err) {
       // Fallback: hardcoded values if API unreachable
