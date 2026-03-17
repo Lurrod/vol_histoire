@@ -27,11 +27,11 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title data-i18n="settings.title">Paramètres du Compte | Vol d'Histoire</title>
   <meta name="description" content="Gérez vos paramètres de compte, votre profil et vos préférences de sécurité.">
-  <link rel="canonical" href="https://vol-histoire.titouan-borde.com/settings.html">
+  <link rel="canonical" href="https://vol-histoire.titouan-borde.com/settings">
   <meta name="robots" content="noindex, nofollow">
   <meta property="og:title" content="Paramètres du Compte | Vol d'Histoire">
   <meta property="og:description" content="Gérez vos paramètres de compte, votre profil et vos préférences de sécurité.">
-  <meta property="og:url" content="https://vol-histoire.titouan-borde.com/settings.html">
+  <meta property="og:url" content="https://vol-histoire.titouan-borde.com/settings">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Vol d'Histoire">
   <meta property="og:locale" content="fr_FR">
@@ -61,17 +61,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div>
       <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
       <ul class="nav-links">
-        <li><a href="index.html"><i class="fas fa-home"></i data-i18n="nav.home"> Accueil</a></li>
-        <li><a href="hangar.html"><i class="fas fa-plane"></i data-i18n="nav.hangar"> Hangar</a></li>
-        <li><a href="timeline.html"><i class="fas fa-timeline"></i data-i18n="nav.timeline"> Chronologie</a></li>
-        <li><a href="favorites.html"><i class="fas fa-heart"></i data-i18n="nav.favorites"> Favoris</a></li>
+        <li><a href="/"><i class="fas fa-home"></i data-i18n="nav.home"> Accueil</a></li>
+        <li><a href="/hangar"><i class="fas fa-plane"></i data-i18n="nav.hangar"> Hangar</a></li>
+        <li><a href="/timeline"><i class="fas fa-timeline"></i data-i18n="nav.timeline"> Chronologie</a></li>
+        <li><a href="/favorites"><i class="fas fa-heart"></i data-i18n="nav.favorites"> Favoris</a></li>
         <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
         <li class="user-menu"><div class="user-toggle">
-          <a href="login.html" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
+          <a href="/login" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
           <div id="user-info-container" class="user-dropdown hidden">
             <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name">Chargement...</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
             <div class="dropdown-divider"></div>
-            <a href="settings.html" id="settings-icon" class="dropdown-item active"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
+            <a href="/settings" id="settings-icon" class="dropdown-item active"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
             <div class="dropdown-divider"></div>
             <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
           </div>
@@ -153,7 +153,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   <div class="cookie-preference-item disabled-category"><div class="preference-header"><div class="preference-icon marketing"><i class="fas fa-bullhorn"></i></div><div class="preference-info"><h4>Cookies marketing</h4><p data-i18n="settings.marketing_desc">Actuellement non utilisés sur ce site.</p></div><div class="preference-toggle"><div class="toggle-switch disabled"><input type="checkbox" id="pref-marketing" disabled><label for="pref-marketing"><span class="toggle-slider"></span></label></div><span class="toggle-label" data-i18n="settings.not_used">Non utilisé</span></div></div></div>
                 </div>
                 <div class="privacy-actions"><button type="button" class="btn btn-primary" id="save-cookie-preferences"><i class="fas fa-save"></i><span data-i18n="settings.btn_save_prefs">Enregistrer mes préférences</span></button><button type="button" class="btn btn-secondary" id="open-cookie-modal"><i class="fas fa-cog"></i><span data-i18n="settings.btn_advanced">Paramètres avancés</span></button></div>
-                <div class="privacy-info-box"><div class="info-box-header"><i class="fas fa-shield-alt"></i><h4 data-i18n="settings.privacy_box_title">Votre vie privée est importante</h4></div><p data-i18n="settings.privacy_box_desc">Nous respectons votre vie privée et nous engageons à protéger vos données personnelles conformément au RGPD.</p><div class="info-links"><a href="politique-confidentialite.html" class="info-link"><i class="fas fa-file-shield"></i><span data-i18n="settings.link_privacy_policy">Politique de confidentialité</span><i class="fas fa-arrow-right"></i></a><a href="cgu.html" class="info-link"><i class="fas fa-file-contract"></i><span data-i18n="settings.link_terms">Conditions d'utilisation</span><i class="fas fa-arrow-right"></i></a></div></div>
+                <div class="privacy-info-box"><div class="info-box-header"><i class="fas fa-shield-alt"></i><h4 data-i18n="settings.privacy_box_title">Votre vie privée est importante</h4></div><p data-i18n="settings.privacy_box_desc">Nous respectons votre vie privée et nous engageons à protéger vos données personnelles conformément au RGPD.</p><div class="info-links"><a href="/politique-confidentialite" class="info-link"><i class="fas fa-file-shield"></i><span data-i18n="settings.link_privacy_policy">Politique de confidentialité</span><i class="fas fa-arrow-right"></i></a><a href="/cgu" class="info-link"><i class="fas fa-file-contract"></i><span data-i18n="settings.link_terms">Conditions d'utilisation</span><i class="fas fa-arrow-right"></i></a></div></div>
               </div>
             </div>
 
@@ -184,9 +184,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="container">
       <div class="footer-content">
         <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
-        <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="index.html" data-i18n="nav.home">Accueil</a></li><li><a href="hangar.html" data-i18n="nav.hangar">Hangar</a></li><li><a href="timeline.html" data-i18n="nav.timeline">Chronologie</a></li><li><a href="favorites.html" data-i18n="nav.favorites">Favoris</a></li><li><a href="login.html" data-i18n="nav.login">Connexion</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="#" data-i18n="footer.contact">Contact (à venir)</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="mentions-legales.html" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="politique-confidentialite.html" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="cgu.html" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
       </div>
       <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
     </div>

@@ -5,10 +5,10 @@ User-agent: *
 Allow: /
 
 # Pages privées
-Disallow: /login.html
-Disallow: /settings.html
-Disallow: /favorites.html
-Disallow: /cookie-consent.html
+Disallow: /login
+Disallow: /settings
+Disallow: /favorites
+Disallow: /cookie-consent
 
 # Ressources
 Disallow: /js/

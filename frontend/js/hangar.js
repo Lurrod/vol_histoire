@@ -183,14 +183,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       e.preventDefault();
-      window.location.href = 'login.html';
+      window.location.href = '/login';
     }
   });
 
   // Settings navigation
   document.getElementById('settings-icon')?.addEventListener('click', (e) => {
     e.preventDefault();
-    window.location.href = 'settings.html';
+    window.location.href = '/settings';
   });
 
   // Logout handlers
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       // Redirect after a short delay
       setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = '/';
       }, 1000);
     });
   });
@@ -700,11 +700,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       </article>
     `).join('');
 
-    // Add click handlers - CORRECTED TO USE detail.html
+    // Add click handlers - CORRECTED TO USE /details
     document.querySelectorAll('.aircraft-card').forEach(card => {
       card.addEventListener('click', () => {
         const id = card.dataset.id;
-        window.location.href = `details.html?id=${id}`;
+        window.location.href = `/details?id=${id}`;
       });
     });
   }

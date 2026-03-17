@@ -134,11 +134,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   loginIcon?.addEventListener('click', (e) => {
-    if (!localStorage.getItem('token')) { e.preventDefault(); window.location.href = 'login.html'; }
+    if (!localStorage.getItem('token')) { e.preventDefault(); window.location.href = '/login'; }
   });
 
   document.getElementById('settings-icon')?.addEventListener('click', (e) => {
-    e.preventDefault(); window.location.href = 'settings.html';
+    e.preventDefault(); window.location.href = '/settings';
   });
 
   document.querySelectorAll('#logout-icon, #logout-btn').forEach(btn => {
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.preventDefault();
       localStorage.removeItem('token');
       showToast(i18n.t('common.logout_success'), 'success');
-      setTimeout(() => window.location.href = 'index.html', 1000);
+      setTimeout(() => window.location.href = '/', 1000);
     });
   });
 
@@ -417,7 +417,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Click handlers
     document.querySelectorAll('.dossier-card').forEach(card => {
       card.addEventListener('click', function() {
-        window.location.href = `details.html?id=${this.dataset.id}`;
+        window.location.href = `/details?id=${this.dataset.id}`;
       });
     });
 

@@ -397,7 +397,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         showToast('Connexion réussie', 'success', 'Redirection en cours...');
-        setTimeout(() => { window.location.href = "index.html"; }, 1500);
+        setTimeout(() => { window.location.href = "/"; }, 1500);
       } else {
         showToast('Erreur de connexion', 'error', data.message || 'Identifiants incorrects.');
         setButtonLoading(submitBtn, false);
