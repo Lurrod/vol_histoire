@@ -124,14 +124,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem('token');
     if (!token) {
       e.preventDefault();
-      window.location.href = 'login.html';
+      window.location.href = '/login';
     }
   });
 
   // Settings navigation
   document.getElementById('settings-icon')?.addEventListener('click', (e) => {
     e.preventDefault();
-    window.location.href = 'settings.html';
+    window.location.href = '/settings';
   });
 
   // Logout handler - Modal
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast(i18n.t('settings.toast_logout'), 'success');
     
     setTimeout(() => {
-      window.location.href = 'login.html';
+      window.location.href = '/login';
     }, 1500);
   });
 
@@ -271,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem('token');
     
     if (!token) {
-      window.location.href = 'login.html';
+      window.location.href = '/login';
       return false;
     }
 
@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       showToast(i18n.t('settings.toast_session_expired'), 'error');
-      setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+      setTimeout(() => { window.location.href = '/login'; }, 1500);
       return false;
     }
 
@@ -630,7 +630,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         showToast(i18n.t('settings.toast_session_expired'), 'error');
-        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+        setTimeout(() => { window.location.href = '/login'; }, 1500);
       } else {
         console.warn('Failed to load users:', response.status);
         if (userList) {
@@ -753,7 +753,7 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.clear();
             
             setTimeout(() => {
-              window.location.href = 'index.html';
+              window.location.href = '/';
             }, 2000);
           } else {
             const data = await response.json();

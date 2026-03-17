@@ -159,11 +159,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   loginIcon?.addEventListener('click', (e) => {
-    if (!token) { e.preventDefault(); window.location.href = 'login.html'; }
+    if (!token) { e.preventDefault(); window.location.href = '/login'; }
   });
 
   document.getElementById('settings-icon')?.addEventListener('click', (e) => {
-    e.preventDefault(); window.location.href = 'settings.html';
+    e.preventDefault(); window.location.href = '/settings';
   });
 
   document.querySelectorAll('#logout-icon, #logout-btn').forEach(btn => {
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.preventDefault();
       localStorage.removeItem('token');
       showToast(i18n.t('common.logout_success'), 'success');
-      setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+      setTimeout(() => { window.location.href = '/'; }, 1000);
     });
   });
 
@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (response.status === 401 || response.status === 403) {
         showToast(i18n.t('common.session_expired'), 'error');
         localStorage.removeItem('token');
-        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+        setTimeout(() => { window.location.href = '/login'; }, 1500);
         return;
       }
 
@@ -432,7 +432,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Don't navigate if clicking remove button
         if (e.target.closest('.favorite-remove')) return;
         const id = card.dataset.id;
-        window.location.href = `details.html?id=${id}`;
+        window.location.href = `/details?id=${id}`;
       });
     });
 

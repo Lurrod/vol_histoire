@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      window.location.href = 'login.html';
+      window.location.href = '/login';
       return;
     }
 
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Settings navigation
   document.getElementById('settings-icon')?.addEventListener('click', (e) => {
     e.preventDefault();
-    window.location.href = 'settings.html';
+    window.location.href = '/settings';
   });
 
   // Logout handlers
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       localStorage.removeItem('token');
       showToast(i18n.t('common.logout_success'), 'success');
-      setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+      setTimeout(() => { window.location.href = '/'; }, 1000);
     });
   });
 

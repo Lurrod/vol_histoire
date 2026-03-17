@@ -125,14 +125,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       e.preventDefault();
-      window.location.href = 'login.html';
+      window.location.href = '/login';
     }
   });
 
   // Settings navigation
   document.getElementById('settings-icon')?.addEventListener('click', (e) => {
     e.preventDefault();
-    window.location.href = 'settings.html';
+    window.location.href = '/settings';
   });
 
   // Logout handlers
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       // Redirect after a short delay
       setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = '/';
       }, 1000);
     });
   });
@@ -199,14 +199,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Settings navigation
   document.getElementById('settings-icon')?.addEventListener('click', (e) => {
     e.preventDefault();
-    window.location.href = 'settings.html';
+    window.location.href = '/settings';
   });
 
   document.getElementById('logout-icon')?.addEventListener('click', (e) => {
     e.preventDefault();
     localStorage.removeItem('token');
     showToast(i18n.t('common.logout_success'), 'success');
-    setTimeout(() => window.location.href = 'index.html', 1000);
+    setTimeout(() => window.location.href = '/', 1000);
   });
 
   /* =========================================================================
@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!aircraftId) {
     showToast(i18n.t('details.missing_id'), 'error');
-    setTimeout(() => window.location.href = 'hangar.html', 1500);
+    setTimeout(() => window.location.href = '/hangar', 1500);
     return;
   }
 
@@ -272,7 +272,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error('Error loading aircraft:', error);
       showToast(error.message || i18n.t('common.loading_error'), 'error');
-      setTimeout(() => window.location.href = 'hangar.html', 1500);
+      setTimeout(() => window.location.href = '/hangar', 1500);
     }
   }
 
@@ -487,7 +487,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   favoriteBtn?.addEventListener('click', async () => {
     if (!token) {
       showToast(i18n.t('common.login_to_favorite'), 'info');
-      setTimeout(() => window.location.href = 'login.html', 1500);
+      setTimeout(() => window.location.href = '/login', 1500);
       return;
     }
 
@@ -676,7 +676,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       showToast(i18n.t('common.deleted'), 'success');
-      setTimeout(() => window.location.href = 'hangar.html', 1500);
+      setTimeout(() => window.location.href = '/hangar', 1500);
 
     } catch (error) {
       console.error('Error deleting aircraft:', error);
