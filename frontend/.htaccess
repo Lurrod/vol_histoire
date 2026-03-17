@@ -21,24 +21,31 @@ RewriteEngine On
 # --------------------------------------------------------------------------
 # 3. Proxy inverse vers le backend Node.js (API)
 #    Toutes les requêtes /api/* sont redirigées vers Express
+#    Requiert : mod_proxy, mod_proxy_http
 # --------------------------------------------------------------------------
 RewriteCond %{REQUEST_URI} ^/api/ [NC]
 RewriteRule ^api/(.*)$ http://localhost:3000/api/$1 [P,L]
 
+<IfModule mod_proxy.c>
+    ProxyPassReverse /api/ http://localhost:3000/api/
+</IfModule>
+
 # --------------------------------------------------------------------------
-# 4. Ne pas réécrire les fichiers/dossiers qui existent réellement
+# 4. Redirection 301 : supprimer .html des URLs existantes
+#    /hangar.html → /hangar  (SEO friendly)
+#    ⚠ Doit être AVANT le test d'existence des fichiers,
+#      sinon la règle ne se déclenche jamais.
+# --------------------------------------------------------------------------
+RewriteCond %{THE_REQUEST} \s/([^?\s]+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# --------------------------------------------------------------------------
+# 5. Ne pas réécrire les fichiers/dossiers qui existent réellement
 #    (CSS, JS, images, vidéos, polices, etc.)
 # --------------------------------------------------------------------------
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
-
-# --------------------------------------------------------------------------
-# 5. Redirection 301 : supprimer .html des URLs existantes
-#    /hangar.html → /hangar  (SEO friendly)
-# --------------------------------------------------------------------------
-RewriteCond %{THE_REQUEST} \s/([^?\s]+)\.html[\s?] [NC]
-RewriteRule ^ /%1 [R=301,L]
 
 # --------------------------------------------------------------------------
 # 6. Réécriture interne : URLs propres vers fichiers .html

@@ -80,10 +80,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div>
       <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
       <ul class="nav-links">
-        <li><a href="/"><i class="fas fa-home"></i data-i18n="nav.home"> Accueil</a></li>
-        <li><a href="/hangar" class="active"><i class="fas fa-plane"></i data-i18n="nav.hangar"> Hangar</a></li>
-        <li><a href="/timeline"><i class="fas fa-timeline"></i data-i18n="nav.timeline"> Chronologie</a></li>
-        <li><a href="/favorites"><i class="fas fa-heart"></i data-i18n="nav.favorites"> Favoris</a></li>
+        <li><a href="/"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a></li>
+        <li><a href="/hangar" class="active"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
+        <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
+        <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
         <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
         <li class="user-menu"><div class="user-toggle">
           <a href="#" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
@@ -182,19 +182,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="form-group span-2"><label for="aircraft-image-url" data-i18n="hangar.image_url">URL de l'image</label><input type="url" id="aircraft-image-url" placeholder="https://example.com/image.jpg"></div>
             <div class="form-group span-2"><label for="aircraft-description" data-i18n="hangar.full_desc">Description complète</label><textarea id="aircraft-description" rows="4" placeholder="Description détaillée de l'appareil..."></textarea></div>
           </div></div>
-          <div class="form-section"><h3><i class="fas fa-tags"></i data-i18n="hangar.classification"> Classification</h3><div class="form-grid">
+          <div class="form-section"><h3><i class="fas fa-tags"></i> <span data-i18n="hangar.classification">Classification</span></h3><div class="form-grid">
             <div class="form-group"><label for="aircraft-country" data-i18n="hangar.country">Pays *</label><select id="aircraft-country" required><option value="">Sélectionner...</option></select></div>
             <div class="form-group"><label for="aircraft-manufacturer" data-i18n="hangar.manufacturer">Fabricant *</label><select id="aircraft-manufacturer" required><option value="">Sélectionner...</option></select></div>
             <div class="form-group"><label for="aircraft-generation" data-i18n="hangar.generation">Génération *</label><select id="aircraft-generation" required><option value="">Sélectionner...</option></select></div>
             <div class="form-group"><label for="aircraft-type" data-i18n="hangar.type">Type *</label><select id="aircraft-type" required><option value="">Sélectionner...</option></select></div>
             <div class="form-group span-2"><label for="aircraft-status" data-i18n="hangar.status_label">Statut</label><input type="text" id="aircraft-status" placeholder="En service, Retiré..."></div>
           </div></div>
-          <div class="form-section"><h3><i class="fas fa-calendar"></i data-i18n="hangar.important_dates"> Dates importantes</h3><div class="form-grid">
+          <div class="form-section"><h3><i class="fas fa-calendar"></i> <span data-i18n="hangar.important_dates">Dates importantes</span></h3><div class="form-grid">
             <div class="form-group"><label for="aircraft-date-concept" data-i18n="hangar.date_concept">Date de conception</label><input type="date" id="aircraft-date-concept"></div>
             <div class="form-group"><label for="aircraft-date-first-fly" data-i18n="hangar.date_first_fly">Premier vol</label><input type="date" id="aircraft-date-first-fly"></div>
             <div class="form-group"><label for="aircraft-date-operational" data-i18n="hangar.date_operational">Mise en service</label><input type="date" id="aircraft-date-operational"></div>
           </div></div>
-          <div class="form-section"><h3><i class="fas fa-tachometer-alt"></i data-i18n="hangar.tech_specs"> Spécifications techniques</h3><div class="form-grid">
+          <div class="form-section"><h3><i class="fas fa-tachometer-alt"></i> <span data-i18n="hangar.tech_specs">Spécifications techniques</span></h3><div class="form-grid">
             <div class="form-group"><label for="aircraft-max-speed" data-i18n="hangar.max_speed">Vitesse max (km/h)</label><input type="number" id="aircraft-max-speed" placeholder="2400"></div>
             <div class="form-group"><label for="aircraft-max-range" data-i18n="hangar.max_range">Portée max (km)</label><input type="number" id="aircraft-max-range" placeholder="4000"></div>
             <div class="form-group"><label for="aircraft-weight" data-i18n="hangar.weight_kg">Poids (kg)</label><input type="number" id="aircraft-weight" placeholder="8000"></div>
