@@ -25,7 +25,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
   <meta name="theme-color" content="#080c14">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Hangar - Collection d'Avions de Chasse | Vol d'Histoire</title>
+  <title data-i18n="hangar.title">Hangar - Collection d'Avions de Chasse | Vol d'Histoire</title>
   <meta name="description" content="Explorez notre collection complète d'avions de chasse historiques avec filtres avancés et fiches détaillées.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/hangar.html">
   <meta name="robots" content="index, follow">
@@ -54,22 +54,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- Cookie Consent Banner -->
 <div id="cookie-banner" class="cookie-banner hidden">
   <div class="cookie-banner-content">
-    <div class="cookie-banner-text"><div class="cookie-icon"><i class="fas fa-cookie-bite"></i></div><div class="cookie-message"><h3>🍪 Nous utilisons des cookies</h3><p>Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu.</p></div></div>
-    <div class="cookie-banner-actions"><button class="btn btn-secondary btn-sm" id="cookie-settings-btn"><i class="fas fa-cog"></i><span>Personnaliser</span></button><button class="btn btn-outline btn-sm" id="cookie-reject-btn"><span>Refuser</span></button><button class="btn btn-primary btn-sm" id="cookie-accept-btn"><i class="fas fa-check"></i><span>Tout accepter</span></button></div>
+    <div class="cookie-banner-text"><div class="cookie-icon"><i class="fas fa-cookie-bite"></i></div><div class="cookie-message"><h3 data-i18n="cookie.title">🍪 Nous utilisons des cookies</h3><p data-i18n="cookie.message">Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu.</p></div></div>
+    <div class="cookie-banner-actions"><button class="btn btn-secondary btn-sm" id="cookie-settings-btn"><i class="fas fa-cog"></i><span data-i18n="cookie.customize">Personnaliser</span></button><button class="btn btn-outline btn-sm" id="cookie-reject-btn"><span data-i18n="cookie.reject">Refuser</span></button><button class="btn btn-primary btn-sm" id="cookie-accept-btn"><i class="fas fa-check"></i><span data-i18n="cookie.accept_all">Tout accepter</span></button></div>
   </div>
 </div>
 <div id="cookie-modal" class="cookie-modal hidden">
   <div class="cookie-modal-backdrop"></div>
   <div class="cookie-modal-container">
-    <div class="cookie-modal-header"><h2><i class="fas fa-cookie-bite"></i><span>Paramètres des cookies</span></h2><button class="cookie-modal-close" aria-label="Fermer"><i class="fas fa-times"></i></button></div>
+    <div class="cookie-modal-header"><h2><i class="fas fa-cookie-bite"></i><span data-i18n="cookie.settings_title">Paramètres des cookies</span></h2><button class="cookie-modal-close" aria-label="Fermer"><i class="fas fa-times"></i></button></div>
     <div class="cookie-modal-content">
-      <div class="cookie-intro"><p>Choisissez les catégories de cookies que vous souhaitez autoriser.</p></div>
-      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon essential"><i class="fas fa-shield-alt"></i></div><div><h3>Cookies essentiels</h3><p class="cookie-category-description">Nécessaires au fonctionnement du site.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-essential" checked disabled><label for="cookie-essential" class="toggle-disabled"><span class="toggle-slider"></span></label></div></div></div>
-      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon analytics"><i class="fas fa-chart-line"></i></div><div><h3>Cookies analytiques</h3><p class="cookie-category-description">Mesure d'audience et statistiques.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-analytics"><label for="cookie-analytics"><span class="toggle-slider"></span></label></div></div></div>
-      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon preference"><i class="fas fa-sliders-h"></i></div><div><h3>Cookies de préférence</h3><p class="cookie-category-description">Mémorisation de vos choix.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-preference"><label for="cookie-preference"><span class="toggle-slider"></span></label></div></div></div>
-      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon marketing"><i class="fas fa-bullhorn"></i></div><div><h3>Cookies marketing</h3><p class="cookie-category-description">Actuellement non utilisés.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-marketing" disabled><label for="cookie-marketing" class="toggle-disabled"><span class="toggle-slider"></span></label></div></div></div>
+      <div class="cookie-intro"><p data-i18n="cookie.intro">Choisissez les catégories de cookies que vous souhaitez autoriser.</p></div>
+      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon essential"><i class="fas fa-shield-alt"></i></div><div><h3 data-i18n="cookie.essential_title">Cookies essentiels</h3><p class="cookie-category-description" data-i18n="cookie.essential_desc">Nécessaires au fonctionnement du site.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-essential" checked disabled><label for="cookie-essential" class="toggle-disabled"><span class="toggle-slider"></span></label></div></div></div>
+      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon analytics"><i class="fas fa-chart-line"></i></div><div><h3 data-i18n="cookie.analytics_title">Cookies analytiques</h3><p class="cookie-category-description" data-i18n="cookie.analytics_desc_stats">Mesure d'audience et statistiques.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-analytics"><label for="cookie-analytics"><span class="toggle-slider"></span></label></div></div></div>
+      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon preference"><i class="fas fa-sliders-h"></i></div><div><h3 data-i18n="cookie.preference_title">Cookies de préférence</h3><p class="cookie-category-description" data-i18n="cookie.preference_desc">Mémorisation de vos choix.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-preference"><label for="cookie-preference"><span class="toggle-slider"></span></label></div></div></div>
+      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon marketing"><i class="fas fa-bullhorn"></i></div><div><h3 data-i18n="cookie.marketing_title">Cookies marketing</h3><p class="cookie-category-description" data-i18n="cookie.marketing_desc">Actuellement non utilisés.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-marketing" disabled><label for="cookie-marketing" class="toggle-disabled"><span class="toggle-slider"></span></label></div></div></div>
     </div>
-    <div class="cookie-modal-footer"><button class="btn btn-secondary" id="cookie-reject-all-btn"><span>Tout refuser</span></button><button class="btn btn-primary" id="cookie-save-preferences-btn"><i class="fas fa-check"></i><span>Enregistrer</span></button><button class="btn btn-primary" id="cookie-accept-all-btn"><i class="fas fa-check-double"></i><span>Tout accepter</span></button></div>
+    <div class="cookie-modal-footer"><button class="btn btn-secondary" id="cookie-reject-all-btn"><span data-i18n="cookie.reject_all">Tout refuser</span></button><button class="btn btn-primary" id="cookie-save-preferences-btn"><i class="fas fa-check"></i><span data-i18n="cookie.save">Enregistrer</span></button><button class="btn btn-primary" id="cookie-accept-all-btn"><i class="fas fa-check-double"></i><span data-i18n="cookie.accept_all">Tout accepter</span></button></div>
   </div>
 </div>
 <style>.cookie-settings-link{display:inline-flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.45);text-decoration:none;font-size:.875rem;transition:var(--transition)}.cookie-settings-link:hover{color:var(--hud-cyan)}</style>
@@ -80,18 +80,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div>
       <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
       <ul class="nav-links">
-        <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
-        <li><a href="hangar.html" class="active"><i class="fas fa-plane"></i> Hangar</a></li>
-        <li><a href="timeline.html"><i class="fas fa-timeline"></i> Chronologie</a></li>
-        <li><a href="favorites.html"><i class="fas fa-heart"></i> Favoris</a></li>
+        <li><a href="index.html"><i class="fas fa-home"></i data-i18n="nav.home"> Accueil</a></li>
+        <li><a href="hangar.html" class="active"><i class="fas fa-plane"></i data-i18n="nav.hangar"> Hangar</a></li>
+        <li><a href="timeline.html"><i class="fas fa-timeline"></i data-i18n="nav.timeline"> Chronologie</a></li>
+        <li><a href="favorites.html"><i class="fas fa-heart"></i data-i18n="nav.favorites"> Favoris</a></li>
+        <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
         <li class="user-menu"><div class="user-toggle">
           <a href="#" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
           <div id="user-info-container" class="user-dropdown hidden">
-            <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name">Utilisateur</span><span class="user-role">Membre</span></div></div>
+            <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
             <div class="dropdown-divider"></div>
-            <a href="settings.html" id="settings-icon" class="dropdown-item"><i class="fas fa-cog"></i><span>Paramètres</span></a>
+            <a href="settings.html" id="settings-icon" class="dropdown-item"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
             <div class="dropdown-divider"></div>
-            <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span>Déconnexion</span></a>
+            <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
           </div>
         </div></li>
       </ul>
@@ -107,16 +108,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="hero-badge">
           <span class="badge-pulse"></span>
           <i class="fas fa-satellite-dish"></i>
-          <span>Collection Complète</span>
+          <span data-i18n="hangar.badge">Collection Complète</span>
         </div>
         <h1>Hangar des Avions de Chasse</h1>
-        <p>Explorez notre collection exhaustive d'avions militaires historiques et modernes</p>
+        <p data-i18n="hangar.hero_desc">Explorez notre collection exhaustive d'avions militaires historiques et modernes</p>
         <div class="hero-stats">
           <div class="stat-item"><div class="stat-number" id="total-aircraft">0</div><div class="stat-label">Appareils</div></div>
           <div class="stat-divider"></div>
           <div class="stat-item"><div class="stat-number" id="total-countries">0</div><div class="stat-label">Nations</div></div>
           <div class="stat-divider"></div>
-          <div class="stat-item"><div class="stat-number" id="total-generations">0</div><div class="stat-label">Générations</div></div>
+          <div class="stat-item"><div class="stat-number" id="total-generations">0</div><div class="stat-label" data-i18n="hangar.stat_generations">Générations</div></div>
         </div>
       </div>
     </div>
@@ -126,10 +127,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <section class="filters-section">
     <div class="container">
       <div class="filters-container">
-        <div class="search-box"><i class="fas fa-search"></i><input type="search" id="search-input" placeholder="Rechercher un avion..." autocomplete="off"></div>
+        <div class="search-box"><i class="fas fa-search"></i><input type="search" id="search-input" placeholder="Rechercher un avion..." data-i18n-placeholder="hangar.search_placeholder" autocomplete="off"></div>
         <div class="filter-group">
           <button class="filter-btn" id="country-filter-btn"><i class="fas fa-globe"></i><span>Pays</span><i class="fas fa-chevron-down"></i></button>
-          <button class="filter-btn" id="generation-filter-btn"><i class="fas fa-layer-group"></i><span>Génération</span><i class="fas fa-chevron-down"></i></button>
+          <button class="filter-btn" id="generation-filter-btn"><i class="fas fa-layer-group"></i><span data-i18n="hangar.gen_label">Génération</span><i class="fas fa-chevron-down"></i></button>
           <button class="filter-btn" id="type-filter-btn"><i class="fas fa-tags"></i><span>Type</span><i class="fas fa-chevron-down"></i></button>
         </div>
         <div class="controls-group">
@@ -138,14 +139,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <button class="view-btn" data-view="list" aria-label="Vue liste"><i class="fas fa-list"></i></button>
           </div>
           <select id="sort-select" class="sort-select">
-            <option value="default">Trier par défaut</option>
-            <option value="alphabetical">Ordre alphabétique</option>
-            <option value="nation">Pays</option>
-            <option value="service-date">Date d'entrée en service</option>
-            <option value="generation">Génération</option>
-            <option value="type">Type</option>
+            <option value="default" data-i18n="hangar.sort_default">Trier par défaut</option>
+            <option value="alphabetical" data-i18n="hangar.sort_alpha">Ordre alphabétique</option>
+            <option value="nation" data-i18n="hangar.sort_nation">Pays</option>
+            <option value="service-date" data-i18n="hangar.sort_date">Date d'entrée en service</option>
+            <option value="generation" data-i18n="hangar.sort_gen">Génération</option>
+            <option value="type" data-i18n="hangar.sort_type">Type</option>
           </select>
-          <button id="add-airplane-btn" class="btn btn-primary hidden"><i class="fas fa-plus"></i><span>Ajouter un avion</span></button>
+          <button id="add-airplane-btn" class="btn btn-primary hidden"><i class="fas fa-plus"></i><span data-i18n="hangar.add_aircraft">Ajouter un avion</span></button>
         </div>
       </div>
       <div id="active-filters" class="active-filters hidden"></div>
@@ -153,13 +154,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </section>
 
   <!-- Filter Dropdowns -->
-  <div id="country-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3>Filtrer par pays</h3><button class="close-dropdown" data-dropdown="country"><i class="fas fa-times"></i></button></div><div class="filter-options" id="country-options"></div></div>
-  <div id="generation-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3>Filtrer par génération</h3><button class="close-dropdown" data-dropdown="generation"><i class="fas fa-times"></i></button></div><div class="filter-options" id="generation-options"></div></div>
-  <div id="type-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3>Filtrer par type</h3><button class="close-dropdown" data-dropdown="type"><i class="fas fa-times"></i></button></div><div class="filter-options" id="type-options"></div></div>
+  <div id="country-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_country">Filtrer par pays</h3><button class="close-dropdown" data-dropdown="country"><i class="fas fa-times"></i></button></div><div class="filter-options" id="country-options"></div></div>
+  <div id="generation-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_gen">Filtrer par génération</h3><button class="close-dropdown" data-dropdown="generation"><i class="fas fa-times"></i></button></div><div class="filter-options" id="generation-options"></div></div>
+  <div id="type-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_type">Filtrer par type</h3><button class="close-dropdown" data-dropdown="type"><i class="fas fa-times"></i></button></div><div class="filter-options" id="type-options"></div></div>
 
   <!-- Main Content -->
   <main class="container">
-    <div class="content-header"><div class="results-info"><span id="results-count">0 avions trouvés</span></div></div>
+    <div class="content-header"><div class="results-info"><span id="results-count" data-i18n="hangar.results">0 avions trouvés</span></div></div>
     <div id="airplanes-container" class="aircraft-grid"></div>
     <div id="pagination-container" class="pagination"></div>
   </main>
@@ -169,39 +170,39 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="modal-backdrop"></div>
     <div class="modal-container">
       <div class="modal-header">
-        <h2 id="modal-title"><i class="fas fa-plane"></i><span id="modal-title-text">Ajouter un avion</span></h2>
+        <h2 id="modal-title"><i class="fas fa-plane"></i><span id="modal-title-text" data-i18n="hangar.modal_add">Ajouter un avion</span></h2>
         <button class="modal-close" aria-label="Fermer"><i class="fas fa-times"></i></button>
       </div>
       <form id="aircraft-form" class="modal-form">
         <div class="form-sections">
           <div class="form-section"><h3><i class="fas fa-info-circle"></i> Informations générales</h3><div class="form-grid">
-            <div class="form-group"><label for="aircraft-name">Nom *</label><input type="text" id="aircraft-name" required placeholder="F-16 Fighting Falcon"></div>
-            <div class="form-group"><label for="aircraft-complete-name">Nom complet</label><input type="text" id="aircraft-complete-name" placeholder="General Dynamics F-16 Fighting Falcon"></div>
-            <div class="form-group span-2"><label for="aircraft-little-description">Description courte *</label><input type="text" id="aircraft-little-description" required placeholder="Chasseur multirôle moderne"></div>
-            <div class="form-group span-2"><label for="aircraft-image-url">URL de l'image</label><input type="url" id="aircraft-image-url" placeholder="https://example.com/image.jpg"></div>
-            <div class="form-group span-2"><label for="aircraft-description">Description complète</label><textarea id="aircraft-description" rows="4" placeholder="Description détaillée de l'appareil..."></textarea></div>
+            <div class="form-group"><label for="aircraft-name" data-i18n="hangar.name">Nom *</label><input type="text" id="aircraft-name" required placeholder="F-16 Fighting Falcon"></div>
+            <div class="form-group"><label for="aircraft-complete-name" data-i18n="hangar.complete_name">Nom complet</label><input type="text" id="aircraft-complete-name" placeholder="General Dynamics F-16 Fighting Falcon"></div>
+            <div class="form-group span-2"><label for="aircraft-little-description" data-i18n="hangar.short_desc">Description courte *</label><input type="text" id="aircraft-little-description" required placeholder="Chasseur multirôle moderne"></div>
+            <div class="form-group span-2"><label for="aircraft-image-url" data-i18n="hangar.image_url">URL de l'image</label><input type="url" id="aircraft-image-url" placeholder="https://example.com/image.jpg"></div>
+            <div class="form-group span-2"><label for="aircraft-description" data-i18n="hangar.full_desc">Description complète</label><textarea id="aircraft-description" rows="4" placeholder="Description détaillée de l'appareil..."></textarea></div>
           </div></div>
-          <div class="form-section"><h3><i class="fas fa-tags"></i> Classification</h3><div class="form-grid">
-            <div class="form-group"><label for="aircraft-country">Pays *</label><select id="aircraft-country" required><option value="">Sélectionner...</option></select></div>
-            <div class="form-group"><label for="aircraft-manufacturer">Fabricant *</label><select id="aircraft-manufacturer" required><option value="">Sélectionner...</option></select></div>
-            <div class="form-group"><label for="aircraft-generation">Génération *</label><select id="aircraft-generation" required><option value="">Sélectionner...</option></select></div>
-            <div class="form-group"><label for="aircraft-type">Type *</label><select id="aircraft-type" required><option value="">Sélectionner...</option></select></div>
-            <div class="form-group span-2"><label for="aircraft-status">Statut</label><input type="text" id="aircraft-status" placeholder="En service, Retiré..."></div>
+          <div class="form-section"><h3><i class="fas fa-tags"></i data-i18n="hangar.classification"> Classification</h3><div class="form-grid">
+            <div class="form-group"><label for="aircraft-country" data-i18n="hangar.country">Pays *</label><select id="aircraft-country" required><option value="">Sélectionner...</option></select></div>
+            <div class="form-group"><label for="aircraft-manufacturer" data-i18n="hangar.manufacturer">Fabricant *</label><select id="aircraft-manufacturer" required><option value="">Sélectionner...</option></select></div>
+            <div class="form-group"><label for="aircraft-generation" data-i18n="hangar.generation">Génération *</label><select id="aircraft-generation" required><option value="">Sélectionner...</option></select></div>
+            <div class="form-group"><label for="aircraft-type" data-i18n="hangar.type">Type *</label><select id="aircraft-type" required><option value="">Sélectionner...</option></select></div>
+            <div class="form-group span-2"><label for="aircraft-status" data-i18n="hangar.status_label">Statut</label><input type="text" id="aircraft-status" placeholder="En service, Retiré..."></div>
           </div></div>
-          <div class="form-section"><h3><i class="fas fa-calendar"></i> Dates importantes</h3><div class="form-grid">
-            <div class="form-group"><label for="aircraft-date-concept">Date de conception</label><input type="date" id="aircraft-date-concept"></div>
-            <div class="form-group"><label for="aircraft-date-first-fly">Premier vol</label><input type="date" id="aircraft-date-first-fly"></div>
-            <div class="form-group"><label for="aircraft-date-operational">Mise en service</label><input type="date" id="aircraft-date-operational"></div>
+          <div class="form-section"><h3><i class="fas fa-calendar"></i data-i18n="hangar.important_dates"> Dates importantes</h3><div class="form-grid">
+            <div class="form-group"><label for="aircraft-date-concept" data-i18n="hangar.date_concept">Date de conception</label><input type="date" id="aircraft-date-concept"></div>
+            <div class="form-group"><label for="aircraft-date-first-fly" data-i18n="hangar.date_first_fly">Premier vol</label><input type="date" id="aircraft-date-first-fly"></div>
+            <div class="form-group"><label for="aircraft-date-operational" data-i18n="hangar.date_operational">Mise en service</label><input type="date" id="aircraft-date-operational"></div>
           </div></div>
-          <div class="form-section"><h3><i class="fas fa-tachometer-alt"></i> Spécifications techniques</h3><div class="form-grid">
-            <div class="form-group"><label for="aircraft-max-speed">Vitesse max (km/h)</label><input type="number" id="aircraft-max-speed" placeholder="2400"></div>
-            <div class="form-group"><label for="aircraft-max-range">Portée max (km)</label><input type="number" id="aircraft-max-range" placeholder="4000"></div>
-            <div class="form-group"><label for="aircraft-weight">Poids (kg)</label><input type="number" id="aircraft-weight" placeholder="8000"></div>
+          <div class="form-section"><h3><i class="fas fa-tachometer-alt"></i data-i18n="hangar.tech_specs"> Spécifications techniques</h3><div class="form-grid">
+            <div class="form-group"><label for="aircraft-max-speed" data-i18n="hangar.max_speed">Vitesse max (km/h)</label><input type="number" id="aircraft-max-speed" placeholder="2400"></div>
+            <div class="form-group"><label for="aircraft-max-range" data-i18n="hangar.max_range">Portée max (km)</label><input type="number" id="aircraft-max-range" placeholder="4000"></div>
+            <div class="form-group"><label for="aircraft-weight" data-i18n="hangar.weight_kg">Poids (kg)</label><input type="number" id="aircraft-weight" placeholder="8000"></div>
           </div></div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" id="cancel-btn"><i class="fas fa-times"></i><span>Annuler</span></button>
-          <button type="submit" class="btn btn-primary" id="submit-btn"><i class="fas fa-save"></i><span>Enregistrer</span></button>
+          <button type="button" class="btn btn-secondary" id="cancel-btn"><i class="fas fa-times"></i><span data-i18n="hangar.cancel">Annuler</span></button>
+          <button type="submit" class="btn btn-primary" id="submit-btn"><i class="fas fa-save"></i><span data-i18n="cookie.save">Enregistrer</span></button>
         </div>
       </form>
     </div>
@@ -211,15 +212,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <footer>
     <div class="container">
       <div class="footer-content">
-        <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p>Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
-        <div class="footer-section"><h3>Navigation</h3><ul><li><a href="index.html">Accueil</a></li><li><a href="hangar.html">Hangar</a></li><li><a href="timeline.html">Chronologie</a></li><li><a href="favorites.html">Favoris</a></li><li><a href="login.html">Connexion</a></li></ul></div>
-        <div class="footer-section"><h3>Ressources</h3><ul><li><a href="#">À propos (à venir)</a></li><li><a href="#">Contact (à venir)</a></li><li><a href="#">FAQ (à venir)</a></li><li><a href="#">Support (à venir)</a></li></ul></div>
-        <div class="footer-section"><h3>Légal</h3><ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="politique-confidentialite.html">Politique de confidentialité</a></li><li><a href="cgu.html">CGU</a></li><li><a href="#">Cookies</a></li></ul></div>
+        <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
+        <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="index.html" data-i18n="nav.home">Accueil</a></li><li><a href="hangar.html" data-i18n="nav.hangar">Hangar</a></li><li><a href="timeline.html" data-i18n="nav.timeline">Chronologie</a></li><li><a href="favorites.html" data-i18n="nav.favorites">Favoris</a></li><li><a href="login.html" data-i18n="nav.login">Connexion</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="#" data-i18n="footer.contact">Contact (à venir)</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="mentions-legales.html" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="politique-confidentialite.html" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="cgu.html" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
       </div>
-      <div class="footer-bottom"><p>&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p>Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
+      <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
     </div>
   </footer>
   <div id="toast-container"></div>
+  <script src="js/i18n.js"></script>
   <script src="js/cookies.js"></script>
   <script src="js/hangar.js"></script>
 </body>

@@ -17,15 +17,15 @@ document.addEventListener("DOMContentLoaded", async () => {
      ========================================================================= */
 
   const eraConfig = {
-    1940: { color: '#d4a017', label: 'Aube des Jets', desc: "L'ère des premiers réacteurs militaires, transition depuis les hélices." },
-    1950: { color: '#3aff6e', label: 'Guerre Froide', desc: "Course aux armements supersoniques, montée en puissance des blocs Est-Ouest." },
-    1960: { color: '#ff8c00', label: 'Ère Supersonique', desc: "Mach 2+, missiles guidés — la doctrine dogfight évolue radicalement." },
-    1970: { color: '#ff4500', label: 'Multirôle', desc: "Premiers chasseurs 3e génération avec radar à impulsion doppler et avionique numérique." },
-    1980: { color: '#00e5ff', label: 'Électronique', desc: "Avionique numérique, fly-by-wire, missiles BVR — la guerre devient électronique." },
-    1990: { color: '#7b5cf0', label: 'Post Guerre Froide', desc: "Transition vers les conflits asymétriques, maturité de la 4e génération." },
-    2000: { color: '#2979ff', label: 'Furtivité', desc: "5e génération — fusion de données, furtivité active, supercruise." },
-    2010: { color: '#e040fb', label: 'Réseau & IA', desc: "Integration réseau, IA embarquée — vers la 6e génération." },
-    2020: { color: '#ff3d6e', label: 'Futur Combat', desc: "Systèmes autonomes, drones de combat, hybridation humain-machine." }
+    1940: { color: '#d4a017', get label() { return i18n.t('timeline.era_1940_label'); }, get desc() { return i18n.t('timeline.era_1940_desc'); } },
+    1950: { color: '#3aff6e', get label() { return i18n.t('timeline.era_1950_label'); }, get desc() { return i18n.t('timeline.era_1950_desc'); } },
+    1960: { color: '#ff8c00', get label() { return i18n.t('timeline.era_1960_label'); }, get desc() { return i18n.t('timeline.era_1960_desc'); } },
+    1970: { color: '#ff4500', get label() { return i18n.t('timeline.era_1970_label'); }, get desc() { return i18n.t('timeline.era_1970_desc'); } },
+    1980: { color: '#00e5ff', get label() { return i18n.t('timeline.era_1980_label'); }, get desc() { return i18n.t('timeline.era_1980_desc'); } },
+    1990: { color: '#7b5cf0', get label() { return i18n.t('timeline.era_1990_label'); }, get desc() { return i18n.t('timeline.era_1990_desc'); } },
+    2000: { color: '#2979ff', get label() { return i18n.t('timeline.era_2000_label'); }, get desc() { return i18n.t('timeline.era_2000_desc'); } },
+    2010: { color: '#e040fb', get label() { return i18n.t('timeline.era_2010_label'); }, get desc() { return i18n.t('timeline.era_2010_desc'); } },
+    2020: { color: '#ff3d6e', get label() { return i18n.t('timeline.era_2020_label'); }, get desc() { return i18n.t('timeline.era_2020_desc'); } }
   };
 
   /* =========================================================================
@@ -102,10 +102,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const userNameEl = document.getElementById('user-name');
         const userRoleEl = document.querySelector('.user-role');
-        if (userNameEl) userNameEl.textContent = payload.name || 'Utilisateur';
+        if (userNameEl) userNameEl.textContent = payload.name || i18n.t('nav.user_default');
         if (userRoleEl) {
           const role = Number(payload.role);
-          userRoleEl.textContent = role === 1 ? 'Administrateur' : role === 2 ? 'Éditeur' : 'Membre';
+          userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') : role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
         }
         userDropdown?.classList.remove('hidden');
       } catch (error) {
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     btn?.addEventListener('click', (e) => {
       e.preventDefault();
       localStorage.removeItem('token');
-      showToast('Déconnexion réussie', 'success');
+      showToast(i18n.t('common.logout_success'), 'success');
       setTimeout(() => window.location.href = 'index.html', 1000);
     });
   });
@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
       console.error('Error loading aircraft:', error);
-      showToast('Erreur lors du chargement des données', 'error');
+      showToast(i18n.t('common.loading_error'), 'error');
       document.getElementById('loading-state').innerHTML =
         '<p style="color:#e74c3c;font-family:\'Share Tech Mono\',monospace;font-size:0.8rem;letter-spacing:2px">ERREUR — DONNÉES INACCESSIBLES</p>';
     }
@@ -458,7 +458,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
         <div class="card-body">
           <div class="card-name">${plane.name}</div>
-          <div class="card-desc">${plane.little_description || 'Description non disponible.'}</div>
+          <div class="card-desc">${plane.little_description || i18n.t('details.no_desc_available')}</div>
           <div class="card-specs">
             <div class="spec-item">
               <div class="spec-val">${speed}</div>
@@ -523,5 +523,11 @@ document.addEventListener("DOMContentLoaded", async () => {
      ========================================================================= */
 
   await loadAllAircraft();
+  // Re-render on language change
+  window.addEventListener('langChanged', () => {
+    renderDecadeNav();
+    renderTimeline();
+  });
+
   console.log('Timeline v2 — Salle d\'Opérations — initialized');
 });

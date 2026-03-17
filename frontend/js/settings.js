@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     closeLogoutModal();
-    showToast('Déconnexion réussie', 'success');
+    showToast(i18n.t('settings.toast_logout'), 'success');
     
     setTimeout(() => {
       window.location.href = 'login.html';
@@ -280,7 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.warn('Token expiré, redirection vers login');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      showToast('Session expirée, veuillez vous reconnecter', 'error');
+      showToast(i18n.t('settings.toast_session_expired'), 'error');
       setTimeout(() => { window.location.href = 'login.html'; }, 1500);
       return false;
     }
@@ -401,7 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // Validation
       if (name.length < 2) {
-        showToast('Le nom doit contenir au moins 2 caractères', 'error');
+        showToast(i18n.t('settings.toast_name_min'), 'error');
         return;
       }
 
@@ -430,9 +430,9 @@ document.addEventListener("DOMContentLoaded", () => {
           currentUser = { ...currentUser, name, email };
           localStorage.setItem('user', JSON.stringify(currentUser));
           updateUserDisplay();
-          showToast('Profil mis à jour avec succès', 'success');
+          showToast(i18n.t('settings.toast_profile_updated'), 'success');
         } else {
-          showToast(data.message || 'Erreur lors de la mise à jour', 'error');
+          showToast(data.message || i18n.t('settings.toast_profile_error'), 'error');
         }
       } catch (err) {
         console.error('Profile update error:', err);
@@ -440,7 +440,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentUser = { ...currentUser, name, email };
         localStorage.setItem('user', JSON.stringify(currentUser));
         updateUserDisplay();
-        showToast('Profil mis à jour localement (API non disponible)', 'info');
+        showToast(i18n.t('settings.toast_profile_local'), 'info');
       } finally {
         setButtonLoading(submitBtn, false);
       }
@@ -451,7 +451,7 @@ document.addEventListener("DOMContentLoaded", () => {
     resetProfileBtn.addEventListener('click', () => {
       document.getElementById('name').value = currentUser?.name || '';
       document.getElementById('email').value = currentUser?.email || '';
-      showToast('Formulaire réinitialisé', 'info');
+      showToast(i18n.t('settings.toast_form_reset'), 'info');
     });
   }
 
@@ -568,7 +568,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (password.length < 4) {
-        showToast('Le mot de passe doit contenir au moins 4 caractères', 'error');
+        showToast(i18n.t('settings.toast_password_min'), 'error');
         return;
       }
 
@@ -589,12 +589,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await response.json();
 
         if (response.ok) {
-          showToast('Mot de passe mis à jour avec succès', 'success');
+          showToast(i18n.t('settings.toast_password_updated'), 'success');
           securityForm.reset();
           updatePasswordStrength('');
           updatePasswordRequirements('');
         } else {
-          showToast(data.message || 'Erreur lors de la mise à jour', 'error');
+          showToast(data.message || i18n.t('settings.toast_profile_error'), 'error');
         }
       } catch (err) {
         console.error('Password update error:', err);
@@ -629,7 +629,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn('Token expiré ou accès refusé:', response.status);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        showToast('Session expirée, veuillez vous reconnecter', 'error');
+        showToast(i18n.t('settings.toast_session_expired'), 'error');
         setTimeout(() => { window.location.href = 'login.html'; }, 1500);
       } else {
         console.warn('Failed to load users:', response.status);
@@ -682,7 +682,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function deleteUser(userId) {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+    if (!confirm(i18n.t('settings.confirm_delete_user'))) {
       return;
     }
 
@@ -696,7 +696,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (response.ok) {
-        showToast('Utilisateur supprimé avec succès', 'success');
+        showToast(i18n.t('settings.toast_user_deleted'), 'success');
         allUsers = allUsers.filter(u => u.id !== parseInt(userId));
         displayUsers(allUsers);
         updateUserStats();
@@ -706,7 +706,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (err) {
       console.error('Delete user error:', err);
-      showToast('Erreur réseau', 'error');
+      showToast(i18n.t('settings.toast_network_error'), 'error');
     }
   }
 
@@ -749,7 +749,7 @@ document.addEventListener("DOMContentLoaded", () => {
           });
 
           if (response.ok) {
-            showToast('Compte supprimé avec succès', 'success');
+            showToast(i18n.t('settings.toast_account_deleted'), 'success');
             localStorage.clear();
             
             setTimeout(() => {
@@ -762,7 +762,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         } catch (err) {
           console.error('Delete account error:', err);
-          showToast('Erreur réseau', 'error');
+          showToast(i18n.t('settings.toast_network_error'), 'error');
           setButtonLoading(deleteAccountBtn, false);
         }
       } else if (userInput !== null) {
@@ -865,7 +865,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateToggleStatus(type, isEnabled) {
     const statusElement = document.getElementById(`${type}-status`);
     if (statusElement) {
-      statusElement.textContent = isEnabled ? 'Activé' : 'Désactivé';
+      statusElement.textContent = isEnabled ? i18n.t('settings.enabled') : i18n.t('settings.disabled');
       statusElement.style.color = isEnabled ? 'var(--success)' : 'var(--text-secondary)';
     }
   }
@@ -914,7 +914,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update UI
     loadCookiePreferences();
     
-    showToast('Vos préférences de cookies ont été enregistrées', 'success');
+    showToast(i18n.t('settings.toast_cookies_saved'), 'success');
   }
   
   // Cookie preferences event listeners

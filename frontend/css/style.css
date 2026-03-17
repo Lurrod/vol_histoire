@@ -1870,3 +1870,8 @@ footer {
   .roles-grid { grid-template-columns: repeat(3, 1fr); }
   .personal-card { padding: 1.75rem; }
 }
+/* Language Toggle */
+.lang-switch { display: flex; align-items: center; }
+.lang-btn { background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.2); color: var(--hud-cyan, #00e5ff); font-family: "Orbitron", sans-serif; font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: 6px; cursor: pointer; transition: all 0.3s ease; letter-spacing: 1px; }
+.lang-btn:hover { background: rgba(0,229,255,0.15); border-color: rgba(0,229,255,0.4); box-shadow: 0 0 12px rgba(0,229,255,0.2); transform: translateY(-1px); }
+

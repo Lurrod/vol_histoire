@@ -26,9 +26,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function formatDate(dateString) {
-    if (!dateString) return 'Non spécifié';
+    if (!dateString) return i18n.t('details.not_specified');
     const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', { 
+    return date.toLocaleDateString(i18n.currentLang === 'en' ? 'en-GB' : 'fr-FR', { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       localStorage.removeItem('token');
       
       // Show logout message
-      showToast('Déconnexion réussie', 'success');
+      showToast(i18n.t('common.logout_success'), 'success');
       
       // Redirect after a short delay
       setTimeout(() => {
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         
         document.getElementById('user-name').textContent = payload.name;
         document.querySelector('.user-role').textContent = 
-          userRole === 1 ? 'Administrateur' : userRole === 2 ? 'Éditeur' : 'Membre';
+          userRole === 1 ? i18n.t('common.role_admin') : userRole === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
         
         userDropdown?.classList.remove('hidden');
         
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById('logout-icon')?.addEventListener('click', (e) => {
     e.preventDefault();
     localStorage.removeItem('token');
-    showToast('Déconnexion réussie', 'success');
+    showToast(i18n.t('common.logout_success'), 'success');
     setTimeout(() => window.location.href = 'index.html', 1000);
   });
 
@@ -245,7 +245,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const aircraftId = urlParams.get('id');
 
   if (!aircraftId) {
-    showToast('ID d\'avion manquant', 'error');
+    showToast(i18n.t('details.missing_id'), 'error');
     setTimeout(() => window.location.href = 'hangar.html', 1500);
     return;
   }
@@ -261,7 +261,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const response = await fetch(`/api/airplanes/${aircraftId}`);
       
       if (!response.ok) {
-        throw new Error('Avion non trouvé');
+        throw new Error(i18n.t('details.not_found'));
       }
 
       aircraftData = await response.json();
@@ -271,7 +271,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       
     } catch (error) {
       console.error('Error loading aircraft:', error);
-      showToast(error.message || 'Erreur lors du chargement', 'error');
+      showToast(error.message || i18n.t('common.loading_error'), 'error');
       setTimeout(() => window.location.href = 'hangar.html', 1500);
     }
   }
@@ -291,12 +291,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (aircraftData.generation) {
       badge.innerHTML = `
         <i class="fas fa-layer-group"></i>
-        <span>${aircraftData.generation}e Génération</span>
+        <span>${aircraftData.generation}${i18n.currentLang === 'en' ? (['st','nd','rd'][aircraftData.generation-1]||'th') + ' Generation' : 'e Génération'}</span>
       `;
     }
 
-    document.getElementById('hero-country').textContent = aircraftData.country_name || 'Non spécifié';
-    document.getElementById('hero-manufacturer').textContent = aircraftData.manufacturer_name || 'Non spécifié';
+    document.getElementById('hero-country').textContent = aircraftData.country_name || i18n.t('details.not_specified');
+    document.getElementById('hero-manufacturer').textContent = aircraftData.manufacturer_name || i18n.t('details.not_specified');
     
     if (aircraftData.date_operationel) {
       const year = new Date(aircraftData.date_operationel).getFullYear();
@@ -316,11 +316,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById('stat-weight').textContent = 
       aircraftData.weight ? `${aircraftData.weight} kg` : 'N/A';
     document.getElementById('stat-status').textContent = 
-      aircraftData.status || 'Non spécifié';
+      aircraftData.status || i18n.t('details.not_specified');
 
     // Description
     document.getElementById('aircraft-description').textContent = 
-      aircraftData.description || 'Aucune description disponible.';
+      aircraftData.description || i18n.t('details.no_description');
 
     // Timeline dates
     const conceptEl = document.getElementById('date-concept');
@@ -361,14 +361,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById('armament-list');
     
     if (!armament || armament.length === 0) {
-      container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Aucun armement répertorié</p>';
+      container.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${i18n.t('details.no_armament')}</p>`;
       return;
     }
 
     container.innerHTML = armament.map(item => `
       <div class="feature-card">
         <h4>${item.name}</h4>
-        <p>${item.description || 'Pas de description disponible'}</p>
+        <p>${item.description || i18n.t('details.no_desc_available')}</p>
       </div>
     `).join('');
   }
@@ -377,14 +377,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById('tech-list');
     
     if (!technologies || technologies.length === 0) {
-      container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Aucune technologie répertoriée</p>';
+      container.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${i18n.t('details.no_tech')}</p>`;
       return;
     }
 
     container.innerHTML = technologies.map(item => `
       <div class="feature-card">
         <h4>${item.name}</h4>
-        <p>${item.description || 'Pas de description disponible'}</p>
+        <p>${item.description || i18n.t('details.no_desc_available')}</p>
       </div>
     `).join('');
   }
@@ -393,7 +393,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById('missions-list');
     
     if (!missions || missions.length === 0) {
-      container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Aucune mission répertoriée</p>';
+      container.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${i18n.t('details.no_mission')}</p>`;
       return;
     }
 
@@ -421,7 +421,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById('wars-list');
     
     if (!wars || wars.length === 0) {
-      container.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Aucun engagement historique répertorié</p>';
+      container.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${i18n.t('details.no_war')}</p>`;
       return;
     }
 
@@ -436,7 +436,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <i class="fas fa-calendar-days"></i>
             <span>${startYear} - ${endYear}</span>
           </div>
-          <p>${war.description || 'Pas de description disponible'}</p>
+          <p>${war.description || i18n.t('details.no_desc_available')}</p>
         </div>
       `;
     }).join('');
@@ -473,20 +473,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       favoriteBtn.classList.add('favorited');
       favoriteBtn.innerHTML = `
         <i class="fas fa-heart"></i>
-        <span>Dans les favoris</span>
+        <span>${i18n.t('details.remove_favorite')}</span>
       `;
     } else {
       favoriteBtn.classList.remove('favorited');
       favoriteBtn.innerHTML = `
         <i class="far fa-heart"></i>
-        <span>Ajouter aux favoris</span>
+        <span>${i18n.t('details.add_favorite')}</span>
       `;
     }
   }
 
   favoriteBtn?.addEventListener('click', async () => {
     if (!token) {
-      showToast('Veuillez vous connecter pour ajouter aux favoris', 'info');
+      showToast(i18n.t('common.login_to_favorite'), 'info');
       setTimeout(() => window.location.href = 'login.html', 1500);
       return;
     }
@@ -499,13 +499,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la mise à jour des favoris');
+        throw new Error(i18n.t('common.favorite_error'));
       }
 
       isFavorite = !isFavorite;
       updateFavoriteButton();
       showToast(
-        isFavorite ? 'Ajouté aux favoris !' : 'Retiré des favoris',
+        isFavorite ? i18n.t('common.favorite_added') : i18n.t('common.favorite_removed'),
         'success'
       );
 
@@ -587,20 +587,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       const types = await typesRes.json();
 
       document.getElementById('edit-country-id').innerHTML = 
-        '<option value="">Sélectionner...</option>' +
+        `<option value="">${i18n.t('details.select')}</option>` +
         countries.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 
       document.getElementById('edit-manufacturer-id').innerHTML = 
-        '<option value="">Sélectionner...</option>' +
+        `<option value="">${i18n.t('details.select')}</option>` +
         manufacturers.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
 
       document.getElementById('edit-type').innerHTML = 
-        '<option value="">Sélectionner...</option>' +
+        `<option value="">${i18n.t('details.select')}</option>` +
         types.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
 
       document.getElementById('edit-generation-id').innerHTML = 
-        '<option value="">Sélectionner...</option>' +
-        [1, 2, 3, 4, 5].map(g => `<option value="${g}">${g}e Génération</option>`).join('');
+        `<option value="">${i18n.t('details.select')}</option>` +
+        [1, 2, 3, 4, 5].map(g => `<option value="${g}">${g}${i18n.currentLang === 'en' ? (['st','nd','rd'][g-1]||'th') + ' Generation' : 'e Génération'}</option>`).join('');
 
     } catch (error) {
       console.error('Error loading form selects:', error);
@@ -611,7 +611,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     e.preventDefault();
 
     if (!token || (userRole !== 1 && userRole !== 2)) {
-      showToast('Accès non autorisé', 'error');
+      showToast(i18n.t('common.unauthorized'), 'error');
       return;
     }
 
@@ -645,10 +645,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la mise à jour');
+        throw new Error(i18n.t('common.update_error'));
       }
 
-      showToast('Avion mis à jour avec succès !', 'success');
+      showToast(i18n.t('common.saved'), 'success');
       closeEditModal();
       
       // Reload data
@@ -656,12 +656,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
       console.error('Error updating aircraft:', error);
-      showToast(error.message || 'Erreur lors de la mise à jour', 'error');
+      showToast(error.message || i18n.t('common.update_error'), 'error');
     }
   });
 
   deleteBtn?.addEventListener('click', async () => {
-    if (!confirm(`Êtes-vous sûr de vouloir supprimer "${aircraftData.name}" ?\n\nCette action est irréversible.`)) {
+    if (!confirm(i18n.t('common.confirm_delete') + ` "${aircraftData.name}" ?`)) {
       return;
     }
 
@@ -672,15 +672,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la suppression');
+        throw new Error(i18n.t('common.delete_error'));
       }
 
-      showToast('Avion supprimé avec succès', 'success');
+      showToast(i18n.t('common.deleted'), 'success');
       setTimeout(() => window.location.href = 'hangar.html', 1500);
 
     } catch (error) {
       console.error('Error deleting aircraft:', error);
-      showToast(error.message || 'Erreur lors de la suppression', 'error');
+      showToast(error.message || i18n.t('common.delete_error'), 'error');
     }
   });
 
@@ -723,6 +723,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   await loadAircraftDetails();
   observeElements();
+
+  // Re-render on language change
+  window.addEventListener('langChanged', () => {
+    if (aircraftData) {
+      renderAircraftDetails();
+      loadRelatedData();
+      updateFavoriteButton();
+    }
+  });
 
   console.log('Aircraft details page initialized');
 });

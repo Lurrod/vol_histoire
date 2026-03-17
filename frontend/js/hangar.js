@@ -127,13 +127,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         const userRoleEl = document.querySelector('.user-role');
         
         if (userNameEl) {
-          userNameEl.textContent = payload.name || 'Utilisateur';
+          userNameEl.textContent = payload.name || i18n.t('nav.user_default');
         }
         
         if (userRoleEl) {
           const role = Number(payload.role);
-          userRoleEl.textContent = role === 1 ? 'Administrateur' :
-                                   role === 2 ? 'Éditeur' : 'Membre';
+          userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
+                                   role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
         }
         
         userDropdown?.classList.remove('hidden');
@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       localStorage.removeItem('token');
       
       // Show logout message
-      showToast('Déconnexion réussie', 'success');
+      showToast(i18n.t('common.logout_success'), 'success');
       
       // Redirect after a short delay
       setTimeout(() => {
@@ -243,7 +243,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       populateFormSelects();
     } catch (error) {
       console.error('Error loading referential data:', error);
-      showToast('Erreur lors du chargement des données', 'error');
+      showToast(i18n.t('common.loading_error'), 'error');
     }
   }
 
@@ -299,22 +299,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     const typeSelect = document.getElementById('aircraft-type');
 
     if (countrySelect) {
-      countrySelect.innerHTML = '<option value="">Sélectionner...</option>' +
+      countrySelect.innerHTML = `<option value="">${i18n.t('hangar.select')}</option>` +
         state.countries.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     }
 
     if (manufacturerSelect) {
-      manufacturerSelect.innerHTML = '<option value="">Sélectionner...</option>' +
+      manufacturerSelect.innerHTML = `<option value="">${i18n.t('hangar.select')}</option>` +
         state.manufacturers.map(m => `<option value="${m.id}">${m.name}${m.country_name ? ` (${m.country_name})` : ''}</option>`).join('');
     }
 
     if (generationSelect) {
-      generationSelect.innerHTML = '<option value="">Sélectionner...</option>' +
+      generationSelect.innerHTML = `<option value="">${i18n.t('hangar.select')}</option>` +
         state.generations.map((g, i) => `<option value="${i + 1}">${g}e Génération</option>`).join('');
     }
 
     if (typeSelect) {
-      typeSelect.innerHTML = '<option value="">Sélectionner...</option>' +
+      typeSelect.innerHTML = `<option value="">${i18n.t('hangar.select')}</option>` +
         state.types.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
     }
   }
@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       
     } catch (error) {
       console.error('Error loading aircraft:', error);
-      showToast('Erreur lors du chargement des avions', 'error');
+      showToast(i18n.t('common.loading_error'), 'error');
       hideSkeletonLoaders();
     }
   }
@@ -458,9 +458,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function updateResultsCount() {
     const count = state.filteredAircraft.length;
-    const text = count === 0 ? 'Aucun avion trouvé' : 
-                 count === 1 ? '1 avion trouvé' : 
-                 `${count} avions trouvés`;
+    const text = count === 0 ? i18n.t('hangar.results_none') : 
+                 count === 1 ? i18n.t('hangar.results_one') : 
+                 i18n.t('hangar.results', { count });
     document.getElementById('results-count').textContent = text;
   }
 
@@ -680,7 +680,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
           </div>
           <p class="aircraft-description">
-            ${aircraft.little_description || 'Description non disponible'}
+            ${aircraft.little_description || i18n.t('details.no_desc_available')}
           </p>
           <div class="aircraft-specs">
             ${aircraft.max_speed ? `
@@ -782,7 +782,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      showToast('Accès non autorisé', 'error');
+      showToast(i18n.t('common.unauthorized'), 'error');
       return;
     }
 
@@ -791,12 +791,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       const payload = JSON.parse(atob(token.split('.')[1]));
       userRole = Number(payload.role);
     } catch (error) {
-      showToast('Erreur d\'authentification', 'error');
+      showToast(i18n.t('common.auth_error'), 'error');
       return;
     }
 
     if (userRole !== 1 && userRole !== 2) {
-      showToast('Accès non autorisé', 'error');
+      showToast(i18n.t('common.unauthorized'), 'error');
       return;
     }
 
@@ -830,16 +830,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la création');
+        throw new Error(i18n.t('common.create_error'));
       }
 
-      showToast('Avion créé avec succès !', 'success');
+      showToast(i18n.t('common.added'), 'success');
       closeModal();
       loadAircraft();
       
     } catch (error) {
       console.error('Error creating aircraft:', error);
-      showToast(error.message || 'Erreur lors de la création', 'error');
+      showToast(error.message || i18n.t('common.create_error'), 'error');
     }
   });
 
@@ -945,6 +945,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       clearInterval(cardObserver);
     }
   }, 100);
+
+  // Re-render on language change
+  window.addEventListener('langChanged', () => {
+    updateResultsCount();
+    renderAircraft();
+  });
 
   console.log('Hangar page initialized successfully');
 });

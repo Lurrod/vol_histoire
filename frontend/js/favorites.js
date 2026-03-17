@@ -32,13 +32,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const diffMs = now - date;
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "Ajouté aujourd'hui";
-    if (diffDays === 1) return 'Ajouté hier';
-    if (diffDays < 30) return `Ajouté il y a ${diffDays} jours`;
+    if (diffDays === 0) return i18n.t('favorites.added_today');
+    if (diffDays === 1) return i18n.t('favorites.added_yesterday');
+    if (diffDays < 30) return i18n.t('favorites.added_days_ago', { days: diffDays });
     const diffMonths = Math.floor(diffDays / 30);
-    if (diffMonths === 1) return 'Ajouté il y a 1 mois';
-    if (diffMonths < 12) return `Ajouté il y a ${diffMonths} mois`;
-    return `Ajouté le ${date.toLocaleDateString('fr-FR')}`;
+    if (diffMonths === 1) return i18n.t('favorites.added_month_ago');
+    if (diffMonths < 12) return i18n.t('favorites.added_months_ago', { months: diffMonths });
+    return i18n.t('favorites.added_on', { date: date.toLocaleDateString(i18n.currentLang === 'en' ? 'en-GB' : 'fr-FR') });
   }
 
   /* =========================================================================
@@ -123,11 +123,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       const userNameEl = document.getElementById('user-name');
       const userRoleEl = document.querySelector('.user-role');
 
-      if (userNameEl) userNameEl.textContent = payload.name || 'Utilisateur';
+      if (userNameEl) userNameEl.textContent = payload.name || i18n.t('nav.user_default');
       if (userRoleEl) {
         const role = Number(payload.role);
-        userRoleEl.textContent = role === 1 ? 'Administrateur' :
-                                 role === 2 ? 'Éditeur' : 'Membre';
+        userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
+                                 role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
       }
 
       userDropdown?.classList.remove('hidden');
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     btn?.addEventListener('click', (e) => {
       e.preventDefault();
       localStorage.removeItem('token');
-      showToast('Déconnexion réussie', 'success');
+      showToast(i18n.t('common.logout_success'), 'success');
       setTimeout(() => { window.location.href = 'index.html'; }, 1000);
     });
   });
@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       if (response.status === 401 || response.status === 403) {
-        showToast('Session expirée, veuillez vous reconnecter', 'error');
+        showToast(i18n.t('common.session_expired'), 'error');
         localStorage.removeItem('token');
         setTimeout(() => { window.location.href = 'login.html'; }, 1500);
         return;
@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
       console.error('Error loading favorites:', error);
-      showToast('Erreur lors du chargement des favoris', 'error');
+      showToast(i18n.t('common.loading_error'), 'error');
       hideSkeletonLoaders();
     }
   }
@@ -340,9 +340,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function updateResultsCount() {
     const count = state.filtered.length;
-    const text = count === 0 ? 'Aucun favori trouvé' :
-                 count === 1 ? '1 favori' :
-                 `${count} favoris`;
+    const text = count === 0 ? i18n.t('favorites.results_none') :
+                 count === 1 ? i18n.t('favorites.results_one') :
+                 i18n.t('favorites.results', { count });
     document.getElementById('results-count').textContent = text;
   }
 
@@ -375,7 +375,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     container.innerHTML = state.filtered.map(aircraft => `
       <article class="aircraft-card" data-id="${aircraft.id}">
-        <button class="favorite-remove" data-airplane-id="${aircraft.id}" title="Retirer des favoris">
+        <button class="favorite-remove" data-airplane-id="${aircraft.id}" title="${i18n.t('details.remove_favorite')}">
           <i class="fas fa-heart-broken"></i>
         </button>
         <div class="aircraft-image">
@@ -402,7 +402,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
           </div>
           <p class="aircraft-description">
-            ${aircraft.little_description || 'Description non disponible'}
+            ${aircraft.little_description || i18n.t('details.no_desc_available')}
           </p>
           <div class="aircraft-specs">
             ${aircraft.max_speed ? `
@@ -477,11 +477,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateStats();
       }
 
-      showToast('Retiré des favoris', 'success');
+      showToast(i18n.t('common.favorite_removed'), 'success');
 
     } catch (error) {
       console.error('Error removing favorite:', error);
-      showToast('Erreur lors de la suppression', 'error');
+      showToast(i18n.t('common.delete_error'), 'error');
     }
   }
 
@@ -501,6 +501,12 @@ document.addEventListener("DOMContentLoaded", async () => {
      ========================================================================= */
 
   await loadFavorites();
+
+  // Re-render on language change
+  window.addEventListener('langChanged', () => {
+    updateResultsCount();
+    renderFavorites();
+  });
 
   console.log('Favoris page initialized successfully');
 });
