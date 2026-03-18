@@ -245,8 +245,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const aircraftId = urlParams.get('id');
 
   if (!aircraftId) {
-    showToast(i18n.t('details.missing_id'), 'error');
-    setTimeout(() => window.location.href = '/hangar', 1500);
+    window.location.href = '/404';
     return;
   }
 
@@ -271,8 +270,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       
     } catch (error) {
       console.error('Error loading aircraft:', error);
-      showToast(error.message || i18n.t('common.loading_error'), 'error');
-      setTimeout(() => window.location.href = '/hangar', 1500);
+      window.location.href = '/404';
     }
   }
 

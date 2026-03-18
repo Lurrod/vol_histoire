@@ -76,7 +76,7 @@ nav { display: flex; justify-content: space-between; align-items: center; }
 /* ======================================================================
    AUTH GATE — Immersive "Access Denied" screen
    ====================================================================== */
-.auth-gate { padding: 5rem 0 6rem; }
+.auth-gate { padding: 5rem 0 6rem; margin-top: 70px; }
 
 .auth-gate-content {
   display: grid;
