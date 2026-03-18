@@ -68,8 +68,8 @@
 2. **Hawker Siddeley Harrier**  
 3. **Panavia Tornado**  
 4. **BAE Sea Harrier**  
-5. **Eurofighter Typhoon**  
-6. **Lockheed Martin F-35B Lightning II**  
+5. **Eurofighter Typhoon Anglais**  
+6. **Lockheed Martin F-35B Lightning II Anglais**  
 7. **Blackburn Buccaneer**  
 8. **Avro Vulcan** (modernisé après 1960)  
 
