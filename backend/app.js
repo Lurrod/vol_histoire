@@ -713,6 +713,41 @@ app.get('/api/stats', async (req, res) => {
 });
 
 // -----------------------------------------------------------------------------
+// Clean URLs : /hangar → hangar.html, /a-propos → a-propos.html, etc.
+// -----------------------------------------------------------------------------
+
+// Redirection 301 : supprimer .html des URLs (SEO)
+app.use((req, res, next) => {
+  if (req.path.endsWith('.html') && req.method === 'GET') {
+    const clean = req.path.slice(0, -5);
+    const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+    return res.redirect(301, clean + query);
+  }
+  next();
+});
+
+// Servir le fichier .html correspondant à l'URL propre
+const fs = require('fs');
+app.get('*', (req, res, next) => {
+  // Ignorer les requêtes API et les fichiers avec extension
+  if (req.path.startsWith('/api/') || path.extname(req.path)) {
+    return next();
+  }
+
+  const htmlFile = path.join(__dirname, '../frontend', req.path + '.html');
+  if (fs.existsSync(htmlFile)) {
+    return res.sendFile(htmlFile);
+  }
+
+  // 404 personnalisé
+  const notFoundFile = path.join(__dirname, '../frontend/404.html');
+  if (fs.existsSync(notFoundFile)) {
+    return res.status(404).sendFile(notFoundFile);
+  }
+  res.status(404).send('Page non trouvée');
+});
+
+// -----------------------------------------------------------------------------
 // Gestionnaire d'erreurs global
 // -----------------------------------------------------------------------------
 app.use((err, req, res, next) => {
