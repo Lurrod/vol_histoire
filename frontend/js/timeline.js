@@ -32,12 +32,19 @@ document.addEventListener("DOMContentLoaded", async () => {
      UTILITIES
      ========================================================================= */
 
+  function escapeHtml(text) {
+    if (text == null) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+  }
+
   function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
-    toast.innerHTML = `<i class="fas fa-${icon}"></i><span>${message}</span>`;
+    toast.innerHTML = `<i class="fas fa-${icon}"></i><span>${escapeHtml(message)}</span>`;
     container.appendChild(toast);
     setTimeout(() => { toast.classList.add('fade-out'); setTimeout(() => toast.remove(), 300); }, 3000);
   }
@@ -87,31 +94,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   const updateAuthUI = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-
-        // Check if token is expired
-        if (payload.exp && Date.now() >= payload.exp * 1000) {
-          console.warn('Token expiré, nettoyage de la session');
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          return;
-        }
-
-        const userNameEl = document.getElementById('user-name');
-        const userRoleEl = document.querySelector('.user-role');
-        if (userNameEl) userNameEl.textContent = payload.name || i18n.t('nav.user_default');
-        if (userRoleEl) {
-          const role = Number(payload.role);
-          userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') : role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
-        }
-        userDropdown?.classList.remove('hidden');
-      } catch (error) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+    const payload = auth.getPayload();
+    if (payload) {
+      const userNameEl = document.getElementById('user-name');
+      const userRoleEl = document.querySelector('.user-role');
+      if (userNameEl) userNameEl.textContent = payload.name || i18n.t('nav.user_default');
+      if (userRoleEl) {
+        const role = Number(payload.role);
+        userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') : role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
       }
+      userDropdown?.classList.remove('hidden');
     }
   };
 
@@ -134,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   loginIcon?.addEventListener('click', (e) => {
-    if (!localStorage.getItem('token')) { e.preventDefault(); window.location.href = '/login'; }
+    if (!auth.getToken()) { e.preventDefault(); window.location.href = '/login'; }
   });
 
   document.getElementById('settings-icon')?.addEventListener('click', (e) => {
@@ -142,9 +134,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   document.querySelectorAll('#logout-icon, #logout-btn').forEach(btn => {
-    btn?.addEventListener('click', (e) => {
+    btn?.addEventListener('click', async (e) => {
       e.preventDefault();
-      localStorage.removeItem('token');
+      await auth.logout();
       showToast(i18n.t('common.logout_success'), 'success');
       setTimeout(() => window.location.href = '/', 1000);
     });
@@ -439,8 +431,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const genClass = plane.generation ? `gen-${plane.generation}` : '';
     const genLabel = plane.generation ? `G${plane.generation}` : '—';
     const refNum = plane.id ? plane.id.toString().padStart(4, '0') : '0000';
-    const speed = plane.max_speed ? `${plane.max_speed} km/h` : '—';
-    const range = plane.max_range ? `${plane.max_range} km` : '—';
+    const speed = plane.max_speed ? `${escapeHtml(plane.max_speed)} km/h` : '—';
+    const range = plane.max_range ? `${escapeHtml(plane.max_range)} km` : '—';
     const imgSrc = plane.image_url || 'https://via.placeholder.com/400x200/0f1626/00e5ff?text=IMG';
     const delay = (index % 6) * 0.08;
 
@@ -451,14 +443,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           <span class="card-gen ${genClass}">${genLabel}</span>
         </div>
         <div class="card-image">
-          <img src="${imgSrc}" alt="${plane.name}" loading="lazy">
+          <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(plane.name)}" loading="lazy">
           <div class="card-scan"></div>
           <div class="card-year">${year}</div>
-          ${plane.country_name ? `<div class="card-country-flag">${plane.country_name.substring(0,3).toUpperCase()}</div>` : ''}
+          ${plane.country_name ? `<div class="card-country-flag">${escapeHtml(plane.country_name).substring(0,3).toUpperCase()}</div>` : ''}
         </div>
         <div class="card-body">
-          <div class="card-name">${plane.name}</div>
-          <div class="card-desc">${plane.little_description || i18n.t('details.no_desc_available')}</div>
+          <div class="card-name">${escapeHtml(plane.name)}</div>
+          <div class="card-desc">${escapeHtml(plane.little_description) || i18n.t('details.no_desc_available')}</div>
           <div class="card-specs">
             <div class="spec-item">
               <div class="spec-val">${speed}</div>

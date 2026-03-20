@@ -3,6 +3,13 @@ document.addEventListener("DOMContentLoaded", async () => {
      UTILITIES
      ========================================================================= */
 
+  function escapeHtml(text) {
+    if (text == null) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+  }
+
   function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -14,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     toast.innerHTML = `
       <i class="fas fa-${icon}"></i>
-      <span>${message}</span>
+      <span>${escapeHtml(message)}</span>
     `;
 
     container.appendChild(toast);
@@ -104,38 +111,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // User Authentication & Menu
-  let token = localStorage.getItem('token');
-  let currentUser = null;
+  const currentUser = auth.getPayload();
 
-  // If the token exists but is expired, clean up and treat as logged out
-  if (token && isTokenExpired(token)) {
-    console.warn('Token expiré, nettoyage de la session');
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    token = null;
-  }
+  if (currentUser) {
+    const userNameEl = document.getElementById('user-name');
+    const userRoleEl = document.querySelector('.user-role');
 
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      currentUser = payload;
-
-      const userNameEl = document.getElementById('user-name');
-      const userRoleEl = document.querySelector('.user-role');
-
-      if (userNameEl) userNameEl.textContent = payload.name || i18n.t('nav.user_default');
-      if (userRoleEl) {
-        const role = Number(payload.role);
-        userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
-                                 role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
-      }
-
-      userDropdown?.classList.remove('hidden');
-    } catch (error) {
-      console.error('Token parsing error:', error);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+    if (userNameEl) userNameEl.textContent = currentUser.name || i18n.t('nav.user_default');
+    if (userRoleEl) {
+      const role = Number(currentUser.role);
+      userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
+                               role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
     }
+
+    userDropdown?.classList.remove('hidden');
   }
 
   // User dropdown toggle
@@ -159,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   loginIcon?.addEventListener('click', (e) => {
-    if (!token) { e.preventDefault(); window.location.href = '/login'; }
+    if (!auth.getToken()) { e.preventDefault(); window.location.href = '/login'; }
   });
 
   document.getElementById('settings-icon')?.addEventListener('click', (e) => {
@@ -167,9 +156,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   document.querySelectorAll('#logout-icon, #logout-btn').forEach(btn => {
-    btn?.addEventListener('click', (e) => {
+    btn?.addEventListener('click', async (e) => {
       e.preventDefault();
-      localStorage.removeItem('token');
+      await auth.logout();
       showToast(i18n.t('common.logout_success'), 'success');
       setTimeout(() => { window.location.href = '/'; }, 1000);
     });
@@ -192,7 +181,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const authGate = document.getElementById('auth-gate');
   const favoritesContent = document.getElementById('favorites-content');
 
-  if (!token || !currentUser) {
+  if (!auth.getToken() || !currentUser) {
     // Not logged in — show auth gate, hide favorites
     authGate?.classList.remove('hidden');
     favoritesContent?.classList.add('hidden');
@@ -223,13 +212,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     showSkeletonLoaders();
 
     try {
-      const response = await fetch('/api/favorites', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      const response = await auth.authFetch('/api/favorites');
 
       if (response.status === 401 || response.status === 403) {
         showToast(i18n.t('common.session_expired'), 'error');
-        localStorage.removeItem('token');
+        auth.clearSession();
         setTimeout(() => { window.location.href = '/login'; }, 1500);
         return;
       }
@@ -379,36 +366,36 @@ document.addEventListener("DOMContentLoaded", async () => {
           <i class="fas fa-heart-broken"></i>
         </button>
         <div class="aircraft-image">
-          <img src="${aircraft.image_url || 'https://via.placeholder.com/400x300?text=No+Image'}"
-               alt="${aircraft.name}"
+          <img src="${escapeHtml(aircraft.image_url) || 'https://via.placeholder.com/400x300?text=No+Image'}"
+               alt="${escapeHtml(aircraft.name)}"
                loading="lazy">
           <div class="aircraft-overlay">
             <div class="aircraft-badges">
-              ${aircraft.generation ? `<span class="aircraft-badge generation">${aircraft.generation}e Gén</span>` : ''}
-              ${aircraft.type_name ? `<span class="aircraft-badge type">${aircraft.type_name}</span>` : ''}
+              ${aircraft.generation ? `<span class="aircraft-badge generation">${escapeHtml(aircraft.generation)}e Gén</span>` : ''}
+              ${aircraft.type_name ? `<span class="aircraft-badge type">${escapeHtml(aircraft.type_name)}</span>` : ''}
             </div>
           </div>
         </div>
         <div class="aircraft-content">
           <div class="aircraft-header">
             <div class="aircraft-title">
-              <h3>${aircraft.name}</h3>
+              <h3>${escapeHtml(aircraft.name)}</h3>
               ${aircraft.country_name ? `
                 <div class="aircraft-country">
                   <i class="fas fa-globe"></i>
-                  <span>${aircraft.country_name}</span>
+                  <span>${escapeHtml(aircraft.country_name)}</span>
                 </div>
               ` : ''}
             </div>
           </div>
           <p class="aircraft-description">
-            ${aircraft.little_description || i18n.t('details.no_desc_available')}
+            ${escapeHtml(aircraft.little_description) || i18n.t('details.no_desc_available')}
           </p>
           <div class="aircraft-specs">
             ${aircraft.max_speed ? `
               <div class="spec-item">
                 <i class="fas fa-gauge-high"></i>
-                <span>${aircraft.max_speed} km/h</span>
+                <span>${escapeHtml(aircraft.max_speed)} km/h</span>
               </div>
             ` : ''}
             ${aircraft.date_operationel ? `
@@ -452,9 +439,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function removeFavorite(airplaneId) {
     try {
-      const response = await fetch(`/api/favorites/${airplaneId}`, {
+      const response = await auth.authFetch(`/api/favorites/${airplaneId}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
       });
 
       if (!response.ok) throw new Error('Erreur');

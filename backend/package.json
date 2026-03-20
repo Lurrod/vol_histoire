@@ -1,18 +1,19 @@
 {
   "name": "Vol d'histoire",
-  "version": "2.2.1",
+  "version": "2.3.2",
   "main": "server.js",
   "scripts": {
-  "start": "node server.js",
-  "test": "jest --config jest.config.json",
-  "test:coverage": "jest --config jest.config.json --coverage"
-},
+    "start": "node server.js",
+    "test": "jest --config jest.config.json",
+    "test:coverage": "jest --config jest.config.json --coverage"
+  },
   "keywords": [],
   "author": "Titouan Borde",
   "license": "SEE LICENSE IN LICENSE",
   "description": "Vol d'histoire",
   "dependencies": {
     "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

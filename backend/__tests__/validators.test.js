@@ -117,6 +117,10 @@ describe('isValidName', () => {
 // isValidPassword
 // =============================================================================
 describe('isValidPassword', () => {
+  test('accepte un mot de passe de 4 caractères (minimum)', () => {
+    expect(isValidPassword('1234')).toBe(true);
+  });
+
   test('accepte un mot de passe de 8 caractères', () => {
     expect(isValidPassword('12345678')).toBe(true);
   });
@@ -125,8 +129,8 @@ describe('isValidPassword', () => {
     expect(isValidPassword('Tr0ub4dor&3')).toBe(true);
   });
 
-  test('refuse 7 caractères', () => {
-    expect(isValidPassword('1234567')).toBe(false);
+  test('refuse 3 caractères', () => {
+    expect(isValidPassword('123')).toBe(false);
   });
 
   test('refuse une chaîne vide', () => {
