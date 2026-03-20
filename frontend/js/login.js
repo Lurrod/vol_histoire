@@ -275,8 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ========== Auth Status ==========
   function checkAuthStatus() {
-    const token = localStorage.getItem('token');
-    if (token) {
+    if (auth.getToken()) {
       console.log('User is authenticated');
     }
   }
@@ -295,6 +294,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
   }
 
+  // ========== Escape HTML ==========
+  function escapeHtml(text) {
+    if (text == null) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+  }
+
   // ========== Toast ==========
   function showToast(message, type = 'success', description = '') {
     // Remove existing toasts
@@ -309,8 +316,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <i class="fas ${icon}"></i>
       </div>
       <div class="toast-content">
-        <div class="toast-message">${message}</div>
-        ${description ? `<div class="toast-description">${description}</div>` : ''}
+        <div class="toast-message">${escapeHtml(message)}</div>
+        ${description ? `<div class="toast-description">${escapeHtml(description)}</div>` : ''}
       </div>
     `;
 
@@ -366,19 +373,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password })
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token);
+        auth.setToken(data.token);
         
         if (data.user) {
           localStorage.setItem("user", JSON.stringify(data.user));
         } else {
-          try {
-            const payload = JSON.parse(atob(data.token.split('.')[1]));
+          const payload = auth.getPayload();
+          if (payload) {
             const userFromToken = {
               id: payload.id,
               email: payload.email || email,
@@ -386,13 +394,12 @@ document.addEventListener("DOMContentLoaded", () => {
               role: Number(payload.role)
             };
             localStorage.setItem("user", JSON.stringify(userFromToken));
-          } catch (e) {
-            const minimalUser = {
+          } else {
+            localStorage.setItem("user", JSON.stringify({
               email: email,
               name: email.split('@')[0],
               role: 3
-            };
-            localStorage.setItem("user", JSON.stringify(minimalUser));
+            }));
           }
         }
         
@@ -470,10 +477,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========== Logout ==========
   const logoutIcon = document.getElementById('logout-icon');
   if (logoutIcon) {
-    logoutIcon.addEventListener('click', (e) => {
+    logoutIcon.addEventListener('click', async (e) => {
       e.preventDefault();
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      await auth.logout();
       showToast(i18n.t('login.toast_logout'), 'success', i18n.t('login.toast_logout_msg'));
       setTimeout(() => { window.location.reload(); }, 1500);
     });

@@ -49,32 +49,16 @@ document.addEventListener("DOMContentLoaded", () => {
      ========================================================================= */
 
   const updateAuthUI = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
+    const payload = auth.getPayload();
+    if (payload) {
+      const userNameEl = document.getElementById('user-name');
+      const userRoleEl = document.querySelector('.user-role');
 
-        // Check if token is expired
-        if (payload.exp && Date.now() >= payload.exp * 1000) {
-          console.warn('Token expiré, nettoyage de la session');
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          return;
-        }
-
-        const userNameEl = document.getElementById('user-name');
-        const userRoleEl = document.querySelector('.user-role');
-
-        if (userNameEl) userNameEl.textContent = payload.name || i18n.t('nav.user_default');
-        if (userRoleEl) {
-          const role = Number(payload.role);
-          userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
-                                   role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
-        }
-      } catch (error) {
-        console.error('Token parsing error:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+      if (userNameEl) userNameEl.textContent = payload.name || i18n.t('nav.user_default');
+      if (userRoleEl) {
+        const role = Number(payload.role);
+        userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
+                                 role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
       }
     }
   };
@@ -84,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     e.stopPropagation();
 
-    const token = localStorage.getItem('token');
+    const token = auth.getToken();
     if (!token) {
       window.location.href = '/login';
       return;
@@ -118,9 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Logout handlers
   const logoutButtons = document.querySelectorAll('#logout-icon, #logout-btn');
   logoutButtons.forEach(btn => {
-    btn?.addEventListener('click', (e) => {
+    btn?.addEventListener('click', async (e) => {
       e.preventDefault();
-      localStorage.removeItem('token');
+      await auth.logout();
       showToast(i18n.t('common.logout_success'), 'success');
       setTimeout(() => { window.location.href = '/'; }, 1000);
     });
@@ -242,6 +226,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =========================================================================
+     UTILITIES
+     ========================================================================= */
+
+  function escapeHtml(text) {
+    if (text == null) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+  }
+
+  /* =========================================================================
      TOAST NOTIFICATIONS
      ========================================================================= */
 
@@ -268,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
-    toast.innerHTML = `<span style="font-size: 1.25rem;">${icon}</span><span>${message}</span>`;
+    toast.innerHTML = `<span style="font-size: 1.25rem;">${icon}</span><span>${escapeHtml(message)}</span>`;
 
     document.body.appendChild(toast);
 

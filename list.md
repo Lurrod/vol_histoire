@@ -75,22 +75,22 @@
 
 ### Allemagne :
 
-1. **Lockheed F-104 Starfighter**  
-2. **McDonnell Douglas F-4 Phantom II**  
-3. **Panavia Tornado**  
-4. **Eurofighter Typhoon**  
-5. **Mikoyan-Gourevitch MiG-21** 
-6. **Mikoyan-Gourevitch MiG-23** 
-7. **Mikoyan-Gourevitch MiG-29** 
-8. **Dassault/Dornier Alpha Jet**  
+1. **Lockheed F-104 Starfighter Allemand**  
+2. **McDonnell Douglas F-4 Phantom II Allemand**  
+3. **Panavia Tornado Allemand**  
+4. **Eurofighter Typhoon Allemand**  
+5. **Mikoyan-Gourevitch MiG-21 Allemand** 
+6. **Mikoyan-Gourevitch MiG-23 Allemand** 
+7. **Mikoyan-Gourevitch MiG-29 Allemand** 
+8. **Dassault/Dornier Alpha Jet Allemand**  
 
 ### Italie :
 
-1. **Lockheed F-104 Starfighter**  
-2. **Aeritalia F-104S Starfighter**  
-3. **Panavia Tornado**  
-4. **Eurofighter Typhoon**  
-5. **Lockheed Martin F-35 Lightning II**  
+1. **Lockheed F-104 Starfighter Italien**  
+2. **Aeritalia F-104S Starfighter Italien**  
+3. **Panavia Tornado Italien**  
+4. **Eurofighter Typhoon Italien**  
+5. **Lockheed Martin F-35 Lightning II Italien**  
 6. **Aermacchi MB-339**  
 7. **AMX International AMX**  
 

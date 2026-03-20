@@ -121,8 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Login redirect
   loginIcon?.addEventListener('click', (e) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!auth.getToken()) {
       e.preventDefault();
       window.location.href = '/login';
     }
@@ -165,14 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
   logoutModal?.querySelector('.logout-modal-backdrop')?.addEventListener('click', closeLogoutModal);
 
   logoutConfirm?.addEventListener('click', async () => {
-    try {
-      await fetch(`${API_BASE}/logout`, { method: 'POST' });
-    } catch (err) {
-      console.error('Logout error:', err);
-    }
-    
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    await auth.logout();
     closeLogoutModal();
     showToast(i18n.t('settings.toast_logout'), 'success');
     
@@ -268,21 +260,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function checkAuth() {
-    const token = localStorage.getItem('token');
+    const payload = auth.getPayload();
     
-    if (!token) {
-      window.location.href = '/login';
-      return false;
-    }
-
-    // Check if token is expired
-    if (isTokenExpired(token)) {
-      console.warn('Token expiré, redirection vers login');
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      showToast(i18n.t('settings.toast_session_expired'), 'error');
-      setTimeout(() => { window.location.href = '/login'; }, 1500);
-      return false;
+    if (!payload) {
+      // Try a refresh before giving up
+      try {
+        await auth.authFetch('/api/stats'); // lightweight call to trigger refresh
+      } catch {
+        // ignore
+      }
+      if (!auth.getPayload()) {
+        window.location.href = '/login';
+        return false;
+      }
     }
 
     // Try to get user from localStorage first
@@ -292,11 +282,9 @@ document.addEventListener("DOMContentLoaded", () => {
         currentUser = JSON.parse(storedUser);
         updateUserDisplay();
         
-        // Load profile data
         document.getElementById('name').value = currentUser.name || '';
         document.getElementById('email').value = currentUser.email || '';
         
-        // Show admin section if user is admin
         if (Number(currentUser.role) === 1) {
           document.getElementById('admin-nav-link').classList.remove('hidden');
           document.getElementById('admin')?.classList.remove('hidden');
@@ -309,24 +297,18 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // If no stored user, try API (but don't redirect on failure)
+    // If no stored user, try API
     try {
-      const response = await fetch(`${API_BASE}/user`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await auth.authFetch(`${API_BASE}/user`);
 
       if (response.ok) {
         currentUser = await response.json();
         localStorage.setItem('user', JSON.stringify(currentUser));
         updateUserDisplay();
         
-        // Load profile data
         document.getElementById('name').value = currentUser.name || '';
         document.getElementById('email').value = currentUser.email || '';
         
-        // Show admin section if user is admin
         if (Number(currentUser.role) === 1) {
           document.getElementById('admin-nav-link').classList.remove('hidden');
           document.getElementById('admin')?.classList.remove('hidden');
@@ -335,14 +317,10 @@ document.addEventListener("DOMContentLoaded", () => {
         
         return true;
       } else {
-        // API failed, but we have a token, so decode JWT for user info
+        // API failed, decode JWT for user info
         console.warn('API unavailable, using token-only auth');
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          currentUser = { id: payload.id, name: payload.name || 'Utilisateur', email: payload.email || '', role: Number(payload.role) };
-        } catch (e) {
-          currentUser = { name: 'Utilisateur', email: '' };
-        }
+        const p = auth.getPayload();
+        currentUser = p ? { id: p.id, name: p.name || 'Utilisateur', email: p.email || '', role: Number(p.role) } : { name: 'Utilisateur', email: '' };
         updateUserDisplay();
         if (Number(currentUser.role) === 1) {
           document.getElementById('admin-nav-link').classList.remove('hidden');
@@ -352,14 +330,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
       }
     } catch (err) {
-      // Network error - decode JWT for user info
       console.warn('Network error, using token-only auth:', err);
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        currentUser = { id: payload.id, name: payload.name || 'Utilisateur', email: payload.email || '', role: Number(payload.role) };
-      } catch (e) {
-        currentUser = { name: 'Utilisateur', email: '' };
-      }
+      const p = auth.getPayload();
+      currentUser = p ? { id: p.id, name: p.name || 'Utilisateur', email: p.email || '', role: Number(p.role) } : { name: 'Utilisateur', email: '' };
       updateUserDisplay();
       if (Number(currentUser.role) === 1) {
         document.getElementById('admin-nav-link').classList.remove('hidden');
@@ -414,13 +387,9 @@ document.addEventListener("DOMContentLoaded", () => {
       setButtonLoading(submitBtn, true);
 
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE}/user/update`, {
+        const response = await auth.authFetch(`${API_BASE}/user/update`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email })
         });
 
@@ -576,13 +545,9 @@ document.addEventListener("DOMContentLoaded", () => {
       setButtonLoading(submitBtn, true);
 
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE}/user/password`, {
+        const response = await auth.authFetch(`${API_BASE}/user/password`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password })
         });
 
@@ -614,12 +579,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadUsers() {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE}/users`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await auth.authFetch(`${API_BASE}/users`);
 
       if (response.ok) {
         allUsers = await response.json();
@@ -627,8 +587,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateUserStats();
       } else if (response.status === 401 || response.status === 403) {
         console.warn('Token expiré ou accès refusé:', response.status);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        auth.clearSession();
         showToast(i18n.t('settings.toast_session_expired'), 'error');
         setTimeout(() => { window.location.href = '/login'; }, 1500);
       } else {
@@ -687,12 +646,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE}/users/${userId}`, {
+      const response = await auth.authFetch(`${API_BASE}/users/${userId}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
       });
 
       if (response.ok) {
@@ -740,17 +695,13 @@ document.addEventListener("DOMContentLoaded", () => {
         setButtonLoading(deleteAccountBtn, true);
 
         try {
-          const token = localStorage.getItem('token');
-          const response = await fetch(`${API_BASE}/user/delete`, {
+          const response = await auth.authFetch(`${API_BASE}/user/delete`, {
             method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
           });
 
           if (response.ok) {
             showToast(i18n.t('settings.toast_account_deleted'), 'success');
-            localStorage.clear();
+            await auth.logout();
             
             setTimeout(() => {
               window.location.href = '/';

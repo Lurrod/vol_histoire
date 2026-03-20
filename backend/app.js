@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const {
   isValidEmail, isValidName, isValidPassword, validateAirplaneData,
 } = require('./validators');
@@ -19,6 +20,7 @@ app.use((req, res, next) => {
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   res.removeHeader('X-Powered-By');
   next();
 });
@@ -42,6 +44,7 @@ app.use(cors({
 }));
 
 app.use(express.json({ limit: '100kb' }));
+app.use(cookieParser());
 
 // -----------------------------------------------------------------------------
 // Rate-limiter en mémoire
@@ -124,6 +127,49 @@ app.param('airplaneId', (req, res, next, value) => {
 });
 
 // -----------------------------------------------------------------------------
+// Auth: helpers JWT
+// -----------------------------------------------------------------------------
+const ACCESS_TOKEN_EXPIRY = '15m';
+const REFRESH_TOKEN_EXPIRY = '7d';
+const REFRESH_COOKIE_NAME = 'refreshToken';
+const REFRESH_COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 jours en ms
+
+function generateAccessToken(user) {
+  return jwt.sign(
+    { id: user.id, name: user.name, role: user.role_id ?? user.role, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: ACCESS_TOKEN_EXPIRY }
+  );
+}
+
+function generateRefreshToken(user) {
+  return jwt.sign(
+    { id: user.id, role: user.role_id ?? user.role },
+    process.env.REFRESH_SECRET,
+    { expiresIn: REFRESH_TOKEN_EXPIRY }
+  );
+}
+
+function setRefreshCookie(res, token) {
+  res.cookie(REFRESH_COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: REFRESH_COOKIE_MAX_AGE,
+    path: '/api',
+  });
+}
+
+function clearRefreshCookie(res) {
+  res.clearCookie(REFRESH_COOKIE_NAME, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/api',
+  });
+}
+
+// -----------------------------------------------------------------------------
 // Auth: middleware d'autorisation
 // -----------------------------------------------------------------------------
 const authorize = (roles) => {
@@ -140,7 +186,11 @@ const authorize = (roles) => {
       req.user = { ...decoded, role: coercedRole };
       next();
     } catch (error) {
-      return res.status(401).json({ message: 'Token invalide' });
+      // Distinguer token expiré vs token invalide
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: 'Token expiré', code: 'TOKEN_EXPIRED' });
+      }
+      return res.status(401).json({ message: 'Token invalide', code: 'TOKEN_INVALID' });
     }
   };
 };
@@ -160,7 +210,7 @@ app.post('/api/register',
       return res.status(400).json({ message: 'Email invalide' });
     }
     if (!password || !isValidPassword(password)) {
-      return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères)' });
+      return res.status(400).json({ message: 'Mot de passe invalide (4-128 caractères)' });
     }
 
     try {
@@ -208,24 +258,56 @@ app.post('/api/login',
         return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
       }
 
-      const token = jwt.sign(
-        {
-          id: user.rows[0].id,
-          name: user.rows[0].name,
-          role: user.rows[0].role_id,
-          email: user.rows[0].email,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: '2h' }
-      );
+      const userData = user.rows[0];
+      const accessToken = generateAccessToken(userData);
+      const refreshToken = generateRefreshToken(userData);
 
-      res.json({ message: 'Connexion réussie', token });
+      setRefreshCookie(res, refreshToken);
+
+      res.json({ message: 'Connexion réussie', token: accessToken });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Erreur serveur' });
     }
   }
 );
+
+// -----------------------------------------------------------------------------
+// Auth: refresh & logout
+// -----------------------------------------------------------------------------
+app.post('/api/refresh', async (req, res) => {
+  const refreshToken = req.cookies[REFRESH_COOKIE_NAME];
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Aucun refresh token', code: 'NO_REFRESH_TOKEN' });
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+
+    // Récupérer les données fraîches de l'utilisateur en DB
+    const result = await pool.query(
+      'SELECT id, name, email, role_id FROM users WHERE id = $1',
+      [decoded.id]
+    );
+    if (result.rows.length === 0) {
+      clearRefreshCookie(res);
+      return res.status(401).json({ message: 'Utilisateur introuvable', code: 'USER_NOT_FOUND' });
+    }
+
+    const user = result.rows[0];
+    const newAccessToken = generateAccessToken(user);
+
+    res.json({ token: newAccessToken });
+  } catch (error) {
+    clearRefreshCookie(res);
+    return res.status(401).json({ message: 'Refresh token invalide', code: 'REFRESH_INVALID' });
+  }
+});
+
+app.post('/api/logout', (req, res) => {
+  clearRefreshCookie(res);
+  res.json({ message: 'Déconnexion réussie' });
+});
 
 // -----------------------------------------------------------------------------
 // Utilisateurs
@@ -268,7 +350,7 @@ app.put('/api/users/:id', authorize([1, 2, 3]), async (req, res) => {
     return res.status(400).json({ message: 'Email invalide' });
   }
   if (password !== undefined && !isValidPassword(password)) {
-    return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères)' });
+    return res.status(400).json({ message: 'Mot de passe invalide (4-128 caractères)' });
   }
 
   const requester = req.user;

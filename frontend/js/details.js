@@ -2,7 +2,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   /* =========================================================================
      UTILITIES
      ========================================================================= */
-  
+
+  function escapeHtml(text) {
+    if (text == null) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+  }
+
   function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -14,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     toast.innerHTML = `
       <i class="fas fa-${icon}"></i>
-      <span>${message}</span>
+      <span>${escapeHtml(message)}</span>
     `;
     
     container.appendChild(toast);
@@ -122,8 +129,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Login redirect
   loginIcon?.addEventListener('click', (e) => {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!auth.getToken()) {
       e.preventDefault();
       window.location.href = '/login';
     }
@@ -138,14 +144,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Logout handlers
   const logoutButtons = document.querySelectorAll('#logout-icon, #logout-btn');
   logoutButtons.forEach(btn => {
-    btn?.addEventListener('click', (e) => {
+    btn?.addEventListener('click', async (e) => {
       e.preventDefault();
-      localStorage.removeItem('token');
-      
-      // Show logout message
+      await auth.logout();
       showToast(i18n.t('common.logout_success'), 'success');
-      
-      // Redirect after a short delay
       setTimeout(() => {
         window.location.href = '/';
       }, 1000);
@@ -163,36 +165,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  const token = localStorage.getItem('token');
+  const payload = auth.getPayload();
   let userRole = null;
 
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-
-      // Check if token is expired
-      if (payload.exp && Date.now() >= payload.exp * 1000) {
-        console.warn('Token expiré, nettoyage de la session');
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-      } else {
-        userRole = Number(payload.role);
-        
-        document.getElementById('user-name').textContent = payload.name;
-        document.querySelector('.user-role').textContent = 
-          userRole === 1 ? i18n.t('common.role_admin') : userRole === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
-        
-        userDropdown?.classList.remove('hidden');
-        
-        if (userRole === 1 || userRole === 2) {
-          document.getElementById('edit-btn')?.classList.remove('hidden');
-          document.getElementById('delete-btn')?.classList.remove('hidden');
-        }
-      }
-    } catch (error) {
-      console.error('Token error:', error);
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+  if (payload) {
+    userRole = Number(payload.role);
+    
+    document.getElementById('user-name').textContent = payload.name;
+    document.querySelector('.user-role').textContent = 
+      userRole === 1 ? i18n.t('common.role_admin') : userRole === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
+    
+    userDropdown?.classList.remove('hidden');
+    
+    if (userRole === 1 || userRole === 2) {
+      document.getElementById('edit-btn')?.classList.remove('hidden');
+      document.getElementById('delete-btn')?.classList.remove('hidden');
     }
   }
 
@@ -200,13 +187,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById('settings-icon')?.addEventListener('click', (e) => {
     e.preventDefault();
     window.location.href = '/settings';
-  });
-
-  document.getElementById('logout-icon')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    localStorage.removeItem('token');
-    showToast(i18n.t('common.logout_success'), 'success');
-    setTimeout(() => window.location.href = '/', 1000);
   });
 
   /* =========================================================================
@@ -365,8 +345,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     container.innerHTML = armament.map(item => `
       <div class="feature-card">
-        <h4>${item.name}</h4>
-        <p>${item.description || i18n.t('details.no_desc_available')}</p>
+        <h4>${escapeHtml(item.name)}</h4>
+        <p>${escapeHtml(item.description) || i18n.t('details.no_desc_available')}</p>
       </div>
     `).join('');
   }
@@ -381,8 +361,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     container.innerHTML = technologies.map(item => `
       <div class="feature-card">
-        <h4>${item.name}</h4>
-        <p>${item.description || i18n.t('details.no_desc_available')}</p>
+        <h4>${escapeHtml(item.name)}</h4>
+        <p>${escapeHtml(item.description) || i18n.t('details.no_desc_available')}</p>
       </div>
     `).join('');
   }
@@ -409,8 +389,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="mission-icon">
           <i class="fas fa-${missionIcons[item.name] || 'bullseye'}"></i>
         </div>
-        <h4>${item.name}</h4>
-        <p>${item.description || ''}</p>
+        <h4>${escapeHtml(item.name)}</h4>
+        <p>${escapeHtml(item.description) || ''}</p>
       </div>
     `).join('');
   }
@@ -429,12 +409,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       return `
         <div class="war-card">
-          <h4>${war.name}</h4>
+          <h4>${escapeHtml(war.name)}</h4>
           <div class="war-period">
             <i class="fas fa-calendar-days"></i>
             <span>${startYear} - ${endYear}</span>
           </div>
-          <p>${war.description || i18n.t('details.no_desc_available')}</p>
+          <p>${escapeHtml(war.description) || i18n.t('details.no_desc_available')}</p>
         </div>
       `;
     }).join('');
@@ -448,12 +428,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   let isFavorite = false;
 
   async function checkFavoriteStatus() {
-    if (!token) return;
+    if (!auth.getToken()) return;
 
     try {
-      const response = await fetch(`/api/airplanes/${aircraftId}/favorite`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await auth.authFetch(`/api/airplanes/${aircraftId}/favorite`);
 
       const data = await response.json();
       isFavorite = data.isFavorite;
@@ -483,7 +461,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   favoriteBtn?.addEventListener('click', async () => {
-    if (!token) {
+    if (!auth.getToken()) {
       showToast(i18n.t('common.login_to_favorite'), 'info');
       setTimeout(() => window.location.href = '/login', 1500);
       return;
@@ -491,10 +469,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
       const method = isFavorite ? 'DELETE' : 'POST';
-      const response = await fetch(`/api/favorites/${aircraftId}`, {
-        method,
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await auth.authFetch(`/api/favorites/${aircraftId}`, { method });
 
       if (!response.ok) {
         throw new Error(i18n.t('common.favorite_error'));
@@ -586,15 +561,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       document.getElementById('edit-country-id').innerHTML = 
         `<option value="">${i18n.t('details.select')}</option>` +
-        countries.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        countries.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
 
       document.getElementById('edit-manufacturer-id').innerHTML = 
         `<option value="">${i18n.t('details.select')}</option>` +
-        manufacturers.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+        manufacturers.map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`).join('');
 
       document.getElementById('edit-type').innerHTML = 
         `<option value="">${i18n.t('details.select')}</option>` +
-        types.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+        types.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('');
 
       document.getElementById('edit-generation-id').innerHTML = 
         `<option value="">${i18n.t('details.select')}</option>` +
@@ -608,7 +583,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   editForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (!token || (userRole !== 1 && userRole !== 2)) {
+    if (!auth.getToken() || (userRole !== 1 && userRole !== 2)) {
       showToast(i18n.t('common.unauthorized'), 'error');
       return;
     }
@@ -633,12 +608,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     try {
-      const response = await fetch(`/api/airplanes/${aircraftId}`, {
+      const response = await auth.authFetch(`/api/airplanes/${aircraftId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
 
@@ -664,9 +636,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      const response = await fetch(`/api/airplanes/${aircraftId}`, {
+      const response = await auth.authFetch(`/api/airplanes/${aircraftId}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
       });
 
       if (!response.ok) {

@@ -11,7 +11,7 @@ function isValidName(name) {
 }
 
 function isValidPassword(password) {
-  return typeof password === 'string' && password.length >= 8 && password.length <= 128;
+  return typeof password === 'string' && password.length >= 4 && password.length <= 128;
 }
 
 function isValidString(value, maxLength = 255) {
