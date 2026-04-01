@@ -55,6 +55,7 @@
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KB3P52VK"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
+<a href="#main-content" class="skip-link">Aller au contenu</a>
 <!-- Cookie Consent Banner -->
 <div id="cookie-banner" class="cookie-banner hidden">
   <div class="cookie-banner-content">
@@ -172,7 +173,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div id="type-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_type">Filtrer par type</h3><button class="close-dropdown" data-dropdown="type"><i class="fas fa-times"></i></button></div><div class="filter-options" id="type-options"></div></div>
 
     <!-- Main Content -->
-    <main class="container hangar-main">
+    <main id="main-content" class="container hangar-main">
       <div class="content-header"><div class="results-info"><span id="results-count">0 avions trouvés</span></div></div>
       <div id="airplanes-container" class="aircraft-grid"></div>
       <div id="pagination-container" class="pagination"></div>
@@ -235,7 +236,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
     </div>
   </footer>
-  <div id="toast-container"></div>
+  <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/i18n.js"></script>
   <script defer src="js/auth.js"></script>
   <script defer src="js/cookies.js"></script>
