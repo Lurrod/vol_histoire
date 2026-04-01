@@ -1,4 +1,14 @@
+const ALPHA3_TO_ALPHA2 = {
+  USA: 'us', RUS: 'ru', CHN: 'cn', FRA: 'fr', GBR: 'gb',
+  DEU: 'de', ITA: 'it', SWE: 'se', IND: 'in', JPN: 'jp',
+  BRA: 'br', ISR: 'il', VNM: 'vn', AFG: 'af', IRQ: 'iq',
+  YUG: 'rs', KOR: 'kr', FLK: 'fk', LBN: 'lb', DZA: 'dz',
+  SYR: 'sy', IRN: 'ir'
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
+  await auth.init();
+
   /* =========================================================================
      STATE MANAGEMENT
      ========================================================================= */
@@ -15,7 +25,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       search: ''
     },
     sort: 'default',
-    view: 'grid',
     countries: [],
     generations: [],
     types: [],
@@ -70,15 +79,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   let lastScroll = 0;
   window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
-    
+
     if (currentScroll > 100) {
       header.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
     }
-    
+
     lastScroll = currentScroll;
-  });
+  }, { passive: true });
+
 
   // Mobile menu toggle
   hamburger?.addEventListener('click', () => {
@@ -219,10 +229,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         fetch('/api/manufacturers')
       ]);
 
-      state.countries = await countriesRes.json();
-      state.generations = await generationsRes.json();
-      state.types = await typesRes.json();
-      state.manufacturers = await manufacturersRes.json();
+      if (!countriesRes.ok || !generationsRes.ok || !typesRes.ok || !manufacturersRes.ok) {
+        throw new Error('Erreur chargement référentiels');
+      }
+
+      const [countries, generations, types, manufacturers] = await Promise.all([
+        countriesRes.json(), generationsRes.json(), typesRes.json(), manufacturersRes.json()
+      ]);
+
+      state.countries = Array.isArray(countries) ? countries : [];
+      state.generations = Array.isArray(generations) ? generations : [];
+      state.types = Array.isArray(types) ? types : [];
+      state.manufacturers = Array.isArray(manufacturers) ? manufacturers : [];
 
       populateFilterOptions();
       populateFormSelects();
@@ -269,7 +287,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         
         state.filters[filterType] = state.filters[filterType] === value ? null : value;
         state.currentPage = 1;
-        
+        saveFiltersToSession();
         applyFiltersAndRender();
         closeAllDropdowns();
         updateActiveFilters();
@@ -295,7 +313,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (generationSelect) {
       generationSelect.innerHTML = `<option value="">${i18n.t('hangar.select')}</option>` +
-        state.generations.map((g, i) => `<option value="${i + 1}">${g}e Génération</option>`).join('');
+        state.generations.map(g => `<option value="${g}">${g}e Génération</option>`).join('');
     }
 
     if (typeSelect) {
@@ -304,9 +322,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  function renderSkeletons() {
+    const container = document.getElementById('airplanes-container');
+    if (!container) return;
+    container.innerHTML = Array.from({ length: 6 }).map(() => `
+      <div class="skeleton-card">
+        <div class="skeleton-image"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      </div>
+    `).join('');
+  }
+
   async function loadAircraft() {
-    showSkeletonLoaders();
-    
+    renderSkeletons();
     try {
       const params = new URLSearchParams({
         sort: state.sort,
@@ -316,36 +349,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       const response = await fetch(`/api/airplanes?${params}`);
+      if (!response.ok) throw new Error('Erreur serveur');
       const data = await response.json();
-      
-      state.aircraft = data.data || [];
+
+      state.aircraft = Array.isArray(data.data) ? data.data : [];
       applyFiltersAndRender();
       updateStats();
-      
+
     } catch (error) {
       console.error('Error loading aircraft:', error);
       showToast(i18n.t('common.loading_error'), 'error');
-      hideSkeletonLoaders();
     }
-  }
-
-  function showSkeletonLoaders() {
-    const container = document.getElementById('airplanes-container');
-    container.innerHTML = Array(8).fill(0).map(() => `
-      <div class="aircraft-card skeleton">
-        <div class="skeleton-image"></div>
-        <div class="skeleton-content">
-          <div class="skeleton-title"></div>
-          <div class="skeleton-text"></div>
-          <div class="skeleton-text short"></div>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  function hideSkeletonLoaders() {
-    const skeletons = document.querySelectorAll('.skeleton');
-    skeletons.forEach(skeleton => skeleton.remove());
   }
 
   function animateNumber(el, target) {
@@ -375,11 +389,16 @@ document.addEventListener("DOMContentLoaded", async () => {
      ========================================================================= */
   
   const searchInput = document.getElementById('search-input');
+  let searchDebounceTimer = null;
 
   searchInput?.addEventListener('input', (e) => {
     state.filters.search = e.target.value.toLowerCase();
     state.currentPage = 1;
-    applyFiltersAndRender();
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => {
+      saveFiltersToSession();
+      applyFiltersAndRender();
+    }, 300);
   });
 
 
@@ -474,20 +493,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       ${filters.map(filter => `
         <div class="active-filter" data-type="${filter.type}">
           <span>${escapeHtml(filter.label)}</span>
-          <button onclick="removeFilter('${filter.type}')">
+          <button class="remove-filter-btn" data-filter-type="${filter.type}">
             <i class="fas fa-times"></i>
           </button>
         </div>
       `).join('')}
-      <button class="clear-all-filters" onclick="clearAllFilters()">
+      <button class="clear-all-filters">
         Effacer tout
       </button>
     `;
+
+    container.querySelectorAll('.remove-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => window.removeFilter(btn.dataset.filterType));
+    });
+    container.querySelector('.clear-all-filters')?.addEventListener('click', () => window.clearAllFilters());
   }
 
   window.removeFilter = (type) => {
     state.filters[type] = null;
     state.currentPage = 1;
+    saveFiltersToSession();
     applyFiltersAndRender();
     updateActiveFilters();
   };
@@ -496,10 +521,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.filters.country = null;
     state.filters.generation = null;
     state.filters.type = null;
+    state.filters.search = '';
     state.currentPage = 1;
+    saveFiltersToSession();
     applyFiltersAndRender();
     updateActiveFilters();
+    if (searchInput) searchInput.value = '';
   };
+
+  /* =========================================================================
+     SESSION PERSISTENCE
+     ========================================================================= */
+
+  const SESSION_KEY = 'hangar_filters';
+
+  function saveFiltersToSession() {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+      filters: state.filters,
+      sort: state.sort,
+      currentPage: state.currentPage,
+    }));
+  }
+
+  function restoreFiltersFromSession() {
+    const saved = sessionStorage.getItem(SESSION_KEY);
+    if (!saved) return;
+    try {
+      const { filters, sort, currentPage } = JSON.parse(saved);
+      if (filters) Object.assign(state.filters, filters);
+      if (sort) state.sort = sort;
+      if (currentPage) state.currentPage = currentPage;
+    } catch (e) {
+      sessionStorage.removeItem(SESSION_KEY);
+    }
+  }
 
   /* =========================================================================
      FILTER DROPDOWNS
@@ -587,34 +642,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const sortSelect = document.getElementById('sort-select');
   sortSelect?.addEventListener('change', (e) => {
     state.sort = e.target.value;
+    saveFiltersToSession();
     applyFiltersAndRender();
   });
 
-  const viewButtons = document.querySelectorAll('.view-btn');
-  viewButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const view = btn.dataset.view;
-      state.view = view;
-
-      viewButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const container = document.getElementById('airplanes-container');
-      container.className = view === 'grid' ? 'aircraft-grid' : 'aircraft-list';
-
-      // Save view preference
-      localStorage.setItem('preferredView', view);
-    });
-  });
-
-  // Restore view preference on load
-  const savedView = localStorage.getItem('preferredView');
-  if (savedView && window.innerWidth > 768) {
-    const viewBtn = document.querySelector(`.view-btn[data-view="${savedView}"]`);
-    if (viewBtn) {
-      viewBtn.click();
-    }
-  }
 
   /* =========================================================================
      RENDERING
@@ -625,8 +656,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const startIndex = (state.currentPage - 1) * state.itemsPerPage;
     const endIndex = startIndex + state.itemsPerPage;
     const pageAircraft = state.filteredAircraft.slice(startIndex, endIndex);
-
-    hideSkeletonLoaders();
 
     if (pageAircraft.length === 0) {
       container.innerHTML = `
@@ -642,9 +671,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     container.innerHTML = pageAircraft.map(aircraft => `
       <article class="aircraft-card" data-id="${aircraft.id}">
         <div class="aircraft-image">
-          <img src="${escapeHtml(aircraft.image_url) || 'https://via.placeholder.com/400x300?text=No+Image'}" 
+          <img src="${escapeHtml(aircraft.image_url) || 'https://via.placeholder.com/400x300?text=No+Image'}"
                alt="${escapeHtml(aircraft.name)}"
-               loading="lazy">
+               loading="lazy" width="400" height="300">
           <div class="aircraft-overlay">
             <div class="aircraft-badges">
               ${aircraft.generation ? `<span class="aircraft-badge generation">${escapeHtml(aircraft.generation)}e Gén</span>` : ''}
@@ -655,13 +684,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="aircraft-content">
           <div class="aircraft-header">
             <div class="aircraft-title">
-              <h3>${escapeHtml(aircraft.name)}</h3>
-              ${aircraft.country_name ? `
-                <div class="aircraft-country">
-                  <i class="fas fa-globe"></i>
-                  <span>${escapeHtml(aircraft.country_name)}</span>
-                </div>
-              ` : ''}
+              <div class="aircraft-name-row">
+                <h3>${escapeHtml(aircraft.name)}</h3>
+                ${aircraft.country_code && ALPHA3_TO_ALPHA2[aircraft.country_code] ? `<img class="country-flag" src="https://flagcdn.com/w40/${ALPHA3_TO_ALPHA2[aircraft.country_code]}.png" alt="${escapeHtml(aircraft.country_name)}" width="20" height="15">` : ''}
+              </div>
             </div>
           </div>
           <p class="aircraft-description">
@@ -706,14 +732,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     container.innerHTML = `
-      <button ${state.currentPage === 1 || totalPages === 1 ? 'disabled' : ''} onclick="changePage(${state.currentPage - 1})">
-        <i class="fas fa-chevron-left"></i> Précédent
+      <button class="prev-page-btn" ${state.currentPage === 1 || totalPages === 1 ? 'disabled' : ''}>
+        <i class="fas fa-chevron-left"></i> ${i18n.t('hangar.prev_page')}
       </button>
-      <span class="page-info">Page ${state.currentPage} sur ${totalPages}</span>
-      <button ${state.currentPage === totalPages || totalPages === 1 ? 'disabled' : ''} onclick="changePage(${state.currentPage + 1})">
-        Suivant <i class="fas fa-chevron-right"></i>
+      <span class="page-info">${i18n.t('hangar.page_info', { current: state.currentPage, total: totalPages })}</span>
+      <button class="next-page-btn" ${state.currentPage === totalPages || totalPages === 1 ? 'disabled' : ''}>
+        ${i18n.t('hangar.next_page')} <i class="fas fa-chevron-right"></i>
       </button>
     `;
+
+    container.querySelector('.prev-page-btn')?.addEventListener('click', () => window.changePage(state.currentPage - 1));
+    container.querySelector('.next-page-btn')?.addEventListener('click', () => window.changePage(state.currentPage + 1));
   }
 
   window.changePage = (page) => {
@@ -908,9 +937,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   // Initialize auth UI
   updateAuthUI();
-  
+
+  // Restaurer les filtres/tri depuis la session avant le chargement
+  restoreFiltersFromSession();
+  if (searchInput && state.filters.search) searchInput.value = state.filters.search;
+  if (sortSelect && state.sort !== 'default') sortSelect.value = state.sort;
+
   await loadReferentialData();
   await loadAircraft();
+
+  // Afficher les filtres actifs restaurés
+  updateActiveFilters();
   
   // Observe cards for animations
   const cardObserver = setInterval(() => {
@@ -920,11 +957,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }, 100);
 
-  // Re-render on language change
+  // Re-render on language change (seulement si les données sont chargées)
   window.addEventListener('langChanged', () => {
     updateResultsCount();
-    renderAircraft();
+    if (state.aircraft.length > 0) renderAircraft();
   });
 
-  console.log('Hangar page initialized successfully');
 });
