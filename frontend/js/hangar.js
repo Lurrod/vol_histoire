@@ -669,7 +669,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     container.innerHTML = pageAircraft.map(aircraft => `
-      <article class="aircraft-card" data-id="${aircraft.id}">
+      <article class="aircraft-card" data-id="${aircraft.id}" tabindex="0" role="link" aria-label="${escapeHtml(aircraft.name)}">
         <div class="aircraft-image">
           <img src="${escapeHtml(aircraft.image_url) || 'https://via.placeholder.com/400x300?text=No+Image'}"
                alt="${escapeHtml(aircraft.name)}"
@@ -716,6 +716,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.addEventListener('click', () => {
         const id = card.dataset.id;
         window.location.href = `/details?id=${id}`;
+      });
+
+      // Keyboard navigation - Enter key
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const id = card.dataset.id;
+          window.location.href = `/details?id=${id}`;
+        }
       });
     });
   }
