@@ -3,7 +3,9 @@
   "testMatch": ["**/__tests__/**/*.test.js"],
   "collectCoverageFrom": [
     "validators.js",
-    "app.js"
+    "app.js",
+    "middleware/**/*.js",
+    "routes/**/*.js"
   ],
   "coverageReporters": ["text", "lcov"],
   "coverageThreshold": {
