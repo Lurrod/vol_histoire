@@ -985,6 +985,36 @@ describe('Relations avions', () => {
     const res = await request(app).get('/api/airplanes/1/armament');
     expect(res.status).toBe(500);
   });
+
+  test('GET /api/airplanes/:id/related — 200 (toutes les relations)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ name: 'Missile MICA', description: 'IR/EM' }] }) // armement
+      .mockResolvedValueOnce({ rows: [{ name: 'RBE2-AA', description: 'Radar AESA' }] }) // tech
+      .mockResolvedValueOnce({ rows: [{ name: 'Supériorité aérienne', description: '' }] }) // missions
+      .mockResolvedValueOnce({ rows: [{ name: 'Opération Serval', date_start: '2013', date_end: '2014', description: '' }] }); // wars
+
+    const res = await request(app)
+      .get('/api/airplanes/4/related')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('armament');
+    expect(res.body).toHaveProperty('tech');
+    expect(res.body).toHaveProperty('missions');
+    expect(res.body).toHaveProperty('wars');
+    expect(res.body.armament[0].name).toBe('Missile MICA');
+  });
+
+  test('GET /api/airplanes/:id/related — 500 erreur BDD', async () => {
+    mockPool.query.mockRejectedValueOnce(new Error('DB error'));
+
+    const res = await request(app)
+      .get('/api/airplanes/4/related')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+
+    expect(res.status).toBe(500);
+    expect(res.body.error).toBe('Erreur serveur');
+  });
 });
 
 // =============================================================================
@@ -1022,6 +1052,24 @@ describe('Référentiels', () => {
   test('500 — erreur DB sur countries', async () => {
     mockPool.query.mockRejectedValueOnce(new Error('DB fail'));
     const res = await request(app).get('/api/countries');
+    expect(res.status).toBe(500);
+  });
+
+  test('GET /api/countries — 500 erreur BDD', async () => {
+    mockPool.query.mockRejectedValueOnce(new Error('DB error'));
+    const res = await request(app).get('/api/countries');
+    expect(res.status).toBe(500);
+  });
+
+  test('GET /api/generations — 500 erreur BDD', async () => {
+    mockPool.query.mockRejectedValueOnce(new Error('DB error'));
+    const res = await request(app).get('/api/generations');
+    expect(res.status).toBe(500);
+  });
+
+  test('GET /api/types — 500 erreur BDD', async () => {
+    mockPool.query.mockRejectedValueOnce(new Error('DB error'));
+    const res = await request(app).get('/api/types');
     expect(res.status).toBe(500);
   });
 });
