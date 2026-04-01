@@ -66,6 +66,22 @@ describe('isValidEmail', () => {
     const email = `${local}@b.fr`; // 248 + 1 + 1 + 1 + 2 = 253 chars, OK
     expect(isValidEmail(email)).toBe(true);
   });
+
+  test('refuse un TLD d\'un seul caractère', () => {
+    expect(isValidEmail('user@example.c')).toBe(false);
+  });
+
+  test('refuse un point en fin de partie locale', () => {
+    expect(isValidEmail('user.@example.com')).toBe(false);
+  });
+
+  test('refuse un point en début de partie locale', () => {
+    expect(isValidEmail('.user@example.com')).toBe(false);
+  });
+
+  test('refuse des points consécutifs dans la partie locale', () => {
+    expect(isValidEmail('user..name@example.com')).toBe(false);
+  });
 });
 
 // =============================================================================
@@ -117,20 +133,36 @@ describe('isValidName', () => {
 // isValidPassword
 // =============================================================================
 describe('isValidPassword', () => {
-  test('accepte un mot de passe de 4 caractères (minimum)', () => {
-    expect(isValidPassword('1234')).toBe(true);
+  test('accepte un mot de passe de 8 caractères avec majuscule, minuscule et chiffre', () => {
+    expect(isValidPassword('Abcdef1x')).toBe(true);
   });
 
-  test('accepte un mot de passe de 8 caractères', () => {
-    expect(isValidPassword('12345678')).toBe(true);
+  test('accepte un mot de passe de 12 caractères', () => {
+    expect(isValidPassword('Abcdef123xyz')).toBe(true);
   });
 
   test('accepte un mot de passe fort', () => {
     expect(isValidPassword('Tr0ub4dor&3')).toBe(true);
   });
 
-  test('refuse 3 caractères', () => {
-    expect(isValidPassword('123')).toBe(false);
+  test('refuse 7 caractères même avec les bons types', () => {
+    expect(isValidPassword('Abcde1x')).toBe(false);
+  });
+
+  test('refuse 4 caractères (ancien minimum)', () => {
+    expect(isValidPassword('Ab1x')).toBe(false);
+  });
+
+  test('refuse un mot de passe sans majuscule', () => {
+    expect(isValidPassword('abcdefg1')).toBe(false);
+  });
+
+  test('refuse un mot de passe sans minuscule', () => {
+    expect(isValidPassword('ABCDEFG1')).toBe(false);
+  });
+
+  test('refuse un mot de passe sans chiffre', () => {
+    expect(isValidPassword('Abcdefgh')).toBe(false);
   });
 
   test('refuse une chaîne vide', () => {
@@ -138,11 +170,11 @@ describe('isValidPassword', () => {
   });
 
   test('refuse plus de 128 caractères', () => {
-    expect(isValidPassword('a'.repeat(129))).toBe(false);
+    expect(isValidPassword('Aa1' + 'x'.repeat(126))).toBe(false);
   });
 
   test('accepte exactement 128 caractères', () => {
-    expect(isValidPassword('a'.repeat(128))).toBe(true);
+    expect(isValidPassword('Aa1' + 'x'.repeat(125))).toBe(true);
   });
 
   test('refuse null', () => {
@@ -285,6 +317,18 @@ describe('isOptionalUrl', () => {
   test('refuse un nombre', () => {
     expect(isOptionalUrl(123)).toBe(false);
   });
+
+  test('refuse http:// sans hostname', () => {
+    expect(isOptionalUrl('http://')).toBe(false);
+  });
+
+  test('refuse une URL javascript: (vecteur XSS)', () => {
+    expect(isOptionalUrl('javascript:alert(1)')).toBe(false);
+  });
+
+  test('refuse une URL avec espace', () => {
+    expect(isOptionalUrl('http://example .com/image.jpg')).toBe(false);
+  });
 });
 
 // =============================================================================
@@ -303,8 +347,8 @@ describe('isOptionalDate', () => {
     expect(isOptionalDate('2024-01-15')).toBe(true);
   });
 
-  test('accepte une date avec heure', () => {
-    expect(isOptionalDate('2024-01-15T10:00:00Z')).toBe(true);
+  test('refuse une date avec heure (format datetime)', () => {
+    expect(isOptionalDate('2024-01-15T10:00:00Z')).toBe(false);
   });
 
   test('refuse une chaîne non-date', () => {
@@ -315,8 +359,16 @@ describe('isOptionalDate', () => {
     expect(isOptionalDate(20240115)).toBe(false);
   });
 
-  test('accepte une année seule', () => {
-    expect(isOptionalDate('1969')).toBe(true);
+  test('refuse une année seule', () => {
+    expect(isOptionalDate('1969')).toBe(false);
+  });
+
+  test('refuse une date impossible (mois 13)', () => {
+    expect(isOptionalDate('2024-13-01')).toBe(false);
+  });
+
+  test('refuse une date impossible (jour 32)', () => {
+    expect(isOptionalDate('2024-01-32')).toBe(false);
   });
 });
 
@@ -518,5 +570,62 @@ describe('validateAirplaneData', () => {
     const data = { ...validData, description: 'a'.repeat(10001) };
     const errors = validateAirplaneData(data);
     expect(errors).toContain('La description ne doit pas dépasser 10 000 caractères.');
+  });
+});
+
+// =============================================================================
+// validateAirplaneData — branches optionnelles
+// =============================================================================
+describe('validateAirplaneData — champs optionnels invalides', () => {
+  const base = { name: 'Rafale' };
+
+  test('complete_name trop long (>255 car.) → erreur', () => {
+    const errors = validateAirplaneData({ ...base, complete_name: 'A'.repeat(256) });
+    expect(errors).toContain('Le nom complet ne doit pas dépasser 255 caractères.');
+  });
+
+  test('little_description trop longue (>255 car.) → erreur', () => {
+    const errors = validateAirplaneData({ ...base, little_description: 'B'.repeat(256) });
+    expect(errors).toContain('La description courte ne doit pas dépasser 255 caractères.');
+  });
+
+  test('date_first_fly invalide → erreur', () => {
+    const errors = validateAirplaneData({ ...base, date_first_fly: 'not-a-date' });
+    expect(errors).toContain('La date du premier vol doit être une date valide.');
+  });
+
+  test('date_operationel invalide → erreur', () => {
+    const errors = validateAirplaneData({ ...base, date_operationel: 'not-a-date' });
+    expect(errors).toContain('La date opérationnelle doit être une date valide.');
+  });
+
+  test('max_range négatif → erreur', () => {
+    const errors = validateAirplaneData({ ...base, max_range: -100 });
+    expect(errors).toContain('La portée max doit être un nombre positif.');
+  });
+
+  test('id_manufacturer invalide (chaîne) → erreur', () => {
+    const errors = validateAirplaneData({ ...base, id_manufacturer: 'abc' });
+    expect(errors).toContain("L'ID du fabricant doit être un entier positif.");
+  });
+
+  test('id_generation invalide (négatif) → erreur', () => {
+    const errors = validateAirplaneData({ ...base, id_generation: -1 });
+    expect(errors).toContain("L'ID de la génération doit être un entier positif.");
+  });
+
+  test('type invalide (0) → erreur', () => {
+    const errors = validateAirplaneData({ ...base, type: 0 });
+    expect(errors).toContain("L'ID du type doit être un entier positif.");
+  });
+
+  test('plusieurs erreurs simultanées', () => {
+    const errors = validateAirplaneData({
+      ...base,
+      complete_name: 'A'.repeat(256),
+      max_range: -1,
+      id_generation: 'xyz',
+    });
+    expect(errors.length).toBe(3);
   });
 });
