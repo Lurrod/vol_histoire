@@ -3,22 +3,7 @@
 <head>
 
 <!-- Google Tag Manager -->
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag("consent", "default", {
-  ad_storage: "denied",
-  ad_user_data: "denied",
-  ad_personalization: "denied",
-  analytics_storage: "denied",
-  wait_for_update: 500
-});
-</script>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
-new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
-"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,"script","dataLayer","GTM-KB3P52VK");</script>
+<script src="js/gtm.js"></script>
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -47,7 +32,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
   <link rel="stylesheet" href="css/login.css">
   <link rel="stylesheet" href="css/cookies.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -69,14 +54,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="cookie-banner-actions">
       <button class="btn btn-secondary btn-sm" id="cookie-settings-btn">
         <i class="fas fa-cog"></i>
-        <span>Personnaliser</span>
+        <span data-i18n="cookie.customize">Personnaliser</span>
       </button>
       <button class="btn btn-outline btn-sm" id="cookie-reject-btn">
-        <span>Refuser</span>
+        <span data-i18n="cookie.reject">Refuser</span>
       </button>
       <button class="btn btn-primary btn-sm" id="cookie-accept-btn">
         <i class="fas fa-check"></i>
-        <span>Tout accepter</span>
+        <span data-i18n="cookie.accept_all">Tout accepter</span>
       </button>
     </div>
   </div>
@@ -114,14 +99,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
         </div>
         <div class="cookie-category-details">
-          <p><strong>Exemples :</strong></p>
+          <p><strong data-i18n="cookie.examples_label">Exemples :</strong></p>
           <ul>
             <li data-i18n="login.cookie_essential_auth">Authentification et sécurité</li>
             <li data-i18n="login.cookie_essential_prefs">Mémorisation de vos préférences</li>
             <li data-i18n="login.cookie_essential_cart">Panier d'achat (si applicable)</li>
-            <li>Cookies de consentement</li>
+            <li data-i18n="cookie.essential_consent">Cookies de consentement</li>
           </ul>
-          <p class="cookie-duration"><i class="fas fa-clock"></i> Durée : Session à 1 an</p>
+          <p class="cookie-duration"><i class="fas fa-clock"></i> <span data-i18n="cookie.duration_essential">Durée : Session à 1 an</span></p>
         </div>
       </div>
       <div class="cookie-category">
@@ -139,14 +124,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
         </div>
         <div class="cookie-category-details">
-          <p><strong>Exemples :</strong></p>
+          <p><strong data-i18n="cookie.examples_label">Exemples :</strong></p>
           <ul>
             <li data-i18n="login.cookie_analytics_google">Google Analytics (mesure d'audience)</li>
             <li data-i18n="login.cookie_analytics_pages">Pages visitées et durée de visite</li>
-            <li>Taux de rebond et parcours utilisateur</li>
+            <li data-i18n="cookie.analytics_bounce">Taux de rebond et parcours utilisateur</li>
             <li data-i18n="login.cookie_analytics_stats">Statistiques d'utilisation anonymes</li>
           </ul>
-          <p class="cookie-duration"><i class="fas fa-clock"></i> Durée : 13 mois maximum</p>
+          <p class="cookie-duration"><i class="fas fa-clock"></i> <span data-i18n="cookie.duration_analytics">Durée : 13 mois maximum</span></p>
         </div>
       </div>
       <div class="cookie-category">
@@ -164,14 +149,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
         </div>
         <div class="cookie-category-details">
-          <p><strong>Exemples :</strong></p>
+          <p><strong data-i18n="cookie.examples_label">Exemples :</strong></p>
           <ul>
             <li data-i18n="login.cookie_preference_lang">Langue et région préférées</li>
             <li data-i18n="login.cookie_preference_filters">Filtres de recherche enregistrés</li>
             <li data-i18n="login.cookie_preference_theme">Thème d'affichage (clair/sombre)</li>
             <li data-i18n="login.cookie_essential_accessibility">Paramètres d'accessibilité</li>
           </ul>
-          <p class="cookie-duration"><i class="fas fa-clock"></i> Durée : 6 mois à 1 an</p>
+          <p class="cookie-duration"><i class="fas fa-clock"></i> <span data-i18n="cookie.duration_preference">Durée : 6 mois à 1 an</span></p>
         </div>
       </div>
       <div class="cookie-category">
@@ -189,7 +174,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
         </div>
         <div class="cookie-category-details">
-          <p><strong>Note :</strong> Nous n'utilisons actuellement pas de cookies marketing ou publicitaires sur ce site.</p>
+          <p><strong data-i18n="cookie.marketing_note_label">Note :</strong> <span data-i18n="cookie.marketing_note">Nous n'utilisons actuellement pas de cookies marketing ou publicitaires sur ce site.</span></p>
         </div>
       </div>
       <div class="cookie-info-box">
@@ -229,7 +214,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
         <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
         <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-        <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
+        <li class="lang-switch">
+          <button id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i></button>
+          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
+            <li><button class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
+            <li><button class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
+          </ul>
+        </li>
         <li class="user-menu">
           <div class="user-toggle">
             <a href="/login" id="login-icon" class="login-icon active">
@@ -292,7 +283,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="visual-stats">
           <div class="stat-item">
             <span class="stat-number" id="stat-airplanes">--</span>
-            <span class="stat-label">Appareils</span>
+            <span class="stat-label" data-i18n="home.stat_aircraft">Appareils</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
@@ -302,7 +293,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="stat-divider"></div>
           <div class="stat-item">
             <span class="stat-number" id="stat-countries">--</span>
-            <span class="stat-label">Nations</span>
+            <span class="stat-label" data-i18n="home.stat_nations">Nations</span>
           </div>
         </div>
 
@@ -362,7 +353,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   <span class="custom-check"><i class="fas fa-check"></i></span>
                   <span class="checkbox-label" data-i18n="login.remember_me">Se souvenir de moi</span>
                 </label>
-                <a href="#" class="forgot-password" data-i18n="login.forgot_password">Mot de passe oublié ?</a>
+                <a href="/forgot-password" class="forgot-password" data-i18n="login.forgot_password">Mot de passe oublié ?</a>
               </div>
               <button type="submit" class="btn-submit">
                 <span data-i18n="login.login_btn">Se connecter</span>
@@ -437,7 +428,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="form-footer">
               <p data-i18n="login.has_account">Vous avez déjà un compte ?</p>
               <button class="switch-form" id="switch-to-login">
-                <span>Se connecter</span>
+                <span data-i18n="login.login_link">Se connecter</span>
                 <i class="fas fa-chevron-right"></i>
               </button>
             </div>
@@ -460,15 +451,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="footer-content">
         <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
         <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="#" data-i18n="footer.contact">Contact (à venir)</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="/contact" data-i18n="footer.contact">Contact</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
       </div>
       <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
     </div>
   </footer>
-  <script src="js/i18n.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/cookies.js"></script>
-  <script src="js/login.js"></script>
+  <script defer src="js/i18n.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/cookies.js"></script>
+  <script defer src="js/login.js"></script>
 </body>
 </html>

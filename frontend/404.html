@@ -3,22 +3,7 @@
 <head>
 
 <!-- Google Tag Manager -->
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag("consent", "default", {
-  ad_storage: "denied",
-  ad_user_data: "denied",
-  ad_personalization: "denied",
-  analytics_storage: "denied",
-  wait_for_update: 500
-});
-</script>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
-new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
-"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,"script","dataLayer","GTM-KB3P52VK");</script>
+<script src="js/gtm.js"></script>
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -33,7 +18,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
   <link rel="stylesheet" href="/css/cookies.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     /* ============================================================
@@ -52,8 +37,8 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(0, 229, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 229, 255, 0.02) 1px, transparent 1px);
+        linear-gradient(rgba(200, 169, 110, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200, 169, 110, 0.02) 1px, transparent 1px);
       background-size: 60px 60px;
       z-index: 0;
       pointer-events: none;
@@ -64,7 +49,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
       inset: 0;
       background:
         radial-gradient(ellipse at 50% 40%, rgba(231, 76, 60, 0.06) 0%, transparent 60%),
-        radial-gradient(ellipse at 20% 80%, rgba(0, 229, 255, 0.04) 0%, transparent 50%);
+        radial-gradient(ellipse at 20% 80%, rgba(200, 169, 110, 0.04) 0%, transparent 50%);
       z-index: 0;
       pointer-events: none;
     }
@@ -99,13 +84,13 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(0, 229, 255, 0.03) 0%, rgba(8, 12, 20, 0.95) 70%);
-      border: 2px solid rgba(0, 229, 255, 0.2);
+      background: radial-gradient(circle, rgba(200, 169, 110, 0.03) 0%, rgba(13, 13, 13, 0.95) 70%);
+      border: 2px solid rgba(200, 169, 110, 0.2);
       position: relative;
       overflow: hidden;
       box-shadow:
-        0 0 60px rgba(0, 229, 255, 0.08),
-        inset 0 0 60px rgba(0, 229, 255, 0.03);
+        0 0 60px rgba(200, 169, 110, 0.08),
+        inset 0 0 60px rgba(200, 169, 110, 0.03);
     }
 
     .radar::before,
@@ -113,7 +98,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
       content: '';
       position: absolute;
       border-radius: 50%;
-      border: 1px solid rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(200, 169, 110, 0.08);
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
     }
@@ -127,13 +112,13 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
       width: 90%;
       height: 90%;
       border-radius: 50%;
-      border: 1px solid rgba(0, 229, 255, 0.05);
+      border: 1px solid rgba(200, 169, 110, 0.05);
     }
 
     .radar-cross-h,
     .radar-cross-v {
       position: absolute;
-      background: rgba(0, 229, 255, 0.07);
+      background: rgba(200, 169, 110, 0.07);
     }
     .radar-cross-h { top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-0.5px); }
     .radar-cross-v { left: 50%; top: 0; bottom: 0; width: 1px; transform: translateX(-0.5px); }
@@ -145,8 +130,8 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
       background: conic-gradient(
         from 0deg at 50% 50%,
         transparent 0deg,
-        rgba(0, 229, 255, 0.25) 30deg,
-        rgba(0, 229, 255, 0.08) 50deg,
+        rgba(200, 169, 110, 0.25) 30deg,
+        rgba(200, 169, 110, 0.08) 50deg,
         transparent 55deg
       );
       animation: sweep 3s linear infinite;
@@ -165,7 +150,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
       height: 8px;
       background: var(--hud-cyan);
       border-radius: 50%;
-      box-shadow: 0 0 12px rgba(0, 229, 255, 0.6);
+      box-shadow: 0 0 12px rgba(200, 169, 110, 0.6);
       z-index: 2;
     }
 
@@ -218,9 +203,9 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
 
     .radar-label {
       position: absolute;
-      font-family: 'Orbitron', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       font-size: 0.55rem;
-      color: rgba(0, 229, 255, 0.3);
+      color: rgba(200, 169, 110, 0.3);
       letter-spacing: 1px;
       z-index: 3;
     }
@@ -281,7 +266,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
     }
 
     .error-code {
-      font-family: 'Orbitron', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       font-size: clamp(4rem, 8vw, 7rem);
       font-weight: 700;
       line-height: 1;
@@ -301,7 +286,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
     }
 
     .error-title {
-      font-family: 'Orbitron', sans-serif;
+      font-family: 'Barlow Condensed', sans-serif;
       font-size: clamp(1.4rem, 3vw, 2rem);
       font-weight: 600;
       color: var(--white);
@@ -318,11 +303,11 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
 
     .error-telemetry {
       background: rgba(15, 22, 38, 0.6);
-      border: 1px solid rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(200, 169, 110, 0.08);
       border-radius: 12px;
       padding: 1rem 1.25rem;
       margin-bottom: 2rem;
-      font-family: 'Space Grotesk', monospace;
+      font-family: 'DM Sans', monospace;
       font-size: 0.8rem;
       max-width: 460px;
     }
@@ -337,7 +322,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
     .telemetry-line:last-child { border-bottom: none; }
 
     .telemetry-key {
-      color: rgba(0, 229, 255, 0.5);
+      color: rgba(200, 169, 110, 0.5);
       text-transform: uppercase;
       letter-spacing: 1px;
       font-size: 0.7rem;
@@ -393,7 +378,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
         <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
         <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-        <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
+        <li class="lang-switch">
+          <button id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i></button>
+          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
+            <li><button class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
+            <li><button class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
+          </ul>
+        </li>
         <li class="user-menu"><div class="user-toggle">
           <a href="/login" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
           <div id="user-info-container" class="user-dropdown hidden">
@@ -505,7 +496,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       });
     }
   </script>
-  <script src="/js/i18n.js"></script>
-  <script src="/js/cookies.js"></script>
+  <script defer src="/js/i18n.js"></script>
+  <script defer src="/js/cookies.js"></script>
 </body>
 </html>

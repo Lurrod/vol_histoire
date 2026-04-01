@@ -3,22 +3,7 @@
 <head>
 
 <!-- Google Tag Manager -->
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag("consent", "default", {
-  ad_storage: "denied",
-  ad_user_data: "denied",
-  ad_personalization: "denied",
-  analytics_storage: "denied",
-  wait_for_update: 500
-});
-</script>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
-new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
-"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,"script","dataLayer","GTM-KB3P52VK");</script>
+<script src="js/gtm.js"></script>
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -42,7 +27,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
   <link rel="stylesheet" href="css/cookies.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -61,7 +46,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
         <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
         <li><a href="/favorites" class="active"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-        <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
+        <li class="lang-switch">
+          <button id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i></button>
+          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
+            <li><button class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
+            <li><button class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
+          </ul>
+        </li>
         <li class="user-menu"><div class="user-toggle">
           <a href="#" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
           <div id="user-info-container" class="user-dropdown hidden">
@@ -79,18 +70,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- Page Header -->
   <section class="page-hero">
     <div class="hero-background"></div>
-    <div class="hero-hud-grid"></div>
     <div class="container">
-      <div class="page-hero-content">
-        <div class="hero-badge"><span class="badge-pulse"></span><i class="fas fa-heart"></i><span data-i18n="favorites.badge">Collection Personnelle</span></div>
-        <h1 data-i18n="favorites.hero_title">Mes Favoris</h1>
-        <p data-i18n="favorites.hero_desc">Retrouvez tous les avions que vous avez ajoutés à vos favoris</p>
-        <div class="hero-stats">
-          <div class="stat-item"><div class="stat-number" id="total-favorites">0</div><div class="stat-label" data-i18n="favorites.stat_favorites">Favoris</div></div>
-          <div class="stat-divider"></div>
-          <div class="stat-item"><div class="stat-number" id="total-countries">0</div><div class="stat-label" data-i18n="favorites.stat_nations">Nations</div></div>
-          <div class="stat-divider"></div>
-          <div class="stat-item"><div class="stat-number" id="total-generations">0</div><div class="stat-label" data-i18n="favorites.stat_generations">Générations</div></div>
+      <div class="page-hero-inner">
+        <div class="hero-text">
+          <div class="hero-eyebrow"><span data-i18n="favorites.badge">Collection Personnelle</span></div>
+          <h1 data-i18n="favorites.hero_title">Mes<span class="hero-muted">Favoris</span></h1>
+          <p data-i18n="favorites.hero_desc">Retrouvez tous les avions que vous avez ajoutés à vos favoris</p>
+        </div>
+        <div class="hero-data">
+          <div class="data-row">
+            <span class="data-number" id="total-favorites">0</span>
+            <span class="data-label" data-i18n="favorites.stat_favorites">Favoris</span>
+          </div>
+          <div class="data-row">
+            <span class="data-number" id="total-countries">0</span>
+            <span class="data-label" data-i18n="favorites.stat_nations">Nations</span>
+          </div>
+          <div class="data-row">
+            <span class="data-number" id="total-generations">0</span>
+            <span class="data-label" data-i18n="favorites.stat_generations">Générations</span>
+          </div>
         </div>
       </div>
     </div>
@@ -145,8 +144,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div id="empty-state" class="empty-state hidden">
         <i class="fas fa-heart-crack"></i>
         <h3 data-i18n="favorites.empty_title">Aucun favori pour l'instant</h3>
-        <p>Explorez le hangar et ajoutez des avions à vos favoris en cliquant sur l'icône <i class="fas fa-heart"></i></p>
-        <a href="/hangar" class="btn btn-primary"><i class="fas fa-plane"></i> <span data-i18n="favorites.empty_btn">Explorer le Hangar</span></a>
+        <p data-i18n="favorites.empty_desc">Explorez le hangar et ajoutez des avions à vos favoris en cliquant sur l'icône</p>
       </div>
     </div>
   </section>
@@ -157,16 +155,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="footer-content">
         <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
         <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="#" data-i18n="footer.contact">Contact (à venir)</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="/contact" data-i18n="footer.contact">Contact</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
       </div>
       <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
     </div>
   </footer>
   <div id="toast-container"></div>
-  <script src="js/i18n.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/cookies.js"></script>
-  <script src="js/favorites.js"></script>
+  <script defer src="js/i18n.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/cookies.js"></script>
+  <script defer src="js/favorites.js"></script>
 </body>
 </html>

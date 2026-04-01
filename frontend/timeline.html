@@ -3,22 +3,7 @@
 <head>
 
 <!-- Google Tag Manager -->
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag("consent", "default", {
-  ad_storage: "denied",
-  ad_user_data: "denied",
-  ad_personalization: "denied",
-  analytics_storage: "denied",
-  wait_for_update: 500
-});
-</script>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
-new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
-"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,"script","dataLayer","GTM-KB3P52VK");</script>
+<script src="js/gtm.js"></script>
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -26,6 +11,8 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
   <title data-i18n="timeline.title">Chronologie de l'Aviation Militaire | Vol d'Histoire</title>
   <meta name="description" content="Explorez l'évolution de l'aviation militaire à travers une frise chronologique interactive des avions de chasse.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/timeline">
+  <link rel="alternate" hreflang="fr" href="https://vol-histoire.titouan-borde.com/timeline">
+  <link rel="alternate" hreflang="x-default" href="https://vol-histoire.titouan-borde.com/timeline">
   <meta name="robots" content="index, follow">
   <meta name="keywords" content="chronologie aviation militaire, frise chronologique avions, évolution avions de chasse">
   <meta property="og:title" content="Chronologie de l'Aviation Militaire | Vol d'Histoire">
@@ -37,9 +24,27 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Chronologie de l'Aviation Militaire | Vol d'Histoire">
   <meta name="twitter:description" content="Explorez l'évolution de l'aviation militaire à travers une frise chronologique interactive des avions de chasse.">
+  <meta property="og:image" content="https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg">
+  <meta name="twitter:image" content="https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Chronologie de l'Aviation Militaire",
+    "description": "Frise chronologique interactive de l'aviation militaire de 1960 à aujourd'hui.",
+    "url": "https://vol-histoire.titouan-borde.com/timeline",
+    "inLanguage": "fr",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Vol d'Histoire",
+      "url": "https://vol-histoire.titouan-borde.com/"
+    }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/timeline.css">
   <link rel="stylesheet" href="css/cookies.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -64,7 +69,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
       <li><a href="/timeline" class="active"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
       <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-      <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
+      <li class="lang-switch">
+          <button id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i></button>
+          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
+            <li><button class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
+            <li><button class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
+          </ul>
+        </li>
         <li class="user-menu"><div class="user-toggle">
         <a href="/login" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
         <div id="user-info-container" class="user-dropdown hidden">
@@ -81,50 +92,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- Hero -->
 <section class="timeline-hero">
-  <div class="hero-bg-grid"></div>
-  <div class="hero-bg-vignette"></div>
   <div class="container">
-    <div class="hero-content">
-      <div class="hero-left">
-        <div class="mission-tag" data-i18n="timeline.mission_tag">Dossier Classifié — Aviation Militaire</div>
-        <h1 class="hero-title">
-          Histoire de<br>
-          <span data-i18n="timeline.hero_title_2">l'Aviation</span>
-        </h1>
-        <p class="hero-desc" data-i18n="timeline.hero_desc_full">
-          75 ans d'innovation stratégique. Des premiers réacteurs de la Guerre Froide aux chasseurs furtifs de 5e génération — parcourez chaque décennie.
-        </p>
-        <div class="hero-stats-grid">
-          <div class="hero-stat-cell">
-            <div class="stat-val" id="total-aircraft-timeline">0</div>
-            <div class="stat-key" data-i18n="timeline.stat_aircraft">Avions</div>
-          </div>
-          <div class="hero-stat-cell">
-            <div class="stat-val" id="total-years">0</div>
-            <div class="stat-key" data-i18n="timeline.stat_years">Années</div>
-          </div>
-          <div class="hero-stat-cell">
-            <div class="stat-val" id="total-generations-timeline">5</div>
-            <div class="stat-key" data-i18n="timeline.stat_generations">Générations</div>
-          </div>
-        </div>
-      </div>
-      <div class="hero-right">
-        <div class="mission-brief-card">
-          <div class="brief-header" data-i18n="timeline.nav_brief">Navigation</div>
-          <div class="brief-line" data-i18n="timeline.scroll">Défilement<span data-i18n="timeline.scroll_dir">→ Horizontal</span></div>
-          <div class="brief-line" data-i18n="timeline.filters">Filtres<span data-i18n="timeline.filters_gen">Génération</span></div>
-          <div class="brief-line" data-i18n="timeline.access">Accès fiche<span data-i18n="timeline.access_click">Cliquer</span></div>
-        </div>
-        <div class="mission-brief-card">
-          <div class="brief-header" data-i18n="timeline.legend_title">Légende Gen.</div>
-          <div class="brief-line" style="color:var(--gen-1)">■<span data-i18n="timeline.gen_1">1ère — Proto-jet</span></div>
-          <div class="brief-line" style="color:var(--gen-2)">■<span data-i18n="timeline.gen_2">2e — Supersonique</span></div>
-          <div class="brief-line" style="color:var(--gen-3)">■<span data-i18n="timeline.gen_3">3e — Avionique</span></div>
-          <div class="brief-line" style="color:var(--gen-4)">■<span data-i18n="timeline.gen_4">4e — Multirôle</span></div>
-          <div class="brief-line" style="color:var(--gen-5)">■<span data-i18n="timeline.gen_5">5e — Furtif</span></div>
-        </div>
-      </div>
+    <div class="hero-eyebrow" data-i18n="timeline.eyebrow">Chronologie</div>
+    <h1 class="hero-title"><span data-i18n="timeline.hero_title_1">Histoire de l'</span><span data-i18n="timeline.hero_title_2">Aviation Militaire</span></h1>
+    <p class="hero-desc" data-i18n="timeline.hero_desc_full">75 ans d'innovation stratégique. Des premiers réacteurs de la Guerre Froide aux chasseurs furtifs de 5e génération.</p>
+    <div class="hero-stats">
+      <span class="stat-item"><strong id="total-aircraft-timeline">0</strong><span data-i18n="timeline.stat_aircraft">Avions</span></span>
+      <div class="stat-sep"></div>
+      <span class="stat-item"><strong id="total-years">0</strong><span data-i18n="timeline.stat_years">Années</span></span>
+      <div class="stat-sep"></div>
+      <span class="stat-item"><strong id="total-generations-timeline">5</strong><span data-i18n="timeline.stat_generations">Générations</span></span>
     </div>
   </div>
 </section>
@@ -133,39 +110,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="control-panel">
   <div class="container">
     <div class="control-inner">
-      <div class="control-section">
-        <button class="nav-arrow" id="nav-prev" aria-label="Précédent" disabled>
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        <div class="ctrl-label" data-i18n="timeline.decade">Décennie</div>
-        <div class="decade-track" id="decade-nav"></div>
-        <button class="nav-arrow" id="nav-next" aria-label="Suivant">
-          <i class="fas fa-chevron-right"></i>
-        </button>
+      <div class="gen-pills">
+        <button class="gen-filter active" data-gen="all" data-i18n="timeline.filter_all">Toutes</button>
+        <button class="gen-filter" data-gen="1"><span class="gen-dot" style="background:var(--gen-1)"></span>G1</button>
+        <button class="gen-filter" data-gen="2"><span class="gen-dot" style="background:var(--gen-2)"></span>G2</button>
+        <button class="gen-filter" data-gen="3"><span class="gen-dot" style="background:var(--gen-3)"></span>G3</button>
+        <button class="gen-filter" data-gen="4"><span class="gen-dot" style="background:var(--gen-4)"></span>G4</button>
+        <button class="gen-filter" data-gen="5"><span class="gen-dot" style="background:var(--gen-5)"></span>G5</button>
       </div>
-      <div class="control-section">
-        <div class="ctrl-label" data-i18n="timeline.gen_label">Gén.</div>
-        <div class="gen-pills">
-          <button class="gen-filter active" data-gen="all">
-            <span class="gen-dot"></span data-i18n="timeline.all">Toutes
-          </button>
-          <button class="gen-filter" data-gen="1">
-            <span class="gen-dot" style="background:var(--gen-1)"></span>G1
-          </button>
-          <button class="gen-filter" data-gen="2">
-            <span class="gen-dot" style="background:var(--gen-2)"></span>G2
-          </button>
-          <button class="gen-filter" data-gen="3">
-            <span class="gen-dot" style="background:var(--gen-3)"></span>G3
-          </button>
-          <button class="gen-filter" data-gen="4">
-            <span class="gen-dot" style="background:var(--gen-4)"></span>G4
-          </button>
-          <button class="gen-filter" data-gen="5">
-            <span class="gen-dot" style="background:var(--gen-5)"></span>G5
-          </button>
-        </div>
-      </div>
+      <div class="decade-anchors" id="decade-nav"></div>
     </div>
   </div>
 </div>
@@ -187,16 +140,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </main>
 
-<!-- Progress dots (fixed bottom) -->
-<div class="timeline-progress" id="timeline-progress" style="display:none"></div>
-
 <!-- Footer -->
   <footer>
     <div class="container">
       <div class="footer-content">
         <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
         <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="#" data-i18n="footer.contact">Contact (à venir)</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="/contact" data-i18n="footer.contact">Contact</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
       </div>
       <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
@@ -204,9 +154,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </footer>
 
 <div id="toast-container"></div>
-<script src="js/i18n.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/cookies.js"></script>
-<script src="js/timeline.js"></script>
+<script defer src="js/i18n.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/cookies.js"></script>
+<script defer src="js/timeline.js"></script>
 </body>
 </html>

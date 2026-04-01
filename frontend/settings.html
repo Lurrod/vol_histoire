@@ -3,22 +3,7 @@
 <head>
 
 <!-- Google Tag Manager -->
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag("consent", "default", {
-  ad_storage: "denied",
-  ad_user_data: "denied",
-  ad_personalization: "denied",
-  analytics_storage: "denied",
-  wait_for_update: 500
-});
-</script>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
-new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
-"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,"script","dataLayer","GTM-KB3P52VK");</script>
+<script src="js/gtm.js"></script>
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -42,7 +27,7 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="css/settings.css">
   <link rel="stylesheet" href="css/cookies.css">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -65,7 +50,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
         <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
         <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-        <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
+        <li class="lang-switch">
+          <button id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i></button>
+          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
+            <li><button class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
+            <li><button class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
+          </ul>
+        </li>
         <li class="user-menu"><div class="user-toggle">
           <a href="/login" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
           <div id="user-info-container" class="user-dropdown hidden">
@@ -84,11 +75,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- Page Header -->
     <section class="page-hero">
       <div class="hero-background"></div>
-      <div class="hero-hud-grid"></div>
       <div class="container">
         <div class="hero-content">
-          <div class="hero-badge"><span class="badge-pulse"></span><i class="fas fa-cog"></i><span data-i18n="settings.badge">Paramètres</span></div>
-          <h1 data-i18n="settings.hero_title">Gestion du Compte</h1>
+          <div class="hero-eyebrow"><span data-i18n="settings.badge">Paramètres</span></div>
+          <h1 data-i18n="settings.hero_title">Gestion du<span class="hero-muted">Compte</span></h1>
           <p data-i18n="settings.hero_desc">Personnalisez votre expérience et gérez vos informations</p>
         </div>
       </div>
@@ -101,7 +91,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <!-- Sidebar -->
           <aside class="settings-sidebar">
             <nav class="sidebar-nav">
-              <a href="#profile" class="sidebar-link active" data-section="profile"><div class="link-icon"><i class="fas fa-user"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_profile">Profil</span><span class="link-description" data-i18n="settings.sidebar_profile_desc">Informations personnelles</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#dashboard" class="sidebar-link active" data-section="dashboard"><div class="link-icon"><i class="fas fa-chart-bar"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_dashboard">Dashboard</span><span class="link-description" data-i18n="settings.sidebar_dashboard_desc">Mes statistiques</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#profile" class="sidebar-link" data-section="profile"><div class="link-icon"><i class="fas fa-user"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_profile">Profil</span><span class="link-description" data-i18n="settings.sidebar_profile_desc">Informations personnelles</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
               <a href="#security" class="sidebar-link" data-section="security"><div class="link-icon"><i class="fas fa-shield"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_security">Sécurité</span><span class="link-description" data-i18n="settings.sidebar_security_desc">Mot de passe & protection</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
               <a href="#privacy" class="sidebar-link" data-section="privacy"><div class="link-icon"><i class="fas fa-cookie-bite"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_privacy">Cookies & Confidentialité</span><span class="link-description" data-i18n="settings.sidebar_privacy_desc">Gestion des cookies</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
               <a href="#admin" class="sidebar-link hidden" data-section="admin" id="admin-nav-link"><div class="link-icon"><i class="fas fa-users-cog"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_admin">Administration</span><span class="link-description" data-i18n="settings.sidebar_admin_desc">Gestion utilisateurs</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
@@ -111,8 +102,72 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
           <!-- Main Content -->
           <div class="settings-content">
+
+            <!-- Dashboard -->
+            <div id="dashboard" class="content-section active">
+              <div class="section-card">
+                <!-- Profile card -->
+                <div class="db-profile">
+                  <div class="db-avatar" id="db-avatar">U</div>
+                  <div class="db-profile-info">
+                    <h2 id="db-name">Chargement...</h2>
+                    <span class="db-role-badge role-member" id="db-role-badge">Membre</span>
+                    <p class="db-email" id="db-email"></p>
+                  </div>
+                </div>
+
+                <!-- KPIs -->
+                <div class="db-kpis" id="db-kpis">
+                  <div class="db-kpi">
+                    <div class="db-kpi-icon"><i class="fas fa-heart"></i></div>
+                    <div class="db-kpi-val" id="db-total-fav">0</div>
+                    <div class="db-kpi-label" data-i18n="settings.db_favorites">Favoris</div>
+                  </div>
+                  <div class="db-kpi">
+                    <div class="db-kpi-icon"><i class="fas fa-globe"></i></div>
+                    <div class="db-kpi-val" id="db-total-countries">0</div>
+                    <div class="db-kpi-label" data-i18n="settings.db_countries">Pays</div>
+                  </div>
+                  <div class="db-kpi">
+                    <div class="db-kpi-icon"><i class="fas fa-layer-group"></i></div>
+                    <div class="db-kpi-val" id="db-total-gen">0</div>
+                    <div class="db-kpi-label" data-i18n="settings.db_generations">Générations</div>
+                  </div>
+                  <div class="db-kpi">
+                    <div class="db-kpi-icon"><i class="fas fa-tags"></i></div>
+                    <div class="db-kpi-val" id="db-total-types">0</div>
+                    <div class="db-kpi-label" data-i18n="settings.db_types">Types</div>
+                  </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="db-charts" id="db-charts">
+                  <div class="db-chart-block">
+                    <h3 class="db-chart-title"><i class="fas fa-globe"></i> <span data-i18n="settings.db_by_country">Par pays</span></h3>
+                    <div id="db-country-bars" class="db-bars"></div>
+                  </div>
+                  <div class="db-chart-block">
+                    <h3 class="db-chart-title"><i class="fas fa-layer-group"></i> <span data-i18n="settings.db_by_gen">Par génération</span></h3>
+                    <div id="db-gen-bars" class="db-bars"></div>
+                  </div>
+                </div>
+                <div class="db-chart-block db-chart-full" id="db-type-block">
+                  <h3 class="db-chart-title"><i class="fas fa-tags"></i> <span data-i18n="settings.db_by_type">Par type d'appareil</span></h3>
+                  <div id="db-type-bars" class="db-bars"></div>
+                </div>
+
+                <!-- Empty state -->
+                <div id="db-empty" class="db-empty hidden">
+                  <div class="db-empty-icon"><i class="fas fa-heart"></i></div>
+                  <h3 data-i18n="settings.db_empty_title">Aucun favori pour l'instant</h3>
+                  <p data-i18n="settings.db_empty_desc">Explorez le hangar et ajoutez des avions à vos favoris pour voir vos statistiques.</p>
+                  <a href="/hangar" class="btn btn-primary"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a>
+                </div>
+              </div>
+            </div>
+
             <!-- Profile -->
-            <div id="profile" class="content-section active">
+            <div id="profile" class="content-section">
               <div class="section-card">
                 <div class="section-header"><div class="header-icon"><i class="fas fa-user"></i></div><div class="header-text"><h2 data-i18n="settings.profile_title">Informations du Profil</h2><p data-i18n="settings.profile_desc">Mettez à jour vos informations personnelles</p></div></div>
                 <form id="profile-form" class="modern-form">
@@ -185,12 +240,43 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="footer-content">
         <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
         <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="#" data-i18n="footer.contact">Contact (à venir)</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="/contact" data-i18n="footer.contact">Contact</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
       </div>
       <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
     </div>
   </footer>
+
+  <!-- Edit User Modal -->
+  <div id="edit-user-modal" class="logout-modal hidden">
+    <div class="logout-modal-backdrop"></div>
+    <div class="logout-modal-container" style="max-width: 460px; width: 92%;">
+      <div class="logout-modal-icon" style="background: rgba(200,169,110,0.08); border-color: rgba(200,169,110,0.2);"><i class="fas fa-user-edit" style="color: var(--hud-cyan);"></i></div>
+      <h3 class="logout-modal-title" id="edit-user-modal-title" data-i18n="settings.edit_user_title_default">Modifier l'utilisateur</h3>
+      <div style="width: 100%; margin: 1.25rem 0 1.5rem; text-align: left;">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fas fa-user"></i><span data-i18n="settings.edit_label_name">Nom</span></label>
+          <input type="text" id="edit-user-name" autocomplete="off">
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fas fa-envelope"></i><span data-i18n="settings.edit_label_email">Email</span></label>
+          <input type="email" id="edit-user-email" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-shield-alt"></i><span data-i18n="settings.edit_label_role">Rôle</span></label>
+          <select id="edit-user-role">
+            <option value="1" data-i18n="common.role_admin">Administrateur</option>
+            <option value="2" data-i18n="common.role_editor">Éditeur</option>
+            <option value="3" data-i18n="nav.user_role">Membre</option>
+          </select>
+        </div>
+      </div>
+      <div class="logout-modal-actions">
+        <button id="edit-user-cancel" class="logout-modal-btn logout-modal-btn-cancel" data-i18n="settings.edit_cancel">Annuler</button>
+        <button id="edit-user-save" class="logout-modal-btn logout-modal-btn-save"><i class="fas fa-save"></i> <span data-i18n="settings.edit_save">Enregistrer</span></button>
+      </div>
+    </div>
+  </div>
 
   <!-- Logout Modal -->
   <div id="logout-modal" class="logout-modal hidden">
@@ -203,9 +289,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 
-  <script src="js/i18n.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/cookies.js"></script>
-  <script src="js/settings.js"></script>
+  <script defer src="js/i18n.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/cookies.js"></script>
+  <script defer src="js/settings.js"></script>
 </body>
 </html>
