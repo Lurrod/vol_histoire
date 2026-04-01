@@ -3,28 +3,16 @@
 <head>
 
 <!-- Google Tag Manager -->
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag("consent", "default", {
-  ad_storage: "denied",
-  ad_user_data: "denied",
-  ad_personalization: "denied",
-  analytics_storage: "denied",
-  wait_for_update: 500
-});
-</script>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":
-new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
-"https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,"script","dataLayer","GTM-KB3P52VK");</script>
+<script src="js/gtm.js"></script>
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="theme-color" content="#080c14">
   <title data-i18n="legal.privacy_title">Politique de Confidentialité | Vol d'Histoire</title>
   <meta name="description" content="Politique de confidentialité et protection des données personnelles sur Vol d'Histoire.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/politique-confidentialite">
+  <link rel="alternate" hreflang="fr" href="https://vol-histoire.titouan-borde.com/politique-confidentialite">
+  <link rel="alternate" hreflang="x-default" href="https://vol-histoire.titouan-borde.com/politique-confidentialite">
   <meta name="robots" content="index, follow">
   <meta name="keywords" content="politique de confidentialité, RGPD, données personnelles">
   <meta property="og:title" content="Politique de Confidentialité | Vol d'Histoire">
@@ -36,10 +24,29 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Politique de Confidentialité | Vol d'Histoire">
   <meta name="twitter:description" content="Politique de confidentialité et protection des données personnelles sur Vol d'Histoire.">
+  <meta property="og:image" content="https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg">
+  <meta name="twitter:image" content="https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Politique de Confidentialité - Vol d'Histoire",
+    "url": "https://vol-histoire.titouan-borde.com/politique-confidentialite",
+    "description": "Politique de confidentialité et protection des données personnelles sur Vol d'Histoire.",
+    "inLanguage": "fr",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Vol d'Histoire",
+      "url": "https://vol-histoire.titouan-borde.com/"
+    }
+  }
+  </script>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/legal.css">
   <link rel="stylesheet" href="css/cookies.css">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -47,280 +54,71 @@ j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KB3P52VK"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
+
 <!-- Cookie Consent Banner -->
 <div id="cookie-banner" class="cookie-banner hidden">
   <div class="cookie-banner-content">
-    <div class="cookie-banner-text">
-      <div class="cookie-icon">
-        <i class="fas fa-cookie-bite"></i>
-      </div>
-      <div class="cookie-message">
-        <h3 data-i18n="cookie.title">🍪 Nous utilisons des cookies</h3>
-        <p>Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu. En cliquant sur "Tout accepter", vous consentez à l'utilisation de tous les cookies.</p>
-      </div>
-    </div>
-    <div class="cookie-banner-actions">
-      <button class="btn btn-secondary btn-sm" id="cookie-settings-btn">
-        <i class="fas fa-cog"></i>
-        <span>Personnaliser</span>
-      </button>
-      <button class="btn btn-outline btn-sm" id="cookie-reject-btn">
-        <span>Refuser</span>
-      </button>
-      <button class="btn btn-primary btn-sm" id="cookie-accept-btn">
-        <i class="fas fa-check"></i>
-        <span>Tout accepter</span>
-      </button>
-    </div>
+    <div class="cookie-banner-text"><div class="cookie-icon"><i class="fas fa-cookie-bite"></i></div><div class="cookie-message"><h3 data-i18n="cookie.title">🍪 Nous utilisons des cookies</h3><p data-i18n="cookie.message">Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu.</p></div></div>
+    <div class="cookie-banner-actions"><button class="btn btn-secondary btn-sm" id="cookie-settings-btn"><i class="fas fa-cog"></i><span data-i18n="cookie.customize">Personnaliser</span></button><button class="btn btn-outline btn-sm" id="cookie-reject-btn"><span data-i18n="cookie.reject">Refuser</span></button><button class="btn btn-primary btn-sm" id="cookie-accept-btn"><i class="fas fa-check"></i><span data-i18n="cookie.accept_all">Tout accepter</span></button></div>
   </div>
 </div>
-
-<!-- Cookie Settings Modal -->
 <div id="cookie-modal" class="cookie-modal hidden">
   <div class="cookie-modal-backdrop"></div>
   <div class="cookie-modal-container">
-    <div class="cookie-modal-header">
-      <h2>
-        <i class="fas fa-cookie-bite"></i>
-        <span data-i18n="cookie.settings_title">Paramètres des cookies</span>
-      </h2>
-      <button class="cookie-modal-close" aria-label="Fermer">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-
+    <div class="cookie-modal-header"><h2><i class="fas fa-cookie-bite"></i><span data-i18n="cookie.settings_title">Paramètres des cookies</span></h2><button class="cookie-modal-close" aria-label="Fermer"><i class="fas fa-times"></i></button></div>
     <div class="cookie-modal-content">
-      <div class="cookie-intro">
-        <p>Nous utilisons des cookies pour améliorer votre expérience sur notre site. Vous pouvez choisir les catégories de cookies que vous souhaitez autoriser.</p>
-      </div>
-
-      <!-- Essential Cookies -->
-      <div class="cookie-category">
-        <div class="cookie-category-header">
-          <div class="cookie-category-info">
-            <div class="cookie-category-icon essential">
-              <i class="fas fa-shield-alt"></i>
-            </div>
-            <div>
-              <h3 data-i18n="cookie.essential_title">Cookies essentiels</h3>
-              <p class="cookie-category-description">Nécessaires au fonctionnement du site. Ils ne peuvent pas être désactivés.</p>
-            </div>
-          </div>
-          <div class="cookie-toggle">
-            <input type="checkbox" id="cookie-essential" checked disabled>
-            <label for="cookie-essential" class="toggle-disabled">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="cookie-category-details">
-          <p><strong>Exemples :</strong></p>
-          <ul>
-            <li>Authentification et sécurité</li>
-            <li>Mémorisation de vos préférences</li>
-            <li>Panier d'achat (si applicable)</li>
-            <li>Cookies de consentement</li>
-          </ul>
-          <p class="cookie-duration"><i class="fas fa-clock"></i> Durée : Session à 1 an</p>
-        </div>
-      </div>
-
-      <!-- Analytics Cookies -->
-      <div class="cookie-category">
-        <div class="cookie-category-header">
-          <div class="cookie-category-info">
-            <div class="cookie-category-icon analytics">
-              <i class="fas fa-chart-line"></i>
-            </div>
-            <div>
-              <h3 data-i18n="cookie.analytics_title">Cookies analytiques</h3>
-              <p class="cookie-category-description">Nous aident à comprendre comment les visiteurs utilisent notre site.</p>
-            </div>
-          </div>
-          <div class="cookie-toggle">
-            <input type="checkbox" id="cookie-analytics">
-            <label for="cookie-analytics">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="cookie-category-details">
-          <p><strong>Exemples :</strong></p>
-          <ul>
-            <li>Google Analytics (mesure d'audience)</li>
-            <li>Pages visitées et durée de visite</li>
-            <li>Taux de rebond et parcours utilisateur</li>
-            <li>Statistiques d'utilisation anonymes</li>
-          </ul>
-          <p class="cookie-duration"><i class="fas fa-clock"></i> Durée : 13 mois maximum</p>
-        </div>
-      </div>
-
-      <!-- Preference Cookies -->
-      <div class="cookie-category">
-        <div class="cookie-category-header">
-          <div class="cookie-category-info">
-            <div class="cookie-category-icon preference">
-              <i class="fas fa-sliders-h"></i>
-            </div>
-            <div>
-              <h3 data-i18n="cookie.preference_title">Cookies de préférence</h3>
-              <p class="cookie-category-description">Permettent de mémoriser vos choix et personnaliser votre expérience.</p>
-            </div>
-          </div>
-          <div class="cookie-toggle">
-            <input type="checkbox" id="cookie-preference">
-            <label for="cookie-preference">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="cookie-category-details">
-          <p><strong>Exemples :</strong></p>
-          <ul>
-            <li>Langue et région préférées</li>
-            <li>Filtres de recherche enregistrés</li>
-            <li>Thème d'affichage (clair/sombre)</li>
-            <li>Paramètres d'accessibilité</li>
-          </ul>
-          <p class="cookie-duration"><i class="fas fa-clock"></i> Durée : 6 mois à 1 an</p>
-        </div>
-      </div>
-
-      <!-- Marketing Cookies (optionnel) -->
-      <div class="cookie-category">
-        <div class="cookie-category-header">
-          <div class="cookie-category-info">
-            <div class="cookie-category-icon marketing">
-              <i class="fas fa-bullhorn"></i>
-            </div>
-            <div>
-              <h3 data-i18n="cookie.marketing_title">Cookies marketing</h3>
-              <p class="cookie-category-description">Utilisés pour afficher des publicités pertinentes (actuellement non utilisés).</p>
-            </div>
-          </div>
-          <div class="cookie-toggle">
-            <input type="checkbox" id="cookie-marketing" disabled>
-            <label for="cookie-marketing" class="toggle-disabled">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="cookie-category-details">
-          <p><strong>Note :</strong> Nous n'utilisons actuellement pas de cookies marketing ou publicitaires sur ce site.</p>
-        </div>
-      </div>
-
-      <!-- Information -->
-      <div class="cookie-info-box">
-        <i class="fas fa-info-circle"></i>
-        <div>
-          <p><strong>Plus d'informations</strong></p>
-          <p>Pour en savoir plus sur notre utilisation des cookies et vos droits, consultez notre <a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a>.</p>
-        </div>
-      </div>
+      <div class="cookie-intro"><p data-i18n="cookie.intro">Choisissez les catégories de cookies que vous souhaitez autoriser.</p></div>
+      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon essential"><i class="fas fa-shield-alt"></i></div><div><h3 data-i18n="cookie.essential_title">Cookies essentiels</h3><p class="cookie-category-description" data-i18n="cookie.essential_desc">Nécessaires au fonctionnement du site.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-essential" checked disabled><label for="cookie-essential" class="toggle-disabled"><span class="toggle-slider"></span></label></div></div></div>
+      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon analytics"><i class="fas fa-chart-line"></i></div><div><h3 data-i18n="cookie.analytics_title">Cookies analytiques</h3><p class="cookie-category-description" data-i18n="cookie.analytics_desc_stats">Mesure d’audience et statistiques.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-analytics"><label for="cookie-analytics"><span class="toggle-slider"></span></label></div></div></div>
+      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon preference"><i class="fas fa-sliders-h"></i></div><div><h3 data-i18n="cookie.preference_title">Cookies de préférence</h3><p class="cookie-category-description" data-i18n="cookie.preference_desc">Mémorisation de vos choix.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-preference"><label for="cookie-preference"><span class="toggle-slider"></span></label></div></div></div>
+      <div class="cookie-category"><div class="cookie-category-header"><div class="cookie-category-info"><div class="cookie-category-icon marketing"><i class="fas fa-bullhorn"></i></div><div><h3 data-i18n="cookie.marketing_title">Cookies marketing</h3><p class="cookie-category-description" data-i18n="cookie.marketing_desc">Actuellement non utilisés.</p></div></div><div class="cookie-toggle"><input type="checkbox" id="cookie-marketing" disabled><label for="cookie-marketing" class="toggle-disabled"><span class="toggle-slider"></span></label></div></div></div>
     </div>
-
-    <div class="cookie-modal-footer">
-      <button class="btn btn-secondary" id="cookie-reject-all-btn">
-        <span>Tout refuser</span>
-      </button>
-      <button class="btn btn-primary" id="cookie-save-preferences-btn">
-        <i class="fas fa-check"></i>
-        <span>Enregistrer mes préférences</span>
-      </button>
-      <button class="btn btn-primary" id="cookie-accept-all-btn">
-        <i class="fas fa-check-double"></i>
-        <span>Tout accepter</span>
-      </button>
-    </div>
+    <div class="cookie-modal-footer"><button class="btn btn-secondary" id="cookie-reject-all-btn"><span data-i18n="cookie.reject_all">Tout refuser</span></button><button class="btn btn-primary" id="cookie-save-preferences-btn"><i class="fas fa-check"></i><span data-i18n="cookie.save">Enregistrer</span></button><button class="btn btn-primary" id="cookie-accept-all-btn"><i class="fas fa-check-double"></i><span data-i18n="cookie.accept_all">Tout accepter</span></button></div>
   </div>
 </div>
+<style>.cookie-settings-link{display:inline-flex;align-items:center;gap:.5rem;color:rgba(255,255,255,.45);text-decoration:none;font-size:.875rem;transition:var(--transition)}.cookie-settings-link:hover{color:var(--hud-cyan)}</style>
 
-<!-- Cookie Settings Link (optional - pour footer) -->
-<style>
-  .cookie-settings-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: var(--transition);
-  }
-  
-  .cookie-settings-link:hover {
-    color: var(--secondary);
-  }
-  
-  .cookie-settings-link i {
-    font-size: 1rem;
-  }
-</style>
   <!-- Header -->
   <header>
     <nav class="container">
-      <div class="logo">
-        <i class="fas fa-jet-fighter"></i>
-        <span>Vol d'Histoire</span>
-      </div>
-      
-      <button class="hamburger" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      
+      <div class="logo"><i class="fas fa-jet-fighter"></i><span>Vol d’Histoire</span></div>
+      <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
       <ul class="nav-links">
         <li><a href="/"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a></li>
         <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
         <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
         <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-        
-        <li class="lang-switch"><button id="lang-toggle" class="lang-btn" aria-label="Switch language">EN</button></li>
-        <li class="user-menu">
-          <div class="user-toggle">
-            <a href="/login" id="login-icon" class="login-icon">
-              <i class="fas fa-user-circle"></i>
-            </a>
-            <div id="user-info-container" class="user-dropdown hidden">
-              <div class="user-header">
-                <div class="user-avatar">
-                  <i class="fas fa-user-circle"></i>
-                </div>
-                <div class="user-details">
-                  <span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span>
-                  <span class="user-role" data-i18n="nav.user_role">Membre</span>
-                </div>
-              </div>
-              <div class="dropdown-divider"></div>
-              <a href="/settings" id="settings-icon" class="dropdown-item">
-                <i class="fas fa-cog"></i>
-                <span>Paramètres</span>
-              </a>
-              <div class="dropdown-divider"></div>
-              <a href="#" id="logout-icon" class="dropdown-item logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Déconnexion</span>
-              </a>
-            </div>
-          </div>
+        <li class="lang-switch">
+          <button id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i></button>
+          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
+            <li><button class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
+            <li><button class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
+          </ul>
         </li>
+        <li class="user-menu"><div class="user-toggle">
+          <a href="#" id="login-icon" class="login-icon"><i class="fas fa-user-circle"></i></a>
+          <div id="user-info-container" class="user-dropdown hidden">
+            <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
+            <div class="dropdown-divider"></div>
+            <a href="/settings" id="settings-icon" class="dropdown-item"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
+            <div class="dropdown-divider"></div>
+            <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
+          </div>
+        </div></li>
       </ul>
     </nav>
   </header>
 
   <!-- Hero Section -->
-  <section class="legal-hero">
+  <section class="page-hero">
     <div class="hero-background"></div>
     <div class="container">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <i class="fas fa-shield-alt"></i>
-          <span>Protection des Données</span>
+      <div class="page-hero-inner">
+        <div class="hero-text">
+          <div class="hero-eyebrow"><span>Légal</span></div>
+          <h1>Politique de<span class="hero-muted">Confidentialité</span></h1>
+          <p>Comment nous protégeons et utilisons vos données personnelles</p>
         </div>
-        <h1>Politique de Confidentialité</h1>
-        <p>Comment nous protégeons et utilisons vos données personnelles</p>
       </div>
     </div>
   </section>
@@ -351,7 +149,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="legal-text">
             <p>Le responsable du traitement des données personnelles est :</p>
             <p><strong>Titouan Borde</strong> — projet personnel Vol d'Histoire</p>
-            <p><strong>Email :</strong> borde.titouan.47@gmail.com</p>
+            <p><strong>Email :</strong> vdh@titouan-borde.com</p>
           </div>
         </div>
 
@@ -672,7 +470,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <i class="fas fa-envelope"></i>
                 <div>
                   <strong>Par email</strong>
-                  <p><a href="mailto:borde.titouan.47@gmail.com">borde.titouan.47@gmail.com</a></p>
+                  <p><a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
                 </div>
               </div>
               <div class="contact-method">
@@ -724,7 +522,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="legal-text">
             <p>Pour toute question concernant cette politique de confidentialité ou le traitement de vos données personnelles, n'hésitez pas à nous contacter :</p>
             <div class="contact-info">
-              <p><i class="fas fa-envelope"></i> Email : <a href="mailto:borde.titouan.47@gmail.com">borde.titouan.47@gmail.com</a></p>
+              <p><i class="fas fa-envelope"></i> Email : <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
               <p><i class="fas fa-user-shield"></i> Responsable du traitement : Titouan Borde</p>
             </div>
           </div>
@@ -744,15 +542,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="footer-content">
         <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p><div class="footer-social"><a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a><a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a><a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a></div></div>
         <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="#" data-i18n="footer.contact">Contact (à venir)</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="#" data-i18n="footer.about">À propos (à venir)</a></li><li><a href="/contact" data-i18n="footer.contact">Contact</a></li><li><a href="#" data-i18n="footer.faq">FAQ (à venir)</a></li><li><a href="#" data-i18n="footer.support">Support (à venir)</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
       </div>
       <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2025 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
     </div>
   </footer>
-  <script src="js/i18n.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/cookies.js"></script>
-  <script src="js/script.js"></script>
+  <script defer src="js/i18n.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/cookies.js"></script>
+  <script defer src="js/script.js"></script>
 </body>
 </html>
