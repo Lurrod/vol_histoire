@@ -5,8 +5,8 @@ test.describe('Login / Logout', () => {
   test('login réussi redirige vers l\'accueil', async ({ page }) => {
     await page.goto('/login');
 
-    await page.fill('#login-email', 'test@vol-histoire.com');
-    await page.fill('#login-password', 'TestPass123');
+    await page.fill('#login-email', 'titouan.borde.47@gmail.com');
+    await page.fill('#login-password', 'Titouan1.');
     await page.click('#login-form button[type="submit"]');
 
     // Après login, on est redirigé vers l'index

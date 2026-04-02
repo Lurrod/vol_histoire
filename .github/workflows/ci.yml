@@ -1,0 +1,104 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ═══════════════════════════════════════════════════════════
+  # CI — Tests + audit sécurité
+  # ═══════════════════════════════════════════════════════════
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: vol_histoire_test
+          POSTGRES_USER: vol_user
+          POSTGRES_PASSWORD: testpassword
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U vol_user -d vol_histoire_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_USER: vol_user
+      DB_HOST: localhost
+      DB_NAME: vol_histoire_test
+      DB_PASSWORD: testpassword
+      DB_PORT: 5432
+      DB_SSL: false
+      JWT_SECRET: ci-test-jwt-secret-key-minimum-32-characters-long
+      REFRESH_SECRET: ci-test-refresh-secret-key-minimum-32-characters-long
+      NODE_ENV: test
+      PORT: 3000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        run: cd backend && npm ci
+
+      - name: Security audit
+        run: cd backend && npm audit --audit-level=critical
+
+      - name: Run backend tests with coverage
+        run: cd backend && npm run test:coverage
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm ci
+
+      - name: Run frontend tests
+        run: cd frontend && npm test
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: backend/coverage/
+          retention-days: 7
+
+  # ═══════════════════════════════════════════════════════════
+  # CD — Déploiement sur Kimsufi (uniquement push sur main)
+  # ═══════════════════════════════════════════════════════════
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/vol-histoire
+
+            # Pull les derniers changements
+            git pull origin main
+
+            # Backend : installer les dépendances et redémarrer
+            cd backend
+            npm ci --production
+            pm2 restart vol-histoire || pm2 start server.js --name vol-histoire
+            cd ..
+
+            echo "Deploiement termine"

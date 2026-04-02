@@ -1,0 +1,172 @@
+/* ======================================================================
+   VOL D'HISTOIRE — DESIGN SYSTEM TOKENS
+   Single source of truth for all custom properties.
+   ====================================================================== */
+
+:root {
+  /* ============================================================
+     COULEURS — PALETTE MINIMALISTE PREMIUM
+     ============================================================ */
+  --hud-cyan:   #C8A96E;   /* or champagne — accent unique et retenu */
+  --hud-green:  #5A8A6A;   /* vert militaire désaturé */
+  --hud-amber:  #B8956A;   /* ambre secondaire */
+  --accent:     #C0392B;   /* rouge danger — clarté UX */
+  --success:    #2E7D52;   /* vert succès désaturé */
+  --warning:    #B8860B;   /* or foncé pour les avertissements */
+  --purple:     #7C6FA0;   /* violet assourdi */
+  --blue:       #4A7FA0;   /* bleu technique */
+
+  /* ============================================================
+     BACKGROUNDS — CHARCOAL CHAUD
+     ============================================================ */
+  --night:      #0D0D0D;   /* noir chaud — fond principal */
+  --night-mid:  #141414;   /* surface intermédiaire */
+  --night-soft: #1A1A1A;   /* surface douce */
+  --white:      #ffffff;
+
+  --black:      #000000;
+
+  /* Alias de rétrocompatibilité */
+  --cyan:       var(--hud-cyan);
+  --surface:    var(--night-mid);
+  --surface-2:  var(--night-soft);
+  --bg:         rgba(255, 255, 255, 0.04);
+  --bg-dark:    var(--night-mid);
+  --bg-secondary: #ecf0f1;
+
+  /* ============================================================
+     TEXTE
+     ============================================================ */
+  --text-light:     #E8E6E1;               /* blanc légèrement chaud */
+  --text-primary:   #F0EDE8;               /* blanc cassé premium */
+  --text-secondary: rgba(240, 237, 232, 0.65);
+  --text-muted:     rgba(240, 237, 232, 0.40);
+  --text-faint:     rgba(240, 237, 232, 0.24);
+  --text-ghost:     rgba(240, 237, 232, 0.16);
+
+  /* ============================================================
+     BORDURES
+     ============================================================ */
+  --border-subtle:  rgba(255, 255, 255, 0.06);
+  --border-mid:     rgba(255, 255, 255, 0.10);
+  --border-cyan:    rgba(200, 169, 110, 0.16);
+  --border-cyan-md: rgba(200, 169, 110, 0.28);
+
+  /* Alias (utilisé dans plusieurs pages) */
+  --border:       var(--border-subtle);
+  --border-light: rgba(255, 255, 255, 0.04);
+
+  /* ============================================================
+     TYPOGRAPHIE
+     ============================================================ */
+  --font-sans:    'DM Sans', sans-serif;
+  --font-display: 'Barlow Condensed', sans-serif;
+
+  /* Tailles */
+  --text-xs:   0.70rem;
+  --text-sm:   0.85rem;
+  --text-base: 0.95rem;
+  --text-md:   1.00rem;
+  --text-lg:   1.10rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.50rem;
+  --text-3xl:  2.00rem;
+  --text-4xl:  2.50rem;
+
+  /* Hauteurs de ligne */
+  --leading-tight:   1.0;
+  --leading-snug:    1.3;
+  --leading-base:    1.6;
+  --leading-relaxed: 1.8;
+  --leading-loose:   1.85;
+
+  /* ============================================================
+     ESPACEMENTS — Grille de 4 px
+     ============================================================ */
+  --sp-1:  0.25rem;   /*  4 px */
+  --sp-2:  0.50rem;   /*  8 px */
+  --sp-3:  0.75rem;   /* 12 px */
+  --sp-4:  1.00rem;   /* 16 px */
+  --sp-5:  1.25rem;   /* 20 px */
+  --sp-6:  1.50rem;   /* 24 px */
+  --sp-7:  1.75rem;   /* 28 px */
+  --sp-8:  2.00rem;   /* 32 px */
+  --sp-10: 2.50rem;   /* 40 px */
+  --sp-12: 3.00rem;   /* 48 px */
+  --sp-16: 4.00rem;   /* 64 px */
+  --sp-20: 5.00rem;   /* 80 px */
+  --sp-24: 6.00rem;   /* 96 px */
+  --sp-28: 7.00rem;   /* 112 px */
+  --sp-32: 8.00rem;   /* 128 px */
+  --sp-40: 10.00rem;  /* 160 px */
+  --sp-48: 12.00rem;  /* 192 px */
+
+  /* ============================================================
+     ARRONDIS — Réduits pour un style plus architectural
+     ============================================================ */
+  --r-sm:   2px;
+  --r-md:   4px;
+  --r-lg:   6px;
+  --r-xl:   10px;
+  --r-2xl:  14px;
+  --r-full: 9999px;
+
+  /* ============================================================
+     OMBRES — Précises et sobres, sans glow
+     ============================================================ */
+  --shadow-sm:   0 1px 3px  rgba(0, 0, 0, 0.25);
+  --shadow:      0 2px 8px  rgba(0, 0, 0, 0.35);
+  --shadow-lg:   0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-xl:   0 12px 40px rgba(0, 0, 0, 0.55);
+  --shadow-cyan: 0 2px 12px rgba(200, 169, 110, 0.10);
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-dark:    linear-gradient(135deg, #0D0D0D 0%, #141414 100%);
+
+  /* ============================================================
+     TRANSITIONS
+     ============================================================ */
+  --ease:           cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition:      all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ============================================================
+     LAYOUT
+     ============================================================ */
+  --container-max: 1400px;
+  --container-pad: clamp(1.5rem, 5vw, 4rem);
+  --header-h:      70px;
+
+  /* ============================================================
+     Z-INDEX
+     ============================================================ */
+  --z-sticky:   100;
+  --z-header:   1000;
+  --z-dropdown: 2000;
+  --z-modal:    10000;
+
+  /* ============================================================
+     VARIABLES THÈME CLAIR — utilisées par login.css (panneau form)
+     ============================================================ */
+  --light-bg:       #ffffff;
+  --light-bg-soft:  #f8f9fa;
+  --light-text:     #1A1A1A;
+  --light-text-sub: #6B6B6B;
+  --light-border:   #E0DDD8;
+  --light-blue:     #4A7FA0;
+  --light-blue-dk:  #3A6F90;
+
+  /* ============================================================
+     VARIABLES DE COMPATIBILITÉ
+     Utilisées dans les anciens CSS de page. Résolues vers le thème dark.
+     ============================================================ */
+  --primary:         var(--night-mid);
+  --primary-light:   var(--night-soft);
+  --primary-dark:    var(--text-primary);
+  --secondary:       var(--hud-cyan);
+  --secondary-light: #D4B87E;
+  --secondary-dark:  #B8956A;
+  --info:            var(--blue);
+}

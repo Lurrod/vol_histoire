@@ -17,7 +17,7 @@ test.describe('Favoris', () => {
   });
 
   test('utilisateur connecté → page favoris accessible', async ({ page }) => {
-    await loginViaApi(page, 'test@vol-histoire.com', 'TestPass123');
+    await loginViaApi(page, 'titouan.borde.47@gmail.com', 'Titouan1.');
     await page.goto('/favorites');
     await page.waitForLoadState('networkidle');
 

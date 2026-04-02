@@ -1,0 +1,122 @@
+/* ======================================================================
+   VOL D'HISTOIRE — BASE
+   Déclaration des layers + reset + éléments de base partagés.
+   Doit être chargé après tokens.css, avant shared.css et les CSS de page.
+   ====================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap');
+
+/* Établit l'ordre de priorité : page > utilities > components > base */
+@layer base, components, page, utilities;
+
+/* ============================================================
+   RESET
+   ============================================================ */
+@layer base {
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  img, video {
+    max-width: 100%;
+    display: block;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  ul, ol {
+    list-style: none;
+  }
+
+  /* ============================================================
+     BODY
+     ============================================================ */
+  body {
+    font-family: var(--font-sans);
+    background: var(--night);
+    color: var(--text-light);
+    line-height: var(--leading-base);
+    overflow-x: hidden;
+  }
+
+  /* ============================================================
+     CONTAINER
+     ============================================================ */
+  .container {
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--container-pad);
+  }
+
+  /* ============================================================
+     TYPOGRAPHIE DE BASE
+     ============================================================ */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    line-height: var(--leading-snug);
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+
+  /* Titres display — Barlow Condensed */
+  .display, [class*="hero"] h1, [class*="section-title"],
+  .logo { letter-spacing: 0.04em; }
+
+  p {
+    line-height: var(--leading-relaxed);
+  }
+
+  strong {
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  /* ============================================================
+     FOCUS ACCESSIBLE
+     ============================================================ */
+  :focus-visible {
+    outline: 2px solid var(--hud-cyan);
+    outline-offset: 3px;
+    border-radius: var(--r-sm);
+  }
+
+  /* Supprime outline sur focus souris */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* ============================================================
+     RESPONSIVE CONTAINER
+     ============================================================ */
+  @media (max-width: 63.99em) {    /* < 1024px */
+    .container { padding-inline: var(--sp-8); }
+  }
+
+  @media (max-width: 47.99em) {    /* < 768px */
+    .container { padding-inline: var(--sp-6); }
+  }
+
+  @media (max-width: 39.99em) {    /* < 640px */
+    .container { padding-inline: var(--sp-4); }
+  }
+
+  @media (max-width: 29.99em) {    /* < 480px */
+    .container { padding-inline: var(--sp-3); }
+  }
+}

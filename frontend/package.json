@@ -1,0 +1,13 @@
+{
+  "name": "vol-histoire-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest --config jest.config.json",
+    "test:watch": "jest --config jest.config.json --watch"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  }
+}

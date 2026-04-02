@@ -1,4 +1,22 @@
 require('dotenv').config();
+const logger = require('./logger');
+
+// Validation des variables d'environnement critiques
+const REQUIRED_ENV = ['JWT_SECRET', 'REFRESH_SECRET', 'DB_USER', 'DB_HOST', 'DB_NAME', 'DB_PASSWORD'];
+const missing = REQUIRED_ENV.filter(key => !process.env[key]);
+if (missing.length > 0) {
+  logger.error('Variables d\'environnement manquantes', { missing: missing.join(', ') });
+  process.exit(1);
+}
+if (process.env.JWT_SECRET.length < 32) {
+  logger.error('JWT_SECRET doit faire au moins 32 caractères');
+  process.exit(1);
+}
+if (process.env.REFRESH_SECRET.length < 32) {
+  logger.error('REFRESH_SECRET doit faire au moins 32 caractères');
+  process.exit(1);
+}
+
 const app = require('./app');
 const { Pool } = require('pg');
 
@@ -8,11 +26,46 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
+  ssl: process.env.DB_SSL === 'false'     ? false
+     : process.env.DB_SSL === 'no-verify' ? { rejectUnauthorized: false }
+     :                                      { rejectUnauthorized: true },
 });
 
 app.setPool(pool);
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Serveur démarré sur http://localhost:${port}`);
+const server = app.listen(port, () => {
+  logger.info('Serveur démarré', { port, url: `http://localhost:${port}` });
 });
+
+// -----------------------------------------------------------------------------
+// Arrêt gracieux (SIGTERM / SIGINT)
+// -----------------------------------------------------------------------------
+async function shutdown(signal) {
+  logger.info('Arrêt gracieux en cours', { signal });
+
+  // 1. Arrêter d'accepter de nouvelles connexions
+  server.close(async () => {
+    try {
+      // 2. Fermer le pool PostgreSQL proprement
+      await pool.end();
+      logger.info('Pool PostgreSQL fermé');
+      process.exit(0);
+    } catch (err) {
+      logger.error('Erreur fermeture du pool', { error: err.message });
+      process.exit(1);
+    }
+  });
+
+  // Forcer l'arrêt si les connexions en cours ne se terminent pas dans les 10 s
+  setTimeout(() => {
+    logger.error('Délai dépassé — arrêt forcé');
+    process.exit(1);
+  }, 10000).unref();
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT',  () => shutdown('SIGINT'));

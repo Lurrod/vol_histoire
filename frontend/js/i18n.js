@@ -65,6 +65,22 @@ const i18n = (() => {
     return value;
   }
 
+  /** Sanitize HTML — DOMPurify avec whitelist restrictive */
+  const PURIFY_CONFIG = {
+    ALLOWED_TAGS: ['a', 'strong', 'em', 'br', 'span', 'i', 'u', 'b'],
+    ALLOWED_ATTR: ['href', 'class', 'target', 'rel'],
+  };
+
+  function sanitizeHtml(html) {
+    if (typeof DOMPurify !== 'undefined') {
+      return DOMPurify.sanitize(html, PURIFY_CONFIG);
+    }
+    // Fallback si DOMPurify n'est pas chargé : échapper tout le HTML
+    const div = document.createElement('div');
+    div.textContent = html;
+    return div.innerHTML;
+  }
+
   /** Apply translations to all data-i18n elements in the DOM */
   function applyToDOM(root = document) {
     // Text content
@@ -85,10 +101,11 @@ const i18n = (() => {
     });
 
     // innerHTML (for content with embedded HTML like links)
+    // Seules les balises sûres sont autorisées (a, strong, em, br, span, i, u, b)
     root.querySelectorAll('[data-i18n-html]').forEach(el => {
       const key = el.getAttribute('data-i18n-html');
       const translated = t(key);
-      if (translated !== key) el.innerHTML = translated;
+      if (translated !== key) el.innerHTML = sanitizeHtml(translated);
     });
 
     // Placeholders
@@ -117,9 +134,13 @@ const i18n = (() => {
     // Update lang toggle button
     const langBtn = document.getElementById('lang-toggle');
     if (langBtn) {
-      langBtn.textContent = currentLang === 'fr' ? 'EN' : 'FR';
       langBtn.setAttribute('aria-label', currentLang === 'fr' ? 'Switch to English' : 'Passer en français');
     }
+
+    // Marquer l'option active dans le dropdown
+    document.querySelectorAll('.lang-option').forEach(opt => {
+      opt.classList.toggle('active', opt.getAttribute('data-lang') === currentLang);
+    });
   }
 
   /** Switch language */
@@ -141,13 +162,35 @@ const i18n = (() => {
     isLoaded = true;
     applyToDOM();
 
-    // Bind lang toggle button
+    // Bind lang toggle button + dropdown
     document.addEventListener('click', (e) => {
       const btn = e.target.closest('#lang-toggle');
+      const option = e.target.closest('.lang-option');
+      const langSwitch = document.querySelector('.lang-switch');
+
       if (btn) {
         e.preventDefault();
-        const newLang = currentLang === 'fr' ? 'en' : 'fr';
-        setLang(newLang);
+        const isOpen = langSwitch && langSwitch.classList.toggle('open');
+        btn.classList.toggle('open', !!isOpen);
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        return;
+      }
+
+      if (option) {
+        e.preventDefault();
+        const lang = option.getAttribute('data-lang');
+        if (lang) setLang(lang);
+        if (langSwitch) langSwitch.classList.remove('open');
+        const toggle = document.getElementById('lang-toggle');
+        if (toggle) { toggle.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
+        return;
+      }
+
+      // Clic en dehors — fermer le dropdown
+      if (langSwitch && langSwitch.classList.contains('open') && !e.target.closest('.lang-switch')) {
+        langSwitch.classList.remove('open');
+        const toggle = document.getElementById('lang-toggle');
+        if (toggle) { toggle.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
       }
     });
   }

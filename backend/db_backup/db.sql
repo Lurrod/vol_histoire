@@ -9,13 +9,57 @@ CREATE TABLE roles (
 
 INSERT INTO roles (name) VALUES ('admin'), ('editeur'), ('utilisateur');
 
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    role_id INTEGER REFERENCES roles(id) ON DELETE SET NULL DEFAULT 3
+    role_id INTEGER REFERENCES roles(id) ON DELETE SET NULL DEFAULT 3,
+    email_verified BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+-- Index pour les recherches fréquentes par email (login, register, reset password)
+CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
+
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id          SERIAL PRIMARY KEY,
+    jti         VARCHAR(36) UNIQUE NOT NULL,       -- UUID v4, identifiant unique du token
+    user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    revoked     BOOLEAN NOT NULL DEFAULT FALSE,
+    expires_at  TIMESTAMP NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Index pour les requêtes fréquentes :
+-- 1. Vérification de validité (lookup par jti)
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_jti ON refresh_tokens (jti) WHERE revoked = FALSE;
+
+-- 2. Révocation de tous les tokens d'un utilisateur
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens (user_id) WHERE revoked = FALSE;
+
+-- 3. Nettoyage des tokens expirés
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_expires_at ON refresh_tokens (expires_at);
+
+-- Permissions
+GRANT SELECT, INSERT, UPDATE, DELETE ON refresh_tokens TO vol_user;
+GRANT USAGE, SELECT ON SEQUENCE refresh_tokens_id_seq TO vol_user;
+
+CREATE TABLE IF NOT EXISTS email_tokens (
+    id          SERIAL PRIMARY KEY,
+    user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token       VARCHAR(64) NOT NULL UNIQUE,
+    type        VARCHAR(10) NOT NULL CHECK (type IN ('verify', 'reset')),
+    expires_at  TIMESTAMP NOT NULL,
+    used_at     TIMESTAMP,
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_email_tokens_token ON email_tokens (token) WHERE used_at IS NULL;
+CREATE INDEX IF NOT EXISTS idx_email_tokens_user_type ON email_tokens (user_id, type) WHERE used_at IS NULL;
+GRANT SELECT, INSERT, UPDATE, DELETE ON email_tokens TO vol_user;
+GRANT USAGE, SELECT ON SEQUENCE email_tokens_id_seq TO vol_user;
 
 CREATE TABLE countries (
     id SERIAL PRIMARY KEY,
@@ -65,7 +109,9 @@ CREATE TABLE airplanes (
     id_generation SMALLINT REFERENCES generation(id) ON DELETE SET NULL,
     type INTEGER REFERENCES type(id) ON DELETE SET NULL,
     status VARCHAR(50),
-    weight FLOAT
+    weight FLOAT,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE favorites (
@@ -119,6 +165,23 @@ CREATE TABLE airplane_tech (
     id_tech INTEGER REFERENCES tech(id) ON DELETE CASCADE,
     PRIMARY KEY (id_airplane, id_tech)
 );
+
+-- Trigger updated_at automatique (partagé par users et airplanes)
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_users_updated_at
+  BEFORE UPDATE ON users
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER trg_airplanes_updated_at
+  BEFORE UPDATE ON airplanes
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 INSERT INTO countries (name, code) VALUES
 ('États-Unis', 'USA'),
