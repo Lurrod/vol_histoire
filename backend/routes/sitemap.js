@@ -1,4 +1,5 @@
 const express = require('express');
+const asyncHandler = require('../middleware/asyncHandler');
 
 module.exports = function createSitemapRouter(getPool) {
   const router = express.Router();
@@ -6,7 +7,7 @@ module.exports = function createSitemapRouter(getPool) {
   // -----------------------------------------------------------------------------
   // Sitemap dynamique
   // -----------------------------------------------------------------------------
-  router.get('/sitemap.xml', async (req, res) => {
+  router.get('/sitemap.xml', asyncHandler(async (req, res) => {
     const BASE_URL = 'https://vol-histoire.titouan-borde.com';
     const today = new Date().toISOString().split('T')[0];
 
@@ -23,10 +24,9 @@ module.exports = function createSitemapRouter(getPool) {
       { loc: '/cgu',                       changefreq: 'yearly',  priority: '0.2' },
     ];
 
-    try {
-      const result = await getPool().query('SELECT id FROM airplanes ORDER BY id ASC');
+    const result = await getPool().query('SELECT id FROM airplanes ORDER BY id ASC');
 
-      const staticUrls = staticPages.map(p => `
+    const staticUrls = staticPages.map(p => `
   <url>
     <loc>${BASE_URL}${p.loc}</loc>
     <lastmod>${today}</lastmod>
@@ -34,7 +34,7 @@ module.exports = function createSitemapRouter(getPool) {
     <priority>${p.priority}</priority>
   </url>`).join('');
 
-      const airplaneUrls = result.rows.map(row => `
+    const airplaneUrls = result.rows.map(row => `
   <url>
     <loc>${BASE_URL}/details?id=${row.id}</loc>
     <lastmod>${today}</lastmod>
@@ -42,16 +42,13 @@ module.exports = function createSitemapRouter(getPool) {
     <priority>0.8</priority>
   </url>`).join('');
 
-      const xml = `<?xml version="1.0" encoding="UTF-8"?>
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${staticUrls}${airplaneUrls}
 </urlset>`;
 
-      res.set('Content-Type', 'application/xml');
-      res.send(xml);
-    } catch (error) {
-      res.status(500).send('Erreur serveur');
-    }
-  });
+    res.set('Content-Type', 'application/xml');
+    res.send(xml);
+  }));
 
   return router;
 };

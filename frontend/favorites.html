@@ -23,6 +23,9 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Mes Favoris - Vol d'Histoire">
   <meta name="twitter:description" content="Retrouvez vos avions de chasse favoris sauvegardés dans votre collection personnelle.">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/favorites.css">
   <link rel="stylesheet" href="css/cookies.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -133,14 +136,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="favorites-toolbar">
         <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-input" placeholder="Rechercher dans mes favoris..." data-i18n-placeholder="favorites.search_placeholder"></div>
         <div class="toolbar-right">
+          <button class="filter-btn" id="country-filter-btn"><i class="fas fa-globe"></i><span data-i18n="hangar.filter_country">Pays</span><i class="fas fa-chevron-down"></i></button>
+          <button class="filter-btn" id="generation-filter-btn"><i class="fas fa-layer-group"></i><span data-i18n="hangar.gen_label">Génération</span><i class="fas fa-chevron-down"></i></button>
+          <button class="filter-btn" id="type-filter-btn"><i class="fas fa-tags"></i><span data-i18n="hangar.filter_type">Type</span><i class="fas fa-chevron-down"></i></button>
           <select id="sort-select" class="sort-select">
             <option value="recent" data-i18n="favorites.sort_recent">Plus récents</option>
             <option value="alphabetical" data-i18n="favorites.sort_alpha">Alphabétique</option>
             <option value="nation" data-i18n="favorites.sort_nation">Par nation</option>
             <option value="generation" data-i18n="favorites.sort_gen">Par génération</option>
           </select>
+          <!-- Filter Dropdowns -->
+          <div id="country-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_country">Filtrer par pays</h3><button class="close-dropdown"><i class="fas fa-times"></i></button></div><div class="filter-options" id="country-options"></div></div>
+          <div id="generation-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_gen">Filtrer par génération</h3><button class="close-dropdown"><i class="fas fa-times"></i></button></div><div class="filter-options" id="generation-options"></div></div>
+          <div id="type-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_type">Filtrer par type</h3><button class="close-dropdown"><i class="fas fa-times"></i></button></div><div class="filter-options" id="type-options"></div></div>
         </div>
       </div>
+      <div id="active-filters" class="active-filters hidden"></div>
       <div class="results-bar"><span id="results-count" data-i18n="favorites.results">0 favoris</span></div>
       <div id="favorites-container" class="aircraft-grid"></div>
       <div id="empty-state" class="empty-state hidden">
@@ -166,8 +177,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </footer>
   <div id="toast-container" aria-live="polite"></div>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js" integrity="sha512-wKnMJBjR8MnLzXcAIA666FHmJhVvsXKPOoZFcYpSm6JIHIHJh4ABjVRkPHs7GAknJoSqBil7UHZfdPkqCGEXA==" crossorigin="anonymous"></script>
   <script defer src="js/i18n.js"></script>
   <script defer src="js/auth.js"></script>
+  <script defer src="js/utils.js"></script>
+  <script defer src="js/nav.js"></script>
   <script defer src="js/cookies.js"></script>
   <script defer src="js/favorites.js"></script>
 </body>

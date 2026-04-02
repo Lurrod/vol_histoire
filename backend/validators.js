@@ -3,7 +3,10 @@
 // -----------------------------------------------------------------------------
 
 function isValidEmail(email) {
-  return typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 255;
+  if (typeof email !== 'string' || email.length > 255) return false;
+  // Partie locale : caractères valides, pas de point en début/fin, pas de points consécutifs
+  // Domaine : caractères valides, TLD alphabétique d'au moins 2 caractères
+  return /^[a-zA-Z0-9_%+\-]+(\.[a-zA-Z0-9_%+\-]+)*@[a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/.test(email);
 }
 
 function isValidName(name) {
@@ -11,7 +14,12 @@ function isValidName(name) {
 }
 
 function isValidPassword(password) {
-  return typeof password === 'string' && password.length >= 4 && password.length <= 128;
+  if (typeof password !== 'string') return false;
+  if (password.length < 8 || password.length > 128) return false;
+  if (!/[a-z]/.test(password)) return false;
+  if (!/[A-Z]/.test(password)) return false;
+  if (!/[0-9]/.test(password)) return false;
+  return true;
 }
 
 function isValidString(value, maxLength = 255) {
@@ -29,22 +37,30 @@ function isOptionalText(value, maxLength = 10000) {
 function isOptionalUrl(value) {
   if (value == null || value === '') return true;
   if (typeof value !== 'string' || value.length > 2048) return false;
-  return /^https?:\/\/.+/i.test(value);
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
 }
 
 function isOptionalDate(value) {
   if (value == null || value === '') return true;
-  return typeof value === 'string' && !isNaN(Date.parse(value));
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const [year, month, day] = value.split('-').map(Number);
+  const d = new Date(value);
+  return d.getFullYear() === year && d.getMonth() + 1 === month && d.getDate() === day;
 }
 
 function isOptionalPositiveNumber(value) {
-  if (value == null || value === '' || value === null) return true;
+  if (value == null || value === '') return true;
   const num = Number(value);
   return !isNaN(num) && num >= 0;
 }
 
 function isOptionalId(value) {
-  if (value == null || value === '' || value === null) return true;
+  if (value == null || value === '') return true;
   const num = Number(value);
   return Number.isInteger(num) && num > 0;
 }

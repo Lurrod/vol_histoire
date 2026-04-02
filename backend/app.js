@@ -3,13 +3,21 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yaml');
+const fs = require('fs');
 const authMiddleware = require('./middleware/auth');
+const logger = require('./logger');
 const {
   authorize, cleanupExpiredTokens, revokeAllUserRefreshTokens,
 } = authMiddleware;
 const mailer = require('./mailer');
 
 const app = express();
+
+// Nécessaire derrière un reverse proxy (Apache, Nginx) pour que
+// req.ip retourne l'IP réelle du client (rate limiting, logs).
+app.set('trust proxy', 1);
 
 // -----------------------------------------------------------------------------
 // Sécurité : Headers HTTP
@@ -37,6 +45,20 @@ app.use((req, res, next) => {
   res.removeHeader('X-Powered-By');
   next();
 });
+
+// -----------------------------------------------------------------------------
+// Protection CSRF — pourquoi pas de token CSRF dédié
+// -----------------------------------------------------------------------------
+// 1. Le refresh token est un cookie SameSite=Strict + HttpOnly + Path=/api
+//    → le navigateur ne l'envoie jamais lors de requêtes cross-origin.
+// 2. L'access token est stocké en mémoire JS (pas en cookie) et envoyé via
+//    le header Authorization: Bearer → un site tiers ne peut pas le forger.
+// 3. CORS restreint avec whitelist d'origins + credentials: true.
+// 4. CSP form-action 'self' empêche les formulaires HTML de poster cross-origin.
+// Ces 4 couches rendent un token CSRF classique redondant (Double Submit Cookie
+// ou Synchronizer Token Pattern). Si SameSite=Strict est modifié un jour,
+// réévaluer cette posture.
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Sécurité : CORS restreint
@@ -99,6 +121,25 @@ const globalApiLimiter = rateLimit({
   keyGenerator: (req) => req.ip,
 });
 
+const refreshLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  message: { message: 'Trop de tentatives de rafraîchissement, réessayez dans 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => req.ip,
+});
+
+const resetPasswordLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { message: 'Trop de tentatives, réessayez dans 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => req.ip,
+  skip: () => process.env.NODE_ENV === 'test',
+});
+
 const emailLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 3,
@@ -111,6 +152,17 @@ const emailLimiter = rateLimit({
 
 // Appliquer le limiteur global à toutes les routes API
 app.use('/api/', globalApiLimiter);
+
+// -----------------------------------------------------------------------------
+// Documentation API (Swagger UI)
+// -----------------------------------------------------------------------------
+try {
+  const openapiDoc = YAML.parse(fs.readFileSync(path.join(__dirname, 'openapi.yaml'), 'utf8'));
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapiDoc, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Vol d\'Histoire — API Docs',
+  }));
+} catch { /* openapi.yaml absent (tests) — Swagger désactivé */ }
 
 // -----------------------------------------------------------------------------
 // Pool PostgreSQL (injectable pour les tests)
@@ -147,19 +199,25 @@ app.get('/', (req, res) => {
 // Routes
 // -----------------------------------------------------------------------------
 const createAuthRouter = require('./routes/auth');
-app.use('/api', createAuthRouter(() => pool, { registerLimiter, loginLimiter, emailLimiter, mailer }));
+app.use('/api', createAuthRouter(() => pool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, resetPasswordLimiter, mailer }));
 
 const createUsersRouter = require('./routes/users');
 app.use('/api', createUsersRouter(() => pool));
 
 const createAirplanesRouter = require('./routes/airplanes');
-app.use('/api', createAirplanesRouter(() => pool));
+app.use('/api', createAirplanesRouter(() => pool, {
+  onAirplaneChange: () => app.invalidateStatsCache?.(),
+}));
 
 const createFavoritesRouter = require('./routes/favorites');
 app.use('/api', createFavoritesRouter(() => pool));
 
 const createStatsRouter = require('./routes/stats');
-app.use('/api', createStatsRouter(() => pool));
+const statsRouter = createStatsRouter(() => pool);
+app.use('/api', statsRouter);
+
+// Exposer l'invalidation du cache stats (utilisé par les routes airplanes)
+app.invalidateStatsCache = () => statsRouter.invalidateCache?.();
 
 const createSitemapRouter = require('./routes/sitemap');
 app.use('/', createSitemapRouter(() => pool));
@@ -179,7 +237,6 @@ app.use((req, res, next) => {
 });
 
 // Servir le fichier .html correspondant à l'URL propre
-const fs = require('fs');
 const fsPromises = fs.promises;
 
 // Pré-construction de la liste des pages HTML valides au démarrage (évite fs à chaque requête)
@@ -225,11 +282,11 @@ app.get('*', async (req, res, next) => {
 // Gestionnaire d'erreurs global
 // -----------------------------------------------------------------------------
 app.use((err, req, res, next) => {
-  console.error('Erreur non gérée:', err.message);
   if (err.message === 'Origine non autorisée par CORS') {
     return res.status(403).json({ message: 'Origine non autorisée' });
   }
-  res.status(500).json({ message: 'Erreur interne du serveur' });
+  const entry = logger.error('Erreur non gérée', { error: err.message, path: req.path, method: req.method });
+  res.status(500).json({ message: 'Erreur interne du serveur', errorId: entry.errorId });
 });
 
 // -----------------------------------------------------------------------------
@@ -241,7 +298,7 @@ if (process.env.NODE_ENV !== 'test') {
     try {
       await cleanupExpiredTokens();
     } catch (err) {
-      console.error('Erreur nettoyage refresh tokens:', err.message);
+      logger.error('Erreur nettoyage refresh tokens', { error: err.message });
     }
   }, 60 * 60 * 1000);
 }

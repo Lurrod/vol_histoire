@@ -1,35 +1,43 @@
+const ALPHA3_TO_ALPHA2 = {
+  USA: 'us', RUS: 'ru', CHN: 'cn', FRA: 'fr', GBR: 'gb',
+  DEU: 'de', ITA: 'it', SWE: 'se', IND: 'in', JPN: 'jp',
+  BRA: 'br', ISR: 'il', VNM: 'vn', AFG: 'af', IRQ: 'iq',
+  YUG: 'rs', KOR: 'kr', FLK: 'fk', LBN: 'lb', DZA: 'dz',
+  SYR: 'sy', IRN: 'ir'
+};
+
 document.addEventListener("DOMContentLoaded", async () => {
-  /* =========================================================================
-     UTILITIES
-     ========================================================================= */
+  await auth.init();
 
-  function escapeHtml(text) {
-    if (text == null) return '';
-    const div = document.createElement('div');
-    div.textContent = String(text);
-    return div.innerHTML;
-  }
+  /* escapeHtml, showToast → utils.js | navigation → nav.js */
 
-  function showToast(message, type = 'info') {
+  function showUndoToast(message, onUndo) {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-
-    const icon = type === 'success' ? 'check-circle' :
-                 type === 'error' ? 'exclamation-circle' :
-                 'info-circle';
-
+    toast.className = 'toast toast-info';
+    toast.setAttribute('role', 'status');
     toast.innerHTML = `
-      <i class="fas fa-${icon}"></i>
-      <span>${escapeHtml(message)}</span>
+      <i class="fas fa-heart-broken" aria-hidden="true"></i>
+      <span style="flex:1">${escapeHtml(message)}</span>
+      <button class="toast-undo-btn" style="background:none;border:1px solid currentColor;border-radius:6px;padding:0.2rem 0.6rem;cursor:pointer;font-weight:700;color:inherit;font-size:0.85rem">${escapeHtml(i18n.t('favorites.undo'))}</button>
     `;
+
+    let undone = false;
+    toast.querySelector('.toast-undo-btn').addEventListener('click', () => {
+      undone = true;
+      onUndo();
+      toast.classList.add('fade-out');
+      setTimeout(() => toast.remove(), 300);
+    });
 
     container.appendChild(toast);
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       toast.classList.add('fade-out');
       setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    }, 5000);
+
+    return { cancel: () => { clearTimeout(timer); if (!undone) { toast.classList.add('fade-out'); setTimeout(() => toast.remove(), 300); } } };
   }
 
   function formatRelativeDate(dateString) {
@@ -49,134 +57,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   /* =========================================================================
-     NAVIGATION & AUTH
-     ========================================================================= */
-
-  const header = document.querySelector('header');
-  const hamburger = document.querySelector('.hamburger');
-  const navLinks = document.querySelector('.nav-links');
-  const loginIcon = document.getElementById('login-icon');
-  const userToggle = document.querySelector('.user-toggle');
-  const userDropdown = document.querySelector('.user-dropdown');
-
-  // Header scroll effect
-  window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 100) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  });
-
-  // Mobile menu toggle
-  hamburger?.addEventListener('click', () => {
-    navLinks?.classList.toggle('show');
-    hamburger.classList.toggle('active');
-    document.body.style.overflow = navLinks?.classList.contains('show') ? 'hidden' : '';
-  });
-
-  // Close mobile menu on link click
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', () => {
-      if (link.id === 'login-icon') return;
-      navLinks?.classList.remove('show');
-      hamburger?.classList.remove('active');
-      document.body.style.overflow = '';
-    });
-  });
-
-  // Close mobile menu on resize
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (window.innerWidth > 992) {
-        navLinks?.classList.remove('show');
-        hamburger?.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-    }, 250);
-  });
-
-  // Token expiration check utility
-  function isTokenExpired(token) {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (!payload.exp) return false;
-      // exp is in seconds, Date.now() in ms — add 30s buffer
-      return Date.now() >= payload.exp * 1000;
-    } catch {
-      return true;
-    }
-  }
-
-  // User Authentication & Menu
-  const currentUser = auth.getPayload();
-
-  if (currentUser) {
-    const userNameEl = document.getElementById('user-name');
-    const userRoleEl = document.querySelector('.user-role');
-
-    if (userNameEl) userNameEl.textContent = currentUser.name || i18n.t('nav.user_default');
-    if (userRoleEl) {
-      const role = Number(currentUser.role);
-      userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
-                               role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
-    }
-
-    userDropdown?.classList.remove('hidden');
-  }
-
-  // User dropdown toggle
-  userToggle?.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (userDropdown?.classList.contains('show')) {
-      userDropdown.classList.remove('show');
-      setTimeout(() => userDropdown.classList.add('hidden'), 300);
-    } else {
-      userDropdown?.classList.remove('hidden');
-      setTimeout(() => userDropdown?.classList.add('show'), 10);
-    }
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!userToggle?.contains(e.target) && !userDropdown?.contains(e.target)) {
-      userDropdown?.classList.remove('show');
-      userDropdown?.classList.add('hidden');
-    }
-  });
-
-  loginIcon?.addEventListener('click', (e) => {
-    if (!auth.getToken()) { e.preventDefault(); window.location.href = '/login'; }
-  });
-
-  document.getElementById('settings-icon')?.addEventListener('click', (e) => {
-    e.preventDefault(); window.location.href = '/settings';
-  });
-
-  document.querySelectorAll('#logout-icon, #logout-btn').forEach(btn => {
-    btn?.addEventListener('click', async (e) => {
-      e.preventDefault();
-      await auth.logout();
-      showToast(i18n.t('common.logout_success'), 'success');
-      setTimeout(() => { window.location.href = '/'; }, 1000);
-    });
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      navLinks?.classList.remove('show');
-      hamburger?.classList.remove('active');
-      userDropdown?.classList.remove('show');
-      userDropdown?.classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-  });
-
-  /* =========================================================================
      AUTH GATE
      ========================================================================= */
+
+  const currentUser = auth.getPayload();
 
   const authGate = document.getElementById('auth-gate');
   const favoritesContent = document.getElementById('favorites-content');
@@ -201,16 +85,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     favorites: [],
     filtered: [],
     sort: 'recent',
-    search: ''
+    search: '',
+    filters: {
+      country: null,
+      generation: null,
+      type: null
+    }
   };
 
   /* =========================================================================
      DATA LOADING
      ========================================================================= */
 
-  async function loadFavorites() {
-    showSkeletonLoaders();
+  function renderSkeletons() {
+    const container = document.getElementById('favorites-container');
+    if (!container) return;
+    container.classList.remove('hidden');
+    container.innerHTML = Array.from({ length: 6 }).map(() => `
+      <div class="skeleton-card">
+        <div class="skeleton-image"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      </div>
+    `).join('');
+  }
 
+  async function loadFavorites() {
+    renderSkeletons();
     try {
       const response = await auth.authFetch('/api/favorites');
 
@@ -223,47 +128,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (!response.ok) throw new Error('Erreur serveur');
 
-      state.favorites = await response.json();
+      const data = await response.json();
+      state.favorites = Array.isArray(data) ? data : [];
+      populateFilterOptions();
       applyFiltersAndRender();
       updateStats();
 
     } catch (error) {
       console.error('Error loading favorites:', error);
       showToast(i18n.t('common.loading_error'), 'error');
-      hideSkeletonLoaders();
     }
   }
 
-  function showSkeletonLoaders() {
-    const container = document.getElementById('favorites-container');
-    container.innerHTML = Array(6).fill(0).map(() => `
-      <div class="aircraft-card skeleton">
-        <div class="skeleton-image"></div>
-        <div class="skeleton-content">
-          <div class="skeleton-title"></div>
-          <div class="skeleton-text"></div>
-          <div class="skeleton-text short"></div>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  function hideSkeletonLoaders() {
-    document.querySelectorAll('.skeleton').forEach(s => s.remove());
-  }
-
-  function animateNumber(el, target) {
-    if (!el) return;
-    const duration = 1400;
-    const start = performance.now();
-    function step(now) {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = Math.round(eased * target);
-      if (progress < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
+  /* animateNumber → utils.js */
 
   function updateStats() {
     const uniqueCountries = new Set(state.favorites.map(a => a.country_name).filter(Boolean));
@@ -291,6 +168,137 @@ document.addEventListener("DOMContentLoaded", async () => {
     applyFiltersAndRender();
   });
 
+  /* =========================================================================
+     FILTER DROPDOWNS (pays, génération, type)
+     ========================================================================= */
+
+  function populateFilterOptions() {
+    const countries = [...new Set(state.favorites.map(a => a.country_name).filter(Boolean))].sort();
+    const generations = [...new Set(state.favorites.map(a => a.generation).filter(Boolean))].sort((a, b) => a - b);
+    const types = [...new Set(state.favorites.map(a => a.type_name).filter(Boolean))].sort();
+
+    const countryOptions = document.getElementById('country-options');
+    const generationOptions = document.getElementById('generation-options');
+    const typeOptions = document.getElementById('type-options');
+
+    if (countryOptions) {
+      countryOptions.innerHTML = countries.map(c => `<div class="filter-option" data-value="${escapeHtml(c)}">${escapeHtml(c)}</div>`).join('');
+    }
+    if (generationOptions) {
+      generationOptions.innerHTML = generations.map(g => `<div class="filter-option" data-value="${g}">${g}e Génération</div>`).join('');
+    }
+    if (typeOptions) {
+      typeOptions.innerHTML = types.map(t => `<div class="filter-option" data-value="${escapeHtml(t)}">${escapeHtml(t)}</div>`).join('');
+    }
+
+    // Click handlers pour les options
+    document.querySelectorAll('.filter-option').forEach(option => {
+      option.addEventListener('click', function () {
+        const dropdown = this.closest('.filter-dropdown');
+        const filterType = dropdown.id.replace('-dropdown', '');
+        const value = this.dataset.value;
+
+        state.filters[filterType] = state.filters[filterType] === value ? null : value;
+        applyFiltersAndRender();
+        closeAllDropdowns();
+        updateActiveFilters();
+      });
+    });
+  }
+
+  // Dropdown toggle
+  const filterButtons = {
+    'country-filter-btn': 'country-dropdown',
+    'generation-filter-btn': 'generation-dropdown',
+    'type-filter-btn': 'type-dropdown'
+  };
+
+  const dropdownTimeouts = new Map();
+
+  Object.entries(filterButtons).forEach(([btnId, dropdownId]) => {
+    document.getElementById(btnId)?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const dropdown = document.getElementById(dropdownId);
+      const isOpen = dropdown.classList.contains('show');
+      closeAllDropdowns();
+      if (!isOpen) {
+        // Annuler le timeout hidden programmé par closeAllDropdowns
+        if (dropdownTimeouts.has(dropdownId)) {
+          clearTimeout(dropdownTimeouts.get(dropdownId));
+          dropdownTimeouts.delete(dropdownId);
+        }
+        dropdown.classList.remove('hidden');
+        setTimeout(() => dropdown.classList.add('show'), 10);
+      }
+    });
+  });
+
+  document.querySelectorAll('.close-dropdown').forEach(btn => {
+    btn.addEventListener('click', () => closeAllDropdowns());
+  });
+
+  function closeAllDropdowns() {
+    document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+      dropdown.classList.remove('show');
+      const id = dropdown.id;
+      if (dropdownTimeouts.has(id)) clearTimeout(dropdownTimeouts.get(id));
+      const timeout = setTimeout(() => {
+        dropdown.classList.add('hidden');
+        dropdownTimeouts.delete(id);
+      }, 300);
+      dropdownTimeouts.set(id, timeout);
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.filter-btn') && !e.target.closest('.filter-dropdown')) {
+      closeAllDropdowns();
+    }
+  });
+
+  // Active filters display
+  function updateActiveFilters() {
+    const container = document.getElementById('active-filters');
+    const filters = [];
+
+    if (state.filters.country) filters.push({ type: 'country', label: state.filters.country });
+    if (state.filters.generation) filters.push({ type: 'generation', label: `${state.filters.generation}e Génération` });
+    if (state.filters.type) filters.push({ type: 'type', label: state.filters.type });
+
+    if (filters.length === 0) {
+      container.classList.add('hidden');
+      container.innerHTML = '';
+      return;
+    }
+
+    container.classList.remove('hidden');
+    container.innerHTML = `
+      <div class="active-filters-label">Filtres :</div>
+      ${filters.map(f => `
+        <div class="active-filter" data-type="${f.type}">
+          <span>${escapeHtml(f.label)}</span>
+          <button class="remove-filter-btn" data-filter-type="${f.type}"><i class="fas fa-times"></i></button>
+        </div>
+      `).join('')}
+      <button class="clear-all-filters">Effacer tout</button>
+    `;
+
+    container.querySelectorAll('.remove-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.filters[btn.dataset.filterType] = null;
+        applyFiltersAndRender();
+        updateActiveFilters();
+      });
+    });
+    container.querySelector('.clear-all-filters')?.addEventListener('click', () => {
+      state.filters.country = null;
+      state.filters.generation = null;
+      state.filters.type = null;
+      applyFiltersAndRender();
+      updateActiveFilters();
+    });
+  }
+
   function applyFiltersAndRender() {
     let filtered = [...state.favorites];
 
@@ -302,6 +310,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         a.country_name?.toLowerCase().includes(state.search) ||
         a.little_description?.toLowerCase().includes(state.search)
       );
+    }
+
+    // Country filter
+    if (state.filters.country) {
+      filtered = filtered.filter(a => a.country_name === state.filters.country);
+    }
+
+    // Generation filter
+    if (state.filters.generation) {
+      filtered = filtered.filter(a => String(a.generation) === String(state.filters.generation));
+    }
+
+    // Type filter
+    if (state.filters.type) {
+      filtered = filtered.filter(a => a.type_name === state.filters.type);
     }
 
     // Sort
@@ -337,8 +360,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById('favorites-container');
     const emptyState = document.getElementById('empty-state');
 
-    hideSkeletonLoaders();
-
     // Show/hide empty state
     if (state.favorites.length === 0) {
       container.classList.add('hidden');
@@ -361,14 +382,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     container.innerHTML = state.filtered.map(aircraft => `
-      <article class="aircraft-card" data-id="${aircraft.id}">
+      <article class="aircraft-card" data-id="${aircraft.id}" tabindex="0" role="link" aria-label="${escapeHtml(aircraft.name)}">
         <button class="favorite-remove" data-airplane-id="${aircraft.id}" title="${i18n.t('details.remove_favorite')}">
           <i class="fas fa-heart-broken"></i>
         </button>
         <div class="aircraft-image">
           <img src="${escapeHtml(aircraft.image_url) || 'https://via.placeholder.com/400x300?text=No+Image'}"
                alt="${escapeHtml(aircraft.name)}"
-               loading="lazy">
+               loading="lazy" width="400" height="300">
           <div class="aircraft-overlay">
             <div class="aircraft-badges">
               ${aircraft.generation ? `<span class="aircraft-badge generation">${escapeHtml(aircraft.generation)}e Gén</span>` : ''}
@@ -379,18 +400,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="aircraft-content">
           <div class="aircraft-header">
             <div class="aircraft-title">
-              <h3>${escapeHtml(aircraft.name)}</h3>
-              ${aircraft.country_name ? `
-                <div class="aircraft-country">
-                  <i class="fas fa-globe"></i>
-                  <span>${escapeHtml(aircraft.country_name)}</span>
-                </div>
-              ` : ''}
+              <div class="aircraft-name-row">
+                <h3>${escapeHtml(aircraft.name)}</h3>
+                ${aircraft.country_code && ALPHA3_TO_ALPHA2[aircraft.country_code] ? `<img class="country-flag" src="https://flagcdn.com/w80/${ALPHA3_TO_ALPHA2[aircraft.country_code]}.png" alt="${escapeHtml(aircraft.country_name)}" width="24" height="18">` : ''}
+              </div>
             </div>
           </div>
-          <p class="aircraft-description">
-            ${escapeHtml(aircraft.little_description) || i18n.t('details.no_desc_available')}
-          </p>
           <div class="aircraft-specs">
             ${aircraft.max_speed ? `
               <div class="spec-item">
@@ -423,53 +438,51 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    // Remove from favorites
+    // Remove from favorites (undo toast)
     container.querySelectorAll('.favorite-remove').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
         const airplaneId = btn.dataset.airplaneId;
-        await removeFavorite(airplaneId);
+
+        // Snapshot pour undo
+        const snapshot = [...state.favorites];
+
+        // Retrait optimiste de l'état et de la carte
+        state.favorites = state.favorites.filter(a => a.id !== parseInt(airplaneId));
+        const card = btn.closest('.aircraft-card');
+        if (card) {
+          card.style.transition = 'all 0.3s ease';
+          card.style.transform = 'scale(0.85)';
+          card.style.opacity = '0';
+        }
+
+        let undone = false;
+        showUndoToast(i18n.t('favorites.removed'), () => {
+          undone = true;
+          state.favorites = snapshot;
+          applyFiltersAndRender();
+          updateStats();
+        });
+
+        // API call après le délai undo
+        setTimeout(async () => {
+          if (undone) return;
+          try {
+            const response = await auth.authFetch(`/api/favorites/${airplaneId}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error();
+            applyFiltersAndRender();
+            updateStats();
+          } catch {
+            state.favorites = snapshot;
+            applyFiltersAndRender();
+            updateStats();
+            showToast(i18n.t('common.error'), 'error');
+          }
+        }, 5000);
       });
     });
   }
 
-  /* =========================================================================
-     REMOVE FAVORITE
-     ========================================================================= */
-
-  async function removeFavorite(airplaneId) {
-    try {
-      const response = await auth.authFetch(`/api/favorites/${airplaneId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) throw new Error('Erreur');
-
-      // Remove from state
-      state.favorites = state.favorites.filter(a => a.id !== parseInt(airplaneId));
-
-      // Animate card removal
-      const card = document.querySelector(`.aircraft-card[data-id="${airplaneId}"]`);
-      if (card) {
-        card.style.transition = 'all 0.4s ease';
-        card.style.transform = 'scale(0.8)';
-        card.style.opacity = '0';
-        setTimeout(() => {
-          applyFiltersAndRender();
-          updateStats();
-        }, 400);
-      } else {
-        applyFiltersAndRender();
-        updateStats();
-      }
-
-      showToast(i18n.t('common.favorite_removed'), 'success');
-
-    } catch (error) {
-      console.error('Error removing favorite:', error);
-      showToast(i18n.t('common.delete_error'), 'error');
-    }
-  }
 
   /* =========================================================================
      KEYBOARD SHORTCUTS
@@ -494,5 +507,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderFavorites();
   });
 
-  console.log('Favoris page initialized successfully');
 });

@@ -271,7 +271,6 @@ class CookieConsent {
       this.disablePreferences();
     }
     
-    console.log('Cookie preferences applied:', this.preferences);
   }
   
   updateGTMConsent() {
@@ -297,26 +296,21 @@ class CookieConsent {
       cookie_consent_marketing: this.preferences.marketing
     });
 
-    console.log('GTM Consent Mode updated:', this.preferences);
   }
 
   enableAnalytics() {
-    console.log('Analytics cookies enabled');
     this.fireEvent('analytics_enabled');
   }
-  
+
   disableAnalytics() {
-    console.log('Analytics cookies disabled');
     this.fireEvent('analytics_disabled');
   }
-  
+
   enablePreferences() {
-    console.log('Preference cookies enabled');
     this.fireEvent('preferences_enabled');
   }
-  
+
   disablePreferences() {
-    console.log('Preference cookies disabled');
     this.fireEvent('preferences_disabled');
   }
   
@@ -337,16 +331,17 @@ class CookieConsent {
     
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    
-    const icon = type === 'success' ? 'check-circle' : 
-                 type === 'error' ? 'exclamation-circle' : 
+    toast.setAttribute('role', 'status');
+
+    const icon = type === 'success' ? 'check-circle' :
+                 type === 'error' ? 'exclamation-circle' :
                  'info-circle';
-    
+
     toast.innerHTML = `
-      <i class="fas fa-${icon}"></i>
+      <i class="fas fa-${icon}" aria-hidden="true"></i>
       <span>${message}</span>
     `;
-    
+
     toastContainer.appendChild(toast);
     
     // Show animation
@@ -398,11 +393,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
   
-  console.log('Cookie Consent System initialized');
-  console.log('Type "resetCookieConsent()" in console to reset consent');
 });
 
 // Listen to cookie consent events (GTM integration)
-document.addEventListener('cookieConsent', (e) => {
-  console.log('Cookie consent event:', e.detail);
+document.addEventListener('cookieConsent', () => {
 });

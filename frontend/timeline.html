@@ -45,6 +45,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/shared.css">
   <link rel="stylesheet" href="css/timeline.css">
   <link rel="stylesheet" href="css/cookies.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -93,15 +95,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- Hero -->
 <section class="timeline-hero">
   <div class="container">
-    <div class="hero-eyebrow" data-i18n="timeline.eyebrow">Chronologie</div>
-    <h1 class="hero-title"><span data-i18n="timeline.hero_title_1">Histoire de l'</span><span data-i18n="timeline.hero_title_2">Aviation Militaire</span></h1>
-    <p class="hero-desc" data-i18n="timeline.hero_desc_full">75 ans d'innovation stratégique. Des premiers réacteurs de la Guerre Froide aux chasseurs furtifs de 5e génération.</p>
-    <div class="hero-stats">
-      <span class="stat-item"><strong id="total-aircraft-timeline">0</strong><span data-i18n="timeline.stat_aircraft">Avions</span></span>
-      <div class="stat-sep"></div>
-      <span class="stat-item"><strong id="total-years">0</strong><span data-i18n="timeline.stat_years">Années</span></span>
-      <div class="stat-sep"></div>
-      <span class="stat-item"><strong id="total-generations-timeline">5</strong><span data-i18n="timeline.stat_generations">Générations</span></span>
+    <div class="page-hero-inner">
+      <div class="hero-text">
+        <div class="hero-eyebrow" data-i18n="timeline.eyebrow">Chronologie</div>
+        <h1 class="hero-title"><span data-i18n="timeline.hero_title_1">Histoire de l'</span><span data-i18n="timeline.hero_title_2">Aviation Militaire</span></h1>
+        <p data-i18n="timeline.hero_desc_full">75 ans d'innovation stratégique. Des premiers réacteurs de la Guerre Froide aux chasseurs furtifs de 5e génération.</p>
+      </div>
+      <div class="hero-data">
+        <div class="data-row">
+          <span class="data-number" id="total-aircraft-timeline">0</span>
+          <span class="data-label" data-i18n="timeline.stat_aircraft">Avions</span>
+        </div>
+        <div class="data-row">
+          <span class="data-number" id="total-years">0</span>
+          <span class="data-label" data-i18n="timeline.stat_years">Années</span>
+        </div>
+        <div class="data-row">
+          <span class="data-number" id="total-generations-timeline">5</span>
+          <span class="data-label" data-i18n="timeline.stat_generations">Générations</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -134,7 +147,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <i class="fas fa-filter"></i>
     <h3 data-i18n="timeline.empty_title">Aucun appareil</h3>
     <p data-i18n="timeline.empty_desc">Aucun avion ne correspond aux filtres actifs</p>
-    <button class="btn btn-primary" onclick="resetFilters()">
+    <button id="reset-filters-btn" class="btn btn-primary">
       <i class="fas fa-undo"></i> <span data-i18n="timeline.reset">Réinitialiser</span>
     </button>
   </div>
@@ -154,8 +167,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </footer>
 
 <div id="toast-container" aria-live="polite"></div>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.4/purify.min.js" integrity="sha512-wKnMJBjR8MnLzXcAIA666FHmJhVvsXKPOoZFcYpSm6JIHIHJh4ABjVRkPHs7GAknJoSqBil7UHZfdPkqCGEXA==" crossorigin="anonymous"></script>
 <script defer src="js/i18n.js"></script>
   <script defer src="js/auth.js"></script>
+  <script defer src="js/utils.js"></script>
+  <script defer src="js/nav.js"></script>
   <script defer src="js/cookies.js"></script>
 <script defer src="js/timeline.js"></script>
 </body>

@@ -1,36 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  /* =========================================================================
-     UTILITIES
-     ========================================================================= */
+  await auth.init();
 
-  function escapeHtml(text) {
-    if (text == null) return '';
-    const div = document.createElement('div');
-    div.textContent = String(text);
-    return div.innerHTML;
-  }
-
-  function showToast(message, type = 'info') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    
-    const icon = type === 'success' ? 'check-circle' : 
-                 type === 'error' ? 'exclamation-circle' : 
-                 'info-circle';
-    
-    toast.innerHTML = `
-      <i class="fas fa-${icon}"></i>
-      <span>${escapeHtml(message)}</span>
-    `;
-    
-    container.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.classList.add('fade-out');
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
-  }
+  /* escapeHtml, showToast → utils.js | navigation → nav.js */
 
   function formatDate(dateString) {
     if (!dateString) return i18n.t('details.not_specified');
@@ -42,128 +13,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  /* =========================================================================
-     NAVIGATION & AUTH
-     ========================================================================= */
-  
-  const header = document.querySelector('header');
-  const hamburger = document.querySelector('.hamburger');
-  const navLinks = document.querySelector('.nav-links');
-  const loginIcon = document.getElementById('login-icon');
-  const userToggle = document.querySelector('.user-toggle');
-  const userDropdown = document.querySelector('.user-dropdown');
-
-  // Header scroll effect with passive listener
-  let lastScroll = 0;
-  window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-
-    if (currentScroll > 100) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-
-    lastScroll = currentScroll;
-  }, { passive: true });
-
-  // Mobile menu toggle
-  hamburger?.addEventListener('click', () => {
-    navLinks?.classList.toggle('show');
-    hamburger.classList.toggle('active');
-    document.body.style.overflow = navLinks?.classList.contains('show') ? 'hidden' : '';
-  });
-
-  // Close mobile menu on link click (except login icon)
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      // Ne pas fermer le menu si c'est l'icône de login
-      if (link.id === 'login-icon') {
-        return;
-      }
-      navLinks?.classList.remove('show');
-      hamburger?.classList.remove('active');
-      document.body.style.overflow = '';
-    });
-  });
-
-  // Close mobile menu on window resize with debouncing
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (window.innerWidth > 992) {
-        navLinks?.classList.remove('show');
-        hamburger?.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-    }, 250); // Debounce resize events
-  });
-
-  // User dropdown toggle
-  userToggle?.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Toggle the dropdown visibility
-    if (userDropdown?.classList.contains('show')) {
-      userDropdown.classList.remove('show');
-      setTimeout(() => {
-        userDropdown.classList.add('hidden');
-      }, 300); // Wait for animation to complete
-    } else {
-      userDropdown?.classList.remove('hidden');
-      setTimeout(() => {
-        userDropdown?.classList.add('show');
-      }, 10); // Small delay for smooth animation
-    }
-  });
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!userToggle?.contains(e.target) && !userDropdown?.contains(e.target)) {
-      userDropdown?.classList.remove('show');
-      userDropdown?.classList.add('hidden');
-    }
-  });
-
-  // Login redirect
-  loginIcon?.addEventListener('click', (e) => {
-    if (!auth.getToken()) {
-      e.preventDefault();
-      window.location.href = '/login';
-    }
-  });
-
-  // Settings navigation
-  document.getElementById('settings-icon')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.location.href = '/settings';
-  });
-
-  // Logout handlers
-  const logoutButtons = document.querySelectorAll('#logout-icon, #logout-btn');
-  logoutButtons.forEach(btn => {
-    btn?.addEventListener('click', async (e) => {
-      e.preventDefault();
-      await auth.logout();
-      showToast(i18n.t('common.logout_success'), 'success');
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 1000);
-    });
-  });
-
-  // Keyboard navigation - ESC to close menus
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      navLinks?.classList.remove('show');
-      hamburger?.classList.remove('active');
-      userDropdown?.classList.remove('show');
-      userDropdown?.classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-  });
 
   const payload = auth.getPayload();
   let userRole = null;
@@ -171,60 +20,49 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (payload) {
     userRole = Number(payload.role);
     
-    document.getElementById('user-name').textContent = payload.name;
+    const userNameEl = document.getElementById('user-name');
+    if (userNameEl) userNameEl.textContent = payload.name;
     document.querySelector('.user-role').textContent = 
       userRole === 1 ? i18n.t('common.role_admin') : userRole === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
     
-    userDropdown?.classList.remove('hidden');
-    
+    document.querySelector('.user-dropdown')?.classList.remove('hidden');
+
     if (userRole === 1 || userRole === 2) {
       document.getElementById('edit-btn')?.classList.remove('hidden');
       document.getElementById('delete-btn')?.classList.remove('hidden');
     }
   }
 
-  // Settings navigation
-  document.getElementById('settings-icon')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.location.href = '/settings';
-  });
-
-  /* =========================================================================
-     TOUCH GESTURES
-     ========================================================================= */
-
-  let touchStartY = 0;
-  let touchEndY = 0;
-
-  document.addEventListener('touchstart', (e) => {
-    touchStartY = e.changedTouches[0].screenY;
-  }, { passive: true });
-
-  document.addEventListener('touchend', (e) => {
-    touchEndY = e.changedTouches[0].screenY;
-    handleSwipe();
-  }, { passive: true });
-
-  function handleSwipe() {
-    const swipeThreshold = 100;
-    const diff = touchStartY - touchEndY;
-
-    // Swipe up to close mobile menu
-    if (diff > swipeThreshold && navLinks?.classList.contains('show')) {
-      navLinks.classList.remove('show');
-      hamburger?.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-  }
+  /* settings navigation, touch gestures → nav.js */
 
   /* =========================================================================
      GET AIRCRAFT ID
      ========================================================================= */
-  
+
+  function slugify(text) {
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  // Support deux formats d'URL :
+  // - /details?id=14          (navigation interne)
+  // - /details/f-22-raptor-14 (URL SEO, ID en suffixe)
   const urlParams = new URLSearchParams(window.location.search);
-  const aircraftId = urlParams.get('id');
+  let aircraftId = urlParams.get('id');
 
   if (!aircraftId) {
+    const pathSegment = window.location.pathname.split('/').filter(Boolean).pop();
+    if (pathSegment) {
+      const match = pathSegment.match(/-(\d+)$/);
+      if (match) aircraftId = match[1];
+    }
+  }
+
+  if (!aircraftId || !/^\d+$/.test(aircraftId)) {
     window.location.href = '/404';
     return;
   }
@@ -232,12 +70,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   /* =========================================================================
      LOAD AIRCRAFT DATA
      ========================================================================= */
-  
+
   let aircraftData = null;
 
   async function loadAircraftDetails() {
     try {
-      const response = await fetch(`/api/airplanes/${aircraftId}`);
+      const response = await auth.fetchWithTimeout(`/api/airplanes/${aircraftId}`);
       
       if (!response.ok) {
         throw new Error(i18n.t('details.not_found'));
@@ -254,9 +92,71 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  function updateSeoMeta(name, description, imageUrl, pageUrl) {
+    const fullTitle = `${name} | Vol d'Histoire`;
+    const desc = description
+      ? description.substring(0, 155).trimEnd() + (description.length > 155 ? '...' : '')
+      : 'Découvrez les spécifications détaillées, l\'armement et l\'historique de cet avion de chasse.';
+
+    // Canonical
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) { canonical = document.createElement('link'); canonical.setAttribute('rel', 'canonical'); document.head.appendChild(canonical); }
+    canonical.href = pageUrl;
+
+    // Hreflang
+    ['fr', 'x-default'].forEach(lang => {
+      let el = document.querySelector(`link[rel="alternate"][hreflang="${lang}"]`);
+      if (el) el.href = pageUrl;
+    });
+
+    // Meta description
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.setAttribute('name', 'description'); document.head.appendChild(metaDesc); }
+    metaDesc.content = desc;
+
+    // Open Graph
+    const ogProps = { 'og:title': fullTitle, 'og:description': desc, 'og:url': pageUrl, 'og:image': imageUrl };
+    Object.entries(ogProps).forEach(([prop, val]) => {
+      let el = document.querySelector(`meta[property="${prop}"]`);
+      if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el); }
+      el.content = val;
+    });
+
+    // Twitter Card
+    const twitterProps = { 'twitter:title': fullTitle, 'twitter:description': desc, 'twitter:image': imageUrl };
+    Object.entries(twitterProps).forEach(([name, val]) => {
+      let el = document.querySelector(`meta[name="${name}"]`);
+      if (!el) { el = document.createElement('meta'); el.setAttribute('name', name); document.head.appendChild(el); }
+      el.content = val;
+    });
+
+    // JSON-LD structured data
+    let ldScript = document.querySelector('script[type="application/ld+json"]');
+    if (!ldScript) { ldScript = document.createElement('script'); ldScript.type = 'application/ld+json'; document.head.appendChild(ldScript); }
+    const ldData = {
+      '@context': 'https://schema.org',
+      '@type': 'Thing',
+      'name': name,
+      'description': desc,
+      'image': imageUrl,
+      'url': pageUrl,
+      'isPartOf': { '@type': 'WebSite', 'name': 'Vol d\'Histoire', 'url': 'https://vol-histoire.titouan-borde.com/' }
+    };
+    if (aircraftData.complete_name) ldData.alternateName = aircraftData.complete_name;
+    ldScript.textContent = JSON.stringify(ldData);
+  }
+
   function renderAircraftDetails() {
     // Update page title
     document.title = `${aircraftData.name} | Vol d'Histoire`;
+
+    // Mise à jour des balises SEO dynamiques
+    const slug = slugify(aircraftData.name);
+    const cleanPath = `/details/${slug}-${aircraftId}`;
+    history.pushState({ id: aircraftId }, document.title, cleanPath);
+    const pageUrl = `https://vol-histoire.titouan-borde.com${cleanPath}`;
+    const imageUrl = aircraftData.image_url || 'https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg';
+    updateSeoMeta(aircraftData.name, aircraftData.description, imageUrl, pageUrl);
 
     // Breadcrumb
     document.getElementById('breadcrumb-name').textContent = aircraftData.name;
@@ -269,7 +169,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (aircraftData.generation) {
       badge.innerHTML = `
         <i class="fas fa-layer-group"></i>
-        <span>${aircraftData.generation}${i18n.currentLang === 'en' ? (['st','nd','rd'][aircraftData.generation-1]||'th') + ' Generation' : 'e Génération'}</span>
+        <span>${escapeHtml(aircraftData.generation)}${i18n.currentLang === 'en' ? (['st','nd','rd'][aircraftData.generation-1]||'th') + ' Generation' : 'e Génération'}</span>
       `;
     }
 
@@ -285,6 +185,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const heroImage = document.getElementById('hero-image');
     heroImage.src = aircraftData.image_url || 'https://via.placeholder.com/800x500?text=No+Image';
     heroImage.alt = aircraftData.name;
+    heroImage.loading = 'lazy';
 
     // Quick stats
     document.getElementById('stat-speed').textContent = 
@@ -313,26 +214,162 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function loadRelatedData() {
     try {
-      const [armamentRes, techRes, missionsRes, warsRes] = await Promise.all([
-        fetch(`/api/airplanes/${aircraftId}/armament`),
-        fetch(`/api/airplanes/${aircraftId}/tech`),
-        fetch(`/api/airplanes/${aircraftId}/missions`),
-        fetch(`/api/airplanes/${aircraftId}/wars`)
-      ]);
-
-      const armament = await armamentRes.json();
-      const technologies = await techRes.json();
-      const missions = await missionsRes.json();
-      const wars = await warsRes.json();
+      const response = await auth.fetchWithTimeout(`/api/airplanes/${aircraftId}/related`);
+      if (!response.ok) throw new Error('Erreur serveur');
+      const { armament, tech, missions, wars } = await response.json();
 
       renderArmament(armament);
-      renderTechnologies(technologies);
+      renderTechnologies(tech);
       renderMissions(missions);
       renderWars(wars);
+      renderRadarChart(armament, tech, missions);
 
     } catch (error) {
       console.error('Error loading related data:', error);
     }
+  }
+
+  /* =========================================================================
+     RADAR CHART
+     ========================================================================= */
+
+  function renderRadarChart(armament, tech, missions) {
+    const chartEl = document.getElementById('radar-chart');
+    const legendEl = document.getElementById('radar-legend');
+    if (!chartEl || !legendEl || !aircraftData) return;
+
+    // Valeurs de référence pour normalisation (max connus de la base)
+    const REF_SPEED = 3529;   // SR-71 Blackbird
+    const REF_RANGE = 15000;  // Bombardiers stratégiques
+    const REF_ARMAMENT = 10;
+    const REF_MISSIONS = 8;
+    const REF_TECH = 8;
+
+    const axes = [
+      {
+        label: i18n.t('details.radar_speed'),
+        icon: 'gauge-high',
+        score: Math.min((aircraftData.max_speed || 0) / REF_SPEED * 100, 100),
+        raw: aircraftData.max_speed ? `${Number(aircraftData.max_speed).toLocaleString()} km/h` : 'N/A',
+      },
+      {
+        label: i18n.t('details.radar_range'),
+        icon: 'route',
+        score: Math.min((aircraftData.max_range || 0) / REF_RANGE * 100, 100),
+        raw: aircraftData.max_range ? `${Number(aircraftData.max_range).toLocaleString()} km` : 'N/A',
+      },
+      {
+        label: i18n.t('details.radar_armament'),
+        icon: 'crosshairs',
+        score: Math.min((armament.length || 0) / REF_ARMAMENT * 100, 100),
+        raw: `${armament.length} ${i18n.currentLang === 'en' ? (armament.length !== 1 ? 'systems' : 'system') : (armament.length > 1 ? 'systèmes' : 'système')}`,
+      },
+      {
+        label: i18n.t('details.radar_versatility'),
+        icon: 'bullseye',
+        score: Math.min((missions.length || 0) / REF_MISSIONS * 100, 100),
+        raw: `${missions.length} ${i18n.currentLang === 'en' ? (missions.length !== 1 ? 'missions' : 'mission') : (missions.length > 1 ? 'missions' : 'mission')}`,
+      },
+      {
+        label: i18n.t('details.radar_technology'),
+        icon: 'microchip',
+        score: Math.min((tech.length || 0) / REF_TECH * 100, 100),
+        raw: `${tech.length} tech${tech.length > 1 ? 's' : ''}`,
+      },
+    ];
+
+    // ---- SVG ----
+    const cx = 150, cy = 150, r = 95;
+    const n = axes.length;
+    const angles = axes.map((_, i) => -Math.PI / 2 + (i * 2 * Math.PI / n));
+
+    function pt(angle, val) {
+      return [
+        +(cx + (val / 100) * r * Math.cos(angle)).toFixed(2),
+        +(cy + (val / 100) * r * Math.sin(angle)).toFixed(2),
+      ];
+    }
+
+    // Polygones de grille
+    const gridLevels = [20, 40, 60, 80, 100];
+    const gridPolygons = gridLevels.map((level, gi) => {
+      const pts = angles.map(a => pt(a, level).join(',')).join(' ');
+      const isOuter = gi === 4;
+      const fill = gi % 2 === 0 && !isOuter ? 'rgba(200,169,110,0.02)' : 'none';
+      const stroke = isOuter ? 'rgba(200,169,110,0.25)' : 'rgba(255,255,255,0.07)';
+      const sw = isOuter ? 1.5 : 1;
+      return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" />`;
+    }).join('');
+
+    // Lignes d'axes
+    const axisLines = angles.map(a => {
+      const [x2, y2] = pt(a, 100);
+      return `<line x1="${cx}" y1="${cy}" x2="${x2}" y2="${y2}" stroke="rgba(255,255,255,0.12)" stroke-width="1" />`;
+    }).join('');
+
+    // Polygone de données
+    const dataPolygonPts = angles.map((a, i) => pt(a, axes[i].score).join(',')).join(' ');
+
+    // Points de données
+    const dataDots = angles.map((a, i) => {
+      const [x, y] = pt(a, axes[i].score);
+      return `<circle cx="${x}" cy="${y}" r="4.5" fill="#C8A96E" stroke="#0D0D0D" stroke-width="2" />`;
+    }).join('');
+
+    // Labels des axes (5 positions autour du radar)
+    const labelR = 118;
+    const textAnchors = ['middle', 'start', 'start', 'end', 'end'];
+    const dyOffsets = [-6, 4, 4, 4, 4];
+    const axisLabels = angles.map((a, i) => {
+      const lx = +(cx + labelR * Math.cos(a)).toFixed(2);
+      const ly = +(cy + labelR * Math.sin(a) + dyOffsets[i]).toFixed(2);
+      return `<text x="${lx}" y="${ly}" text-anchor="${textAnchors[i]}" dominant-baseline="middle" fill="rgba(255,255,255,0.6)" font-size="9" font-family="DM Sans, sans-serif" font-weight="600" letter-spacing="0.05em">${axes[i].label.toUpperCase()}</text>`;
+    }).join('');
+
+    chartEl.innerHTML = `
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;overflow:visible;">
+        <defs>
+          <radialGradient id="radarFill_${aircraftId}" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(200,169,110,0.3)" />
+            <stop offset="100%" stop-color="rgba(200,169,110,0.04)" />
+          </radialGradient>
+        </defs>
+        ${gridPolygons}
+        ${axisLines}
+        <polygon points="${dataPolygonPts}"
+          fill="url(#radarFill_${aircraftId})"
+          stroke="#C8A96E" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.85"
+          style="transition: all 0.5s ease;" />
+        ${dataDots}
+        ${axisLabels}
+      </svg>
+    `;
+
+    // ---- Légende ----
+    legendEl.innerHTML = axes.map(axis => `
+      <div class="radar-stat">
+        <div class="radar-stat-head">
+          <div class="radar-stat-icon"><i class="fas fa-${axis.icon}"></i></div>
+          <div class="radar-stat-info">
+            <span class="radar-stat-label">${escapeHtml(axis.label)}</span>
+            <span class="radar-stat-value">${escapeHtml(axis.raw)}</span>
+          </div>
+          <span class="radar-stat-pct">${Math.round(axis.score)}%</span>
+        </div>
+        <div class="radar-bar">
+          <div class="radar-bar-fill" data-target="${axis.score.toFixed(1)}"></div>
+        </div>
+      </div>
+    `).join('');
+
+    // Animation des barres
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        legendEl.querySelectorAll('.radar-bar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.target + '%';
+        });
+      });
+    });
   }
 
   function renderArmament(armament) {
@@ -550,9 +587,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function loadFormSelects() {
     try {
       const [countriesRes, manufacturersRes, typesRes] = await Promise.all([
-        fetch('/api/countries'),
-        fetch('/api/manufacturers'),
-        fetch('/api/types')
+        auth.fetchWithTimeout('/api/countries'),
+        auth.fetchWithTimeout('/api/manufacturers'),
+        auth.fetchWithTimeout('/api/types')
       ]);
 
       const countries = await countriesRes.json();
@@ -594,10 +631,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       little_description: document.getElementById('edit-little-description').value,
       image_url: document.getElementById('edit-image-url').value,
       description: document.getElementById('edit-description').value,
-      country_id: parseInt(document.getElementById('edit-country-id').value),
-      id_manufacturer: parseInt(document.getElementById('edit-manufacturer-id').value),
-      id_generation: parseInt(document.getElementById('edit-generation-id').value),
-      type: parseInt(document.getElementById('edit-type').value),
+      country_id: parseInt(document.getElementById('edit-country-id').value) || null,
+      id_manufacturer: parseInt(document.getElementById('edit-manufacturer-id').value) || null,
+      id_generation: parseInt(document.getElementById('edit-generation-id').value) || null,
+      type: parseInt(document.getElementById('edit-type').value) || null,
       status: document.getElementById('edit-status').value,
       date_concept: document.getElementById('edit-date-concept').value || null,
       date_first_fly: document.getElementById('edit-date-first-fly').value || null,
@@ -654,9 +691,43 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   /* =========================================================================
+     PDF EXPORT
+     ========================================================================= */
+
+  document.getElementById('pdf-btn')?.addEventListener('click', () => {
+    // Forcer toutes les sections visibles (IntersectionObserver peut avoir opacity:0 sur les sections hors viewport)
+    const sections = document.querySelectorAll('.content-section');
+    sections.forEach(section => {
+      section.style.opacity = '1';
+      section.style.transform = 'none';
+      section.style.transition = 'none';
+    });
+
+    // Laisser le navigateur appliquer les styles avant d'ouvrir la boîte d'impression
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.print();
+        // Restaurer les transitions après impression
+        sections.forEach(section => {
+          section.style.transition = 'all 0.5s ease';
+        });
+      });
+    });
+  });
+
+  // Backup pour Ctrl+P direct
+  window.addEventListener('beforeprint', () => {
+    document.querySelectorAll('.content-section').forEach(section => {
+      section.style.opacity = '1';
+      section.style.transform = 'none';
+      section.style.transition = 'none';
+    });
+  });
+
+  /* =========================================================================
      KEYBOARD SHORTCUTS
      ========================================================================= */
-  
+
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeEditModal();
@@ -689,7 +760,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   /* =========================================================================
      INITIALIZE
      ========================================================================= */
-  
+
   await loadAircraftDetails();
   observeElements();
 
@@ -702,5 +773,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  console.log('Aircraft details page initialized');
 });

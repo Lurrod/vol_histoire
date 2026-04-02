@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   // Elements
   const loginForm = document.getElementById("login-form");
   const registerForm = document.getElementById("register-form");
@@ -6,14 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const switchToLogin = document.getElementById("switch-to-login");
   const loginSlide = document.getElementById("login-slide");
   const registerSlide = document.getElementById("register-slide");
-  const hamburger = document.querySelector('.hamburger');
-  const navLinks = document.querySelector('.nav-links');
-  const loginIcon = document.getElementById('login-icon');
-  const userDropdown = document.getElementById('user-info-container');
-  
-  // Password toggle elements
-  const toggleLoginPassword = document.getElementById('toggle-login-password');
-  const toggleRegisterPassword = document.getElementById('toggle-register-password');
   const loginPassword = document.getElementById('login-password');
   const registerPassword = document.getElementById('register-password');
 
@@ -23,15 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  init();
+  await init();
 
-  function init() {
-    setupPasswordToggles();
+  async function init() {
+    await auth.init();
+    // Password toggles (utils.js)
+    setupPasswordToggle(document.getElementById('toggle-login-password'), loginPassword);
+    setupPasswordToggle(document.getElementById('toggle-register-password'), registerPassword);
     setupFormSwitching();
-    setupNavigation();
+    // Navigation gérée par nav.js
     setupPasswordStrength();
     checkAuthStatus();
-    addScrollEffect();
     fetchStats();
   }
 
@@ -45,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!elAirplanes || !elYears || !elCountries) return;
 
     try {
-      const res = await fetch('/api/stats');
+      const res = await auth.fetchWithTimeout('/api/stats');
       if (!res.ok) throw new Error('Erreur API');
 
       const data = await res.json();
@@ -55,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
       animateNumber(elCountries, data.countries);
 
       if (data.earliest_year && data.latest_year) {
-        elYears.textContent = data.earliest_year;
+        animateNumber(elYears, data.latest_year - data.earliest_year);
         elYearsLabel.textContent = 'À nos jours';
       }
     } catch (err) {
@@ -68,46 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function animateNumber(el, target) {
-    const duration = 1200;
-    const start = performance.now();
-
-    function step(now) {
-      const progress = Math.min((now - start) / duration, 1);
-      // Ease-out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = Math.round(eased * target);
-      if (progress < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  // ========== Password Toggles ==========
-  function setupPasswordToggles() {
-    if (toggleLoginPassword && loginPassword) {
-      toggleLoginPassword.addEventListener('click', () => {
-        togglePasswordVisibility(loginPassword, toggleLoginPassword);
-      });
-    }
-    if (toggleRegisterPassword && registerPassword) {
-      toggleRegisterPassword.addEventListener('click', () => {
-        togglePasswordVisibility(registerPassword, toggleRegisterPassword);
-      });
-    }
-  }
-
-  function togglePasswordVisibility(input, button) {
-    const icon = button.querySelector('i');
-    if (input.type === "password") {
-      input.type = "text";
-      icon.classList.remove("fa-eye-slash");
-      icon.classList.add("fa-eye");
-    } else {
-      input.type = "password";
-      icon.classList.remove("fa-eye");
-      icon.classList.add("fa-eye-slash");
-    }
-  }
+  // animateNumber, setupPasswordToggle → utils.js
 
   // ========== Form Switching (Slide) ==========
   function setupFormSwitching() {
@@ -135,95 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePasswordStrength(0);
   }
 
-  // ========== Navigation ==========
-  function setupNavigation() {
-    const header = document.querySelector('header');
-    const userToggle = document.querySelector('.user-toggle');
-
-    // Scroll effect
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 100) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-    }, { passive: true });
-
-    // Mobile menu
-    if (hamburger && navLinks) {
-      hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navLinks.classList.toggle('show');
-        document.body.style.overflow = navLinks.classList.contains('show') ? 'hidden' : '';
-      });
-
-      document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', () => {
-          navLinks.classList.remove('show');
-          hamburger.classList.remove('active');
-          document.body.style.overflow = '';
-        });
-      });
-
-      let resizeTimeout;
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          if (window.innerWidth > 992) {
-            navLinks.classList.remove('show');
-            hamburger.classList.remove('active');
-            document.body.style.overflow = '';
-          }
-        }, 250);
-      });
-
-      // Touch gesture
-      let touchStartY = 0;
-      navLinks.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-      }, { passive: true });
-
-      navLinks.addEventListener('touchend', (e) => {
-        const swipeDistance = touchStartY - e.changedTouches[0].clientY;
-        if (swipeDistance > 100) {
-          navLinks.classList.remove('show');
-          hamburger.classList.remove('active');
-          document.body.style.overflow = '';
-        }
-      }, { passive: true });
-
-      document.addEventListener('click', (e) => {
-        if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
-          hamburger.classList.remove('active');
-          navLinks.classList.remove('show');
-          document.body.style.overflow = '';
-        }
-      });
-    }
-
-    // User dropdown
-    const userToggleElement = userToggle || loginIcon;
-    if (userToggleElement && userDropdown) {
-      userToggleElement.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (userDropdown.classList.contains('show')) {
-          userDropdown.classList.remove('show');
-          setTimeout(() => userDropdown.classList.add('hidden'), 300);
-        } else {
-          userDropdown.classList.remove('hidden');
-          setTimeout(() => userDropdown.classList.add('show'), 10);
-        }
-      });
-
-      document.addEventListener('click', (e) => {
-        if (!userToggleElement.contains(e.target) && !userDropdown.contains(e.target)) {
-          userDropdown.classList.remove('show');
-          userDropdown.classList.add('hidden');
-        }
-      });
-    }
-  }
+  // Navigation → nav.js
 
   // ========== Password Strength ==========
   function setupPasswordStrength() {
@@ -237,11 +104,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function calculatePasswordStrength(password) {
     let strength = 0;
-    if (password.length >= 4) strength += 20;
-    if (password.length >= 6) strength += 20;
-    if (password.length >= 8) strength += 20;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 20;
-    if (/[0-9]/.test(password)) strength += 10;
+    if (password.length >= 8) strength += 25;
+    if (/[a-z]/.test(password)) strength += 20;
+    if (/[A-Z]/.test(password)) strength += 20;
+    if (/[0-9]/.test(password)) strength += 15;
+    if (password.length >= 12) strength += 10;
     if (/[^a-zA-Z0-9]/.test(password)) strength += 10;
     return Math.min(strength, 100);
   }
@@ -254,19 +121,19 @@ document.addEventListener("DOMContentLoaded", () => {
       strengthFill.style.width = `${strength}%`;
       
       if (strength === 0) {
-        strengthText.textContent = 'Force du mot de passe';
+        strengthText.textContent = i18n.t('login.password_strength');
         strengthText.style.color = 'var(--text-secondary)';
         strengthFill.style.background = 'transparent';
       } else if (strength < 40) {
-        strengthText.textContent = 'Faible';
+        strengthText.textContent = i18n.t('login.strength_weak');
         strengthText.style.color = 'var(--accent)';
         strengthFill.style.background = 'var(--accent)';
       } else if (strength < 70) {
-        strengthText.textContent = 'Moyen';
+        strengthText.textContent = i18n.t('login.strength_medium');
         strengthText.style.color = 'var(--warning)';
         strengthFill.style.background = 'var(--warning)';
       } else {
-        strengthText.textContent = 'Fort';
+        strengthText.textContent = i18n.t('login.strength_strong');
         strengthText.style.color = 'var(--success)';
         strengthFill.style.background = 'var(--success)';
       }
@@ -276,58 +143,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========== Auth Status ==========
   function checkAuthStatus() {
     if (auth.getToken()) {
-      console.log('User is authenticated');
     }
   }
 
-  // ========== Scroll Effect ==========
-  function addScrollEffect() {
-    const header = document.querySelector('header');
-    if (!header) return;
-
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 100) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-    }, { passive: true });
-  }
-
-  // ========== Escape HTML ==========
-  function escapeHtml(text) {
-    if (text == null) return '';
-    const div = document.createElement('div');
-    div.textContent = String(text);
-    return div.innerHTML;
-  }
-
-  // ========== Toast ==========
-  function showToast(message, type = 'success', description = '') {
-    // Remove existing toasts
-    document.querySelectorAll('.toast').forEach(t => t.remove());
-
-    const toast = document.createElement('div');
-    const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-    toast.className = `toast toast-${type}`;
-    
-    toast.innerHTML = `
-      <div class="toast-icon">
-        <i class="fas ${icon}"></i>
-      </div>
-      <div class="toast-content">
-        <div class="toast-message">${escapeHtml(message)}</div>
-        ${description ? `<div class="toast-description">${escapeHtml(description)}</div>` : ''}
-      </div>
-    `;
-
-    document.body.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 100);
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 300);
-    }, 4000);
-  }
+  // Scroll effect, escapeHtml, showToast → utils.js / nav.js
 
   // ========== Validation ==========
   function validateEmail(email) {
@@ -335,7 +154,60 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function validatePassword(password) {
-    return password.length >= 4;
+    return password.length >= 8 && /[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password);
+  }
+
+  // ========== Email non vérifié ==========
+  function showEmailNotVerifiedNotice(email) {
+    // Supprimer une notice existante
+    document.getElementById('email-not-verified-notice')?.remove();
+
+    const notice = document.createElement('div');
+    notice.id = 'email-not-verified-notice';
+    notice.style.cssText = [
+      'background:rgba(243,156,18,0.08)',
+      'border:1px solid rgba(243,156,18,0.25)',
+      'border-radius:10px',
+      'padding:1rem 1.25rem',
+      'margin-top:1rem',
+      'display:flex',
+      'align-items:flex-start',
+      'gap:0.75rem',
+    ].join(';');
+
+    const escapedEmail = escapeHtml(email);
+    notice.innerHTML = `
+      <i class="fas fa-envelope" style="color:#f39c12;margin-top:2px;flex-shrink:0"></i>
+      <div style="flex:1">
+        <p style="margin:0 0 0.4rem;font-weight:600;color:#f39c12;font-size:0.88rem;">Email non vérifié</p>
+        <p style="margin:0 0 0.75rem;color:rgba(255,255,255,0.5);font-size:0.82rem;line-height:1.5">
+          Vérifiez votre boîte mail (et vos spams) pour activer votre compte.
+        </p>
+        <button id="resend-verify-btn" style="background:rgba(243,156,18,0.12);border:1px solid rgba(243,156,18,0.3);border-radius:7px;padding:0.45rem 0.9rem;color:#f39c12;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s">
+          <i class="fas fa-redo" style="margin-right:0.3rem"></i>Renvoyer l'email
+        </button>
+      </div>
+    `;
+
+    loginForm.insertAdjacentElement('afterend', notice);
+
+    document.getElementById('resend-verify-btn').addEventListener('click', async function() {
+      this.disabled = true;
+      this.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:0.3rem"></i>Envoi...';
+      try {
+        await auth.fetchWithTimeout('/api/auth/resend-verification', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: escapedEmail }),
+        });
+        this.innerHTML = '<i class="fas fa-check" style="margin-right:0.3rem"></i>Email envoyé !';
+        this.style.color = '#34d964';
+        this.style.borderColor = 'rgba(52,217,100,0.3)';
+      } catch {
+        this.disabled = false;
+        this.innerHTML = '<i class="fas fa-redo" style="margin-right:0.3rem"></i>Renvoyer l\'email';
+      }
+    });
   }
 
   // ========== Loading State ==========
@@ -359,59 +231,55 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitBtn = loginForm.querySelector('button[type="submit"]');
 
     if (!validateEmail(email)) {
-      showToast('Email invalide', 'error', 'Veuillez entrer une adresse email valide.');
+      showToast('Veuillez entrer une adresse email valide.', 'error');
       return;
     }
-    if (!validatePassword(password)) {
-      showToast('Mot de passe invalide', 'error', 'Le mot de passe doit contenir au moins 4 caractères.');
+    if (!password) {
+      showToast('Veuillez entrer votre mot de passe.', 'error');
       return;
     }
 
     try {
       setButtonLoading(submitBtn, true);
 
-      const response = await fetch("/api/login", {
+      const response = await auth.fetchWithTimeout("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
+      let data = {};
+      try { data = await response.json(); } catch { /* réponse non-JSON */ }
 
       if (response.ok) {
         auth.setToken(data.token);
-        
-        if (data.user) {
-          localStorage.setItem("user", JSON.stringify(data.user));
-        } else {
-          const payload = auth.getPayload();
-          if (payload) {
-            const userFromToken = {
-              id: payload.id,
-              email: payload.email || email,
-              name: payload.name || email.split('@')[0],
-              role: Number(payload.role)
-            };
-            localStorage.setItem("user", JSON.stringify(userFromToken));
-          } else {
-            localStorage.setItem("user", JSON.stringify({
-              email: email,
-              name: email.split('@')[0],
-              role: 3
-            }));
-          }
+
+        const payload = auth.getPayload();
+        if (payload) {
+          localStorage.setItem("user", JSON.stringify({
+            id: payload.id,
+            email: payload.email || email,
+            name: payload.name || email.split('@')[0],
+            role: Number(payload.role)
+          }));
         }
-        
-        showToast('Connexion réussie', 'success', 'Redirection en cours...');
+
+        showToast('Connexion réussie', 'success');
         setTimeout(() => { window.location.href = "/"; }, 1500);
+      } else if (response.status === 429) {
+        showToast(data.message || 'Trop de tentatives, réessayez dans quelques minutes.', 'error');
+        setButtonLoading(submitBtn, false);
+      } else if (data.code === 'EMAIL_NOT_VERIFIED') {
+        setButtonLoading(submitBtn, false);
+        showEmailNotVerifiedNotice(email);
       } else {
-        showToast('Erreur de connexion', 'error', data.message || 'Identifiants incorrects.');
+        showToast(data.message || 'Identifiants incorrects.', 'error');
         setButtonLoading(submitBtn, false);
       }
     } catch (err) {
       console.error('Login error:', err);
-      showToast('Erreur réseau', 'error', 'Impossible de se connecter au serveur.');
+      showToast('Impossible de se connecter au serveur.', 'error');
       setButtonLoading(submitBtn, false);
     }
   });
@@ -427,80 +295,49 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitBtn = registerForm.querySelector('button[type="submit"]');
 
     if (name.length < 2) {
-      showToast('Nom invalide', 'error', 'Le nom doit contenir au moins 2 caractères.');
+      showToast('Le nom doit contenir au moins 2 caractères.', 'error');
       return;
     }
     if (!validateEmail(email)) {
-      showToast('Email invalide', 'error', 'Veuillez entrer une adresse email valide.');
+      showToast('Veuillez entrer une adresse email valide.', 'error');
       return;
     }
     if (!validatePassword(password)) {
-      showToast('Mot de passe faible', 'error', 'Le mot de passe doit contenir au moins 4 caractères.');
+      showToast('Minimum 8 caractères avec 1 majuscule, 1 minuscule et 1 chiffre.', 'error');
       return;
     }
     if (!acceptTerms) {
-      showToast('Conditions requises', 'error', 'Vous devez accepter les conditions d\'utilisation.');
+      showToast('Vous devez accepter les conditions d\'utilisation.', 'error');
       return;
     }
 
     try {
       setButtonLoading(submitBtn, true);
 
-      const response = await fetch("/api/register", {
+      const response = await auth.fetchWithTimeout("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password })
       });
 
-      const data = await response.json();
+      let data = {};
+      try { data = await response.json(); } catch { /* réponse non-JSON */ }
 
       if (response.ok) {
-        showToast('Compte créé !', 'success', 'Vous pouvez maintenant vous connecter.');
-        
-        setTimeout(() => {
-          showSlide(loginSlide, registerSlide);
-          registerForm.reset();
-          updatePasswordStrength(0);
-          document.getElementById("login-email").value = email;
-        }, 1500);
+        window.location.href = '/check-email?email=' + encodeURIComponent(email);
+      } else if (response.status === 429) {
+        showToast(data.message || 'Trop de tentatives, réessayez dans quelques minutes.', 'error');
+        setButtonLoading(submitBtn, false);
       } else {
-        showToast('Erreur d\'inscription', 'error', data.message || 'Impossible de créer le compte.');
+        showToast(data.message || 'Impossible de créer le compte.', 'error');
         setButtonLoading(submitBtn, false);
       }
     } catch (err) {
       console.error('Register error:', err);
-      showToast('Erreur réseau', 'error', 'Impossible de se connecter au serveur.');
+      showToast('Impossible de se connecter au serveur.', 'error');
       setButtonLoading(submitBtn, false);
     }
   });
 
-  // ========== Logout ==========
-  const logoutIcon = document.getElementById('logout-icon');
-  if (logoutIcon) {
-    logoutIcon.addEventListener('click', async (e) => {
-      e.preventDefault();
-      await auth.logout();
-      showToast(i18n.t('login.toast_logout'), 'success', i18n.t('login.toast_logout_msg'));
-      setTimeout(() => { window.location.reload(); }, 1500);
-    });
-  }
-
-  // ========== Keyboard Shortcuts ==========
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (userDropdown) {
-        userDropdown.classList.remove('show');
-        userDropdown.classList.add('hidden');
-      }
-      if (navLinks) {
-        navLinks.classList.remove('show');
-        hamburger.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-    }
-  });
-
-  // Console greeting
-  console.log('%c✈ Vol d\'Histoire', 'font-size: 20px; font-weight: bold; color: #00e5ff;');
-  console.log('%cBienvenue sur notre plateforme !', 'font-size: 14px; color: #7f8c8d;');
+  // Logout, ESC handler → nav.js
 });

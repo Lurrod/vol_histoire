@@ -1,0 +1,205 @@
+'use strict';
+const nodemailer = require('nodemailer');
+const logger = require('./logger');
+
+// -----------------------------------------------------------------------------
+// Validation des variables d'environnement SMTP
+// -----------------------------------------------------------------------------
+if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
+  logger.error('Variables MAIL_USER et MAIL_PASS requises pour l\'envoi d\'emails');
+  if (process.env.NODE_ENV === 'production') {
+    process.exit(1);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Configuration SMTP — OVH
+// -----------------------------------------------------------------------------
+const transporter = nodemailer.createTransport({
+  host: 'ssl0.ovh.net',
+  port: 465,
+  secure: true, // SSL/TLS
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
+  tls: {
+    rejectUnauthorized: true,
+  },
+});
+
+const BASE_URL = process.env.FRONTEND_URL || 'https://vol-histoire.titouan-borde.com';
+const FROM = `"Vol d'Histoire" <${process.env.MAIL_USER}>`;
+
+// -----------------------------------------------------------------------------
+// Vérification de la connexion SMTP au démarrage
+// -----------------------------------------------------------------------------
+async function verifyConnection() {
+  try {
+    await transporter.verify();
+    logger.info('Connexion SMTP OVH établie');
+  } catch (err) {
+    logger.error('Erreur SMTP', { error: err.message });
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Email de vérification de compte
+// -----------------------------------------------------------------------------
+async function sendVerificationEmail(to, name, token) {
+  const link = `${BASE_URL}/verify-email?token=${encodeURIComponent(token)}`;
+  await transporter.sendMail({
+    from: FROM,
+    to,
+    subject: "Confirmez votre adresse email — Vol d'Histoire",
+    html: buildVerifyTemplate(name, link),
+  });
+}
+
+// -----------------------------------------------------------------------------
+// Email de réinitialisation de mot de passe
+// -----------------------------------------------------------------------------
+async function sendPasswordResetEmail(to, name, token) {
+  const link = `${BASE_URL}/reset-password?token=${encodeURIComponent(token)}`;
+  await transporter.sendMail({
+    from: FROM,
+    to,
+    subject: "Réinitialisation de votre mot de passe — Vol d'Histoire",
+    html: buildResetTemplate(name, link),
+  });
+}
+
+// -----------------------------------------------------------------------------
+// Templates HTML d'emails
+// -----------------------------------------------------------------------------
+function buildVerifyTemplate(name, link) {
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmez votre email</title>
+</head>
+<body style="margin:0;padding:0;background:#0D0D0D;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0D0D0D;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+          <tr>
+            <td style="background:#141414;border-radius:12px 12px 0 0;padding:32px 40px;text-align:center;border-bottom:2px solid rgba(200,169,110,0.25);">
+              <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.5);">AVIATION MILITAIRE</p>
+              <h1 style="margin:10px 0 0;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">Vol d'Histoire</h1>
+              <div style="width:32px;height:2px;background:#C8A96E;margin:14px auto 0;border-radius:1px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#1A1A1A;padding:40px 40px 32px;">
+              <h2 style="margin:0 0 16px;font-size:20px;font-weight:700;color:#ffffff;">Confirmez votre adresse email</h2>
+              <p style="margin:0 0 28px;font-size:15px;color:rgba(255,255,255,0.55);line-height:1.75;">
+                Bonjour <strong style="color:#ffffff;">${escapeHtmlEmail(name)}</strong>,<br><br>
+                Merci de vous être inscrit sur <strong style="color:#C8A96E;">Vol d'Histoire</strong>. Cliquez sur le bouton ci-dessous pour confirmer votre adresse email et activer votre compte.
+              </p>
+              <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td align="center" style="padding:0 0 32px;">
+                    <a href="${link}"
+                       style="display:inline-block;background:#141414;color:#C8A96E;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:0.5px;padding:15px 40px;border-radius:8px;border:2px solid rgba(200,169,110,0.4);">
+                      Confirmer mon email
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 10px;font-size:13px;color:rgba(255,255,255,0.35);text-align:center;">Ce lien expire dans <strong style="color:rgba(255,255,255,0.55);">24 heures</strong>.</p>
+              <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.25);text-align:center;line-height:1.6;">
+                Si le bouton ne fonctionne pas, copiez ce lien :<br>
+                <a href="${link}" style="color:#C8A96E;word-break:break-all;">${link}</a>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#141414;border-top:1px solid rgba(200,169,110,0.1);border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.25);line-height:1.6;">
+                &copy; 2025 Vol d'Histoire &mdash; Si vous n'avez pas cr&eacute;&eacute; de compte, ignorez cet email.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+function buildResetTemplate(name, link) {
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réinitialisation de mot de passe</title>
+</head>
+<body style="margin:0;padding:0;background:#0D0D0D;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0D0D0D;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+          <tr>
+            <td style="background:#141414;border-radius:12px 12px 0 0;padding:32px 40px;text-align:center;border-bottom:2px solid rgba(200,169,110,0.25);">
+              <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.5);">AVIATION MILITAIRE</p>
+              <h1 style="margin:10px 0 0;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">Vol d'Histoire</h1>
+              <div style="width:32px;height:2px;background:#C8A96E;margin:14px auto 0;border-radius:1px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#1A1A1A;padding:40px 40px 32px;">
+              <h2 style="margin:0 0 16px;font-size:20px;font-weight:700;color:#ffffff;">R&eacute;initialisation de mot de passe</h2>
+              <p style="margin:0 0 28px;font-size:15px;color:rgba(255,255,255,0.55);line-height:1.75;">
+                Bonjour <strong style="color:#ffffff;">${escapeHtmlEmail(name)}</strong>,<br><br>
+                Vous avez demand&eacute; &agrave; r&eacute;initialiser votre mot de passe. Cliquez sur le bouton ci-dessous pour en choisir un nouveau.
+              </p>
+              <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td align="center" style="padding:0 0 32px;">
+                    <a href="${link}"
+                       style="display:inline-block;background:#141414;color:#C8A96E;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:0.5px;padding:15px 40px;border-radius:8px;border:2px solid rgba(200,169,110,0.4);">
+                      R&eacute;initialiser mon mot de passe
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 10px;font-size:13px;color:rgba(255,255,255,0.35);text-align:center;">Ce lien expire dans <strong style="color:rgba(255,255,255,0.55);">1 heure</strong>.</p>
+              <p style="margin:0 0 20px;font-size:12px;color:rgba(255,255,255,0.25);text-align:center;line-height:1.6;">
+                Si le bouton ne fonctionne pas, copiez ce lien :<br>
+                <a href="${link}" style="color:#C8A96E;word-break:break-all;">${link}</a>
+              </p>
+              <p style="margin:0;font-size:13px;color:#e74c3c;text-align:center;padding:12px;background:rgba(231,76,60,0.08);border-radius:6px;border:1px solid rgba(231,76,60,0.2);">
+                Si vous n'avez pas fait cette demande, ignorez cet email. Votre mot de passe reste inchang&eacute;.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#141414;border-top:1px solid rgba(200,169,110,0.1);border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.25);line-height:1.6;">
+                &copy; 2025 Vol d'Histoire &mdash; Pour votre s&eacute;curit&eacute;, ce lien n'est valable qu'une seule fois.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+function escapeHtmlEmail(text) {
+  if (!text) return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+module.exports = { sendVerificationEmail, sendPasswordResetEmail, verifyConnection };

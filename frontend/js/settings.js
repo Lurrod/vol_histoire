@@ -1,139 +1,17 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await auth.init();
+
   // ========================================================================
   // INITIALIZATION & UTILITIES
   // ========================================================================
   
   const API_BASE = "/api";
   let currentUser = null;
-  let allUsers = [];
 
-  // Toast Notification System
-  function showToast(message, type = 'info', duration = 4000) {
-    // Remove existing toasts
-    document.querySelectorAll('.toast').forEach(t => t.remove());
+  /* showToast → utils.js | navigation → nav.js */
 
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    
-    const icon = type === 'success' ? 'check-circle' : 
-                 type === 'error' ? 'exclamation-circle' : 
-                 'info-circle';
-    
-    toast.innerHTML = `
-      <i class="fas fa-${icon}"></i>
-      <span>${message}</span>
-    `;
-    
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.classList.add('fade-out');
-      setTimeout(() => toast.remove(), 300);
-    }, duration);
-  }
-
-  // ========================================================================
-  // NAVIGATION & HEADER
-  // ========================================================================
-  
-  const header = document.querySelector('header');
-  const hamburger = document.querySelector('.hamburger');
-  const navLinks = document.querySelector('.nav-links');
-  const loginIcon = document.getElementById('login-icon');
-  const userToggle = document.querySelector('.user-toggle');
-  const userDropdown = document.getElementById('user-info-container');
+  // Logout handler - Modal (overrides nav.js simple logout)
   const logoutIcon = document.getElementById('logout-icon');
-
-  // Header scroll effect with passive listener
-  let lastScroll = 0;
-  window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-
-    if (currentScroll > 100) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-
-    lastScroll = currentScroll;
-  }, { passive: true });
-
-  // Mobile menu toggle
-  hamburger?.addEventListener('click', () => {
-    navLinks?.classList.toggle('show');
-    hamburger.classList.toggle('active');
-    document.body.style.overflow = navLinks?.classList.contains('show') ? 'hidden' : '';
-  });
-
-  // Close mobile menu on link click (except login icon)
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      // Ne pas fermer le menu si c'est l'icône de login
-      if (link.id === 'login-icon') {
-        return;
-      }
-      navLinks?.classList.remove('show');
-      hamburger?.classList.remove('active');
-      document.body.style.overflow = '';
-    });
-  });
-
-  // Close mobile menu on window resize with debouncing
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (window.innerWidth > 992) {
-        navLinks?.classList.remove('show');
-        hamburger?.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-    }, 250); // Debounce resize events
-  });
-
-  // User dropdown toggle
-  const userToggleElement = userToggle || loginIcon;
-  userToggleElement?.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Toggle the dropdown visibility
-    if (userDropdown?.classList.contains('show')) {
-      userDropdown.classList.remove('show');
-      setTimeout(() => {
-        userDropdown.classList.add('hidden');
-      }, 300); // Wait for animation to complete
-    } else {
-      userDropdown?.classList.remove('hidden');
-      setTimeout(() => {
-        userDropdown?.classList.add('show');
-      }, 10); // Small delay for smooth animation
-    }
-  });
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!userToggleElement?.contains(e.target) && !userDropdown?.contains(e.target)) {
-      userDropdown?.classList.remove('show');
-      userDropdown?.classList.add('hidden');
-    }
-  });
-
-  // Login redirect
-  loginIcon?.addEventListener('click', (e) => {
-    if (!auth.getToken()) {
-      e.preventDefault();
-      window.location.href = '/login';
-    }
-  });
-
-  // Settings navigation
-  document.getElementById('settings-icon')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.location.href = '/settings';
-  });
-
-  // Logout handler - Modal
   const logoutModal = document.getElementById('logout-modal');
   const logoutCancel = document.getElementById('logout-cancel');
   const logoutConfirm = document.getElementById('logout-confirm');
@@ -155,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (logoutIcon) {
     logoutIcon.addEventListener('click', (e) => {
       e.preventDefault();
+      e.stopImmediatePropagation();
       openLogoutModal();
     });
   }
@@ -166,54 +45,23 @@ document.addEventListener("DOMContentLoaded", () => {
   logoutConfirm?.addEventListener('click', async () => {
     await auth.logout();
     closeLogoutModal();
-    showToast(i18n.t('settings.toast_logout'), 'success');
+    showToast(i18n.t('common.logout_success'), 'success');
     
     setTimeout(() => {
       window.location.href = '/login';
     }, 1500);
   });
 
-  // Keyboard navigation - ESC to close menus
+  // Keyboard navigation - ESC to close logout modal (nav handled by nav.js)
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      navLinks?.classList.remove('show');
-      hamburger?.classList.remove('active');
-      userDropdown?.classList.remove('show');
-      userDropdown?.classList.add('hidden');
-      document.body.style.overflow = '';
       if (logoutModal?.classList.contains('show')) {
         closeLogoutModal();
       }
     }
   });
 
-  /* =========================================================================
-     TOUCH GESTURES
-     ========================================================================= */
-
-  let touchStartY = 0;
-  let touchEndY = 0;
-
-  document.addEventListener('touchstart', (e) => {
-    touchStartY = e.changedTouches[0].screenY;
-  }, { passive: true });
-
-  document.addEventListener('touchend', (e) => {
-    touchEndY = e.changedTouches[0].screenY;
-    handleSwipe();
-  }, { passive: true });
-
-  function handleSwipe() {
-    const swipeThreshold = 100;
-    const diff = touchStartY - touchEndY;
-
-    // Swipe up to close mobile menu
-    if (diff > swipeThreshold && navLinks?.classList.contains('show')) {
-      navLinks.classList.remove('show');
-      hamburger?.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-  }
+  /* touch gestures → nav.js */
 
   // ========================================================================
   // SECTION NAVIGATION
@@ -288,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (Number(currentUser.role) === 1) {
           document.getElementById('admin-nav-link').classList.remove('hidden');
           document.getElementById('admin')?.classList.remove('hidden');
-          loadUsers();
+          // loadUsers déplacé dans l'init (via settingsAdmin)
         }
         
         return true;
@@ -299,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // If no stored user, try API
     try {
-      const response = await auth.authFetch(`${API_BASE}/user`);
+      const response = await auth.authFetch(`${API_BASE}/users/${auth.getPayload().id}`);
 
       if (response.ok) {
         currentUser = await response.json();
@@ -312,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (Number(currentUser.role) === 1) {
           document.getElementById('admin-nav-link').classList.remove('hidden');
           document.getElementById('admin')?.classList.remove('hidden');
-          loadUsers();
+          // loadUsers déplacé dans l'init (via settingsAdmin)
         }
         
         return true;
@@ -325,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (Number(currentUser.role) === 1) {
           document.getElementById('admin-nav-link').classList.remove('hidden');
           document.getElementById('admin')?.classList.remove('hidden');
-          loadUsers();
+          // loadUsers déplacé dans l'init (via settingsAdmin)
         }
         return true;
       }
@@ -337,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (Number(currentUser.role) === 1) {
         document.getElementById('admin-nav-link').classList.remove('hidden');
         document.getElementById('admin')?.classList.remove('hidden');
-        loadUsers();
+        // loadUsers déplacé dans l'init (via settingsAdmin)
       }
       return true;
     }
@@ -346,15 +194,15 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateUserDisplay() {
     const userNameElements = document.querySelectorAll('#user-name');
     userNameElements.forEach(el => {
-      el.textContent = currentUser?.name || 'Utilisateur';
+      el.textContent = currentUser?.name || i18n.t('nav.user_default');
     });
     
     // Update role display in user menu dropdown
     const userRoleEl = document.querySelector('.user-role');
     if (userRoleEl && currentUser) {
       const role = Number(currentUser.role);
-      userRoleEl.textContent = role === 1 ? 'Administrateur' :
-                               role === 2 ? 'Éditeur' : 'Membre';
+      userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
+                               role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
     }
   }
 
@@ -387,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setButtonLoading(submitBtn, true);
 
       try {
-        const response = await auth.authFetch(`${API_BASE}/user/update`, {
+        const response = await auth.authFetch(`${API_BASE}/users/${currentUser.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email })
@@ -405,11 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } catch (err) {
         console.error('Profile update error:', err);
-        // Update locally even if API fails
-        currentUser = { ...currentUser, name, email };
-        localStorage.setItem('user', JSON.stringify(currentUser));
-        updateUserDisplay();
-        showToast(i18n.t('settings.toast_profile_local'), 'info');
+        showToast(i18n.t('settings.toast_network_error'), 'error');
       } finally {
         setButtonLoading(submitBtn, false);
       }
@@ -479,34 +323,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     if (password.length === 0) {
-      strengthText.textContent = 'Force du mot de passe';
+      strengthText.textContent = i18n.t('settings.password_strength');
       strengthText.style.color = 'var(--text-secondary)';
     } else if (strength < 40) {
-      strengthText.textContent = 'Faible';
+      strengthText.textContent = i18n.t('settings.strength_weak');
       strengthText.style.color = 'var(--accent)';
     } else if (strength < 70) {
-      strengthText.textContent = 'Moyen';
+      strengthText.textContent = i18n.t('settings.strength_medium');
       strengthText.style.color = 'var(--warning)';
     } else {
-      strengthText.textContent = 'Fort';
+      strengthText.textContent = i18n.t('settings.strength_strong');
       strengthText.style.color = 'var(--success)';
     }
   }
 
   function calculatePasswordStrength(password) {
     let strength = 0;
-    if (password.length >= 4) strength += 20;
-    if (password.length >= 6) strength += 20;
-    if (password.length >= 8) strength += 20;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength += 20;
-    if (/[0-9]/.test(password)) strength += 10;
+    if (password.length >= 8) strength += 25;
+    if (/[a-z]/.test(password)) strength += 20;
+    if (/[A-Z]/.test(password)) strength += 20;
+    if (/[0-9]/.test(password)) strength += 15;
+    if (password.length >= 12) strength += 10;
     if (/[^a-zA-Z0-9]/.test(password)) strength += 10;
     return Math.min(strength, 100);
   }
 
   function updatePasswordRequirements(password) {
     const requirements = {
-      'req-length': password.length >= 4,
+      'req-length': password.length >= 8,
       'req-upper': /[A-Z]/.test(password),
       'req-lower': /[a-z]/.test(password),
       'req-number': /[0-9]/.test(password)
@@ -536,7 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (password.length < 4) {
+      if (password.length < 8 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
         showToast(i18n.t('settings.toast_password_min'), 'error');
         return;
       }
@@ -545,7 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setButtonLoading(submitBtn, true);
 
       try {
-        const response = await auth.authFetch(`${API_BASE}/user/password`, {
+        const response = await auth.authFetch(`${API_BASE}/users/${currentUser.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password })
@@ -570,112 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ========================================================================
-  // ADMIN SECTION
-  // ========================================================================
-  
-  const userFilter = document.getElementById('user-filter');
-  const userList = document.getElementById('user-list');
-
-  async function loadUsers() {
-    try {
-      const response = await auth.authFetch(`${API_BASE}/users`);
-
-      if (response.ok) {
-        allUsers = await response.json();
-        displayUsers(allUsers);
-        updateUserStats();
-      } else if (response.status === 401 || response.status === 403) {
-        console.warn('Token expiré ou accès refusé:', response.status);
-        auth.clearSession();
-        showToast(i18n.t('settings.toast_session_expired'), 'error');
-        setTimeout(() => { window.location.href = '/login'; }, 1500);
-      } else {
-        console.warn('Failed to load users:', response.status);
-        if (userList) {
-          userList.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">API non disponible. Connectez votre backend pour voir les utilisateurs.</p>';
-        }
-      }
-    } catch (err) {
-      console.warn('Network error loading users:', err);
-      // Show empty state
-      if (userList) {
-        userList.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">Impossible de charger les utilisateurs. Vérifiez votre connexion.</p>';
-      }
-    }
-  }
-
-  function displayUsers(users) {
-    if (!userList) return;
-
-    userList.innerHTML = users.map(user => `
-      <div class="user-card" data-user-id="${user.id}">
-        <div class="user-avatar-img">
-          ${user.name.charAt(0).toUpperCase()}
-        </div>
-        <div class="user-info">
-          <div class="user-info-name">${escapeHtml(user.name)}</div>
-          <div class="user-info-email">${escapeHtml(user.email)}</div>
-        </div>
-        <div class="user-actions">
-          ${user.id !== currentUser?.id ? `
-            <button class="btn-delete" data-user-id="${user.id}">
-              <i class="fas fa-trash"></i>
-            </button>
-          ` : ''}
-        </div>
-      </div>
-    `).join('');
-
-    // Attach delete handlers
-    document.querySelectorAll('.btn-delete').forEach(btn => {
-      btn.addEventListener('click', () => deleteUser(btn.dataset.userId));
-    });
-  }
-
-  function updateUserStats() {
-    const totalUsersEl = document.getElementById('total-users');
-    if (totalUsersEl) {
-      totalUsersEl.textContent = allUsers.length;
-    }
-  }
-
-  async function deleteUser(userId) {
-    if (!confirm(i18n.t('settings.confirm_delete_user'))) {
-      return;
-    }
-
-    try {
-      const response = await auth.authFetch(`${API_BASE}/users/${userId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        showToast(i18n.t('settings.toast_user_deleted'), 'success');
-        allUsers = allUsers.filter(u => u.id !== parseInt(userId));
-        displayUsers(allUsers);
-        updateUserStats();
-      } else {
-        const data = await response.json();
-        showToast(data.message || 'Erreur lors de la suppression', 'error');
-      }
-    } catch (err) {
-      console.error('Delete user error:', err);
-      showToast(i18n.t('settings.toast_network_error'), 'error');
-    }
-  }
-
-  // User search/filter
-  if (userFilter) {
-    userFilter.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      const filtered = allUsers.filter(user => 
-        user.name.toLowerCase().includes(query) ||
-        user.email.toLowerCase().includes(query)
-      );
-      displayUsers(filtered);
-    });
-  }
+  /* ADMIN SECTION → settings-admin.js */
 
   // ========================================================================
   // DANGER ZONE
@@ -695,7 +434,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setButtonLoading(deleteAccountBtn, true);
 
         try {
-          const response = await auth.authFetch(`${API_BASE}/user/delete`, {
+          const response = await auth.authFetch(`${API_BASE}/users/${currentUser.id}`, {
             method: 'DELETE',
           });
 
@@ -744,29 +483,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  // ========================================================================
-  // KEYBOARD SHORTCUTS
-  // ========================================================================
-  
-  document.addEventListener('keydown', (e) => {
-    // ESC to close dropdowns
-    if (e.key === 'Escape') {
-      if (userDropdown && userDropdown.classList.contains('show')) {
-        userDropdown.classList.remove('show');
-        setTimeout(() => userDropdown.classList.add('hidden'), 300);
-      }
-      if (navLinks && navLinks.classList.contains('show')) {
-        navLinks.classList.remove('show');
-        hamburger?.classList.remove('active');
-      }
-    }
-  });
+  /* escapeHtml → utils.js | keyboard shortcuts → nav.js */
 
   // ========================================================================
   // COOKIE PREFERENCES MANAGEMENT
@@ -798,7 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const consentDate = document.getElementById('consent-date');
         if (consentDate && data.timestamp) {
           const date = new Date(data.timestamp);
-          consentDate.textContent = date.toLocaleDateString('fr-FR', {
+          consentDate.textContent = date.toLocaleDateString(i18n.currentLang === 'en' ? 'en-GB' : 'fr-FR', {
             day: 'numeric',
             month: 'long',
             year: 'numeric',
@@ -911,16 +628,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  /* DASHBOARD → settings-dashboard.js */
+
   // ========================================================================
   // INITIALIZATION
   // ========================================================================
-  
-  checkAuth();
+
+  // Exposer le contexte partagé pour les sous-modules
+  window.settings = {
+    get currentUser() { return currentUser; },
+    setButtonLoading,
+  };
+
+  checkAuth().then(() => {
+    // Charger admin si rôle admin
+    if (Number(currentUser?.role) === 1) {
+      window.settingsAdmin?.loadUsers();
+    }
+    window.settingsDashboard?.loadDashboard();
+  });
 
   // Load cookie preferences on page load
   loadCookiePreferences();
 
-  // Console greeting
-  console.log('%c🛩️ Vol d\'Histoire - Settings', 'font-size: 18px; font-weight: bold; color: #3498db;');
-  console.log('%cGestion de compte', 'font-size: 14px; color: #2c3e50;');
 });

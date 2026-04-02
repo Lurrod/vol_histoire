@@ -40,7 +40,17 @@ RewriteCond %{THE_REQUEST} \s/([^?\s]+)\.html[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L]
 
 # --------------------------------------------------------------------------
-# 5. Ne pas réécrire les fichiers/dossiers qui existent réellement
+# 5. Sitemap dynamique : proxy vers le backend
+#    Doit être AVANT le test d'existence des fichiers
+# --------------------------------------------------------------------------
+RewriteRule ^sitemap\.xml$ http://localhost:3000/sitemap.xml [P,L]
+
+<IfModule mod_proxy.c>
+    ProxyPassReverse /sitemap.xml http://localhost:3000/sitemap.xml
+</IfModule>
+
+# --------------------------------------------------------------------------
+# 6. Ne pas réécrire les fichiers/dossiers qui existent réellement
 #    (CSS, JS, images, vidéos, polices, etc.)
 # --------------------------------------------------------------------------
 RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -48,24 +58,31 @@ RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
 # --------------------------------------------------------------------------
-# 6. Réécriture interne : URLs propres vers fichiers .html
+# 7. Réécriture interne : URLs propres vers fichiers .html
 #    /hangar       → hangar.html
 #    /details      → details.html
 #    /a-propos     → a-propos.html
 #    etc.
 # --------------------------------------------------------------------------
+
+# /details/{slug} → details.html (URLs SEO avec slug d'avion)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^details/[^/]+$ details.html [L]
+
+# Règle générale : /page → page.html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+)$ $1.html [L]
 
 # --------------------------------------------------------------------------
-# 7. Page d'erreur 404 personnalisée
+# 8. Page d'erreur 404 personnalisée
 # --------------------------------------------------------------------------
 ErrorDocument 404 /404.html
 
 # --------------------------------------------------------------------------
-# 8. Sécurité : empêcher l'accès aux fichiers sensibles
+# 9. Sécurité : empêcher l'accès aux fichiers sensibles
 # --------------------------------------------------------------------------
 <FilesMatch "\.(env|gitignore|sql|md|json|lock)$">
     Require all denied
@@ -77,7 +94,7 @@ ErrorDocument 404 /404.html
 </Files>
 
 # --------------------------------------------------------------------------
-# 9. Cache navigateur pour les ressources statiques
+# 10. Cache navigateur pour les ressources statiques
 # --------------------------------------------------------------------------
 <IfModule mod_expires.c>
     ExpiresActive On
@@ -93,7 +110,7 @@ ErrorDocument 404 /404.html
 </IfModule>
 
 # --------------------------------------------------------------------------
-# 10. Compression Gzip
+# 11. Compression Gzip
 # --------------------------------------------------------------------------
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/css application/javascript
@@ -101,7 +118,7 @@ ErrorDocument 404 /404.html
 </IfModule>
 
 # --------------------------------------------------------------------------
-# 11. En-têtes de sécurité supplémentaires
+# 12. En-têtes de sécurité supplémentaires
 # --------------------------------------------------------------------------
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"

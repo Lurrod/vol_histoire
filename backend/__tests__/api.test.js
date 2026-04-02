@@ -43,6 +43,21 @@ const refreshTokenExpired = jwt.sign({ id: 1, role: 1, jti: 'expired-jti' }, pro
 // =============================================================================
 const mockPool = {
   query: jest.fn(),
+  // Support des transactions (withTransaction appelle pool.connect())
+  connect: jest.fn().mockImplementation(() => {
+    const TX_CMDS = new Set(['BEGIN', 'COMMIT', 'ROLLBACK']);
+    const client = {
+      query: (...args) => {
+        // Ignorer les commandes transactionnelles pour ne pas décaler les mocks
+        if (typeof args[0] === 'string' && TX_CMDS.has(args[0])) {
+          return Promise.resolve();
+        }
+        return mockPool.query(...args);
+      },
+      release: jest.fn(),
+    };
+    return Promise.resolve(client);
+  }),
 };
 
 beforeAll(() => {
@@ -51,6 +66,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   mockPool.query.mockReset();
+  app.invalidateStatsCache?.();
 });
 
 afterAll(() => {
@@ -275,7 +291,8 @@ describe('Middleware authorize', () => {
   });
 
   test('200 — admin accède à /api/users', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [{ count: '0' }] }); // COUNT
+    mockPool.query.mockResolvedValueOnce({ rows: [] }); // SELECT
     const res = await request(app)
       .get('/api/users')
       .set('Authorization', `Bearer ${tokenAdmin}`);
@@ -1013,7 +1030,8 @@ describe('Relations avions', () => {
       .set('Authorization', `Bearer ${tokenAdmin}`);
 
     expect(res.status).toBe(500);
-    expect(res.body.error).toBe('Erreur serveur');
+    expect(res.body.message).toBe('Erreur interne du serveur');
+    expect(res.body.errorId).toBeDefined();
   });
 });
 
@@ -1516,6 +1534,40 @@ describe('En-tête Content-Security-Policy', () => {
 });
 
 // =============================================================================
+// PROTECTION CSRF (SameSite + Bearer + CSP form-action)
+// =============================================================================
+describe('Protection CSRF', () => {
+  test('CSP inclut form-action self', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).get('/api/countries');
+    const csp = res.headers['content-security-policy'];
+    expect(csp).toContain("form-action 'self'");
+  });
+
+  test('CORS rejette les origines non autorisées', async () => {
+    const res = await request(app)
+      .get('/api/countries')
+      .set('Origin', 'https://evil.com');
+    expect(res.status).toBe(403);
+  });
+
+  test('Cookie refresh est SameSite=Strict, HttpOnly, Path=/api', async () => {
+    const bcrypt = require('bcryptjs');
+    const hashed = await bcrypt.hash('Password1', 10);
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Test', email: 'test@test.com', password: hashed, role_id: 3, email_verified: true }] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).post('/api/login').send({ email: 'test@test.com', password: 'Password1' });
+    const cookies = res.headers['set-cookie'];
+    const refreshCookie = cookies.find(c => c.startsWith('refreshToken='));
+    expect(refreshCookie).toMatch(/HttpOnly/);
+    expect(refreshCookie).toMatch(/SameSite=Strict/);
+    expect(refreshCookie).toMatch(/Path=\/api/);
+  });
+});
+
+// =============================================================================
 // GET /sitemap.xml
 // =============================================================================
 describe('GET /sitemap.xml', () => {
@@ -1545,6 +1597,7 @@ describe('GET /sitemap.xml', () => {
     const res = await request(app).get('/sitemap.xml');
 
     expect(res.status).toBe(500);
-    expect(res.text).toContain('Erreur serveur');
+    expect(res.body.message).toBe('Erreur interne du serveur');
+    expect(res.body.errorId).toBeDefined();
   });
 });

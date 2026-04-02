@@ -31,190 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     manufacturers: []
   };
 
-  /* =========================================================================
-     UTILITIES
-     ========================================================================= */
-
-  function escapeHtml(text) {
-    if (text == null) return '';
-    const div = document.createElement('div');
-    div.textContent = String(text);
-    return div.innerHTML;
-  }
-
-  function showToast(message, type = 'info') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    
-    const icon = type === 'success' ? 'check-circle' : 
-                 type === 'error' ? 'exclamation-circle' : 
-                 'info-circle';
-    
-    toast.innerHTML = `
-      <i class="fas fa-${icon}"></i>
-      <span>${escapeHtml(message)}</span>
-    `;
-    
-    container.appendChild(toast);
-    
-    setTimeout(() => {
-      toast.classList.add('fade-out');
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
-  }
-
-  /* =========================================================================
-     NAVIGATION & AUTH
-     ========================================================================= */
-  
-  const header = document.querySelector('header');
-  const hamburger = document.querySelector('.hamburger');
-  const navLinks = document.querySelector('.nav-links');
-  const loginIcon = document.getElementById('login-icon');
-  const userToggle = document.querySelector('.user-toggle');
-  const userDropdown = document.querySelector('.user-dropdown');
-
-  // Header scroll effect
-  let lastScroll = 0;
-  window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-
-    if (currentScroll > 100) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-
-    lastScroll = currentScroll;
-  }, { passive: true });
-
-
-  // Mobile menu toggle
-  hamburger?.addEventListener('click', () => {
-    navLinks?.classList.toggle('show');
-    hamburger.classList.toggle('active');
-    document.body.style.overflow = navLinks?.classList.contains('show') ? 'hidden' : '';
-  });
-
-  // Close mobile menu on link click (except login icon)
-  document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', (e) => {
-      // Ne pas fermer le menu si c'est l'icône de login
-      if (link.id === 'login-icon') {
-        return;
-      }
-      navLinks?.classList.remove('show');
-      hamburger?.classList.remove('active');
-      document.body.style.overflow = '';
-    });
-  });
-
-  // Close mobile menu on window resize
-  let resizeTimer;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (window.innerWidth > 992) {
-        navLinks?.classList.remove('show');
-        hamburger?.classList.remove('active');
-        document.body.style.overflow = '';
-        closeAllDropdowns();
-      }
-    }, 250); // Debounce resize events
-  });
-
-  // User Authentication & Menu
-  const updateAuthUI = () => {
-    const payload = auth.getPayload();
-    
-    if (payload) {
-      const userNameEl = document.getElementById('user-name');
-      const userRoleEl = document.querySelector('.user-role');
-      
-      if (userNameEl) {
-        userNameEl.textContent = payload.name || i18n.t('nav.user_default');
-      }
-      
-      if (userRoleEl) {
-        const role = Number(payload.role);
-        userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
-                                 role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
-      }
-      
-      userDropdown?.classList.remove('hidden');
-
-      // Show add button for admin/editor
-      const userRole = Number(payload.role);
-      if (userRole === 1 || userRole === 2) {
-        document.getElementById('add-airplane-btn')?.classList.remove('hidden');
-      }
-    }
-  };
-
-  // User dropdown toggle
-  userToggle?.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (userDropdown?.classList.contains('show')) {
-      userDropdown.classList.remove('show');
-      setTimeout(() => {
-        userDropdown.classList.add('hidden');
-      }, 300);
-    } else {
-      userDropdown?.classList.remove('hidden');
-      setTimeout(() => {
-        userDropdown?.classList.add('show');
-      }, 10);
-    }
-  });
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!userToggle?.contains(e.target) && !userDropdown?.contains(e.target)) {
-      userDropdown?.classList.remove('show');
-      userDropdown?.classList.add('hidden');
-    }
-  });
-
-  // Login redirect
-  loginIcon?.addEventListener('click', (e) => {
-    if (!auth.getToken()) {
-      e.preventDefault();
-      window.location.href = '/login';
-    }
-  });
-
-  // Settings navigation
-  document.getElementById('settings-icon')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.location.href = '/settings';
-  });
-
-  // Logout handlers
-  const logoutButtons = document.querySelectorAll('#logout-icon, #logout-btn');
-  logoutButtons.forEach(btn => {
-    btn?.addEventListener('click', async (e) => {
-      e.preventDefault();
-      await auth.logout();
-      showToast(i18n.t('common.logout_success'), 'success');
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 1000);
-    });
-  });
-
-  // Keyboard navigation - ESC to close menus
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      navLinks?.classList.remove('show');
-      hamburger?.classList.remove('active');
-      userDropdown?.classList.remove('show');
-      userDropdown?.classList.add('hidden');
-      document.body.style.overflow = '';
-    }
-  });
+  /* escapeHtml, showToast, animateNumber → utils.js | navigation → nav.js */
 
   /* =========================================================================
      DATA LOADING
@@ -223,10 +40,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function loadReferentialData() {
     try {
       const [countriesRes, generationsRes, typesRes, manufacturersRes] = await Promise.all([
-        fetch('/api/countries'),
-        fetch('/api/generations'),
-        fetch('/api/types'),
-        fetch('/api/manufacturers')
+        auth.fetchWithTimeout('/api/countries'),
+        auth.fetchWithTimeout('/api/generations'),
+        auth.fetchWithTimeout('/api/types'),
+        auth.fetchWithTimeout('/api/manufacturers')
       ]);
 
       if (!countriesRes.ok || !generationsRes.ok || !typesRes.ok || !manufacturersRes.ok) {
@@ -288,9 +105,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         state.filters[filterType] = state.filters[filterType] === value ? null : value;
         state.currentPage = 1;
         saveFiltersToSession();
-        applyFiltersAndRender();
         closeAllDropdowns();
         updateActiveFilters();
+        loadAircraft();
       });
     });
   }
@@ -348,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         ...(state.filters.type && { type: state.filters.type })
       });
 
-      const response = await fetch(`/api/airplanes?${params}`);
+      const response = await auth.fetchWithTimeout(`/api/airplanes?${params}`);
       if (!response.ok) throw new Error('Erreur serveur');
       const data = await response.json();
 
@@ -360,19 +177,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error('Error loading aircraft:', error);
       showToast(i18n.t('common.loading_error'), 'error');
     }
-  }
-
-  function animateNumber(el, target) {
-    if (!el) return;
-    const duration = 1400;
-    const start = performance.now();
-    function step(now) {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      el.textContent = Math.round(eased * target);
-      if (progress < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
   }
 
   function updateStats() {
@@ -484,6 +288,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (filters.length === 0) {
       container.classList.add('hidden');
+      container.innerHTML = '';
       return;
     }
 
@@ -513,8 +318,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.filters[type] = null;
     state.currentPage = 1;
     saveFiltersToSession();
-    applyFiltersAndRender();
     updateActiveFilters();
+    loadAircraft();
   };
 
   window.clearAllFilters = () => {
@@ -524,9 +329,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.filters.search = '';
     state.currentPage = 1;
     saveFiltersToSession();
-    applyFiltersAndRender();
     updateActiveFilters();
     if (searchInput) searchInput.value = '';
+    loadAircraft();
   };
 
   /* =========================================================================
@@ -758,9 +563,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderAircraft();
     renderPagination();
 
-    // Scroll to top of content, accounting for sticky header
-    const filtersSection = document.querySelector('.filters-section');
-    const offset = filtersSection ? filtersSection.offsetTop - 70 : 0;
+    // Scroll au début de la toolbar (juste au-dessus des cartes)
+    const toolbar = document.querySelector('.hangar-toolbar');
+    const offset = toolbar ? toolbar.offsetTop - 80 : 0;
     window.scrollTo({ top: offset, behavior: 'smooth' });
   };
 
@@ -920,10 +725,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const diff = touchStartY - touchEndY;
 
     // Close mobile menu on swipe up (when menu is open)
-    if (diff > swipeThreshold && navLinks?.classList.contains('show')) {
-      navLinks.classList.remove('show');
-      hamburger?.classList.remove('active');
-      document.body.style.overflow = '';
+    if (diff > swipeThreshold && document.querySelector('.nav-links')?.classList.contains('show')) {
+      nav.closeMenu();
     }
   }
 
@@ -944,7 +747,16 @@ document.addEventListener("DOMContentLoaded", async () => {
      ========================================================================= */
   
   // Initialize auth UI
-  updateAuthUI();
+  nav.updateAuthUI();
+
+  // Show add button for admin/editor
+  const payload = auth.getPayload();
+  if (payload) {
+    const userRole = Number(payload.role);
+    if (userRole === 1 || userRole === 2) {
+      document.getElementById('add-airplane-btn')?.classList.remove('hidden');
+    }
+  }
 
   // Restaurer les filtres/tri depuis la session avant le chargement
   restoreFiltersFromSession();
