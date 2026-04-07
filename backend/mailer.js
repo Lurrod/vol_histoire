@@ -3,38 +3,53 @@ const nodemailer = require('nodemailer');
 const logger = require('./logger');
 
 // -----------------------------------------------------------------------------
-// Validation des variables d'environnement SMTP
+// Détection mode "no-mailer" : test, CI, ou MAIL_USER/MAIL_PASS absents
+// En production, MAIL_USER/MAIL_PASS sont OBLIGATOIRES (exit 1).
+// Sinon : transporter no-op qui résout sans rien envoyer (logs en debug).
 // -----------------------------------------------------------------------------
-if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
-  logger.error('Variables MAIL_USER et MAIL_PASS requises pour l\'envoi d\'emails');
+const HAS_SMTP_CREDS = Boolean(process.env.MAIL_USER && process.env.MAIL_PASS);
+const IS_TEST_OR_CI = process.env.NODE_ENV === 'test' || process.env.CI === 'true';
+
+if (!HAS_SMTP_CREDS) {
   if (process.env.NODE_ENV === 'production') {
+    logger.error('Variables MAIL_USER et MAIL_PASS requises en production');
     process.exit(1);
+  }
+  if (!IS_TEST_OR_CI) {
+    logger.warn('MAIL_USER/MAIL_PASS absents — mailer en mode no-op (dev local)');
   }
 }
 
 // -----------------------------------------------------------------------------
-// Configuration SMTP — OVH
+// Configuration SMTP — OVH (uniquement si credentials présents)
 // -----------------------------------------------------------------------------
-const transporter = nodemailer.createTransport({
-  host: 'ssl0.ovh.net',
-  port: 465,
-  secure: true, // SSL/TLS
-  auth: {
-    user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: true,
-  },
-});
+const transporter = HAS_SMTP_CREDS
+  ? nodemailer.createTransport({
+      host: 'ssl0.ovh.net',
+      port: 465,
+      secure: true, // SSL/TLS
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: true,
+      },
+    })
+  : {
+      // No-op transporter : résout sans rien envoyer
+      sendMail: async () => ({ messageId: 'noop', accepted: [], rejected: [] }),
+      verify: async () => true,
+    };
 
 const BASE_URL = process.env.FRONTEND_URL || 'https://vol-histoire.titouan-borde.com';
-const FROM = `"Vol d'Histoire" <${process.env.MAIL_USER}>`;
+const FROM = `"Vol d'Histoire" <${process.env.MAIL_USER || 'noreply@vol-histoire.local'}>`;
 
 // -----------------------------------------------------------------------------
 // Vérification de la connexion SMTP au démarrage
 // -----------------------------------------------------------------------------
 async function verifyConnection() {
+  if (!HAS_SMTP_CREDS) return; // skip silencieux en mode no-op
   try {
     await transporter.verify();
     logger.info('Connexion SMTP OVH établie');
