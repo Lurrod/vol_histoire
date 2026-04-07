@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Su-15', 'Sukhoi Su-15 Flagon', 'Intercepteur soviétique de 2e génération', 
-    'https://i.postimg.cc/m2BsCFJj/su15.jpg', 
-    'Le Sukhoi Su-15 Flagon est un avion intercepteur supersonique développé pour les forces aériennes soviétiques. Classé dans la 2e génération, il est conçu pour contrer les bombardiers à haute altitude et les avions espions pendant la Guerre froide, avec une capacité tous temps grâce à son radar. Utilisé principalement pour la défense aérienne, il a été impliqué dans des incidents célèbres comme l''interception du vol KAL 007.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '1962-01-01', '1965-05-30', '1967-04-01', 
-    2230.0, 1550.0, (SELECT id FROM manufacturer WHERE code = 'SUK'), 
-    (SELECT id FROM generation WHERE generation = 2), (SELECT id FROM type WHERE name = 'Intercepteur'), 
-    'Retiré', 10675.0
+    'Su-15',
+    'Su-15',
+    'Sukhoi Su-15 Flagon',
+    'Sukhoi Su-15 Flagon',
+    'Intercepteur soviétique de 2e génération',
+    'Soviet 2nd-generation interceptor',
+    'https://i.postimg.cc/m2BsCFJj/su15.jpg',
+    'Le Sukhoi Su-15 Flagon est un avion intercepteur supersonique développé pour les forces aériennes soviétiques. Classé dans la 2e génération, il est conçu pour contrer les bombardiers à haute altitude et les avions espions pendant la Guerre froide, avec une capacité tous temps grâce à son radar. Utilisé principalement pour la défense aérienne, il a été impliqué dans des incidents célèbres comme l''interception du vol KAL 007.',
+    'The Sukhoi Su-15 Flagon is a supersonic interceptor aircraft developed for the Soviet air forces. Classified as 2nd generation, it is designed to counter high-altitude bombers and spy planes during the Cold War, with all-weather capability thanks to its radar. Used mainly for air defense, it was involved in famous incidents such as the interception of KAL 007 flight.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '1962-01-01',
+    '1965-05-30',
+    '1967-04-01',
+    2230.0,
+    1550.0,
+    (SELECT id FROM manufacturer WHERE code = 'SUK'),
+    (SELECT id FROM generation WHERE generation = 2),
+    (SELECT id FROM type WHERE name = 'Intercepteur'),
+    'Retiré',
+    NULL,
+    10675.0
 );
 
 -- Insertion des technologies

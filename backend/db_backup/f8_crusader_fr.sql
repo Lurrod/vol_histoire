@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'F-8E (FN) Crusader', 'Vought F-8E (FN) Crusader', 'Chasseur naval français de 3e génération', 
-    'https://i.postimg.cc/3NncDkmt/f8-crusader-fr.jpg', 
-    'Le Vought F-8E (FN) Crusader est une version modifiée du F-8 Crusader américain, adaptée pour la Marine nationale française (Aéronavale). Classé dans la 3e génération, il a été utilisé comme intercepteur embarqué sur les porte-avions Clemenceau et Foch. Avec ses ailes à incidence variable et sa capacité tous temps, il a servi pendant 35 ans avant d’être remplacé par le Rafale Marine.', 
-    (SELECT id FROM countries WHERE code = 'FRA'), '1952-01-01', '1964-02-27', '1964-11-01', 
-    1915.0, 1730.0, (SELECT id FROM manufacturer WHERE code = 'LM'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Intercepteur'), 
-    'Retiré', 10990.0
+    'F-8E (FN) Crusader',
+    'F-8E (FN) Crusader',
+    'Vought F-8E (FN) Crusader',
+    'Vought F-8E (FN) Crusader',
+    'Chasseur naval français de 3e génération',
+    'French 3rd-generation naval fighter',
+    'https://i.postimg.cc/3NncDkmt/f8-crusader-fr.jpg',
+    'Le Vought F-8E (FN) Crusader est une version modifiée du F-8 Crusader américain, adaptée pour la Marine nationale française (Aéronavale). Classé dans la 3e génération, il a été utilisé comme intercepteur embarqué sur les porte-avions Clemenceau et Foch. Avec ses ailes à incidence variable et sa capacité tous temps, il a servi pendant 35 ans avant d’être remplacé par le Rafale Marine.',
+    'The Vought F-8E (FN) Crusader is a modified version of the American F-8 Crusader, adapted for the French Navy (Aéronavale). Classified as 3rd generation, it was used as a carrier-based interceptor on the Clemenceau and Foch aircraft carriers. With its variable-incidence wings and all-weather capability, it served for 35 years before being replaced by the Rafale Marine.',
+    (SELECT id FROM countries WHERE code = 'FRA'),
+    '1952-01-01',
+    '1964-02-27',
+    '1964-11-01',
+    1915.0,
+    1730.0,
+    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Intercepteur'),
+    'Retiré',
+    NULL,
+    10990.0
 );
 
 -- Insertion des technologies

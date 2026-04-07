@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'F-4 Phantom II', 'McDonnell Douglas F-4 Phantom II', 'Chasseur-bombardier multirôle américain de 3e génération', 
-    'https://i.postimg.cc/0ySqDdZz/f4-phantom-2.jpg', 
-    'Le McDonnell Douglas F-4 Phantom II est un avion de chasse-bombardier multirôle emblématique, développé pour l''US Navy et l''US Air Force. Classé dans la 3e génération, il est connu pour sa polyvalence, sa vitesse et sa robustesse, servant dans des rôles d''interception, de supériorité aérienne et d''attaque au sol. Largement exporté, il a été un pilier des forces aériennes occidentales pendant la Guerre froide et au-delà.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1955-01-01', '1958-05-27', '1960-12-30', 
-    2370.0, 2600.0, (SELECT id FROM manufacturer WHERE code = 'BOE'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Retiré', 12700.0
+    'F-4 Phantom II',
+    'F-4 Phantom II',
+    'McDonnell Douglas F-4 Phantom II',
+    'McDonnell Douglas F-4 Phantom II',
+    'Chasseur-bombardier multirôle américain de 3e génération',
+    'American 3rd-generation multirole fighter-bomber',
+    'https://i.postimg.cc/0ySqDdZz/f4-phantom-2.jpg',
+    'Le McDonnell Douglas F-4 Phantom II est un avion de chasse-bombardier multirôle emblématique, développé pour l''US Navy et l''US Air Force. Classé dans la 3e génération, il est connu pour sa polyvalence, sa vitesse et sa robustesse, servant dans des rôles d''interception, de supériorité aérienne et d''attaque au sol. Largement exporté, il a été un pilier des forces aériennes occidentales pendant la Guerre froide et au-delà.',
+    'The McDonnell Douglas F-4 Phantom II is an iconic multirole fighter-bomber aircraft developed for the US Navy and US Air Force. Classified as 3rd generation, it is known for its versatility, speed and ruggedness, serving in interception, air superiority and ground attack roles. Widely exported, it was a pillar of Western air forces during the Cold War and beyond.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1955-01-01',
+    '1958-05-27',
+    '1960-12-30',
+    2370.0,
+    2600.0,
+    (SELECT id FROM manufacturer WHERE code = 'BOE'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Retiré',
+    NULL,
+    12700.0
 );
 
 -- Insertion des technologies

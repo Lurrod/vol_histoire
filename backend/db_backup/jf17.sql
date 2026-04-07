@@ -4,17 +4,49 @@ INSERT INTO armement (name, description) VALUES
 
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Chengdu FC-1/JF-17', 'Chengdu FC-1 Xiaolong / JF-17 Thunder', 'Chasseur multirôle léger sino-pakistanais de 4e génération', 
-    'https://i.postimg.cc/dtj4Z7c8/jf17.jpg', 
-    'Le Chengdu FC-1 Xiaolong (Fierce Dragon), désigné JF-17 Thunder au Pakistan, est un chasseur multirôle léger développé conjointement par Chengdu Aerospace Corporation et le Pakistan Aeronautical Complex. Conçu pour être un appareil abordable et performant, il vise à remplacer les flottes vieillissantes de F-7, Mirage III et A-5 de la Pakistan Air Force. Monoréacteur équipé du Klimov RD-93, il dispose d''un radar KLJ-7 et peut emporter un large éventail d''armements air-air et air-sol. Entré en service en 2007, le JF-17 est produit en série au Pakistan et a été exporté vers plusieurs pays dont la Birmanie et le Nigeria. Le Block 3, doté d''un radar AESA et de capacités améliorées, marque une évolution significative du programme.', 
-    (SELECT id FROM countries WHERE code = 'CHN'), '1991-01-01', '2003-08-25', '2007-03-12', 
-    1960.0, 1352.0, (SELECT id FROM manufacturer WHERE code = 'CAC'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 6586.0
+    'Chengdu FC-1/JF-17',
+    'Chengdu FC-1/JF-17',
+    'Chengdu FC-1 Xiaolong / JF-17 Thunder',
+    'Chengdu FC-1 Xiaolong / JF-17 Thunder',
+    'Chasseur multirôle léger sino-pakistanais de 4e génération',
+    'Sino-Pakistani 4th-generation light multirole fighter',
+    'https://i.postimg.cc/dtj4Z7c8/jf17.jpg',
+    'Le Chengdu FC-1 Xiaolong (Fierce Dragon), désigné JF-17 Thunder au Pakistan, est un chasseur multirôle léger développé conjointement par Chengdu Aerospace Corporation et le Pakistan Aeronautical Complex. Conçu pour être un appareil abordable et performant, il vise à remplacer les flottes vieillissantes de F-7, Mirage III et A-5 de la Pakistan Air Force. Monoréacteur équipé du Klimov RD-93, il dispose d''un radar KLJ-7 et peut emporter un large éventail d''armements air-air et air-sol. Entré en service en 2007, le JF-17 est produit en série au Pakistan et a été exporté vers plusieurs pays dont la Birmanie et le Nigeria. Le Block 3, doté d''un radar AESA et de capacités améliorées, marque une évolution significative du programme.',
+    'The Chengdu FC-1 Xiaolong (Fierce Dragon), designated JF-17 Thunder in Pakistan, is a light multirole fighter jointly developed by Chengdu Aerospace Corporation and Pakistan Aeronautical Complex. Designed to be an affordable and capable aircraft, it aims to replace the aging fleets of F-7, Mirage III and A-5 of the Pakistan Air Force. Single-engine equipped with the Klimov RD-93, it has a KLJ-7 radar and can carry a wide range of air-to-air and air-to-ground armaments. Entered into service in 2007, the JF-17 is mass-produced in Pakistan and has been exported to several countries including Myanmar and Nigeria. Block 3, with an AESA radar and enhanced capabilities, marks a significant leap forward.',
+    (SELECT id FROM countries WHERE code = 'CHN'),
+    '1991-01-01',
+    '2003-08-25',
+    '2007-03-12',
+    1960.0,
+    1352.0,
+    (SELECT id FROM manufacturer WHERE code = 'CAC'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    6586.0
 );
 
 -- Insertion des technologies

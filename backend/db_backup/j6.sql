@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Shenyang J-6', 'Shenyang J-6 Farmer', 'Chasseur chinois de 2e génération', 
-    'https://i.postimg.cc/2ypB2xhV/j6.jpg', 
-    'Le Shenyang J-6 Farmer est une copie chinoise sous licence du MiG-19 soviétique, développée par Shenyang Aircraft Corporation pour l''Armée populaire de libération. Classé dans la 2e génération, il est le premier chasseur supersonique chinois, conçu pour la supériorité aérienne et des missions d''interception. Utilisé pendant la Guerre froide, il a été largement exporté à des pays alliés comme le Pakistan et la Corée du Nord.', 
-    (SELECT id FROM countries WHERE code = 'CHN'), '1956-01-01', '1958-09-30', '1960-01-01', 
-    1450.0, 1390.0, (SELECT id FROM manufacturer WHERE code = 'SAC'), 
-    (SELECT id FROM generation WHERE generation = 2), (SELECT id FROM type WHERE name = 'Chasseur'), 
-    'Retiré', 5770.0
+    'Shenyang J-6',
+    'Shenyang J-6',
+    'Shenyang J-6 Farmer',
+    'Shenyang J-6 Farmer',
+    'Chasseur chinois de 2e génération',
+    'Chinese 2nd-generation fighter',
+    'https://i.postimg.cc/2ypB2xhV/j6.jpg',
+    'Le Shenyang J-6 Farmer est une copie chinoise sous licence du MiG-19 soviétique, développée par Shenyang Aircraft Corporation pour l''Armée populaire de libération. Classé dans la 2e génération, il est le premier chasseur supersonique chinois, conçu pour la supériorité aérienne et des missions d''interception. Utilisé pendant la Guerre froide, il a été largement exporté à des pays alliés comme le Pakistan et la Corée du Nord.',
+    'The Shenyang J-6 Farmer is a Chinese licensed copy of the Soviet MiG-19, developed by Shenyang Aircraft Corporation for the People',
+    (SELECT id FROM countries WHERE code = 'CHN'),
+    '1956-01-01',
+    '1958-09-30',
+    '1960-01-01',
+    1450.0,
+    1390.0,
+    (SELECT id FROM manufacturer WHERE code = 'SAC'),
+    (SELECT id FROM generation WHERE generation = 2),
+    (SELECT id FROM type WHERE name = 'Chasseur'),
+    'Retiré',
+    NULL,
+    5770.0
 );
 
 -- Insertion des technologies

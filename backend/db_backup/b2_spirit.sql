@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'B-2 Spirit', 'Northrop Grumman B-2 Spirit', 'Bombardier furtif américain de 5e génération', 
-    'https://i.postimg.cc/ZKhQXtL5/b2-spirit.jpg', 
-    'Le Northrop Grumman B-2 Spirit est un bombardier stratégique furtif développé pour l''US Air Force. Classé dans la 5e génération, il est conçu pour des missions de pénétration furtive à haute altitude, capable de transporter des armes nucléaires et conventionnelles. Surnommé l''avion furtif par excellence, il a été utilisé dans des conflits modernes pour des frappes stratégiques de précision.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1979-01-01', '1989-07-17', '1997-04-01', 
-    1010.0, 11100.0, (SELECT id FROM manufacturer WHERE code = 'LM'), 
-    (SELECT id FROM generation WHERE generation = 5), (SELECT id FROM type WHERE name = 'Bombardier'), 
-    'Actif', 71600.0
+    'B-2 Spirit',
+    'B-2 Spirit',
+    'Northrop Grumman B-2 Spirit',
+    'Northrop Grumman B-2 Spirit',
+    'Bombardier furtif américain de 5e génération',
+    'American 5th-generation stealth bomber',
+    'https://i.postimg.cc/ZKhQXtL5/b2-spirit.jpg',
+    'Le Northrop Grumman B-2 Spirit est un bombardier stratégique furtif développé pour l''US Air Force. Classé dans la 5e génération, il est conçu pour des missions de pénétration furtive à haute altitude, capable de transporter des armes nucléaires et conventionnelles. Surnommé l''avion furtif par excellence, il a été utilisé dans des conflits modernes pour des frappes stratégiques de précision.',
+    'The Northrop Grumman B-2 Spirit is a stealth strategic bomber developed for the US Air Force. Classified as 5th generation, it is designed for high-altitude stealth penetration missions, capable of carrying nuclear and conventional weapons. Nicknamed the stealth aircraft par excellence, it has been used in modern conflicts for precision strategic strikes.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1979-01-01',
+    '1989-07-17',
+    '1997-04-01',
+    1010.0,
+    11100.0,
+    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM generation WHERE generation = 5),
+    (SELECT id FROM type WHERE name = 'Bombardier'),
+    'Actif',
+    'Active',
+    71600.0
 );
 
 -- Insertion des technologies

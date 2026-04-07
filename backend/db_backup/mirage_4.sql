@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Mirage IV', 'Dassault Mirage IV', 'Bombardier stratégique français de 3e génération', 
-    'https://i.postimg.cc/cC5NMFVn/mirage4.jpg', 
-    'Le Dassault Mirage IV est un bombardier stratégique supersonique développé par Dassault Aviation pour l''Armée de l''Air française. Classé dans la 3e génération, il a été conçu pour la dissuasion nucléaire avec des capacités de pénétration à basse altitude. Utilisé comme vecteur principal de la force de frappe nucléaire française pendant la Guerre froide, il a été adapté plus tard pour des missions de reconnaissance.', 
-    (SELECT id FROM countries WHERE code = 'FRA'), '1956-01-01', '1959-06-17', '1964-10-01', 
-    2340.0, 4000.0, (SELECT id FROM manufacturer WHERE code = 'DAS'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Bombardier'), 
-    'Retiré', 14450.0
+    'Mirage IV',
+    'Mirage IV',
+    'Dassault Mirage IV',
+    'Dassault Mirage IV',
+    'Bombardier stratégique français de 3e génération',
+    'French 3rd-generation strategic bomber',
+    'https://i.postimg.cc/cC5NMFVn/mirage4.jpg',
+    'Le Dassault Mirage IV est un bombardier stratégique supersonique développé par Dassault Aviation pour l''Armée de l''Air française. Classé dans la 3e génération, il a été conçu pour la dissuasion nucléaire avec des capacités de pénétration à basse altitude. Utilisé comme vecteur principal de la force de frappe nucléaire française pendant la Guerre froide, il a été adapté plus tard pour des missions de reconnaissance.',
+    'The Dassault Mirage IV is a supersonic strategic bomber developed by Dassault Aviation for the French Air Force. Classified as 3rd generation, it was designed for nuclear deterrence with low-altitude penetration capabilities. Used as the main vector of the French nuclear strike force during the Cold War, it was later adapted for reconnaissance missions.',
+    (SELECT id FROM countries WHERE code = 'FRA'),
+    '1956-01-01',
+    '1959-06-17',
+    '1964-10-01',
+    2340.0,
+    4000.0,
+    (SELECT id FROM manufacturer WHERE code = 'DAS'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Bombardier'),
+    'Retiré',
+    NULL,
+    14450.0
 );
 
 -- Insertion des technologies

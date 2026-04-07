@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Su-25', 'Sukhoi Su-25 Frogfoot', 'Avion d''appui aérien rapproché soviétique/russe de 3e génération', 
-    'https://i.postimg.cc/K81sMGGQ/su25.jpg', 
-    'Le Sukhoi Su-25 Frogfoot est un avion d''appui aérien rapproché développé pour les forces aériennes soviétiques, puis russes. Classé dans la 3e génération, il est conçu pour fournir un soutien direct aux troupes au sol avec une robustesse exceptionnelle et une forte capacité d''armement. Surnommé le "char volant", il a été largement utilisé dans des conflits comme l''Afghanistan et reste en service dans plusieurs pays.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '1972-01-01', '1975-02-22', '1981-07-01', 
-    975.0, 1850.0, (SELECT id FROM manufacturer WHERE code = 'SUK'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Appui aérien'), 
-    'Actif', 9500.0
+    'Su-25',
+    'Su-25',
+    'Sukhoi Su-25 Frogfoot',
+    'Sukhoi Su-25 Frogfoot',
+    'Avion d''appui aérien rapproché soviétique/russe de 3e génération',
+    'Soviet/Russian 3rd-generation close air support aircraft',
+    'https://i.postimg.cc/K81sMGGQ/su25.jpg',
+    'Le Sukhoi Su-25 Frogfoot est un avion d''appui aérien rapproché développé pour les forces aériennes soviétiques, puis russes. Classé dans la 3e génération, il est conçu pour fournir un soutien direct aux troupes au sol avec une robustesse exceptionnelle et une forte capacité d''armement. Surnommé le "char volant", il a été largement utilisé dans des conflits comme l''Afghanistan et reste en service dans plusieurs pays.',
+    'The Sukhoi Su-25 Frogfoot is a close air support aircraft developed for the Soviet and later Russian air forces. Classified as 3rd generation, it is designed to provide direct support to ground troops with exceptional ruggedness and strong weapon capacity. Nicknamed the "flying tank", it has been widely used in conflicts such as Afghanistan and remains in service in several countries.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '1972-01-01',
+    '1975-02-22',
+    '1981-07-01',
+    975.0,
+    1850.0,
+    (SELECT id FROM manufacturer WHERE code = 'SUK'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Appui aérien'),
+    'Actif',
+    'Active',
+    9500.0
 );
 
 -- Insertion des technologies

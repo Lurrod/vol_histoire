@@ -5,17 +5,49 @@ INSERT INTO armement (name, description) VALUES
 
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Shenyang J-16', 'Shenyang J-16 Strike Flanker', 'Chasseur-bombardier multirôle chinois de 4e génération avancée', 
-    'https://i.postimg.cc/KYrVZ9vy/j16.jpg', 
-    'Le Shenyang J-16 est un chasseur-bombardier multirôle biplace développé par Shenyang Aircraft Corporation, dérivé du Su-30MKK russe. Entré en service en 2015, il représente la version la plus avancée de la lignée Flanker produite en Chine, intégrant des systèmes entièrement nationaux : radar AESA, réacteurs WS-10B et avionique de dernière génération. Capable d''emporter jusqu''à 12 tonnes de charge externe, le J-16 excelle dans les missions de frappe en profondeur, de suppression des défenses aériennes et de supériorité aérienne. Une variante spécialisée en guerre électronique, le J-16D, a également été développée. Il constitue aujourd''hui l''un des appareils les plus polyvalents et les plus produits de l''aviation militaire chinoise.', 
-    (SELECT id FROM countries WHERE code = 'CHN'), '2005-01-01', '2011-10-17', '2015-03-01', 
-    2400.0, 3500.0, (SELECT id FROM manufacturer WHERE code = 'SAC'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 17500.0
+    'Shenyang J-16',
+    'Shenyang J-16',
+    'Shenyang J-16 Strike Flanker',
+    'Shenyang J-16 Strike Flanker',
+    'Chasseur-bombardier multirôle chinois de 4e génération avancée',
+    'Chinese advanced 4th-generation multirole fighter-bomber',
+    'https://i.postimg.cc/KYrVZ9vy/j16.jpg',
+    'Le Shenyang J-16 est un chasseur-bombardier multirôle biplace développé par Shenyang Aircraft Corporation, dérivé du Su-30MKK russe. Entré en service en 2015, il représente la version la plus avancée de la lignée Flanker produite en Chine, intégrant des systèmes entièrement nationaux : radar AESA, réacteurs WS-10B et avionique de dernière génération. Capable d''emporter jusqu''à 12 tonnes de charge externe, le J-16 excelle dans les missions de frappe en profondeur, de suppression des défenses aériennes et de supériorité aérienne. Une variante spécialisée en guerre électronique, le J-16D, a également été développée. Il constitue aujourd''hui l''un des appareils les plus polyvalents et les plus produits de l''aviation militaire chinoise.',
+    'The Shenyang J-16 is a twin-seat multirole fighter-bomber developed by Shenyang Aircraft Corporation, derived from the Russian Su-30MKK. Entered into service in 2015, it represents the most advanced version of the Flanker lineage produced in China, integrating fully national systems: AESA radar, WS-10B engines and latest-generation avionics. Capable of carrying up to 12 tons of external load, the J-16 excels in deep strike, suppression of enemy air defenses and air superiority missions. A specialized electronic warfare variant, the J-16D, has also been developed. It is today one of the most versatile and lethal aircraft in the Chinese inventory.',
+    (SELECT id FROM countries WHERE code = 'CHN'),
+    '2005-01-01',
+    '2011-10-17',
+    '2015-03-01',
+    2400.0,
+    3500.0,
+    (SELECT id FROM manufacturer WHERE code = 'SAC'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    17500.0
 );
 
 -- Insertion des technologies

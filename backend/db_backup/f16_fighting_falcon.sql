@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'F-16 Fighting Falcon', 'General Dynamics F-16 Fighting Falcon', 'Chasseur multirôle américain de 4e génération', 
-    'https://i.postimg.cc/d0fvshX3/f16-fighting-falcon.jpg', 
-    'Le General Dynamics F-16 Fighting Falcon est un avion de chasse multirôle emblématique de l''US Air Force. Classé dans la 4e génération, il est réputé pour sa maniabilité exceptionnelle grâce à son système fly-by-wire, son coût abordable et sa polyvalence dans les missions air-air et air-sol. Largement exporté, il a été utilisé dans de nombreux conflits à travers le monde.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1972-01-01', '1974-02-02', '1979-08-17', 
-    2410.0, 4220.0, (SELECT id FROM manufacturer WHERE code = 'LM'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 8570.0
+    'F-16 Fighting Falcon',
+    'F-16 Fighting Falcon',
+    'General Dynamics F-16 Fighting Falcon',
+    'General Dynamics F-16 Fighting Falcon',
+    'Chasseur multirôle américain de 4e génération',
+    'American 4th-generation multirole fighter',
+    'https://i.postimg.cc/d0fvshX3/f16-fighting-falcon.jpg',
+    'Le General Dynamics F-16 Fighting Falcon est un avion de chasse multirôle emblématique de l''US Air Force. Classé dans la 4e génération, il est réputé pour sa maniabilité exceptionnelle grâce à son système fly-by-wire, son coût abordable et sa polyvalence dans les missions air-air et air-sol. Largement exporté, il a été utilisé dans de nombreux conflits à travers le monde.',
+    'The General Dynamics F-16 Fighting Falcon is an iconic multirole fighter of the US Air Force. Classified as 4th generation, it is renowned for its exceptional maneuverability thanks to its fly-by-wire system, its affordable cost and its versatility in air-to-air and air-to-ground missions. Widely exported, it has been used in numerous conflicts around the world.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1972-01-01',
+    '1974-02-02',
+    '1979-08-17',
+    2410.0,
+    4220.0,
+    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    8570.0
 );
 
 -- Insertion des technologies

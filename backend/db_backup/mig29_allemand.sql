@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'MiG-29 Allemand', 'Mikoyan MiG-29A/UB Fulcrum (NVA / Luftwaffe)', 'Chasseur de supériorité aérienne de 4e génération, joyau hérité de l''Allemagne de l''Est', 
-    'https://i.postimg.cc/QML24bBs/mig29-allemand.jpg', 
-    'Le MiG-29 allemand constitue un cas unique dans l''histoire de l''aviation militaire : seul chasseur de 4e génération du Pacte de Varsovie à avoir été intégré et exploité opérationnellement au sein de l''OTAN. La Nationale Volksarmee (NVA) de l''Allemagne de l''Est reçut 24 appareils — 20 MiG-29A monoplaces et 4 MiG-29UB biplaces — à partir de 1988, seulement deux ans avant la chute du Mur de Berlin. Après la réunification de 1990, contrairement aux MiG-21 et MiG-23 rapidement retirés, la Luftwaffe décida de conserver les MiG-29 en service actif au sein du JG 73 « Steinhoff » basé à Laage, en Mecklembourg. Cette décision s''avéra stratégiquement précieuse : les Fulcrum allemands participèrent à de nombreux exercices OTAN, révélant les capacités redoutables du missile R-73 Archer couplé au viseur de casque, et démontrant une supériorité en combat rapproché face aux F-16 et F/A-18 occidentaux. Les appareils furent modernisés aux standards OTAN avec l''intégration de systèmes IFF, de communications sécurisées et d''un GPS. En 2003, après 15 ans de service sous les couleurs allemandes, les 22 MiG-29 restants furent cédés à la Pologne pour un euro symbolique chacun, mettant fin à ce chapitre exceptionnel de l''aviation européenne.', 
-    (SELECT id FROM countries WHERE code = 'DEU'), '1974-01-01', '1977-10-06', '1988-05-01', 
-    2450.0, 1430.0, (SELECT id FROM manufacturer WHERE code = 'MIG'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Chasseur'), 
-    'Retiré', 11000.0
+    'MiG-29 Allemand',
+    'German MiG-29',
+    'Mikoyan MiG-29A/UB Fulcrum (NVA / Luftwaffe)',
+    'Mikoyan MiG-29A/UB Fulcrum (NVA / Luftwaffe)',
+    'Chasseur de supériorité aérienne de 4e génération, joyau hérité de l''Allemagne de l''Est',
+    '4th-generation air superiority fighter, jewel inherited from East Germany',
+    'https://i.postimg.cc/QML24bBs/mig29-allemand.jpg',
+    'Le MiG-29 allemand constitue un cas unique dans l''histoire de l''aviation militaire : seul chasseur de 4e génération du Pacte de Varsovie à avoir été intégré et exploité opérationnellement au sein de l''OTAN. La Nationale Volksarmee (NVA) de l''Allemagne de l''Est reçut 24 appareils — 20 MiG-29A monoplaces et 4 MiG-29UB biplaces — à partir de 1988, seulement deux ans avant la chute du Mur de Berlin. Après la réunification de 1990, contrairement aux MiG-21 et MiG-23 rapidement retirés, la Luftwaffe décida de conserver les MiG-29 en service actif au sein du JG 73 « Steinhoff » basé à Laage, en Mecklembourg. Cette décision s''avéra stratégiquement précieuse : les Fulcrum allemands participèrent à de nombreux exercices OTAN, révélant les capacités redoutables du missile R-73 Archer couplé au viseur de casque, et démontrant une supériorité en combat rapproché face aux F-16 et F/A-18 occidentaux. Les appareils furent modernisés aux standards OTAN avec l''intégration de systèmes IFF, de communications sécurisées et d''un GPS. En 2003, après 15 ans de service sous les couleurs allemandes, les 22 MiG-29 restants furent cédés à la Pologne pour un euro symbolique chacun, mettant fin à ce chapitre exceptionnel de l''aviation européenne.',
+    'The German MiG-29 constitutes a unique case in military aviation history: the only 4th-generation fighter from the Warsaw Pact to have been integrated and operationally operated within NATO. The East German Nationale Volksarmee (NVA) received 24 aircraft — 20 single-seat MiG-29A and 4 twin-seat MiG-29UB — from 1988, only two years before the fall of the Berlin Wall. After the 1990 reunification, unlike the MiG-21 and MiG-23 which were quickly retired, the Luftwaffe decided to keep the MiG-29s in active service within JG 73 "Steinhoff" based at Laage in Mecklenburg. This decision proved strategic.',
+    (SELECT id FROM countries WHERE code = 'DEU'),
+    '1974-01-01',
+    '1977-10-06',
+    '1988-05-01',
+    2450.0,
+    1430.0,
+    (SELECT id FROM manufacturer WHERE code = 'MIG'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Chasseur'),
+    'Retiré',
+    NULL,
+    11000.0
 );
 
 -- Insertion des technologies

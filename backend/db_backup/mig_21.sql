@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'MiG-21', 'Mikoyan-Gourevitch MiG-21 Fishbed', 'Chasseur soviétique de 3e génération', 
-    'https://i.postimg.cc/bwnsrntT/mig21.jpg', 
-    'Le Mikoyan-Gourevitch MiG-21 Fishbed est un avion de chasse supersonique développé pour les forces aériennes soviétiques. Classé dans la 3e génération, il est connu pour sa simplicité, sa vitesse et sa maniabilité, servant principalement comme intercepteur et chasseur léger. Largement exporté, il a été un pilier des forces aériennes du Pacte de Varsovie et a participé à de nombreux conflits de la Guerre froide à nos jours.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '1954-01-01', '1956-06-14', '1959-01-01', 
-    2230.0, 1210.0, (SELECT id FROM manufacturer WHERE code = 'MIG'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Chasseur'), 
-    'Actif', 5843.0
+    'MiG-21',
+    'MiG-21',
+    'Mikoyan-Gourevitch MiG-21 Fishbed',
+    'Mikoyan-Gurevich MiG-21 Fishbed',
+    'Chasseur soviétique de 3e génération',
+    'Soviet 3rd-generation fighter',
+    'https://i.postimg.cc/bwnsrntT/mig21.jpg',
+    'Le Mikoyan-Gourevitch MiG-21 Fishbed est un avion de chasse supersonique développé pour les forces aériennes soviétiques. Classé dans la 3e génération, il est connu pour sa simplicité, sa vitesse et sa maniabilité, servant principalement comme intercepteur et chasseur léger. Largement exporté, il a été un pilier des forces aériennes du Pacte de Varsovie et a participé à de nombreux conflits de la Guerre froide à nos jours.',
+    'The Mikoyan-Gurevich MiG-21 Fishbed is a supersonic fighter aircraft developed for the Soviet air forces. Classified as 3rd generation, it is known for its simplicity, speed and maneuverability, serving mainly as an interceptor and light fighter. Widely exported, it was a pillar of Warsaw Pact air forces and has participated in many conflicts from the Cold War to the present.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '1954-01-01',
+    '1956-06-14',
+    '1959-01-01',
+    2230.0,
+    1210.0,
+    (SELECT id FROM manufacturer WHERE code = 'MIG'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Chasseur'),
+    'Actif',
+    'Active',
+    5843.0
 );
 
 -- Insertion des technologies

@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Étendard IV', 'Dassault Étendard IV', 'Chasseur naval français de 2e génération', 
-    'https://i.postimg.cc/pdJq4nP1/etendard4.jpg', 
-    'Le Dassault Étendard IV est un avion de chasse embarqué développé par Dassault Aviation pour la Marine nationale française. Classé dans la 2e génération, il a été conçu pour des missions d''attaque au sol et de reconnaissance depuis des porte-avions. Premier avion naval français de série, il a servi de base au développement du Super Étendard.', 
-    (SELECT id FROM countries WHERE code = 'FRA'), '1954-01-01', '1958-05-21', '1962-07-01', 
-    1099.0, 1700.0, (SELECT id FROM manufacturer WHERE code = 'DAS'), 
-    (SELECT id FROM generation WHERE generation = 2), (SELECT id FROM type WHERE name = 'Appui aérien'), 
-    'Retiré', 6100.0
+    'Étendard IV',
+    'Étendard IV',
+    'Dassault Étendard IV',
+    'Dassault Étendard IV',
+    'Chasseur naval français de 2e génération',
+    'French 2nd-generation naval fighter',
+    'https://i.postimg.cc/pdJq4nP1/etendard4.jpg',
+    'Le Dassault Étendard IV est un avion de chasse embarqué développé par Dassault Aviation pour la Marine nationale française. Classé dans la 2e génération, il a été conçu pour des missions d''attaque au sol et de reconnaissance depuis des porte-avions. Premier avion naval français de série, il a servi de base au développement du Super Étendard.',
+    'The Dassault Étendard IV is a carrier-based fighter developed by Dassault Aviation for the French Navy. Classified as 2nd generation, it was designed for ground attack and reconnaissance missions from aircraft carriers. The first French production naval aircraft, it served as the basis for the development of the Super Étendard.',
+    (SELECT id FROM countries WHERE code = 'FRA'),
+    '1954-01-01',
+    '1958-05-21',
+    '1962-07-01',
+    1099.0,
+    1700.0,
+    (SELECT id FROM manufacturer WHERE code = 'DAS'),
+    (SELECT id FROM generation WHERE generation = 2),
+    (SELECT id FROM type WHERE name = 'Appui aérien'),
+    'Retiré',
+    NULL,
+    6100.0
 );
 
 -- Insertion des technologies

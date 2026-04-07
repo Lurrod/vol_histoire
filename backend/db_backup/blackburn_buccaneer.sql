@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Blackburn Buccaneer', 'Blackburn (Hawker Siddeley) Buccaneer', 'Bombardier embarqué britannique de 2e génération spécialisé dans l''attaque à basse altitude', 
-    'https://i.postimg.cc/cJnHWCh9/blackburn_buccaneer.jpg', 
-    'Le Blackburn Buccaneer est un avion d''attaque embarqué conçu pour la Royal Navy afin de mener des frappes antinavires à très basse altitude sous la couverture radar ennemie. Classé dans la 2e génération, il se distingue par son système de soufflage de couche limite sur les ailes et les gouvernes, lui conférant d''excellentes performances à basse vitesse indispensables aux opérations sur porte-avions. Propulsé par deux réacteurs Rolls-Royce Spey, il possède une soute à bombes rotative interne et peut emporter une charge offensive considérable. Après le retrait des porte-avions britanniques, le Buccaneer a été transféré à la RAF où il a servi comme bombardier tactique à pénétration basse altitude. Il s''est illustré pendant la guerre du Golfe en 1991 comme désignateur laser pour les Tornado, prouvant sa valeur jusqu''à sa retraite en 1994. L''Afrique du Sud l''a également employé au combat.', 
-    (SELECT id FROM countries WHERE code = 'GBR'), '1955-01-01', '1958-04-30', '1962-07-17', 
-    1040.0, 3700.0, (SELECT id FROM manufacturer WHERE code = 'BAE'), 
-    (SELECT id FROM generation WHERE generation = 2), (SELECT id FROM type WHERE name = 'Bombardier'), 
-    'Retiré', 13608.0
+    'Blackburn Buccaneer',
+    'Blackburn Buccaneer',
+    'Blackburn (Hawker Siddeley) Buccaneer',
+    'Blackburn (Hawker Siddeley) Buccaneer',
+    'Bombardier embarqué britannique de 2e génération spécialisé dans l''attaque à basse altitude',
+    'British 2nd-generation carrier-based bomber specialized in low-altitude attack',
+    'https://i.postimg.cc/cJnHWCh9/blackburn_buccaneer.jpg',
+    'Le Blackburn Buccaneer est un avion d''attaque embarqué conçu pour la Royal Navy afin de mener des frappes antinavires à très basse altitude sous la couverture radar ennemie. Classé dans la 2e génération, il se distingue par son système de soufflage de couche limite sur les ailes et les gouvernes, lui conférant d''excellentes performances à basse vitesse indispensables aux opérations sur porte-avions. Propulsé par deux réacteurs Rolls-Royce Spey, il possède une soute à bombes rotative interne et peut emporter une charge offensive considérable. Après le retrait des porte-avions britanniques, le Buccaneer a été transféré à la RAF où il a servi comme bombardier tactique à pénétration basse altitude. Il s''est illustré pendant la guerre du Golfe en 1991 comme désignateur laser pour les Tornado, prouvant sa valeur jusqu''à sa retraite en 1994. L''Afrique du Sud l''a également employé au combat.',
+    'The Blackburn Buccaneer is a carrier-based attack aircraft designed for the Royal Navy to carry out anti-ship strikes at very low altitude under enemy radar cover. Classified as 2nd generation, it is distinguished by its boundary layer blowing system on wings and control surfaces, giving it excellent low-speed performance essential for carrier operations. Powered by two Rolls-Royce Spey engines, it has an internal rotating bomb bay and can carry a considerable offensive load. After the withdrawal of British aircraft carriers, the Buccaneer was transferred to the RAF where it served as a low-altitude penetration tactical bomber. It distinguished itself during the Gulf War in 1991 as a laser designator for Tornados, proving its value until its retirement in 1994. South Africa also employed it in combat.',
+    (SELECT id FROM countries WHERE code = 'GBR'),
+    '1955-01-01',
+    '1958-04-30',
+    '1962-07-17',
+    1040.0,
+    3700.0,
+    (SELECT id FROM manufacturer WHERE code = 'BAE'),
+    (SELECT id FROM generation WHERE generation = 2),
+    (SELECT id FROM type WHERE name = 'Bombardier'),
+    'Retiré',
+    NULL,
+    13608.0
 );
 
 -- Insertion des technologies

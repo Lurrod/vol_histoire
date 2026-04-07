@@ -12,6 +12,7 @@ const {
   authorize, cleanupExpiredTokens, cleanupUnverifiedUsers, revokeAllUserRefreshTokens,
 } = authMiddleware;
 const mailer = require('./mailer');
+const { langMiddleware } = require('./i18n');
 
 const app = express();
 
@@ -155,6 +156,9 @@ const emailLimiter = rateLimit({
 
 // Appliquer le limiteur global à toutes les routes API
 app.use('/api/', globalApiLimiter);
+
+// Middleware i18n : attache req.lang (fr/en) sur toutes les routes /api/*
+app.use('/api/', langMiddleware);
 
 // -----------------------------------------------------------------------------
 // Documentation API (Swagger UI)

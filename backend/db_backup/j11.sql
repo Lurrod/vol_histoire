@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Shenyang J-11', 'Shenyang J-11 Flanker', 'Chasseur de supériorité aérienne chinois de 4e génération', 
-    'https://i.postimg.cc/NfCQtjCx/j11.jpg', 
-    'Le Shenyang J-11 est un chasseur de supériorité aérienne produit par Shenyang Aircraft Corporation, dérivé du Sukhoi Su-27 russe sous licence. Le programme a débuté dans les années 1990 avec l''assemblage sous licence de Su-27SK, avant d''évoluer vers le J-11B, une version entièrement sinisée intégrant des systèmes avioniques chinois, un radar AESA national et des réacteurs WS-10. Plus lourd et mieux armé que le J-10, le J-11 constitue l''épine dorsale de la chasse lourde de l''Armée populaire de libération et reste en production active avec des variantes modernisées.', 
-    (SELECT id FROM countries WHERE code = 'CHN'), '1995-01-01', '1998-12-16', '2000-06-01', 
-    2500.0, 3530.0, (SELECT id FROM manufacturer WHERE code = 'SAC'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Chasseur'), 
-    'Actif', 16380.0
+    'Shenyang J-11',
+    'Shenyang J-11',
+    'Shenyang J-11 Flanker',
+    'Shenyang J-11 Flanker',
+    'Chasseur de supériorité aérienne chinois de 4e génération',
+    'Chinese 4th-generation air superiority fighter',
+    'https://i.postimg.cc/NfCQtjCx/j11.jpg',
+    'Le Shenyang J-11 est un chasseur de supériorité aérienne produit par Shenyang Aircraft Corporation, dérivé du Sukhoi Su-27 russe sous licence. Le programme a débuté dans les années 1990 avec l''assemblage sous licence de Su-27SK, avant d''évoluer vers le J-11B, une version entièrement sinisée intégrant des systèmes avioniques chinois, un radar AESA national et des réacteurs WS-10. Plus lourd et mieux armé que le J-10, le J-11 constitue l''épine dorsale de la chasse lourde de l''Armée populaire de libération et reste en production active avec des variantes modernisées.',
+    'The Shenyang J-11 is an air superiority fighter produced by Shenyang Aircraft Corporation, derived from the Russian Sukhoi Su-27 under license. The program began in the 1990s with the licensed assembly of Su-27SK, before evolving into the J-11B, a fully sinicized version integrating Chinese avionics systems, a national AESA radar and WS-10 engines. Heavier and better armed than the J-10, the J-11 forms the backbone of the People',
+    (SELECT id FROM countries WHERE code = 'CHN'),
+    '1995-01-01',
+    '1998-12-16',
+    '2000-06-01',
+    2500.0,
+    3530.0,
+    (SELECT id FROM manufacturer WHERE code = 'SAC'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Chasseur'),
+    'Actif',
+    'Active',
+    16380.0
 );
 
 -- Insertion des technologies

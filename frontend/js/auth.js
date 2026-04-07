@@ -219,6 +219,29 @@ const auth = (() => {
 
   // ========== fetchWithTimeout — fetch avec timeout via AbortController ==========
 
+  /**
+   * Injecte automatiquement `?lang=fr|en` sur toutes les URLs /api/*
+   * en lisant la langue actuelle depuis localStorage (vol-histoire-lang).
+   * Les URLs absolues et non-/api sont laissées intactes.
+   */
+  function withLangParam(url) {
+    if (typeof url !== 'string') return url;
+    // Ne toucher que les URLs /api/* relatives ou absolues same-origin
+    const isApi = url.startsWith('/api/') ||
+                  url.includes('://' + (typeof location !== 'undefined' ? location.host : '') + '/api/');
+    if (!isApi) return url;
+
+    let lang = 'fr';
+    try {
+      lang = localStorage.getItem('vol-histoire-lang') || 'fr';
+    } catch { /* localStorage indisponible */ }
+
+    const separator = url.includes('?') ? '&' : '?';
+    // Ne pas doubler si lang= déjà présent
+    if (/[?&]lang=/.test(url)) return url;
+    return `${url}${separator}lang=${encodeURIComponent(lang)}`;
+  }
+
   function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
     const controller = new AbortController();
     const existing = options.signal;
@@ -226,7 +249,7 @@ const auth = (() => {
       existing.addEventListener('abort', () => controller.abort());
     }
     const timer = setTimeout(() => controller.abort(), timeoutMs);
-    return fetch(url, { ...options, signal: controller.signal })
+    return fetch(withLangParam(url), { ...options, signal: controller.signal })
       .finally(() => clearTimeout(timer));
   }
 
