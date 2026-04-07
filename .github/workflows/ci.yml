@@ -128,14 +128,41 @@ jobs:
       - name: Seed test users
         run: cd e2e && node seed-test-users.js
 
+      - name: Seed test data (countries, manufacturers, airplanes...)
+        run: cd e2e && node seed-test-data.js
+
       - name: Install E2E dependencies
         run: cd e2e && npm ci
 
       - name: Install Playwright browsers
         run: cd e2e && npx playwright install --with-deps chromium
 
+      - name: Start backend server
+        run: |
+          cd backend && node server.js &
+          echo $! > /tmp/backend.pid
+          # Attendre que /api/health réponde 200
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -sf http://localhost:3000/api/health > /dev/null; then
+              echo "Backend prêt"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Backend KO après 10s"
+          exit 1
+
       - name: Run Playwright tests
+        env:
+          E2E_BASE_URL: http://localhost:3000
         run: cd e2e && npm test
+
+      - name: Stop backend server
+        if: always()
+        run: |
+          if [ -f /tmp/backend.pid ]; then
+            kill $(cat /tmp/backend.pid) 2>/dev/null || true
+          fi
 
       - name: Upload Playwright report
         if: always()

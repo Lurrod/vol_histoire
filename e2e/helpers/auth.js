@@ -8,17 +8,21 @@
  * @param {string} password
  */
 async function loginViaApi(page, email, password) {
-  const response = await page.request.post('http://localhost:3000/api/login', {
+  // Utilise une URL relative → même origine que le frontend → le cookie
+  // refreshToken (HttpOnly, Path=/api, SameSite=Strict) est correctement
+  // posé sur le BrowserContext et envoyé sur les navigations suivantes.
+  const baseURL = page.context()._options?.baseURL || 'http://localhost:3000';
+  const response = await page.request.post(`${baseURL}/api/login`, {
     data: { email, password },
   });
-  const body = await response.json();
-  if (!body.token) {
-    throw new Error(`Login échoué : ${JSON.stringify(body)}`);
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok() || !body.token) {
+    throw new Error(`Login échoué (${response.status()}) : ${JSON.stringify(body)}`);
   }
-  // Stocker le token dans localStorage pour que auth.js le trouve
-  await page.addInitScript((token) => {
-    window.localStorage.setItem('authToken', token);
-  }, body.token);
+  // Le cookie refreshToken est désormais dans le BrowserContext.
+  // À la prochaine navigation, auth.init() appellera /api/refresh et
+  // récupérera un access token frais en mémoire (pattern attendu).
+  return body.token;
 }
 
 module.exports = { loginViaApi };
