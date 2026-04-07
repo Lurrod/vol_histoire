@@ -8,22 +8,19 @@
  * @param {string} password
  */
 async function loginViaApi(page, email, password) {
-  // URL relative : page.request hérite automatiquement du baseURL du context.
-  // Le cookie refreshToken (HttpOnly, Path=/api, SameSite=Strict) est posé
-  // sur le BrowserContext et envoyé sur les navigations same-origin suivantes.
-  const response = await page.request.post('/api/login', {
-    data: { email, password },
-  });
-  const body = await response.json().catch(() => ({}));
-  if (!response.ok() || !body.token) {
-    throw new Error(`Login échoué (${response.status()}) : ${JSON.stringify(body)}`);
-  }
-  // Force la première navigation (load + auth.init() → /api/refresh) pour
-  // garantir que l'access token est en mémoire AVANT que le test ne goto une page.
-  // Sinon certaines pages (settings) peuvent rendre avant que le rôle soit connu.
-  await page.goto('/');
+  // Login via le FORMULAIRE réel → garantit que :
+  //  1. Le cookie refreshToken est posé par une vraie navigation browser
+  //  2. auth.setToken() est appelé en mémoire JS du contexte page
+  //  3. login.js gère le redirect vers /
+  // Plus fiable que page.request.post (qui souffre de subtilités cookie context).
+  await page.goto('/login');
+  await page.fill('#login-email', email);
+  await page.fill('#login-password', password);
+  await Promise.all([
+    page.waitForURL((url) => !url.pathname.includes('login'), { timeout: 10000 }),
+    page.click('#login-form button[type="submit"]'),
+  ]);
   await page.waitForLoadState('networkidle');
-  return body.token;
 }
 
 module.exports = { loginViaApi };

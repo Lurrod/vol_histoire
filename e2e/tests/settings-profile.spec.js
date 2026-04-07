@@ -11,6 +11,9 @@ test.describe('Settings — Profil & Sécurité', () => {
   test('la page settings affiche le nom et l\'email pré-remplis', async ({ page }) => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
+    // Section dashboard est active par défaut → switch vers profil
+    await page.click('[data-section="profile"]');
+    await page.waitForTimeout(300);
 
     const nameInput = page.locator('#name');
     await expect(nameInput).toBeVisible({ timeout: 8000 });
@@ -26,6 +29,8 @@ test.describe('Settings — Profil & Sécurité', () => {
   test('modifier le nom et sauvegarder affiche un toast de succès', async ({ page }) => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
+    await page.click('[data-section="profile"]');
+    await page.waitForTimeout(300);
 
     const nameInput = page.locator('#name');
     await expect(nameInput).toBeVisible({ timeout: 8000 });
@@ -55,6 +60,8 @@ test.describe('Settings — Profil & Sécurité', () => {
   test('le bouton réinitialiser restaure les valeurs du profil', async ({ page }) => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
+    await page.click('[data-section="profile"]');
+    await page.waitForTimeout(300);
 
     const nameInput = page.locator('#name');
     await expect(nameInput).toBeVisible({ timeout: 8000 });
