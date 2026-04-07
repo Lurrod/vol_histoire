@@ -9,7 +9,7 @@ const fs = require('fs');
 const authMiddleware = require('./middleware/auth');
 const logger = require('./logger');
 const {
-  authorize, cleanupExpiredTokens, revokeAllUserRefreshTokens,
+  authorize, cleanupExpiredTokens, cleanupUnverifiedUsers, revokeAllUserRefreshTokens,
 } = authMiddleware;
 const mailer = require('./mailer');
 
@@ -31,7 +31,7 @@ app.use((req, res, next) => {
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
-    "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com",
+    "script-src 'self' https://www.googletagmanager.com/gtag/js https://www.google-analytics.com/analytics.js",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
     "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
     "img-src 'self' https://i.postimg.cc https://flagcdn.com https://www.googletagmanager.com data:",
@@ -158,10 +158,113 @@ app.use('/api/', globalApiLimiter);
 // -----------------------------------------------------------------------------
 try {
   const openapiDoc = YAML.parse(fs.readFileSync(path.join(__dirname, 'openapi.yaml'), 'utf8'));
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapiDoc, {
-    customCss: '.swagger-ui .topbar { display: none }',
+  // En production, restreindre l'accès à la doc API aux admins
+  if (process.env.NODE_ENV === 'production') {
+    app.use('/api/docs', (req, res, next) => {
+      res.status(404).sendFile(path.join(__dirname, '../frontend/index.html'));
+    });
+  } else {
+    app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapiDoc, {
+    customCss: `
+      /* Fond global */
+      html, body, #swagger-ui, .swagger-ui { background: #0a0a0a !important; }
+      .swagger-ui .wrapper { background: #0a0a0a !important; }
+      .swagger-ui .topbar { display: none !important; }
+
+      /* Polices */
+      .swagger-ui, .swagger-ui .opblock-body, .swagger-ui .opblock-description-wrapper,
+      .swagger-ui table, .swagger-ui .btn { font-family: 'Space Grotesk', sans-serif !important; }
+      .swagger-ui .info .title, .swagger-ui .opblock-tag { font-family: 'Orbitron', sans-serif !important; }
+
+      /* Titres et texte */
+      .swagger-ui .info .title { color: #C8A96E !important; }
+      .swagger-ui .info .title small { background: #C8A96E !important; color: #0a0a0a !important; }
+      .swagger-ui .info .title small pre { color: #0a0a0a !important; }
+      .swagger-ui .info { margin: 30px 0 !important; }
+      .swagger-ui .info p, .swagger-ui .info a { color: #aaa !important; }
+      .swagger-ui p, .swagger-ui .markdown p, .swagger-ui .renderedMarkdown p { color: #aaa !important; }
+      .swagger-ui h4, .swagger-ui h5, .swagger-ui label { color: #ddd !important; }
+      .swagger-ui a { color: #C8A96E !important; }
+      .swagger-ui .opblock-tag { color: #C8A96E !important; border-bottom: 1px solid #1a1a1a !important; }
+      .swagger-ui .opblock-tag small { color: #888 !important; }
+
+      /* Scheme container */
+      .swagger-ui .scheme-container { background: #111 !important; border-bottom: 1px solid #222 !important; box-shadow: none !important; }
+
+      /* Blocs opérations */
+      .swagger-ui .opblock { border-color: #222 !important; background: #111 !important; box-shadow: none !important; }
+      .swagger-ui .opblock .opblock-summary { border-color: #222 !important; }
+      .swagger-ui .opblock .opblock-summary-description { color: #aaa !important; }
+      .swagger-ui .opblock .opblock-summary-path, .swagger-ui .opblock .opblock-summary-path span { color: #ddd !important; }
+      .swagger-ui .opblock.opblock-get { background: rgba(26,58,92,0.15) !important; border-color: #1a3a5c !important; }
+      .swagger-ui .opblock.opblock-get .opblock-summary { border-color: #1a3a5c !important; background: rgba(26,58,92,0.25) !important; }
+      .swagger-ui .opblock.opblock-post { background: rgba(26,92,58,0.15) !important; border-color: #1a5c3a !important; }
+      .swagger-ui .opblock.opblock-post .opblock-summary { border-color: #1a5c3a !important; background: rgba(26,92,58,0.25) !important; }
+      .swagger-ui .opblock.opblock-put { background: rgba(92,74,26,0.15) !important; border-color: #5c4a1a !important; }
+      .swagger-ui .opblock.opblock-put .opblock-summary { border-color: #5c4a1a !important; background: rgba(92,74,26,0.25) !important; }
+      .swagger-ui .opblock.opblock-delete { background: rgba(92,26,26,0.15) !important; border-color: #5c1a1a !important; }
+      .swagger-ui .opblock.opblock-delete .opblock-summary { border-color: #5c1a1a !important; background: rgba(92,26,26,0.25) !important; }
+      .swagger-ui .opblock-body { background: #0d0d0d !important; }
+      .swagger-ui .opblock-body pre { background: #111 !important; color: #ccc !important; }
+      .swagger-ui .opblock-description-wrapper p { color: #aaa !important; }
+
+      /* Boutons */
+      .swagger-ui .btn { border-color: #C8A96E !important; color: #C8A96E !important; background: transparent !important; }
+      .swagger-ui .btn:hover { background: rgba(200,169,110,0.1) !important; }
+      .swagger-ui .btn.execute { background: #C8A96E !important; color: #0a0a0a !important; border-color: #C8A96E !important; }
+      .swagger-ui .btn.cancel { background: transparent !important; }
+
+      /* Inputs */
+      .swagger-ui select { background: #1a1a1a !important; color: #e0e0e0 !important; border-color: #333 !important; }
+      .swagger-ui input[type=text], .swagger-ui input[type=password], .swagger-ui input[type=search],
+      .swagger-ui input[type=email], .swagger-ui input[type=file] { background: #1a1a1a !important; color: #e0e0e0 !important; border-color: #333 !important; }
+      .swagger-ui textarea { background: #1a1a1a !important; color: #e0e0e0 !important; border-color: #333 !important; }
+
+      /* Tables */
+      .swagger-ui table { background: transparent !important; }
+      .swagger-ui table thead tr th { color: #C8A96E !important; border-bottom: 1px solid #222 !important; background: transparent !important; }
+      .swagger-ui table tbody tr td { border-bottom: 1px solid #1a1a1a !important; color: #ccc !important; background: transparent !important; }
+      .swagger-ui .parameters-col_description input { background: #1a1a1a !important; color: #e0e0e0 !important; }
+
+      /* Paramètres */
+      .swagger-ui .parameter__name { color: #e0e0e0 !important; }
+      .swagger-ui .parameter__name.required::after { color: #e74c3c !important; }
+      .swagger-ui .parameter__type { color: #888 !important; }
+      .swagger-ui .parameter__in { color: #666 !important; }
+
+      /* Réponses */
+      .swagger-ui .response-col_status { color: #C8A96E !important; }
+      .swagger-ui .response-col_description { color: #ccc !important; }
+      .swagger-ui .responses-inner { background: #0d0d0d !important; }
+      .swagger-ui .responses-table { background: transparent !important; }
+      .swagger-ui .response { color: #ccc !important; }
+      .swagger-ui .microlight { background: #111 !important; color: #ccc !important; }
+      .swagger-ui .highlight-code { background: #111 !important; }
+      .swagger-ui .highlight-code .microlight { background: #111 !important; }
+      .swagger-ui .copy-to-clipboard { background: #222 !important; }
+
+      /* Modèles */
+      .swagger-ui section.models { border: 1px solid #222 !important; background: #0d0d0d !important; }
+      .swagger-ui section.models h4 { color: #C8A96E !important; border-bottom: 1px solid #222 !important; }
+      .swagger-ui .model-title { color: #C8A96E !important; }
+      .swagger-ui .model-box { background: #111 !important; }
+      .swagger-ui .model { color: #ccc !important; }
+      .swagger-ui .prop-type { color: #C8A96E !important; }
+      .swagger-ui .prop-format { color: #888 !important; }
+
+      /* Authorize */
+      .swagger-ui .auth-wrapper { background: #0d0d0d !important; }
+      .swagger-ui .dialog-ux .modal-ux { background: #111 !important; border: 1px solid #222 !important; }
+      .swagger-ui .dialog-ux .modal-ux-header { border-bottom: 1px solid #222 !important; }
+      .swagger-ui .dialog-ux .modal-ux-header h3 { color: #C8A96E !important; }
+      .swagger-ui .dialog-ux .modal-ux-content p { color: #ccc !important; }
+      .swagger-ui .dialog-ux .modal-ux-content h4 { color: #ddd !important; }
+      .swagger-ui .auth-btn-wrapper .btn-done { background: #C8A96E !important; color: #0a0a0a !important; }
+    `,
     customSiteTitle: 'Vol d\'Histoire — API Docs',
+    customfavIcon: '/favicon.ico',
   }));
+  }
 } catch { /* openapi.yaml absent (tests) — Swagger désactivé */ }
 
 // -----------------------------------------------------------------------------
@@ -205,9 +308,11 @@ const createUsersRouter = require('./routes/users');
 app.use('/api', createUsersRouter(() => pool));
 
 const createAirplanesRouter = require('./routes/airplanes');
-app.use('/api', createAirplanesRouter(() => pool, {
+const airplanesRouter = createAirplanesRouter(() => pool, {
   onAirplaneChange: () => app.invalidateStatsCache?.(),
-}));
+});
+app.use('/api', airplanesRouter);
+app.invalidateAirplanesReferentialCache = () => airplanesRouter.invalidateReferentialCache?.();
 
 const createFavoritesRouter = require('./routes/favorites');
 app.use('/api', createFavoritesRouter(() => pool));
@@ -221,6 +326,16 @@ app.invalidateStatsCache = () => statsRouter.invalidateCache?.();
 
 const createSitemapRouter = require('./routes/sitemap');
 app.use('/', createSitemapRouter(() => pool));
+
+// Health check
+app.get('/api/health', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() });
+  } catch {
+    res.status(503).json({ status: 'error', message: 'Database unreachable' });
+  }
+});
 
 // -----------------------------------------------------------------------------
 // Clean URLs : /hangar → hangar.html, /a-propos → a-propos.html, etc.
@@ -293,6 +408,7 @@ app.use((err, req, res, next) => {
 // Nettoyage périodique des refresh tokens expirés/révoqués (toutes les heures)
 // -----------------------------------------------------------------------------
 let tokenCleanupInterval;
+let unverifiedUsersCleanupInterval;
 if (process.env.NODE_ENV !== 'test') {
   tokenCleanupInterval = setInterval(async () => {
     try {
@@ -301,12 +417,26 @@ if (process.env.NODE_ENV !== 'test') {
       logger.error('Erreur nettoyage refresh tokens', { error: err.message });
     }
   }, 60 * 60 * 1000);
+
+  // Purge des comptes non vérifiés depuis plus de 7 jours (toutes les 24h)
+  unverifiedUsersCleanupInterval = setInterval(async () => {
+    try {
+      const deleted = await cleanupUnverifiedUsers();
+      if (deleted > 0) {
+        logger.info('Comptes non vérifiés purgés', { count: deleted });
+      }
+    } catch (err) {
+      logger.error('Erreur purge comptes non vérifiés', { error: err.message });
+    }
+  }, 24 * 60 * 60 * 1000);
 }
 
 // Exposé pour les tests et le graceful shutdown
 app.stopCleanup = () => {
   if (tokenCleanupInterval) clearInterval(tokenCleanupInterval);
+  if (unverifiedUsersCleanupInterval) clearInterval(unverifiedUsersCleanupInterval);
 };
+app.cleanupUnverifiedUsers = cleanupUnverifiedUsers;
 
 // Exposé pour que d'autres routes puissent révoquer les tokens (ex: changement de MDP)
 app.revokeAllUserRefreshTokens = revokeAllUserRefreshTokens;

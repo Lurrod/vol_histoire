@@ -93,6 +93,20 @@ async function cleanupExpiredTokens() {
   );
 }
 
+/**
+ * Supprime les comptes utilisateurs non vérifiés depuis plus de 7 jours.
+ * Les email_tokens associés sont supprimés en cascade via la FK ON DELETE CASCADE.
+ * Retourne le nombre de comptes supprimés.
+ */
+async function cleanupUnverifiedUsers() {
+  const result = await pool.query(
+    `DELETE FROM users
+     WHERE email_verified = FALSE
+       AND created_at < NOW() - INTERVAL '7 days'`
+  );
+  return result.rowCount || 0;
+}
+
 function setRefreshCookie(res, token) {
   res.cookie(REFRESH_COOKIE_NAME, token, {
     httpOnly: true,
@@ -138,6 +152,24 @@ const authorize = (roles) => {
   };
 };
 
+/**
+ * Middleware : autorise uniquement le propriétaire de la ressource ou un admin (role 1).
+ * À placer APRÈS authorize([...]) pour que req.user soit déjà défini.
+ * @param {string} paramName - nom du paramètre d'URL contenant l'ID utilisateur (défaut 'id')
+ */
+const isOwnerOrAdmin = (paramName = 'id') => (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Non authentifié' });
+  }
+  const targetId = Number(req.params[paramName]);
+  const requesterId = Number(req.user.id);
+  const requesterRole = Number(req.user.role);
+  if (requesterId !== targetId && requesterRole !== 1) {
+    return res.status(403).json({ message: 'Accès non autorisé' });
+  }
+  next();
+};
+
 module.exports = {
   setPool,
   REFRESH_COOKIE_NAME,
@@ -148,7 +180,9 @@ module.exports = {
   revokeRefreshToken,
   revokeAllUserRefreshTokens,
   cleanupExpiredTokens,
+  cleanupUnverifiedUsers,
   setRefreshCookie,
   clearRefreshCookie,
   authorize,
+  isOwnerOrAdmin,
 };

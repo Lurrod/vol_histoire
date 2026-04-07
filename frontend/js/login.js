@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Check required elements
   if (!loginForm || !registerForm || !switchToRegister || !switchToLogin) {
-    console.error("Required form elements not found");
+    // Éléments de formulaire requis absents
     return;
   }
 
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     } catch (err) {
       // Fallback statique si l'API n'est pas joignable
-      console.warn('Stats API indisponible, utilisation des valeurs par défaut.');
+      // Stats API indisponible — utilisation des valeurs par défaut
       elAirplanes.textContent = '45+';
       elYears.textContent = '1950';
       elYearsLabel.textContent = 'À nos jours';
@@ -257,12 +257,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const payload = auth.getPayload();
         if (payload) {
-          localStorage.setItem("user", JSON.stringify({
+          auth.setUserInfo({
             id: payload.id,
             email: payload.email || email,
             name: payload.name || email.split('@')[0],
             role: Number(payload.role)
-          }));
+          });
         }
 
         showToast('Connexion réussie', 'success');
@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         setButtonLoading(submitBtn, false);
       }
     } catch (err) {
-      console.error('Login error:', err);
+      // Erreur gérée via toast
       showToast('Impossible de se connecter au serveur.', 'error');
       setButtonLoading(submitBtn, false);
     }
@@ -333,7 +333,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         setButtonLoading(submitBtn, false);
       }
     } catch (err) {
-      console.error('Register error:', err);
+      // Erreur gérée via toast
       showToast('Impossible de se connecter au serveur.', 'error');
       setButtonLoading(submitBtn, false);
     }

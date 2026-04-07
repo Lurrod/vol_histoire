@@ -111,13 +111,15 @@ describe('isTokenExpired', () => {
 // clearSession
 // =============================================================================
 describe('clearSession', () => {
-  test('supprime le token et le localStorage user', () => {
+  test('supprime le token et les infos utilisateur en mémoire', () => {
     auth.setToken('token');
-    localStorage.setItem('user', JSON.stringify({ name: 'Test' }));
+    auth.setUserInfo({ id: 1, name: 'Test', email: 't@t.fr', role: 3 });
 
     auth.clearSession();
 
     expect(auth.getToken()).toBeNull();
+    expect(auth.getUserInfo()).toBeNull();
+    // Nettoyage rétrocompatibilité localStorage
     expect(localStorage.getItem('user')).toBeNull();
   });
 });

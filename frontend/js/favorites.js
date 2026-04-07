@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateStats();
 
     } catch (error) {
-      console.error('Error loading favorites:', error);
+      // Erreur gérée via toast
       showToast(i18n.t('common.loading_error'), 'error');
     }
   }

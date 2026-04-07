@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { isValidEmail, isValidName, isValidPassword } = require('../validators');
-const { authorize, revokeAllUserRefreshTokens } = require('../middleware/auth');
+const { authorize, isOwnerOrAdmin, revokeAllUserRefreshTokens } = require('../middleware/auth');
 const logger = require('../logger');
 const { withTransaction } = require('../db');
 const asyncHandler = require('../middleware/asyncHandler');
@@ -38,12 +38,8 @@ module.exports = function createUsersRouter(getPool) {
     });
   }));
 
-  router.get('/users/:id', authorize([1, 2, 3]), asyncHandler(async (req, res) => {
+  router.get('/users/:id', authorize([1, 2, 3]), isOwnerOrAdmin('id'), asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const requester = req.user;
-    if (Number(requester.id) !== Number(id) && requester.role !== 1) {
-      return res.status(403).json({ message: 'Accès non autorisé' });
-    }
 
     const result = await getPool().query('SELECT id, name, email, role_id FROM users WHERE id = $1', [id]);
     if (result.rows.length === 0) {
@@ -52,7 +48,7 @@ module.exports = function createUsersRouter(getPool) {
     res.json(result.rows[0]);
   }));
 
-  router.put('/users/:id', authorize([1, 2, 3]), asyncHandler(async (req, res) => {
+  router.put('/users/:id', authorize([1, 2, 3]), isOwnerOrAdmin('id'), asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { name, email, password } = req.body;
 
@@ -64,11 +60,6 @@ module.exports = function createUsersRouter(getPool) {
     }
     if (password !== undefined && !isValidPassword(password)) {
       return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)' });
-    }
-
-    const requester = req.user;
-    if (Number(requester.id) !== Number(id) && requester.role !== 1) {
-      return res.status(403).json({ message: 'Accès non autorisé' });
     }
 
     let hashedPassword;
@@ -162,12 +153,8 @@ module.exports = function createUsersRouter(getPool) {
     }
   });
 
-  router.delete('/users/:id', authorize([1, 2, 3]), asyncHandler(async (req, res) => {
+  router.delete('/users/:id', authorize([1, 2, 3]), isOwnerOrAdmin('id'), asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const requester = req.user;
-    if (Number(requester.id) !== Number(id) && requester.role !== 1) {
-      return res.status(403).json({ message: 'Accès non autorisé' });
-    }
 
     // Transaction : révoquer les sessions + supprimer le compte
     const result = await withTransaction(getPool(), async (client) => {

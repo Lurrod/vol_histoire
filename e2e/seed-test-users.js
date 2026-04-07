@@ -7,9 +7,20 @@
  * Prérequis : backend/.env configuré + PostgreSQL accessible
  */
 
-require('dotenv').config({ path: require('path').join(__dirname, '../backend/.env') });
-const { Pool } = require('pg');
-const bcrypt = require('bcryptjs');
+// dotenv optionnel : en CI les variables sont déjà injectées via l'env du job.
+// En local, charge backend/.env si dotenv est disponible (via backend/node_modules).
+try {
+  require('dotenv').config({ path: require('path').join(__dirname, '../backend/.env') });
+} catch {
+  // dotenv non disponible — on suppose que les env vars sont déjà définies
+}
+// pg et bcryptjs sont résolus depuis backend/node_modules (pas de dépendance e2e dédiée)
+const path = require('path');
+const Module = require('module');
+const backendNodeModules = path.join(__dirname, '../backend/node_modules');
+Module.globalPaths.push(backendNodeModules);
+const { Pool } = require(path.join(backendNodeModules, 'pg'));
+const bcrypt = require(path.join(backendNodeModules, 'bcryptjs'));
 
 const pool = new Pool({
   user: process.env.DB_USER,

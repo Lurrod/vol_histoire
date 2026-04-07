@@ -123,35 +123,30 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // Try to get user from localStorage first
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        currentUser = JSON.parse(storedUser);
-        updateUserDisplay();
-        
-        document.getElementById('name').value = currentUser.name || '';
-        document.getElementById('email').value = currentUser.email || '';
-        
-        if (Number(currentUser.role) === 1) {
-          document.getElementById('admin-nav-link').classList.remove('hidden');
-          document.getElementById('admin')?.classList.remove('hidden');
-          // loadUsers déplacé dans l'init (via settingsAdmin)
-        }
-        
-        return true;
-      } catch (e) {
-        console.error('Error parsing stored user:', e);
+    // Récupère d'abord les infos utilisateur en mémoire (auth module)
+    const cachedUser = auth.getUserInfo();
+    if (cachedUser) {
+      currentUser = cachedUser;
+      updateUserDisplay();
+
+      document.getElementById('name').value = currentUser.name || '';
+      document.getElementById('email').value = currentUser.email || '';
+
+      if (Number(currentUser.role) === 1) {
+        document.getElementById('admin-nav-link').classList.remove('hidden');
+        document.getElementById('admin')?.classList.remove('hidden');
       }
+
+      return true;
     }
 
-    // If no stored user, try API
+    // Sinon, fallback sur l'API
     try {
       const response = await auth.authFetch(`${API_BASE}/users/${auth.getPayload().id}`);
 
       if (response.ok) {
         currentUser = await response.json();
-        localStorage.setItem('user', JSON.stringify(currentUser));
+        auth.setUserInfo(currentUser);
         updateUserDisplay();
         
         document.getElementById('name').value = currentUser.name || '';
@@ -166,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return true;
       } else {
         // API failed, decode JWT for user info
-        console.warn('API unavailable, using token-only auth');
+        // API indisponible — authentification par token uniquement
         const p = auth.getPayload();
         currentUser = p ? { id: p.id, name: p.name || 'Utilisateur', email: p.email || '', role: Number(p.role) } : { name: 'Utilisateur', email: '' };
         updateUserDisplay();
@@ -178,7 +173,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return true;
       }
     } catch (err) {
-      console.warn('Network error, using token-only auth:', err);
+      // Erreur réseau — authentification par token uniquement
       const p = auth.getPayload();
       currentUser = p ? { id: p.id, name: p.name || 'Utilisateur', email: p.email || '', role: Number(p.role) } : { name: 'Utilisateur', email: '' };
       updateUserDisplay();
@@ -245,14 +240,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (response.ok) {
           currentUser = { ...currentUser, name, email };
-          localStorage.setItem('user', JSON.stringify(currentUser));
+          auth.setUserInfo(currentUser);
           updateUserDisplay();
           showToast(i18n.t('settings.toast_profile_updated'), 'success');
         } else {
           showToast(data.message || i18n.t('settings.toast_profile_error'), 'error');
         }
       } catch (err) {
-        console.error('Profile update error:', err);
+        // Erreur gérée via toast
         showToast(i18n.t('settings.toast_network_error'), 'error');
       } finally {
         setButtonLoading(submitBtn, false);
@@ -406,7 +401,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           showToast(data.message || i18n.t('settings.toast_profile_error'), 'error');
         }
       } catch (err) {
-        console.error('Password update error:', err);
+        // Erreur gérée via toast
         showToast('API non disponible. Connectez votre backend pour changer le mot de passe.', 'error');
       } finally {
         setButtonLoading(submitBtn, false);
@@ -451,7 +446,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             setButtonLoading(deleteAccountBtn, false);
           }
         } catch (err) {
-          console.error('Delete account error:', err);
+          // Erreur gérée via toast
           showToast(i18n.t('settings.toast_network_error'), 'error');
           setButtonLoading(deleteAccountBtn, false);
         }
@@ -524,7 +519,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           });
         }
       } catch (e) {
-        console.error('Error loading cookie preferences:', e);
+        // Erreur silencieuse — préférences cookies
       }
     }
   }

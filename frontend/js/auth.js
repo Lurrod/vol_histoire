@@ -14,8 +14,8 @@
  */
 
 const auth = (() => {
-  const USER_KEY = 'user';
   let accessToken = null; // Mémoire uniquement — jamais persisté
+  let userInfo = null;    // Infos utilisateur en mémoire uniquement (pas localStorage)
   let isRefreshing = false;
   let refreshQueue = [];
   let _initialized = false;
@@ -70,7 +70,25 @@ const auth = (() => {
 
   function clearSession() {
     accessToken = null;
-    localStorage.removeItem(USER_KEY);
+    userInfo = null;
+    // Nettoyage rétrocompatibilité (anciennes versions stockaient en localStorage)
+    try { localStorage.removeItem('user'); } catch { /* ignore */ }
+  }
+
+  function getUserInfo() {
+    if (userInfo) return userInfo;
+    const payload = getPayload();
+    if (!payload) return null;
+    return {
+      id: payload.id,
+      email: payload.email || '',
+      name: payload.name || '',
+      role: Number(payload.role),
+    };
+  }
+
+  function setUserInfo(info) {
+    userInfo = info ? { ...info } : null;
   }
 
   function getPayload() {
@@ -106,16 +124,15 @@ const auth = (() => {
       const data = await response.json();
       setToken(data.token);
 
-      // Mettre à jour les infos utilisateur affichées (données non sensibles)
+      // Mettre à jour les infos utilisateur en mémoire (jamais persisté)
       const payload = getPayload();
       if (payload) {
-        const userInfo = {
+        userInfo = {
           id: payload.id,
           email: payload.email || '',
           name: payload.name || '',
           role: Number(payload.role),
         };
-        localStorage.setItem(USER_KEY, JSON.stringify(userInfo));
       }
 
       // Notifier les autres onglets du nouveau token
@@ -281,6 +298,8 @@ const auth = (() => {
     getToken,
     setToken,
     getPayload,
+    getUserInfo,
+    setUserInfo,
     clearSession,
     isTokenExpired,
     authFetch,
