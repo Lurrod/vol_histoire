@@ -8,12 +8,20 @@
  * @param {string} password
  */
 async function loginViaApi(page, email, password) {
-  // Login via le FORMULAIRE réel → garantit que :
-  //  1. Le cookie refreshToken est posé par une vraie navigation browser
-  //  2. auth.setToken() est appelé en mémoire JS du contexte page
-  //  3. login.js gère le redirect vers /
-  // Plus fiable que page.request.post (qui souffre de subtilités cookie context).
+  // Login via le FORMULAIRE réel.
+  //
+  // RACE CRITIQUE : login.js fait `await auth.init()` au DOMContentLoaded
+  // (qui appelle /api/refresh). Le handler submit est bindé APRÈS cette
+  // attente. Si on clique submit avant que init() ne se termine, le handler
+  // n'est pas encore bindé → le formulaire submit nativement en GET vers
+  // /login? et le test échoue. SOLUTION : waitForLoadState('networkidle')
+  // après goto pour garantir que auth.init() + setupFormSwitching ont fini.
   await page.goto('/login');
+  await page.waitForLoadState('networkidle');
+  // Sécurité supplémentaire : attendre que le handler soit effectivement
+  // attaché en vérifiant que login.js a fini son init (le bouton existe).
+  await page.waitForSelector('#login-form button[type="submit"]', { state: 'visible' });
+
   await page.fill('#login-email', email);
   await page.fill('#login-password', password);
   await Promise.all([
