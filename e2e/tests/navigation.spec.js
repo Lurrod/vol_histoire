@@ -140,6 +140,9 @@ test.describe('Settings (authentifié)', () => {
     await loginViaApi(page, 'titouan.borde.47@gmail.com', 'Titouan1.');
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
+    // Section dashboard est active par défaut → switch vers profil
+    await page.click('[data-section="profile"]');
+    await page.waitForTimeout(300);
 
     expect(page.url()).toContain('settings');
 
