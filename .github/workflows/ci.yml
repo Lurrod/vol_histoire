@@ -73,10 +73,112 @@ jobs:
           retention-days: 7
 
   # ═══════════════════════════════════════════════════════════
+  # E2E — Tests Playwright (servent backend + frontend localement)
+  # ═══════════════════════════════════════════════════════════
+  e2e:
+    runs-on: ubuntu-latest
+    needs: test
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: vol_histoire_test
+          POSTGRES_USER: vol_user
+          POSTGRES_PASSWORD: testpassword
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U vol_user -d vol_histoire_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DB_USER: vol_user
+      DB_HOST: localhost
+      DB_NAME: vol_histoire_test
+      DB_PASSWORD: testpassword
+      DB_PORT: 5432
+      DB_SSL: false
+      JWT_SECRET: ci-test-jwt-secret-key-minimum-32-characters-long
+      REFRESH_SECRET: ci-test-refresh-secret-key-minimum-32-characters-long
+      NODE_ENV: test
+      PORT: 3000
+      ALLOWED_ORIGINS: http://localhost:8080
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            e2e/package-lock.json
+
+      - name: Install backend dependencies
+        run: cd backend && npm ci
+
+      - name: Apply database schema
+        run: |
+          PGPASSWORD=testpassword psql -h localhost -U vol_user -d vol_histoire_test -f backend/db_backup/db.sql
+
+      - name: Seed test users
+        run: cd e2e && node seed-test-users.js
+
+      - name: Install E2E dependencies
+        run: cd e2e && npm ci
+
+      - name: Install Playwright browsers
+        run: cd e2e && npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: cd e2e && npm test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            e2e/test-results/
+            e2e/playwright-report/
+          retention-days: 7
+
+  # ═══════════════════════════════════════════════════════════
+  # LOAD — Tests de charge autocannon (mock pool, isole perf framework)
+  # ═══════════════════════════════════════════════════════════
+  load:
+    runs-on: ubuntu-latest
+    needs: test
+
+    env:
+      NODE_ENV: test
+      JWT_SECRET: ci-test-jwt-secret-key-minimum-32-characters-long
+      REFRESH_SECRET: ci-test-refresh-secret-key-minimum-32-characters-long
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        run: cd backend && npm ci
+
+      - name: Run load tests (autocannon)
+        run: cd backend && npm run test:load
+
+  # ═══════════════════════════════════════════════════════════
   # CD — Déploiement sur Kimsufi (uniquement push sur main)
   # ═══════════════════════════════════════════════════════════
   deploy:
-    needs: test
+    needs: [test, e2e, load]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
@@ -102,3 +204,37 @@ jobs:
             cd ..
 
             echo "Deploiement termine"
+
+      # ─── Smoke test post-deploy ───────────────────────────────
+      # Vérifie que l'app répond et que la BD est joignable.
+      # Le job échoue (et alerte) si /api/health ne retourne pas 200.
+      - name: Smoke test — health check production
+        run: |
+          set -e
+          URL="https://vol-histoire.titouan-borde.com/api/health"
+          echo "GET $URL"
+          # Attendre 5s que PM2 finisse le restart
+          sleep 5
+          # Retry 3 fois (espacés de 5s) avant d'échouer
+          for i in 1 2 3; do
+            HTTP_CODE=$(curl -s -o /tmp/health.json -w "%{http_code}" "$URL" || echo "000")
+            BODY=$(cat /tmp/health.json 2>/dev/null || echo "")
+            echo "Tentative $i — HTTP $HTTP_CODE — $BODY"
+            if [ "$HTTP_CODE" = "200" ] && echo "$BODY" | grep -q '"status":"ok"'; then
+              echo "Smoke test OK"
+              exit 0
+            fi
+            [ $i -lt 3 ] && sleep 5
+          done
+          echo "Smoke test KO après 3 tentatives"
+          exit 1
+
+      - name: Smoke test — page d'accueil
+        run: |
+          set -e
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://vol-histoire.titouan-borde.com/")
+          echo "GET / → HTTP $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Page d'accueil KO"
+            exit 1
+          fi

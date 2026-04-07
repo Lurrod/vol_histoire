@@ -880,8 +880,92 @@ paths:
                       type: integer
                     name:
                       type: string
+                    code:
+                      type: string
+                    country_id:
+                      type: integer
                     country_name:
                       type: string
+
+  /referentials:
+    get:
+      tags: [Referentials]
+      summary: Tous les référentiels en 1 requête (countries + generations + types + manufacturers)
+      description: |
+        Endpoint combiné : exécute les 4 requêtes SQL en parallèle et retourne
+        un seul payload. Permet au frontend d'éviter 4 round-trips HTTP successifs.
+        Cacheable (Cache-Control: public, max-age=300, s-maxage=3600).
+      responses:
+        '200':
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+              description: 'public, max-age=300, s-maxage=3600, stale-while-revalidate=600'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  countries:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        name: { type: string }
+                  generations:
+                    type: array
+                    items:
+                      type: integer
+                  types:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        name: { type: string }
+                        description: { type: string, nullable: true }
+                  manufacturers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        name: { type: string }
+                        code: { type: string }
+                        country_id: { type: integer }
+                        country_name: { type: string }
+        '500':
+          description: Erreur base de données
+
+  # ═══════════════════════════════════════════════════════════
+  # HEALTH
+  # ═══════════════════════════════════════════════════════════
+  /health:
+    get:
+      tags: [Health]
+      summary: Health check (liveness + DB readiness)
+      description: Vérifie la connectivité à PostgreSQL via `SELECT 1`. Utilisé par PM2/load balancer.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+                  uptime: { type: number, description: 'Uptime serveur en secondes' }
+                  timestamp: { type: string, format: date-time }
+        '503':
+          description: Base de données injoignable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: error }
+                  message: { type: string }
 
   # ═══════════════════════════════════════════════════════════
   # FAVORITES

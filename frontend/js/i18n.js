@@ -43,7 +43,7 @@ const i18n = (() => {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.json();
     } catch (err) {
-      console.error(`[i18n] Failed to load ${lang}.json:`, err);
+      // Échec silencieux du chargement i18n
       return {};
     }
   }

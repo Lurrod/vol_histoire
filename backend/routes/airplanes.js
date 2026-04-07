@@ -27,6 +27,29 @@ async function validateAirplaneFKs(pool, { country_id, id_manufacturer, id_gener
 module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = {}) {
   const router = express.Router();
 
+  // -----------------------------------------------------------------------------
+  // Cache des valeurs valides (whitelist) pour les filtres /airplanes
+  // Chargé en lazy depuis la BD au premier appel, puis conservé en mémoire.
+  // Les référentiels (generations, types) sont gérés via fichiers SQL — aucune
+  // route ne les modifie à l'exécution, donc pas besoin d'invalidation.
+  // -----------------------------------------------------------------------------
+  let referentialCache = null;
+  async function getValidReferentials() {
+    if (referentialCache) return referentialCache;
+    const pool = getPool();
+    const [gens, types] = await Promise.all([
+      pool.query('SELECT DISTINCT generation FROM generation'),
+      pool.query('SELECT name FROM type'),
+    ]);
+    referentialCache = {
+      generations: new Set(gens.rows.map((r) => Number(r.generation))),
+      typeNames: new Set(types.rows.map((r) => r.name)),
+    };
+    return referentialCache;
+  }
+  // Exposé pour les tests + invalidation manuelle si besoin
+  router.invalidateReferentialCache = () => { referentialCache = null; };
+
   // Validation des IDs
   router.param('id', (req, res, next, value) => {
     if (!/^\d+$/.test(value)) {
@@ -44,9 +67,20 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     const generation = req.query.generation || '';
     const type = req.query.type || '';
 
-    // S4 FIX : Valider que generation est un entier positif s'il est fourni
-    if (generation && (!/^\d+$/.test(generation) || Number(generation) < 1 || Number(generation) > 10)) {
-      return res.status(400).json({ message: 'Paramètre generation invalide (entier entre 1 et 10)' });
+    // Validation format (sans DB) — rejette texte, 0, négatif
+    if (generation && !/^[1-9]\d*$/.test(generation)) {
+      return res.status(400).json({ message: 'Paramètre generation invalide' });
+    }
+
+    // Validation stricte contre la whitelist BD (chargée lazy en mémoire)
+    if (generation || type) {
+      const valid = await getValidReferentials();
+      if (generation && !valid.generations.has(Number(generation))) {
+        return res.status(400).json({ message: 'Paramètre generation invalide' });
+      }
+      if (type && !valid.typeNames.has(type)) {
+        return res.status(400).json({ message: 'Paramètre type invalide' });
+      }
     }
 
     let query = `
@@ -90,8 +124,24 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     };
     query += ' ORDER BY ' + (sortMap[sort] || 'a.id ASC');
 
+    // Pagination
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 100));
+    const offset = (page - 1) * limit;
+
+    // Compter le total avant pagination
+    const countQuery = `SELECT COUNT(*) FROM airplanes a
+      LEFT JOIN countries c ON a.country_id = c.id
+      LEFT JOIN generation g ON a.id_generation = g.id
+      LEFT JOIN type t ON a.type = t.id` + (conditions.length > 0 ? ' WHERE ' + conditions.join(' AND ') : '');
+    const countResult = await getPool().query(countQuery, queryParams);
+    const total = parseInt(countResult.rows[0].count, 10);
+
+    queryParams.push(limit, offset);
+    query += ` LIMIT $${queryParams.length - 1} OFFSET $${queryParams.length}`;
+
     const result = await getPool().query(query, queryParams);
-    res.json({ data: result.rows });
+    res.json({ data: result.rows, total, page, limit });
   }));
 
   router.get('/airplanes/:id', asyncHandler(async (req, res) => {
@@ -206,30 +256,71 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     res.json({ isFavorite: result.rows.length > 0 });
   }));
 
+  // Cache-Control commun aux référentiels (rarement modifiés)
+  // public : cacheable par CDN/proxies + navigateur
+  // max-age=300 (5 min) côté client + s-maxage=3600 (1h) côté CDN
+  // stale-while-revalidate=600 : sert l'ancien en arrière-plan pendant le refresh
+  const REFERENTIALS_CACHE = 'public, max-age=300, s-maxage=3600, stale-while-revalidate=600';
+
   router.get('/countries', asyncHandler(async (req, res) => {
     const result = await getPool().query(
       'SELECT id, name FROM countries WHERE id IN (SELECT DISTINCT country_id FROM airplanes WHERE country_id IS NOT NULL) ORDER BY name ASC'
     );
+    res.set('Cache-Control', REFERENTIALS_CACHE);
     res.json(result.rows);
   }));
 
   router.get('/generations', asyncHandler(async (req, res) => {
     const result = await getPool().query('SELECT DISTINCT generation FROM generation ORDER BY generation ASC');
+    res.set('Cache-Control', REFERENTIALS_CACHE);
     res.json(result.rows.map((row) => row.generation));
   }));
 
   router.get('/types', asyncHandler(async (req, res) => {
-    const result = await getPool().query('SELECT * FROM type');
+    const result = await getPool().query(
+      'SELECT id, name, description FROM type ORDER BY name ASC'
+    );
+    res.set('Cache-Control', REFERENTIALS_CACHE);
     res.json(result.rows);
   }));
 
   router.get('/manufacturers', asyncHandler(async (req, res) => {
     const result = await getPool().query(`
-      SELECT m.*, c.name as country_name
+      SELECT m.id, m.name, m.code, m.country_id, c.name AS country_name
       FROM manufacturer m
       JOIN countries c ON m.country_id = c.id
+      ORDER BY m.name ASC
     `);
+    res.set('Cache-Control', REFERENTIALS_CACHE);
     res.json(result.rows);
+  }));
+
+  // Endpoint combiné : récupère tous les référentiels en 1 seul round-trip.
+  // Permet au frontend de loader filtres + dropdowns en parallèle (Promise.all SQL)
+  // au lieu de 4 requêtes HTTP séquentielles.
+  router.get('/referentials', asyncHandler(async (req, res) => {
+    const pool = getPool();
+    const [countries, generations, types, manufacturers] = await Promise.all([
+      pool.query(
+        'SELECT id, name FROM countries WHERE id IN (SELECT DISTINCT country_id FROM airplanes WHERE country_id IS NOT NULL) ORDER BY name ASC'
+      ),
+      pool.query('SELECT DISTINCT generation FROM generation ORDER BY generation ASC'),
+      pool.query('SELECT id, name, description FROM type ORDER BY name ASC'),
+      pool.query(`
+        SELECT m.id, m.name, m.code, m.country_id, c.name AS country_name
+        FROM manufacturer m
+        JOIN countries c ON m.country_id = c.id
+        ORDER BY m.name ASC
+      `),
+    ]);
+
+    res.set('Cache-Control', REFERENTIALS_CACHE);
+    res.json({
+      countries: countries.rows,
+      generations: generations.rows.map((row) => row.generation),
+      types: types.rows,
+      manufacturers: manufacturers.rows,
+    });
   }));
 
   router.post('/airplanes', authorize([1, 2]), asyncHandler(async (req, res) => {

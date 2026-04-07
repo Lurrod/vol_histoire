@@ -39,20 +39,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   
   async function loadReferentialData() {
     try {
-      const [countriesRes, generationsRes, typesRes, manufacturersRes] = await Promise.all([
-        auth.fetchWithTimeout('/api/countries'),
-        auth.fetchWithTimeout('/api/generations'),
-        auth.fetchWithTimeout('/api/types'),
-        auth.fetchWithTimeout('/api/manufacturers')
-      ]);
-
-      if (!countriesRes.ok || !generationsRes.ok || !typesRes.ok || !manufacturersRes.ok) {
+      // 1 round-trip HTTP au lieu de 4 (endpoint combiné /api/referentials)
+      const response = await auth.fetchWithTimeout('/api/referentials');
+      if (!response.ok) {
         throw new Error('Erreur chargement référentiels');
       }
-
-      const [countries, generations, types, manufacturers] = await Promise.all([
-        countriesRes.json(), generationsRes.json(), typesRes.json(), manufacturersRes.json()
-      ]);
+      const { countries, generations, types, manufacturers } = await response.json();
 
       state.countries = Array.isArray(countries) ? countries : [];
       state.generations = Array.isArray(generations) ? generations : [];
@@ -62,7 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       populateFilterOptions();
       populateFormSelects();
     } catch (error) {
-      console.error('Error loading referential data:', error);
+      // Erreur gérée via toast
       showToast(i18n.t('common.loading_error'), 'error');
     }
   }
@@ -174,7 +166,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateStats();
 
     } catch (error) {
-      console.error('Error loading aircraft:', error);
+      // Erreur gérée via toast
       showToast(i18n.t('common.loading_error'), 'error');
     }
   }
@@ -491,7 +483,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div class="aircraft-title">
               <div class="aircraft-name-row">
                 <h3>${escapeHtml(aircraft.name)}</h3>
-                ${aircraft.country_code && ALPHA3_TO_ALPHA2[aircraft.country_code] ? `<img class="country-flag" src="https://flagcdn.com/w40/${ALPHA3_TO_ALPHA2[aircraft.country_code]}.png" alt="${escapeHtml(aircraft.country_name)}" width="20" height="15">` : ''}
+                ${aircraft.country_code && ALPHA3_TO_ALPHA2[aircraft.country_code] ? `<img class="country-flag" src="https://flagcdn.com/w40/${ALPHA3_TO_ALPHA2[aircraft.country_code]}.png" alt="${escapeHtml(aircraft.country_name)}" width="24" height="18">` : ''}
               </div>
             </div>
           </div>
@@ -654,7 +646,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       loadAircraft();
       
     } catch (error) {
-      console.error('Error creating aircraft:', error);
+      // Erreur gérée via toast
       showToast(error.message || i18n.t('common.create_error'), 'error');
     }
   });

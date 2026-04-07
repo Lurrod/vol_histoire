@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       checkFavoriteStatus();
       
     } catch (error) {
-      console.error('Error loading aircraft:', error);
+      // Erreur gérée via redirection
       window.location.href = '/404';
     }
   }
@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderRadarChart(armament, tech, missions);
 
     } catch (error) {
-      console.error('Error loading related data:', error);
+      // Erreur silencieuse — données secondaires
     }
   }
 
@@ -475,7 +475,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateFavoriteButton();
 
     } catch (error) {
-      console.error('Error checking favorite:', error);
+      // Erreur silencieuse — statut favori
     }
   }
 
@@ -520,7 +520,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
 
     } catch (error) {
-      console.error('Error toggling favorite:', error);
+      // Erreur gérée via toast
       showToast(error.message, 'error');
     }
   });
@@ -586,15 +586,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function loadFormSelects() {
     try {
-      const [countriesRes, manufacturersRes, typesRes] = await Promise.all([
-        auth.fetchWithTimeout('/api/countries'),
-        auth.fetchWithTimeout('/api/manufacturers'),
-        auth.fetchWithTimeout('/api/types')
-      ]);
-
-      const countries = await countriesRes.json();
-      const manufacturers = await manufacturersRes.json();
-      const types = await typesRes.json();
+      // 1 round-trip HTTP au lieu de 3 (endpoint combiné /api/referentials)
+      const response = await auth.fetchWithTimeout('/api/referentials');
+      if (!response.ok) throw new Error('Erreur chargement référentiels');
+      const { countries, manufacturers, types } = await response.json();
 
       document.getElementById('edit-country-id').innerHTML = 
         `<option value="">${i18n.t('details.select')}</option>` +
@@ -613,7 +608,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         [1, 2, 3, 4, 5].map(g => `<option value="${g}">${g}${i18n.currentLang === 'en' ? (['st','nd','rd'][g-1]||'th') + ' Generation' : 'e Génération'}</option>`).join('');
 
     } catch (error) {
-      console.error('Error loading form selects:', error);
+      // Erreur silencieuse — selects du formulaire
     }
   }
 
@@ -662,7 +657,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await loadAircraftDetails();
 
     } catch (error) {
-      console.error('Error updating aircraft:', error);
+      // Erreur gérée via toast
       showToast(error.message || i18n.t('common.update_error'), 'error');
     }
   });
@@ -685,7 +680,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       setTimeout(() => window.location.href = '/hangar', 1500);
 
     } catch (error) {
-      console.error('Error deleting aircraft:', error);
+      // Erreur gérée via toast
       showToast(error.message || i18n.t('common.delete_error'), 'error');
     }
   });

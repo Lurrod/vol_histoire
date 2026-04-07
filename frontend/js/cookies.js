@@ -246,7 +246,7 @@ class CookieConsent {
         const parsed = JSON.parse(consentData);
         return parsed.preferences;
       } catch (e) {
-        console.error('Error parsing consent data:', e);
+        // Erreur silencieuse — données de consentement corrompues
         return null;
       }
     }
@@ -337,10 +337,13 @@ class CookieConsent {
                  type === 'error' ? 'exclamation-circle' :
                  'info-circle';
 
-    toast.innerHTML = `
-      <i class="fas fa-${icon}" aria-hidden="true"></i>
-      <span>${message}</span>
-    `;
+    const iconEl = document.createElement('i');
+    iconEl.className = `fas fa-${icon}`;
+    iconEl.setAttribute('aria-hidden', 'true');
+    const spanEl = document.createElement('span');
+    spanEl.textContent = message;
+    toast.appendChild(iconEl);
+    toast.appendChild(spanEl);
 
     toastContainer.appendChild(toast);
     

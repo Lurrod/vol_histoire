@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     } catch (err) {
       // Fallback: hardcoded values if API unreachable
-      console.warn('Stats API unavailable, using fallback values.');
+      // Stats API indisponible — valeurs par défaut
       animateNumber(elAirplanes, 45);
       animateNumber(elYears, 75);
       animateNumber(elCountries, 12);

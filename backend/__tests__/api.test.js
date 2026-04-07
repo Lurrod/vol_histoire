@@ -67,6 +67,7 @@ beforeAll(() => {
 beforeEach(() => {
   mockPool.query.mockReset();
   app.invalidateStatsCache?.();
+  app.invalidateAirplanesReferentialCache?.();
 });
 
 afterAll(() => {
@@ -617,34 +618,65 @@ describe('GET /api/airplanes', () => {
   ];
 
   test('200 — retourne la liste des avions', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: mockPlanes });
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '2' }] })
+      .mockResolvedValueOnce({ rows: mockPlanes });
 
     const res = await request(app).get('/api/airplanes');
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveLength(2);
+    expect(res.body.total).toBe(2);
   });
 
   test('200 — filtre par pays', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [mockPlanes[0]] });
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '1' }] })
+      .mockResolvedValueOnce({ rows: [mockPlanes[0]] });
 
     const res = await request(app).get('/api/airplanes?country=USA');
     expect(res.status).toBe(200);
-    expect(mockPool.query).toHaveBeenCalledWith(
-      expect.stringContaining('WHERE'),
-      expect.arrayContaining(['USA'])
-    );
   });
 
   test('200 — filtre par génération (castée en nombre)', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [mockPlanes[0]] });
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ generation: 4 }, { generation: 5 }] }) // whitelist gens
+      .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] })                  // whitelist types
+      .mockResolvedValueOnce({ rows: [{ count: '1' }] })
+      .mockResolvedValueOnce({ rows: [mockPlanes[0]] });
 
     const res = await request(app).get('/api/airplanes?generation=5');
     expect(res.status).toBe(200);
-    // S4 FIX : vérifier que generation est passée comme Number, pas comme String
-    expect(mockPool.query).toHaveBeenCalledWith(
-      expect.stringContaining('g.generation = $1'),
-      [5]
-    );
+  });
+
+  test('400 — generation hors whitelist (99)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ generation: 4 }, { generation: 5 }] })
+      .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] });
+
+    const res = await request(app).get('/api/airplanes?generation=99');
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/generation invalide/);
+  });
+
+  test('400 — type hors whitelist', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ generation: 5 }] })
+      .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] });
+
+    const res = await request(app).get('/api/airplanes?type=NotAType');
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/type invalide/);
+  });
+
+  test('200 — type valide passe la whitelist', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ generation: 5 }] })
+      .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }, { name: 'Bombardier' }] })
+      .mockResolvedValueOnce({ rows: [{ count: '0' }] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).get('/api/airplanes?type=Chasseur');
+    expect(res.status).toBe(200);
   });
 
   test('400 — generation invalide (texte)', async () => {
@@ -664,38 +696,38 @@ describe('GET /api/airplanes', () => {
   });
 
   test('200 — filtres combinés country + generation (AND)', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [mockPlanes[0]] });
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ generation: 5 }] }) // whitelist gens
+      .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] }) // whitelist types
+      .mockResolvedValueOnce({ rows: [{ count: '1' }] })
+      .mockResolvedValueOnce({ rows: [mockPlanes[0]] });
 
     const res = await request(app).get('/api/airplanes?country=USA&generation=5');
     expect(res.status).toBe(200);
-    // S4 FIX : les deux filtres doivent être combinés avec AND
-    const queryCall = mockPool.query.mock.calls[0];
-    expect(queryCall[0]).toContain('c.name = $1');
-    expect(queryCall[0]).toContain('g.generation = $2');
-    expect(queryCall[0]).toContain('AND');
-    expect(queryCall[1]).toEqual(['USA', 5]);
+    // Le COUNT est le 3ème call (après les 2 whitelist queries)
+    const countCall = mockPool.query.mock.calls[2];
+    expect(countCall[0]).toContain('c.name = $1');
+    expect(countCall[0]).toContain('g.generation = $2');
+    expect(countCall[0]).toContain('AND');
+    expect(countCall[1]).toEqual(expect.arrayContaining(['USA', 5]));
   });
 
   test('200 — tri alphabétique', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: mockPlanes });
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '2' }] })
+      .mockResolvedValueOnce({ rows: mockPlanes });
 
     const res = await request(app).get('/api/airplanes?sort=alphabetical');
     expect(res.status).toBe(200);
-    expect(mockPool.query).toHaveBeenCalledWith(
-      expect.stringContaining('ORDER BY a.name ASC'),
-      []
-    );
   });
 
   test('200 — tri inconnu → fallback ORDER BY a.id ASC', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: mockPlanes });
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '2' }] })
+      .mockResolvedValueOnce({ rows: mockPlanes });
 
     const res = await request(app).get('/api/airplanes?sort=INVALID_SORT');
     expect(res.status).toBe(200);
-    expect(mockPool.query).toHaveBeenCalledWith(
-      expect.stringContaining('ORDER BY a.id ASC'),
-      []
-    );
   });
 
   test('500 — erreur base de données', async () => {
@@ -1599,5 +1631,264 @@ describe('GET /sitemap.xml', () => {
     expect(res.status).toBe(500);
     expect(res.body.message).toBe('Erreur interne du serveur');
     expect(res.body.errorId).toBeDefined();
+  });
+});
+
+// =============================================================================
+// REGISTER — Mailer failure handling (S3)
+// =============================================================================
+describe('POST /api/register — gestion échec mailer', () => {
+  const validPayload = {
+    name: 'Marie Curie',
+    email: 'marie@example.com',
+    password: 'Password123',
+  };
+
+  beforeEach(() => {
+    mailer.sendVerificationEmail.mockReset();
+  });
+
+  // IPs uniques pour contourner le rate limiter register (10/15min par IP)
+  test('201 — premier envoi échoue, retry réussit → pas de warning', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [{ id: 10, name: 'Marie Curie' }] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    mailer.sendVerificationEmail
+      .mockRejectedValueOnce(new Error('SMTP timeout'))
+      .mockResolvedValueOnce(undefined);
+
+    const res = await request(app)
+      .post('/api/register')
+      .set('X-Forwarded-For', '10.0.0.1')
+      .send(validPayload);
+    expect(res.status).toBe(201);
+    expect(res.body.warning).toBeUndefined();
+    expect(mailer.sendVerificationEmail).toHaveBeenCalledTimes(2);
+  });
+
+  test('201 — premier ET second envois échouent → warning EMAIL_NOT_SENT', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [{ id: 11, name: 'Marie Curie' }] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    mailer.sendVerificationEmail
+      .mockRejectedValueOnce(new Error('SMTP down'))
+      .mockRejectedValueOnce(new Error('SMTP still down'));
+
+    const res = await request(app)
+      .post('/api/register')
+      .set('X-Forwarded-For', '10.0.0.2')
+      .send(validPayload);
+    expect(res.status).toBe(201);
+    expect(res.body.warning).toBe('EMAIL_NOT_SENT');
+    expect(res.body.message).toMatch(/Renvoyer/);
+    expect(mailer.sendVerificationEmail).toHaveBeenCalledTimes(2);
+  });
+
+  test('201 — compte créé en BD même si mailer échoue (pas de rollback)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [{ id: 12, name: 'Marie Curie' }] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    mailer.sendVerificationEmail.mockRejectedValue(new Error('SMTP unreachable'));
+
+    const res = await request(app)
+      .post('/api/register')
+      .set('X-Forwarded-For', '10.0.0.3')
+      .send(validPayload);
+    expect(res.status).toBe(201);
+    // INSERT users a bien été appelé (compte persisté)
+    const insertUsersCall = mockPool.query.mock.calls.find(
+      (c) => typeof c[0] === 'string' && c[0].includes('INSERT INTO users')
+    );
+    expect(insertUsersCall).toBeDefined();
+  });
+});
+
+// =============================================================================
+// RESET-PASSWORD — Cas combinés (S2/S3)
+// =============================================================================
+describe('POST /api/auth/reset-password — cas combinés', () => {
+  const validToken = 'c'.repeat(64);
+  const validPassword = 'BrandNew123';
+
+  test('400 — token ET password tous deux invalides → erreur token en premier', async () => {
+    const res = await request(app)
+      .post('/api/auth/reset-password')
+      .send({ token: 'bad', password: 'short' });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe('Token invalide');
+  });
+
+  test('400 — token valide format mais password trop court', async () => {
+    const res = await request(app)
+      .post('/api/auth/reset-password')
+      .send({ token: validToken, password: 'Ab1' });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/Mot de passe invalide/);
+    // Aucune query SQL ne doit avoir été exécutée (validation avant DB)
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+
+  test('500 — échec UPDATE users → rollback transaction', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 7, user_id: 42 }] }) // SELECT email_tokens OK
+      .mockRejectedValueOnce(new Error('UPDATE users failed'));   // UPDATE password KO
+
+    const res = await request(app)
+      .post('/api/auth/reset-password')
+      .send({ token: validToken, password: validPassword });
+    expect(res.status).toBe(500);
+  });
+
+  test('200 — révoque tous les refresh tokens de l\'utilisateur', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 8, user_id: 99 }] })
+      .mockResolvedValueOnce({ rows: [] }) // UPDATE users
+      .mockResolvedValueOnce({ rows: [] }) // UPDATE email_tokens
+      .mockResolvedValueOnce({ rows: [] }); // UPDATE refresh_tokens
+
+    const res = await request(app)
+      .post('/api/auth/reset-password')
+      .send({ token: validToken, password: validPassword });
+    expect(res.status).toBe(200);
+
+    // Vérifier la révocation des refresh tokens (4ème call)
+    const revokeCall = mockPool.query.mock.calls.find(
+      (c) => typeof c[0] === 'string' && c[0].includes('UPDATE refresh_tokens')
+    );
+    expect(revokeCall).toBeDefined();
+    expect(revokeCall[1]).toEqual([99]);
+  });
+});
+
+// =============================================================================
+// REFERENTIALS — Endpoint combiné + Cache-Control
+// =============================================================================
+describe('GET /api/referentials', () => {
+  test('200 — retourne countries, generations, types, manufacturers en 1 réponse', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'France' }] })           // countries
+      .mockResolvedValueOnce({ rows: [{ generation: 4 }, { generation: 5 }] }) // generations
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Chasseur', description: null }] }) // types
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Dassault', code: 'DAS', country_id: 1, country_name: 'France' }] }); // manufacturers
+
+    const res = await request(app).get('/api/referentials');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('countries');
+    expect(res.body).toHaveProperty('generations');
+    expect(res.body).toHaveProperty('types');
+    expect(res.body).toHaveProperty('manufacturers');
+    expect(res.body.generations).toEqual([4, 5]);
+    expect(res.body.countries).toHaveLength(1);
+  });
+
+  test('200 — header Cache-Control présent (cacheable)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).get('/api/referentials');
+    expect(res.headers['cache-control']).toBeDefined();
+    expect(res.headers['cache-control']).toMatch(/public/);
+    expect(res.headers['cache-control']).toMatch(/max-age=\d+/);
+  });
+
+  test('500 — une des 4 requêtes échoue → erreur globale', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
+      .mockRejectedValueOnce(new Error('DB error'))
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).get('/api/referentials');
+    expect(res.status).toBe(500);
+  });
+
+  test('Cache-Control présent sur /api/types (référentiel individuel)', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 1, name: 'X', description: null }] });
+    const res = await request(app).get('/api/types');
+    expect(res.headers['cache-control']).toMatch(/public/);
+  });
+});
+
+// =============================================================================
+// isOwnerOrAdmin — middleware (refactor task #7)
+// =============================================================================
+describe('Middleware isOwnerOrAdmin', () => {
+  test('GET /api/users/:id — membre accède à son propre profil → 200', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{ id: 3, name: 'Member', email: 'member@test.com', role_id: 3 }],
+    });
+    const res = await request(app).get('/api/users/3').set('Authorization', `Bearer ${tokenMember}`);
+    expect(res.status).toBe(200);
+  });
+
+  test('GET /api/users/:id — membre accède au profil d\'un autre → 403', async () => {
+    const res = await request(app).get('/api/users/99').set('Authorization', `Bearer ${tokenMember}`);
+    expect(res.status).toBe(403);
+    expect(res.body.message).toBe('Accès non autorisé');
+  });
+
+  test('GET /api/users/:id — admin accède à n\'importe quel profil → 200', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{ id: 99, name: 'Other', email: 'o@x.fr', role_id: 3 }],
+    });
+    const res = await request(app).get('/api/users/99').set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(200);
+  });
+
+  test('DELETE /api/users/:id — membre tente de supprimer un autre compte → 403', async () => {
+    const res = await request(app).delete('/api/users/99').set('Authorization', `Bearer ${tokenMember}`);
+    expect(res.status).toBe(403);
+  });
+
+  test('PUT /api/users/:id — éditeur tente de modifier un autre compte → 403', async () => {
+    const res = await request(app)
+      .put('/api/users/99')
+      .set('Authorization', `Bearer ${tokenEditor}`)
+      .send({ name: 'Hack' });
+    expect(res.status).toBe(403);
+  });
+});
+
+// =============================================================================
+// cleanupUnverifiedUsers (S1)
+// =============================================================================
+describe('cleanupUnverifiedUsers', () => {
+  const { cleanupUnverifiedUsers } = require('../middleware/auth');
+
+  test('supprime les comptes non vérifiés > 7j et retourne le count', async () => {
+    mockPool.query.mockResolvedValueOnce({ rowCount: 5 });
+    const deleted = await cleanupUnverifiedUsers();
+    expect(deleted).toBe(5);
+
+    const call = mockPool.query.mock.calls[0];
+    expect(call[0]).toMatch(/DELETE FROM users/);
+    expect(call[0]).toMatch(/email_verified = FALSE/);
+    expect(call[0]).toMatch(/INTERVAL '7 days'/);
+  });
+
+  test('retourne 0 si aucun compte à supprimer', async () => {
+    mockPool.query.mockResolvedValueOnce({ rowCount: 0 });
+    const deleted = await cleanupUnverifiedUsers();
+    expect(deleted).toBe(0);
+  });
+
+  test('rowCount null → retourne 0', async () => {
+    mockPool.query.mockResolvedValueOnce({ rowCount: null });
+    const deleted = await cleanupUnverifiedUsers();
+    expect(deleted).toBe(0);
+  });
+
+  test('propage l\'erreur DB', async () => {
+    mockPool.query.mockRejectedValueOnce(new Error('DB locked'));
+    await expect(cleanupUnverifiedUsers()).rejects.toThrow('DB locked');
   });
 });

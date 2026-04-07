@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderTimeline();
 
     } catch (error) {
-      console.error('Error loading aircraft:', error);
+      // Erreur gérée via toast
       showToast(i18n.t('common.loading_error'), 'error');
       document.getElementById('loading-state').innerHTML =
         '<p style="color:#e74c3c;font-family:\'DM Sans\',sans-serif;font-size:0.8rem;letter-spacing:2px">ERREUR — DONNÉES INACCESSIBLES</p>';
