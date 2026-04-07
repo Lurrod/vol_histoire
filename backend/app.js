@@ -130,6 +130,7 @@ const refreshLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req) => req.ip,
+  skip: () => process.env.NODE_ENV === 'test',
 });
 
 const resetPasswordLimiter = rateLimit({
