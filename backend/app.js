@@ -34,7 +34,7 @@ app.use((req, res, next) => {
     "script-src 'self' https://www.googletagmanager.com/gtag/js https://www.google-analytics.com/analytics.js",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
     "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-    "img-src 'self' https://i.postimg.cc https://flagcdn.com https://www.googletagmanager.com data:",
+    "img-src 'self' https://i.postimg.cc https://flagcdn.com https://www.googletagmanager.com https://picsum.photos https://fastly.picsum.photos data:",
     "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
     "media-src 'self'",
     "object-src 'none'",
@@ -101,6 +101,7 @@ const registerLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req) => req.ip,
+  skip: () => process.env.NODE_ENV === 'test',
 });
 
 const loginLimiter = rateLimit({
@@ -110,6 +111,7 @@ const loginLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req) => req.ip,
+  skip: () => process.env.NODE_ENV === 'test',
 });
 
 const globalApiLimiter = rateLimit({
