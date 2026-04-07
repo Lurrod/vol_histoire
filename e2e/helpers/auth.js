@@ -8,20 +8,21 @@
  * @param {string} password
  */
 async function loginViaApi(page, email, password) {
-  // Utilise une URL relative → même origine que le frontend → le cookie
-  // refreshToken (HttpOnly, Path=/api, SameSite=Strict) est correctement
-  // posé sur le BrowserContext et envoyé sur les navigations suivantes.
-  const baseURL = page.context()._options?.baseURL || 'http://localhost:3000';
-  const response = await page.request.post(`${baseURL}/api/login`, {
+  // URL relative : page.request hérite automatiquement du baseURL du context.
+  // Le cookie refreshToken (HttpOnly, Path=/api, SameSite=Strict) est posé
+  // sur le BrowserContext et envoyé sur les navigations same-origin suivantes.
+  const response = await page.request.post('/api/login', {
     data: { email, password },
   });
   const body = await response.json().catch(() => ({}));
   if (!response.ok() || !body.token) {
     throw new Error(`Login échoué (${response.status()}) : ${JSON.stringify(body)}`);
   }
-  // Le cookie refreshToken est désormais dans le BrowserContext.
-  // À la prochaine navigation, auth.init() appellera /api/refresh et
-  // récupérera un access token frais en mémoire (pattern attendu).
+  // Force la première navigation (load + auth.init() → /api/refresh) pour
+  // garantir que l'access token est en mémoire AVANT que le test ne goto une page.
+  // Sinon certaines pages (settings) peuvent rendre avant que le rôle soit connu.
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
   return body.token;
 }
 

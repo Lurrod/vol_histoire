@@ -82,27 +82,27 @@ async function seed() {
       max_speed, max_range, id_manufacturer, id_generation, type, status, weight
     ) VALUES
       (1, 'Rafale', 'Dassault Rafale', 'Multirôle français',
-       'https://i.postimg.cc/test/rafale.jpg', 'Chasseur multirôle français de 4ème génération.',
+       'https://picsum.photos/seed/rafale/600/400', 'Chasseur multirôle français de 4ème génération.',
        1, '1986-01-01', '1986-07-04', '2001-06-18',
        1.8, 3700, 1, 4, 2, 'En service', 9500),
 
       (2, 'F-22 Raptor', 'Lockheed Martin F-22 Raptor', 'Furtif américain',
-       'https://i.postimg.cc/test/f22.jpg', 'Premier chasseur de 5e génération.',
+       'https://picsum.photos/seed/f22/600/400', 'Premier chasseur de 5e génération.',
        2, '1981-01-01', '1997-09-07', '2005-12-15',
        2.25, 2960, 2, 5, 1, 'En service', 19700),
 
       (3, 'Su-27', 'Sukhoi Su-27', 'Chasseur soviétique',
-       'https://i.postimg.cc/test/su27.jpg', 'Chasseur de supériorité aérienne soviétique.',
+       'https://picsum.photos/seed/su27/600/400', 'Chasseur de supériorité aérienne soviétique.',
        3, '1969-01-01', '1977-05-20', '1985-01-01',
        2.35, 3530, 4, 4, 1, 'En service', 16380),
 
       (4, 'Mirage 2000', 'Dassault Mirage 2000', 'Multirôle français 4e gen',
-       'https://i.postimg.cc/test/mirage2000.jpg', 'Multirôle français de 4ème génération.',
+       'https://picsum.photos/seed/mirage2000/600/400', 'Multirôle français de 4ème génération.',
        1, '1972-01-01', '1978-03-10', '1984-07-02',
        2.2, 1550, 1, 4, 2, 'En service', 7500),
 
       (5, 'F-35 Lightning II', 'Lockheed Martin F-35 Lightning II', 'Furtif multirôle',
-       'https://i.postimg.cc/test/f35.jpg', 'Multirôle furtif américain de 5ème génération.',
+       'https://picsum.photos/seed/f35/600/400', 'Multirôle furtif américain de 5ème génération.',
        2, '1992-01-01', '2006-12-15', '2015-07-31',
        1.6, 2220, 2, 5, 2, 'En service', 13290)
     ON CONFLICT (id) DO NOTHING
