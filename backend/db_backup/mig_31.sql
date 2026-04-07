@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'MiG-31', 'Mikoyan-Gourevitch MiG-31 Foxhound', 'Intercepteur soviétique/russe de 4e génération', 
-    'https://i.postimg.cc/tJP4JQ1g/mig31.jpg', 
-    'Le Mikoyan-Gourevitch MiG-31 Foxhound est un avion intercepteur supersonique développé pour les forces aériennes soviétiques, puis russes. Classé dans la 4e génération, il est conçu pour intercepter des cibles à haute altitude et grande vitesse, comme les bombardiers et missiles de croisière, avec son radar avancé Zaslon et ses missiles à longue portée. Toujours en service, il demeure un élément clé de la défense aérienne russe.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '1972-01-01', '1975-09-16', '1981-05-06', 
-    3000.0, 3000.0, (SELECT id FROM manufacturer WHERE code = 'MIG'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Intercepteur'), 
-    'Actif', 21825.0
+    'MiG-31',
+    'MiG-31',
+    'Mikoyan-Gourevitch MiG-31 Foxhound',
+    'Mikoyan-Gurevich MiG-31 Foxhound',
+    'Intercepteur soviétique/russe de 4e génération',
+    'Soviet/Russian 4th-generation interceptor',
+    'https://i.postimg.cc/tJP4JQ1g/mig31.jpg',
+    'Le Mikoyan-Gourevitch MiG-31 Foxhound est un avion intercepteur supersonique développé pour les forces aériennes soviétiques, puis russes. Classé dans la 4e génération, il est conçu pour intercepter des cibles à haute altitude et grande vitesse, comme les bombardiers et missiles de croisière, avec son radar avancé Zaslon et ses missiles à longue portée. Toujours en service, il demeure un élément clé de la défense aérienne russe.',
+    'The Mikoyan-Gurevich MiG-31 Foxhound is a supersonic interceptor aircraft developed for the Soviet and later Russian air forces. Classified as 4th generation, it is designed to intercept high-altitude, high-speed targets such as bombers and cruise missiles, with its advanced Zaslon radar and long-range missiles. Still in service, it remains a key element of Russian air defense.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '1972-01-01',
+    '1975-09-16',
+    '1981-05-06',
+    3000.0,
+    3000.0,
+    (SELECT id FROM manufacturer WHERE code = 'MIG'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Intercepteur'),
+    'Actif',
+    'Active',
+    21825.0
 );
 
 -- Insertion des technologies

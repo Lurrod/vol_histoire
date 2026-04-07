@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Shenyang J-8', 'Shenyang J-8 Finback', 'Intercepteur chinois de 3e génération', 
-    'https://i.postimg.cc/8khFTMLm/j8.jpg', 
-    'Le Shenyang J-8 Finback est un chasseur-intercepteur développé par Shenyang Aircraft Corporation pour l''Armée populaire de libération. Classé dans la 3e génération, il est conçu pour des missions d''interception à haute altitude et grande vitesse, évoluant à partir des bases du MiG-21 avec des améliorations chinoises. Utilisé pendant la Guerre froide, il a été modernisé dans des variantes comme le J-8II pour inclure des capacités multirôles.', 
-    (SELECT id FROM countries WHERE code = 'CHN'), '1964-01-01', '1969-07-05', '1980-03-01', 
-    2350.0, 2200.0, (SELECT id FROM manufacturer WHERE code = 'SAC'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Intercepteur'), 
-    'Retiré', 9820.0
+    'Shenyang J-8',
+    'Shenyang J-8',
+    'Shenyang J-8 Finback',
+    'Shenyang J-8 Finback',
+    'Intercepteur chinois de 3e génération',
+    'Chinese 3rd-generation interceptor',
+    'https://i.postimg.cc/8khFTMLm/j8.jpg',
+    'Le Shenyang J-8 Finback est un chasseur-intercepteur développé par Shenyang Aircraft Corporation pour l''Armée populaire de libération. Classé dans la 3e génération, il est conçu pour des missions d''interception à haute altitude et grande vitesse, évoluant à partir des bases du MiG-21 avec des améliorations chinoises. Utilisé pendant la Guerre froide, il a été modernisé dans des variantes comme le J-8II pour inclure des capacités multirôles.',
+    'The Shenyang J-8 Finback is a fighter-interceptor developed by Shenyang Aircraft Corporation for the People',
+    (SELECT id FROM countries WHERE code = 'CHN'),
+    '1964-01-01',
+    '1969-07-05',
+    '1980-03-01',
+    2350.0,
+    2200.0,
+    (SELECT id FROM manufacturer WHERE code = 'SAC'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Intercepteur'),
+    'Retiré',
+    NULL,
+    9820.0
 );
 
 -- Insertion des technologies

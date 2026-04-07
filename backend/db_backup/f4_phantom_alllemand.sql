@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'F-4 Phantom II Allemand', 'McDonnell Douglas F-4F Phantom II (Luftwaffe)', 'Chasseur multirôle de 3e génération au service de la Luftwaffe', 
-    'https://i.postimg.cc/DzV9jgWV/f4-phantom-2-allemand.jpg', 
-    'Le McDonnell Douglas F-4F Phantom II est la variante allégée du célèbre chasseur-bombardier américain, spécialement adaptée pour la Luftwaffe ouest-allemande. Livrée à partir de 1973, cette version se distinguait par la suppression initiale de la capacité de tir de missiles AIM-7 Sparrow et par un allègement structurel pour privilégier les missions de supériorité aérienne. Au total, 175 exemplaires furent livrés à l''Allemagne de l''Ouest. Dans les années 1980, le programme ICE (Improved Combat Efficiency) modernisa profondément la flotte en intégrant le radar AN/APG-65, la capacité de tir du missile AIM-120 AMRAAM et de nouveaux systèmes de guerre électronique, propulsant l''appareil aux standards de la 4e génération. Le F-4F constitua le pilier de la défense aérienne allemande pendant plus de trois décennies de Guerre froide et au-delà, assurant des missions d''interception et de police du ciel dans le cadre de l''OTAN. Il fut définitivement retiré du service en 2013, remplacé par l''Eurofighter Typhoon.', 
-    (SELECT id FROM countries WHERE code = 'DEU'), '1955-01-01', '1973-05-18', '1973-09-01', 
-    2370.0, 2600.0, (SELECT id FROM manufacturer WHERE code = 'BOE'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Retiré', 12700.0
+    'F-4 Phantom II Allemand',
+    'German F-4 Phantom II',
+    'McDonnell Douglas F-4F Phantom II (Luftwaffe)',
+    'McDonnell Douglas F-4F Phantom II (Luftwaffe)',
+    'Chasseur multirôle de 3e génération au service de la Luftwaffe',
+    '3rd-generation multirole fighter in Luftwaffe service',
+    'https://i.postimg.cc/DzV9jgWV/f4-phantom-2-allemand.jpg',
+    'Le McDonnell Douglas F-4F Phantom II est la variante allégée du célèbre chasseur-bombardier américain, spécialement adaptée pour la Luftwaffe ouest-allemande. Livrée à partir de 1973, cette version se distinguait par la suppression initiale de la capacité de tir de missiles AIM-7 Sparrow et par un allègement structurel pour privilégier les missions de supériorité aérienne. Au total, 175 exemplaires furent livrés à l''Allemagne de l''Ouest. Dans les années 1980, le programme ICE (Improved Combat Efficiency) modernisa profondément la flotte en intégrant le radar AN/APG-65, la capacité de tir du missile AIM-120 AMRAAM et de nouveaux systèmes de guerre électronique, propulsant l''appareil aux standards de la 4e génération. Le F-4F constitua le pilier de la défense aérienne allemande pendant plus de trois décennies de Guerre froide et au-delà, assurant des missions d''interception et de police du ciel dans le cadre de l''OTAN. Il fut définitivement retiré du service en 2013, remplacé par l''Eurofighter Typhoon.',
+    'The McDonnell Douglas F-4F Phantom II is the lightened variant of the famous American fighter-bomber, specially adapted for the West German Luftwaffe. Delivered from 1973, this version was distinguished by the initial removal of AIM-7 Sparrow missile firing capability and by structural lightening to prioritize air superiority missions. A total of 175 examples were delivered to West Germany. In the 1980s, the ICE (Improved Combat Efficiency) program deeply modernized the fleet by integrating the AN/APG-65 radar, AIM-120 AMRAAM missile firing capability and new electronic warfare systems, transforming the F-4F into a formidable BVR combat aircraft.',
+    (SELECT id FROM countries WHERE code = 'DEU'),
+    '1955-01-01',
+    '1973-05-18',
+    '1973-09-01',
+    2370.0,
+    2600.0,
+    (SELECT id FROM manufacturer WHERE code = 'BOE'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Retiré',
+    NULL,
+    12700.0
 );
 
 -- Insertion des technologies

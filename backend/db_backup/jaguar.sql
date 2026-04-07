@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Jaguar', 'SEPECAT Jaguar', 'Chasseur-bombardier franco-britannique de 3e génération', 
-    'https://i.postimg.cc/ZR4ZTB8C/jaguar.jpg', 
-    'Le SEPECAT Jaguar est un avion de chasse-bombardier développé conjointement par la France et le Royaume-Uni (SEPECAT). Classé dans la 3e génération, il a été conçu pour des missions d''attaque au sol à basse altitude et d''appui aérien rapproché, avec des capacités secondaires de supériorité aérienne. Utilisé par l''Armée de l''Air française et la Royal Air Force, il a servi dans plusieurs conflits avant d’être retiré.', 
-    (SELECT id FROM countries WHERE code = 'FRA'), '1965-01-01', '1968-09-08', '1973-06-01', 
-    1700.0, 3524.0, (SELECT id FROM manufacturer WHERE code = 'DAS'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Appui aérien'), 
-    'Retiré', 7700.0
+    'Jaguar',
+    'Jaguar',
+    'SEPECAT Jaguar',
+    'SEPECAT Jaguar',
+    'Chasseur-bombardier franco-britannique de 3e génération',
+    'Franco-British 3rd-generation fighter-bomber',
+    'https://i.postimg.cc/ZR4ZTB8C/jaguar.jpg',
+    'Le SEPECAT Jaguar est un avion de chasse-bombardier développé conjointement par la France et le Royaume-Uni (SEPECAT). Classé dans la 3e génération, il a été conçu pour des missions d''attaque au sol à basse altitude et d''appui aérien rapproché, avec des capacités secondaires de supériorité aérienne. Utilisé par l''Armée de l''Air française et la Royal Air Force, il a servi dans plusieurs conflits avant d’être retiré.',
+    'The SEPECAT Jaguar is a fighter-bomber aircraft jointly developed by France and the United Kingdom (SEPECAT). Classified as 3rd generation, it was designed for low-altitude ground attack and close air support missions, with secondary air superiority capabilities. Used by the French Air Force and the Royal Air Force, it served in several conflicts before being retired.',
+    (SELECT id FROM countries WHERE code = 'FRA'),
+    '1965-01-01',
+    '1968-09-08',
+    '1973-06-01',
+    1700.0,
+    3524.0,
+    (SELECT id FROM manufacturer WHERE code = 'DAS'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Appui aérien'),
+    'Retiré',
+    NULL,
+    7700.0
 );
 
 -- Insertion des technologies

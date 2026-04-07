@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Mirage 2000', 'Dassault Mirage 2000', 'Chasseur multirôle français de 4e génération', 
-    'https://i.postimg.cc/s2TdnMyK/mirage2000.jpg', 
-    'Le Dassault Mirage 2000 est un avion de chasse multirôle développé par Dassault Aviation pour l''Armée de l''Air française. Appartenant à la 4e génération, il est conçu pour la supériorité aérienne et les frappes au sol, avec une aile delta, un système fly-by-wire et une grande maniabilité. Utilisé dans de nombreux conflits, il est également exporté vers plusieurs pays.', 
-    (SELECT id FROM countries WHERE code = 'FRA'), '1975-01-01', '1978-03-10', '1984-07-02', 
-    2338.0, 1550.0, (SELECT id FROM manufacturer WHERE code = 'DAS'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 7500.0
+    'Mirage 2000',
+    'Mirage 2000',
+    'Dassault Mirage 2000',
+    'Dassault Mirage 2000',
+    'Chasseur multirôle français de 4e génération',
+    'French 4th-generation multirole fighter',
+    'https://i.postimg.cc/s2TdnMyK/mirage2000.jpg',
+    'Le Dassault Mirage 2000 est un avion de chasse multirôle développé par Dassault Aviation pour l''Armée de l''Air française. Appartenant à la 4e génération, il est conçu pour la supériorité aérienne et les frappes au sol, avec une aile delta, un système fly-by-wire et une grande maniabilité. Utilisé dans de nombreux conflits, il est également exporté vers plusieurs pays.',
+    'The Dassault Mirage 2000 is a multirole fighter aircraft developed by Dassault Aviation for the French Air Force. Belonging to the 4th generation, it is designed for air superiority and ground strikes, with a delta wing, fly-by-wire system and high maneuverability. Used in many conflicts, it has also been exported to several countries.',
+    (SELECT id FROM countries WHERE code = 'FRA'),
+    '1975-01-01',
+    '1978-03-10',
+    '1984-07-02',
+    2338.0,
+    1550.0,
+    (SELECT id FROM manufacturer WHERE code = 'DAS'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    7500.0
 );
 
 -- Insertion des technologies

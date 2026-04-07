@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Chengdu J-10', 'Chengdu J-10 Vigorous Dragon', 'Chasseur multirôle chinois de 4e génération', 
-    'https://i.postimg.cc/XvGJmCVF/j10.jpg', 
-    'Le Chengdu J-10 Vigorous Dragon est un chasseur multirôle développé par Chengdu Aerospace Corporation pour l''Armée populaire de libération. Classé dans la 4e génération, il est conçu pour la supériorité aérienne et les missions air-sol, avec une configuration delta-canard et un système fly-by-wire. Introduit dans les années 2000, il est un pilier moderne de l''aviation chinoise et a été exporté sous des variantes comme le J-10C.', 
-    (SELECT id FROM countries WHERE code = 'CHN'), '1994-01-01', '1998-03-23', '2004-07-01', 
-    2200.0, 1850.0, (SELECT id FROM manufacturer WHERE code = 'CAC'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 9750.0
+    'Chengdu J-10',
+    'Chengdu J-10',
+    'Chengdu J-10 Vigorous Dragon',
+    'Chengdu J-10 Vigorous Dragon',
+    'Chasseur multirôle chinois de 4e génération',
+    'Chinese 4th-generation multirole fighter',
+    'https://i.postimg.cc/XvGJmCVF/j10.jpg',
+    'Le Chengdu J-10 Vigorous Dragon est un chasseur multirôle développé par Chengdu Aerospace Corporation pour l''Armée populaire de libération. Classé dans la 4e génération, il est conçu pour la supériorité aérienne et les missions air-sol, avec une configuration delta-canard et un système fly-by-wire. Introduit dans les années 2000, il est un pilier moderne de l''aviation chinoise et a été exporté sous des variantes comme le J-10C.',
+    'The Chengdu J-10 Vigorous Dragon is a multirole fighter developed by Chengdu Aerospace Corporation for the People',
+    (SELECT id FROM countries WHERE code = 'CHN'),
+    '1994-01-01',
+    '1998-03-23',
+    '2004-07-01',
+    2200.0,
+    1850.0,
+    (SELECT id FROM manufacturer WHERE code = 'CAC'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    9750.0
 );
 
 -- Insertion des technologies

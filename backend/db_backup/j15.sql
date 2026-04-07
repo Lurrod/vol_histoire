@@ -4,17 +4,49 @@ INSERT INTO armement (name, description) VALUES
 
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Shenyang J-15', 'Shenyang J-15 Flying Shark', 'Chasseur embarqué chinois de 4e génération', 
-    'https://i.postimg.cc/YS6cvrRZ/j15.jpg', 
-    'Le Shenyang J-15 Flying Shark est le premier chasseur embarqué opérationnel de la marine chinoise, développé par Shenyang Aircraft Corporation. Dérivé du prototype T-10K du Sukhoi Su-33 russe, il a été adapté et modernisé avec des systèmes avioniques et un armement chinois. Le J-15 est conçu pour opérer depuis les porte-avions de la classe Liaoning et Shandong, utilisant un tremplin ski-jump pour le décollage. Capable de missions de supériorité aérienne, d''attaque antinavire et de frappe tactique, il est équipé d''ailes repliables, d''une crosse d''appontage et d''un train d''atterrissage renforcé. Il constitue un élément clé de la projection de puissance navale chinoise.', 
-    (SELECT id FROM countries WHERE code = 'CHN'), '2001-01-01', '2009-08-31', '2013-11-01', 
-    2400.0, 3500.0, (SELECT id FROM manufacturer WHERE code = 'SAC'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 17500.0
+    'Shenyang J-15',
+    'Shenyang J-15',
+    'Shenyang J-15 Flying Shark',
+    'Shenyang J-15 Flying Shark',
+    'Chasseur embarqué chinois de 4e génération',
+    'Chinese 4th-generation carrier-based fighter',
+    'https://i.postimg.cc/YS6cvrRZ/j15.jpg',
+    'Le Shenyang J-15 Flying Shark est le premier chasseur embarqué opérationnel de la marine chinoise, développé par Shenyang Aircraft Corporation. Dérivé du prototype T-10K du Sukhoi Su-33 russe, il a été adapté et modernisé avec des systèmes avioniques et un armement chinois. Le J-15 est conçu pour opérer depuis les porte-avions de la classe Liaoning et Shandong, utilisant un tremplin ski-jump pour le décollage. Capable de missions de supériorité aérienne, d''attaque antinavire et de frappe tactique, il est équipé d''ailes repliables, d''une crosse d''appontage et d''un train d''atterrissage renforcé. Il constitue un élément clé de la projection de puissance navale chinoise.',
+    'The Shenyang J-15 Flying Shark is the first operational carrier-based fighter of the Chinese Navy, developed by Shenyang Aircraft Corporation. Derived from the Russian Sukhoi Su-33 T-10K prototype, it has been adapted and modernized with Chinese avionics systems and armament. The J-15 is designed to operate from Liaoning and Shandong-class aircraft carriers, using a ski-jump ramp for take-off. Capable of air superiority, anti-ship attack and tactical strike missions, it is equipped with folding wings, an arrestor hook and reinforced landing gear. It constitutes a key element of Chinese naval power projection.',
+    (SELECT id FROM countries WHERE code = 'CHN'),
+    '2001-01-01',
+    '2009-08-31',
+    '2013-11-01',
+    2400.0,
+    3500.0,
+    (SELECT id FROM manufacturer WHERE code = 'SAC'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    17500.0
 );
 
 -- Insertion des technologies

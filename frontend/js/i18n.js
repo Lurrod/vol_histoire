@@ -146,6 +146,7 @@ const i18n = (() => {
   /** Switch language */
   async function setLang(lang) {
     if (!SUPPORTED_LANGS.includes(lang)) return;
+    const previous = currentLang;
     currentLang = lang;
     localStorage.setItem(STORAGE_KEY, lang);
     translations = await loadTranslations(lang);
@@ -153,6 +154,20 @@ const i18n = (() => {
     applyToDOM();
     // Dispatch event so JS modules can react
     window.dispatchEvent(new CustomEvent('langChanged', { detail: { lang } }));
+    // i18n BD : si la langue change effectivement et qu'on est sur une page
+    // qui affiche du contenu DB (hangar, details, favorites, timeline, index),
+    // on recharge pour refetch /api/* avec le bon ?lang=.
+    // Les pages sans données DB (login, settings, legal) peuvent être exclues
+    // pour éviter les reloads inutiles.
+    if (previous && previous !== lang) {
+      const path = window.location.pathname;
+      const needsReload = /^\/$|^\/(hangar|details|favorites|timeline)/.test(path);
+      if (needsReload) {
+        // Petit délai pour que l'event langChanged soit traité par les listeners
+        // et que le localStorage soit bien écrit avant le reload.
+        setTimeout(() => window.location.reload(), 100);
+      }
+    }
   }
 
   /** Initialize — call once on DOMContentLoaded */

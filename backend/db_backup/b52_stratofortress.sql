@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'B-52 Stratofortress', 'Boeing B-52 Stratofortress', 'Bombardier stratégique américain de 2e génération', 
-    'https://i.postimg.cc/3RTpYBfm/b52-stratofortress.jpg', 
-    'Le Boeing B-52 Stratofortress est un bombardier stratégique à longue portée développé pour l''US Air Force. Classé dans la 2e génération, il est conçu pour des missions de frappe stratégique et nucléaire, avec une capacité exceptionnelle de charge utile et de portée. En service depuis les années 1950, il a été modernisé à plusieurs reprises et reste actif, participant à presque tous les conflits majeurs américains depuis la Guerre froide.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1950-01-01', '1952-04-15', '1955-02-01', 
-    957.0, 14800.0, (SELECT id FROM manufacturer WHERE code = 'BOE'), 
-    (SELECT id FROM generation WHERE generation = 2), (SELECT id FROM type WHERE name = 'Bombardier'), 
-    'Actif', 83000.0
+    'B-52 Stratofortress',
+    'B-52 Stratofortress',
+    'Boeing B-52 Stratofortress',
+    'Boeing B-52 Stratofortress',
+    'Bombardier stratégique américain de 2e génération',
+    'American 2nd-generation strategic bomber',
+    'https://i.postimg.cc/3RTpYBfm/b52-stratofortress.jpg',
+    'Le Boeing B-52 Stratofortress est un bombardier stratégique à longue portée développé pour l''US Air Force. Classé dans la 2e génération, il est conçu pour des missions de frappe stratégique et nucléaire, avec une capacité exceptionnelle de charge utile et de portée. En service depuis les années 1950, il a été modernisé à plusieurs reprises et reste actif, participant à presque tous les conflits majeurs américains depuis la Guerre froide.',
+    'The Boeing B-52 Stratofortress is a long-range strategic bomber developed for the US Air Force. Classified as 2nd generation, it is designed for strategic and nuclear strike missions, with exceptional payload capacity and range. In service since the 1950s, it has been modernized several times and remains active, participating in almost all major American conflicts since the Cold War.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1950-01-01',
+    '1952-04-15',
+    '1955-02-01',
+    957.0,
+    14800.0,
+    (SELECT id FROM manufacturer WHERE code = 'BOE'),
+    (SELECT id FROM generation WHERE generation = 2),
+    (SELECT id FROM type WHERE name = 'Bombardier'),
+    'Actif',
+    'Active',
+    83000.0
 );
 
 -- Insertion des technologies

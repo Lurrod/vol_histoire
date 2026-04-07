@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'B-1 Lancer', 'Rockwell B-1 Lancer', 'Bombardier stratégique américain de 4e génération', 
-    'https://i.postimg.cc/tgmfcsBK/b1-lancer.jpg', 
-    'Le Rockwell B-1 Lancer est un bombardier stratégique à géométrie variable développé pour l''US Air Force. Classé dans la 4e génération, il est conçu pour des missions de pénétration à basse altitude et à haute vitesse, capable de transporter une large gamme d''armes conventionnelles et nucléaires. Utilisé dans des conflits modernes, il excelle dans les frappes stratégiques de précision.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1970-01-01', '1974-12-23', '1986-10-01', 
-    1330.0, 12000.0, (SELECT id FROM manufacturer WHERE code = 'BOE'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Bombardier'), 
-    'Actif', 87000.0
+    'B-1 Lancer',
+    'B-1 Lancer',
+    'Rockwell B-1 Lancer',
+    'Rockwell B-1 Lancer',
+    'Bombardier stratégique américain de 4e génération',
+    'American 4th-generation strategic bomber',
+    'https://i.postimg.cc/tgmfcsBK/b1-lancer.jpg',
+    'Le Rockwell B-1 Lancer est un bombardier stratégique à géométrie variable développé pour l''US Air Force. Classé dans la 4e génération, il est conçu pour des missions de pénétration à basse altitude et à haute vitesse, capable de transporter une large gamme d''armes conventionnelles et nucléaires. Utilisé dans des conflits modernes, il excelle dans les frappes stratégiques de précision.',
+    'The Rockwell B-1 Lancer is a variable-geometry strategic bomber developed for the US Air Force. Classified as 4th generation, it is designed for low-altitude high-speed penetration missions, capable of carrying a wide range of conventional and nuclear weapons. Used in modern conflicts, it excels in precision strategic strikes.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1970-01-01',
+    '1974-12-23',
+    '1986-10-01',
+    1330.0,
+    12000.0,
+    (SELECT id FROM manufacturer WHERE code = 'BOE'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Bombardier'),
+    'Actif',
+    'Active',
+    87000.0
 );
 
 -- Insertion des technologies

@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'A-10 Thunderbolt II', 'Fairchild Republic A-10 Thunderbolt II', 'Avion d''appui aérien rapproché américain de 4e génération', 
-    'https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg', 
-    'Le Fairchild Republic A-10 Thunderbolt II, surnommé "Warthog", est un avion d''appui aérien rapproché conçu pour l''US Air Force. Classé dans la 4e génération, il est spécialisé dans la destruction de blindés et de cibles au sol grâce à son canon GAU-8 Avenger et sa robustesse exceptionnelle. Utilisé dans de nombreux conflits modernes, il est célèbre pour sa durabilité et son efficacité au combat.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1970-01-01', '1972-05-10', '1977-03-10', 
-    706.0, 4150.0, (SELECT id FROM manufacturer WHERE code = 'LM'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Appui aérien'), 
-    'Actif', 12000.0
+    'A-10 Thunderbolt II',
+    'A-10 Thunderbolt II',
+    'Fairchild Republic A-10 Thunderbolt II',
+    'Fairchild Republic A-10 Thunderbolt II',
+    'Avion d''appui aérien rapproché américain de 4e génération',
+    'American 4th-generation close air support aircraft',
+    'https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg',
+    'Le Fairchild Republic A-10 Thunderbolt II, surnommé "Warthog", est un avion d''appui aérien rapproché conçu pour l''US Air Force. Classé dans la 4e génération, il est spécialisé dans la destruction de blindés et de cibles au sol grâce à son canon GAU-8 Avenger et sa robustesse exceptionnelle. Utilisé dans de nombreux conflits modernes, il est célèbre pour sa durabilité et son efficacité au combat.',
+    'The Fairchild Republic A-10 Thunderbolt II, nicknamed "Warthog", is a close air support aircraft designed for the US Air Force. Classified as 4th generation, it specializes in the destruction of armor and ground targets thanks to its GAU-8 Avenger cannon and exceptional ruggedness. Used in numerous modern conflicts, it is famous for its durability and combat effectiveness.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1970-01-01',
+    '1972-05-10',
+    '1977-03-10',
+    706.0,
+    4150.0,
+    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Appui aérien'),
+    'Actif',
+    'Active',
+    12000.0
 );
 
 -- Insertion des technologies

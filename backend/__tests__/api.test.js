@@ -1600,6 +1600,147 @@ describe('Protection CSRF', () => {
 });
 
 // =============================================================================
+// i18n — pickLang helper + lang middleware
+// =============================================================================
+describe('i18n — pickLang helper', () => {
+  const { pickLang, pickLangMany, resolveLang, TRANSLATION_NEEDED } = require('../i18n');
+
+  test('lang=fr retourne les champs originaux et supprime les _en', () => {
+    const row = { id: 1, name: 'Rafale', name_en: 'Rafale', description: 'Chasseur', description_en: 'Fighter' };
+    const result = pickLang(row, 'fr', ['name', 'description']);
+    expect(result.name).toBe('Rafale');
+    expect(result.description).toBe('Chasseur');
+    expect(result.name_en).toBeUndefined();
+    expect(result.description_en).toBeUndefined();
+  });
+
+  test('lang=en retourne les champs _en quand disponibles', () => {
+    const row = { id: 1, name: 'Chasseur', name_en: 'Fighter', description: 'Avion', description_en: 'Aircraft' };
+    const result = pickLang(row, 'en', ['name', 'description']);
+    expect(result.name).toBe('Fighter');
+    expect(result.description).toBe('Aircraft');
+  });
+
+  test('lang=en avec _en NULL retourne "Translation needed"', () => {
+    const row = { id: 1, name: 'Avion spécial', name_en: null, description: 'Desc', description_en: null };
+    const result = pickLang(row, 'en', ['name', 'description']);
+    expect(result.name).toBe(TRANSLATION_NEEDED);
+    expect(result.description).toBe(TRANSLATION_NEEDED);
+  });
+
+  test('lang=en avec fallbackFields garde le FR si _en NULL (noms propres)', () => {
+    const row = { id: 1, name: 'Rafale', name_en: null, description: 'Avion', description_en: null };
+    const result = pickLang(row, 'en', ['name', 'description'], ['name']);
+    expect(result.name).toBe('Rafale'); // fallback FR car nom propre
+    expect(result.description).toBe(TRANSLATION_NEEDED); // pas de fallback
+  });
+
+  test('pickLangMany applique à un tableau', () => {
+    const rows = [
+      { name: 'A', name_en: 'A-en' },
+      { name: 'B', name_en: null },
+    ];
+    const result = pickLangMany(rows, 'en', ['name']);
+    expect(result[0].name).toBe('A-en');
+    expect(result[1].name).toBe(TRANSLATION_NEEDED);
+  });
+
+  test('resolveLang lit ?lang= en priorité', () => {
+    const req = { query: { lang: 'en' }, headers: { 'accept-language': 'fr-FR,fr' } };
+    expect(resolveLang(req)).toBe('en');
+  });
+
+  test('resolveLang tombe sur Accept-Language si pas de query', () => {
+    const req = { query: {}, headers: { 'accept-language': 'en-US,en;q=0.9' } };
+    expect(resolveLang(req)).toBe('en');
+  });
+
+  test('resolveLang fallback sur fr si aucun indice', () => {
+    const req = { query: {}, headers: {} };
+    expect(resolveLang(req)).toBe('fr');
+  });
+
+  test('resolveLang ignore les langues non supportées', () => {
+    const req = { query: { lang: 'de' }, headers: {} };
+    expect(resolveLang(req)).toBe('fr');
+  });
+
+  test('pickLang gère null/undefined proprement', () => {
+    expect(pickLang(null, 'en', ['name'])).toBeNull();
+    expect(pickLang(undefined, 'en', ['name'])).toBeUndefined();
+  });
+});
+
+// =============================================================================
+// i18n — Routes /api/airplanes avec ?lang=en
+// =============================================================================
+describe('Routes i18n — ?lang=en', () => {
+  test('GET /api/countries?lang=en retourne name traduit', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [
+        { id: 1, name: 'France', name_en: 'France' },
+        { id: 2, name: 'États-Unis', name_en: 'United States' },
+      ],
+    });
+    const res = await request(app).get('/api/countries?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.body[0].name).toBe('France');
+    expect(res.body[1].name).toBe('United States');
+    expect(res.body[0].name_en).toBeUndefined();
+  });
+
+  test('GET /api/types?lang=en retourne Translation needed si _en NULL', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [
+        { id: 1, name: 'Chasseur', name_en: 'Fighter', description: 'Desc FR', description_en: null },
+      ],
+    });
+    const res = await request(app).get('/api/types?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.body[0].name).toBe('Fighter');
+    expect(res.body[0].description).toBe('Translation needed');
+  });
+
+  test('GET /api/airplanes?lang=fr retourne les champs FR', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '1' }] })
+      .mockResolvedValueOnce({
+        rows: [{
+          id: 1, name: 'Rafale', name_en: 'Rafale',
+          complete_name: 'Dassault Rafale', complete_name_en: null,
+          little_description: 'Chasseur', little_description_en: 'Fighter',
+          country_name: 'France', country_name_en: 'France',
+          type_name: 'Multirôle', type_name_en: 'Multirole',
+        }],
+      });
+    const res = await request(app).get('/api/airplanes?lang=fr');
+    expect(res.status).toBe(200);
+    expect(res.body.data[0].little_description).toBe('Chasseur');
+    expect(res.body.data[0].type_name).toBe('Multirôle');
+  });
+
+  test('GET /api/airplanes?lang=en retourne les champs EN + fallback nom propre', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '1' }] })
+      .mockResolvedValueOnce({
+        rows: [{
+          id: 1, name: 'Rafale', name_en: null, // nom propre sans trad → fallback FR
+          complete_name: 'Dassault Rafale', complete_name_en: null,
+          little_description: 'Chasseur français', little_description_en: null,
+          country_name: 'France', country_name_en: 'France',
+          type_name: 'Multirôle', type_name_en: 'Multirole',
+        }],
+      });
+    const res = await request(app).get('/api/airplanes?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.body.data[0].name).toBe('Rafale'); // fallback
+    expect(res.body.data[0].complete_name).toBe('Dassault Rafale'); // fallback
+    expect(res.body.data[0].little_description).toBe('Translation needed'); // pas de fallback
+    expect(res.body.data[0].type_name).toBe('Multirole'); // traduit
+  });
+});
+
+// =============================================================================
 // GET /sitemap.xml
 // =============================================================================
 describe('GET /sitemap.xml', () => {

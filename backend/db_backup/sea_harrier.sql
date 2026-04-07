@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'BAE Sea Harrier', 'British Aerospace Sea Harrier', 'Chasseur embarqué VTOL britannique de 3e génération', 
-    'https://i.postimg.cc/R0TBP78X/sea-harrier.jpg', 
-    'Le British Aerospace Sea Harrier est la version navalisée du Harrier, développée pour la Royal Navy afin d''opérer depuis des porte-aéronefs légers de classe Invincible grâce à son décollage court et atterrissage vertical (STOVL). Classé dans la 3e génération, il combine la poussée vectorielle du réacteur Rolls-Royce Pegasus avec un radar Blue Fox (puis Blue Vixen sur la version FA2) et des missiles air-air pour la défense aérienne de la flotte. Le Sea Harrier s''est illustré de manière décisive pendant la guerre des Malouines en 1982, où il a remporté 20 victoires aériennes sans aucune perte en combat aérien, un bilan exceptionnel qui a démontré la viabilité du concept VTOL en opérations navales. Il a ensuite servi dans les Balkans avant d''être retiré en 2006, remplacé par le Harrier GR.9 puis le F-35B Lightning II.', 
-    (SELECT id FROM countries WHERE code = 'GBR'), '1975-01-01', '1978-08-20', '1980-04-18', 
-    1185.0, 3600.0, (SELECT id FROM manufacturer WHERE code = 'BAE'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Chasseur'), 
-    'Retiré', 6374.0
+    'BAE Sea Harrier',
+    'BAE Sea Harrier',
+    'British Aerospace Sea Harrier',
+    'British Aerospace Sea Harrier',
+    'Chasseur embarqué VTOL britannique de 3e génération',
+    'British 3rd-generation VTOL carrier-based fighter',
+    'https://i.postimg.cc/R0TBP78X/sea-harrier.jpg',
+    'Le British Aerospace Sea Harrier est la version navalisée du Harrier, développée pour la Royal Navy afin d''opérer depuis des porte-aéronefs légers de classe Invincible grâce à son décollage court et atterrissage vertical (STOVL). Classé dans la 3e génération, il combine la poussée vectorielle du réacteur Rolls-Royce Pegasus avec un radar Blue Fox (puis Blue Vixen sur la version FA2) et des missiles air-air pour la défense aérienne de la flotte. Le Sea Harrier s''est illustré de manière décisive pendant la guerre des Malouines en 1982, où il a remporté 20 victoires aériennes sans aucune perte en combat aérien, un bilan exceptionnel qui a démontré la viabilité du concept VTOL en opérations navales. Il a ensuite servi dans les Balkans avant d''être retiré en 2006, remplacé par le Harrier GR.9 puis le F-35B Lightning II.',
+    'The British Aerospace Sea Harrier is the navalized version of the Harrier, developed for the Royal Navy to operate from Invincible-class light aircraft carriers thanks to its short take-off and vertical landing (STOVL). Classified as 3rd generation, it combines the vectored thrust of the Rolls-Royce Pegasus engine with a Blue Fox radar (then Blue Vixen on the FA2 version) and air-to-air missiles for fleet air defense. The Sea Harrier distinguished itself decisively during the Falklands War in 1982, where it won 20 air victories without any loss in air combat, an exceptional record that demonstrated the viability of the VTOL concept in operations.',
+    (SELECT id FROM countries WHERE code = 'GBR'),
+    '1975-01-01',
+    '1978-08-20',
+    '1980-04-18',
+    1185.0,
+    3600.0,
+    (SELECT id FROM manufacturer WHERE code = 'BAE'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Chasseur'),
+    'Retiré',
+    NULL,
+    6374.0
 );
 
 -- Insertion des technologies

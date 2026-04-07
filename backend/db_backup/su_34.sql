@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Su-34', 'Sukhoi Su-34 Fullback', 'Chasseur-bombardier russe de 4e génération avancée', 
-    'https://i.postimg.cc/W1qX458H/su34.jpg', 
-    'Le Sukhoi Su-34 Fullback est un chasseur-bombardier biplace dérivé du Su-27, développé pour les forces aériennes russes. Classé dans la 4e génération avancée (souvent appelée 4++), il est conçu pour des missions de frappe tactique et stratégique avec une capacité tous temps et une grande précision. Équipé d’un poste de pilotage côte à côte, il est utilisé dans des conflits modernes comme la guerre en Syrie.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '1986-01-01', '1990-04-13', '2014-03-20', 
-    1900.0, 4000.0, (SELECT id FROM manufacturer WHERE code = 'SUK'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Bombardier'), 
-    'Actif', 22500.0
+    'Su-34',
+    'Su-34',
+    'Sukhoi Su-34 Fullback',
+    'Sukhoi Su-34 Fullback',
+    'Chasseur-bombardier russe de 4e génération avancée',
+    'Advanced Russian 4th-generation fighter-bomber',
+    'https://i.postimg.cc/W1qX458H/su34.jpg',
+    'Le Sukhoi Su-34 Fullback est un chasseur-bombardier biplace dérivé du Su-27, développé pour les forces aériennes russes. Classé dans la 4e génération avancée (souvent appelée 4++), il est conçu pour des missions de frappe tactique et stratégique avec une capacité tous temps et une grande précision. Équipé d’un poste de pilotage côte à côte, il est utilisé dans des conflits modernes comme la guerre en Syrie.',
+    'The Sukhoi Su-34 Fullback is a twin-seat fighter-bomber derived from the Su-27, developed for the Russian air forces. Classified as advanced 4th generation (often called 4++), it is designed for tactical and strategic strike missions with all-weather capability and high precision. Equipped with a side-by-side cockpit, it has been used in modern conflicts such as the war in Syria.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '1986-01-01',
+    '1990-04-13',
+    '2014-03-20',
+    1900.0,
+    4000.0,
+    (SELECT id FROM manufacturer WHERE code = 'SUK'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Bombardier'),
+    'Actif',
+    'Active',
+    22500.0
 );
 
 -- Insertion des technologies

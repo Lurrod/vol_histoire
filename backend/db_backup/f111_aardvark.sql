@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'F-111 Aardvark', 'General Dynamics F-111 Aardvark', 'Bombardier tactique américain de 3e génération', 
-    'https://i.postimg.cc/cCPbL2pX/f111-aardvark.jpg', 
-    'Le General Dynamics F-111 Aardvark est un bombardier tactique à géométrie variable développé pour l''US Air Force. Classé dans la 3e génération, il est conçu pour des missions de frappe stratégique et tactique à basse altitude, avec une capacité de pénétration avancée grâce à son radar de suivi de terrain. Utilisé principalement pendant la Guerre du Vietnam et la Guerre du Golfe, il est célèbre pour sa polyvalence et sa vitesse.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1963-01-01', '1964-12-21', '1967-10-18', 
-    2655.0, 6700.0, (SELECT id FROM manufacturer WHERE code = 'LM'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Bombardier'), 
-    'Retiré', 20900.0
+    'F-111 Aardvark',
+    'F-111 Aardvark',
+    'General Dynamics F-111 Aardvark',
+    'General Dynamics F-111 Aardvark',
+    'Bombardier tactique américain de 3e génération',
+    'American 3rd-generation tactical bomber',
+    'https://i.postimg.cc/cCPbL2pX/f111-aardvark.jpg',
+    'Le General Dynamics F-111 Aardvark est un bombardier tactique à géométrie variable développé pour l''US Air Force. Classé dans la 3e génération, il est conçu pour des missions de frappe stratégique et tactique à basse altitude, avec une capacité de pénétration avancée grâce à son radar de suivi de terrain. Utilisé principalement pendant la Guerre du Vietnam et la Guerre du Golfe, il est célèbre pour sa polyvalence et sa vitesse.',
+    'The General Dynamics F-111 Aardvark is a variable-geometry tactical bomber developed for the US Air Force. Classified as 3rd generation, it is designed for strategic and tactical strike missions at low altitude, with advanced penetration capability thanks to its terrain-following radar. Used mainly during the Vietnam War and the Gulf War, it is famous for its versatility and speed.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1963-01-01',
+    '1964-12-21',
+    '1967-10-18',
+    2655.0,
+    6700.0,
+    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Bombardier'),
+    'Retiré',
+    NULL,
+    20900.0
 );
 
 -- Insertion des technologies

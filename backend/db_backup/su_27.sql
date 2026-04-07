@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Su-27', 'Sukhoi Su-27 Flanker', 'Chasseur multirôle soviétique/russe de 4e génération', 
-    'https://i.postimg.cc/W4rW55Jk/su27.jpg', 
-    'Le Sukhoi Su-27 Flanker est un avion de chasse multirôle développé pour les forces aériennes soviétiques, puis russes. Classé dans la 4e génération, il est conçu pour la supériorité aérienne avec une maniabilité exceptionnelle et une capacité de frappe au sol secondaire. Rival direct des chasseurs occidentaux comme le F-15, il a été largement exporté et a servi de base à de nombreuses variantes modernes.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '1974-01-01', '1977-05-20', '1982-06-20', 
-    2500.0, 3530.0, (SELECT id FROM manufacturer WHERE code = 'SUK'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Chasseur'), 
-    'Actif', 16400.0
+    'Su-27',
+    'Su-27',
+    'Sukhoi Su-27 Flanker',
+    'Sukhoi Su-27 Flanker',
+    'Chasseur multirôle soviétique/russe de 4e génération',
+    'Soviet/Russian 4th-generation multirole fighter',
+    'https://i.postimg.cc/W4rW55Jk/su27.jpg',
+    'Le Sukhoi Su-27 Flanker est un avion de chasse multirôle développé pour les forces aériennes soviétiques, puis russes. Classé dans la 4e génération, il est conçu pour la supériorité aérienne avec une maniabilité exceptionnelle et une capacité de frappe au sol secondaire. Rival direct des chasseurs occidentaux comme le F-15, il a été largement exporté et a servi de base à de nombreuses variantes modernes.',
+    'The Sukhoi Su-27 Flanker is a multirole fighter aircraft developed for the Soviet and later Russian air forces. Classified as 4th generation, it is designed for air superiority with exceptional maneuverability and secondary ground strike capability. Direct rival of Western fighters such as the F-15, it has been widely exported and has served as the basis for numerous modern variants.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '1974-01-01',
+    '1977-05-20',
+    '1982-06-20',
+    2500.0,
+    3530.0,
+    (SELECT id FROM manufacturer WHERE code = 'SUK'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Chasseur'),
+    'Actif',
+    'Active',
+    16400.0
 );
 
 -- Insertion des technologies

@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'MiG-23', 'Mikoyan-Gourevitch MiG-23 Flogger', 'Chasseur multirôle soviétique de 3e génération', 
-    'https://i.postimg.cc/cC6JStWf/mig23.jpg', 
-    'Le Mikoyan-Gourevitch MiG-23 Flogger est un avion de chasse multirôle à géométrie variable développé pour les forces aériennes soviétiques. Classé dans la 3e génération, il est conçu pour la supériorité aérienne et les frappes au sol, avec une capacité d''adaptation grâce à ses ailes ajustables. Largement exporté, il a été utilisé dans de nombreux conflits de la Guerre froide et au-delà.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '1964-01-01', '1967-06-10', '1970-01-01', 
-    2500.0, 1900.0, (SELECT id FROM manufacturer WHERE code = 'MIG'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Retiré', 11780.0
+    'MiG-23',
+    'MiG-23',
+    'Mikoyan-Gourevitch MiG-23 Flogger',
+    'Mikoyan-Gurevich MiG-23 Flogger',
+    'Chasseur multirôle soviétique de 3e génération',
+    'Soviet 3rd-generation multirole fighter',
+    'https://i.postimg.cc/cC6JStWf/mig23.jpg',
+    'Le Mikoyan-Gourevitch MiG-23 Flogger est un avion de chasse multirôle à géométrie variable développé pour les forces aériennes soviétiques. Classé dans la 3e génération, il est conçu pour la supériorité aérienne et les frappes au sol, avec une capacité d''adaptation grâce à ses ailes ajustables. Largement exporté, il a été utilisé dans de nombreux conflits de la Guerre froide et au-delà.',
+    'The Mikoyan-Gurevich MiG-23 Flogger is a variable-geometry multirole fighter aircraft developed for the Soviet air forces. Classified as 3rd generation, it is designed for air superiority and ground strikes, with adaptation capability thanks to its adjustable wings. Widely exported, it has been used in many Cold War and post-Cold War conflicts.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '1964-01-01',
+    '1967-06-10',
+    '1970-01-01',
+    2500.0,
+    1900.0,
+    (SELECT id FROM manufacturer WHERE code = 'MIG'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Retiré',
+    NULL,
+    11780.0
 );
 
 -- Insertion des technologies

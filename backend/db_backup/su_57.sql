@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Su-57', 'Sukhoi Su-57 Felon', 'Chasseur furtif russe de 5e génération', 
-    'https://i.postimg.cc/NjWrKjZJ/su57.jpg', 
-    'Le Sukhoi Su-57 Felon est un avion de chasse multirôle furtif développé par Sukhoi pour les forces aériennes russes. Classé dans la 5e génération, il est conçu pour la supériorité aérienne et les frappes au sol, avec une furtivité avancée, des capteurs intégrés et une supercroisière. Premier avion furtif russe opérationnel, il vise à concurrencer les chasseurs américains comme le F-22 et le F-35.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '2002-01-01', '2010-01-29', '2020-12-25', 
-    2470.0, 3500.0, (SELECT id FROM manufacturer WHERE code = 'SUK'), 
-    (SELECT id FROM generation WHERE generation = 5), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 18500.0
+    'Su-57',
+    'Su-57',
+    'Sukhoi Su-57 Felon',
+    'Sukhoi Su-57 Felon',
+    'Chasseur furtif russe de 5e génération',
+    'Russian 5th-generation stealth fighter',
+    'https://i.postimg.cc/NjWrKjZJ/su57.jpg',
+    'Le Sukhoi Su-57 Felon est un avion de chasse multirôle furtif développé par Sukhoi pour les forces aériennes russes. Classé dans la 5e génération, il est conçu pour la supériorité aérienne et les frappes au sol, avec une furtivité avancée, des capteurs intégrés et une supercroisière. Premier avion furtif russe opérationnel, il vise à concurrencer les chasseurs américains comme le F-22 et le F-35.',
+    'The Sukhoi Su-57 Felon is a stealth multirole fighter aircraft developed by Sukhoi for the Russian air forces. Classified as 5th generation, it is designed for air superiority and ground strikes, with advanced stealth, integrated sensors and supercruise. The first operational Russian stealth aircraft, it aims to compete with American fighters such as the F-22 and F-35.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '2002-01-01',
+    '2010-01-29',
+    '2020-12-25',
+    2470.0,
+    3500.0,
+    (SELECT id FROM manufacturer WHERE code = 'SUK'),
+    (SELECT id FROM generation WHERE generation = 5),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    18500.0
 );
 
 -- Insertion des technologies

@@ -5,17 +5,49 @@ INSERT INTO armement (name, description) VALUES
 
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Chengdu J-20', 'Chengdu J-20 Mighty Dragon', 'Chasseur furtif chinois de 5e génération', 
-    'https://i.postimg.cc/9XpWxpGK/j20.jpg', 
-    'Le Chengdu J-20 Mighty Dragon est le premier avion de combat furtif de 5e génération développé par la Chine. Conçu par Chengdu Aerospace Corporation, il a effectué son premier vol en 2011 et est entré en service actif en 2017. Le J-20 combine une conception furtive avancée, une configuration delta-canard, des capacités de supercroisière et une fusion de capteurs sophistiquée. Destiné à la supériorité aérienne et à l''interception à longue portée, il est conçu pour rivaliser avec les chasseurs de 5e génération occidentaux comme le F-22 Raptor et le F-35 Lightning II. Équipé de missiles à très longue portée, il représente un bond technologique majeur pour l''aviation militaire chinoise.', 
-    (SELECT id FROM countries WHERE code = 'CHN'), '1997-01-01', '2011-01-11', '2017-03-09', 
-    2100.0, 2000.0, (SELECT id FROM manufacturer WHERE code = 'CAC'), 
-    (SELECT id FROM generation WHERE generation = 5), (SELECT id FROM type WHERE name = 'Chasseur'), 
-    'Actif', 19390.0
+    'Chengdu J-20',
+    'Chengdu J-20',
+    'Chengdu J-20 Mighty Dragon',
+    'Chengdu J-20 Mighty Dragon',
+    'Chasseur furtif chinois de 5e génération',
+    'Chinese 5th-generation stealth fighter',
+    'https://i.postimg.cc/9XpWxpGK/j20.jpg',
+    'Le Chengdu J-20 Mighty Dragon est le premier avion de combat furtif de 5e génération développé par la Chine. Conçu par Chengdu Aerospace Corporation, il a effectué son premier vol en 2011 et est entré en service actif en 2017. Le J-20 combine une conception furtive avancée, une configuration delta-canard, des capacités de supercroisière et une fusion de capteurs sophistiquée. Destiné à la supériorité aérienne et à l''interception à longue portée, il est conçu pour rivaliser avec les chasseurs de 5e génération occidentaux comme le F-22 Raptor et le F-35 Lightning II. Équipé de missiles à très longue portée, il représente un bond technologique majeur pour l''aviation militaire chinoise.',
+    'The Chengdu J-20 Mighty Dragon is the first 5th-generation stealth combat aircraft developed by China. Designed by Chengdu Aerospace Corporation, it made its first flight in 2011 and entered active service in 2017. The J-20 combines advanced stealth design, a delta-canard configuration, supercruise capabilities and sophisticated sensor fusion. Intended for air superiority and long-range interception, it is designed to compete with Western 5th-generation fighters such as the F-22 Raptor and the F-35 Lightning II. Equipped with very long-range missiles, it represents a major technological leap for Chinese military aviation.',
+    (SELECT id FROM countries WHERE code = 'CHN'),
+    '1997-01-01',
+    '2011-01-11',
+    '2017-03-09',
+    2100.0,
+    2000.0,
+    (SELECT id FROM manufacturer WHERE code = 'CAC'),
+    (SELECT id FROM generation WHERE generation = 5),
+    (SELECT id FROM type WHERE name = 'Chasseur'),
+    'Actif',
+    'Active',
+    19390.0
 );
 
 -- Insertion des technologies

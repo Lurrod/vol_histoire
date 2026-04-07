@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'MiG-21 Allemand', 'Mikoyan-Gourevitch MiG-21 Fishbed (NVA / Luftwaffe)', 'Chasseur supersonique soviétique de 3e génération au service de l''Allemagne de l''Est puis réunifiée', 
-    'https://i.postimg.cc/VNyxGRJ2/mig21-allemand.jpg', 
-    'Le MiG-21 allemand fut l''avion de combat principal des forces aériennes de la République démocratique allemande (Nationale Volksarmee - NVA). À partir de 1962, l''Allemagne de l''Est reçut progressivement plusieurs variantes du Fishbed — MiG-21F-13, MiG-21PF, MiG-21PFM, MiG-21M, MiG-21MF, MiG-21bis et MiG-21U d''entraînement — totalisant plus de 570 appareils livrés par l''Union soviétique. Le MiG-21 constitua l''épine dorsale de la défense aérienne est-allemande pendant toute la Guerre froide, assurant l''interception et la supériorité aérienne face aux forces de l''OTAN le long du rideau de fer. La version MiG-21bis, dernière évolution majeure, disposait du réacteur Tumansky R-25-300 plus puissant et du radar RP-22 amélioré. Après la réunification allemande en 1990, la Luftwaffe hérita de 24 MiG-21bis encore opérationnels. Brièvement évalués et utilisés pour l''entraînement au combat dissimilaire — offrant aux pilotes de l''OTAN une expérience unique face à un chasseur du Pacte de Varsovie —, ils furent définitivement retirés du service en 1993 et remplacés par des appareils occidentaux.', 
-    (SELECT id FROM countries WHERE code = 'DEU'), '1954-01-01', '1956-06-14', '1962-06-01', 
-    2230.0, 1210.0, (SELECT id FROM manufacturer WHERE code = 'MIG'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Chasseur'), 
-    'Retiré', 5843.0
+    'MiG-21 Allemand',
+    'German MiG-21',
+    'Mikoyan-Gourevitch MiG-21 Fishbed (NVA / Luftwaffe)',
+    'Mikoyan-Gurevich MiG-21 Fishbed (NVA / Luftwaffe)',
+    'Chasseur supersonique soviétique de 3e génération au service de l''Allemagne de l''Est puis réunifiée',
+    'Soviet 3rd-generation supersonic fighter in East German and reunified German service',
+    'https://i.postimg.cc/VNyxGRJ2/mig21-allemand.jpg',
+    'Le MiG-21 allemand fut l''avion de combat principal des forces aériennes de la République démocratique allemande (Nationale Volksarmee - NVA). À partir de 1962, l''Allemagne de l''Est reçut progressivement plusieurs variantes du Fishbed — MiG-21F-13, MiG-21PF, MiG-21PFM, MiG-21M, MiG-21MF, MiG-21bis et MiG-21U d''entraînement — totalisant plus de 570 appareils livrés par l''Union soviétique. Le MiG-21 constitua l''épine dorsale de la défense aérienne est-allemande pendant toute la Guerre froide, assurant l''interception et la supériorité aérienne face aux forces de l''OTAN le long du rideau de fer. La version MiG-21bis, dernière évolution majeure, disposait du réacteur Tumansky R-25-300 plus puissant et du radar RP-22 amélioré. Après la réunification allemande en 1990, la Luftwaffe hérita de 24 MiG-21bis encore opérationnels. Brièvement évalués et utilisés pour l''entraînement au combat dissimilaire — offrant aux pilotes de l''OTAN une expérience unique face à un chasseur du Pacte de Varsovie —, ils furent définitivement retirés du service en 1993 et remplacés par des appareils occidentaux.',
+    'The German MiG-21 was the main combat aircraft of the East German air force (Nationale Volksarmee - NVA). From 1962, East Germany gradually received several variants of the Fishbed — MiG-21F-13, MiG-21PF, MiG-21PFM, MiG-21M, MiG-21MF, MiG-21bis and MiG-21U trainers — totaling more than 570 aircraft delivered by the Soviet Union. The MiG-21 formed the backbone of East German air defense throughout the Cold War, providing interception and air superiority against NATO forces along the Iron Curtain.',
+    (SELECT id FROM countries WHERE code = 'DEU'),
+    '1954-01-01',
+    '1956-06-14',
+    '1962-06-01',
+    2230.0,
+    1210.0,
+    (SELECT id FROM manufacturer WHERE code = 'MIG'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Chasseur'),
+    'Retiré',
+    NULL,
+    5843.0
 );
 
 -- Insertion des technologies

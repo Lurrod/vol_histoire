@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'F-5 Freedom Fighter', 'Northrop F-5 Freedom Fighter', 'Chasseur léger américain de 3e génération', 
-    'https://i.postimg.cc/nrryzvCc/f5-freedom-fighter.jpg', 
-    'Le Northrop F-5 Freedom Fighter est un avion de chasse léger développé par Northrop pour l''US Air Force et ses alliés. Classé dans la 3e génération, il est conçu pour être économique, maniable et facile à entretenir, avec des capacités de supériorité aérienne et d''attaque au sol. Largement exporté, il a été utilisé dans de nombreux conflits, notamment pendant la Guerre du Vietnam.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1955-01-01', '1959-07-30', '1964-03-01', 
-    1700.0, 2870.0, (SELECT id FROM manufacturer WHERE code = 'LM'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Chasseur'), 
-    'Retiré', 4240.0
+    'F-5 Freedom Fighter',
+    'F-5 Freedom Fighter',
+    'Northrop F-5 Freedom Fighter',
+    'Northrop F-5 Freedom Fighter',
+    'Chasseur léger américain de 3e génération',
+    'American 3rd-generation light fighter',
+    'https://i.postimg.cc/nrryzvCc/f5-freedom-fighter.jpg',
+    'Le Northrop F-5 Freedom Fighter est un avion de chasse léger développé par Northrop pour l''US Air Force et ses alliés. Classé dans la 3e génération, il est conçu pour être économique, maniable et facile à entretenir, avec des capacités de supériorité aérienne et d''attaque au sol. Largement exporté, il a été utilisé dans de nombreux conflits, notamment pendant la Guerre du Vietnam.',
+    'The Northrop F-5 Freedom Fighter is a light fighter aircraft developed by Northrop for the US Air Force and its allies. Classified as 3rd generation, it is designed to be economical, maneuverable and easy to maintain, with air superiority and ground attack capabilities. Widely exported, it has been used in many conflicts, notably during the Vietnam War.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1955-01-01',
+    '1959-07-30',
+    '1964-03-01',
+    1700.0,
+    2870.0,
+    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Chasseur'),
+    'Retiré',
+    NULL,
+    4240.0
 );
 
 -- Insertion des technologies

@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Su-35', 'Sukhoi Su-35 Flanker-E', 'Chasseur multirôle russe de 4e génération avancée', 
-    'https://i.postimg.cc/Nj0jnS5Y/su35.jpg', 
-    'Le Sukhoi Su-35 Flanker-E est une version modernisée du Su-27, classée comme un chasseur multirôle de 4e génération avancée (souvent appelée 4++). Développé par Sukhoi, il excelle dans la supériorité aérienne et les frappes au sol grâce à ses moteurs à poussée vectorielle, son radar avancé et sa maniabilité exceptionnelle. Utilisé par les forces aériennes russes, il a été déployé dans des conflits récents.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '2005-01-01', '2008-02-19', '2014-02-12', 
-    2500.0, 3600.0, (SELECT id FROM manufacturer WHERE code = 'SUK'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 19000.0
+    'Su-35',
+    'Su-35',
+    'Sukhoi Su-35 Flanker-E',
+    'Sukhoi Su-35 Flanker-E',
+    'Chasseur multirôle russe de 4e génération avancée',
+    'Advanced Russian 4th-generation multirole fighter',
+    'https://i.postimg.cc/Nj0jnS5Y/su35.jpg',
+    'Le Sukhoi Su-35 Flanker-E est une version modernisée du Su-27, classée comme un chasseur multirôle de 4e génération avancée (souvent appelée 4++). Développé par Sukhoi, il excelle dans la supériorité aérienne et les frappes au sol grâce à ses moteurs à poussée vectorielle, son radar avancé et sa maniabilité exceptionnelle. Utilisé par les forces aériennes russes, il a été déployé dans des conflits récents.',
+    'The Sukhoi Su-35 Flanker-E is a modernized version of the Su-27, classified as an advanced 4th-generation multirole fighter (often called 4++). Developed by Sukhoi, it excels in air superiority and ground strikes thanks to its thrust-vectoring engines, advanced radar and exceptional maneuverability. Used by the Russian air forces, it has been deployed in recent conflicts.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '2005-01-01',
+    '2008-02-19',
+    '2014-02-12',
+    2500.0,
+    3600.0,
+    (SELECT id FROM manufacturer WHERE code = 'SUK'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    19000.0
 );
 
 -- Insertion des technologies

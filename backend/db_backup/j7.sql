@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Chengdu J-7', 'Chengdu J-7 Fishcan', 'Chasseur chinois de 3e génération', 
-    'https://i.postimg.cc/G3YD9ZnY/j7.jpg', 
-    'Le Chengdu J-7 Fishcan est une version chinoise sous licence et améliorée du MiG-21 soviétique, développée par Chengdu Aerospace Corporation pour l''Armée populaire de libération. Classé dans la 3e génération, ce chasseur supersonique est conçu pour la supériorité aérienne et l''interception, avec des capacités air-sol limitées. Largement exporté, il a été utilisé dans plusieurs conflits pendant et après la Guerre froide.', 
-    (SELECT id FROM countries WHERE code = 'CHN'), '1961-01-01', '1966-01-17', '1967-04-01', 
-    2230.0, 1700.0, (SELECT id FROM manufacturer WHERE code = 'CAC'), 
-    (SELECT id FROM generation WHERE generation = 3), (SELECT id FROM type WHERE name = 'Chasseur'), 
-    'Retiré', 5843.0
+    'Chengdu J-7',
+    'Chengdu J-7',
+    'Chengdu J-7 Fishcan',
+    'Chengdu J-7 Fishcan',
+    'Chasseur chinois de 3e génération',
+    'Chinese 3rd-generation fighter',
+    'https://i.postimg.cc/G3YD9ZnY/j7.jpg',
+    'Le Chengdu J-7 Fishcan est une version chinoise sous licence et améliorée du MiG-21 soviétique, développée par Chengdu Aerospace Corporation pour l''Armée populaire de libération. Classé dans la 3e génération, ce chasseur supersonique est conçu pour la supériorité aérienne et l''interception, avec des capacités air-sol limitées. Largement exporté, il a été utilisé dans plusieurs conflits pendant et après la Guerre froide.',
+    'The Chengdu J-7 Fishcan is a Chinese licensed and improved version of the Soviet MiG-21, developed by Chengdu Aerospace Corporation for the People',
+    (SELECT id FROM countries WHERE code = 'CHN'),
+    '1961-01-01',
+    '1966-01-17',
+    '1967-04-01',
+    2230.0,
+    1700.0,
+    (SELECT id FROM manufacturer WHERE code = 'CAC'),
+    (SELECT id FROM generation WHERE generation = 3),
+    (SELECT id FROM type WHERE name = 'Chasseur'),
+    'Retiré',
+    NULL,
+    5843.0
 );
 
 -- Insertion des technologies

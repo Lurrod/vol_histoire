@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'F-15E Strike Eagle', 'McDonnell Douglas F-15E Strike Eagle', 'Chasseur-bombardier multirôle américain de 4e génération', 
-    'https://i.postimg.cc/BvDMfhV7/f15-eagle.jpg', 
-    'Le McDonnell Douglas F-15E Strike Eagle est une variante multirôle du F-15 Eagle, optimisée pour les missions de frappe au sol tout en conservant des capacités de supériorité aérienne. Classé dans la 4e génération, il est équipé de systèmes avancés pour les frappes de précision à longue portée et a été largement utilisé dans des conflits modernes par l''US Air Force.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1982-01-01', '1986-12-11', '1988-09-30', 
-    2655.0, 3900.0, (SELECT id FROM manufacturer WHERE code = 'BOE'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 14300.0
+    'F-15E Strike Eagle',
+    'F-15E Strike Eagle',
+    'McDonnell Douglas F-15E Strike Eagle',
+    'McDonnell Douglas F-15E Strike Eagle',
+    'Chasseur-bombardier multirôle américain de 4e génération',
+    'American 4th-generation multirole fighter-bomber',
+    'https://i.postimg.cc/BvDMfhV7/f15-eagle.jpg',
+    'Le McDonnell Douglas F-15E Strike Eagle est une variante multirôle du F-15 Eagle, optimisée pour les missions de frappe au sol tout en conservant des capacités de supériorité aérienne. Classé dans la 4e génération, il est équipé de systèmes avancés pour les frappes de précision à longue portée et a été largement utilisé dans des conflits modernes par l''US Air Force.',
+    'The McDonnell Douglas F-15E Strike Eagle is a multirole variant of the F-15 Eagle, optimized for ground strike missions while retaining air superiority capabilities. Classified as 4th generation, it is equipped with advanced systems for long-range precision strikes and has been widely used in modern conflicts by the US Air Force.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1982-01-01',
+    '1986-12-11',
+    '1988-09-30',
+    2655.0,
+    3900.0,
+    (SELECT id FROM manufacturer WHERE code = 'BOE'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    14300.0
 );
 
 -- Insertion des technologies

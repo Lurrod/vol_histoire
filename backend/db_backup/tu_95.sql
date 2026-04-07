@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'Tu-95', 'Tupolev Tu-95 Bear', 'Bombardier stratégique soviétique/russe de 2e génération', 
+    'Tu-95',
+    'Tu-95',
+    'Tupolev Tu-95 Bear',
+    'Tupolev Tu-95 Bear',
+    'Bombardier stratégique soviétique/russe de 2e génération',
+    'Soviet/Russian 2nd-generation strategic bomber',
     'https://i.postimg.cc/jjQ6Wm7Z/tu95.jpg',
-    'Le Tupolev Tu-95 Bear est un bombardier stratégique à longue portée développé pour les forces aériennes soviétiques, puis russes. Classé dans la 2e génération, il est propulsé par quatre moteurs à turbopropulseurs et conçu pour des missions de frappe stratégique et de dissuasion nucléaire. En service depuis les années 1950, il reste opérationnel grâce à des modernisations et est célèbre pour sa portée exceptionnelle et sa longévité.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '1950-01-01', '1952-11-12', '1956-05-01', 
-    925.0, 15000.0, (SELECT id FROM manufacturer WHERE code = 'TUP'), 
-    (SELECT id FROM generation WHERE generation = 2), (SELECT id FROM type WHERE name = 'Bombardier'), 
-    'Actif', 90000.0
+    'Le Tupolev Tu-95 Bear est un bombardier stratégique à longue portée développé pour les forces aériennes soviétiques, puis russes. Classé dans la 2e génération, il est propulsé par quatre moteurs à turbopropulseurs et conçu pour des missions de frappe stratégique et de dissuasion nucléaire. En service depuis les années 1950, il reste opérationnel grâce à des modernisations et est célèbre pour sa portée exceptionnelle et sa longévité.',
+    'The Tupolev Tu-95 Bear is a long-range strategic bomber developed for the Soviet and later Russian air forces. Classified as 2nd generation, it is powered by four turboprop engines and designed for strategic strike and nuclear deterrence missions. In service since the 1950s, it remains operational thanks to modernizations and is famous for its exceptional range and longevity.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '1950-01-01',
+    '1952-11-12',
+    '1956-05-01',
+    925.0,
+    15000.0,
+    (SELECT id FROM manufacturer WHERE code = 'TUP'),
+    (SELECT id FROM generation WHERE generation = 2),
+    (SELECT id FROM type WHERE name = 'Bombardier'),
+    'Actif',
+    'Active',
+    90000.0
 );
 
 -- Insertion des technologies

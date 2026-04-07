@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'MiG-29', 'Mikoyan MiG-29 Fulcrum', 'Chasseur multirôle soviétique/russe de 4e génération', 
-    'https://i.postimg.cc/44VZGN14/mig29.jpg', 
-    'Le Mikoyan MiG-29 Fulcrum est un avion de chasse multirôle développé par le bureau MiG pour les forces aériennes soviétiques, puis russes. Classé dans la 4e génération, il est conçu pour la supériorité aérienne et les combats rapprochés, avec une grande maniabilité et une robustesse exceptionnelle. Largement exporté, il a été utilisé dans de nombreux conflits par diverses nations.', 
-    (SELECT id FROM countries WHERE code = 'RUS'), '1974-01-01', '1977-10-06', '1983-07-01', 
-    2450.0, 1430.0, (SELECT id FROM manufacturer WHERE code = 'MIG'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 11000.0
+    'MiG-29',
+    'MiG-29',
+    'Mikoyan MiG-29 Fulcrum',
+    'Mikoyan MiG-29 Fulcrum',
+    'Chasseur multirôle soviétique/russe de 4e génération',
+    'Soviet/Russian 4th-generation multirole fighter',
+    'https://i.postimg.cc/44VZGN14/mig29.jpg',
+    'Le Mikoyan MiG-29 Fulcrum est un avion de chasse multirôle développé par le bureau MiG pour les forces aériennes soviétiques, puis russes. Classé dans la 4e génération, il est conçu pour la supériorité aérienne et les combats rapprochés, avec une grande maniabilité et une robustesse exceptionnelle. Largement exporté, il a été utilisé dans de nombreux conflits par diverses nations.',
+    'The Mikoyan MiG-29 Fulcrum is a multirole fighter aircraft developed by the MiG bureau for the Soviet and later Russian air forces. Classified as 4th generation, it is designed for air superiority and close combat, with high maneuverability and exceptional ruggedness. Widely exported, it has been used in many conflicts by various nations.',
+    (SELECT id FROM countries WHERE code = 'RUS'),
+    '1974-01-01',
+    '1977-10-06',
+    '1983-07-01',
+    2450.0,
+    1430.0,
+    (SELECT id FROM manufacturer WHERE code = 'MIG'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    11000.0
 );
 
 -- Insertion des technologies

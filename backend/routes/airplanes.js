@@ -2,6 +2,7 @@ const express = require('express');
 const { validateAirplaneData } = require('../validators');
 const { authorize } = require('../middleware/auth');
 const asyncHandler = require('../middleware/asyncHandler');
+const { pickLang, pickLangMany } = require('../i18n');
 
 // Vérifie l'existence des clés étrangères d'un avion en une seule requête.
 // Retourne un tableau de messages d'erreur (vide si tout est valide).
@@ -84,9 +85,11 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     }
 
     let query = `
-      SELECT a.id, a.name, a.complete_name, a.little_description, a.image_url,
-             a.max_speed, c.name as country_name, c.code as country_code,
-             g.generation, t.name as type_name,
+      SELECT a.id, a.name, a.name_en, a.complete_name, a.complete_name_en,
+             a.little_description, a.little_description_en, a.image_url,
+             a.max_speed, c.name as country_name, c.name_en as country_name_en,
+             c.code as country_code,
+             g.generation, t.name as type_name, t.name_en as type_name_en,
              a.date_operationel
       FROM airplanes a
       LEFT JOIN countries c ON a.country_id = c.id
@@ -141,17 +144,26 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     query += ` LIMIT $${queryParams.length - 1} OFFSET $${queryParams.length}`;
 
     const result = await getPool().query(query, queryParams);
-    res.json({ data: result.rows, total, page, limit });
+    // i18n : noms propres (name, complete_name, country_name) fallback FR ;
+    // little_description → "Translation needed" si name_en NULL
+    const data = pickLangMany(
+      result.rows,
+      req.lang,
+      ['name', 'complete_name', 'little_description', 'country_name', 'type_name'],
+      ['name', 'complete_name', 'country_name'] // noms propres → fallback FR
+    );
+    res.json({ data, total, page, limit });
   }));
 
   router.get('/airplanes/:id', asyncHandler(async (req, res) => {
     const { id } = req.params;
     const result = await getPool().query(
       `SELECT airplanes.*,
-              manufacturer.name AS manufacturer_name,
+              manufacturer.name AS manufacturer_name, manufacturer.name_en AS manufacturer_name_en,
               generation.generation,
-              type.name AS type_name,
-              countries.name AS country_name
+              generation.description AS generation_description, generation.description_en AS generation_description_en,
+              type.name AS type_name, type.name_en AS type_name_en,
+              countries.name AS country_name, countries.name_en AS country_name_en
        FROM airplanes
        LEFT JOIN manufacturer ON airplanes.id_manufacturer = manufacturer.id
        LEFT JOIN generation ON airplanes.id_generation = generation.id
@@ -163,86 +175,96 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Avion non trouvé' });
     }
-    res.json(result.rows[0]);
+    const row = pickLang(
+      result.rows[0],
+      req.lang,
+      ['name', 'complete_name', 'little_description', 'description', 'status',
+       'manufacturer_name', 'type_name', 'country_name', 'generation_description'],
+      ['name', 'complete_name', 'manufacturer_name', 'country_name'] // noms propres
+    );
+    res.json(row);
   }));
 
   router.get('/airplanes/:id/armament', asyncHandler(async (req, res) => {
     const { id } = req.params;
     const result = await getPool().query(
-      `SELECT armement.name, armement.description
+      `SELECT armement.name, armement.name_en, armement.description, armement.description_en
        FROM airplane_armement
        JOIN armement ON airplane_armement.id_armement = armement.id
        WHERE airplane_armement.id_airplane = $1`,
       [id]
     );
-    res.json(result.rows);
+    res.json(pickLangMany(result.rows, req.lang, ['name', 'description'], ['name']));
   }));
 
   router.get('/airplanes/:id/tech', asyncHandler(async (req, res) => {
     const { id } = req.params;
     const result = await getPool().query(
-      `SELECT t.name, t.description
+      `SELECT t.name, t.name_en, t.description, t.description_en
        FROM airplane_tech at
        JOIN tech t ON at.id_tech = t.id
        WHERE at.id_airplane = $1`,
       [id]
     );
-    res.json(result.rows);
+    res.json(pickLangMany(result.rows, req.lang, ['name', 'description'], ['name']));
   }));
 
   router.get('/airplanes/:id/missions', asyncHandler(async (req, res) => {
     const { id } = req.params;
     const result = await getPool().query(
-      `SELECT missions.name, missions.description
+      `SELECT missions.name, missions.name_en, missions.description, missions.description_en
        FROM airplane_missions
        JOIN missions ON airplane_missions.id_mission = missions.id
        WHERE airplane_missions.id_airplane = $1`,
       [id]
     );
-    res.json(result.rows);
+    res.json(pickLangMany(result.rows, req.lang, ['name', 'description']));
   }));
 
   router.get('/airplanes/:id/wars', asyncHandler(async (req, res) => {
     const { id } = req.params;
     const result = await getPool().query(
-      `SELECT wars.name, wars.date_start, wars.date_end, wars.description
+      `SELECT wars.name, wars.name_en, wars.date_start, wars.date_end, wars.description, wars.description_en
        FROM airplane_wars
        JOIN wars ON airplane_wars.id_wars = wars.id
        WHERE airplane_wars.id_airplane = $1`,
       [id]
     );
-    res.json(result.rows);
+    res.json(pickLangMany(result.rows, req.lang, ['name', 'description']));
   }));
 
   router.get('/airplanes/:id/related', asyncHandler(async (req, res) => {
     const { id } = req.params;
     const [armamentRes, techRes, missionsRes, warsRes] = await Promise.all([
       getPool().query(
-        `SELECT armement.name, armement.description FROM airplane_armement
+        `SELECT armement.name, armement.name_en, armement.description, armement.description_en
+         FROM airplane_armement
          JOIN armement ON airplane_armement.id_armement = armement.id
          WHERE airplane_armement.id_airplane = $1`, [id]
       ),
       getPool().query(
-        `SELECT t.name, t.description FROM airplane_tech at
+        `SELECT t.name, t.name_en, t.description, t.description_en FROM airplane_tech at
          JOIN tech t ON at.id_tech = t.id
          WHERE at.id_airplane = $1`, [id]
       ),
       getPool().query(
-        `SELECT missions.name, missions.description FROM airplane_missions
+        `SELECT missions.name, missions.name_en, missions.description, missions.description_en
+         FROM airplane_missions
          JOIN missions ON airplane_missions.id_mission = missions.id
          WHERE airplane_missions.id_airplane = $1`, [id]
       ),
       getPool().query(
-        `SELECT wars.name, wars.date_start, wars.date_end, wars.description FROM airplane_wars
+        `SELECT wars.name, wars.name_en, wars.date_start, wars.date_end, wars.description, wars.description_en
+         FROM airplane_wars
          JOIN wars ON airplane_wars.id_wars = wars.id
          WHERE airplane_wars.id_airplane = $1`, [id]
       )
     ]);
     res.json({
-      armament: armamentRes.rows,
-      tech: techRes.rows,
-      missions: missionsRes.rows,
-      wars: warsRes.rows
+      armament: pickLangMany(armamentRes.rows, req.lang, ['name', 'description'], ['name']),
+      tech: pickLangMany(techRes.rows, req.lang, ['name', 'description'], ['name']),
+      missions: pickLangMany(missionsRes.rows, req.lang, ['name', 'description']),
+      wars: pickLangMany(warsRes.rows, req.lang, ['name', 'description']),
     });
   }));
 
@@ -264,10 +286,10 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
 
   router.get('/countries', asyncHandler(async (req, res) => {
     const result = await getPool().query(
-      'SELECT id, name FROM countries WHERE id IN (SELECT DISTINCT country_id FROM airplanes WHERE country_id IS NOT NULL) ORDER BY name ASC'
+      'SELECT id, name, name_en FROM countries WHERE id IN (SELECT DISTINCT country_id FROM airplanes WHERE country_id IS NOT NULL) ORDER BY name ASC'
     );
     res.set('Cache-Control', REFERENTIALS_CACHE);
-    res.json(result.rows);
+    res.json(pickLangMany(result.rows, req.lang, ['name'], ['name']));
   }));
 
   router.get('/generations', asyncHandler(async (req, res) => {
@@ -278,21 +300,22 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
 
   router.get('/types', asyncHandler(async (req, res) => {
     const result = await getPool().query(
-      'SELECT id, name, description FROM type ORDER BY name ASC'
+      'SELECT id, name, name_en, description, description_en FROM type ORDER BY name ASC'
     );
     res.set('Cache-Control', REFERENTIALS_CACHE);
-    res.json(result.rows);
+    res.json(pickLangMany(result.rows, req.lang, ['name', 'description']));
   }));
 
   router.get('/manufacturers', asyncHandler(async (req, res) => {
     const result = await getPool().query(`
-      SELECT m.id, m.name, m.code, m.country_id, c.name AS country_name
+      SELECT m.id, m.name, m.name_en, m.code, m.country_id,
+             c.name AS country_name, c.name_en AS country_name_en
       FROM manufacturer m
       JOIN countries c ON m.country_id = c.id
       ORDER BY m.name ASC
     `);
     res.set('Cache-Control', REFERENTIALS_CACHE);
-    res.json(result.rows);
+    res.json(pickLangMany(result.rows, req.lang, ['name', 'country_name'], ['name', 'country_name']));
   }));
 
   // Endpoint combiné : récupère tous les référentiels en 1 seul round-trip.
@@ -302,12 +325,13 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     const pool = getPool();
     const [countries, generations, types, manufacturers] = await Promise.all([
       pool.query(
-        'SELECT id, name FROM countries WHERE id IN (SELECT DISTINCT country_id FROM airplanes WHERE country_id IS NOT NULL) ORDER BY name ASC'
+        'SELECT id, name, name_en FROM countries WHERE id IN (SELECT DISTINCT country_id FROM airplanes WHERE country_id IS NOT NULL) ORDER BY name ASC'
       ),
       pool.query('SELECT DISTINCT generation FROM generation ORDER BY generation ASC'),
-      pool.query('SELECT id, name, description FROM type ORDER BY name ASC'),
+      pool.query('SELECT id, name, name_en, description, description_en FROM type ORDER BY name ASC'),
       pool.query(`
-        SELECT m.id, m.name, m.code, m.country_id, c.name AS country_name
+        SELECT m.id, m.name, m.name_en, m.code, m.country_id,
+               c.name AS country_name, c.name_en AS country_name_en
         FROM manufacturer m
         JOIN countries c ON m.country_id = c.id
         ORDER BY m.name ASC
@@ -316,10 +340,10 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
 
     res.set('Cache-Control', REFERENTIALS_CACHE);
     res.json({
-      countries: countries.rows,
+      countries: pickLangMany(countries.rows, req.lang, ['name'], ['name']),
       generations: generations.rows.map((row) => row.generation),
-      types: types.rows,
-      manufacturers: manufacturers.rows,
+      types: pickLangMany(types.rows, req.lang, ['name', 'description']),
+      manufacturers: pickLangMany(manufacturers.rows, req.lang, ['name', 'country_name'], ['name', 'country_name']),
     });
   }));
 

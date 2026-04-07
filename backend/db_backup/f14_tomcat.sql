@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'F-14 Tomcat', 'Grumman F-14 Tomcat', 'Chasseur embarqué américain de 4e génération', 
-    'https://i.postimg.cc/DwQSVLcd/f14-tomcat.jpg', 
-    'Le Grumman F-14 Tomcat est un avion de chasse embarqué développé pour l''US Navy, célèbre pour ses ailes à géométrie variable et sa capacité à intercepter à longue portée. Classé dans la 4e génération, il a été conçu pour la supériorité aérienne et la défense des flottes, avec des capacités secondaires air-sol. Utilisé principalement pendant la Guerre froide, il reste une icône de l''aviation navale.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1968-01-01', '1970-12-21', '1974-09-22', 
-    2485.0, 2965.0, (SELECT id FROM manufacturer WHERE code = 'LM'), 
-    (SELECT id FROM generation WHERE generation = 4), (SELECT id FROM type WHERE name = 'Intercepteur'), 
-    'Retiré', 19940.0
+    'F-14 Tomcat',
+    'F-14 Tomcat',
+    'Grumman F-14 Tomcat',
+    'Grumman F-14 Tomcat',
+    'Chasseur embarqué américain de 4e génération',
+    'American 4th-generation carrier-based fighter',
+    'https://i.postimg.cc/DwQSVLcd/f14-tomcat.jpg',
+    'Le Grumman F-14 Tomcat est un avion de chasse embarqué développé pour l''US Navy, célèbre pour ses ailes à géométrie variable et sa capacité à intercepter à longue portée. Classé dans la 4e génération, il a été conçu pour la supériorité aérienne et la défense des flottes, avec des capacités secondaires air-sol. Utilisé principalement pendant la Guerre froide, il reste une icône de l''aviation navale.',
+    'The Grumman F-14 Tomcat is a carrier-based fighter aircraft developed for the US Navy, famous for its variable-geometry wings and its ability to intercept at long range. Classified as 4th generation, it was designed for air superiority and fleet defense, with secondary air-to-ground capabilities. Used mainly during the Cold War, it remains an icon of naval aviation.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1968-01-01',
+    '1970-12-21',
+    '1974-09-22',
+    2485.0,
+    2965.0,
+    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM generation WHERE generation = 4),
+    (SELECT id FROM type WHERE name = 'Intercepteur'),
+    'Retiré',
+    NULL,
+    19940.0
 );
 
 -- Insertion des technologies

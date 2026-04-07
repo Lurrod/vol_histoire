@@ -1,16 +1,48 @@
 -- Insertion dans airplanes
 INSERT INTO airplanes (
-    name, complete_name, little_description, image_url, description, 
-    country_id, date_concept, date_first_fly, date_operationel, 
-    max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+    name,
+    name_en,
+    complete_name,
+    complete_name_en,
+    little_description,
+    little_description_en,
+    image_url,
+    description,
+    description_en,
+    country_id,
+    date_concept,
+    date_first_fly,
+    date_operationel,
+    max_speed,
+    max_range,
+    id_manufacturer,
+    id_generation,
+    type,
+    status,
+    status_en,
+    weight
 ) VALUES (
-    'F-35 Lightning II', 'Lockheed Martin F-35 Lightning II', 'Avion multirôle furtif américain de 5e génération', 
-    'https://i.postimg.cc/W3YWZrjL/f35-lightning-2.jpg', 
-    'Le Lockheed Martin F-35 Lightning II est un avion de combat multirôle furtif conçu pour l''US Air Force, la Navy et le Marine Corps. Appartenant à la 5e génération, il excelle dans les missions air-air, air-sol et de reconnaissance grâce à sa furtivité, sa fusion de capteurs et ses capacités STOVL (décollage court et atterrissage vertical) dans certaines variantes. Utilisé par de nombreux pays alliés, il est un pilier des forces aériennes modernes.', 
-    (SELECT id FROM countries WHERE code = 'USA'), '1996-01-01', '2006-12-15', '2016-08-02', 
-    2000.0, 2200.0, (SELECT id FROM manufacturer WHERE code = 'LM'), 
-    (SELECT id FROM generation WHERE generation = 5), (SELECT id FROM type WHERE name = 'Multirôle'), 
-    'Actif', 13200.0
+    'F-35 Lightning II',
+    'F-35 Lightning II',
+    'Lockheed Martin F-35 Lightning II',
+    'Lockheed Martin F-35 Lightning II',
+    'Avion multirôle furtif américain de 5e génération',
+    'American 5th-generation stealth multirole aircraft',
+    'https://i.postimg.cc/W3YWZrjL/f35-lightning-2.jpg',
+    'Le Lockheed Martin F-35 Lightning II est un avion de combat multirôle furtif conçu pour l''US Air Force, la Navy et le Marine Corps. Appartenant à la 5e génération, il excelle dans les missions air-air, air-sol et de reconnaissance grâce à sa furtivité, sa fusion de capteurs et ses capacités STOVL (décollage court et atterrissage vertical) dans certaines variantes. Utilisé par de nombreux pays alliés, il est un pilier des forces aériennes modernes.',
+    'The Lockheed Martin F-35 Lightning II is a stealth multirole combat aircraft designed for the US Air Force, Navy and Marine Corps. Belonging to the 5th generation, it excels in air-to-air, air-to-ground and reconnaissance missions thanks to its stealth, sensor fusion and STOVL (short take-off and vertical landing) capabilities in certain variants. Used by many allied countries, it is a pillar of modern air forces.',
+    (SELECT id FROM countries WHERE code = 'USA'),
+    '1996-01-01',
+    '2006-12-15',
+    '2016-08-02',
+    2000.0,
+    2200.0,
+    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM generation WHERE generation = 5),
+    (SELECT id FROM type WHERE name = 'Multirôle'),
+    'Actif',
+    'Active',
+    13200.0
 );
 
 -- Insertion des technologies
