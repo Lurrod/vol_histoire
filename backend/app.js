@@ -403,7 +403,16 @@ app.use((err, req, res, next) => {
   if (err.message === 'Origine non autorisée par CORS') {
     return res.status(403).json({ message: 'Origine non autorisée' });
   }
-  const entry = logger.error('Erreur non gérée', { error: err.message, path: req.path, method: req.method });
+  // Passer l'objet Error complet (pas err.message string) → permet à Sentry
+  // de capturer la stack trace via captureException(meta.error).
+  const entry = logger.error('Erreur non gérée', {
+    error: err,
+    path: req.path,
+    method: req.method,
+    status: err.status || 500,
+    userId: req.user?.id,
+    userRole: req.user?.role,
+  });
   res.status(500).json({ message: 'Erreur interne du serveur', errorId: entry.errorId });
 });
 
