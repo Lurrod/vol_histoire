@@ -251,25 +251,50 @@ jobs:
 
             echo "Deploiement termine — version : $(grep '\"version\"' backend/package.json | head -1)"
 
-      # ─── Smoke test post-deploy ───────────────────────────────
-      # Vérifie que la page d'accueil répond après le PM2 restart.
-      # Retry 3 fois (espacés de 5s) avant d'échouer.
-      # Note : /api/health n'est pas vérifié car Apache reverse-proxy
-      # ne le route pas correctement vers le backend (à investiguer).
-      - name: Smoke test — page d'accueil production
+      # ─── Smoke tests post-deploy ──────────────────────────────
+      # Vérifie 3 endpoints critiques après le PM2 restart :
+      #   1. /api/health → backend + DB joignable
+      #   2. /          → Apache + frontend statique
+      #   3. /api/airplanes → API REST + données seedées
+      # Retry 3× (espacés 5s) sur chaque endpoint.
+      - name: Smoke test — backend health (DB joignable)
         run: |
           set -e
-          URL="https://vol-histoire.titouan-borde.com/"
+          URL="https://vol-histoire.titouan-borde.com/api/health"
           echo "GET $URL"
           sleep 5
           for i in 1 2 3; do
-            HTTP_CODE=$(curl -s -o /tmp/index.html -w "%{http_code}" "$URL" || echo "000")
-            echo "Tentative $i — HTTP $HTTP_CODE"
-            if [ "$HTTP_CODE" = "200" ]; then
-              echo "Smoke test OK"
+            HTTP_CODE=$(curl -s -o /tmp/health.json -w "%{http_code}" "$URL" || echo "000")
+            BODY=$(cat /tmp/health.json 2>/dev/null || echo "")
+            echo "Tentative $i — HTTP $HTTP_CODE — $BODY"
+            if [ "$HTTP_CODE" = "200" ] && echo "$BODY" | grep -q '"status":"ok"'; then
+              echo "✓ Backend health OK"
               exit 0
             fi
             [ $i -lt 3 ] && sleep 5
           done
-          echo "Smoke test KO après 3 tentatives"
+          echo "✗ Backend health KO après 3 tentatives"
           exit 1
+
+      - name: Smoke test — page d'accueil
+        run: |
+          set -e
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://vol-histoire.titouan-borde.com/")
+          echo "GET / → HTTP $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "✗ Page d'accueil KO"
+            exit 1
+          fi
+          echo "✓ Page d'accueil OK"
+
+      - name: Smoke test — API airplanes
+        run: |
+          set -e
+          HTTP_CODE=$(curl -s -o /tmp/airplanes.json -w "%{http_code}" "https://vol-histoire.titouan-borde.com/api/airplanes?limit=1")
+          echo "GET /api/airplanes → HTTP $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "✗ API airplanes KO"
+            cat /tmp/airplanes.json
+            exit 1
+          fi
+          echo "✓ API airplanes OK"
