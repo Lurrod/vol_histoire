@@ -17,10 +17,10 @@ async function loginViaApi(page, email, password) {
   // /login? et le test échoue. SOLUTION : waitForLoadState('networkidle')
   // après goto pour garantir que auth.init() + setupFormSwitching ont fini.
   await page.goto('/login');
-  await page.waitForLoadState('networkidle');
-  // Sécurité supplémentaire : attendre que le handler soit effectivement
-  // attaché en vérifiant que login.js a fini son init (le bouton existe).
-  await page.waitForSelector('#login-form button[type="submit"]', { state: 'visible' });
+  // Attend le marqueur posé en fin de DOMContentLoaded de login.js → garantit
+  // que TOUS les addEventListener (notamment submit) sont bindés. Sans cela,
+  // le formulaire submit nativement en GET vers /login?.
+  await page.waitForSelector('#login-form[data-ready="true"]', { timeout: 10000 });
 
   await page.fill('#login-email', email);
   await page.fill('#login-password', password);
