@@ -340,8 +340,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Logout, ESC handler → nav.js
-
-  // Marqueur E2E : signale que TOUS les bindings (init + submit handlers + form switching)
-  // sont prêts. Les tests peuvent attendre [data-ready="true"] avant d'interagir.
-  loginForm.dataset.ready = 'true';
 });
