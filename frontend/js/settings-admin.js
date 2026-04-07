@@ -43,23 +43,29 @@ document.addEventListener('DOMContentLoaded', () => {
   function displayUsers(users) {
     if (!userList) return;
 
-    userList.innerHTML = users.map(user => {
+    // safeSetHTML : double couche escapeHtml + DOMPurify sanitization
+    // (défense en profondeur — la liste users vient d'utilisateurs externes,
+    // c'est le seul endroit où des données user-controlled sont affichées
+    // à un autre user)
+    const html = users.map(user => {
       const roleLabel = user.role_id === 1 ? 'Admin' : user.role_id === 2 ? 'Éditeur' : 'Membre';
       const roleBadgeClass = user.role_id === 1 ? 'badge-admin' : user.role_id === 2 ? 'badge-editor' : 'badge-member';
+      const initial = escapeHtml(String(user.name || '?').charAt(0).toUpperCase());
       return `
-        <div class="user-card" data-user-id="${user.id}">
-          <div class="user-avatar-img">${user.name.charAt(0).toUpperCase()}</div>
+        <div class="user-card" data-user-id="${Number(user.id)}">
+          <div class="user-avatar-img">${initial}</div>
           <div class="user-info">
             <div class="user-info-name">${escapeHtml(user.name)}<span class="role-badge ${roleBadgeClass}">${roleLabel}</span></div>
             <div class="user-info-email">${escapeHtml(user.email)}</div>
           </div>
           <div class="user-actions">
-            <button class="btn-edit" data-user-id="${user.id}" title="Modifier"><i class="fas fa-pen"></i></button>
-            ${user.id !== ctx()?.currentUser?.id ? `<button class="btn-delete" data-user-id="${user.id}" title="Supprimer"><i class="fas fa-trash"></i></button>` : ''}
+            <button class="btn-edit" data-user-id="${Number(user.id)}" title="Modifier"><i class="fas fa-pen"></i></button>
+            ${user.id !== ctx()?.currentUser?.id ? `<button class="btn-delete" data-user-id="${Number(user.id)}" title="Supprimer"><i class="fas fa-trash"></i></button>` : ''}
           </div>
         </div>
       `;
     }).join('');
+    safeSetHTML(userList, html);
 
     document.querySelectorAll('.btn-edit').forEach(btn => {
       btn.addEventListener('click', () => {

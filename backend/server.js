@@ -50,12 +50,14 @@ async function shutdown(signal) {
   // 1. Arrêter d'accepter de nouvelles connexions
   server.close(async () => {
     try {
-      // 2. Fermer le pool PostgreSQL proprement
+      // 2. Flush Sentry pour ne pas perdre les events en cours
+      await logger.flushSentry(2000);
+      // 3. Fermer le pool PostgreSQL proprement
       await pool.end();
       logger.info('Pool PostgreSQL fermé');
       process.exit(0);
     } catch (err) {
-      logger.error('Erreur fermeture du pool', { error: err.message });
+      logger.error('Erreur fermeture du pool', { error: err });
       process.exit(1);
     }
   });
@@ -66,6 +68,15 @@ async function shutdown(signal) {
     process.exit(1);
   }, 10000).unref();
 }
+
+// Erreurs non capturées : forward vers logger → Sentry, puis arrêt propre
+process.on('uncaughtException', (err) => {
+  logger.error('uncaughtException', { error: err });
+  shutdown('uncaughtException');
+});
+process.on('unhandledRejection', (reason) => {
+  logger.error('unhandledRejection', { error: reason instanceof Error ? reason : new Error(String(reason)) });
+});
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT',  () => shutdown('SIGINT'));
