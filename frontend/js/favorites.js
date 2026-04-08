@@ -94,6 +94,43 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   /* =========================================================================
+     URL STATE SYNC
+     ========================================================================= */
+
+  function readStateFromUrl() {
+    const p = new URLSearchParams(location.search);
+    if (p.has('country')) state.filters.country    = p.get('country');
+    if (p.has('gen'))     state.filters.generation = Number(p.get('gen'));
+    if (p.has('type'))    state.filters.type       = p.get('type');
+    if (p.has('q'))       state.search             = p.get('q').toLowerCase();
+    if (p.has('sort'))    state.sort               = p.get('sort');
+  }
+
+  function writeStateToUrl() {
+    const p = new URLSearchParams();
+    if (state.filters.country)    p.set('country', state.filters.country);
+    if (state.filters.generation) p.set('gen', String(state.filters.generation));
+    if (state.filters.type)       p.set('type', state.filters.type);
+    if (state.search)             p.set('q', state.search);
+    if (state.sort && state.sort !== 'recent') p.set('sort', state.sort);
+    const qs = p.toString();
+    const url = qs ? `${location.pathname}?${qs}` : location.pathname;
+    try { history.replaceState(null, '', url); } catch (_) { /* ignore */ }
+  }
+
+  window.addEventListener('popstate', () => {
+    // Reset filters to defaults before reading, so removed params clear
+    state.filters = { country: null, generation: null, type: null };
+    state.search = '';
+    state.sort = 'recent';
+    readStateFromUrl();
+    if (searchInput) searchInput.value = state.search;
+    if (sortSelect) sortSelect.value = state.sort;
+    applyFiltersAndRender();
+    updateActiveFilters();
+  });
+
+  /* =========================================================================
      DATA LOADING
      ========================================================================= */
 
@@ -160,11 +197,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   searchInput?.addEventListener('input', (e) => {
     state.search = e.target.value.toLowerCase();
+    writeStateToUrl();
     applyFiltersAndRender();
   });
 
   sortSelect?.addEventListener('change', (e) => {
     state.sort = e.target.value;
+    writeStateToUrl();
     applyFiltersAndRender();
   });
 
@@ -198,7 +237,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const filterType = dropdown.id.replace('-dropdown', '');
         const value = this.dataset.value;
 
-        state.filters[filterType] = state.filters[filterType] === value ? null : value;
+        const newVal = state.filters[filterType] === value ? null : value;
+        // Normaliser la génération en nombre pour cohérence URL/état
+        state.filters[filterType] = (filterType === 'generation' && newVal != null) ? Number(newVal) : newVal;
+        writeStateToUrl();
         applyFiltersAndRender();
         closeAllDropdowns();
         updateActiveFilters();
@@ -286,6 +328,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     container.querySelectorAll('.remove-filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         state.filters[btn.dataset.filterType] = null;
+        writeStateToUrl();
         applyFiltersAndRender();
         updateActiveFilters();
       });
@@ -294,6 +337,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       state.filters.country = null;
       state.filters.generation = null;
       state.filters.type = null;
+      writeStateToUrl();
       applyFiltersAndRender();
       updateActiveFilters();
     });
@@ -499,7 +543,15 @@ document.addEventListener("DOMContentLoaded", async () => {
      INITIALIZE
      ========================================================================= */
 
+  // Lire l'état depuis l'URL avant le premier load (permet le deep-linking)
+  readStateFromUrl();
+  if (searchInput && state.search) searchInput.value = state.search;
+  if (sortSelect) sortSelect.value = state.sort;
+
   await loadFavorites();
+
+  // Afficher les filtres actifs restaurés depuis l'URL
+  updateActiveFilters();
 
   // Re-render on language change
   window.addEventListener('langChanged', () => {
