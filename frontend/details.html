@@ -140,6 +140,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <button id="edit-btn" class="btn btn-secondary hidden"><i class="fas fa-edit"></i><span data-i18n="details.edit">Modifier</span></button>
               <button id="delete-btn" class="btn btn-danger hidden"><i class="fas fa-trash"></i><span data-i18n="details.delete">Supprimer</span></button>
             </div>
+            <div class="share-bar" role="group" aria-label="Partager cet avion">
+              <span class="share-label" data-i18n="details.share_label">Partager</span>
+              <button class="share-btn" data-share="twitter"  aria-label="Partager sur X"        title="X / Twitter"><i class="fab fa-twitter"></i></button>
+              <button class="share-btn" data-share="linkedin" aria-label="Partager sur LinkedIn" title="LinkedIn"><i class="fab fa-linkedin"></i></button>
+              <button class="share-btn" data-share="reddit"   aria-label="Partager sur Reddit"   title="Reddit"><i class="fab fa-reddit"></i></button>
+              <button class="share-btn" data-share="copy"     aria-label="Copier le lien"        title="Copier le lien"><i class="fas fa-link"></i></button>
+              <button class="share-btn share-btn-native hidden" data-share="native" aria-label="Partager" title="Partager"><i class="fas fa-share-nodes"></i></button>
+            </div>
           </div>
           <div class="hero-right">
             <div class="aircraft-image-container"><img id="hero-image" src="" alt="" class="aircraft-image" width="800" height="500"><div class="image-overlay"></div></div>
@@ -247,6 +255,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/vendor/sentry.min.js"></script>
+  <script src="js/app-version.js"></script>
   <script defer src="js/sentry-init.js"></script>
   <script defer src="js/i18n.js"></script>
   <script defer src="js/icons.js"></script>

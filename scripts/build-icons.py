@@ -33,7 +33,7 @@ fa-th fa-timeline fa-times fa-times-circle fa-tower-broadcast fa-trash fa-trash-
 fa-triangle-exclamation fa-undo fa-user fa-user-astronaut fa-user-check fa-user-circle
 fa-user-edit fa-user-lock fa-user-plus fa-user-shield fa-users fa-users-cog fa-virus
 fa-weight-hanging fa-jet-fighter-up
-fa-facebook fa-twitter fa-instagram fa-youtube fa-github
+fa-facebook fa-twitter fa-instagram fa-youtube fa-github fa-linkedin fa-reddit
 """
 
 # FA6 a renommé / refactoré certaines icônes — alias vers les noms FA6
@@ -75,7 +75,7 @@ ALIASES = {
     'fa-users-cog': 'users-gear',
 }
 
-BRANDS = {'fa-facebook', 'fa-twitter', 'fa-instagram', 'fa-youtube', 'fa-github'}
+BRANDS = {'fa-facebook', 'fa-twitter', 'fa-instagram', 'fa-youtube', 'fa-github', 'fa-linkedin', 'fa-reddit'}
 
 def main():
     icons = ICONS_RAW.split()

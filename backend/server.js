@@ -19,6 +19,25 @@ if (process.env.REFRESH_SECRET.length < 32) {
 
 const app = require('./app');
 const { Pool } = require('pg');
+const fs = require('fs');
+const path = require('path');
+
+// Génère frontend/js/app-version.js depuis backend/package.json à chaque boot.
+// Le fichier expose window.APP_VERSION (lu par sentry-init.js pour le tag release)
+// et window.APP_BUILD (timestamp du boot, utile pour cache-busting et debug).
+(function writeAppVersion() {
+  try {
+    const pkg = require('./package.json');
+    const out = `/* Auto-généré au boot du serveur — ne pas éditer */
+window.APP_VERSION = ${JSON.stringify(pkg.version)};
+window.APP_BUILD   = ${JSON.stringify(new Date().toISOString())};
+`;
+    fs.writeFileSync(path.join(__dirname, '../frontend/js/app-version.js'), out);
+    logger.info('app-version.js généré', { version: pkg.version });
+  } catch (err) {
+    logger.error('Échec génération app-version.js', { error: err });
+  }
+})();
 
 const pool = new Pool({
   user: process.env.DB_USER,
