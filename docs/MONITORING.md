@@ -16,7 +16,7 @@ Guide opérationnel pour configurer la surveillance production. Le code applicat
 ```env
 SENTRY_DSN=https://xxxxxxxxxxxxxxxx@oXXXXXX.ingest.sentry.io/YYYYYYY
 SENTRY_ENVIRONMENT=production
-SENTRY_RELEASE=3.2.0
+SENTRY_RELEASE=3.3.0
 SENTRY_TRACES_SAMPLE_RATE=0.1
 # Optionnel : capture aussi les warnings (par défaut errors only)
 # SENTRY_CAPTURE_WARN=true
@@ -27,7 +27,7 @@ Récupérer le DSN : Sentry → Settings → Projects → vol-histoire → Clien
 ### Vérification
 
 ```bash
-# Sur le serveur Kimsufi après deploy V3.2.0+
+# Sur le serveur Kimsufi après deploy V3.3.0+
 pm2 logs vol-histoire | grep "Sentry activé"
 # → doit afficher : {"level":"info","message":"Sentry activé","env":"production"}
 ```
