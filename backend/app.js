@@ -13,6 +13,8 @@ const {
 } = authMiddleware;
 const mailer = require('./mailer');
 const { langMiddleware } = require('./i18n');
+const observability = require('./middleware/observability');
+const createMonitoringRouter = require('./routes/monitoring');
 
 const app = express();
 
@@ -32,11 +34,11 @@ app.use((req, res, next) => {
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
-    "script-src 'self' https://www.googletagmanager.com/gtag/js https://www.google-analytics.com/analytics.js",
+    "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://browser.sentry-cdn.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
     "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
     "img-src 'self' https://i.postimg.cc https://flagcdn.com https://www.googletagmanager.com https://picsum.photos https://fastly.picsum.photos data:",
-    "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com",
+    "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://*.ingest.sentry.io https://*.sentry.io",
     "media-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
@@ -81,6 +83,10 @@ app.use(cors({
 
 app.use(express.json({ limit: '100kb' }));
 app.use(cookieParser());
+
+// Observabilité : Request ID + access log + métriques HTTP
+app.use(observability.requestId);
+app.use(observability.accessLog);
 
 // -----------------------------------------------------------------------------
 // Rate-limiter (express-rate-limit)
@@ -279,8 +285,15 @@ try {
 // -----------------------------------------------------------------------------
 let pool;
 
-app.setPool = (p) => { pool = p; authMiddleware.setPool(p); };
+app.setPool = (p) => {
+  pool = p;
+  authMiddleware.setPool(p);
+  observability.startDbPoolMetrics(() => pool);
+};
 app.getPool = () => pool;
+
+// Endpoints de monitoring (live, ready, metrics, status)
+app.use('/api', createMonitoringRouter(() => pool));
 
 // -----------------------------------------------------------------------------
 // Fichiers statiques
@@ -320,6 +333,9 @@ const airplanesRouter = createAirplanesRouter(() => pool, {
 });
 app.use('/api', airplanesRouter);
 app.invalidateAirplanesReferentialCache = () => airplanesRouter.invalidateReferentialCache?.();
+
+const createFacetsRouter = require('./routes/facets');
+app.use('/api', createFacetsRouter(() => pool));
 
 const createFavoritesRouter = require('./routes/favorites');
 app.use('/api', createFavoritesRouter(() => pool));
@@ -409,8 +425,10 @@ app.use((err, req, res, next) => {
   }
   // Passer l'objet Error complet (pas err.message string) → permet à Sentry
   // de capturer la stack trace via captureException(meta.error).
+  observability.errorsTotal.inc({ type: 'unhandled' });
   const entry = logger.error('Erreur non gérée', {
     error: err,
+    reqId: req.id,
     path: req.path,
     method: req.method,
     status: err.status || 500,
