@@ -417,7 +417,8 @@
   to   { transform: translate(-50%, 0);    opacity: 1; }
 }
 
-/* Compare modal */
+/* Compare modal — forcer le display par défaut (certains resets cassent <dialog>) */
+.compare-modal:not([open]) { display: none !important; }
 .compare-modal {
   background: var(--night-mid);
   color: var(--text-primary);
@@ -687,6 +688,7 @@
 }
 
 /* Mobile filter sheet */
+.filter-sheet:not([open]) { display: none !important; }
 .filter-sheet {
   border: none;
   padding: 0;
