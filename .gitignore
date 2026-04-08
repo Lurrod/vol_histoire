@@ -6,4 +6,4 @@ node_modules/
 CLAUDE.md
 .claude/
 backend/coverage/
-install.cmd
+install.cmd.superpowers/
