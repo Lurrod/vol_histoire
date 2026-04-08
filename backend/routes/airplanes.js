@@ -146,12 +146,15 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     const result = await getPool().query(query, queryParams);
     // i18n : noms propres (name, complete_name, country_name) fallback FR ;
     // little_description → "Translation needed" si name_en NULL
+    // On capture le nom de type FR canonique AVANT pickLang pour l'exposer
+    // comme clé stable côté client (type_name_fr).
+    const fr = result.rows.map(r => r.type_name);
     const data = pickLangMany(
       result.rows,
       req.lang,
       ['name', 'complete_name', 'little_description', 'country_name', 'type_name'],
       ['name', 'complete_name', 'country_name'] // noms propres → fallback FR
-    );
+    ).map((row, i) => ({ ...row, type_name_fr: fr[i] }));
     res.json({ data, total, page, limit });
   }));
 
@@ -342,7 +345,12 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     res.json({
       countries: pickLangMany(countries.rows, req.lang, ['name'], ['name']),
       generations: generations.rows.map((row) => row.generation),
-      types: pickLangMany(types.rows, req.lang, ['name', 'description']),
+      // On expose le nom canonique FR (name_fr) en plus du nom traduit (name),
+      // pour que le frontend puisse utiliser le FR comme clé d'URL stable.
+      types: pickLangMany(types.rows, req.lang, ['name', 'description']).map((t, i) => ({
+        ...t,
+        name_fr: types.rows[i].name,
+      })),
       manufacturers: pickLangMany(manufacturers.rows, req.lang, ['name', 'country_name'], ['name', 'country_name']),
     });
   }));
