@@ -303,10 +303,15 @@ app.use(express.static(path.join(__dirname, '../frontend/')));
 app.use('/css', express.static(path.join(__dirname, '../frontend/css')));
 app.use('/js', express.static(path.join(__dirname, '../frontend/js')));
 
+// SSR /details/:slug et /details?id=X — injecte les meta tags dynamiques
+// AVANT la liste statique htmlPages (sinon /details serait servi en HTML brut).
+const createDetailsSsrRouter = require('./routes/details-ssr');
+app.use('/', createDetailsSsrRouter(() => pool));
+
 // Routes HTML sans extension (utile en dev local — en prod c'est Apache/.htaccess qui gère)
 const htmlPages = [
   'verify-email', 'forgot-password', 'reset-password', 'check-email',
-  'hangar', 'details', 'timeline', 'favorites', 'login', 'settings',
+  'hangar', 'timeline', 'favorites', 'login', 'settings',
   'a-propos', 'contact', 'faq', 'support', 'mentions-legales',
   'politique-confidentialite', 'cgu',
 ];

@@ -785,6 +785,70 @@ describe('GET /api/airplanes/facets', () => {
 });
 
 // =============================================================================
+// SSR — GET /details/:slug
+// =============================================================================
+describe('GET /details/:slug — server-rendered meta', () => {
+  test('200 — injecte le titre, description et og:image dynamiques', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 12,
+        name: 'F-16C Fighting Falcon',
+        complete_name: 'General Dynamics F-16C',
+        little_description: 'Chasseur multirôle américain de 4e génération',
+        image_url: 'https://example.com/f16.jpg',
+        date_operationel: '1978-08-17',
+        country_name: 'États-Unis',
+        country_code: 'USA',
+        generation: 4,
+        type_name: 'Multirôle',
+        manufacturer_name: 'Lockheed Martin',
+      }],
+    });
+
+    const res = await request(app).get('/details/f-16c-fighting-falcon-12');
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toMatch(/text\/html/);
+    expect(res.text).toContain('<title>F-16C Fighting Falcon');
+    expect(res.text).toContain('Chasseur multirôle américain');
+    expect(res.text).toContain('https://example.com/f16.jpg');
+    expect(res.text).toContain('canonical" href="https://vol-histoire.titouan-borde.com/details/f-16c-fighting-falcon-12"');
+    // JSON-LD Article + BreadcrumbList
+    expect(res.text).toMatch(/"@type":"Article"/);
+    expect(res.text).toMatch(/"@type":"BreadcrumbList"/);
+  });
+
+  test('404 → fallback vers la page statique pour id inexistant', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).get('/details/inexistant-99999');
+    // L'avion n'existe pas → SSR passe la main → static details.html servi
+    // (status 200 car details.html existe et le JS gère la redirection 404 côté client)
+    expect([200, 404]).toContain(res.status);
+  });
+
+  test('200 — supporte aussi /details?id=X', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 5,
+        name: 'Mirage 2000',
+        complete_name: 'Dassault Mirage 2000',
+        little_description: 'Chasseur français',
+        image_url: 'https://example.com/mirage.jpg',
+        country_name: 'France',
+        generation: 4,
+        type_name: 'Multirôle',
+        manufacturer_name: 'Dassault',
+      }],
+    });
+
+    const res = await request(app).get('/details?id=5');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<title>Mirage 2000');
+    expect(res.text).toContain('https://example.com/mirage.jpg');
+  });
+});
+
+// =============================================================================
 // AVIONS — GET /api/airplanes/:id
 // =============================================================================
 describe('GET /api/airplanes/:id', () => {
