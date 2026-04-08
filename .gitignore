@@ -6,4 +6,8 @@ node_modules/
 CLAUDE.md
 .claude/
 backend/coverage/
-install.cmd.superpowers/
+install.cmd
+.superpowers/
+docs/superpowers/
+e2e/test-results/
+e2e/playwright-report/
