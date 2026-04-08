@@ -971,6 +971,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       bar = document.createElement('div');
       bar.id = 'compare-bar';
       bar.className = 'compare-bar hidden';
+      bar.style.display = 'none'; // caché par défaut
       bar.innerHTML =
         '<span id="compare-count">0 sélectionnés</span>' +
         '<button id="compare-clear" class="btn btn-secondary btn-sm">Effacer</button>' +
@@ -989,6 +990,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.renderCompareBar = function () {
       const n = state.compareIds.length;
       bar.classList.toggle('hidden', n === 0);
+      // Force direct — contourne tout conflit CSS éventuel
+      bar.style.display = n === 0 ? 'none' : 'flex';
       const cnt = document.getElementById('compare-count');
       if (cnt) cnt.textContent = n + ' sélectionné' + (n > 1 ? 's' : '');
     };
