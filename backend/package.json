@@ -6,7 +6,9 @@
     "start": "node server.js",
     "test": "jest --config jest.config.json --testPathIgnorePatterns=load",
     "test:coverage": "jest --config jest.config.json --coverage --testPathIgnorePatterns=load",
-    "test:load": "jest --config jest.config.json --testPathPattern=load"
+    "test:load": "jest --config jest.config.json --testPathPattern=load",
+    "build:css": "node ../scripts/build-css.js",
+    "build:icons": "python ../scripts/build-icons.py"
   },
   "keywords": [],
   "author": "Titouan Borde",
@@ -15,6 +17,7 @@
   "dependencies": {
     "@sentry/node": "^10.47.0",
     "bcryptjs": "^2.4.3",
+    "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
