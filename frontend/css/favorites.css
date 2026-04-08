@@ -181,7 +181,7 @@
 .favorites-section { padding: 5rem 0 7rem; }
 .favorites-toolbar { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
 .search-box { position: relative; flex: 1; min-width: 250px; max-width: 500px; }
-.search-box i { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
+.search-box i, .search-box .icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
 .search-box input { width: 100%; padding: 0.875rem 1rem 0.875rem 3rem; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; font-family: inherit; font-size: 1rem; color: var(--white); background: rgba(255,255,255,0.03); transition: var(--transition); }
 .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
 .search-box input::placeholder { color: rgba(255,255,255,0.3); }

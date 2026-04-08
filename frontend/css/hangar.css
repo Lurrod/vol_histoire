@@ -49,7 +49,7 @@
 }
 
 .search-box { position: relative; flex: 1; min-width: 250px; }
-.search-box i { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
+.search-box i, .search-box .icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
 .search-box input {
   width: 100%; padding: 0.8rem 1rem 0.8rem 3.25rem;
   border: 1px solid rgba(255,255,255,0.09);
