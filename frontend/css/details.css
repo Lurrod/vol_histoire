@@ -38,8 +38,7 @@
   transition: var(--transition-fast);
   font-size: 0.95rem;
 }
-.share-btn:hover,
-.share-btn:focus-visible {
+.share-btn:hover, .share-btn:focus-visible {
   border-color: var(--hud-cyan);
   color: var(--hud-cyan);
   transform: translateY(-1px);
@@ -103,7 +102,7 @@ body.mini-bar-visible .mini-bar { transform: translateY(0); }
   color: var(--text-secondary);
   font-size: 0.85rem;
 }
-.mini-bar .mini-stats span i { color: var(--hud-cyan); margin-right: 0.35rem; }
+.mini-bar .mini-stats span i, .mini-bar .mini-stats span .icon { color: var(--hud-cyan); margin-right: 0.35rem; }
 @media (max-width: 900px) { .mini-bar { display: none; } }
 
 /* CHIP GRID (armament/tech/missions/wars) */
@@ -128,13 +127,12 @@ body.mini-bar-visible .mini-bar { transform: translateY(0); }
   transition: var(--transition-fast);
   width: 100%;
 }
-.chip:hover,
-.chip:focus-visible {
+.chip:hover, .chip:focus-visible {
   border-color: var(--border-cyan-md);
   color: var(--hud-cyan);
   transform: translateY(-1px);
 }
-.chip i { color: var(--hud-cyan); flex-shrink: 0; }
+.chip i, .chip .icon { color: var(--hud-cyan); flex-shrink: 0; }
 .chip-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chip-tooltip {
   position: absolute;
@@ -156,8 +154,7 @@ body.mini-bar-visible .mini-bar { transform: translateY(0); }
   z-index: 10;
   box-shadow: var(--shadow-lg);
 }
-.chip:hover .chip-tooltip,
-.chip:focus-visible .chip-tooltip { opacity: 1; }
+.chip:hover .chip-tooltip, .chip:focus-visible .chip-tooltip { opacity: 1; }
 
 /* HERO PROMOTION on large screens */
 @media (min-width: 1024px) {
@@ -185,7 +182,7 @@ body.mini-bar-visible .mini-bar { transform: translateY(0); }
 .breadcrumb { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 3rem; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; }
 .breadcrumb a { color: rgba(255,255,255,0.3); text-decoration: none; transition: var(--transition-fast); display: flex; align-items: center; gap: 0.5rem; }
 .breadcrumb a:hover { color: rgba(255,255,255,0.7); }
-.breadcrumb > i { font-size: 0.6rem; color: rgba(255,255,255,0.15); }
+.breadcrumb > i, .breadcrumb > .icon { font-size: 0.6rem; color: rgba(255,255,255,0.15); }
 .breadcrumb span { color: rgba(255,255,255,0.7); }
 
 .hero-main { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
@@ -199,7 +196,7 @@ body.mini-bar-visible .mini-bar { transform: translateY(0); }
 .hero-meta { display: flex; gap: 0; margin-bottom: 3rem; flex-wrap: wrap; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 1.25rem 0; }
 .meta-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.5); padding-right: 1.75rem; margin-right: 1.75rem; border-right: 1px solid rgba(255,255,255,0.07); }
 .meta-item:last-child { border-right: none; margin-right: 0; padding-right: 0; }
-.meta-item i { font-size: 0.9rem; color: rgba(255,255,255,0.25); }
+.meta-item i, .meta-item .icon { font-size: 0.9rem; color: rgba(255,255,255,0.25); }
 
 .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 
@@ -208,7 +205,7 @@ body.mini-bar-visible .mini-bar { transform: translateY(0); }
 .btn-favorite { background: rgba(200,169,110,0.06); backdrop-filter: blur(10px); color: var(--hud-cyan); border: 1px solid rgba(200,169,110,0.2); }
 .btn-favorite:hover { background: rgba(200,169,110,0.12); border-color: rgba(200,169,110,0.4); }
 .btn-favorite.favorited { background: rgba(255,171,0,0.15); border-color: var(--hud-amber); color: var(--hud-amber); }
-.btn-favorite.favorited i { color: var(--hud-amber); }
+.btn-favorite.favorited i, .btn-favorite.favorited .icon { color: var(--hud-amber); }
 .btn-secondary { background: rgba(255,255,255,0.04); backdrop-filter: blur(10px); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); }
 .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); }
 .btn-danger { background: rgba(231,76,60,0.1); color: var(--accent); border: 1px solid rgba(231,76,60,0.25); }
@@ -242,7 +239,7 @@ main { padding: 6rem 0; }
 .content-section:hover { border-color: rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
 .section-header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
 .section-header h2 { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; color: var(--white); display: flex; align-items: center; gap: 0.75rem; }
-.section-header h2 i { color: var(--hud-cyan); }
+.section-header h2 i, .section-header h2 .icon { color: var(--hud-cyan); }
 .section-content { line-height: 1.8; }
 
 /* Description */
@@ -277,7 +274,7 @@ main { padding: 6rem 0; }
 .war-card:hover { transform: translateX(8px); background: rgba(231,76,60,0.08); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
 .war-card h4 { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--accent); margin-bottom: 0.75rem; font-size: 1.15rem; }
 .war-period { display: flex; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; font-weight: 600; }
-.war-period i { color: var(--accent); }
+.war-period i, .war-period .icon { color: var(--accent); }
 .war-card p { color: rgba(255,255,255,0.45); line-height: 1.7; }
 
 /* MODAL */
@@ -343,7 +340,7 @@ main { padding: 6rem 0; }
   letter-spacing: 0.04em;
 }
 
-.radar-card-header h2 i { color: var(--hud-cyan, #C8A96E); }
+.radar-card-header h2 i, .radar-card-header h2 .icon { color: var(--hud-cyan, #C8A96E); }
 
 .radar-subtitle {
   color: rgba(255,255,255,0.4);
@@ -542,18 +539,7 @@ main { padding: 6rem 0; }
   }
 
   /* Éléments à masquer */
-  header,
-  footer,
-  .hero-actions,
-  .breadcrumb,
-  .hero-background,
-  .image-overlay,
-  #toast-container,
-  #edit-modal,
-  .cookie-banner,
-  .cookie-modal,
-  .hamburger,
-  .lang-switch {
+  header, footer, .hero-actions, .breadcrumb, .hero-background, .image-overlay, #toast-container, #edit-modal, .cookie-banner, .cookie-modal, .hamburger, .lang-switch {
     display: none !important;
   }
 
@@ -583,7 +569,7 @@ main { padding: 6rem 0; }
   .aircraft-badge { color: #666 !important; }
   .hero-meta { border-color: #ccc !important; }
   .meta-item { color: #444 !important; }
-  .meta-item i { color: #666 !important; }
+  .meta-item i, .meta-item .icon { color: #666 !important; }
 
   /* Image */
   .aircraft-image-container { border: 1px solid #ccc !important; border-radius: 8px; overflow: hidden; }
@@ -612,7 +598,7 @@ main { padding: 6rem 0; }
   }
   .section-header { border-bottom-color: #ddd !important; margin-bottom: 0.4cm; }
   .section-header h2 { font-size: 13pt; color: #000 !important; }
-  .section-header h2 i { color: #333 !important; }
+  .section-header h2 i, .section-header h2 .icon { color: #333 !important; }
   .description-section p { color: #333 !important; }
 
   /* Timeline */
@@ -638,7 +624,7 @@ main { padding: 6rem 0; }
   .war-card { border-left-color: #666 !important; background: #f9f9f9 !important; }
   .war-card h4 { color: #222 !important; }
   .war-period { color: #555 !important; }
-  .war-period i { color: #666 !important; }
+  .war-period i, .war-period .icon { color: #666 !important; }
   .war-card p { color: #555 !important; }
 
   /* Pied de page PDF */

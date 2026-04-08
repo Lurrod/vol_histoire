@@ -156,7 +156,7 @@
   color: rgba(255,255,255,0.6);
 }
 
-.gate-feature i {
+.gate-feature i, .gate-feature .icon {
   color: var(--hud-cyan);
   font-size: 0.9rem;
 }
@@ -181,7 +181,7 @@
 .favorites-section { padding: 5rem 0 7rem; }
 .favorites-toolbar { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
 .search-box { position: relative; flex: 1; min-width: 250px; max-width: 500px; }
-.search-box i, .search-box .icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
+.search-box i, .search-box .icon, .search-box .icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
 .search-box input { width: 100%; padding: 0.875rem 1rem 0.875rem 3rem; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; font-family: inherit; font-size: 1rem; color: var(--white); background: rgba(255,255,255,0.03); transition: var(--transition); }
 .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
 .search-box input::placeholder { color: rgba(255,255,255,0.3); }
@@ -259,7 +259,7 @@
 .aircraft-description { color: rgba(255,255,255,0.45); line-height: 1.7; margin-bottom: 1.25rem; font-size: 0.95rem; }
 .aircraft-specs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.07); }
 .spec-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.5); }
-.spec-item i { color: var(--hud-cyan); width: 16px; }
+.spec-item i, .spec-item .icon { color: var(--hud-cyan); width: 16px; }
 
 /* Favorite remove button */
 .favorite-remove { position: absolute; top: 1rem; right: 1rem; z-index: 10; width: 40px; height: 40px; border-radius: 50%; background: rgba(231,76,60,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(231,76,60,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 0.9rem; transition: var(--transition); opacity: 0; }
@@ -268,14 +268,14 @@
 
 /* Favorited date */
 .favorited-date { font-size: 0.8rem; color: rgba(255,255,255,0.35); margin-top: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
-.favorited-date i { color: var(--hud-amber); font-size: 0.75rem; }
+.favorited-date i, .favorited-date .icon { color: var(--hud-amber); font-size: 0.75rem; }
 
 /* EMPTY STATE */
 .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center; grid-column: 1 / -1; }
-.empty-state i { font-size: 4rem; color: rgba(200,169,110,0.15); margin-bottom: 1.5rem; }
+.empty-state i, .empty-state .icon { font-size: 4rem; color: rgba(200,169,110,0.15); margin-bottom: 1.5rem; }
 .empty-state h3 { font-size: 1.5rem; color: rgba(255,255,255,0.7); margin-bottom: 0.75rem; font-weight: 600; }
 .empty-state p { font-size: 1.05rem; max-width: 450px; margin-bottom: 2rem; line-height: 1.7; color: rgba(255,255,255,0.4); }
-.empty-state p i { font-size: 1rem; color: var(--hud-amber); opacity: 1; margin: 0; }
+.empty-state p i, .empty-state p .icon { font-size: 1rem; color: var(--hud-amber); opacity: 1; margin: 0; }
 
 /* footer/toast → shared.css */
 

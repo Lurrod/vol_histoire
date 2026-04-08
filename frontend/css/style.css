@@ -64,8 +64,7 @@
   pointer-events: none;
 }
 
-.hero-hud-corner::before,
-.hero-hud-corner::after {
+.hero-hud-corner::before, .hero-hud-corner::after {
   content: '';
   position: absolute;
   background: rgba(200, 169, 110, 0.2);
@@ -581,7 +580,7 @@
   font-size: 0.9rem;
 }
 
-.spec i { color: var(--hud-cyan); }
+.spec i, .spec .icon { color: var(--hud-cyan); }
 
 .aircraft-btn {
   display: inline-flex;
@@ -674,7 +673,7 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-.timeline-features i { color: var(--hud-cyan); font-size: 1.1rem; }
+.timeline-features i, .timeline-features .icon { color: var(--hud-cyan); font-size: 1.1rem; }
 
 .timeline-visual {
   display: grid;
@@ -702,15 +701,13 @@
   border-radius: 2px;
 }
 
-.timeline-card:hover,
-.timeline-card.active {
+.timeline-card:hover, .timeline-card.active {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.12);
   transform: translateX(4px);
 }
 
-.timeline-card:hover::before,
-.timeline-card.active::before {
+.timeline-card:hover::before, .timeline-card.active::before {
   background: var(--hud-cyan);
 }
 
@@ -949,7 +946,7 @@
   .stat-label { font-size: 0.6rem; }
 
   .btn { padding: 0.75rem 1.5rem; font-size: 0.875rem; }
-  .btn i { font-size: 0.875rem; }
+  .btn i, .btn .icon { font-size: 0.875rem; }
 
   .feature-card { padding: 1.25rem; }
   .feature-card h3 { font-size: 1.15rem; }
@@ -983,8 +980,7 @@
   .btn { min-height: 44px; }
   /* nav/dropdown touch responsive → shared.css */
 
-  .feature-card:hover,
-  .aircraft-card:hover { transform: none; }
+  .feature-card:hover, .aircraft-card:hover { transform: none; }
 
   .feature-card:active { transform: scale(0.98); }
   .aircraft-card:active { transform: scale(0.98); }
@@ -992,8 +988,7 @@
 
 /* High resolution displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .aircraft-image img,
-  .hero-video {
+  .aircraft-image img, .hero-video {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
   }
@@ -1012,8 +1007,7 @@
 /* Print styles */
 @media print {
   /* header/footer/hamburger/user-menu print → shared.css */
-  .scroll-indicator,
-  .hero-video, .hero-hud-grid, .hero-hud-corner, .cta-grid-bg { display: none !important; }
+  .scroll-indicator, .hero-video, .hero-hud-grid, .hero-hud-corner, .cta-grid-bg { display: none !important; }
   .hero { min-height: auto; height: auto; }
   * { background: white !important; color: black !important; box-shadow: none !important; }
 }
@@ -1114,7 +1108,7 @@
   font-size: 0.9rem;
 }
 
-.personal-features-list li i {
+.personal-features-list li i, .personal-features-list li .icon {
   color: var(--hud-green);
   width: 16px;
   text-align: center;
@@ -1290,7 +1284,7 @@
   margin-bottom: 1rem;
 }
 
-.mockup-search i { color: var(--hud-cyan); font-size: 0.9rem; }
+.mockup-search i, .mockup-search .icon { color: var(--hud-cyan); font-size: 0.9rem; }
 
 .mockup-search span {
   color: rgba(255, 255, 255, 0.3);

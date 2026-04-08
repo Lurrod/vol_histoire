@@ -110,8 +110,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   height: 40px;
   z-index: 2;
 }
-.hud-corner::before,
-.hud-corner::after {
+.hud-corner::before, .hud-corner::after {
   content: '';
   position: absolute;
   background: rgba(200, 169, 110, 0.25);
@@ -336,7 +335,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-.form-group label i {
+.form-group label i, .form-group label .icon {
   color: var(--secondary);
   width: 16px;
   font-size: 0.75rem;
@@ -374,8 +373,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
 }
-.form-group:focus-within .input-line,
-.password-wrapper:focus-within + .input-line {
+.form-group:focus-within .input-line, .password-wrapper:focus-within + .input-line {
   width: 100%;
 }
 
@@ -463,7 +461,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   transition: var(--transition-fast);
   flex-shrink: 0;
 }
-.custom-check i {
+.custom-check i, .custom-check .icon {
   font-size: 0.6rem;
   color: var(--white);
   opacity: 0;
@@ -474,7 +472,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   background: var(--secondary);
   border-color: var(--secondary);
 }
-.checkbox-wrapper input:checked + .custom-check i {
+.checkbox-wrapper input:checked + .custom-check i, .checkbox-wrapper input:checked + .custom-check .icon {
   opacity: 1;
   transform: scale(1);
 }
@@ -521,10 +519,10 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
 .btn-submit:hover {
   background: var(--primary);
 }
-.btn-submit i {
+.btn-submit i, .btn-submit .icon {
   transition: transform 0.3s ease;
 }
-.btn-submit:hover i {
+.btn-submit:hover i, .btn-submit:hover .icon {
   transform: translateX(4px);
 }
 
@@ -559,11 +557,11 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   background: rgba(200, 169, 110, 0.08);
   transform: translateX(4px);
 }
-.switch-form i {
+.switch-form i, .switch-form .icon {
   font-size: 0.7rem;
   transition: transform 0.2s ease;
 }
-.switch-form:hover i { transform: translateX(3px); }
+.switch-form:hover i, .switch-form:hover .icon { transform: translateX(3px); }
 
 /* Security Footer */
 .security-info {
@@ -583,7 +581,7 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-.security-item i {
+.security-item i, .security-item .icon {
   color: var(--success);
   font-size: 0.8rem;
 }

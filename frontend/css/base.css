@@ -81,8 +81,7 @@
   }
 
   /* Titres display — Barlow Condensed */
-  .display, [class*="hero"] h1, [class*="section-title"],
-  .logo { letter-spacing: 0.04em; }
+  .display, [class*="hero"] h1, [class*="section-title"], .logo { letter-spacing: 0.04em; }
 
   p {
     line-height: var(--leading-relaxed);

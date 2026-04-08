@@ -155,7 +155,7 @@
   margin: 0;
 }
 
-.cookie-modal-header i {
+.cookie-modal-header i, .cookie-modal-header .icon {
   color: var(--warning);
   font-size: 1.75rem;
 }
@@ -371,7 +371,7 @@
   border-top: 1px dashed var(--border);
 }
 
-.cookie-duration i {
+.cookie-duration i, .cookie-duration .icon {
   color: var(--secondary);
 }
 
@@ -387,7 +387,7 @@
   border-radius: 8px;
 }
 
-.cookie-info-box > i {
+.cookie-info-box > i, .cookie-info-box > .icon {
   color: var(--warning);
   font-size: 1.5rem;
   flex-shrink: 0;
@@ -447,9 +447,7 @@
     max-height: 95vh;
   }
   
-  .cookie-modal-header,
-  .cookie-modal-content,
-  .cookie-modal-footer {
+  .cookie-modal-header, .cookie-modal-content, .cookie-modal-footer {
     padding: 1.5rem;
   }
 }
@@ -510,8 +508,7 @@
     border-radius: 0;
   }
   
-  .cookie-modal-header,
-  .cookie-modal-content {
+  .cookie-modal-header, .cookie-modal-content {
     padding: 1rem;
   }
   

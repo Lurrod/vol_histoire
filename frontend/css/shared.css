@@ -74,7 +74,7 @@
     transform: scale(1.05);
   }
 
-  .logo i {
+  .logo i, .logo .icon {
     font-size: 1.75rem;
     color: var(--hud-cyan);
   }
@@ -239,7 +239,7 @@
     background: rgba(231, 76, 60, 0.10);
   }
 
-  .dropdown-item i {
+  .dropdown-item i, .dropdown-item .icon {
     width: 20px;
     text-align: center;
   }
@@ -268,8 +268,7 @@
     font-size: var(--text-md);
   }
 
-  .lang-btn:hover,
-  .lang-btn.open {
+  .lang-btn:hover, .lang-btn.open {
     background: rgba(200, 169, 110, 0.12);
     border-color: rgba(200, 169, 110, 0.35);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
@@ -538,14 +537,12 @@
     gap: var(--sp-2);
   }
 
-  .form-group label i {
+  .form-group label i, .form-group label .icon {
     color: var(--hud-cyan);
     width: 20px;
   }
 
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
+  .form-group input, .form-group select, .form-group textarea {
     width: 100%;
     padding: 0.875rem var(--sp-4);
     border: 1px solid var(--border-subtle);
@@ -557,14 +554,11 @@
     transition: var(--transition-fast);
   }
 
-  .form-group input::placeholder,
-  .form-group textarea::placeholder {
+  .form-group input::placeholder, .form-group textarea::placeholder {
     color: rgba(255, 255, 255, 0.25);
   }
 
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
     outline: none;
     border-color: rgba(255, 255, 255, 0.22);
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
@@ -741,7 +735,7 @@
     border: 1px solid rgba(200, 169, 110, 0.25);
   }
 
-  .toast i { font-size: var(--text-2xl); }
+  .toast i, .toast .icon { font-size: var(--text-2xl); }
 
   /* ============================================================
      SKELETON LOADER
@@ -802,7 +796,7 @@
     grid-column: 1 / -1;
   }
 
-  .empty-state i {
+  .empty-state i, .empty-state .icon {
     font-size: 4rem;
     color: rgba(200, 169, 110, 0.15);
     margin-bottom: var(--sp-6);
@@ -859,7 +853,7 @@
     margin-bottom: var(--sp-4);
   }
 
-  .footer-logo i { color: var(--hud-cyan); }
+  .footer-logo i, .footer-logo .icon { color: var(--hud-cyan); }
 
   .footer-section p {
     color: rgba(255, 255, 255, 0.45);
@@ -919,7 +913,7 @@
     font-size: 0.90rem;
   }
 
-  .footer-bottom i { color: var(--accent); }
+  .footer-bottom i, .footer-bottom .icon { color: var(--accent); }
 
   /* ============================================================
      HERO COMMUN (pages secondaires)
@@ -1180,9 +1174,7 @@
       margin: var(--sp-4);
     }
 
-    .modal-header,
-    .modal-form,
-    .modal-footer {
+    .modal-header, .modal-form, .modal-footer {
       padding: var(--sp-6) var(--sp-4);
     }
 
@@ -1205,7 +1197,7 @@
   @media (max-width: 29.99em) {   /* < 480px */
 
     .logo span { display: none; }
-    .logo i    { font-size: 1.75rem; }
+    .logo i, .logo .icon    { font-size: 1.75rem; }
 
     header { padding-block: var(--sp-3); }
 
@@ -1270,12 +1262,7 @@
 
   /* Print : masquer la chrome */
   @media print {
-    header,
-    footer,
-    .hamburger,
-    .lang-switch,
-    #toast-container,
-    .modal {
+    header, footer, .hamburger, .lang-switch, #toast-container, .modal {
       display: none;
     }
   }
