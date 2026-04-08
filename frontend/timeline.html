@@ -92,64 +92,72 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </nav>
 </header>
 
-<!-- Hero -->
-<section class="timeline-hero">
-  <div class="container">
-    <div class="page-hero-inner">
-      <div class="hero-text">
-        <div class="hero-eyebrow" data-i18n="timeline.eyebrow">Chronologie</div>
-        <h1 class="hero-title"><span data-i18n="timeline.hero_title_1">Histoire de l'</span><span data-i18n="timeline.hero_title_2">Aviation Militaire</span></h1>
-        <p data-i18n="timeline.hero_desc_full">75 ans d'innovation stratégique. Des premiers réacteurs de la Guerre Froide aux chasseurs furtifs de 5e génération.</p>
+<!-- Cinematic Timeline -->
+<main id="main-content" class="tl-cinematic">
+
+  <!-- Hero intro -->
+  <section class="tl-intro" id="tl-intro">
+    <div class="tl-intro-bg" aria-hidden="true"></div>
+    <div class="tl-intro-inner">
+      <span class="tl-eyebrow">Chronique · 1950 — aujourd'hui</span>
+      <h1 class="tl-title">
+        <span class="tl-title-line-1">Soixante-quinze ans</span>
+        <span class="tl-title-line-2">d'aviation militaire</span>
+      </h1>
+      <p class="tl-lede">
+        Des premiers chasseurs à réaction de la Guerre Froide aux appareils furtifs
+        de cinquième génération — une chronique des appareils qui ont
+        redéfini la supériorité aérienne.
+      </p>
+      <div class="tl-intro-stats">
+        <div class="tl-stat">
+          <span class="tl-stat-num" id="tl-stat-aircraft">0</span>
+          <span class="tl-stat-lbl">appareils</span>
+        </div>
+        <div class="tl-stat">
+          <span class="tl-stat-num" id="tl-stat-years">0</span>
+          <span class="tl-stat-lbl">années</span>
+        </div>
+        <div class="tl-stat">
+          <span class="tl-stat-num" id="tl-stat-decades">0</span>
+          <span class="tl-stat-lbl">décennies</span>
+        </div>
       </div>
-      <div class="hero-data">
-        <div class="data-row">
-          <span class="data-number" id="total-aircraft-timeline">0</span>
-          <span class="data-label" data-i18n="timeline.stat_aircraft">Avions</span>
-        </div>
-        <div class="data-row">
-          <span class="data-number" id="total-years">0</span>
-          <span class="data-label" data-i18n="timeline.stat_years">Années</span>
-        </div>
-        <div class="data-row">
-          <span class="data-number" id="total-generations-timeline">5</span>
-          <span class="data-label" data-i18n="timeline.stat_generations">Générations</span>
-        </div>
+      <div class="tl-scroll-hint" aria-hidden="true">
+        <span>Scroll</span>
+        <i class="fas fa-chevron-down"></i>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Control Panel -->
-<div class="control-panel">
-  <div class="container">
-    <div class="control-inner">
-      <div class="gen-pills">
-        <button class="gen-filter active" data-gen="all" data-i18n="timeline.filter_all">Toutes</button>
-        <button class="gen-filter" data-gen="1"><span class="gen-dot" style="background:var(--gen-1)"></span>G1</button>
-        <button class="gen-filter" data-gen="2"><span class="gen-dot" style="background:var(--gen-2)"></span>G2</button>
-        <button class="gen-filter" data-gen="3"><span class="gen-dot" style="background:var(--gen-3)"></span>G3</button>
-        <button class="gen-filter" data-gen="4"><span class="gen-dot" style="background:var(--gen-4)"></span>G4</button>
-        <button class="gen-filter" data-gen="5"><span class="gen-dot" style="background:var(--gen-5)"></span>G5</button>
-      </div>
-      <div class="decade-anchors" id="decade-nav"></div>
+  <!-- Chapters injected by JS -->
+  <div id="tl-chapters" class="tl-chapters" aria-live="polite"></div>
+
+  <!-- End marker -->
+  <section class="tl-outro" id="tl-outro" aria-hidden="true">
+    <div class="tl-outro-inner">
+      <span class="tl-eyebrow">— fin de chronique —</span>
+      <h2>Et demain ?</h2>
+      <p>La sixième génération est en développement. NGAD, FCAS, Tempest…</p>
+      <a href="/hangar" class="tl-cta">
+        Explorer le hangar complet <i class="fas fa-arrow-right"></i>
+      </a>
     </div>
-  </div>
-</div>
+  </section>
 
-<!-- Main Timeline -->
-<main id="main-content" class="timeline-outer">
-  <div id="loading-state" class="loading-state">
-    <div class="loader"></div>
-    <p data-i18n="timeline.loading">Chargement des données...</p>
+  <!-- Fixed HUD elements -->
+  <div id="tl-year-hud" class="tl-year-hud" aria-hidden="true">
+    <span id="tl-year-hud-num">1950</span>
+    <span id="tl-year-hud-label" class="tl-year-hud-lbl"></span>
   </div>
-  <div id="timeline-container" class="timeline-container"></div>
-  <div id="empty-state" class="empty-state hidden">
-    <i class="fas fa-filter"></i>
-    <h3 data-i18n="timeline.empty_title">Aucun appareil</h3>
-    <p data-i18n="timeline.empty_desc">Aucun avion ne correspond aux filtres actifs</p>
-    <button id="reset-filters-btn" class="btn btn-primary">
-      <i class="fas fa-undo"></i> <span data-i18n="timeline.reset">Réinitialiser</span>
-    </button>
+
+  <nav id="tl-minimap" class="tl-minimap" aria-label="Naviguer par décennie"></nav>
+
+  <div id="tl-progress" class="tl-progress" aria-hidden="true"></div>
+
+  <!-- Loading state -->
+  <div id="tl-loading" class="tl-loading">
+    <div class="tl-loader"></div>
   </div>
 </main>
 
