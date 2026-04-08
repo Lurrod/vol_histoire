@@ -5,7 +5,48 @@
  *
  * Usage : node e2e/seed-test-users.js
  * Prérequis : backend/.env configuré + PostgreSQL accessible
+ *
+ * SÉCURITÉ : ce script crée un compte admin avec mot de passe trivial
+ * (test@gmail.com / test). Refus catégorique en production pour éviter
+ * un désastre catastrophique si quelqu'un l'exécute par mégarde sur le serveur.
  */
+
+// Garde-fou : refuse l'exécution en production. Vérifie plusieurs signaux
+// pour ne pas pouvoir être contourné par une simple variable d'env oubliée.
+(function refuseInProduction() {
+  const env = (process.env.NODE_ENV || '').toLowerCase();
+  const isProd =
+    env === 'production' ||
+    env === 'prod' ||
+    process.env.VOL_HISTOIRE_PROD === '1' ||
+    /vol-histoire\.titouan-borde\.com/i.test(process.env.PUBLIC_URL || '') ||
+    /vol-histoire\.titouan-borde\.com/i.test(process.env.SERVER_HOST || '');
+
+  if (isProd) {
+    console.error('');
+    console.error('  ╔════════════════════════════════════════════════════════════╗');
+    console.error('  ║  REFUS D\'EXÉCUTION                                         ║');
+    console.error('  ║  seed-test-users.js NE DOIT JAMAIS tourner en production.  ║');
+    console.error('  ║  Il créerait un compte admin avec un mot de passe trivial. ║');
+    console.error('  ╚════════════════════════════════════════════════════════════╝');
+    console.error('');
+    console.error('  NODE_ENV    =', JSON.stringify(process.env.NODE_ENV));
+    console.error('  Pour exécuter en local : NODE_ENV=test node e2e/seed-test-users.js');
+    console.error('');
+    process.exit(1);
+  }
+
+  // Si NODE_ENV n'est pas explicitement 'test', warn loud — les CI/local doivent
+  // l'avoir défini. Empêche l'exécution silencieuse "par défaut".
+  if (env !== 'test') {
+    console.error('');
+    console.error('  ⚠️  NODE_ENV doit être défini à "test" pour exécuter ce script.');
+    console.error('     NODE_ENV actuel :', JSON.stringify(process.env.NODE_ENV));
+    console.error('     Lancez : NODE_ENV=test node e2e/seed-test-users.js');
+    console.error('');
+    process.exit(1);
+  }
+})();
 
 // dotenv optionnel : en CI les variables sont déjà injectées via l'env du job.
 // En local, charge backend/.env si dotenv est disponible (via backend/node_modules).
