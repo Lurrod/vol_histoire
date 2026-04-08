@@ -162,6 +162,13 @@
     return null;
   }
 
+  // Liste des classes Font Awesome à NE PAS recopier sur le SVG cible
+  var FA_PREFIXES = ['fa-', 'fas', 'far', 'fab', 'fa '];
+  function isFaClass(c) {
+    if (c === 'fas' || c === 'far' || c === 'fab' || c === 'fa') return true;
+    return c.indexOf('fa-') === 0;
+  }
+
   function swap(root) {
     if (!root || root.nodeType !== 1) return;
     var nodes;
@@ -180,16 +187,35 @@
       var wrap = document.createElement('span');
       wrap.innerHTML = markup;
       var node = wrap.firstChild;
-      node.setAttribute('class', 'icon icon-' + name);
-      if (el.classList.contains('fa-spin')) {
-        node.setAttribute('class', node.getAttribute('class') + ' icon-spin');
+
+      // Classes : 'icon icon-<name>' + toutes les classes non-FA héritées du <i>
+      var classes = ['icon', 'icon-' + name];
+      for (var k = 0; k < el.classList.length; k++) {
+        var c = el.classList[k];
+        if (!isFaClass(c)) classes.push(c);
       }
+      if (el.classList.contains('fa-spin')) classes.push('icon-spin');
+      node.setAttribute('class', classes.join(' '));
+
+      // Style inline : recopier tel quel s'il existe
+      var inlineStyle = el.getAttribute('style');
+      if (inlineStyle) node.setAttribute('style', inlineStyle);
+
+      // Attributs d'accessibilité
       var label = el.getAttribute('aria-label') || el.getAttribute('title');
       if (label) {
         node.setAttribute('role', 'img');
         node.setAttribute('aria-label', label);
         node.removeAttribute('aria-hidden');
       }
+      // Attributs data-* : recopier (utilisé par certains scripts)
+      var attrs = el.attributes;
+      for (var a = 0; a < attrs.length; a++) {
+        if (attrs[a].name.indexOf('data-') === 0) {
+          node.setAttribute(attrs[a].name, attrs[a].value);
+        }
+      }
+
       if (el.parentNode) el.parentNode.replaceChild(node, el);
     }
   }

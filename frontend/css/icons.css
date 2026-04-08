@@ -1,0 +1,38 @@
+/* ============================================================
+   ICON SYSTEM
+   Égalité visuelle avec Font Awesome pour les SVG inline
+   générés par js/icons.js (classe .icon).
+   ============================================================ */
+
+/* Box carrée 1em × 1em — le SVG s'adapte via preserveAspectRatio par défaut.
+   Taille héritée du font-size parent, alignement vertical identique à FA. */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+  color: inherit;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+/* Animation spin (équivalent .fa-spin) */
+.icon-spin {
+  animation: icon-spin 1s linear infinite;
+}
+@keyframes icon-spin {
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .icon-spin { animation: none; }
+}
+
+/* Tant que le swap JS n'a pas tourné, garder les <i> invisibles
+   (évite le FOUC d'un caractère vide à la place de l'icône). */
+i[class*="fa-"]:not(.icon-no-swap) {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  visibility: hidden;
+}
