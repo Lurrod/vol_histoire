@@ -6,6 +6,55 @@
 
 /* header/nav/footer/toast/lang → shared.css */
 
+/* SHARE BAR */
+.share-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+}
+.share-label {
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-right: 0.5rem;
+}
+.share-btn {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: 0.95rem;
+}
+.share-btn:hover,
+.share-btn:focus-visible {
+  border-color: var(--hud-cyan);
+  color: var(--hud-cyan);
+  transform: translateY(-1px);
+}
+.share-btn .icon { width: 16px; height: 16px; }
+.share-btn.flash {
+  background: var(--hud-cyan);
+  color: var(--night);
+  border-color: var(--hud-cyan);
+}
+@media (prefers-reduced-motion: reduce) {
+  .share-btn { transition: none; }
+  .share-btn:hover { transform: none; }
+}
+
 /* SCROLL PROGRESS BAR */
 .scroll-progress {
   position: fixed;

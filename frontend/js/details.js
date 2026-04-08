@@ -800,6 +800,89 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateProgress();
   }
 
+  /* =========================================================================
+     SHARE BAR
+     ========================================================================= */
+
+  function setupShareBar() {
+    const bar = document.querySelector('.share-bar');
+    if (!bar) return;
+
+    function getShareData() {
+      const name = (aircraftData && aircraftData.name) || document.title.split('|')[0].trim();
+      const desc = (aircraftData && (aircraftData.little_description || aircraftData.description)) || '';
+      const url = location.href.split('#')[0];
+      const text = `${name} — Vol d'Histoire`;
+      return { name, desc, url, text };
+    }
+
+    function openIntent(targetUrl) {
+      const w = 600, h = 540;
+      const left = (window.screen.width - w) / 2;
+      const top = (window.screen.height - h) / 2;
+      window.open(
+        targetUrl,
+        'vh-share',
+        `width=${w},height=${h},left=${left},top=${top},menubar=no,toolbar=no,location=no,status=no`
+      );
+    }
+
+    async function copyLink(btn) {
+      const { url } = getShareData();
+      try {
+        await navigator.clipboard.writeText(url);
+        btn.classList.add('flash');
+        if (typeof showToast === 'function') {
+          showToast(i18n.currentLang === 'en' ? 'Link copied' : 'Lien copié', 'success');
+        }
+        setTimeout(() => btn.classList.remove('flash'), 800);
+      } catch (e) {
+        // Fallback : prompt avec l'URL
+        window.prompt('Copier le lien :', url);
+      }
+    }
+
+    async function nativeShare() {
+      const { name, text, url } = getShareData();
+      try {
+        await navigator.share({ title: name, text, url });
+      } catch (e) { /* user cancel = ok */ }
+    }
+
+    // Web Share API : disponible surtout sur mobile + Safari récents
+    if ('share' in navigator) {
+      const native = bar.querySelector('.share-btn-native');
+      if (native) native.classList.remove('hidden');
+    }
+
+    bar.addEventListener('click', e => {
+      const btn = e.target.closest('.share-btn');
+      if (!btn) return;
+      const action = btn.dataset.share;
+      const { name, text, url } = getShareData();
+      const u = encodeURIComponent(url);
+      const t = encodeURIComponent(text);
+
+      switch (action) {
+        case 'twitter':
+          openIntent(`https://twitter.com/intent/tweet?url=${u}&text=${t}`);
+          break;
+        case 'linkedin':
+          openIntent(`https://www.linkedin.com/sharing/share-offsite/?url=${u}`);
+          break;
+        case 'reddit':
+          openIntent(`https://www.reddit.com/submit?url=${u}&title=${t}`);
+          break;
+        case 'copy':
+          copyLink(btn);
+          break;
+        case 'native':
+          nativeShare();
+          break;
+      }
+    });
+  }
+
   // Mini-bar visibility + sync
   function syncMiniBar() {
     if (!aircraftData) return;
@@ -814,6 +897,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   // Sync now (data already loaded at this point) and on any future re-render
   syncMiniBar();
+  setupShareBar();
   window.addEventListener('langChanged', syncMiniBar);
 
   // Mini-bar show/hide via IntersectionObserver on hero
