@@ -785,6 +785,107 @@ describe('GET /api/airplanes/facets', () => {
 });
 
 // =============================================================================
+// MONITORING — /api/live, /api/ready, /api/metrics, /api/status
+// =============================================================================
+describe('Monitoring endpoints', () => {
+  describe('GET /api/live', () => {
+    test('200 — toujours OK avec uptime', async () => {
+      const res = await request(app).get('/api/live');
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe('ok');
+      expect(typeof res.body.uptime).toBe('number');
+      expect(res.body.uptime).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  describe('GET /api/ready', () => {
+    test('200 — DB OK retourne ready avec latence', async () => {
+      mockPool.query.mockResolvedValueOnce({ rows: [{ '?column?': 1 }] });
+      const res = await request(app).get('/api/ready');
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe('ready');
+      expect(res.body.db.ok).toBe(true);
+      expect(typeof res.body.db.latencyMs).toBe('number');
+      expect(res.body.db.latencyMs).toBeGreaterThanOrEqual(0);
+    });
+
+    test('503 — DB inaccessible retourne not_ready', async () => {
+      mockPool.query.mockRejectedValueOnce(new Error('connection refused'));
+      const res = await request(app).get('/api/ready');
+      expect(res.status).toBe(503);
+      expect(res.body.status).toBe('not_ready');
+      expect(res.body.db.ok).toBe(false);
+    });
+  });
+
+  describe('GET /api/metrics', () => {
+    test('200 — retourne du texte Prometheus quand pas de token configuré', async () => {
+      delete process.env.METRICS_TOKEN;
+      const res = await request(app).get('/api/metrics');
+      expect(res.status).toBe(200);
+      expect(res.headers['content-type']).toMatch(/text\/plain|application\/openmetrics-text/);
+    });
+
+    test('401 — sans Bearer token quand METRICS_TOKEN configuré', async () => {
+      process.env.METRICS_TOKEN = 'secret-metrics-token';
+      const res = await request(app).get('/api/metrics');
+      expect(res.status).toBe(401);
+      delete process.env.METRICS_TOKEN;
+    });
+
+    test('401 — Bearer token incorrect', async () => {
+      process.env.METRICS_TOKEN = 'secret-metrics-token';
+      const res = await request(app)
+        .get('/api/metrics')
+        .set('Authorization', 'Bearer wrong-token');
+      expect(res.status).toBe(401);
+      delete process.env.METRICS_TOKEN;
+    });
+
+    test('200 — Bearer token correct', async () => {
+      process.env.METRICS_TOKEN = 'secret-metrics-token';
+      const res = await request(app)
+        .get('/api/metrics')
+        .set('Authorization', 'Bearer secret-metrics-token');
+      expect(res.status).toBe(200);
+      delete process.env.METRICS_TOKEN;
+    });
+  });
+
+  describe('GET /api/status', () => {
+    test('200 — retourne version, env, uptime, sentry status', async () => {
+      const res = await request(app).get('/api/status');
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe('ok');
+      expect(typeof res.body.service).toBe('string');
+      expect(typeof res.body.version).toBe('string');
+      expect(res.body.version).toMatch(/^\d+\.\d+\.\d+$/);
+      expect(res.body.env).toBe('test');
+      expect(typeof res.body.sentry).toBe('boolean');
+      expect(typeof res.body.uptimeSec).toBe('number');
+      expect(typeof res.body.startedAt).toBe('string');
+      // startedAt doit être un ISO 8601 valide
+      expect(new Date(res.body.startedAt).toString()).not.toBe('Invalid Date');
+    });
+
+    test('200 — expose le commit si GIT_COMMIT est défini', async () => {
+      process.env.GIT_COMMIT = 'abc1234';
+      const res = await request(app).get('/api/status');
+      expect(res.status).toBe(200);
+      expect(res.body.commit).toBe('abc1234');
+      delete process.env.GIT_COMMIT;
+    });
+
+    test('200 — commit null si GIT_COMMIT non défini', async () => {
+      delete process.env.GIT_COMMIT;
+      const res = await request(app).get('/api/status');
+      expect(res.status).toBe(200);
+      expect(res.body.commit).toBeNull();
+    });
+  });
+});
+
+// =============================================================================
 // SSR — GET /details/:slug
 // =============================================================================
 describe('GET /details/:slug — server-rendered meta', () => {
