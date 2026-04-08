@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (countryOptions) {
       countryOptions.innerHTML = state.countries.map(country => `
-        <div class="filter-option" data-value="${escapeHtml(country.name)}">
+        <div class="filter-option" data-value="${escapeHtml(country.name_fr || country.name)}">
           ${escapeHtml(country.name)}
         </div>
       `).join('');
@@ -214,9 +214,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
     }
 
-    // Apply country filter
+    // Apply country filter — match against canonical FR name (stable across languages)
     if (state.filters.country) {
-      filtered = filtered.filter(aircraft => aircraft.country_name === state.filters.country);
+      filtered = filtered.filter(aircraft =>
+        (aircraft.country_name_fr || aircraft.country_name) === state.filters.country
+      );
     }
 
     // Apply generation filter
@@ -274,7 +276,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     const filters = [];
 
     if (state.filters.country) {
-      filters.push({ type: 'country', label: state.filters.country });
+      // state.filters.country est la clé FR canonique ; résoudre le nom traduit pour l'affichage
+      const c = state.countries.find(x => (x.name_fr || x.name) === state.filters.country);
+      filters.push({ type: 'country', label: c ? c.name : state.filters.country });
     }
     if (state.filters.generation) {
       filters.push({ type: 'generation', label: `${state.filters.generation}e Génération` });
@@ -1176,7 +1180,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       dlg.querySelectorAll('.fs-tab').forEach(t =>
         t.classList.toggle('active', t.dataset.tab === currentTab));
       let items = [];
-      if (currentTab === 'country')    items = state.countries.map(c => ({ k: c.name, l: c.name }));
+      if (currentTab === 'country')    items = state.countries.map(c => ({ k: c.name_fr || c.name, l: c.name }));
       if (currentTab === 'generation') items = state.generations.map(g => ({ k: g, l: g + 'e Génération' }));
       if (currentTab === 'type')       items = state.types.map(t => ({ k: t.name_fr || t.name, l: t.name }));
       body.innerHTML = items.map(it => {
