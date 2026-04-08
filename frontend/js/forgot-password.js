@@ -33,10 +33,14 @@
 
     setLoading(true);
     try {
+      const captchaToken = window.getHcaptchaToken ? await window.getHcaptchaToken('forgot') : null;
+      const payload = { email };
+      if (captchaToken) payload['h-captcha-response'] = captchaToken;
+
       const res = await auth.fetchWithTimeout('/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {

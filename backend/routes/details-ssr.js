@@ -11,6 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
+const { rewrite: rewriteAssets } = require('../middleware/serveHtml');
 
 const SITE_URL = 'https://vol-histoire.titouan-borde.com';
 const DEFAULT_OG = `${SITE_URL}/og-default.jpg`;
@@ -46,11 +47,15 @@ function idFromSlug(slug) {
 module.exports = function createDetailsSsrRouter(getPool) {
   const router = express.Router();
 
-  // Lire details.html une fois au démarrage
+  // Lire details.html une fois au démarrage et appliquer le cache busting
+  // sur les références asset (même version que celle injectée par serveHtml.js).
   const templatePath = path.join(__dirname, '../../frontend/details.html');
   let template = '';
   try {
-    template = fs.readFileSync(templatePath, 'utf8');
+    const raw = fs.readFileSync(templatePath, 'utf8');
+    let pkgVersion = 'dev';
+    try { pkgVersion = require('../package.json').version || 'dev'; } catch (_) {}
+    template = rewriteAssets(raw, pkgVersion);
   } catch (err) {
     // En tests, le fichier peut être absent — pas bloquant
     template = '';
@@ -183,10 +188,15 @@ module.exports = function createDetailsSsrRouter(getPool) {
       `<link rel="canonical" href="${escapeHtml(url)}">`
     );
 
-    // hreflang fr
+    // hreflang fr / en / x-default — toutes pointent vers la même URL
+    // (le site sert le même HTML, l'i18n est résolue côté client via cookie/lang)
     html = html.replace(
       /<link rel="alternate" hreflang="fr" href="[^"]*">/,
       `<link rel="alternate" hreflang="fr" href="${escapeHtml(url)}">`
+    );
+    html = html.replace(
+      /<link rel="alternate" hreflang="en" href="[^"]*">/,
+      `<link rel="alternate" hreflang="en" href="${escapeHtml(url)}">`
     );
     html = html.replace(
       /<link rel="alternate" hreflang="x-default" href="[^"]*">/,
