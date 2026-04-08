@@ -4,7 +4,7 @@
    Doit être chargé après tokens.css, avant shared.css et les CSS de page.
    ====================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Barlow+Condensed:wght@400;500;600;700&display=swap');
+/* Fonts auto-hostées : voir frontend/css/fonts.css (chargé via <link> dans chaque HTML) */
 
 /* Établit l'ordre de priorité : page > utilities > components > base */
 @layer base, components, page, utilities;

@@ -6,7 +6,23 @@
  *
  * Usage : node e2e/seed-test-data.js
  * Idempotent : utilise ON CONFLICT DO NOTHING.
+ *
+ * SÉCURITÉ : refus catégorique en production. Insérer des avions de test
+ * dans la vraie BD est inacceptable.
  */
+
+(function refuseInProduction() {
+  const env = (process.env.NODE_ENV || '').toLowerCase();
+  if (env === 'production' || env === 'prod' || process.env.VOL_HISTOIRE_PROD === '1') {
+    console.error('REFUS : seed-test-data.js ne doit jamais tourner en production.');
+    console.error('NODE_ENV =', JSON.stringify(process.env.NODE_ENV));
+    process.exit(1);
+  }
+  if (env !== 'test') {
+    console.error('NODE_ENV doit être "test". Actuel :', JSON.stringify(process.env.NODE_ENV));
+    process.exit(1);
+  }
+})();
 
 try {
   require('dotenv').config({ path: require('path').join(__dirname, '../backend/.env') });
