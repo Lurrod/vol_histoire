@@ -1,6 +1,6 @@
 // e2e/tests/settings-profile.spec.js
 // Tests Settings : profil, changement de mot de passe, sécurité
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../helpers/fixtures');
 const { loginViaApi } = require('../helpers/auth');
 
 test.describe('Settings — Profil & Sécurité', () => {

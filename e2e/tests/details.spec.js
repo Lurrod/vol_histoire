@@ -1,5 +1,5 @@
 // e2e/tests/details.spec.js
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../helpers/fixtures');
 
 test.describe('Page Détails', () => {
   test.beforeEach(async ({ page }) => {

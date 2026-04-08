@@ -1,6 +1,6 @@
 // e2e/tests/admin-crud.spec.js
 // Tests CRUD avion pour les utilisateurs admin/éditeur
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../helpers/fixtures');
 const { loginViaApi } = require('../helpers/auth');
 
 // Ces tests nécessitent un compte admin en BDD (id=1, role_id=1)
@@ -75,21 +75,28 @@ test.describe('Admin — CRUD Avions', () => {
   });
 
   test('supprimer l\'avion créé via l\'API', async ({ page }) => {
-    // Chercher l'avion
+    // Naviguer pour avoir auth.js chargé en mémoire
+    await page.goto('/hangar');
+    await page.waitForLoadState('networkidle');
+
+    // Chercher l'avion par nom (toutes pages, limit max)
     const listResponse = await page.request.get('http://localhost:3000/api/airplanes?limit=100');
     const data = await listResponse.json();
     const aircraft = data.data?.find(a => a.name === 'E2E Test Aircraft');
 
     test.skip(!aircraft, 'Avion E2E non trouvé — rien à supprimer');
 
-    // Supprimer via l'API (le token est dans les cookies via loginViaApi)
+    // Le token est en mémoire dans auth.js (jamais persisté en localStorage),
+    // accessible via le scope script global.
+    const token = await page.evaluate(() => {
+      try { return typeof auth !== 'undefined' ? auth.getToken() : null; }
+      catch { return null; }
+    });
+    expect(token).toBeTruthy();
+
     const deleteResponse = await page.request.delete(
       `http://localhost:3000/api/airplanes/${aircraft.id}`,
-      {
-        headers: {
-          'Authorization': `Bearer ${await page.evaluate(() => window.localStorage.getItem('authToken'))}`,
-        },
-      }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
     expect(deleteResponse.status()).toBe(200);
 

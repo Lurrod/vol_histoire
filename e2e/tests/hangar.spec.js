@@ -1,5 +1,5 @@
 // e2e/tests/hangar.spec.js
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../helpers/fixtures');
 
 test.describe('Hangar', () => {
   test.beforeEach(async ({ page }) => {

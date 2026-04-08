@@ -1,5 +1,5 @@
 // e2e/tests/favorites.spec.js
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../helpers/fixtures');
 const { loginViaApi } = require('../helpers/auth');
 
 test.describe('Favoris', () => {

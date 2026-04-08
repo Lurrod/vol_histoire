@@ -1,6 +1,6 @@
 // e2e/tests/admin-users.spec.js
 // Tests Admin : gestion des utilisateurs (liste, modification rôle, recherche)
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../helpers/fixtures');
 const { loginViaApi } = require('../helpers/auth');
 
 test.describe('Admin — Gestion des utilisateurs', () => {

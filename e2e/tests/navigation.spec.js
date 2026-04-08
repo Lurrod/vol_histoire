@@ -1,6 +1,6 @@
 // e2e/tests/navigation.spec.js
 // Tests de navigation inter-pages et accessibilité
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../helpers/fixtures');
 const { loginViaApi } = require('../helpers/auth');
 
 test.describe('Navigation inter-pages', () => {

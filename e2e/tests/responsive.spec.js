@@ -1,6 +1,6 @@
 // e2e/tests/responsive.spec.js
 // Tests responsive : mobile, tablette, navigation
-const { test, expect } = require('@playwright/test');
+const { test, expect } = require('../helpers/fixtures');
 
 const MOBILE = { width: 390, height: 844 };   // iPhone 12
 const TABLET = { width: 810, height: 1080 };  // iPad
