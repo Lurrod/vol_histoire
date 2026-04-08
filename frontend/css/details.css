@@ -6,6 +6,21 @@
 
 /* header/nav/footer/toast/lang → shared.css */
 
+/* SCROLL PROGRESS BAR */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0;
+  background: var(--hud-cyan);
+  z-index: calc(var(--z-header) + 1);
+  transition: width .08s linear;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress { transition: none; }
+}
+
 /* AIRCRAFT HERO */
 .aircraft-hero { position: relative; background: var(--night); padding: 7rem 0 6rem; margin-top: 70px; overflow: hidden; }
 .hero-background { position: absolute; inset: 0; background: radial-gradient(ellipse at 65% 30%, rgba(200,169,110,0.04) 0%, transparent 55%); z-index: 0; }

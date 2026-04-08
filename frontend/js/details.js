@@ -73,7 +73,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let aircraftData = null;
 
+  function mountDetailsSkeletons() {
+    const name = document.getElementById('aircraft-name');
+    if (name) name.innerHTML = '<span class="skeleton-line" style="display:inline-block;width:320px;height:48px;vertical-align:middle"></span>';
+    const sub = document.getElementById('aircraft-complete-name');
+    if (sub) sub.innerHTML = '<span class="skeleton-line" style="display:inline-block;width:220px;height:16px"></span>';
+    ['hero-country','hero-manufacturer','hero-year'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '<span class="skeleton-line" style="display:inline-block;width:80px;height:14px"></span>';
+    });
+    ['stat-speed','stat-range','stat-weight','stat-status'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '<span class="skeleton-line" style="display:inline-block;width:90px;height:20px"></span>';
+    });
+    const desc = document.getElementById('aircraft-description');
+    if (desc) desc.innerHTML =
+      '<span class="skeleton-line" style="display:block;margin-bottom:8px"></span>' +
+      '<span class="skeleton-line" style="display:block;margin-bottom:8px"></span>' +
+      '<span class="skeleton-line medium" style="display:block"></span>';
+  }
+
   async function loadAircraftDetails() {
+    mountDetailsSkeletons();
     try {
       const response = await auth.fetchWithTimeout(`/api/airplanes/${aircraftId}`);
       
@@ -758,6 +779,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await loadAircraftDetails();
   observeElements();
+
+  // Scroll progress bar
+  const progressEl = document.getElementById('scroll-progress');
+  if (progressEl) {
+    let ticking = false;
+    function updateProgress() {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+      progressEl.style.width = pct + '%';
+      ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateProgress);
+        ticking = true;
+      }
+    }, { passive: true });
+    updateProgress();
+  }
 
   // Re-render on language change
   window.addEventListener('langChanged', () => {

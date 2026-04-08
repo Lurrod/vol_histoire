@@ -29,6 +29,12 @@
     display: block;
   }
 
+  *:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+    border-radius: var(--r-sm);
+  }
+
   button {
     font-family: inherit;
     cursor: pointer;
