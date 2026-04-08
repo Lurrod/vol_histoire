@@ -393,36 +393,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  function renderArmament(armament) {
-    const container = document.getElementById('armament-list');
-    
-    if (!armament || armament.length === 0) {
-      container.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${i18n.t('details.no_armament')}</p>`;
+  function renderChipGrid(container, items, iconClass, emptyMsg) {
+    if (!container) return;
+    if (!items || items.length === 0) {
+      container.className = '';
+      container.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${emptyMsg}</p>`;
       return;
     }
+    container.className = 'chip-grid';
+    container.innerHTML = items.map(item => {
+      const name = escapeHtml(item.name || '');
+      const desc = escapeHtml(item.description || '');
+      return `<button class="chip" type="button" tabindex="0">
+        <i class="fas ${iconClass}"></i>
+        <span class="chip-label">${name}</span>
+        ${desc ? `<span class="chip-tooltip" role="tooltip">${desc}</span>` : ''}
+      </button>`;
+    }).join('');
+  }
 
-    container.innerHTML = armament.map(item => `
-      <div class="feature-card">
-        <h4>${escapeHtml(item.name)}</h4>
-        <p>${escapeHtml(item.description) || i18n.t('details.no_desc_available')}</p>
-      </div>
-    `).join('');
+  function renderArmament(armament) {
+    renderChipGrid(document.getElementById('armament-list'), armament, 'fa-crosshairs', i18n.t('details.no_armament'));
   }
 
   function renderTechnologies(technologies) {
-    const container = document.getElementById('tech-list');
-    
-    if (!technologies || technologies.length === 0) {
-      container.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${i18n.t('details.no_tech')}</p>`;
-      return;
-    }
-
-    container.innerHTML = technologies.map(item => `
-      <div class="feature-card">
-        <h4>${escapeHtml(item.name)}</h4>
-        <p>${escapeHtml(item.description) || i18n.t('details.no_desc_available')}</p>
-      </div>
-    `).join('');
+    renderChipGrid(document.getElementById('tech-list'), technologies, 'fa-microchip', i18n.t('details.no_tech'));
   }
 
   function renderMissions(missions) {
@@ -442,15 +437,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       'Escorte': 'shield-halved'
     };
 
-    container.innerHTML = missions.map(item => `
-      <div class="mission-card">
-        <div class="mission-icon">
-          <i class="fas fa-${missionIcons[item.name] || 'bullseye'}"></i>
-        </div>
-        <h4>${escapeHtml(item.name)}</h4>
-        <p>${escapeHtml(item.description) || ''}</p>
-      </div>
-    `).join('');
+    container.className = 'chip-grid';
+    container.innerHTML = missions.map(item => {
+      const icon = missionIcons[item.name] || 'bullseye';
+      const name = escapeHtml(item.name || '');
+      const desc = escapeHtml(item.description || '');
+      return `<button class="chip" type="button" tabindex="0">
+        <i class="fas fa-${icon}"></i>
+        <span class="chip-label">${name}</span>
+        ${desc ? `<span class="chip-tooltip" role="tooltip">${desc}</span>` : ''}
+      </button>`;
+    }).join('');
   }
 
   function renderWars(wars) {
@@ -798,6 +795,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }, { passive: true });
     updateProgress();
+  }
+
+  // Mini-bar visibility + sync
+  function syncMiniBar() {
+    if (!aircraftData) return;
+    const nameEl = document.getElementById('mini-name');
+    if (nameEl) nameEl.textContent = aircraftData.name || '';
+    const sp = document.getElementById('mini-speed');
+    if (sp) sp.innerHTML = aircraftData.max_speed ? '<i class="fas fa-gauge-high"></i>' + aircraftData.max_speed + ' km/h' : '';
+    const rn = document.getElementById('mini-range');
+    if (rn) rn.innerHTML = aircraftData.max_range ? '<i class="fas fa-route"></i>' + aircraftData.max_range + ' km' : '';
+    const wt = document.getElementById('mini-weight');
+    if (wt) wt.innerHTML = aircraftData.weight ? '<i class="fas fa-weight-hanging"></i>' + aircraftData.weight + ' kg' : '';
+  }
+  // Sync now (data already loaded at this point) and on any future re-render
+  syncMiniBar();
+  window.addEventListener('langChanged', syncMiniBar);
+
+  // Mini-bar show/hide via IntersectionObserver on hero
+  const heroSection = document.querySelector('.aircraft-hero');
+  if (heroSection && 'IntersectionObserver' in window) {
+    new IntersectionObserver(
+      entries => {
+        entries.forEach(e => {
+          document.body.classList.toggle('mini-bar-visible', !e.isIntersecting);
+        });
+      },
+      { threshold: 0, rootMargin: '-80px 0px 0px 0px' }
+    ).observe(heroSection);
   }
 
   // Re-render on language change

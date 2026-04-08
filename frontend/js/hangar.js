@@ -28,7 +28,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     countries: [],
     generations: [],
     types: [],
-    manufacturers: []
+    manufacturers: [],
+    facets: null,
+    view: localStorage.getItem('vh_hangar_view') || 'grid',
+    compareIds: JSON.parse(localStorage.getItem('vh_compare_ids') || '[]'),
   };
 
   /* escapeHtml, showToast, animateNumber → utils.js | navigation → nav.js */
@@ -338,7 +341,41 @@ document.addEventListener("DOMContentLoaded", async () => {
       sort: state.sort,
       currentPage: state.currentPage,
     }));
+    writeStateToUrl();
   }
+
+  function writeStateToUrl() {
+    const p = new URLSearchParams();
+    if (state.filters.country)    p.set('country', state.filters.country);
+    if (state.filters.generation) p.set('gen', String(state.filters.generation));
+    if (state.filters.type)       p.set('type', state.filters.type);
+    if (state.filters.search)     p.set('q', state.filters.search);
+    if (state.sort && state.sort !== 'default') p.set('sort', state.sort);
+    if (state.view === 'list')    p.set('view', 'list');
+    if (state.currentPage > 1)    p.set('page', String(state.currentPage));
+    const qs = p.toString();
+    const url = qs ? `${location.pathname}?${qs}` : location.pathname;
+    try { history.replaceState(null, '', url); } catch (e) { /* ignore */ }
+  }
+
+  function readStateFromUrl() {
+    const p = new URLSearchParams(location.search);
+    if (p.has('country')) state.filters.country = p.get('country');
+    if (p.has('gen'))     state.filters.generation = Number(p.get('gen'));
+    if (p.has('type'))    state.filters.type = p.get('type');
+    if (p.has('q'))       state.filters.search = p.get('q');
+    if (p.has('sort'))    state.sort = p.get('sort');
+    if (p.has('view'))    state.view = p.get('view') === 'list' ? 'list' : 'grid';
+    if (p.has('page'))    state.currentPage = Math.max(1, Number(p.get('page')) || 1);
+  }
+
+  window.addEventListener('popstate', () => {
+    readStateFromUrl();
+    if (searchInput && state.filters.search) searchInput.value = state.filters.search;
+    if (sortSelect) sortSelect.value = state.sort;
+    applyFiltersAndRender();
+    updateActiveFilters();
+  });
 
   function restoreFiltersFromSession() {
     const saved = sessionStorage.getItem(SESSION_KEY);
@@ -774,5 +811,290 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateResultsCount();
     if (state.aircraft.length > 0) renderAircraft();
   });
+
+  /* =========================================================================
+     V2 — URL state, facet counts, compare, view toggle, mobile sheet
+     ========================================================================= */
+
+  // Apply URL state on first load (overrides session)
+  readStateFromUrl();
+  if (searchInput && state.filters.search) searchInput.value = state.filters.search;
+  if (sortSelect) sortSelect.value = state.sort;
+  applyFiltersAndRender();
+  updateActiveFilters();
+
+  // --- Facet counts ----------------------------------------------------------
+  async function fetchFacets() {
+    const p = new URLSearchParams();
+    if (state.filters.country)    p.set('country', state.filters.country);
+    if (state.filters.generation) p.set('generation', String(state.filters.generation));
+    if (state.filters.type)       p.set('type', state.filters.type);
+    try {
+      const res = await fetch('/api/airplanes/facets?' + p.toString());
+      if (!res.ok) return;
+      state.facets = await res.json();
+      decorateFacetCounts();
+    } catch (_) { /* ignore */ }
+  }
+
+  function decorateFacetCounts() {
+    if (!state.facets) return;
+    document.querySelectorAll('#country-options .filter-option').forEach(el => {
+      const name = el.dataset.value;
+      const n = state.facets.countries[name] || 0;
+      let tag = el.querySelector('.fc');
+      if (!tag) { tag = document.createElement('span'); tag.className = 'fc'; el.appendChild(tag); }
+      tag.textContent = ' (' + n + ')';
+      el.classList.toggle('filter-option-empty', n === 0);
+    });
+    document.querySelectorAll('#generation-options .filter-option').forEach(el => {
+      const g = Number(el.dataset.value);
+      const n = state.facets.generations[g] || 0;
+      let tag = el.querySelector('.fc');
+      if (!tag) { tag = document.createElement('span'); tag.className = 'fc'; el.appendChild(tag); }
+      tag.textContent = ' (' + n + ')';
+      el.classList.toggle('filter-option-empty', n === 0);
+    });
+    document.querySelectorAll('#type-options .filter-option').forEach(el => {
+      const name = el.dataset.value;
+      const n = state.facets.types[name] || 0;
+      let tag = el.querySelector('.fc');
+      if (!tag) { tag = document.createElement('span'); tag.className = 'fc'; el.appendChild(tag); }
+      tag.textContent = ' (' + n + ')';
+      el.classList.toggle('filter-option-empty', n === 0);
+    });
+  }
+
+  fetchFacets();
+  // Re-fetch facets whenever filters change
+  const origSave = saveFiltersToSession;
+  saveFiltersToSession = function () { origSave(); fetchFacets(); };
+
+  // --- View toggle -----------------------------------------------------------
+  (function setupViewToggle() {
+    const container = document.getElementById('airplanes-container');
+    if (!container) return;
+
+    // Inject toggle buttons into toolbar-right before the sort-select
+    const toolbar = document.querySelector('.toolbar-right');
+    const sortSel = document.getElementById('sort-select');
+    if (toolbar && sortSel && !document.getElementById('view-toggle')) {
+      const wrap = document.createElement('div');
+      wrap.id = 'view-toggle';
+      wrap.className = 'view-toggle';
+      wrap.setAttribute('role', 'group');
+      wrap.setAttribute('aria-label', 'Vue');
+      wrap.innerHTML =
+        '<button id="view-grid" class="view-btn" aria-pressed="true" aria-label="Vue grille"><i class="fas fa-th"></i></button>' +
+        '<button id="view-list" class="view-btn" aria-pressed="false" aria-label="Vue liste"><i class="fas fa-list"></i></button>';
+      toolbar.insertBefore(wrap, sortSel);
+    }
+
+    function applyView() {
+      container.classList.toggle('aircraft-list', state.view === 'list');
+      container.classList.toggle('aircraft-grid', state.view === 'grid');
+      const g = document.getElementById('view-grid');
+      const l = document.getElementById('view-list');
+      if (g) g.setAttribute('aria-pressed', String(state.view === 'grid'));
+      if (l) l.setAttribute('aria-pressed', String(state.view === 'list'));
+    }
+    applyView();
+
+    document.getElementById('view-grid')?.addEventListener('click', () => {
+      state.view = 'grid';
+      localStorage.setItem('vh_hangar_view', 'grid');
+      applyView();
+      writeStateToUrl();
+    });
+    document.getElementById('view-list')?.addEventListener('click', () => {
+      state.view = 'list';
+      localStorage.setItem('vh_hangar_view', 'list');
+      applyView();
+      writeStateToUrl();
+    });
+  })();
+
+  // --- Compare mode ----------------------------------------------------------
+  (function setupCompare() {
+    const container = document.getElementById('airplanes-container');
+    if (!container) return;
+
+    function addCheckboxes() {
+      container.querySelectorAll('.aircraft-card').forEach(card => {
+        if (card.querySelector('.compare-check')) return;
+        const id = Number(card.dataset.id);
+        const label = document.createElement('label');
+        label.className = 'compare-check';
+        label.innerHTML =
+          '<input type="checkbox" data-compare-id="' + id + '"' +
+          (state.compareIds.includes(id) ? ' checked' : '') + '>' +
+          '<span>Comparer</span>';
+        label.addEventListener('click', e => e.stopPropagation());
+        card.appendChild(label);
+      });
+    }
+
+    // Observe container re-renders
+    const mo = new MutationObserver(addCheckboxes);
+    mo.observe(container, { childList: true });
+    addCheckboxes();
+
+    container.addEventListener('change', e => {
+      const cb = e.target.closest('[data-compare-id]');
+      if (!cb) return;
+      const id = Number(cb.dataset.compareId);
+      if (cb.checked) {
+        if (state.compareIds.length >= 3) {
+          cb.checked = false;
+          if (typeof showToast === 'function') showToast('Maximum 3 avions en comparaison', 'warning');
+          return;
+        }
+        state.compareIds.push(id);
+      } else {
+        state.compareIds = state.compareIds.filter(x => x !== id);
+      }
+      localStorage.setItem('vh_compare_ids', JSON.stringify(state.compareIds));
+      renderCompareBar();
+    });
+
+    // Floating bar + modal
+    let bar = document.getElementById('compare-bar');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'compare-bar';
+      bar.className = 'compare-bar hidden';
+      bar.innerHTML =
+        '<span id="compare-count">0 sélectionnés</span>' +
+        '<button id="compare-clear" class="btn btn-secondary btn-sm">Effacer</button>' +
+        '<button id="compare-view" class="btn btn-primary btn-sm">Voir la comparaison</button>';
+      document.body.appendChild(bar);
+
+      const dlg = document.createElement('dialog');
+      dlg.id = 'compare-modal';
+      dlg.className = 'compare-modal';
+      dlg.innerHTML =
+        '<button class="compare-modal-close" aria-label="Fermer"><i class="fas fa-times"></i></button>' +
+        '<div id="compare-modal-body"></div>';
+      document.body.appendChild(dlg);
+    }
+
+    window.renderCompareBar = function () {
+      const n = state.compareIds.length;
+      bar.classList.toggle('hidden', n === 0);
+      const cnt = document.getElementById('compare-count');
+      if (cnt) cnt.textContent = n + ' sélectionné' + (n > 1 ? 's' : '');
+    };
+
+    document.getElementById('compare-clear').addEventListener('click', () => {
+      state.compareIds = [];
+      localStorage.setItem('vh_compare_ids', '[]');
+      container.querySelectorAll('[data-compare-id]').forEach(cb => { cb.checked = false; });
+      renderCompareBar();
+    });
+
+    document.getElementById('compare-view').addEventListener('click', async () => {
+      if (state.compareIds.length === 0) return;
+      try {
+        const items = await Promise.all(
+          state.compareIds.map(id => fetch('/api/airplanes/' + id).then(r => r.json()))
+        );
+        const fields = [
+          ['Image',         a => a.image_url ? '<img src="' + escapeHtml(a.image_url) + '" alt="" style="width:100%;max-height:120px;object-fit:cover;border-radius:4px">' : '-'],
+          ['Nom',           a => escapeHtml(a.name || '-')],
+          ['Pays',          a => escapeHtml(a.country_name || '-')],
+          ['Constructeur',  a => escapeHtml(a.manufacturer_name || '-')],
+          ['Génération',    a => a.generation ? a.generation + 'e' : '-'],
+          ['Type',          a => escapeHtml(a.type_name || '-')],
+          ['Vitesse max',   a => a.max_speed ? a.max_speed + ' km/h' : '-'],
+          ['Portée max',    a => a.max_range ? a.max_range + ' km' : '-'],
+          ['Poids',         a => a.weight ? a.weight + ' kg' : '-'],
+          ['Statut',        a => escapeHtml(a.status || '-')],
+        ];
+        const rows = fields.map(f =>
+          '<tr><th>' + f[0] + '</th>' + items.map(a => '<td>' + f[1](a) + '</td>').join('') + '</tr>'
+        ).join('');
+        document.getElementById('compare-modal-body').innerHTML =
+          '<h2 style="margin-bottom:16px">Comparaison</h2>' +
+          '<table class="compare-table"><tbody>' + rows + '</tbody></table>';
+        document.getElementById('compare-modal').showModal();
+      } catch (err) { /* ignore */ }
+    });
+
+    document.querySelector('#compare-modal .compare-modal-close').addEventListener('click', () => {
+      document.getElementById('compare-modal').close();
+    });
+
+    renderCompareBar();
+  })();
+
+  // --- Mobile filter sheet ---------------------------------------------------
+  (function setupMobileSheet() {
+    function isMobile() { return window.matchMedia('(max-width: 767px)').matches; }
+    if (document.getElementById('filter-sheet')) return;
+
+    const dlg = document.createElement('dialog');
+    dlg.id = 'filter-sheet';
+    dlg.className = 'filter-sheet';
+    dlg.innerHTML =
+      '<div class="filter-sheet-header"><h3>Filtres</h3><button class="filter-sheet-close" aria-label="Fermer"><i class="fas fa-times"></i></button></div>' +
+      '<div class="filter-sheet-tabs">' +
+        '<button class="fs-tab active" data-tab="country">Pays</button>' +
+        '<button class="fs-tab" data-tab="generation">Génération</button>' +
+        '<button class="fs-tab" data-tab="type">Type</button>' +
+      '</div>' +
+      '<div class="filter-sheet-body"></div>' +
+      '<div class="filter-sheet-footer"><button class="btn btn-primary" id="fs-apply">Appliquer</button></div>';
+    document.body.appendChild(dlg);
+
+    let currentTab = 'country';
+
+    function renderTab() {
+      const body = dlg.querySelector('.filter-sheet-body');
+      dlg.querySelectorAll('.fs-tab').forEach(t =>
+        t.classList.toggle('active', t.dataset.tab === currentTab));
+      let items = [];
+      if (currentTab === 'country')    items = state.countries.map(c => ({ k: c.name, l: c.name }));
+      if (currentTab === 'generation') items = state.generations.map(g => ({ k: g, l: g + 'e Génération' }));
+      if (currentTab === 'type')       items = state.types.map(t => ({ k: t.name, l: t.name }));
+      body.innerHTML = items.map(it => {
+        const active = String(state.filters[currentTab]) === String(it.k);
+        return '<button class="fs-item' + (active ? ' active' : '') +
+               '" data-key="' + escapeHtml(String(it.k)) + '">' + escapeHtml(it.l) + '</button>';
+      }).join('');
+      body.querySelectorAll('.fs-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const k = btn.dataset.key;
+          state.filters[currentTab] = String(state.filters[currentTab]) === k ? null : (currentTab === 'generation' ? Number(k) : k);
+          renderTab();
+        });
+      });
+    }
+
+    dlg.querySelectorAll('.fs-tab').forEach(t => {
+      t.addEventListener('click', () => { currentTab = t.dataset.tab; renderTab(); });
+    });
+    dlg.querySelector('.filter-sheet-close').addEventListener('click', () => dlg.close());
+    dlg.querySelector('#fs-apply').addEventListener('click', () => {
+      dlg.close();
+      state.currentPage = 1;
+      saveFiltersToSession();
+      applyFiltersAndRender();
+      updateActiveFilters();
+    });
+
+    ['country-filter-btn', 'generation-filter-btn', 'type-filter-btn'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.addEventListener('click', e => {
+        if (isMobile()) {
+          e.stopImmediatePropagation();
+          e.preventDefault();
+          currentTab = id.split('-')[0];
+          renderTab();
+          try { dlg.showModal(); } catch (_) { dlg.setAttribute('open', ''); }
+        }
+      }, true);
+    });
+  })();
 
 });

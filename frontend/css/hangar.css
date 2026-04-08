@@ -317,6 +317,205 @@
 .skeleton-line.short { width: 55%; }
 .skeleton-line.medium { width: 75%; }
 
+/* =====================================================
+   V2 — Facet counts, view toggle, compare, mobile sheet
+   ===================================================== */
+
+.filter-option .fc { color: var(--text-muted); font-size: 0.75rem; margin-left: 6px; }
+.filter-option-empty { opacity: 0.4; pointer-events: none; }
+
+.view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border-mid);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  margin-right: var(--sp-2);
+}
+.view-btn {
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.view-btn:hover { color: var(--hud-cyan); }
+.view-btn[aria-pressed="true"] {
+  color: var(--hud-cyan);
+  background: rgba(200,169,110,0.08);
+}
+
+/* List view */
+.aircraft-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.aircraft-list .aircraft-card {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  gap: 1rem;
+  padding: 0.75rem;
+  align-items: center;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-lg);
+  background: var(--night-mid);
+}
+.aircraft-list .aircraft-card .aircraft-image { height: 80px; width: 120px; }
+.aircraft-list .aircraft-card .aircraft-image img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--r-sm); }
+.aircraft-list .aircraft-card .aircraft-overlay { display: none; }
+.aircraft-list .aircraft-card .aircraft-content { padding: 0; }
+.aircraft-list .aircraft-card .aircraft-description { display: none; }
+.aircraft-list .aircraft-card h3 { margin-bottom: 0.25rem; }
+@media (max-width: 768px) {
+  .aircraft-list .aircraft-card { grid-template-columns: 80px 1fr; }
+  .aircraft-list .aircraft-card .aircraft-image { width: 80px; height: 60px; }
+  .aircraft-list .aircraft-card .aircraft-specs { display: none; }
+}
+
+/* Compare checkbox on cards */
+.aircraft-card { position: relative; }
+.compare-check {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(13,13,13,0.85);
+  backdrop-filter: blur(8px);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--r-md);
+  font-size: 0.7rem;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  z-index: 3;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.compare-check input { cursor: pointer; accent-color: var(--hud-cyan); }
+.compare-check:hover { border-color: var(--hud-cyan); }
+
+/* Compare bar */
+.compare-bar {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--night-mid);
+  border: 1px solid var(--border-cyan-md);
+  box-shadow: var(--shadow-xl);
+  border-radius: var(--r-xl);
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  z-index: 100;
+  animation: compareBarUp 0.25s var(--ease);
+}
+.compare-bar.hidden { display: none; }
+.compare-bar #compare-count { color: var(--hud-cyan); font-weight: 600; font-size: 0.85rem; }
+@keyframes compareBarUp {
+  from { transform: translate(-50%, 20px); opacity: 0; }
+  to   { transform: translate(-50%, 0);    opacity: 1; }
+}
+
+/* Compare modal */
+.compare-modal {
+  background: var(--night-mid);
+  color: var(--text-primary);
+  border: 1px solid var(--border-cyan-md);
+  border-radius: var(--r-xl);
+  padding: 2rem;
+  max-width: 900px;
+  width: 90vw;
+  max-height: 85vh;
+  overflow: auto;
+  position: relative;
+}
+.compare-modal::backdrop { background: rgba(0,0,0,0.75); }
+.compare-modal-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+.compare-table { width: 100%; border-collapse: collapse; }
+.compare-table th,
+.compare-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+.compare-table th {
+  color: var(--hud-cyan);
+  font-weight: 600;
+  font-size: 0.85rem;
+  width: 140px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+@media (max-width: 768px) {
+  .compare-table,
+  .compare-table tbody,
+  .compare-table tr,
+  .compare-table th,
+  .compare-table td { display: block; width: 100%; }
+  .compare-table th { background: var(--night-soft); }
+}
+
+/* Mobile filter sheet */
+.filter-sheet {
+  border: none;
+  padding: 0;
+  width: 100%;
+  max-width: 100vw;
+  max-height: 85vh;
+  margin: 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: auto;
+  background: var(--night-mid);
+  color: var(--text-primary);
+  border-top: 1px solid var(--border-cyan-md);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+}
+.filter-sheet[open] { display: flex; flex-direction: column; }
+.filter-sheet::backdrop { background: rgba(0,0,0,0.7); }
+.filter-sheet-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1rem; border-bottom: 1px solid var(--border-subtle);
+}
+.filter-sheet-header h3 { color: var(--text-primary); margin: 0; }
+.filter-sheet-close {
+  background: transparent; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 1.2rem;
+}
+.filter-sheet-tabs { display: flex; border-bottom: 1px solid var(--border-subtle); }
+.fs-tab {
+  flex: 1; background: transparent; border: none; color: var(--text-muted);
+  padding: 0.75rem; cursor: pointer; font-size: 0.85rem;
+}
+.fs-tab.active { color: var(--hud-cyan); border-bottom: 2px solid var(--hud-cyan); }
+.filter-sheet-body { flex: 1; overflow-y: auto; padding: 1rem; }
+.fs-item {
+  display: block; width: 100%; text-align: left;
+  background: transparent; border: 1px solid var(--border-subtle);
+  color: var(--text-primary); padding: 0.75rem; margin-bottom: 0.5rem;
+  border-radius: var(--r-md); cursor: pointer; font-size: 0.9rem;
+}
+.fs-item.active { border-color: var(--hud-cyan); color: var(--hud-cyan); }
+.filter-sheet-footer { padding: 1rem; border-top: 1px solid var(--border-subtle); }
+.filter-sheet-footer .btn { width: 100%; }
+
+@media (min-width: 768px) {
+  .filter-sheet { display: none !important; }
+}
+
 /* lang-switch → shared.css */
 
 

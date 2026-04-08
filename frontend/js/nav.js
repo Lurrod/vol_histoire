@@ -64,9 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // -------------------------------------------------------------------
   // Hamburger / mobile menu
   // -------------------------------------------------------------------
+  if (hamburger) hamburger.setAttribute('aria-expanded', 'false');
   hamburger?.addEventListener('click', () => {
+    const nowOpen = !navLinks?.classList.contains('show');
     navLinks?.classList.toggle('show');
     hamburger.classList.toggle('active');
+    hamburger.setAttribute('aria-expanded', String(nowOpen));
     document.body.style.overflow = navLinks?.classList.contains('show') ? 'hidden' : '';
   });
 
