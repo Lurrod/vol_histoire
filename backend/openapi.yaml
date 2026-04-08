@@ -3,8 +3,27 @@ info:
   title: Vol d'Histoire API
   description: |
     API REST de l'encyclopédie de l'aviation militaire **Vol d'Histoire**.
-    Authentification par JWT (access token en header Bearer + refresh token en cookie HttpOnly).
-  version: 1.0.0
+
+    ## Authentification
+    JWT en header `Authorization: Bearer <access_token>` (15 min) +
+    refresh token en cookie HttpOnly (7 jours, rotation au refresh).
+
+    ## Internationalisation
+    Détectée via `?lang=fr|en` ou `Accept-Language`. Les fiches d'avions
+    exposent `name_fr` / `country_name_fr` / `type_name_fr` en plus des
+    champs traduits, comme **clés stables côté client** (utilisées dans les
+    URLs de filtres pour rester valides indépendamment de la langue d'affichage).
+
+    ## Anti-spam
+    Les routes `/register` et `/auth/forgot-password` acceptent un token
+    hCaptcha dans le body (`h-captcha-response`). Si `HCAPTCHA_SECRET`
+    n'est pas configuré côté serveur, la vérification est skippée (mode dev).
+
+    ## Cache & versioning
+    Toutes les pages HTML sont servies avec un query string `?v=<version>`
+    sur les assets pour bust le cache navigateur à chaque déploiement.
+    Les statiques (CSS/JS/fonts) ont un `Cache-Control` long.
+  version: 3.2.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -26,6 +45,10 @@ tags:
     description: Gestion des favoris utilisateur
   - name: Stats
     description: Statistiques globales
+  - name: Monitoring
+    description: Liveness, readiness, métriques Prometheus, statut applicatif
+  - name: Config
+    description: Configuration publique exposée au frontend
 
 components:
   securitySchemes:
@@ -54,12 +77,14 @@ components:
           example: 1
         name:
           type: string
+          description: Nom (traduit selon `?lang=`)
           example: Rafale
         complete_name:
           type: string
           example: Dassault Rafale
         little_description:
           type: string
+          description: Description courte traduite. `"Translation needed"` si pas de version EN.
         image_url:
           type: string
           format: uri
@@ -67,6 +92,14 @@ components:
           type: number
         country_name:
           type: string
+          description: Nom du pays traduit selon `?lang=`
+          example: France
+        country_name_fr:
+          type: string
+          description: |
+            **Clé canonique FR** du pays. Toujours en français quelle que soit
+            la langue de la requête. À utiliser comme clé d'URL stable pour les
+            filtres (`?country=États-Unis` marche en FR et EN).
           example: France
         country_code:
           type: string
@@ -76,6 +109,12 @@ components:
           example: 4
         type_name:
           type: string
+          description: Nom du type traduit selon `?lang=`
+          example: Multirôle
+        type_name_fr:
+          type: string
+          description: |
+            **Clé canonique FR** du type. Même rôle que `country_name_fr`.
           example: Multirôle
         date_operationel:
           type: string
@@ -288,6 +327,11 @@ paths:
                   minLength: 8
                   maxLength: 128
                   description: "1 majuscule, 1 minuscule, 1 chiffre minimum"
+                'h-captcha-response':
+                  type: string
+                  description: |
+                    Token hCaptcha (optionnel). Vérifié côté serveur si
+                    `HCAPTCHA_SECRET` est configuré, sinon ignoré.
       responses:
         '201':
           description: Compte créé
@@ -298,8 +342,12 @@ paths:
                 properties:
                   message:
                     type: string
+                  warning:
+                    type: string
+                    enum: [EMAIL_NOT_SENT]
+                    description: Présent si l'email de vérification n'a pas pu être envoyé
         '400':
-          description: Données invalides ou email déjà utilisé
+          description: "Données invalides, email déjà utilisé, ou captcha invalide (code: CAPTCHA_FAILED)"
         '429':
           description: Rate limit (10 req / 15 min)
 
@@ -420,7 +468,9 @@ paths:
     post:
       tags: [Auth]
       summary: Mot de passe oublié
-      description: Réponse toujours 200 (pas de fuite d'information).
+      description: |
+        Réponse toujours 200 (pas de fuite d'information sur l'existence du compte).
+        Protégé par hCaptcha si `HCAPTCHA_SECRET` est configuré côté serveur.
       requestBody:
         required: true
         content:
@@ -432,9 +482,14 @@ paths:
                 email:
                   type: string
                   format: email
+                'h-captcha-response':
+                  type: string
+                  description: Token hCaptcha (vérifié si configuré).
       responses:
         '200':
           description: Email de réinitialisation envoyé (si le compte existe)
+        '400':
+          description: "Captcha invalide (code: CAPTCHA_FAILED) ou email malformé"
         '429':
           description: Rate limit (3 req / 15 min)
 
@@ -674,6 +729,61 @@ paths:
           description: Données invalides ou référence FK invalide
         '403':
           description: Rôle insuffisant
+
+  /airplanes/facets:
+    get:
+      tags: [Airplanes]
+      summary: Compteurs de facettes pour les filtres du hangar
+      description: |
+        Retourne les compteurs `{ key: count }` pour les trois groupes
+        de filtres : `countries`, `generations`, `types`.
+
+        **Pattern faceted search** : chaque groupe est calculé en
+        appliquant tous les filtres courants **sauf le sien**, ce qui
+        permet d'afficher dans chaque dropdown les compteurs qui restent
+        accessibles si on ajoute ce filtre (sans réduire le dropdown
+        courant à zéro à cause de lui-même).
+
+        Les clés sont toujours en français (clés canoniques FR), comme
+        `country_name_fr` / `type_name_fr` sur les fiches.
+      parameters:
+        - in: query
+          name: country
+          schema: { type: string }
+          description: Filtre pays canonique FR (ex `France`, `États-Unis`)
+        - in: query
+          name: generation
+          schema: { type: integer }
+        - in: query
+          name: type
+          schema: { type: string }
+          description: Filtre type canonique FR (ex `Multirôle`)
+      responses:
+        '200':
+          description: Compteurs de facettes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  countries:
+                    type: object
+                    additionalProperties: { type: integer }
+                    example:
+                      France: 12
+                      États-Unis: 8
+                  generations:
+                    type: object
+                    additionalProperties: { type: integer }
+                    example:
+                      "4": 18
+                      "5": 6
+                  types:
+                    type: object
+                    additionalProperties: { type: integer }
+                    example:
+                      Multirôle: 10
+                      Bombardier: 4
 
   /airplanes/{id}:
     get:
@@ -1040,3 +1150,139 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Stats'
+
+  # ═══════════════════════════════════════════════════════════
+  # CONFIG
+  # ═══════════════════════════════════════════════════════════
+  /config:
+    get:
+      tags: [Config]
+      summary: Configuration publique exposée au frontend
+      description: |
+        Retourne la version applicative et la sitekey hCaptcha (publique).
+        Le frontend lit cet endpoint au boot pour décider s'il doit charger
+        le widget captcha. Cache 5 minutes.
+      responses:
+        '200':
+          description: Configuration publique
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: "3.2.0"
+                  hcaptchaSitekey:
+                    type: string
+                    nullable: true
+                    description: Sitekey publique hCaptcha, ou `null` si non configurée
+
+  # ═══════════════════════════════════════════════════════════
+  # MONITORING
+  # ═══════════════════════════════════════════════════════════
+  /live:
+    get:
+      tags: [Monitoring]
+      summary: Liveness probe
+      description: |
+        Toujours `200` tant que le process Express tourne. Aucune dépendance
+        vérifiée — utiliser `/ready` pour la vraie santé applicative.
+        Adapté pour Kubernetes `livenessProbe` ou un uptime monitor basique.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+                  uptime: { type: number, description: Uptime du process en secondes }
+
+  /ready:
+    get:
+      tags: [Monitoring]
+      summary: Readiness probe
+      description: |
+        Vérifie que le pool PostgreSQL est initialisé et qu'un `SELECT 1`
+        passe. Retourne `503` si la BD est inaccessible.
+        Adapté pour Kubernetes `readinessProbe` ou un load balancer healthcheck.
+      responses:
+        '200':
+          description: Application prête
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ready }
+                  db:
+                    type: object
+                    properties:
+                      ok: { type: boolean, example: true }
+                      latencyMs: { type: integer, example: 3 }
+        '503':
+          description: BD inaccessible
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: not_ready }
+                  db:
+                    type: object
+                    properties:
+                      ok: { type: boolean, example: false }
+
+  /metrics:
+    get:
+      tags: [Monitoring]
+      summary: Métriques Prometheus
+      description: |
+        Texte plain Prometheus exposant les compteurs HTTP, latences,
+        Node.js process metrics (heap, GC, event loop, etc.).
+        Si la variable d'environnement `METRICS_TOKEN` est configurée,
+        le endpoint exige `Authorization: Bearer <token>`.
+      responses:
+        '200':
+          description: Métriques Prometheus
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: |
+                  # HELP process_cpu_user_seconds_total Total user CPU time spent in seconds.
+                  # TYPE process_cpu_user_seconds_total counter
+                  process_cpu_user_seconds_total 1.234
+        '401':
+          description: Token manquant ou invalide (si `METRICS_TOKEN` configuré)
+
+  /status:
+    get:
+      tags: [Monitoring]
+      summary: Statut applicatif lisible
+      description: |
+        Retourne version, environnement, état Sentry, uptime, timestamp de
+        démarrage et commit Git si exposé. Utilisé par les outils d'uptime
+        et le frontend pour afficher la version courante.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+                  service: { type: string, example: "Vol d'histoire" }
+                  version: { type: string, example: "3.2.0" }
+                  env: { type: string, example: production }
+                  sentry: { type: boolean, example: true }
+                  uptimeSec: { type: integer, example: 3600 }
+                  startedAt:
+                    type: string
+                    format: date-time
+                    example: "2026-04-08T10:00:00.000Z"
+                  commit:
+                    type: string
+                    nullable: true
+                    description: Git commit hash si `GIT_COMMIT` env est défini
