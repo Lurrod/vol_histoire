@@ -174,7 +174,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Mise à jour des balises SEO dynamiques
     const slug = slugify(aircraftData.name);
     const cleanPath = `/details/${slug}-${aircraftId}`;
-    history.pushState({ id: aircraftId }, document.title, cleanPath);
+    // replaceState plutôt que pushState : on nettoie juste l'URL courante,
+    // sans créer une entrée d'historique supplémentaire (le goBack reste
+    // fonctionnel : details → retour direct au hangar).
+    history.replaceState({ id: aircraftId }, document.title, cleanPath);
     const pageUrl = `https://vol-histoire.titouan-borde.com${cleanPath}`;
     const imageUrl = aircraftData.image_url || 'https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg';
     updateSeoMeta(aircraftData.name, aircraftData.description, imageUrl, pageUrl);

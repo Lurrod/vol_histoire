@@ -7,52 +7,33 @@ test.describe('Internationalisation fr/en', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.textContent('body');
-    const isFrench =
-      bodyText.includes('Explorez') ||
-      bodyText.includes('Découvrez') ||
-      bodyText.includes('Collection') ||
-      bodyText.includes('Aviation');
-    expect(isFrench).toBe(true);
+    // Cible un élément connu avec data-i18n plutôt que body (évite banner cookies)
+    const navHome = page.locator('a[href="/"] [data-i18n="nav.home"]').first();
+    await expect(navHome).toHaveText(/Accueil/i, { timeout: 5000 });
   });
 
-  // FIXME: comparaison body text incl. cookie banner — flaky, à refactorer en check ciblé
-  test.fixme('le sélecteur de langue change le texte en anglais', async ({ page }) => {
+  test('le sélecteur de langue change vers l\'anglais', async ({ page }) => {
+    await page.addInitScript(() => window.localStorage.clear());
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    const beforeText = await page.textContent('body');
-
     // Ouvrir le sélecteur de langue et cliquer sur EN
-    const langSwitch = page.locator('.lang-switch').first();
-    await langSwitch.click();
-    const enOption = page.locator('.lang-option[data-lang="en"]').first();
-    await enOption.click();
-    await page.waitForTimeout(500);
+    await page.click('#lang-toggle');
+    await page.click('.lang-option[data-lang="en"]');
 
-    const afterText = await page.textContent('body');
-    expect(afterText).not.toBe(beforeText);
-
-    const hasEnglish =
-      afterText.includes('Explore') ||
-      afterText.includes('Discover') ||
-      afterText.includes('Collection') ||
-      afterText.toLowerCase().includes('history');
-    expect(hasEnglish).toBe(true);
+    // Attendre que l'élément connu ait changé de contenu
+    const navHome = page.locator('a[href="/"] [data-i18n="nav.home"]').first();
+    await expect(navHome).toHaveText(/Home/i, { timeout: 5000 });
   });
 
   test('le changement de langue est persisté dans localStorage', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    // Ouvrir le sélecteur et changer en anglais
-    const langSwitch = page.locator('.lang-switch').first();
-    await langSwitch.click();
-    const enOption = page.locator('.lang-option[data-lang="en"]').first();
-    await enOption.click();
+    await page.click('#lang-toggle');
+    await page.click('.lang-option[data-lang="en"]');
     await page.waitForTimeout(500);
 
-    // Vérifier localStorage (clé = 'vol-histoire-lang')
     const storedLang = await page.evaluate(() => window.localStorage.getItem('vol-histoire-lang'));
     expect(storedLang).toBe('en');
   });

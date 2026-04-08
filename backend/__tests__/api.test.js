@@ -739,6 +739,52 @@ describe('GET /api/airplanes', () => {
 });
 
 // =============================================================================
+// AVIONS — GET /api/airplanes/facets
+// =============================================================================
+describe('GET /api/airplanes/facets', () => {
+  test('200 — retourne les trois groupes de facettes', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ k: 'France', n: 5 }, { k: 'USA', n: 8 }] })
+      .mockResolvedValueOnce({ rows: [{ k: 4, n: 10 }, { k: 5, n: 3 }] })
+      .mockResolvedValueOnce({ rows: [{ k: 'Chasseur', n: 9 }, { k: 'Bombardier', n: 4 }] });
+
+    const res = await request(app).get('/api/airplanes/facets');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('countries');
+    expect(res.body).toHaveProperty('generations');
+    expect(res.body).toHaveProperty('types');
+    expect(res.body.countries).toEqual({ France: 5, USA: 8 });
+    expect(res.body.generations).toEqual({ 4: 10, 5: 3 });
+    expect(res.body.types).toEqual({ Chasseur: 9, Bombardier: 4 });
+  });
+
+  test('200 — accepte les filtres country/generation/type en query', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ k: 'France', n: 2 }] })
+      .mockResolvedValueOnce({ rows: [{ k: 4, n: 2 }] })
+      .mockResolvedValueOnce({ rows: [{ k: 'Multirôle', n: 2 }] });
+
+    const res = await request(app)
+      .get('/api/airplanes/facets')
+      .query({ country: 'France', generation: '4', type: 'Multirôle' });
+    expect(res.status).toBe(200);
+    // Chaque groupe exclut son propre filtre (pattern facet), donc 3 queries lancées
+    expect(mockPool.query).toHaveBeenCalledTimes(3);
+  });
+
+  test('200 — ignore les clés nulles dans les réponses', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ k: null, n: 0 }, { k: 'France', n: 5 }] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).get('/api/airplanes/facets');
+    expect(res.status).toBe(200);
+    expect(res.body.countries).toEqual({ France: 5 });
+  });
+});
+
+// =============================================================================
 // AVIONS — GET /api/airplanes/:id
 // =============================================================================
 describe('GET /api/airplanes/:id', () => {
