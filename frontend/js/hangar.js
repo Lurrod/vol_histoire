@@ -1151,6 +1151,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById('compare-modal').close();
     });
 
+    // Purger les ids orphelins (tests précédents / avions supprimés) avant d'afficher le bar
+    if (state.compareIds.length > 0 && state.aircraft.length > 0) {
+      const validIds = new Set(state.aircraft.map(a => Number(a.id)));
+      const cleaned = state.compareIds.filter(id => validIds.has(Number(id)));
+      if (cleaned.length !== state.compareIds.length) {
+        state.compareIds = cleaned;
+        localStorage.setItem('vh_compare_ids', JSON.stringify(cleaned));
+      }
+    }
     renderCompareBar();
   })();
 
