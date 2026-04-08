@@ -327,15 +327,18 @@ app.use('/api', createAuthRouter(() => pool, { registerLimiter, loginLimiter, em
 const createUsersRouter = require('./routes/users');
 app.use('/api', createUsersRouter(() => pool));
 
+// IMPORTANT : le routeur facets doit être monté AVANT airplanes, sinon
+// /api/airplanes/facets est capté par la route /api/airplanes/:id qui
+// interprète "facets" comme un id et renvoie 400 "ID invalide".
+const createFacetsRouter = require('./routes/facets');
+app.use('/api', createFacetsRouter(() => pool));
+
 const createAirplanesRouter = require('./routes/airplanes');
 const airplanesRouter = createAirplanesRouter(() => pool, {
   onAirplaneChange: () => app.invalidateStatsCache?.(),
 });
 app.use('/api', airplanesRouter);
 app.invalidateAirplanesReferentialCache = () => airplanesRouter.invalidateReferentialCache?.();
-
-const createFacetsRouter = require('./routes/facets');
-app.use('/api', createFacetsRouter(() => pool));
 
 const createFavoritesRouter = require('./routes/favorites');
 app.use('/api', createFavoritesRouter(() => pool));
