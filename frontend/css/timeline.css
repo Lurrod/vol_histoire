@@ -129,8 +129,7 @@ body.tl-has-cinematic::before {
   margin-bottom: 1.5rem;
   text-transform: uppercase;
 }
-.tl-title-line-1,
-.tl-title-line-2 {
+.tl-title-line-1, .tl-title-line-2 {
   display: block;
   opacity: 0;
   transform: translateY(24px);
@@ -204,7 +203,7 @@ body.tl-has-cinematic::before {
   opacity: 0;
   animation: tl-fade-up 1s var(--ease) 1s forwards, tl-bounce 2.2s var(--ease) 1.8s infinite;
 }
-.tl-scroll-hint i { font-size: 0.85rem; color: var(--hud-cyan); }
+.tl-scroll-hint i, .tl-scroll-hint .icon { font-size: 0.85rem; color: var(--hud-cyan); }
 @keyframes tl-bounce {
   0%, 100% { transform: translate(-50%, 0); }
   50%      { transform: translate(-50%, 8px); }
@@ -498,7 +497,7 @@ body.tl-has-cinematic::before {
   align-items: center;
   gap: 0.35rem;
 }
-.tl-plane-specs i {
+.tl-plane-specs i, .tl-plane-specs .icon {
   color: var(--era-color, var(--hud-cyan));
   font-size: 0.72rem;
 }
@@ -647,8 +646,7 @@ body.tl-has-cinematic::before {
   transition: var(--transition-fast);
   flex-shrink: 0;
 }
-.tl-mm-btn:hover .tl-mm-label,
-.tl-mm-btn.active .tl-mm-label {
+.tl-mm-btn:hover .tl-mm-label, .tl-mm-btn.active .tl-mm-label {
   opacity: 1;
   transform: translateX(0);
 }
@@ -698,12 +696,7 @@ body.tl-has-cinematic::before {
    MOTION PREFERENCES
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .tl-title-line-1,
-  .tl-title-line-2,
-  .tl-lede,
-  .tl-intro-stats,
-  .tl-scroll-hint,
-  .tl-plane-card {
+  .tl-title-line-1, .tl-title-line-2, .tl-lede, .tl-intro-stats, .tl-scroll-hint, .tl-plane-card {
     opacity: 1;
     transform: none;
     animation: none;
