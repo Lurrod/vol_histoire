@@ -5,11 +5,40 @@
 
 body { background: var(--night); }
 
+/* Global era tint wash — drives the ambient color as decades scroll past */
+body.tl-has-cinematic::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 30%, var(--tl-active-era, transparent) 0%, transparent 55%),
+              radial-gradient(ellipse at 70% 70%, var(--tl-active-era, transparent) 0%, transparent 60%);
+  opacity: 0.10;
+  z-index: 0;
+  pointer-events: none;
+  transition: background 1.4s var(--ease), opacity 1.4s var(--ease);
+  mix-blend-mode: screen;
+}
+
 .tl-cinematic {
   position: relative;
   min-height: 100vh;
   padding: 0;
   overflow-x: hidden;
+}
+
+/* Ambient particles canvas */
+.tl-particles {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.55;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl-particles { display: none; }
+  body.tl-has-cinematic::before { transition: none; }
 }
 
 /* ============================================================
@@ -193,6 +222,27 @@ body { background: var(--night); }
   isolation: isolate;
   overflow: hidden;
 }
+
+/* Backdrop image: first aircraft photo of the decade, heavy blur + darken */
+.tl-chapter-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background-image: var(--era-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(30px) brightness(0.28) saturate(0.7);
+  opacity: 0;
+  transform: scale(1.15);
+  transition: opacity 1.6s var(--ease), transform 3s var(--ease);
+  will-change: opacity, transform;
+}
+.tl-chapter.in-view .tl-chapter-backdrop {
+  opacity: 0.55;
+  transform: scale(1);
+}
+
 .tl-chapter::before {
   content: "";
   position: absolute;
@@ -212,21 +262,30 @@ body { background: var(--night); }
     linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   background-size: 60px 60px;
 }
-.tl-chapter.in-view::before { opacity: 0.16; }
+.tl-chapter.in-view::before { opacity: 0.20; }
 
 .tl-chapter-inner {
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
+  display: grid;
+  grid-template-columns: minmax(320px, 440px) 1fr;
+  gap: 4rem;
+  align-items: start;
 }
 
-.tl-chapter-head {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: start;
-  gap: 3rem;
-  margin-bottom: 4rem;
+/* Sticky left column: decade number + era text stay pinned while cards scroll */
+.tl-chapter-side {
+  position: sticky;
+  top: calc(var(--header-h) + 3rem);
+  align-self: start;
+  min-height: calc(100vh - var(--header-h) - 6rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
 }
+
 .tl-decade-block { position: relative; }
 .tl-decade-num {
   font-family: var(--font-display);
@@ -250,9 +309,9 @@ body { background: var(--night); }
   letter-spacing: 0.1em;
 }
 .tl-era-text {
-  padding-top: 2rem;
+  padding-top: 1.5rem;
   border-top: 1px solid var(--era-color, var(--border-subtle));
-  max-width: 620px;
+  max-width: 100%;
 }
 .tl-era-label {
   font-family: 'Courier New', monospace;
@@ -298,11 +357,34 @@ body { background: var(--night); }
   margin-top: 0.25rem;
 }
 
-/* Aircraft grid */
+/* Aircraft grid (right column, narrower than before since side is sticky) */
+.tl-chapter-main { min-width: 0; }
 .tl-aircraft-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
+}
+.tl-aircraft-grid .tl-plane-card.feature {
+  grid-column: 1 / -1;
+}
+.tl-aircraft-grid .tl-plane-card.feature .tl-plane-img {
+  aspect-ratio: 21/9;
+}
+.tl-aircraft-grid .tl-plane-card.feature .tl-plane-name {
+  font-size: 1.65rem;
+}
+
+/* Split-text reveal — words appear stagger on viewport entry */
+.tl-split-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+  transition-delay: calc(var(--i, 0) * 40ms);
+}
+.tl-split.revealed .tl-split-word {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .tl-plane-card {
@@ -590,9 +672,16 @@ body { background: var(--night); }
   .tl-year-hud { right: 1rem; padding: 0.4rem 0.7rem; }
   #tl-year-hud-num { font-size: 1.15rem; }
   .tl-chapter { padding: 6rem 1.25rem 7rem; }
-  .tl-chapter-head { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
+  .tl-chapter-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .tl-chapter-side {
+    position: static;
+    min-height: auto;
+    margin-bottom: 1rem;
+  }
   .tl-era-text { padding-top: 1.25rem; }
   .tl-aircraft-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .tl-aircraft-grid .tl-plane-card.feature .tl-plane-img { aspect-ratio: 16/9; }
+  .tl-aircraft-grid .tl-plane-card.feature .tl-plane-name { font-size: 1.25rem; }
   .tl-intro-stats { gap: 2rem; margin-bottom: 3rem; }
   .tl-intro { padding: calc(var(--header-h) + 1rem) 1.25rem 3rem; }
 }

@@ -75,23 +75,35 @@ document.addEventListener("DOMContentLoaded", async () => {
       .sort((a, b) => a.decade - b.decade);
   }
 
+  function splitWords(text) {
+    return text.split(/(\s+)/).map((part, i) => {
+      if (/^\s+$/.test(part)) return part;
+      return `<span class="tl-split-word" style="--i:${i}">${escapeHtml(part)}</span>`;
+    }).join('');
+  }
+
   function renderChapters(chapters) {
     const root = document.getElementById('tl-chapters');
     root.innerHTML = chapters.map(ch => {
       const era = ERAS[ch.decade] || { color: 'var(--hud-cyan)', label: '', title: '', desc: '' };
       const countries = new Set(ch.items.map(a => a.country_name_fr || a.country_name).filter(Boolean));
       const gens = new Set(ch.items.map(a => a.generation).filter(Boolean));
+      // Backdrop image: first aircraft with an image
+      const backdropPlane = ch.items.find(a => a.image_url) || ch.items[0];
+      const bgUrl = backdropPlane && backdropPlane.image_url ? backdropPlane.image_url : '';
+      const bgStyle = bgUrl ? `--era-bg:url('${escapeAttr(bgUrl)}');` : '';
       return `
-        <section class="tl-chapter" id="ch-${ch.decade}" data-decade="${ch.decade}" style="--era-color:${era.color}">
+        <section class="tl-chapter" id="ch-${ch.decade}" data-decade="${ch.decade}" style="--era-color:${era.color};${bgStyle}">
+          <div class="tl-chapter-backdrop" aria-hidden="true"></div>
           <div class="tl-chapter-inner">
-            <div class="tl-chapter-head">
+            <aside class="tl-chapter-side">
               <div class="tl-decade-block">
                 <span class="tl-decade-num">${ch.decade}</span>
                 <span class="tl-decade-suffix">s</span>
               </div>
               <div class="tl-era-text">
                 <span class="tl-era-label">${escapeHtml(era.label)}</span>
-                <h2 class="tl-era-title">${escapeHtml(era.title)}</h2>
+                <h2 class="tl-era-title tl-split">${splitWords(era.title)}</h2>
                 <p class="tl-era-desc">${escapeHtml(era.desc)}</p>
                 <div class="tl-era-meta">
                   <div>Appareils<strong>${ch.items.length}</strong></div>
@@ -99,9 +111,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                   <div>Générations<strong>${[...gens].sort().join(' · ') || '—'}</strong></div>
                 </div>
               </div>
-            </div>
-            <div class="tl-aircraft-grid">
-              ${ch.items.map(renderPlaneCard).join('')}
+            </aside>
+            <div class="tl-chapter-main">
+              <div class="tl-aircraft-grid">
+                ${ch.items.map((p, i) => renderPlaneCard(p, i === 0)).join('')}
+              </div>
             </div>
           </div>
         </section>
@@ -109,17 +123,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     }).join('');
   }
 
-  function renderPlaneCard(plane) {
+  function escapeAttr(s) {
+    return String(s || '').replace(/['"<>&]/g, c => ({
+      "'": '&#39;', '"': '&quot;', '<': '&lt;', '>': '&gt;', '&': '&amp;'
+    }[c]));
+  }
+
+  function renderPlaneCard(plane, isFeature) {
     const year = yearOf(plane) || '—';
     const gen = plane.generation ? `G${plane.generation}` : '';
     const country = plane.country_name || '';
     const img = plane.image_url || '';
     const speed = plane.max_speed ? `${plane.max_speed} km/h` : null;
     const range = plane.max_range ? `${plane.max_range} km` : null;
+    const featureClass = isFeature ? ' feature' : '';
     return `
-      <a class="tl-plane-card" href="/details?id=${encodeURIComponent(plane.id)}">
+      <a class="tl-plane-card${featureClass}" href="/details?id=${encodeURIComponent(plane.id)}">
         <div class="tl-plane-img">
-          ${img ? `<img src="${escapeHtml(img)}" alt="${escapeHtml(plane.name)}" loading="lazy">` : ''}
+          ${img ? `<img src="${escapeAttr(img)}" alt="${escapeAttr(plane.name)}" loading="lazy">` : ''}
           <span class="tl-plane-year">${year}</span>
           ${gen ? `<span class="tl-plane-gen">${gen}</span>` : ''}
         </div>
@@ -176,12 +197,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const decade = Number(section.dataset.decade);
         if (entry.isIntersecting) {
           section.classList.add('in-view');
-          // Update year HUD
+          // Update year HUD + body tint on "dominant" chapter
           if (entry.intersectionRatio > 0.2) {
             yearNum.textContent = decade + 's';
             const era = ERAS[decade];
             if (era && yearLbl) yearLbl.textContent = era.label || '';
-            // Minimap active state
+            if (era) {
+              document.body.style.setProperty('--tl-active-era', era.color);
+            }
             mmButtons.forEach(b => b.classList.toggle('active', b.dataset.target === `ch-${decade}`));
           }
         }
@@ -196,11 +219,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       const past = !entries[0].isIntersecting;
       yearHud.classList.toggle('visible', past);
       document.getElementById('tl-minimap').classList.toggle('visible', past);
+      // Clear tint while in hero
+      if (!past) document.body.style.removeProperty('--tl-active-era');
     }, { threshold: 0 }).observe(intro);
 
     // Stagger reveal aircraft cards
     const cardObs = new IntersectionObserver(entries => {
-      entries.forEach((entry, i) => {
+      entries.forEach(entry => {
         if (entry.isIntersecting) {
           const card = entry.target;
           const delay = (Array.from(card.parentElement.children).indexOf(card) % 6) * 80;
@@ -211,6 +236,71 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
     document.querySelectorAll('.tl-plane-card').forEach(c => cardObs.observe(c));
+
+    // Split-text reveal on era titles
+    const splitObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          splitObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('.tl-split').forEach(el => splitObs.observe(el));
+  }
+
+  /* =========================================================================
+     AMBIENT PARTICLE FIELD (canvas)
+     ========================================================================= */
+
+  function initParticles() {
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    const canvas = document.getElementById('tl-particles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let width = 0, height = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    const count = Math.min(80, Math.floor((width * height) / 22000));
+    const particles = Array.from({ length: count }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 1.3 + 0.3,
+      vx: (Math.random() - 0.5) * 0.12,
+      vy: (Math.random() - 0.5) * 0.08,
+      a: Math.random() * 0.35 + 0.15,
+    }));
+
+    function tick() {
+      ctx.clearRect(0, 0, width, height);
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -5) p.x = width + 5;
+        if (p.x > width + 5) p.x = -5;
+        if (p.y < -5) p.y = height + 5;
+        if (p.y > height + 5) p.y = -5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200, 169, 110, ${p.a})`;
+        ctx.fill();
+      }
+      requestAnimationFrame(tick);
+    }
+    tick();
   }
 
   /* =========================================================================
@@ -300,6 +390,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   /* =========================================================================
      INIT
      ========================================================================= */
+
+  document.body.classList.add('tl-has-cinematic');
+  initParticles();
 
   try {
     const aircraft = await loadAllAircraft();
