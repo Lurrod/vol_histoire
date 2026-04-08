@@ -74,16 +74,10 @@ jobs:
 
   # ═══════════════════════════════════════════════════════════
   # E2E — Tests Playwright
-  # NON BLOQUANT : continue-on-error + retiré du gate deploy.
-  # ~18 tests authentifiés échouent en CI headless (cookie/auth race
-  # entre page.request.post et page.goto que je n'ai pas pu résoudre).
-  # Tous les tests passent en local manuel. À reprendre dans une session
-  # dédiée avec debug interactif (npm run test:headed dans e2e/).
   # ═══════════════════════════════════════════════════════════
   e2e:
     runs-on: ubuntu-latest
     needs: test
-    continue-on-error: true
 
     services:
       postgres:
@@ -111,7 +105,9 @@ jobs:
       REFRESH_SECRET: ci-test-refresh-secret-key-minimum-32-characters-long
       NODE_ENV: test
       PORT: 3000
-      ALLOWED_ORIGINS: http://localhost:8080
+      # En CI, Playwright charge le frontend depuis localhost:3000 (express.static).
+      # Le formulaire login pose un Origin header → CORS doit l'accepter sinon 403.
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8080
 
     steps:
       - uses: actions/checkout@v4
