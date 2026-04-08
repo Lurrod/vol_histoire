@@ -9,30 +9,32 @@ test.describe('Page Détails', () => {
   });
 
   test('le nom de l\'avion est affiché', async ({ page }) => {
-    const title = page.locator('h1').first();
+    const title = page.locator('#aircraft-name');
     await expect(title).toBeVisible({ timeout: 8000 });
-    const text = await title.textContent();
-    expect(text.trim().length).toBeGreaterThan(0);
+    // Après rendu, le titre n'est plus vide et ne contient plus de skeleton
+    await expect(async () => {
+      const text = (await title.textContent() || '').trim();
+      expect(text.length).toBeGreaterThan(1);
+      expect(text).not.toBe('Chargement...');
+    }).toPass({ timeout: 8000 });
   });
 
-  // FIXME: les images ont loading="lazy" → naturalWidth=0 hors viewport
-  test.fixme('l\'image de l\'avion est chargée', async ({ page }) => {
-    const img = page.locator('img').first();
+  test('l\'image hero est chargée', async ({ page }) => {
+    const img = page.locator('#hero-image');
     await expect(img).toBeVisible({ timeout: 8000 });
-    const naturalWidth = await img.evaluate(el => el.naturalWidth);
-    expect(naturalWidth).toBeGreaterThan(0);
+    // Scroll pour garantir que l'image lazy est bien rentrée dans le viewport
+    await img.scrollIntoViewIfNeeded();
+    // Attendre que naturalWidth > 0 (image décodée)
+    await expect(async () => {
+      const naturalWidth = await img.evaluate(el => el.naturalWidth);
+      expect(naturalWidth).toBeGreaterThan(0);
+    }).toPass({ timeout: 10000 });
   });
 
-  // FIXME: la page details affiche un état d'erreur sans texte 404 explicite
-  test.fixme('un ID inexistant affiche un message d\'erreur ou 404', async ({ page }) => {
+  test('un ID inexistant redirige vers 404', async ({ page }) => {
+    // details.js fait window.location.href = '/404' sur erreur de chargement
     await page.goto('/details?id=99999');
-    await page.waitForLoadState('networkidle');
-    const bodyText = await page.textContent('body');
-    const hasNotFound =
-      bodyText.includes('404') ||
-      bodyText.includes('non trouvé') ||
-      bodyText.toLowerCase().includes('not found') ||
-      bodyText.includes('existe pas');
-    expect(hasNotFound).toBe(true);
+    await page.waitForURL('**/404', { timeout: 8000 });
+    await expect(page).toHaveURL(/\/404/);
   });
 });

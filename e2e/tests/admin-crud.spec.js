@@ -23,47 +23,45 @@ test.describe('Admin — CRUD Avions', () => {
     await page.goto('/hangar');
     await page.waitForSelector('.aircraft-card', { timeout: 10000 });
 
-    // Compter les cartes avant
-    const initialCount = await page.locator('.aircraft-card').count();
-
     // Ouvrir la modale
     await page.click('#add-airplane-btn');
     const modal = page.locator('#aircraft-modal');
     await expect(modal).toBeVisible({ timeout: 3000 });
 
-    // Remplir les champs obligatoires
+    // Remplir TOUS les champs obligatoires (la validation HTML5 bloque sinon)
     await page.fill('#aircraft-name', 'E2E Test Aircraft');
     await page.fill('#aircraft-little-description', 'Avion créé par les tests E2E');
     await page.fill('#aircraft-image-url', 'https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg');
 
-    // Sélectionner un pays (si dropdown dispo)
-    const countrySelect = page.locator('#aircraft-country');
-    if (await countrySelect.isVisible()) {
-      const options = await countrySelect.locator('option').allTextContents();
-      if (options.length > 1) {
-        await countrySelect.selectOption({ index: 1 });
-      }
+    // Attendre que les dropdowns soient peuplés par l'API référentiels
+    await page.waitForFunction(
+      () => document.querySelectorAll('#aircraft-country option').length > 1
+    );
+
+    // Sélectionner la première option non vide pour chaque select obligatoire
+    for (const id of ['#aircraft-country', '#aircraft-manufacturer', '#aircraft-generation', '#aircraft-type']) {
+      const sel = page.locator(id);
+      const optCount = await sel.locator('option').count();
+      if (optCount > 1) await sel.selectOption({ index: 1 });
     }
 
     // Soumettre
     await page.click('#aircraft-form button[type="submit"]');
 
-    // Attendre le toast de succès ou le rechargement
-    await page.waitForTimeout(2000);
+    // Attendre la fermeture de la modale (signal de succès)
+    await expect(modal).toBeHidden({ timeout: 5000 });
 
-    // Vérifier qu'un avion a été ajouté (via API)
-    const response = await page.request.get('http://localhost:3000/api/airplanes');
+    // Vérifier qu'un avion a été ajouté (via API, limite 100 = tous les avions)
+    const response = await page.request.get('http://localhost:3000/api/airplanes?limit=100');
     const data = await response.json();
     const created = data.data?.find(a => a.name === 'E2E Test Aircraft');
-    if (created) {
-      createdAircraftId = created.id;
-      expect(created.name).toBe('E2E Test Aircraft');
-    }
+    expect(created).toBeDefined();
+    createdAircraftId = created.id;
   });
 
   test('la page détails affiche l\'avion créé', async ({ page }) => {
     // Chercher l'avion par son nom via l'API
-    const response = await page.request.get('http://localhost:3000/api/airplanes');
+    const response = await page.request.get('http://localhost:3000/api/airplanes?limit=100');
     const data = await response.json();
     const aircraft = data.data?.find(a => a.name === 'E2E Test Aircraft');
 
@@ -78,7 +76,7 @@ test.describe('Admin — CRUD Avions', () => {
 
   test('supprimer l\'avion créé via l\'API', async ({ page }) => {
     // Chercher l'avion
-    const listResponse = await page.request.get('http://localhost:3000/api/airplanes');
+    const listResponse = await page.request.get('http://localhost:3000/api/airplanes?limit=100');
     const data = await listResponse.json();
     const aircraft = data.data?.find(a => a.name === 'E2E Test Aircraft');
 
