@@ -6,6 +6,7 @@ const { isValidEmail, isValidName, isValidPassword } = require('../validators');
 const logger = require('../logger');
 const { withTransaction } = require('../db');
 const asyncHandler = require('../middleware/asyncHandler');
+const verifyHcaptcha = require('../middleware/hcaptcha');
 const {
   generateAccessToken,
   generateRefreshToken,
@@ -24,7 +25,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
   // -----------------------------------------------------------------------------
   // Auth: inscription & connexion
   // -----------------------------------------------------------------------------
-  router.post('/register', registerLimiter, asyncHandler(async (req, res) => {
+  router.post('/register', registerLimiter, verifyHcaptcha, asyncHandler(async (req, res) => {
     const { name, password } = req.body;
     const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : req.body.email;
 
@@ -269,7 +270,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
   // POST /api/auth/forgot-password — Demander une réinitialisation
   // try/catch manuel : même pattern que resend-verification
-  router.post('/auth/forgot-password', emailLimiter, async (req, res) => {
+  router.post('/auth/forgot-password', emailLimiter, verifyHcaptcha, async (req, res) => {
     const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : null;
     if (!email || !isValidEmail(email)) {
       return res.status(400).json({ message: 'Email invalide' });

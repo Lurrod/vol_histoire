@@ -16,6 +16,7 @@ const mailer = require('./mailer');
 const { langMiddleware } = require('./i18n');
 const observability = require('./middleware/observability');
 const createMonitoringRouter = require('./routes/monitoring');
+const { buildHtmlCache } = require('./middleware/serveHtml');
 
 const app = express();
 
@@ -47,11 +48,12 @@ app.use((req, res, next) => {
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
-    "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://browser.sentry-cdn.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
+    "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://browser.sentry-cdn.com https://hcaptcha.com https://*.hcaptcha.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com",
     "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
     "img-src 'self' https://i.postimg.cc https://flagcdn.com https://www.googletagmanager.com https://picsum.photos https://fastly.picsum.photos data:",
-    "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://*.ingest.sentry.io https://*.sentry.io",
+    "connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://*.ingest.sentry.io https://*.sentry.io https://hcaptcha.com https://*.hcaptcha.com",
+    "frame-src https://hcaptcha.com https://*.hcaptcha.com",
     "media-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
@@ -337,6 +339,29 @@ app.use('/js', express.static(path.join(__dirname, '../frontend/js'), STATIC_OPT
 const createDetailsSsrRouter = require('./routes/details-ssr');
 app.use('/', createDetailsSsrRouter(() => pool));
 
+// Cache HTML : au boot, on lit tous les *.html et on injecte ?v=<version>
+// sur les références asset (css/js/fonts) pour bust le cache navigateur à
+// chaque déploiement. Coût runtime = 0 (lecture une fois, sert depuis Map).
+const pkgVersion = (() => {
+  try { return require('./package.json').version || 'dev'; }
+  catch { return 'dev'; }
+})();
+const frontendRoot = path.join(__dirname, '../frontend');
+const htmlCache = buildHtmlCache(frontendRoot, pkgVersion);
+logger.info && logger.info('HTML cache initialisé', { count: htmlCache.count, version: pkgVersion });
+
+function sendCachedHtml(res, filePath) {
+  const cached = htmlCache.get(filePath);
+  if (cached !== null) {
+    res.set('Content-Type', 'text/html; charset=utf-8');
+    return res.send(cached);
+  }
+  // Fallback : fichier ajouté après le boot, on le sert via sendFile
+  return res.sendFile(filePath);
+}
+app.htmlCache = htmlCache;          // exposé pour le SSR router /details
+app.sendCachedHtml = sendCachedHtml;
+
 // Routes HTML sans extension (utile en dev local — en prod c'est Apache/.htaccess qui gère)
 const htmlPages = [
   'verify-email', 'forgot-password', 'reset-password', 'check-email',
@@ -346,16 +371,27 @@ const htmlPages = [
 ];
 htmlPages.forEach(page => {
   app.get(`/${page}`, (req, res) => {
-    res.sendFile(path.join(__dirname, `../frontend/${page}.html`));
+    sendCachedHtml(res, path.join(frontendRoot, `${page}.html`));
   });
 });
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  sendCachedHtml(res, path.join(frontendRoot, 'index.html'));
 });
 
 // -----------------------------------------------------------------------------
 // Routes
 // -----------------------------------------------------------------------------
+
+// Public config : sitekey hCaptcha + version. Le frontend lit ce endpoint
+// au boot pour savoir s'il doit afficher le widget captcha sur les forms.
+app.get('/api/config', (req, res) => {
+  res.set('Cache-Control', 'public, max-age=300');
+  res.json({
+    version: pkgVersion,
+    hcaptchaSitekey: process.env.HCAPTCHA_SITEKEY || null,
+  });
+});
+
 const createAuthRouter = require('./routes/auth');
 app.use('/api', createAuthRouter(() => pool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, resetPasswordLimiter, mailer }));
 
@@ -434,20 +470,21 @@ app.get('*', async (req, res, next) => {
 
   // Vérification rapide via le Set pré-construit
   if (validPages.has(req.path)) {
-    return res.sendFile(path.join(frontendDir, req.path + '.html'));
+    return sendCachedHtml(res, path.join(frontendDir, req.path + '.html'));
   }
 
   // Fallback async pour les pages ajoutées dynamiquement après le démarrage
   const htmlFile = path.join(frontendDir, req.path + '.html');
   try {
     await fsPromises.access(htmlFile, fs.constants.F_OK);
-    return res.sendFile(htmlFile);
+    return sendCachedHtml(res, htmlFile);
   } catch {
     // 404 personnalisé
     const notFoundFile = path.join(frontendDir, '404.html');
     try {
       await fsPromises.access(notFoundFile, fs.constants.F_OK);
-      return res.status(404).sendFile(notFoundFile);
+      res.status(404);
+      return sendCachedHtml(res, notFoundFile);
     } catch {
       res.status(404).send('Page non trouvée');
     }

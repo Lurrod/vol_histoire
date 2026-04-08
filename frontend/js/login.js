@@ -314,10 +314,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       setButtonLoading(submitBtn, true);
 
+      const captchaToken = window.getHcaptchaToken ? await window.getHcaptchaToken('register') : null;
+      const payload = { name, email, password };
+      if (captchaToken) payload['h-captcha-response'] = captchaToken;
+
       const response = await auth.fetchWithTimeout("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify(payload)
       });
 
       let data = {};
