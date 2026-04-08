@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (typeOptions) {
       typeOptions.innerHTML = state.types.map(type => `
-        <div class="filter-option" data-value="${escapeHtml(type.name)}">
+        <div class="filter-option" data-value="${escapeHtml(type.name_fr || type.name)}">
           ${escapeHtml(type.name)}
         </div>
       `).join('');
@@ -224,9 +224,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       filtered = filtered.filter(aircraft => aircraft.generation === parseInt(state.filters.generation));
     }
 
-    // Apply type filter
+    // Apply type filter — match against canonical FR name (stable across languages)
     if (state.filters.type) {
-      filtered = filtered.filter(aircraft => aircraft.type_name === state.filters.type);
+      filtered = filtered.filter(aircraft =>
+        (aircraft.type_name_fr || aircraft.type_name) === state.filters.type
+      );
     }
 
     // Apply sorting
@@ -278,7 +280,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       filters.push({ type: 'generation', label: `${state.filters.generation}e Génération` });
     }
     if (state.filters.type) {
-      filters.push({ type: 'type', label: state.filters.type });
+      // Résoudre le nom traduit pour l'affichage (state.filters.type est la clé FR canonique)
+      const t = state.types.find(x => (x.name_fr || x.name) === state.filters.type);
+      filters.push({ type: 'type', label: t ? t.name : state.filters.type });
     }
 
     if (filters.length === 0) {
@@ -992,30 +996,149 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderCompareBar();
     });
 
+    function removeFromCompare(id) {
+      state.compareIds = state.compareIds.filter(x => x !== id);
+      localStorage.setItem('vh_compare_ids', JSON.stringify(state.compareIds));
+      container.querySelectorAll('[data-compare-id="' + id + '"]').forEach(cb => { cb.checked = false; });
+      renderCompareBar();
+      if (state.compareIds.length === 0) {
+        document.getElementById('compare-modal').close();
+      } else {
+        document.getElementById('compare-view').click();
+      }
+    }
+    window.__vhRemoveCompare = removeFromCompare;
+
+    function fmt(v, suffix) {
+      if (v == null || v === '') return '<span class="cmp-dash">—</span>';
+      return escapeHtml(String(v)) + (suffix ? '<span class="cmp-unit"> ' + suffix + '</span>' : '');
+    }
+
+    function findMax(items, key) {
+      let max = -Infinity;
+      for (const a of items) {
+        const v = Number(a[key]);
+        if (!isNaN(v) && v > max) max = v;
+      }
+      return max > -Infinity ? max : null;
+    }
+
+    function bestClass(items, item, key, higherIsBetter) {
+      const v = Number(item[key]);
+      if (isNaN(v)) return '';
+      const max = findMax(items, key);
+      if (max == null) return '';
+      return (higherIsBetter && v === max) ? ' cmp-best' : '';
+    }
+
+    function yearFrom(dateStr) {
+      if (!dateStr) return null;
+      const y = new Date(dateStr).getFullYear();
+      return isNaN(y) ? null : y;
+    }
+
     document.getElementById('compare-view').addEventListener('click', async () => {
       if (state.compareIds.length === 0) return;
       try {
         const items = await Promise.all(
           state.compareIds.map(id => fetch('/api/airplanes/' + id).then(r => r.json()))
         );
-        const fields = [
-          ['Image',         a => a.image_url ? '<img src="' + escapeHtml(a.image_url) + '" alt="" style="width:100%;max-height:120px;object-fit:cover;border-radius:4px">' : '-'],
-          ['Nom',           a => escapeHtml(a.name || '-')],
-          ['Pays',          a => escapeHtml(a.country_name || '-')],
-          ['Constructeur',  a => escapeHtml(a.manufacturer_name || '-')],
-          ['Génération',    a => a.generation ? a.generation + 'e' : '-'],
-          ['Type',          a => escapeHtml(a.type_name || '-')],
-          ['Vitesse max',   a => a.max_speed ? a.max_speed + ' km/h' : '-'],
-          ['Portée max',    a => a.max_range ? a.max_range + ' km' : '-'],
-          ['Poids',         a => a.weight ? a.weight + ' kg' : '-'],
-          ['Statut',        a => escapeHtml(a.status || '-')],
+
+        // Column headers (image + name + remove button)
+        const headers = items.map(a => `
+          <div class="cmp-col-head">
+            <button class="cmp-remove" data-remove="${a.id}" aria-label="Retirer">
+              <i class="fas fa-times"></i>
+            </button>
+            <div class="cmp-img-wrap">
+              ${a.image_url
+                ? '<img src="' + escapeHtml(a.image_url) + '" alt="' + escapeHtml(a.name || '') + '" loading="lazy">'
+                : '<div class="cmp-img-placeholder"><i class="fas fa-plane"></i></div>'}
+            </div>
+            <div class="cmp-col-title">
+              <h3>${escapeHtml(a.name || '—')}</h3>
+              ${a.complete_name ? '<p>' + escapeHtml(a.complete_name) + '</p>' : ''}
+            </div>
+            <div class="cmp-col-meta">
+              ${a.country_name ? '<span class="cmp-chip"><i class="fas fa-globe"></i> ' + escapeHtml(a.country_name) + '</span>' : ''}
+              ${a.generation ? '<span class="cmp-chip cmp-chip-accent">Gen ' + escapeHtml(String(a.generation)) + '</span>' : ''}
+            </div>
+          </div>
+        `).join('');
+
+        // Grouped rows
+        const groups = [
+          {
+            title: 'Classification',
+            icon: 'fa-tags',
+            rows: [
+              { label: 'Constructeur', fn: a => fmt(a.manufacturer_name) },
+              { label: 'Type',         fn: a => fmt(a.type_name) },
+              { label: 'Statut',       fn: a => fmt(a.status) },
+            ],
+          },
+          {
+            title: 'Chronologie',
+            icon: 'fa-calendar',
+            rows: [
+              { label: 'Conception',     fn: a => fmt(yearFrom(a.date_concept)) },
+              { label: 'Premier vol',    fn: a => fmt(yearFrom(a.date_first_fly)) },
+              { label: 'Mise en service', fn: a => fmt(yearFrom(a.date_operationel || a.date_operational)) },
+            ],
+          },
+          {
+            title: 'Performances',
+            icon: 'fa-gauge-high',
+            rows: [
+              { label: 'Vitesse max',  key: 'max_speed', unit: 'km/h', better: true },
+              { label: 'Portée max',   key: 'max_range', unit: 'km',   better: true },
+              { label: 'Poids',        key: 'weight',    unit: 'kg',   better: false },
+            ],
+          },
         ];
-        const rows = fields.map(f =>
-          '<tr><th>' + f[0] + '</th>' + items.map(a => '<td>' + f[1](a) + '</td>').join('') + '</tr>'
-        ).join('');
-        document.getElementById('compare-modal-body').innerHTML =
-          '<h2 style="margin-bottom:16px">Comparaison</h2>' +
-          '<table class="compare-table"><tbody>' + rows + '</tbody></table>';
+
+        const groupsHtml = groups.map(g => `
+          <div class="cmp-group">
+            <div class="cmp-group-header">
+              <i class="fas ${g.icon}"></i>
+              <span>${g.title}</span>
+            </div>
+            ${g.rows.map(r => {
+              const cells = items.map(a => {
+                if (r.fn) return '<div class="cmp-cell">' + r.fn(a) + '</div>';
+                const cls = bestClass(items, a, r.key, r.better);
+                return '<div class="cmp-cell' + cls + '">' + fmt(a[r.key], r.unit) + '</div>';
+              }).join('');
+              return `<div class="cmp-row" style="--cmp-cols:${items.length}">
+                <div class="cmp-row-label">${r.label}</div>
+                ${cells}
+              </div>`;
+            }).join('')}
+          </div>
+        `).join('');
+
+        document.getElementById('compare-modal-body').innerHTML = `
+          <div class="cmp-head">
+            <div>
+              <span class="cmp-eyebrow">Analyse comparée</span>
+              <h2>Comparaison de ${items.length} appareil${items.length > 1 ? 's' : ''}</h2>
+            </div>
+          </div>
+          <div class="cmp-cols" style="--cmp-cols:${items.length}">
+            ${headers}
+          </div>
+          <div class="cmp-body">
+            ${groupsHtml}
+          </div>
+        `;
+
+        // Wire remove buttons
+        document.querySelectorAll('#compare-modal-body .cmp-remove').forEach(btn => {
+          btn.addEventListener('click', () => {
+            removeFromCompare(Number(btn.dataset.remove));
+          });
+        });
+
         document.getElementById('compare-modal').showModal();
       } catch (err) { /* ignore */ }
     });
@@ -1055,7 +1178,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       let items = [];
       if (currentTab === 'country')    items = state.countries.map(c => ({ k: c.name, l: c.name }));
       if (currentTab === 'generation') items = state.generations.map(g => ({ k: g, l: g + 'e Génération' }));
-      if (currentTab === 'type')       items = state.types.map(t => ({ k: t.name, l: t.name }));
+      if (currentTab === 'type')       items = state.types.map(t => ({ k: t.name_fr || t.name, l: t.name }));
       body.innerHTML = items.map(it => {
         const active = String(state.filters[currentTab]) === String(it.k);
         return '<button class="fs-item' + (active ? ' active' : '') +
