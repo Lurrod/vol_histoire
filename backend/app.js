@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const compression = require('compression');
 const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -21,6 +22,18 @@ const app = express();
 // Nécessaire derrière un reverse proxy (Apache, Nginx) pour que
 // req.ip retourne l'IP réelle du client (rate limiting, logs).
 app.set('trust proxy', 1);
+
+// Compression gzip/brotli sur toutes les réponses text/html, css, js, json, svg.
+// Niveau 6 = compromis taille/CPU. Skip si client demande déjà compressed
+// (ex: image/* sont déjà compressées). Gain ~70% sur les payloads texte.
+app.use(compression({
+  level: 6,
+  threshold: 1024, // ne compresse que > 1 KB (en dessous c'est du gaspillage CPU)
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) return false;
+    return compression.filter(req, res);
+  },
+}));
 
 // -----------------------------------------------------------------------------
 // Sécurité : Headers HTTP
@@ -299,9 +312,25 @@ app.use('/api', createMonitoringRouter(() => pool));
 // -----------------------------------------------------------------------------
 // Fichiers statiques
 // -----------------------------------------------------------------------------
-app.use(express.static(path.join(__dirname, '../frontend/')));
-app.use('/css', express.static(path.join(__dirname, '../frontend/css')));
-app.use('/js', express.static(path.join(__dirname, '../frontend/js')));
+// Cache headers : 30 jours sur fonts (immutable), 1 jour sur CSS/JS/images,
+// pas de cache sur HTML (rendu dynamique potentiel + invalidation rapide).
+const STATIC_OPTS = {
+  setHeaders: (res, filePath) => {
+    const ext = path.extname(filePath).toLowerCase();
+    if (ext === '.html') {
+      res.setHeader('Cache-Control', 'no-cache');
+    } else if (ext === '.woff2' || ext === '.woff') {
+      // Fonts : long cache + immutable (le contenu ne change jamais)
+      res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
+    } else if (['.css', '.js', '.svg', '.png', '.jpg', '.jpeg', '.webp', '.avif', '.ico'].includes(ext)) {
+      // Statiques fingerprintables : 1 jour navigateur, 7 jours CDN
+      res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=604800');
+    }
+  },
+};
+app.use(express.static(path.join(__dirname, '../frontend/'), STATIC_OPTS));
+app.use('/css', express.static(path.join(__dirname, '../frontend/css'), STATIC_OPTS));
+app.use('/js', express.static(path.join(__dirname, '../frontend/js'), STATIC_OPTS));
 
 // SSR /details/:slug et /details?id=X — injecte les meta tags dynamiques
 // AVANT la liste statique htmlPages (sinon /details serait servi en HTML brut).
