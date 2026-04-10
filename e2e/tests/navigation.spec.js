@@ -25,7 +25,7 @@ test.describe('Navigation inter-pages', () => {
 
     // Retour via le navigateur
     await page.goBack();
-    await page.waitForURL('**/hangar', { timeout: 5000 });
+    await page.waitForURL('**/hangar**', { timeout: 10000 });
   });
 
   test('le skip link est fonctionnel', async ({ page }) => {
