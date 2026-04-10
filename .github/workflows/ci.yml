@@ -207,7 +207,7 @@ jobs:
   # CD — Déploiement sur Kimsufi (uniquement push sur main)
   # ═══════════════════════════════════════════════════════════
   deploy:
-    needs: [test, load]
+    needs: [test, e2e, load]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 

@@ -1,3 +1,3 @@
 /* Auto-généré au boot du serveur — ne pas éditer */
-window.APP_VERSION = "3.4.0";
-window.APP_BUILD   = "2026-04-10T09:29:46.883Z";
+window.APP_VERSION = "3.4.1";
+window.APP_BUILD   = "2026-04-10T14:30:00.000Z";
