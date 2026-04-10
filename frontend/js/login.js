@@ -192,9 +192,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         this.innerHTML = `<i class="fas fa-check" style="margin-right:0.3rem"></i>${escapeHtml(i18n.t('login.resent'))}`;
         this.style.color = '#34d964';
         this.style.borderColor = 'rgba(52,217,100,0.3)';
+        showToast(i18n.t('login.resent'), 'success');
       } catch {
         this.disabled = false;
         this.innerHTML = `<i class="fas fa-redo" style="margin-right:0.3rem"></i>${escapeHtml(i18n.t('login.resend_email'))}`;
+        showToast(i18n.t('login.server_error'), 'error');
       }
     });
   }
@@ -317,6 +319,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       try { data = await response.json(); } catch { /* réponse non-JSON */ }
 
       if (response.ok) {
+        showToast(i18n.t('login.register_success'), 'success');
         window.location.href = '/check-email?email=' + encodeURIComponent(email);
       } else if (response.status === 429) {
         showToast(data.message || i18n.t('login.too_many_attempts'), 'error');

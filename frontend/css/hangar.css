@@ -25,7 +25,7 @@
 
 /* MODERN HERO LAYOUT */
 .page-hangar .page-hero-inner { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: flex-end; gap: 4rem; }
-.page-hangar .hero-text { flex: 1; max-width: 600px; }
+.page-hangar .hero-text { flex: 1; max-width: 48em; }
 .page-hangar .hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.28); display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
 .page-hangar .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
 .page-hangar .hero-text h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 700; letter-spacing: -2px; line-height: 1.0; color: var(--white); margin-bottom: 2rem; }
@@ -176,7 +176,7 @@
 .page-hangar .modal { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 2rem; }
 .page-hangar .modal.show { display: flex; }
 .page-hangar .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); }
-.page-hangar .modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); max-width: 900px; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn 0.3s ease; }
+.page-hangar .modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); max-width: 64em; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn 0.3s ease; }
 @keyframes modalSlideIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 .page-hangar .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.75rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
 .page-hangar .modal-header h2 { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 0.75rem; }
@@ -222,7 +222,7 @@
 /* ======================================================================
    RESPONSIVE
    ====================================================================== */
-@media (max-width: 992px) {
+@media (max-width: 64em) {
   .page-hangar .hangar-toolbar { flex-direction: column; align-items: stretch; }
   .page-hangar .search-box { max-width: 100%; }
   .page-hangar .toolbar-right { flex-wrap: wrap; }
@@ -233,13 +233,15 @@
   .page-hangar .sort-select { min-height: 44px; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .page-hangar .container { padding: 0 1.5rem; }
   .page-hangar .page-hero { padding: 5rem 0 4rem; }
-  .page-hangar .page-hero-inner { flex-direction: column; gap: 2.5rem; align-items: flex-start; }
+  .page-hangar .page-hero-inner { flex-direction: column; gap: 2.5rem; align-items: center; text-align: center; }
+  .page-hangar .hero-eyebrow { justify-content: center; }
+  .page-hangar .hero-text > p { margin-inline: auto; }
   .page-hangar .hero-text h1 { font-size: clamp(2.5rem, 8vw, 4rem); }
-  .page-hangar .hero-data { flex-direction: row; padding-left: 0; border-left: none; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 2rem; width: 100%; min-width: 0; }
-  .page-hangar .data-row { flex-direction: column; gap: 0.2rem; border-bottom: none; padding: 0 1.5rem; border-right: 1px solid rgba(255,255,255,0.06); justify-content: flex-start; align-items: flex-start; }
+  .page-hangar .hero-data { flex-direction: row; justify-content: center; padding-left: 0; border-left: none; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 2rem; width: 100%; min-width: 0; }
+  .page-hangar .data-row { flex-direction: column; gap: 0.2rem; border-bottom: none; padding: 0 1.5rem; border-right: 1px solid rgba(255,255,255,0.06); justify-content: center; align-items: center; }
   .page-hangar .data-row:first-child { padding-left: 0; }
   .page-hangar .data-row:last-child { border-right: none; }
   .page-hangar .data-number { font-size: 1.75rem; }
@@ -254,12 +256,15 @@
   .page-hangar .pagination button { padding: 0.65rem 1rem; font-size: 0.9rem; min-height: 44px; }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 30em) {
+  .page-hangar .container { padding: 0 0.875rem; }
   .page-hangar .page-hero { padding: 4rem 0 3rem; }
   .page-hangar .hero-text h1 { font-size: clamp(1.75rem, 10vw, 2.5rem); }
-  .page-hangar .aircraft-grid { grid-template-columns: 1fr; }
+  .page-hangar .aircraft-grid { grid-template-columns: 1fr; gap: 1rem; }
   .page-hangar .filter-btn span { display: none; }
   .page-hangar .aircraft-image { height: 180px; }
+  .page-hangar .search-box input { font-size: 0.85rem; padding: 0.7rem 0.75rem 0.7rem 2.5rem; }
+  .page-hangar .hangar-toolbar { gap: 0.75rem; }
   .page-hangar .aircraft-content { padding: 1rem; }
   .page-hangar .pagination { margin: 2rem 0; flex-wrap: wrap; }
   .page-hangar .pagination button { flex: 1; min-width: 100px; }
@@ -361,7 +366,7 @@
 .page-hangar .aircraft-list .aircraft-card .aircraft-content { padding: 0; }
 .page-hangar .aircraft-list .aircraft-card .aircraft-description { display: none; }
 .page-hangar .aircraft-list .aircraft-card h3 { margin-bottom: 0.25rem; }
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .page-hangar .aircraft-list .aircraft-card { grid-template-columns: 80px 1fr; }
   .page-hangar .aircraft-list .aircraft-card .aircraft-image { width: 80px; height: 60px; }
   .page-hangar .aircraft-list .aircraft-card .aircraft-specs { display: none; }
@@ -670,7 +675,7 @@
 .page-hangar .cmp-dash { color: var(--text-faint); }
 
 /* Mobile compare */
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .page-hangar .compare-modal { width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
   .page-hangar #compare-modal-body { padding: 1.25rem 1rem; }
   .page-hangar .cmp-head h2 { font-size: 1.3rem; }
@@ -734,7 +739,7 @@
 .page-hangar .filter-sheet-footer { padding: 1rem; border-top: 1px solid var(--border-subtle); }
 .page-hangar .filter-sheet-footer .btn { width: 100%; }
 
-@media (min-width: 768px) {
+@media (min-width: 48em) {
   .page-hangar .filter-sheet { display: none !important; }
 }
 

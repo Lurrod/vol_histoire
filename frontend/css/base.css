@@ -109,19 +109,19 @@
   /* ============================================================
      RESPONSIVE CONTAINER
      ============================================================ */
-  @media (max-width: 63.99em) {    /* < 1024px */
+  @media (max-width: 64em) {    /* < 1024px */
     .container { padding-inline: var(--sp-8); }
   }
 
-  @media (max-width: 47.99em) {    /* < 768px */
+  @media (max-width: 48em) {    /* < 768px */
     .container { padding-inline: var(--sp-6); }
   }
 
-  @media (max-width: 39.99em) {    /* < 640px */
+  @media (max-width: 48em) {    /* < 640px */
     .container { padding-inline: var(--sp-4); }
   }
 
-  @media (max-width: 29.99em) {    /* < 480px */
+  @media (max-width: 30em) {    /* < 480px */
     .container { padding-inline: var(--sp-3); }
   }
 }

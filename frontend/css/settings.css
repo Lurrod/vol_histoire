@@ -14,7 +14,7 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; }
 .page-settings .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
 .page-settings .hero-text h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; letter-spacing: -1.5px; line-height: 1.05; color: var(--white); margin-bottom: 1.5rem; }
 .page-settings .hero-muted { display: block; color: rgba(255,255,255,0.22); font-weight: 300; letter-spacing: -1px; }
-.page-settings .hero-text p { font-size: 1rem; color: rgba(255,255,255,0.38); line-height: 1.85; max-width: 480px; margin-inline: auto; }
+.page-settings .hero-text p { font-size: 1rem; color: rgba(255,255,255,0.38); line-height: 1.85; max-width: 30em; margin-inline: auto; }
 
 /* SETTINGS LAYOUT */
 .page-settings .settings-page { flex: 1; display: flex; flex-direction: column; }
@@ -226,17 +226,15 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; }
 /* ======================================================================
    RESPONSIVE
    ====================================================================== */
-@media (min-width: 1440px) { .page-settings .container { max-width: 1400px; } }
+@media (min-width: 90em) { .page-settings .container { max-width: 75em; } }
 
-@media (max-width: 1024px) {
+/* ── laptop (≤ 64em) ──────────────────────────────────────────────── */
+@media (max-width: 64em) {
+  .page-settings .container { padding: 0 2rem; }
   .page-settings .settings-grid { grid-template-columns: 1fr; }
   .page-settings .settings-sidebar { position: static; }
   .page-settings .sidebar-nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
   .page-settings .hero-text h1 { font-size: clamp(2rem, 4vw, 3rem); }
-}
-
-@media (max-width: 992px) {
-  .page-settings .container { padding: 0 2rem; }
   .page-settings .btn { min-height: 44px; }
   .page-settings .sidebar-link { min-height: 44px; }
   .page-settings .admin-stats { flex-direction: column; }
@@ -247,7 +245,8 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; }
   .page-settings .privacy-actions .btn { width: 100%; }
 }
 
-@media (max-width: 768px) {
+/* ── tablet (≤ 48em) ──────────────────────────────────────────────── */
+@media (max-width: 48em) {
   .page-settings .container { padding: 0 1.5rem; }
   .page-settings .page-hero { padding: 5rem 0 4rem; }
   .page-settings .hero-text h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
@@ -260,6 +259,8 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; }
   .page-settings .header-text p { font-size: 0.9rem; }
   .page-settings .form-grid { grid-template-columns: 1fr; }
   .page-settings .sidebar-nav { grid-template-columns: 1fr; }
+  .page-settings .sidebar-link { padding: 0.875rem; }
+  .page-settings .link-icon { width: 40px; height: 40px; }
   .page-settings .danger-content { flex-direction: column; }
   .page-settings .danger-icon { width: 48px; height: 48px; font-size: 1.3rem; }
   .page-settings .preference-header { padding: 1rem; }
@@ -268,15 +269,10 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; }
   .page-settings .privacy-info-box { padding: 1.5rem; }
   .page-settings .info-links { grid-template-columns: 1fr; }
   .page-settings .privacy-overview { padding: 1rem; }
-}
-
-@media (max-width: 640px) {
-  .page-settings .sidebar-link { padding: 0.875rem; }
-  .page-settings .link-icon { width: 40px; height: 40px; }
   .page-settings .stat-card { padding: 1rem; }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 30em) {
   .page-settings .page-hero { padding: 4rem 0 3rem; margin-top: 60px; }
   .page-settings .hero-text h1 { font-size: clamp(1.5rem, 5vw, 2rem); }
   .page-settings .hero-text p { font-size: 0.9rem; }
@@ -433,13 +429,13 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; }
 .page-settings .db-empty p { font-size: 0.9rem; color: rgba(255,255,255,0.35); margin: 0 0 1.5rem; }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .page-settings .db-kpis { grid-template-columns: repeat(2, 1fr); }
   .page-settings .db-charts { grid-template-columns: 1fr; }
   .page-settings .db-profile { flex-direction: column; text-align: center; }
   .page-settings .db-bar-label { min-width: 70px; }
 }
-@media (max-width: 480px) {
+@media (max-width: 30em) {
   .page-settings .db-kpis { grid-template-columns: repeat(2, 1fr); }
   .page-settings .db-kpi-val { font-size: 1.4rem; }
 }

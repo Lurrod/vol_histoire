@@ -8,7 +8,8 @@
     "logout": "Déconnexion",
     "login": "Connexion",
     "user_default": "Utilisateur",
-    "user_role": "Membre"
+    "user_role": "Membre",
+    "language": "Langue"
   },
   "cookie": {
     "title": "Nous utilisons des cookies",
@@ -516,6 +517,7 @@
     "invalid_email": "Veuillez entrer une adresse email valide.",
     "missing_password": "Veuillez entrer votre mot de passe.",
     "login_success": "Connexion réussie",
+    "register_success": "Compte créé ! Vérifiez votre email.",
     "too_many_attempts": "Trop de tentatives, réessayez dans quelques minutes.",
     "invalid_credentials": "Identifiants incorrects.",
     "server_error": "Impossible de se connecter au serveur.",

@@ -197,7 +197,7 @@
         });
 
         document.getElementById('compare-modal').showModal();
-      } catch (_) { /* ignore */ }
+      } catch (_) { showToast(i18n.t('common.loading_error'), 'error'); }
     });
 
     document.querySelector('#compare-modal .compare-modal-close').addEventListener('click', () => {

@@ -148,14 +148,16 @@
 /* ================================================================
    RESPONSIVE
    ================================================================ */
-@media (max-width: 992px) {
+@media (max-width: 64em) {
   .page-legal .legal-container { padding: 2rem; }
   .page-legal .legal-section h2 { font-size: 1.3rem; }
   .page-legal .purpose-grid, .page-legal .security-grid, .page-legal .rights-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 }
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .page-legal .page-hero { padding: 5rem 0 4rem; }
-  .page-legal .page-hero-inner { flex-direction: column; gap: 2.5rem; align-items: flex-start; }
+  .page-legal .page-hero-inner { flex-direction: column; gap: 2.5rem; align-items: center; text-align: center; }
+  .page-legal .hero-eyebrow { justify-content: center; }
+  .page-legal .hero-text > p { margin-inline: auto; }
   .page-legal .hero-text h1 { font-size: clamp(2.5rem, 8vw, 4rem); }
   .page-legal .legal-container { padding: 1.5rem; border-radius: 12px; }
   .page-legal .legal-content { padding: 2rem 0 3rem; }
@@ -164,9 +166,14 @@
   .page-legal .contact-methods { grid-template-columns: 1fr; }
   .page-legal .purpose-grid, .page-legal .security-grid, .page-legal .rights-grid, .page-legal .cookie-types, .page-legal .liability-grid { grid-template-columns: 1fr; }
 }
-@media (max-width: 480px) {
+@media (max-width: 30em) {
+  .page-legal .container { padding: 0 0.875rem; }
   .page-legal .page-hero { padding: 4rem 0 3rem; }
   .page-legal .hero-text h1 { font-size: clamp(1.75rem, 10vw, 2.5rem); margin-bottom: 0.75rem; }
+  .page-legal .legal-container { padding: 1rem; }
+  .page-legal .legal-content { padding: 1.5rem 0 2rem; }
+  .page-legal .legal-section { padding: 1.25rem 0; }
   .page-legal .legal-section h2 { font-size: 1.15rem; flex-direction: column; align-items: start; }
+  .page-legal .legal-section p, .page-legal .legal-section li { font-size: 0.85rem; }
   .page-legal .legal-footer { flex-direction: column; gap: 1rem; }
 }
