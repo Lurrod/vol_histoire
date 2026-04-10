@@ -151,7 +151,7 @@ body.page-timeline.tl-has-cinematic::before {
 }
 
 .page-timeline .tl-lede {
-  max-width: 640px;
+  max-width: 48em;
   margin: 0 auto 3rem;
   color: var(--text-secondary);
   font-size: clamp(1rem, 1.5vw, 1.15rem);
@@ -264,7 +264,7 @@ body.page-timeline.tl-has-cinematic::before {
 .page-timeline .tl-chapter.in-view::before { opacity: 0.20; }
 
 .page-timeline .tl-chapter-inner {
-  max-width: 1400px;
+  max-width: 75em;
   margin: 0 auto;
   position: relative;
   display: grid;
@@ -514,7 +514,7 @@ body.page-timeline.tl-has-cinematic::before {
   padding: 6rem 2rem;
   background: linear-gradient(180deg, transparent 0%, var(--night-mid) 100%);
 }
-.page-timeline .tl-outro-inner { text-align: center; max-width: 600px; }
+.page-timeline .tl-outro-inner { text-align: center; max-width: 48em; }
 .page-timeline .tl-outro h2 {
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 3.2rem);
@@ -666,7 +666,7 @@ body.page-timeline.tl-has-cinematic::before {
 /* ============================================================
    RESPONSIVE
    ============================================================ */
-@media (max-width: 900px) {
+@media (max-width: 64em) {
   .page-timeline .tl-year-hud { right: 1rem; padding: 0.4rem 0.7rem; }
   .page-timeline #tl-year-hud-num { font-size: 1.15rem; }
   .page-timeline .tl-chapter { padding: 6rem 1.25rem 7rem; }
@@ -684,12 +684,33 @@ body.page-timeline.tl-has-cinematic::before {
   .page-timeline .tl-intro { padding: calc(var(--header-h) + 1rem) 1.25rem 3rem; }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 48em) {
   .page-timeline .tl-minimap { display: none; }
   .page-timeline .tl-year-hud { display: none; }
   .page-timeline .tl-intro-stats { gap: 1.25rem; }
   .page-timeline .tl-stat-lbl { font-size: 0.62rem; }
   .page-timeline .tl-decade-num { font-size: clamp(4.5rem, 18vw, 6rem); }
+  .page-timeline .tl-chapter { padding: 4rem 1rem 5rem; }
+  .page-timeline .tl-intro { padding: calc(var(--header-h) + 0.75rem) 1rem 2rem; }
+  .page-timeline .tl-outro-inner { padding: 3rem 1rem; }
+  .page-timeline .tl-outro h2 { font-size: 1.5rem; }
+}
+
+/* ── phone (≤ 30em) ───────────────────────────────────────────────── */
+@media (max-width: 30em) {
+  .page-timeline .tl-chapter { padding: 3rem 0.75rem 4rem; }
+  .page-timeline .tl-chapter-inner { gap: 1.5rem; }
+  .page-timeline .tl-intro-stats { gap: 0.75rem; flex-direction: column; align-items: center; }
+  .page-timeline .tl-stat-num { font-size: 2rem; }
+  .page-timeline .tl-stat-lbl { font-size: 0.58rem; }
+  .page-timeline .tl-decade-num { font-size: clamp(3.5rem, 16vw, 5rem); }
+  .page-timeline .tl-era-text { font-size: 0.8rem; padding-top: 1rem; }
+  .page-timeline .tl-plane-card .tl-plane-name { font-size: 0.9rem; }
+  .page-timeline .tl-plane-card .tl-plane-desc { font-size: 0.8rem; }
+  .page-timeline .tl-intro { padding: calc(var(--header-h) + 0.5rem) 0.75rem 1.5rem; }
+  .page-timeline .tl-outro-inner { padding: 2.5rem 0.75rem; }
+  .page-timeline .tl-outro h2 { font-size: 1.3rem; }
+  .page-timeline .tl-cta { font-size: 0.85rem; padding: 0.7rem 1.25rem; }
 }
 
 /* ============================================================

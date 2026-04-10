@@ -8,7 +8,8 @@
     "logout": "Log out",
     "login": "Log in",
     "user_default": "User",
-    "user_role": "Member"
+    "user_role": "Member",
+    "language": "Language"
   },
   "cookie": {
     "title": "We use cookies",
@@ -516,6 +517,7 @@
     "invalid_email": "Please enter a valid email address.",
     "missing_password": "Please enter your password.",
     "login_success": "Login successful",
+    "register_success": "Account created! Check your email.",
     "too_many_attempts": "Too many attempts, please try again in a few minutes.",
     "invalid_credentials": "Invalid credentials.",
     "server_error": "Unable to connect to the server.",

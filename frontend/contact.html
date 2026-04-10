@@ -94,7 +94,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
         <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
         <li class="lang-switch">
-          <button id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i></button>
+          <button id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i><span class="lang-btn-label" data-i18n="nav.language">Langue</span></button>
           <ul class="lang-dropdown" id="lang-dropdown" role="menu">
             <li><button class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
             <li><button class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
@@ -225,7 +225,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
           </form>
 
-          <div id="contact-success" class="form-success-msg">
+          <div id="contact-success" class="form-success-msg" aria-live="assertive" role="status">
             <i class="fas fa-check-circle"></i>
             <span data-i18n="contact.form_success">Message envoyé avec succès ! Nous vous répondrons sous 24–48h.</span>
           </div>
@@ -248,6 +248,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </footer>
 
+  <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/dist/app.min.js"></script>
   <script defer src="js/dist/home.min.js"></script>
   <script>

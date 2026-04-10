@@ -3,6 +3,14 @@
    Single source of truth for all custom properties.
    ====================================================================== */
 
+/* ── BREAKPOINTS (4 paliers, em) ──────────────────────────────────────
+   phone  :  30em  (480px)  — petits mobiles
+   tablet :  48em  (768px)  — tablettes portrait
+   laptop :  64em  (1024px) — tablettes paysage / petits portables
+   desktop:  75em  (1200px) — écrans larges
+   wide   :  90em  (1440px) — min-width uniquement, large desktop
+   ──────────────────────────────────────────────────────────────────── */
+
 :root {
   /* ============================================================
      COULEURS — PALETTE MINIMALISTE PREMIUM

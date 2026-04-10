@@ -91,7 +91,7 @@
   z-index: 3;
   text-align: center;
   color: var(--white);
-  max-width: 900px;
+  max-width: 64em;
   padding: 3rem;
 }
 
@@ -168,7 +168,7 @@
 /* ======================================================================
    BUTTONS
    ====================================================================== */
-.page-home .btn {
+.page-home main .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -782,7 +782,7 @@
   font-size: 1.15rem;
   margin-bottom: 2.5rem;
   color: rgba(255, 255, 255, 0.55);
-  max-width: 600px;
+  max-width: 48em;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 2.5rem;
@@ -824,118 +824,76 @@
    RESPONSIVE DESIGN
    ====================================================================== */
 
-/* Extra Large Desktop */
-@media (min-width: 1400px) {
-  .page-home .container { max-width: 1400px; }
+/* ── desktop (> 90em) ─────────────────────────────────────────────── */
+@media (min-width: 90em) {
+  .page-home main .container { max-width: 75em; }
   .page-home .featured-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* Large Desktop */
-@media (max-width: 1399px) {
-  .page-home .featured-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
-/* Desktop */
-@media (max-width: 1199px) {
-  .page-home .container { padding: 0 3rem; }
+/* ── desktop (≤ 75em) ─────────────────────────────────────────────── */
+@media (max-width: 75em) {
+  .page-home main .container { padding: 0 3rem; }
   .page-home .featured-grid { grid-template-columns: repeat(2, 1fr); }
   .page-home .timeline-content { gap: 5rem; }
 }
 
-/* Tablet Landscape */
-@media (max-width: 1023px) {
-  .page-home .hero { min-height: 650px; }
-  .page-home .hero-content { max-width: 750px; }
+/* ── laptop (≤ 64em) ──────────────────────────────────────────────── */
+@media (max-width: 64em) {
+  .page-home .hero { min-height: 600px; }
+  .page-home .hero-content { max-width: 750px; padding: 2rem 1.5rem; }
   .page-home .hero-stats { gap: 2rem; }
   .page-home .hero-hud-corner { display: none; }
-  .page-home .timeline-content { grid-template-columns: 1fr; gap: 3rem; }
-  .page-home .timeline-visual { grid-template-columns: repeat(2, 1fr); }
-}
-
-/* Tablet Portrait */
-@media (max-width: 991px) {
-  /* hamburger/nav/user-menu/footer responsive → shared.css */
-
-  .page-home .hero { min-height: 600px; }
-  .page-home .hero-content { padding: 2rem 1.5rem; }
-  .page-home .hero-stats { gap: 2rem; }
   .page-home .stat-number { font-size: 2.25rem; }
 
   .page-home .features-grid { grid-template-columns: 1fr; gap: 2rem; }
   .page-home .featured-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
   .page-home .aircraft-image { height: 240px; }
 
+  .page-home .timeline-content { grid-template-columns: 1fr; gap: 3rem; }
+  .page-home .timeline-visual { grid-template-columns: repeat(2, 1fr); }
+
   .page-home .features, .page-home .featured, .page-home .timeline-preview, .page-home .cta-section { padding: 6rem 0; }
 }
 
-/* Mobile Landscape */
-@media (max-width: 767px) {
-  .page-home .container { padding: 0 1.5rem; }
-  /* logo responsive → shared.css */
-  .page-home .hero { min-height: 550px; }
+/* ── tablet (≤ 48em) ──────────────────────────────────────────────── */
+@media (max-width: 48em) {
+  .page-home main .container { padding: 0 1.5rem; }
+  .page-home .hero { min-height: 500px; }
   .page-home .hero-content { padding: 1.5rem 1rem; }
-
-  .page-home .hero-badge { font-size: 0.7rem; padding: 0.5rem 1rem 0.5rem 1.8rem; margin-bottom: 1.5rem; }
+  .page-home .hero-badge { font-size: 0.65rem; padding: 0.4rem 0.9rem 0.4rem 1.7rem; margin-bottom: 1.5rem; }
   .page-home .hero-title { margin-bottom: 1.25rem; }
   .page-home .hero-description { margin-bottom: 2rem; }
 
   .page-home .hero-actions, .page-home .cta-actions { gap: 0.75rem; }
-  .page-home .btn { width: 100%; max-width: 400px; }
+  .page-home main .btn { width: 100%; max-width: 400px; }
   .page-home .btn-large { padding: 0.875rem 1.75rem; }
 
-  .page-home .hero-stats {
-    flex-direction: row;
-    justify-content: space-around;
-    gap: 1.5rem;
-    margin-top: 2.5rem;
-  }
-
+  .page-home .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
   .page-home .stat-item { min-width: auto; flex: 1; }
-  .page-home .stat-number { font-size: 2rem; }
-  .page-home .stat-label { font-size: 0.7rem; }
+  .page-home .stat-number { font-size: 1.875rem; }
+  .page-home .stat-label { font-size: 0.65rem; }
   .page-home .stat-divider { display: none; }
 
   .page-home .section-header { margin-bottom: 3rem; }
   .page-home .section-header h2 { margin-bottom: 0.75rem; }
 
   .page-home .featured-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-  .page-home .aircraft-image { height: 220px; }
+  .page-home .aircraft-image { height: 200px; }
   .page-home .aircraft-content { padding: 1.25rem; }
   .page-home .aircraft-specs { gap: 1rem; }
+  .page-home .feature-card { padding: 1.5rem; }
+  .page-home .feature-icon { width: 48px; height: 48px; font-size: 1.3rem; }
 
   .page-home .timeline-visual { grid-template-columns: 1fr; }
   .page-home .timeline-card { padding: 1.25rem; }
-
-  /* footer responsive → shared.css */
+  .page-home .cta-content p { font-size: 1.05rem; margin-bottom: 2rem; }
 
   .page-home .features, .page-home .featured, .page-home .timeline-preview, .page-home .cta-section { padding: 5rem 0; }
 }
 
-/* Mobile Portrait */
-@media (max-width: 639px) {
-  /* logo responsive → shared.css */
-  .page-home .hero { min-height: 500px; }
-  .page-home .hero-content { padding: 1rem; }
-  .page-home .hero-badge { font-size: 0.65rem; padding: 0.4rem 0.9rem 0.4rem 1.7rem; }
-
-  .page-home .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
-  .page-home .stat-number { font-size: 1.875rem; }
-  .page-home .stat-label { font-size: 0.65rem; }
-
-  .page-home .feature-card { padding: 1.5rem; }
-  .page-home .feature-icon { width: 48px; height: 48px; font-size: 1.3rem; }
-  .page-home .aircraft-image { height: 200px; }
-
-  /* user-dropdown responsive → shared.css */
-
-  .page-home .cta-content p { font-size: 1.05rem; margin-bottom: 2rem; }
-}
-
-/* Extra Small Mobile */
-@media (max-width: 479px) {
-  .page-home .container { padding: 0 0.875rem; }
-  /* logo responsive → shared.css */
-
+/* ── phone (≤ 30em) ───────────────────────────────────────────────── */
+@media (max-width: 30em) {
+  .page-home main .container { padding: 0 0.875rem; }
   .page-home .hero { min-height: 450px; }
   .page-home .hero-content { padding: 0.75rem; }
   .page-home .hero-badge { font-size: 0.6rem; padding: 0.35rem 0.8rem 0.35rem 1.6rem; margin-bottom: 1rem; }
@@ -944,10 +902,10 @@
   .page-home .stat-number { font-size: 1.6rem; }
   .page-home .stat-label { font-size: 0.6rem; }
 
-  .page-home .btn { padding: 0.75rem 1.5rem; font-size: 0.875rem; }
+  .page-home main .btn { padding: 0.75rem 1.5rem; font-size: 0.875rem; }
   .page-home .btn i, .page-home .btn .icon { font-size: 0.875rem; }
 
-  .page-home .feature-card { padding: 1.25rem; }
+  .page-home .feature-card { padding: 1rem; }
   .page-home .feature-card h3 { font-size: 1.15rem; }
   .page-home .aircraft-image { height: 180px; }
   .page-home .aircraft-content { padding: 1rem; }
@@ -956,8 +914,6 @@
 
   .page-home .timeline-card { padding: 1rem; }
   .page-home .timeline-gen { font-size: 1.1rem; }
-
-  /* user-dropdown/footer responsive → shared.css */
 
   .page-home .features, .page-home .featured, .page-home .timeline-preview, .page-home .cta-section { padding: 3rem 0; }
   .page-home .section-header { margin-bottom: 2.5rem; }
@@ -976,7 +932,7 @@
 
 /* Touch device optimizations */
 @media (hover: none) and (pointer: coarse) {
-  .page-home .btn { min-height: 44px; }
+  .page-home main .btn { min-height: 44px; }
   /* nav/dropdown touch responsive → shared.css */
 
   .page-home .feature-card:hover, .page-home .aircraft-card:hover { transform: none; }
@@ -1402,17 +1358,17 @@
 }
 
 /* Responsive */
-@media (max-width: 1200px) {
+@media (max-width: 75em) {
 }
 
-@media (max-width: 992px) {
+@media (max-width: 64em) {
   .page-home .personal-space-grid { grid-template-columns: 1fr; }
   .page-home .search-showcase-content { grid-template-columns: 1fr; }
   .page-home .roles-grid { grid-template-columns: repeat(3, 1fr); }
   .page-home .hangar-mockup { display: none; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
   .page-home .roles-grid { grid-template-columns: repeat(3, 1fr); }
   .page-home .personal-card { padding: 1.75rem; }
 }
