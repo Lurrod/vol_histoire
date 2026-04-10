@@ -25,10 +25,10 @@
         body: JSON.stringify({ email }),
       });
       this.classList.add('sent');
-      this.innerHTML = '<i class="fas fa-check"></i> Email envoyé !';
+      this.innerHTML = `<i class="fas fa-check"></i> ${i18n.t('check_email.resent')}`;
     } catch {
       this.disabled = false;
-      this.innerHTML = '<i class="fas fa-redo"></i> Renvoyer l\'email';
+      this.innerHTML = `<i class="fas fa-redo"></i> ${i18n.t('check_email.resend')}`;
     }
   });
 })();

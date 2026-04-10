@@ -8,26 +8,19 @@ document.addEventListener("DOMContentLoaded", async () => {
      ERA METADATA
      ========================================================================= */
 
-  const ERAS = {
-    1940: { color: '#d4a017', label: 'Seconde Guerre mondiale', title: 'Les derniers moteurs à piston',
-      desc: "Les dernières générations d'avions à hélice dominent les cieux. L'ère des Mustang, Spitfire et Zeros s'achève — les moteurs à piston atteignent leurs limites technologiques alors que le jet pointe son nez." },
-    1950: { color: '#3aff6e', label: 'Guerre de Corée · Premiers jets', title: "L'arrivée du réacteur",
-      desc: "La propulsion par réaction bouleverse l'aviation militaire. MiG-15 et F-86 Sabre se croisent dans le ciel de Corée dans les premiers combats entre avions à réaction de l'histoire. La course au Mach commence." },
-    1960: { color: '#ff8c00', label: 'Guerre froide · Vitesse pure', title: 'La poursuite du Mach',
-      desc: "L'ère des intercepteurs surpuissants. Mach 2 devient la norme, les missiles air-air remplacent progressivement les canons, et la doctrine privilégie la vitesse et l'altitude au détriment de la manœuvrabilité." },
-    1970: { color: '#ff4500', label: 'Vietnam · Retour aux fondamentaux', title: "L'âge de la polyvalence",
-      desc: "Les leçons du Vietnam forcent un retour à la manœuvrabilité et au combat rapproché. Naissance de la 4e génération : F-14, F-15, F-16, MiG-29, Su-27 — des machines conçues pour dominer dans tous les régimes de vol." },
-    1980: { color: '#C8A96E', label: 'Haute technologie', title: 'L’avionique règne',
-      desc: "Les radars à impulsion Doppler, les missiles BVR et les contre-mesures électroniques transforment le combat aérien. La furtivité fait son apparition avec le F-117 — un avion que personne n’est censé voir." },
-    1990: { color: '#7b5cf0', label: 'Guerre du Golfe · Guerre électronique', title: 'La supériorité absolue',
-      desc: "La guerre du Golfe démontre la suprématie occidentale. Les frappes de précision, la fusion de capteurs et la guerre électronique redéfinissent les règles. La 4.5e génération prolonge la vie des chasseurs existants." },
-    2000: { color: '#2979ff', label: 'Ère stealth · 5e génération', title: 'Le retour de la furtivité',
-      desc: "Le F-22 Raptor inaugure la cinquième génération : furtivité, supercroisière, avionique de fusion. Les conflits asymétriques et les opérations multi-rôles dominent. La supériorité aérienne se joue avant même le contact visuel." },
-    2010: { color: '#e040fb', label: 'Guerre en réseau', title: 'La fusion de capteurs',
-      desc: "F-35, J-20, Su-57 — les grandes puissances déploient leurs chasseurs de 5e génération. Les drones de combat, l'IA embarquée et la guerre en réseau redessinent le champ de bataille aérien." },
-    2020: { color: '#ff3d6e', label: '6e génération · Future', title: 'Vers la sixième génération',
-      desc: "NGAD, FCAS, Tempest : les grandes nations préparent leurs chasseurs de 6e génération. Drones loyal wingman, IA, armes à énergie dirigée, furtivité active — l'avenir du combat aérien se dessine maintenant." }
+  /* Couleurs des décennies (stable) ; textes résolus via i18n à l'appel. */
+  const ERA_COLORS = {
+    1940: '#d4a017', 1950: '#3aff6e', 1960: '#ff8c00', 1970: '#ff4500',
+    1980: '#C8A96E', 1990: '#7b5cf0', 2000: '#2979ff', 2010: '#e040fb', 2020: '#ff3d6e'
   };
+  function getEra(decade) {
+    return {
+      color: ERA_COLORS[decade] || 'var(--hud-cyan)',
+      label: i18n.t(`timeline.era_${decade}_label2`),
+      title: i18n.t(`timeline.era_${decade}_title2`),
+      desc:  i18n.t(`timeline.era_${decade}_desc2`),
+    };
+  }
 
   function getDecade(year) { return Math.floor(year / 10) * 10; }
   function yearOf(a) {
@@ -85,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   function renderChapters(chapters) {
     const root = document.getElementById('tl-chapters');
     root.innerHTML = chapters.map(ch => {
-      const era = ERAS[ch.decade] || { color: 'var(--hud-cyan)', label: '', title: '', desc: '' };
+      const era = getEra(ch.decade);
       const countries = new Set(ch.items.map(a => a.country_name_fr || a.country_name).filter(Boolean));
       const gens = new Set(ch.items.map(a => a.generation).filter(Boolean));
       // Backdrop image: first aircraft with an image
@@ -106,9 +99,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <h2 class="tl-era-title tl-split">${splitWords(era.title)}</h2>
                 <p class="tl-era-desc">${escapeHtml(era.desc)}</p>
                 <div class="tl-era-meta">
-                  <div>Appareils<strong>${ch.items.length}</strong></div>
-                  <div>Nations<strong>${countries.size}</strong></div>
-                  <div>Générations<strong>${[...gens].sort().join(' · ') || '—'}</strong></div>
+                  <div>${i18n.t('timeline.meta_aircraft')}<strong>${ch.items.length}</strong></div>
+                  <div>${i18n.t('timeline.meta_nations')}<strong>${countries.size}</strong></div>
+                  <div>${i18n.t('timeline.meta_generations')}<strong>${[...gens].sort().join(' · ') || '—'}</strong></div>
                 </div>
               </div>
             </aside>
@@ -163,7 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   function renderMinimap(chapters) {
     const mm = document.getElementById('tl-minimap');
     mm.innerHTML = chapters.map(ch => {
-      const era = ERAS[ch.decade] || {};
+      const era = getEra(ch.decade);
       return `
         <button class="tl-mm-btn" data-target="ch-${ch.decade}" aria-label="${ch.decade}s">
           <span class="tl-mm-label">${ch.decade}s</span>
@@ -200,11 +193,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           // Update year HUD + body tint on "dominant" chapter
           if (entry.intersectionRatio > 0.2) {
             yearNum.textContent = decade + 's';
-            const era = ERAS[decade];
-            if (era && yearLbl) yearLbl.textContent = era.label || '';
-            if (era) {
-              document.body.style.setProperty('--tl-active-era', era.color);
-            }
+            const era = getEra(decade);
+            if (yearLbl) yearLbl.textContent = era.label || '';
+            document.body.style.setProperty('--tl-active-era', era.color);
             mmButtons.forEach(b => b.classList.toggle('active', b.dataset.target === `ch-${decade}`));
           }
         }
@@ -398,7 +389,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const aircraft = await loadAllAircraft();
     if (aircraft.length === 0) {
       document.getElementById('tl-chapters').innerHTML =
-        '<p style="text-align:center;padding:6rem;color:var(--text-secondary)">Aucun appareil avec une date opérationnelle.</p>';
+        `<p style="text-align:center;padding:6rem;color:var(--text-secondary)">${i18n.t('timeline.no_aircraft')}</p>`;
       document.getElementById('tl-loading').classList.add('gone');
       return;
     }
@@ -418,6 +409,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     observeChapters();
     initProgress();
     initKeyboard(chapters);
+
+    // Re-render chapters + minimap when language changes (les textes d'ère
+    // proviennent d'i18n.t() et ne sont pas dans le DOM HTML d'origine).
+    window.addEventListener('langChanged', () => {
+      renderChapters(chapters);
+      renderMinimap(chapters);
+      observeChapters();
+    });
 
     // Fade out loader
     requestAnimationFrame(() => {

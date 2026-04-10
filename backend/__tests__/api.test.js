@@ -21,6 +21,10 @@ const mailer = require('../mailer');
 
 const app = require('../app');
 
+// Désactiver hCaptcha en tests — APRÈS le require('../app') car
+// dotenv.config() dans app.js recharge les variables depuis .env
+delete process.env.HCAPTCHA_SECRET;
+
 // =============================================================================
 // Helpers — génération de tokens JWT de test
 // =============================================================================

@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <!-- Google Tag Manager -->
-<script defer src="js/gtm.js"></script>
+<script defer src="js/gtm.js?v=1775742573525"></script>
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,11 +10,7 @@
   <title>Vérifiez votre email — Vol d'Histoire</title>
   <link rel="preload" href="fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/fonts.css">
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/icons.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/app.min.css?v=1775742573525">
   <style>
     .ce-wrapper {
       min-height: 100vh;
@@ -153,10 +149,10 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
-  <script src="js/app-version.js"></script>
-  <script defer src="js/sentry-init.js"></script>
+  <script defer src="js/app-version.js?v=1775742573525"></script>
+  <script defer src="js/sentry-init.js?v=1775742573525"></script>
 </head>
-<body>
+<body class="page-login">
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KB3P52VK"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -173,27 +169,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <i class="fas fa-envelope-open-text"></i>
     </div>
 
-    <h1>Vérifiez votre boîte mail</h1>
-    <p>Un lien de confirmation a été envoyé à :</p>
+    <h1 data-i18n="check_email.heading">Vérifiez votre boîte mail</h1>
+    <p data-i18n="check_email.desc">Un lien de confirmation a été envoyé à :</p>
     <div class="ce-email-badge" id="ce-email">—</div>
 
     <div class="ce-hint">
-      <p><i class="fas fa-clock"></i>Le lien est valable <strong style="color:rgba(255,255,255,0.55)">24 heures</strong>.</p>
-      <p><i class="fas fa-folder"></i>Pensez à vérifier vos <strong style="color:rgba(255,255,255,0.55)">spams</strong> si vous ne trouvez pas l'email.</p>
+      <p><i class="fas fa-clock"></i><span data-i18n-html="check_email.validity_hint">Le lien est valable <strong>24 heures</strong>.</span></p>
+      <p><i class="fas fa-folder"></i><span data-i18n-html="check_email.spam_hint">Pensez à vérifier vos <strong>spams</strong> si vous ne trouvez pas l'email.</span></p>
     </div>
 
     <button class="ce-resend-btn" id="ce-resend-btn">
       <i class="fas fa-redo"></i>
-      Renvoyer l'email
+      <span data-i18n="check_email.resend">Renvoyer l'email</span>
     </button>
 
     <a href="/login" class="ce-back">
-      <i class="fas fa-arrow-left"></i> Retour à la connexion
+      <i class="fas fa-arrow-left"></i> <span data-i18n="login.back_to_login">Retour à la connexion</span>
     </a>
   </div>
 </div>
 
-<script defer src="js/auth.js"></script>
-<script defer src="js/check-email.js"></script>
+<script defer src="js/auth.js?v=1775742573525"></script>
+<script defer src="js/check-email.js?v=1775742573525"></script>
 </body>
 </html>

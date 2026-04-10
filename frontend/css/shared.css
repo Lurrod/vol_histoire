@@ -278,8 +278,11 @@
   .lang-dropdown {
     display: none;
     position: absolute;
-    top: calc(100% + 8px);
-    inset-inline-end: 0;
+    top: 100%;
+    right: 0;
+    left: auto;
+    bottom: auto;
+    margin: 8px 0 0 0;
     background: var(--night-mid);
     border: 1px solid var(--border-cyan-md);
     border-radius: 10px;
@@ -1216,6 +1219,11 @@
     .footer-content { gap: var(--sp-8); }
     .footer-logo    { font-size: var(--text-xl); }
   }
+
+  /* Facet counts (hangar + favorites) : compteur à côté de chaque option
+     de filtre, option grisée + non cliquable quand le count vaut 0. */
+  .filter-option .fc { color: var(--text-muted); font-size: 0.75rem; margin-left: 6px; }
+  .filter-option-empty { opacity: 0.4; pointer-events: none; }
 }
 
 /* ============================================================

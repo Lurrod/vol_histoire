@@ -3,10 +3,10 @@
    Scroll-driven narrative, full-bleed chapters, fixed HUD elements.
    ====================================================================== */
 
-body { background: var(--night); }
+body.page-timeline { background: var(--night); }
 
 /* Global era tint wash — drives the ambient color as decades scroll past */
-body.tl-has-cinematic::before {
+body.page-timeline.tl-has-cinematic::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -19,7 +19,7 @@ body.tl-has-cinematic::before {
   mix-blend-mode: screen;
 }
 
-.tl-cinematic {
+.page-timeline .tl-cinematic {
   position: relative;
   min-height: 100vh;
   padding: 0;
@@ -27,7 +27,7 @@ body.tl-has-cinematic::before {
 }
 
 /* Ambient particles canvas */
-.tl-particles {
+.page-timeline .tl-particles {
   position: fixed;
   inset: 0;
   width: 100%;
@@ -37,14 +37,14 @@ body.tl-has-cinematic::before {
   opacity: 0.55;
 }
 @media (prefers-reduced-motion: reduce) {
-  .tl-particles { display: none; }
-  body.tl-has-cinematic::before { transition: none; }
+  .page-timeline .tl-particles { display: none; }
+  body.page-timeline.tl-has-cinematic::before { transition: none; }
 }
 
 /* ============================================================
    LOADING
    ============================================================ */
-.tl-loading {
+.page-timeline .tl-loading {
   position: fixed;
   inset: 0;
   display: flex;
@@ -54,11 +54,11 @@ body.tl-has-cinematic::before {
   z-index: 5000;
   transition: opacity 0.5s var(--ease);
 }
-.tl-loading.gone {
+.page-timeline .tl-loading.gone {
   opacity: 0;
   pointer-events: none;
 }
-.tl-loader {
+.page-timeline .tl-loader {
   width: 48px;
   height: 48px;
   border: 2px solid rgba(200, 169, 110, 0.15);
@@ -71,7 +71,7 @@ body.tl-has-cinematic::before {
 /* ============================================================
    HERO INTRO
    ============================================================ */
-.tl-intro {
+.page-timeline .tl-intro {
   position: relative;
   min-height: 100vh;
   display: flex;
@@ -81,7 +81,7 @@ body.tl-has-cinematic::before {
   overflow: hidden;
   isolation: isolate;
 }
-.tl-intro-bg {
+.page-timeline .tl-intro-bg {
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -90,7 +90,7 @@ body.tl-has-cinematic::before {
     radial-gradient(ellipse at 70% 60%, rgba(74, 127, 160, 0.08) 0%, transparent 55%),
     linear-gradient(180deg, var(--night) 0%, var(--night-mid) 100%);
 }
-.tl-intro-bg::before {
+.page-timeline .tl-intro-bg::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -101,13 +101,13 @@ body.tl-has-cinematic::before {
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
 }
-.tl-intro-inner {
+.page-timeline .tl-intro-inner {
   max-width: 1100px;
   margin: 0 auto;
   text-align: center;
   position: relative;
 }
-.tl-eyebrow {
+.page-timeline .tl-eyebrow {
   display: inline-block;
   color: var(--hud-cyan);
   font-family: 'Courier New', monospace;
@@ -119,7 +119,7 @@ body.tl-has-cinematic::before {
   border-radius: 2px;
   margin-bottom: 2rem;
 }
-.tl-title {
+.page-timeline .tl-title {
   font-family: var(--font-display);
   font-weight: 700;
   color: var(--text-primary);
@@ -129,13 +129,13 @@ body.tl-has-cinematic::before {
   margin-bottom: 1.5rem;
   text-transform: uppercase;
 }
-.tl-title-line-1, .tl-title-line-2 {
+.page-timeline .tl-title-line-1, .page-timeline .tl-title-line-2 {
   display: block;
   opacity: 0;
   transform: translateY(24px);
   animation: tl-fade-up 1s var(--ease) forwards;
 }
-.tl-title-line-1 {
+.page-timeline .tl-title-line-1 {
   color: var(--hud-cyan);
   font-size: 0.58em;
   font-weight: 400;
@@ -143,14 +143,14 @@ body.tl-has-cinematic::before {
   margin-bottom: 0.3rem;
   animation-delay: 0.1s;
 }
-.tl-title-line-2 {
+.page-timeline .tl-title-line-2 {
   animation-delay: 0.25s;
 }
 @keyframes tl-fade-up {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.tl-lede {
+.page-timeline .tl-lede {
   max-width: 640px;
   margin: 0 auto 3rem;
   color: var(--text-secondary);
@@ -159,7 +159,7 @@ body.tl-has-cinematic::before {
   opacity: 0;
   animation: tl-fade-up 1s var(--ease) 0.5s forwards;
 }
-.tl-intro-stats {
+.page-timeline .tl-intro-stats {
   display: flex;
   gap: 4rem;
   justify-content: center;
@@ -167,13 +167,13 @@ body.tl-has-cinematic::before {
   opacity: 0;
   animation: tl-fade-up 1s var(--ease) 0.7s forwards;
 }
-.tl-stat {
+.page-timeline .tl-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
 }
-.tl-stat-num {
+.page-timeline .tl-stat-num {
   font-family: var(--font-display);
   font-size: clamp(2.2rem, 5vw, 3.5rem);
   font-weight: 700;
@@ -181,13 +181,13 @@ body.tl-has-cinematic::before {
   line-height: 1;
   letter-spacing: 0.02em;
 }
-.tl-stat-lbl {
+.page-timeline .tl-stat-lbl {
   font-size: 0.72rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.18em;
 }
-.tl-scroll-hint {
+.page-timeline .tl-scroll-hint {
   position: absolute;
   bottom: -1rem;
   left: 50%;
@@ -203,7 +203,7 @@ body.tl-has-cinematic::before {
   opacity: 0;
   animation: tl-fade-up 1s var(--ease) 1s forwards, tl-bounce 2.2s var(--ease) 1.8s infinite;
 }
-.tl-scroll-hint i, .tl-scroll-hint .icon { font-size: 0.85rem; color: var(--hud-cyan); }
+.page-timeline .tl-scroll-hint i, .page-timeline .tl-scroll-hint .icon { font-size: 0.85rem; color: var(--hud-cyan); }
 @keyframes tl-bounce {
   0%, 100% { transform: translate(-50%, 0); }
   50%      { transform: translate(-50%, 8px); }
@@ -212,9 +212,9 @@ body.tl-has-cinematic::before {
 /* ============================================================
    CHAPTERS
    ============================================================ */
-.tl-chapters { position: relative; }
+.page-timeline .tl-chapters { position: relative; }
 
-.tl-chapter {
+.page-timeline .tl-chapter {
   position: relative;
   min-height: 100vh;
   padding: 8rem 2rem 10rem;
@@ -223,7 +223,7 @@ body.tl-has-cinematic::before {
 }
 
 /* Backdrop image: first aircraft photo of the decade, heavy blur + darken */
-.tl-chapter-backdrop {
+.page-timeline .tl-chapter-backdrop {
   position: absolute;
   inset: 0;
   z-index: -3;
@@ -237,12 +237,12 @@ body.tl-has-cinematic::before {
   transition: opacity 1.6s var(--ease), transform 3s var(--ease);
   will-change: opacity, transform;
 }
-.tl-chapter.in-view .tl-chapter-backdrop {
+.page-timeline .tl-chapter.in-view .tl-chapter-backdrop {
   opacity: 0.55;
   transform: scale(1);
 }
 
-.tl-chapter::before {
+.page-timeline .tl-chapter::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -251,7 +251,7 @@ body.tl-has-cinematic::before {
   opacity: 0.08;
   transition: opacity 1s var(--ease);
 }
-.tl-chapter::after {
+.page-timeline .tl-chapter::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -261,9 +261,9 @@ body.tl-has-cinematic::before {
     linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   background-size: 60px 60px;
 }
-.tl-chapter.in-view::before { opacity: 0.20; }
+.page-timeline .tl-chapter.in-view::before { opacity: 0.20; }
 
-.tl-chapter-inner {
+.page-timeline .tl-chapter-inner {
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
@@ -274,7 +274,7 @@ body.tl-has-cinematic::before {
 }
 
 /* Sticky left column: decade number + era text stay pinned while cards scroll */
-.tl-chapter-side {
+.page-timeline .tl-chapter-side {
   position: sticky;
   top: calc(var(--header-h) + 3rem);
   align-self: start;
@@ -285,8 +285,8 @@ body.tl-has-cinematic::before {
   gap: 2rem;
 }
 
-.tl-decade-block { position: relative; }
-.tl-decade-num {
+.page-timeline .tl-decade-block { position: relative; }
+.page-timeline .tl-decade-num {
   font-family: var(--font-display);
   font-size: clamp(6rem, 14vw, 11rem);
   font-weight: 700;
@@ -298,7 +298,7 @@ body.tl-has-cinematic::before {
   color: transparent;
   display: block;
 }
-.tl-decade-suffix {
+.page-timeline .tl-decade-suffix {
   position: absolute;
   top: 0.4em;
   right: -0.5em;
@@ -307,12 +307,12 @@ body.tl-has-cinematic::before {
   color: var(--era-color, var(--hud-cyan));
   letter-spacing: 0.1em;
 }
-.tl-era-text {
+.page-timeline .tl-era-text {
   padding-top: 1.5rem;
   border-top: 1px solid var(--era-color, var(--border-subtle));
   max-width: 100%;
 }
-.tl-era-label {
+.page-timeline .tl-era-label {
   font-family: 'Courier New', monospace;
   font-size: 0.72rem;
   letter-spacing: 0.25em;
@@ -321,7 +321,7 @@ body.tl-has-cinematic::before {
   margin-bottom: 0.75rem;
   display: block;
 }
-.tl-era-title {
+.page-timeline .tl-era-title {
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 3vw, 2.2rem);
   font-weight: 600;
@@ -331,13 +331,13 @@ body.tl-has-cinematic::before {
   letter-spacing: 0.01em;
   text-transform: uppercase;
 }
-.tl-era-desc {
+.page-timeline .tl-era-desc {
   color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.75;
   margin-bottom: 1.5rem;
 }
-.tl-era-meta {
+.page-timeline .tl-era-meta {
   display: flex;
   gap: 2rem;
   color: var(--text-muted);
@@ -345,7 +345,7 @@ body.tl-has-cinematic::before {
   text-transform: uppercase;
   letter-spacing: 0.15em;
 }
-.tl-era-meta strong {
+.page-timeline .tl-era-meta strong {
   display: block;
   color: var(--text-primary);
   font-size: 1.35rem;
@@ -357,36 +357,36 @@ body.tl-has-cinematic::before {
 }
 
 /* Aircraft grid (right column, narrower than before since side is sticky) */
-.tl-chapter-main { min-width: 0; }
-.tl-aircraft-grid {
+.page-timeline .tl-chapter-main { min-width: 0; }
+.page-timeline .tl-aircraft-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
 }
-.tl-aircraft-grid .tl-plane-card.feature {
+.page-timeline .tl-aircraft-grid .tl-plane-card.feature {
   grid-column: 1 / -1;
 }
-.tl-aircraft-grid .tl-plane-card.feature .tl-plane-img {
+.page-timeline .tl-aircraft-grid .tl-plane-card.feature .tl-plane-img {
   aspect-ratio: 21/9;
 }
-.tl-aircraft-grid .tl-plane-card.feature .tl-plane-name {
+.page-timeline .tl-aircraft-grid .tl-plane-card.feature .tl-plane-name {
   font-size: 1.65rem;
 }
 
 /* Split-text reveal — words appear stagger on viewport entry */
-.tl-split-word {
+.page-timeline .tl-split-word {
   display: inline-block;
   opacity: 0;
   transform: translateY(14px);
   transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
   transition-delay: calc(var(--i, 0) * 40ms);
 }
-.tl-split.revealed .tl-split-word {
+.page-timeline .tl-split.revealed .tl-split-word {
   opacity: 1;
   transform: translateY(0);
 }
 
-.tl-plane-card {
+.page-timeline .tl-plane-card {
   position: relative;
   background: rgba(20, 20, 20, 0.72);
   border: 1px solid var(--border-subtle);
@@ -400,41 +400,41 @@ body.tl-has-cinematic::before {
   -webkit-backdrop-filter: blur(8px);
   text-decoration: none;
 }
-.tl-plane-card.reveal {
+.page-timeline .tl-plane-card.reveal {
   animation: tl-card-in 0.8s var(--ease) forwards;
 }
 @keyframes tl-card-in {
   to { opacity: 1; transform: translateY(0); }
 }
-.tl-plane-card:hover {
+.page-timeline .tl-plane-card:hover {
   border-color: var(--era-color, var(--hud-cyan));
   transform: translateY(-4px);
 }
-.tl-plane-card:hover .tl-plane-img img {
+.page-timeline .tl-plane-card:hover .tl-plane-img img {
   transform: scale(1.06);
 }
 
-.tl-plane-img {
+.page-timeline .tl-plane-img {
   aspect-ratio: 16/9;
   overflow: hidden;
   position: relative;
   background: var(--night-soft);
 }
-.tl-plane-img img {
+.page-timeline .tl-plane-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s var(--ease);
   display: block;
 }
-.tl-plane-img::after {
+.page-timeline .tl-plane-img::after {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, transparent 50%, rgba(13, 13, 13, 0.9) 100%);
   pointer-events: none;
 }
-.tl-plane-year {
+.page-timeline .tl-plane-year {
   position: absolute;
   top: 0.75rem;
   left: 0.75rem;
@@ -449,7 +449,7 @@ body.tl-has-cinematic::before {
   border: 1px solid var(--era-color, var(--border-cyan));
   z-index: 2;
 }
-.tl-plane-gen {
+.page-timeline .tl-plane-gen {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
@@ -464,10 +464,10 @@ body.tl-has-cinematic::before {
   border: 1px solid var(--border-subtle);
   z-index: 2;
 }
-.tl-plane-body {
+.page-timeline .tl-plane-body {
   padding: 1rem 1.1rem 1.1rem;
 }
-.tl-plane-name {
+.page-timeline .tl-plane-name {
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 600;
@@ -477,14 +477,14 @@ body.tl-has-cinematic::before {
   text-transform: uppercase;
   line-height: 1.2;
 }
-.tl-plane-country {
+.page-timeline .tl-plane-country {
   font-size: 0.78rem;
   color: var(--text-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 0.75rem;
 }
-.tl-plane-specs {
+.page-timeline .tl-plane-specs {
   display: flex;
   gap: 1rem;
   padding-top: 0.75rem;
@@ -492,12 +492,12 @@ body.tl-has-cinematic::before {
   color: var(--text-secondary);
   font-size: 0.78rem;
 }
-.tl-plane-specs span {
+.page-timeline .tl-plane-specs span {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
 }
-.tl-plane-specs i, .tl-plane-specs .icon {
+.page-timeline .tl-plane-specs i, .page-timeline .tl-plane-specs .icon {
   color: var(--era-color, var(--hud-cyan));
   font-size: 0.72rem;
 }
@@ -505,7 +505,7 @@ body.tl-has-cinematic::before {
 /* ============================================================
    OUTRO
    ============================================================ */
-.tl-outro {
+.page-timeline .tl-outro {
   position: relative;
   min-height: 60vh;
   display: flex;
@@ -514,8 +514,8 @@ body.tl-has-cinematic::before {
   padding: 6rem 2rem;
   background: linear-gradient(180deg, transparent 0%, var(--night-mid) 100%);
 }
-.tl-outro-inner { text-align: center; max-width: 600px; }
-.tl-outro h2 {
+.page-timeline .tl-outro-inner { text-align: center; max-width: 600px; }
+.page-timeline .tl-outro h2 {
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 3.2rem);
   color: var(--text-primary);
@@ -524,13 +524,13 @@ body.tl-has-cinematic::before {
   letter-spacing: 0.01em;
   font-weight: 600;
 }
-.tl-outro p {
+.page-timeline .tl-outro p {
   color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.7;
   margin-bottom: 2.5rem;
 }
-.tl-cta {
+.page-timeline .tl-cta {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
@@ -546,7 +546,7 @@ body.tl-has-cinematic::before {
   transition: var(--transition);
   border-radius: 2px;
 }
-.tl-cta:hover {
+.page-timeline .tl-cta:hover {
   background: var(--hud-cyan);
   color: var(--night);
 }
@@ -555,7 +555,7 @@ body.tl-has-cinematic::before {
    FIXED HUD
    ============================================================ */
 
-.tl-progress {
+.page-timeline .tl-progress {
   position: fixed;
   top: 0;
   left: 0;
@@ -567,7 +567,7 @@ body.tl-has-cinematic::before {
   pointer-events: none;
 }
 
-.tl-year-hud {
+.page-timeline .tl-year-hud {
   position: fixed;
   top: calc(var(--header-h) + 1.25rem);
   right: 2rem;
@@ -586,11 +586,11 @@ body.tl-has-cinematic::before {
   transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
   pointer-events: none;
 }
-.tl-year-hud.visible {
+.page-timeline .tl-year-hud.visible {
   opacity: 1;
   transform: translateY(0);
 }
-#tl-year-hud-num {
+.page-timeline #tl-year-hud-num {
   color: var(--hud-cyan);
   font-family: var(--font-display);
   font-size: 1.4rem;
@@ -598,7 +598,7 @@ body.tl-has-cinematic::before {
   line-height: 1;
   letter-spacing: 0.03em;
 }
-.tl-year-hud-lbl {
+.page-timeline .tl-year-hud-lbl {
   color: var(--text-muted);
   font-size: 0.62rem;
   letter-spacing: 0.15em;
@@ -606,7 +606,7 @@ body.tl-has-cinematic::before {
   margin-top: 0.15rem;
 }
 
-.tl-minimap {
+.page-timeline .tl-minimap {
   position: fixed;
   right: 1.5rem;
   top: 50%;
@@ -618,8 +618,8 @@ body.tl-has-cinematic::before {
   opacity: 0;
   transition: opacity 0.4s var(--ease);
 }
-.tl-minimap.visible { opacity: 1; }
-.tl-mm-btn {
+.page-timeline .tl-minimap.visible { opacity: 1; }
+.page-timeline .tl-mm-btn {
   background: transparent;
   border: none;
   cursor: pointer;
@@ -629,7 +629,7 @@ body.tl-has-cinematic::before {
   gap: 0.6rem;
   position: relative;
 }
-.tl-mm-label {
+.page-timeline .tl-mm-label {
   color: var(--text-muted);
   font-family: 'Courier New', monospace;
   font-size: 0.65rem;
@@ -639,27 +639,27 @@ body.tl-has-cinematic::before {
   transition: var(--transition-fast);
   white-space: nowrap;
 }
-.tl-mm-tick {
+.page-timeline .tl-mm-tick {
   width: 22px;
   height: 1px;
   background: var(--text-faint);
   transition: var(--transition-fast);
   flex-shrink: 0;
 }
-.tl-mm-btn:hover .tl-mm-label, .tl-mm-btn.active .tl-mm-label {
+.page-timeline .tl-mm-btn:hover .tl-mm-label, .page-timeline .tl-mm-btn.active .tl-mm-label {
   opacity: 1;
   transform: translateX(0);
 }
-.tl-mm-btn:hover .tl-mm-tick {
+.page-timeline .tl-mm-btn:hover .tl-mm-tick {
   width: 36px;
   background: var(--text-secondary);
 }
-.tl-mm-btn.active .tl-mm-tick {
+.page-timeline .tl-mm-btn.active .tl-mm-tick {
   width: 44px;
   background: var(--hud-cyan);
   height: 2px;
 }
-.tl-mm-btn.active .tl-mm-label {
+.page-timeline .tl-mm-btn.active .tl-mm-label {
   color: var(--hud-cyan);
 }
 
@@ -667,43 +667,43 @@ body.tl-has-cinematic::before {
    RESPONSIVE
    ============================================================ */
 @media (max-width: 900px) {
-  .tl-year-hud { right: 1rem; padding: 0.4rem 0.7rem; }
-  #tl-year-hud-num { font-size: 1.15rem; }
-  .tl-chapter { padding: 6rem 1.25rem 7rem; }
-  .tl-chapter-inner { grid-template-columns: 1fr; gap: 2rem; }
-  .tl-chapter-side {
+  .page-timeline .tl-year-hud { right: 1rem; padding: 0.4rem 0.7rem; }
+  .page-timeline #tl-year-hud-num { font-size: 1.15rem; }
+  .page-timeline .tl-chapter { padding: 6rem 1.25rem 7rem; }
+  .page-timeline .tl-chapter-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .page-timeline .tl-chapter-side {
     position: static;
     min-height: auto;
     margin-bottom: 1rem;
   }
-  .tl-era-text { padding-top: 1.25rem; }
-  .tl-aircraft-grid { grid-template-columns: 1fr; gap: 1rem; }
-  .tl-aircraft-grid .tl-plane-card.feature .tl-plane-img { aspect-ratio: 16/9; }
-  .tl-aircraft-grid .tl-plane-card.feature .tl-plane-name { font-size: 1.25rem; }
-  .tl-intro-stats { gap: 2rem; margin-bottom: 3rem; }
-  .tl-intro { padding: calc(var(--header-h) + 1rem) 1.25rem 3rem; }
+  .page-timeline .tl-era-text { padding-top: 1.25rem; }
+  .page-timeline .tl-aircraft-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .page-timeline .tl-aircraft-grid .tl-plane-card.feature .tl-plane-img { aspect-ratio: 16/9; }
+  .page-timeline .tl-aircraft-grid .tl-plane-card.feature .tl-plane-name { font-size: 1.25rem; }
+  .page-timeline .tl-intro-stats { gap: 2rem; margin-bottom: 3rem; }
+  .page-timeline .tl-intro { padding: calc(var(--header-h) + 1rem) 1.25rem 3rem; }
 }
 
 @media (max-width: 600px) {
-  .tl-minimap { display: none; }
-  .tl-year-hud { display: none; }
-  .tl-intro-stats { gap: 1.25rem; }
-  .tl-stat-lbl { font-size: 0.62rem; }
-  .tl-decade-num { font-size: clamp(4.5rem, 18vw, 6rem); }
+  .page-timeline .tl-minimap { display: none; }
+  .page-timeline .tl-year-hud { display: none; }
+  .page-timeline .tl-intro-stats { gap: 1.25rem; }
+  .page-timeline .tl-stat-lbl { font-size: 0.62rem; }
+  .page-timeline .tl-decade-num { font-size: clamp(4.5rem, 18vw, 6rem); }
 }
 
 /* ============================================================
    MOTION PREFERENCES
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .tl-title-line-1, .tl-title-line-2, .tl-lede, .tl-intro-stats, .tl-scroll-hint, .tl-plane-card {
+  .page-timeline .tl-title-line-1, .page-timeline .tl-title-line-2, .page-timeline .tl-lede, .page-timeline .tl-intro-stats, .page-timeline .tl-scroll-hint, .page-timeline .tl-plane-card {
     opacity: 1;
     transform: none;
     animation: none;
   }
-  .tl-chapter::before { opacity: 0.16; transition: none; }
-  .tl-plane-card { transition: none; }
-  .tl-plane-card:hover { transform: none; }
-  .tl-plane-img img { transition: none; }
-  .tl-progress { transition: none; }
+  .page-timeline .tl-chapter::before { opacity: 0.16; transition: none; }
+  .page-timeline .tl-plane-card { transition: none; }
+  .page-timeline .tl-plane-card:hover { transform: none; }
+  .page-timeline .tl-plane-img img { transition: none; }
+  .page-timeline .tl-progress { transition: none; }
 }

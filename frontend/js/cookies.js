@@ -16,10 +16,15 @@ class CookieConsent {
     this.init();
   }
   
-  init() {
+  async init() {
+    // Charger le template cookie-consent.html s'il n'est pas déjà dans le DOM
+    if (!document.getElementById('cookie-banner')) {
+      await this.loadTemplate();
+    }
+
     // Check if consent already given
     const consent = this.getConsent();
-    
+
     if (consent) {
       this.preferences = consent;
       this.applyConsent();
@@ -29,8 +34,27 @@ class CookieConsent {
         this.showBanner();
       }, 1000);
     }
-    
+
     this.attachEventListeners();
+  }
+
+  async loadTemplate() {
+    try {
+      const basePath = document.querySelector('script[src*="cookies.js"]')?.src.replace(/js\/cookies\.js.*$/, '') || './';
+      const res = await fetch(`${basePath}cookie-consent.html`);
+      if (!res.ok) return;
+      const html = await res.text();
+      const container = document.createElement('div');
+      container.innerHTML = html;
+      // Insérer au début du body (avant le header)
+      document.body.insertBefore(container, document.body.firstChild);
+      // Appliquer les traductions i18n au contenu injecté
+      if (typeof i18n !== 'undefined' && i18n.applyToDOM) {
+        i18n.applyToDOM(container);
+      }
+    } catch (e) {
+      // Échec silencieux — le banner inline sert de fallback
+    }
   }
   
   attachEventListeners() {

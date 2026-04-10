@@ -1,6 +1,5 @@
 /* ======================================================================
    VOL D'HISTOIRE — STYLE PRINCIPAL (ACCUEIL)
-   Dark HUD / Cockpit Theme
    ====================================================================== */
 
 /* Variables, reset, body et container fournis par tokens.css + base.css */
@@ -10,7 +9,7 @@
 /* ======================================================================
    HERO SECTION
    ====================================================================== */
-.hero {
+.page-home .hero {
   position: relative;
   height: 100vh;
   min-height: 700px;
@@ -21,7 +20,7 @@
   background: var(--night);
 }
 
-.hero-video {
+.page-home .hero-video {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -34,7 +33,7 @@
   z-index: 0;
 }
 
-.hero-overlay {
+.page-home .hero-overlay {
   position: absolute;
   inset: 0;
   background:
@@ -44,7 +43,7 @@
 }
 
 /* HUD Grid overlay */
-.hero-hud-grid {
+.page-home .hero-hud-grid {
   position: absolute;
   inset: 0;
   z-index: 1;
@@ -56,7 +55,7 @@
 }
 
 /* HUD Corner brackets */
-.hero-hud-corner {
+.page-home .hero-hud-corner {
   position: absolute;
   width: 60px;
   height: 60px;
@@ -64,30 +63,30 @@
   pointer-events: none;
 }
 
-.hero-hud-corner::before, .hero-hud-corner::after {
+.page-home .hero-hud-corner::before, .page-home .hero-hud-corner::after {
   content: '';
   position: absolute;
   background: rgba(200, 169, 110, 0.2);
 }
 
-.hud-tl { top: 80px; left: 24px; }
-.hud-tl::before { top: 0; left: 0; width: 40px; height: 2px; }
-.hud-tl::after  { top: 0; left: 0; width: 2px; height: 40px; }
+.page-home .hud-tl { top: 80px; left: 24px; }
+.page-home .hud-tl::before { top: 0; left: 0; width: 40px; height: 2px; }
+.page-home .hud-tl::after  { top: 0; left: 0; width: 2px; height: 40px; }
 
-.hud-tr { top: 80px; right: 24px; }
-.hud-tr::before { top: 0; right: 0; width: 40px; height: 2px; }
-.hud-tr::after  { top: 0; right: 0; width: 2px; height: 40px; }
+.page-home .hud-tr { top: 80px; right: 24px; }
+.page-home .hud-tr::before { top: 0; right: 0; width: 40px; height: 2px; }
+.page-home .hud-tr::after  { top: 0; right: 0; width: 2px; height: 40px; }
 
-.hud-bl { bottom: 24px; left: 24px; }
-.hud-bl::before { bottom: 0; left: 0; width: 40px; height: 2px; }
-.hud-bl::after  { bottom: 0; left: 0; width: 2px; height: 40px; }
+.page-home .hud-bl { bottom: 24px; left: 24px; }
+.page-home .hud-bl::before { bottom: 0; left: 0; width: 40px; height: 2px; }
+.page-home .hud-bl::after  { bottom: 0; left: 0; width: 2px; height: 40px; }
 
-.hud-br { bottom: 24px; right: 24px; }
-.hud-br::before { bottom: 0; right: 0; width: 40px; height: 2px; }
-.hud-br::after  { bottom: 0; right: 0; width: 2px; height: 40px; }
+.page-home .hud-br { bottom: 24px; right: 24px; }
+.page-home .hud-br::before { bottom: 0; right: 0; width: 40px; height: 2px; }
+.page-home .hud-br::after  { bottom: 0; right: 0; width: 2px; height: 40px; }
 
 /* Hero Content */
-.hero-content {
+.page-home .hero-content {
   position: relative;
   z-index: 3;
   text-align: center;
@@ -96,7 +95,7 @@
   padding: 3rem;
 }
 
-.hero-badge {
+.page-home .hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -116,7 +115,7 @@
   overflow: hidden;
 }
 
-.badge-pulse {
+.page-home .badge-pulse {
   position: absolute;
   left: 12px;
   width: 6px;
@@ -131,7 +130,7 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.hero-title {
+.page-home .hero-title {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: clamp(3rem, 6vw, 5.5rem);
   font-weight: 700;
@@ -140,14 +139,14 @@
   animation: fadeInUp 1s ease 0.4s both;
 }
 
-.gradient-text {
+.page-home .gradient-text {
   background: linear-gradient(135deg, #E8C98A 0%, var(--hud-cyan) 50%, rgba(255,255,255,0.9) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.hero-description {
+.page-home .hero-description {
   font-size: clamp(1rem, 2vw, 1.2rem);
   line-height: 1.8;
   margin-bottom: 3.5rem;
@@ -158,7 +157,7 @@
   margin-right: auto;
 }
 
-.hero-actions {
+.page-home .hero-actions {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
@@ -169,7 +168,7 @@
 /* ======================================================================
    BUTTONS
    ====================================================================== */
-.btn {
+.page-home .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -188,60 +187,60 @@
   overflow: hidden;
 }
 
-.btn-primary {
+.page-home .btn-primary {
   background: var(--hud-cyan);
   color: var(--night);
   border: none;
   font-weight: 700;
 }
 
-.btn-primary:hover {
+.page-home .btn-primary:hover {
   background: #D4B87E;
   box-shadow: 0 8px 24px rgba(200, 169, 110, 0.25);
 }
 
-.btn-ghost {
+.page-home .btn-ghost {
   background: transparent;
   color: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.btn-ghost:hover {
+.page-home .btn-ghost:hover {
   background: rgba(255, 255, 255, 0.05);
   border-color: rgba(255, 255, 255, 0.35);
   color: var(--white);
 }
 
-.btn-secondary {
+.page-home .btn-secondary {
   background: rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(10px);
   color: var(--white);
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.btn-secondary:hover {
+.page-home .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.25);
 }
 
-.btn-outline {
+.page-home .btn-outline {
   background: transparent;
   color: var(--white);
   border: 2px solid var(--white);
 }
 
-.btn-outline:hover {
+.page-home .btn-outline:hover {
   background: var(--white);
   color: var(--night);
 }
 
-.btn-large { padding: 1.1rem 2.5rem; font-size: 1rem; }
-.btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
+.page-home .btn-large { padding: 1.1rem 2.5rem; font-size: 1rem; }
+.page-home .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
 
 /* ======================================================================
    HERO STATS
    ====================================================================== */
-.hero-stats {
+.page-home .hero-stats {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -251,9 +250,9 @@
   animation: fadeInUp 1s ease 1s both;
 }
 
-.stat-item { text-align: center; min-width: 120px; }
+.page-home .stat-item { text-align: center; min-width: 120px; }
 
-.stat-number {
+.page-home .stat-number {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
@@ -262,7 +261,7 @@
   margin-bottom: 0.5rem;
 }
 
-.stat-label {
+.page-home .stat-label {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
@@ -270,14 +269,14 @@
   font-weight: 600;
 }
 
-.stat-divider {
+.page-home .stat-divider {
   width: 1px;
   height: 40px;
   background: rgba(255, 255, 255, 0.1);
 }
 
 /* Scroll Indicator */
-.scroll-indicator {
+.page-home .scroll-indicator {
   position: absolute;
   bottom: 2rem;
   left: 50%;
@@ -291,14 +290,14 @@
   transition: var(--transition);
 }
 
-.scroll-indicator span {
+.page-home .scroll-indicator span {
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: rgba(255, 255, 255, 0.3);
 }
 
-.scroll-line {
+.page-home .scroll-line {
   width: 1px;
   height: 40px;
   background: linear-gradient(180deg, rgba(200, 169, 110, 0.4), transparent);
@@ -313,7 +312,7 @@
 /* ======================================================================
    SECTION STYLING
    ====================================================================== */
-.section-badge {
+.page-home .section-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -329,18 +328,18 @@
   border: 1px solid rgba(255, 255, 255, 0.09);
 }
 
-.section-badge.dark {
+.page-home .section-badge.dark {
   background: rgba(200, 169, 110, 0.06);
   border: 1px solid rgba(200, 169, 110, 0.15);
 }
 
-.section-header {
+.page-home .section-header {
   text-align: center;
   max-width: 700px;
   margin: 0 auto 7rem;
 }
 
-.section-header h2 {
+.page-home .section-header h2 {
   font-family: 'DM Sans', sans-serif;
   font-size: clamp(2rem, 4vw, 3.5rem);
   font-weight: 700;
@@ -349,26 +348,26 @@
   letter-spacing: -0.5px;
 }
 
-.section-header p {
+.page-home .section-header p {
   font-size: 1.1rem;
   color: rgba(255, 255, 255, 0.55);
   line-height: 1.8;
 }
 
-.section-header.light h2 { color: var(--white); }
-.section-header.light p { color: rgba(255, 255, 255, 0.55); }
+.page-home .section-header.light h2 { color: var(--white); }
+.page-home .section-header.light p { color: rgba(255, 255, 255, 0.55); }
 
 /* ======================================================================
    FEATURES SECTION
    ====================================================================== */
-.features {
+.page-home .features {
   padding: 13rem 0;
   background: var(--night);
   position: relative;
 }
 
 /* Subtle top separator */
-.features::before {
+.page-home .features::before {
   content: '';
   position: absolute;
   top: 0;
@@ -378,14 +377,14 @@
   background: linear-gradient(90deg, transparent, rgba(200, 169, 110, 0.15), transparent);
 }
 
-.features-grid {
+.page-home .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2.5rem;
   margin-top: 0;
 }
 
-.feature-card {
+.page-home .feature-card {
   display: flex;
   flex-direction: column;
   background: rgba(20, 20, 20, 0.5);
@@ -397,14 +396,14 @@
   overflow: hidden;
 }
 
-.feature-card:hover {
+.page-home .feature-card:hover {
   transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.12);
   background: rgba(20, 20, 20, 0.85);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
 }
 
-.feature-icon {
+.page-home .feature-icon {
   width: 56px;
   height: 56px;
   background: rgba(255, 255, 255, 0.04);
@@ -418,7 +417,7 @@
   margin-bottom: 2.5rem;
 }
 
-.feature-card h3 {
+.page-home .feature-card h3 {
   font-family: 'DM Sans', sans-serif;
   font-size: 1.2rem;
   font-weight: 700;
@@ -426,14 +425,14 @@
   margin-bottom: 1rem;
 }
 
-.feature-card p {
+.page-home .feature-card p {
   color: rgba(255, 255, 255, 0.5);
   line-height: 1.7;
   margin-bottom: 1.25rem;
   flex: 1;
 }
 
-.feature-link {
+.page-home .feature-link {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -446,20 +445,20 @@
   transition: var(--transition-fast);
 }
 
-.feature-link:hover {
+.page-home .feature-link:hover {
   gap: 0.75rem;
 }
 
 /* ======================================================================
    FEATURED AIRCRAFT SECTION
    ====================================================================== */
-.featured {
+.page-home .featured {
   padding: 10rem 0;
   background: var(--night-mid);
   position: relative;
 }
 
-.featured::before {
+.page-home .featured::before {
   content: '';
   position: absolute;
   top: 0;
@@ -469,14 +468,14 @@
   background: linear-gradient(90deg, transparent, rgba(200, 169, 110, 0.12), transparent);
 }
 
-.featured-grid {
+.page-home .featured-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2.5rem;
   margin-top: 0;
 }
 
-.aircraft-card {
+.page-home .aircraft-card {
   background: rgba(10, 12, 18, 0.9);
   border-radius: 16px;
   overflow: hidden;
@@ -485,31 +484,31 @@
   position: relative;
 }
 
-.aircraft-card:hover {
+.page-home .aircraft-card:hover {
   transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.13);
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
 }
 
-.aircraft-image {
+.page-home .aircraft-image {
   position: relative;
   width: 100%;
   height: 280px;
   overflow: hidden;
 }
 
-.aircraft-image img {
+.page-home .aircraft-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: var(--transition);
 }
 
-.aircraft-card:hover .aircraft-image img {
+.page-home .aircraft-card:hover .aircraft-image img {
   transform: scale(1.08);
 }
 
-.aircraft-overlay {
+.page-home .aircraft-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, transparent 30%, rgba(13, 13, 13, 0.95) 100%);
@@ -518,13 +517,13 @@
   padding: 1.5rem;
 }
 
-.aircraft-tags {
+.page-home .aircraft-tags {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
 
-.tag {
+.page-home .tag {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
   color: rgba(255, 255, 255, 0.75);
@@ -537,42 +536,42 @@
   letter-spacing: 0.5px;
 }
 
-.aircraft-content { padding: 2rem; }
+.page-home .aircraft-content { padding: 2rem; }
 
-.aircraft-header {
+.page-home .aircraft-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
 
-.aircraft-header h3 {
+.page-home .aircraft-header h3 {
   font-family: 'DM Sans', sans-serif;
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--white);
 }
 
-.aircraft-flag img {
+.page-home .aircraft-flag img {
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.aircraft-description {
+.page-home .aircraft-description {
   color: rgba(255, 255, 255, 0.5);
   line-height: 1.7;
   margin-bottom: 1.25rem;
   font-size: 0.95rem;
 }
 
-.aircraft-specs {
+.page-home .aircraft-specs {
   display: flex;
   gap: 1.5rem;
   margin-bottom: 1.25rem;
   flex-wrap: wrap;
 }
 
-.spec {
+.page-home .spec {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -580,9 +579,9 @@
   font-size: 0.9rem;
 }
 
-.spec i, .spec .icon { color: var(--hud-cyan); }
+.page-home .spec i, .page-home .spec .icon { color: var(--hud-cyan); }
 
-.aircraft-btn {
+.page-home .aircraft-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -595,11 +594,11 @@
   letter-spacing: 0.5px;
 }
 
-.aircraft-btn:hover {
+.page-home .aircraft-btn:hover {
   gap: 0.75rem;
 }
 
-.section-cta {
+.page-home .section-cta {
   text-align: center;
   margin-top: 3rem;
 }
@@ -607,14 +606,14 @@
 /* ======================================================================
    TIMELINE PREVIEW
    ====================================================================== */
-.timeline-preview {
+.page-home .timeline-preview {
   position: relative;
   padding: 10rem 0;
   background: var(--night);
   overflow: hidden;
 }
 
-.timeline-bg {
+.page-home .timeline-bg {
   position: absolute;
   inset: 0;
   background-image:
@@ -623,7 +622,7 @@
   z-index: 0;
 }
 
-.timeline-preview::before {
+.page-home .timeline-preview::before {
   content: '';
   position: absolute;
   top: 0;
@@ -634,7 +633,7 @@
   z-index: 1;
 }
 
-.timeline-content {
+.page-home .timeline-content {
   position: relative;
   z-index: 1;
   display: grid;
@@ -643,7 +642,7 @@
   align-items: center;
 }
 
-.timeline-text h2 {
+.page-home .timeline-text h2 {
   font-family: 'DM Sans', sans-serif;
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
@@ -652,19 +651,19 @@
   margin-bottom: 2rem;
 }
 
-.timeline-text p {
+.page-home .timeline-text p {
   font-size: 1.1rem;
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.6);
   margin-bottom: 2rem;
 }
 
-.timeline-features {
+.page-home .timeline-features {
   list-style: none;
   margin-bottom: 2rem;
 }
 
-.timeline-features li {
+.page-home .timeline-features li {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -673,14 +672,14 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-.timeline-features i, .timeline-features .icon { color: var(--hud-cyan); font-size: 1.1rem; }
+.page-home .timeline-features i, .page-home .timeline-features .icon { color: var(--hud-cyan); font-size: 1.1rem; }
 
-.timeline-visual {
+.page-home .timeline-visual {
   display: grid;
   gap: 1.25rem;
 }
 
-.timeline-card {
+.page-home .timeline-card {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 12px;
@@ -689,7 +688,7 @@
   position: relative;
 }
 
-.timeline-card::before {
+.page-home .timeline-card::before {
   content: '';
   position: absolute;
   left: 0;
@@ -701,24 +700,24 @@
   border-radius: 2px;
 }
 
-.timeline-card:hover, .timeline-card.active {
+.page-home .timeline-card:hover, .page-home .timeline-card.active {
   background: rgba(255, 255, 255, 0.04);
   border-color: rgba(255, 255, 255, 0.12);
   transform: translateX(4px);
 }
 
-.timeline-card:hover::before, .timeline-card.active::before {
+.page-home .timeline-card:hover::before, .page-home .timeline-card.active::before {
   background: var(--hud-cyan);
 }
 
-.timeline-year {
+.page-home .timeline-year {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.4);
   margin-bottom: 0.5rem;
   letter-spacing: 1px;
 }
 
-.timeline-gen {
+.page-home .timeline-gen {
   font-family: 'DM Sans', sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
@@ -726,7 +725,7 @@
   margin-bottom: 0.5rem;
 }
 
-.timeline-example {
+.page-home .timeline-example {
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.5);
 }
@@ -734,7 +733,7 @@
 /* ======================================================================
    CTA SECTION
    ====================================================================== */
-.cta-section {
+.page-home .cta-section {
   padding: 12rem 0;
   background: var(--night-mid);
   text-align: center;
@@ -742,7 +741,7 @@
   overflow: hidden;
 }
 
-.cta-grid-bg {
+.page-home .cta-grid-bg {
   position: absolute;
   inset: 0;
   background-image:
@@ -752,12 +751,12 @@
   z-index: 0;
 }
 
-.cta-content {
+.page-home .cta-content {
   position: relative;
   z-index: 1;
 }
 
-.cta-icon {
+.page-home .cta-icon {
   width: 72px;
   height: 72px;
   margin: 0 auto 2rem;
@@ -771,7 +770,7 @@
   color: var(--hud-cyan);
 }
 
-.cta-content h2 {
+.page-home .cta-content h2 {
   font-family: 'DM Sans', sans-serif;
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 700;
@@ -779,7 +778,7 @@
   color: var(--white);
 }
 
-.cta-content p {
+.page-home .cta-content p {
   font-size: 1.15rem;
   margin-bottom: 2.5rem;
   color: rgba(255, 255, 255, 0.55);
@@ -789,7 +788,7 @@
   margin-bottom: 2.5rem;
 }
 
-.cta-actions {
+.page-home .cta-actions {
   display: flex;
   gap: 1rem;
   justify-content: center;
@@ -801,24 +800,24 @@
 /* ======================================================================
    AOS ANIMATIONS
    ====================================================================== */
-[data-aos] {
+.page-home [data-aos] {
   opacity: 0;
   transition-property: transform, opacity;
 }
 
-[data-aos].aos-animate { opacity: 1; }
+.page-home [data-aos].aos-animate { opacity: 1; }
 
-[data-aos="fade-up"] { transform: translateY(40px); }
-[data-aos="fade-up"].aos-animate { transform: translateY(0); }
+.page-home [data-aos="fade-up"] { transform: translateY(40px); }
+.page-home [data-aos="fade-up"].aos-animate { transform: translateY(0); }
 
-[data-aos="fade-right"] { transform: translateX(-40px); }
-[data-aos="fade-right"].aos-animate { transform: translateX(0); }
+.page-home [data-aos="fade-right"] { transform: translateX(-40px); }
+.page-home [data-aos="fade-right"].aos-animate { transform: translateX(0); }
 
-[data-aos="fade-left"] { transform: translateX(40px); }
-[data-aos="fade-left"].aos-animate { transform: translateX(0); }
+.page-home [data-aos="fade-left"] { transform: translateX(40px); }
+.page-home [data-aos="fade-left"].aos-animate { transform: translateX(0); }
 
-[data-aos="zoom-in"] { transform: scale(0.9); }
-[data-aos="zoom-in"].aos-animate { transform: scale(1); }
+.page-home [data-aos="zoom-in"] { transform: scale(0.9); }
+.page-home [data-aos="zoom-in"].aos-animate { transform: scale(1); }
 
 
 /* ======================================================================
@@ -827,168 +826,168 @@
 
 /* Extra Large Desktop */
 @media (min-width: 1400px) {
-  .container { max-width: 1400px; }
-  .featured-grid { grid-template-columns: repeat(3, 1fr); }
+  .page-home .container { max-width: 1400px; }
+  .page-home .featured-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* Large Desktop */
 @media (max-width: 1399px) {
-  .featured-grid { grid-template-columns: repeat(3, 1fr); }
+  .page-home .featured-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 /* Desktop */
 @media (max-width: 1199px) {
-  .container { padding: 0 3rem; }
-  .featured-grid { grid-template-columns: repeat(2, 1fr); }
-  .timeline-content { gap: 5rem; }
+  .page-home .container { padding: 0 3rem; }
+  .page-home .featured-grid { grid-template-columns: repeat(2, 1fr); }
+  .page-home .timeline-content { gap: 5rem; }
 }
 
 /* Tablet Landscape */
 @media (max-width: 1023px) {
-  .hero { min-height: 650px; }
-  .hero-content { max-width: 750px; }
-  .hero-stats { gap: 2rem; }
-  .hero-hud-corner { display: none; }
-  .timeline-content { grid-template-columns: 1fr; gap: 3rem; }
-  .timeline-visual { grid-template-columns: repeat(2, 1fr); }
+  .page-home .hero { min-height: 650px; }
+  .page-home .hero-content { max-width: 750px; }
+  .page-home .hero-stats { gap: 2rem; }
+  .page-home .hero-hud-corner { display: none; }
+  .page-home .timeline-content { grid-template-columns: 1fr; gap: 3rem; }
+  .page-home .timeline-visual { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* Tablet Portrait */
 @media (max-width: 991px) {
   /* hamburger/nav/user-menu/footer responsive → shared.css */
 
-  .hero { min-height: 600px; }
-  .hero-content { padding: 2rem 1.5rem; }
-  .hero-stats { gap: 2rem; }
-  .stat-number { font-size: 2.25rem; }
+  .page-home .hero { min-height: 600px; }
+  .page-home .hero-content { padding: 2rem 1.5rem; }
+  .page-home .hero-stats { gap: 2rem; }
+  .page-home .stat-number { font-size: 2.25rem; }
 
-  .features-grid { grid-template-columns: 1fr; gap: 2rem; }
-  .featured-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
-  .aircraft-image { height: 240px; }
+  .page-home .features-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .page-home .featured-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+  .page-home .aircraft-image { height: 240px; }
 
-  .features, .featured, .timeline-preview, .cta-section { padding: 6rem 0; }
+  .page-home .features, .page-home .featured, .page-home .timeline-preview, .page-home .cta-section { padding: 6rem 0; }
 }
 
 /* Mobile Landscape */
 @media (max-width: 767px) {
-  .container { padding: 0 1.5rem; }
+  .page-home .container { padding: 0 1.5rem; }
   /* logo responsive → shared.css */
-  .hero { min-height: 550px; }
-  .hero-content { padding: 1.5rem 1rem; }
+  .page-home .hero { min-height: 550px; }
+  .page-home .hero-content { padding: 1.5rem 1rem; }
 
-  .hero-badge { font-size: 0.7rem; padding: 0.5rem 1rem 0.5rem 1.8rem; margin-bottom: 1.5rem; }
-  .hero-title { margin-bottom: 1.25rem; }
-  .hero-description { margin-bottom: 2rem; }
+  .page-home .hero-badge { font-size: 0.7rem; padding: 0.5rem 1rem 0.5rem 1.8rem; margin-bottom: 1.5rem; }
+  .page-home .hero-title { margin-bottom: 1.25rem; }
+  .page-home .hero-description { margin-bottom: 2rem; }
 
-  .hero-actions, .cta-actions { gap: 0.75rem; }
-  .btn { width: 100%; max-width: 400px; }
-  .btn-large { padding: 0.875rem 1.75rem; }
+  .page-home .hero-actions, .page-home .cta-actions { gap: 0.75rem; }
+  .page-home .btn { width: 100%; max-width: 400px; }
+  .page-home .btn-large { padding: 0.875rem 1.75rem; }
 
-  .hero-stats {
+  .page-home .hero-stats {
     flex-direction: row;
     justify-content: space-around;
     gap: 1.5rem;
     margin-top: 2.5rem;
   }
 
-  .stat-item { min-width: auto; flex: 1; }
-  .stat-number { font-size: 2rem; }
-  .stat-label { font-size: 0.7rem; }
-  .stat-divider { display: none; }
+  .page-home .stat-item { min-width: auto; flex: 1; }
+  .page-home .stat-number { font-size: 2rem; }
+  .page-home .stat-label { font-size: 0.7rem; }
+  .page-home .stat-divider { display: none; }
 
-  .section-header { margin-bottom: 3rem; }
-  .section-header h2 { margin-bottom: 0.75rem; }
+  .page-home .section-header { margin-bottom: 3rem; }
+  .page-home .section-header h2 { margin-bottom: 0.75rem; }
 
-  .featured-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-  .aircraft-image { height: 220px; }
-  .aircraft-content { padding: 1.25rem; }
-  .aircraft-specs { gap: 1rem; }
+  .page-home .featured-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .page-home .aircraft-image { height: 220px; }
+  .page-home .aircraft-content { padding: 1.25rem; }
+  .page-home .aircraft-specs { gap: 1rem; }
 
-  .timeline-visual { grid-template-columns: 1fr; }
-  .timeline-card { padding: 1.25rem; }
+  .page-home .timeline-visual { grid-template-columns: 1fr; }
+  .page-home .timeline-card { padding: 1.25rem; }
 
   /* footer responsive → shared.css */
 
-  .features, .featured, .timeline-preview, .cta-section { padding: 5rem 0; }
+  .page-home .features, .page-home .featured, .page-home .timeline-preview, .page-home .cta-section { padding: 5rem 0; }
 }
 
 /* Mobile Portrait */
 @media (max-width: 639px) {
   /* logo responsive → shared.css */
-  .hero { min-height: 500px; }
-  .hero-content { padding: 1rem; }
-  .hero-badge { font-size: 0.65rem; padding: 0.4rem 0.9rem 0.4rem 1.7rem; }
+  .page-home .hero { min-height: 500px; }
+  .page-home .hero-content { padding: 1rem; }
+  .page-home .hero-badge { font-size: 0.65rem; padding: 0.4rem 0.9rem 0.4rem 1.7rem; }
 
-  .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
-  .stat-number { font-size: 1.875rem; }
-  .stat-label { font-size: 0.65rem; }
+  .page-home .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+  .page-home .stat-number { font-size: 1.875rem; }
+  .page-home .stat-label { font-size: 0.65rem; }
 
-  .feature-card { padding: 1.5rem; }
-  .feature-icon { width: 48px; height: 48px; font-size: 1.3rem; }
-  .aircraft-image { height: 200px; }
+  .page-home .feature-card { padding: 1.5rem; }
+  .page-home .feature-icon { width: 48px; height: 48px; font-size: 1.3rem; }
+  .page-home .aircraft-image { height: 200px; }
 
   /* user-dropdown responsive → shared.css */
 
-  .cta-content p { font-size: 1.05rem; margin-bottom: 2rem; }
+  .page-home .cta-content p { font-size: 1.05rem; margin-bottom: 2rem; }
 }
 
 /* Extra Small Mobile */
 @media (max-width: 479px) {
-  .container { padding: 0 0.875rem; }
+  .page-home .container { padding: 0 0.875rem; }
   /* logo responsive → shared.css */
 
-  .hero { min-height: 450px; }
-  .hero-content { padding: 0.75rem; }
-  .hero-badge { font-size: 0.6rem; padding: 0.35rem 0.8rem 0.35rem 1.6rem; margin-bottom: 1rem; }
+  .page-home .hero { min-height: 450px; }
+  .page-home .hero-content { padding: 0.75rem; }
+  .page-home .hero-badge { font-size: 0.6rem; padding: 0.35rem 0.8rem 0.35rem 1.6rem; margin-bottom: 1rem; }
 
-  .hero-stats { gap: 1rem; margin-top: 1.5rem; }
-  .stat-number { font-size: 1.6rem; }
-  .stat-label { font-size: 0.6rem; }
+  .page-home .hero-stats { gap: 1rem; margin-top: 1.5rem; }
+  .page-home .stat-number { font-size: 1.6rem; }
+  .page-home .stat-label { font-size: 0.6rem; }
 
-  .btn { padding: 0.75rem 1.5rem; font-size: 0.875rem; }
-  .btn i, .btn .icon { font-size: 0.875rem; }
+  .page-home .btn { padding: 0.75rem 1.5rem; font-size: 0.875rem; }
+  .page-home .btn i, .page-home .btn .icon { font-size: 0.875rem; }
 
-  .feature-card { padding: 1.25rem; }
-  .feature-card h3 { font-size: 1.15rem; }
-  .aircraft-image { height: 180px; }
-  .aircraft-content { padding: 1rem; }
-  .aircraft-header h3 { font-size: 1.2rem; }
-  .aircraft-description { font-size: 0.9rem; }
+  .page-home .feature-card { padding: 1.25rem; }
+  .page-home .feature-card h3 { font-size: 1.15rem; }
+  .page-home .aircraft-image { height: 180px; }
+  .page-home .aircraft-content { padding: 1rem; }
+  .page-home .aircraft-header h3 { font-size: 1.2rem; }
+  .page-home .aircraft-description { font-size: 0.9rem; }
 
-  .timeline-card { padding: 1rem; }
-  .timeline-gen { font-size: 1.1rem; }
+  .page-home .timeline-card { padding: 1rem; }
+  .page-home .timeline-gen { font-size: 1.1rem; }
 
   /* user-dropdown/footer responsive → shared.css */
 
-  .features, .featured, .timeline-preview, .cta-section { padding: 3rem 0; }
-  .section-header { margin-bottom: 2.5rem; }
+  .page-home .features, .page-home .featured, .page-home .timeline-preview, .page-home .cta-section { padding: 3rem 0; }
+  .page-home .section-header { margin-bottom: 2.5rem; }
 }
 
 /* Landscape orientation */
 @media (max-height: 500px) and (orientation: landscape) {
-  .hero { min-height: 100vh; height: auto; }
-  .hero-content { padding: 1rem; }
-  .hero-badge { margin-bottom: 0.75rem; }
-  .hero-title { margin-bottom: 0.75rem; }
-  .hero-description { margin-bottom: 1rem; }
-  .hero-stats { margin-top: 1rem; }
-  .scroll-indicator { display: none; }
+  .page-home .hero { min-height: 100vh; height: auto; }
+  .page-home .hero-content { padding: 1rem; }
+  .page-home .hero-badge { margin-bottom: 0.75rem; }
+  .page-home .hero-title { margin-bottom: 0.75rem; }
+  .page-home .hero-description { margin-bottom: 1rem; }
+  .page-home .hero-stats { margin-top: 1rem; }
+  .page-home .scroll-indicator { display: none; }
 }
 
 /* Touch device optimizations */
 @media (hover: none) and (pointer: coarse) {
-  .btn { min-height: 44px; }
+  .page-home .btn { min-height: 44px; }
   /* nav/dropdown touch responsive → shared.css */
 
-  .feature-card:hover, .aircraft-card:hover { transform: none; }
+  .page-home .feature-card:hover, .page-home .aircraft-card:hover { transform: none; }
 
-  .feature-card:active { transform: scale(0.98); }
-  .aircraft-card:active { transform: scale(0.98); }
+  .page-home .feature-card:active { transform: scale(0.98); }
+  .page-home .aircraft-card:active { transform: scale(0.98); }
 }
 
 /* High resolution displays */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .aircraft-image img, .hero-video {
+  .page-home .aircraft-image img, .page-home .hero-video {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
   }
@@ -996,34 +995,34 @@
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  .page-home *, .page-home *::before, .page-home *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .scroll-indicator { animation: none; }
+  .page-home .scroll-indicator { animation: none; }
 }
 
 /* Print styles */
 @media print {
   /* header/footer/hamburger/user-menu print → shared.css */
-  .scroll-indicator, .hero-video, .hero-hud-grid, .hero-hud-corner, .cta-grid-bg { display: none !important; }
-  .hero { min-height: auto; height: auto; }
-  * { background: white !important; color: black !important; box-shadow: none !important; }
+  .page-home .scroll-indicator, .page-home .hero-video, .page-home .hero-hud-grid, .page-home .hero-hud-corner, .page-home .cta-grid-bg { display: none !important; }
+  .page-home .hero { min-height: auto; height: auto; }
+  .page-home * { background: white !important; color: black !important; box-shadow: none !important; }
 }
 /* ======================================================================
    NOUVELLES SECTIONS — Mise à jour page d'accueil
    ====================================================================== */
 
 /* === SECTION ESPACE PERSONNEL === */
-.personal-space {
+.page-home .personal-space {
   padding: 6rem 0;
   background: var(--night-mid);
   position: relative;
   overflow: hidden;
 }
 
-.personal-space::before {
+.page-home .personal-space::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -1031,14 +1030,14 @@
   pointer-events: none;
 }
 
-.personal-space-grid {
+.page-home .personal-space-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2.5rem;
   margin-top: 3rem;
 }
 
-.personal-card {
+.page-home .personal-card {
   background: rgba(13, 13, 13, 0.7);
   border: 1px solid rgba(200, 169, 110, 0.1);
   border-radius: 20px;
@@ -1048,13 +1047,13 @@
   transition: var(--transition);
 }
 
-.personal-card:hover {
+.page-home .personal-card:hover {
   border-color: rgba(200, 169, 110, 0.25);
   transform: translateY(-4px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
-.personal-card::before {
+.page-home .personal-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -1064,9 +1063,9 @@
   transition: var(--transition);
 }
 
-.personal-card:hover::before { opacity: 1; }
+.page-home .personal-card:hover::before { opacity: 1; }
 
-.personal-card-icon {
+.page-home .personal-card-icon {
   width: 56px;
   height: 56px;
   background: rgba(200, 169, 110, 0.1);
@@ -1079,20 +1078,20 @@
   margin-bottom: 1.5rem;
 }
 
-.personal-card h3 {
+.page-home .personal-card h3 {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--white);
   margin-bottom: 0.75rem;
 }
 
-.personal-card p {
+.page-home .personal-card p {
   color: rgba(255, 255, 255, 0.55);
   line-height: 1.7;
   margin-bottom: 1.5rem;
 }
 
-.personal-features-list {
+.page-home .personal-features-list {
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -1100,7 +1099,7 @@
   margin-bottom: 2rem;
 }
 
-.personal-features-list li {
+.page-home .personal-features-list li {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -1108,21 +1107,21 @@
   font-size: 0.9rem;
 }
 
-.personal-features-list li i, .personal-features-list li .icon {
+.page-home .personal-features-list li i, .page-home .personal-features-list li .icon {
   color: var(--hud-green);
   width: 16px;
   text-align: center;
   flex-shrink: 0;
 }
 
-.roles-grid {
+.page-home .roles-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
   margin-bottom: 2rem;
 }
 
-.role-badge {
+.page-home .role-badge {
   background: rgba(20, 20, 20, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 10px;
@@ -1131,15 +1130,15 @@
   transition: var(--transition);
 }
 
-.role-badge:hover { border-color: rgba(200, 169, 110, 0.2); }
+.page-home .role-badge:hover { border-color: rgba(200, 169, 110, 0.2); }
 
-.role-badge .role-icon {
+.page-home .role-badge .role-icon {
   font-size: 1.25rem;
   margin-bottom: 0.375rem;
   display: block;
 }
 
-.role-badge .role-name {
+.page-home .role-badge .role-name {
   display: block;
   font-size: 0.8rem;
   font-weight: 600;
@@ -1147,28 +1146,28 @@
   margin-bottom: 0.25rem;
 }
 
-.role-badge .role-desc {
+.page-home .role-badge .role-desc {
   font-size: 0.72rem;
   color: rgba(255, 255, 255, 0.45);
   line-height: 1.3;
 }
 
-.role-badge.admin { border-color: rgba(255, 171, 0, 0.25); }
-.role-badge.admin .role-icon { color: var(--hud-amber); }
-.role-badge.editor { border-color: rgba(200, 169, 110, 0.2); }
-.role-badge.editor .role-icon { color: var(--hud-cyan); }
-.role-badge.member { border-color: rgba(0, 230, 118, 0.2); }
-.role-badge.member .role-icon { color: var(--hud-green); }
+.page-home .role-badge.admin { border-color: rgba(255, 171, 0, 0.25); }
+.page-home .role-badge.admin .role-icon { color: var(--hud-amber); }
+.page-home .role-badge.editor { border-color: rgba(200, 169, 110, 0.2); }
+.page-home .role-badge.editor .role-icon { color: var(--hud-cyan); }
+.page-home .role-badge.member { border-color: rgba(0, 230, 118, 0.2); }
+.page-home .role-badge.member .role-icon { color: var(--hud-green); }
 
 /* === SECTION RECHERCHE AVANCÉE === */
-.search-showcase {
+.page-home .search-showcase {
   padding: 6rem 0;
   background: var(--night);
   position: relative;
   overflow: hidden;
 }
 
-.search-showcase::before {
+.page-home .search-showcase::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -1176,14 +1175,14 @@
   pointer-events: none;
 }
 
-.search-showcase-content {
+.page-home .search-showcase-content {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   gap: 4rem;
   align-items: center;
 }
 
-.search-showcase-text h2 {
+.page-home .search-showcase-text h2 {
   font-size: 2.25rem;
   font-weight: 700;
   color: var(--white);
@@ -1191,13 +1190,13 @@
   line-height: 1.2;
 }
 
-.search-showcase-text p {
+.page-home .search-showcase-text p {
   color: rgba(255, 255, 255, 0.55);
   line-height: 1.7;
   margin-bottom: 2rem;
 }
 
-.search-features-list {
+.page-home .search-features-list {
   list-style: none;
   display: flex;
   flex-direction: column;
@@ -1205,13 +1204,13 @@
   margin-bottom: 2.5rem;
 }
 
-.search-features-list li {
+.page-home .search-features-list li {
   display: flex;
   align-items: flex-start;
   gap: 1rem;
 }
 
-.search-features-list li .sf-icon {
+.page-home .search-features-list li .sf-icon {
   width: 36px;
   height: 36px;
   background: rgba(0, 230, 118, 0.1);
@@ -1225,20 +1224,20 @@
   margin-top: 2px;
 }
 
-.search-features-list li .sf-text strong {
+.page-home .search-features-list li .sf-text strong {
   display: block;
   color: var(--white);
   font-weight: 600;
   margin-bottom: 0.2rem;
 }
 
-.search-features-list li .sf-text span {
+.page-home .search-features-list li .sf-text span {
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.875rem;
 }
 
 /* Hangar UI Mockup */
-.hangar-mockup {
+.page-home .hangar-mockup {
   background: rgba(20, 20, 20, 0.8);
   border: 1px solid rgba(200, 169, 110, 0.12);
   border-radius: 20px;
@@ -1247,7 +1246,7 @@
   position: relative;
 }
 
-.mockup-header {
+.page-home .mockup-header {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1256,24 +1255,24 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.mockup-dot {
+.page-home .mockup-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
 }
 
-.mockup-dot:nth-child(1) { background: #ff5f57; }
-.mockup-dot:nth-child(2) { background: #febc2e; }
-.mockup-dot:nth-child(3) { background: #28c840; }
+.page-home .mockup-dot:nth-child(1) { background: #ff5f57; }
+.page-home .mockup-dot:nth-child(2) { background: #febc2e; }
+.page-home .mockup-dot:nth-child(3) { background: #28c840; }
 
-.mockup-title {
+.page-home .mockup-title {
   margin-left: auto;
   font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.35);
   font-family: 'Barlow Condensed', sans-serif;
 }
 
-.mockup-search {
+.page-home .mockup-search {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -1284,21 +1283,21 @@
   margin-bottom: 1rem;
 }
 
-.mockup-search i, .mockup-search .icon { color: var(--hud-cyan); font-size: 0.9rem; }
+.page-home .mockup-search i, .page-home .mockup-search .icon { color: var(--hud-cyan); font-size: 0.9rem; }
 
-.mockup-search span {
+.page-home .mockup-search span {
   color: rgba(255, 255, 255, 0.3);
   font-size: 0.875rem;
 }
 
-.mockup-filters {
+.page-home .mockup-filters {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
   margin-bottom: 1.25rem;
 }
 
-.mockup-filter-chip {
+.page-home .mockup-filter-chip {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -1310,25 +1309,25 @@
   transition: var(--transition);
 }
 
-.mockup-filter-chip.active {
+.page-home .mockup-filter-chip.active {
   background: rgba(200, 169, 110, 0.12);
   border: 1px solid rgba(200, 169, 110, 0.3);
   color: var(--hud-cyan);
 }
 
-.mockup-filter-chip.inactive {
+.page-home .mockup-filter-chip.inactive {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.45);
 }
 
-.mockup-view-toggle {
+.page-home .mockup-view-toggle {
   display: flex;
   gap: 0.375rem;
   margin-left: auto;
 }
 
-.mockup-view-btn {
+.page-home .mockup-view-btn {
   width: 32px;
   height: 32px;
   border-radius: 8px;
@@ -1338,29 +1337,29 @@
   font-size: 0.8rem;
 }
 
-.mockup-view-btn.active-view {
+.page-home .mockup-view-btn.active-view {
   background: rgba(200, 169, 110, 0.15);
   color: var(--hud-cyan);
 }
 
-.mockup-view-btn.inactive-view {
+.page-home .mockup-view-btn.inactive-view {
   background: rgba(255, 255, 255, 0.04);
   color: rgba(255, 255, 255, 0.3);
 }
 
-.mockup-filters-row {
+.page-home .mockup-filters-row {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.mockup-grid {
+.page-home .mockup-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
 }
 
-.mockup-card {
+.page-home .mockup-card {
   background: rgba(13, 13, 13, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 10px;
@@ -1368,11 +1367,11 @@
   transition: var(--transition);
 }
 
-.mockup-card:hover {
+.page-home .mockup-card:hover {
   border-color: rgba(200, 169, 110, 0.2);
 }
 
-.mockup-card-img {
+.page-home .mockup-card-img {
   height: 70px;
   background: linear-gradient(135deg, rgba(200, 169, 110, 0.05) 0%, rgba(20, 20, 20, 0.8) 100%);
   display: flex;
@@ -1383,18 +1382,18 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.mockup-card-body {
+.page-home .mockup-card-body {
   padding: 0.625rem 0.75rem;
 }
 
-.mockup-card-name {
+.page-home .mockup-card-name {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--white);
   margin-bottom: 0.3rem;
 }
 
-.mockup-card-meta {
+.page-home .mockup-card-meta {
   font-size: 0.68rem;
   color: rgba(255, 255, 255, 0.4);
   display: flex;
@@ -1407,15 +1406,15 @@
 }
 
 @media (max-width: 992px) {
-  .personal-space-grid { grid-template-columns: 1fr; }
-  .search-showcase-content { grid-template-columns: 1fr; }
-  .roles-grid { grid-template-columns: repeat(3, 1fr); }
-  .hangar-mockup { display: none; }
+  .page-home .personal-space-grid { grid-template-columns: 1fr; }
+  .page-home .search-showcase-content { grid-template-columns: 1fr; }
+  .page-home .roles-grid { grid-template-columns: repeat(3, 1fr); }
+  .page-home .hangar-mockup { display: none; }
 }
 
 @media (max-width: 768px) {
-  .roles-grid { grid-template-columns: repeat(3, 1fr); }
-  .personal-card { padding: 1.75rem; }
+  .page-home .roles-grid { grid-template-columns: repeat(3, 1fr); }
+  .page-home .personal-card { padding: 1.75rem; }
 }
 /* lang-switch → shared.css */
 

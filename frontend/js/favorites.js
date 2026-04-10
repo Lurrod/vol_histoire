@@ -1,10 +1,4 @@
-const ALPHA3_TO_ALPHA2 = {
-  USA: 'us', RUS: 'ru', CHN: 'cn', FRA: 'fr', GBR: 'gb',
-  DEU: 'de', ITA: 'it', SWE: 'se', IND: 'in', JPN: 'jp',
-  BRA: 'br', ISR: 'il', VNM: 'vn', AFG: 'af', IRQ: 'iq',
-  YUG: 'rs', KOR: 'kr', FLK: 'fk', LBN: 'lb', DZA: 'dz',
-  SYR: 'sy', IRN: 'ir'
-};
+/* ALPHA3_TO_ALPHA2 fourni par js/shared/alpha3.js — chargé avant ce script. */
 
 document.addEventListener("DOMContentLoaded", async () => {
   await auth.init();
@@ -199,6 +193,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     state.search = e.target.value.toLowerCase();
     writeStateToUrl();
     applyFiltersAndRender();
+    decorateFacetCounts();
   });
 
   sortSelect?.addEventListener('change', (e) => {
@@ -233,6 +228,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Click handlers pour les options
     document.querySelectorAll('.filter-option').forEach(option => {
       option.addEventListener('click', function () {
+        // Option grisée (count 0) : ignore le clic
+        if (this.classList.contains('filter-option-empty')) return;
         const dropdown = this.closest('.filter-dropdown');
         const filterType = dropdown.id.replace('-dropdown', '');
         const value = this.dataset.value;
@@ -244,8 +241,69 @@ document.addEventListener("DOMContentLoaded", async () => {
         applyFiltersAndRender();
         closeAllDropdowns();
         updateActiveFilters();
+        decorateFacetCounts();
       });
     });
+
+    decorateFacetCounts();
+  }
+
+  /* =========================================================================
+     FACET COUNTS (côté client — leave-one-out)
+     =========================================================================
+     Pour chaque dimension (pays/génération/type), on calcule le nombre de
+     favoris qui matcheraient SI on remplaçait juste ce filtre. Les options à
+     0 sont grisées et non cliquables. Pareil comportement que /hangar.
+  */
+  function computeFacets() {
+    const facets = { countries: {}, generations: {}, types: {} };
+    const base = state.favorites.filter(a => {
+      if (state.search) {
+        const q = state.search;
+        if (!(a.name?.toLowerCase().includes(q) ||
+              a.complete_name?.toLowerCase().includes(q) ||
+              a.country_name?.toLowerCase().includes(q) ||
+              a.little_description?.toLowerCase().includes(q))) return false;
+      }
+      return true;
+    });
+
+    function matchExcept(a, except) {
+      if (except !== 'country' && state.filters.country && a.country_name !== state.filters.country) return false;
+      if (except !== 'generation' && state.filters.generation && String(a.generation) !== String(state.filters.generation)) return false;
+      if (except !== 'type' && state.filters.type && a.type_name !== state.filters.type) return false;
+      return true;
+    }
+
+    base.forEach(a => {
+      if (matchExcept(a, 'country') && a.country_name) {
+        facets.countries[a.country_name] = (facets.countries[a.country_name] || 0) + 1;
+      }
+      if (matchExcept(a, 'generation') && a.generation != null) {
+        facets.generations[a.generation] = (facets.generations[a.generation] || 0) + 1;
+      }
+      if (matchExcept(a, 'type') && a.type_name) {
+        facets.types[a.type_name] = (facets.types[a.type_name] || 0) + 1;
+      }
+    });
+
+    return facets;
+  }
+
+  function decorateFacetCounts() {
+    const facets = computeFacets();
+    const apply = (selector, lookup) => {
+      document.querySelectorAll(selector).forEach(el => {
+        const n = lookup(el) || 0;
+        let tag = el.querySelector('.fc');
+        if (!tag) { tag = document.createElement('span'); tag.className = 'fc'; el.appendChild(tag); }
+        tag.textContent = ' (' + n + ')';
+        el.classList.toggle('filter-option-empty', n === 0);
+      });
+    };
+    apply('#country-options .filter-option', el => facets.countries[el.dataset.value]);
+    apply('#generation-options .filter-option', el => facets.generations[Number(el.dataset.value)]);
+    apply('#type-options .filter-option', el => facets.types[el.dataset.value]);
   }
 
   // Dropdown toggle
@@ -331,6 +389,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         writeStateToUrl();
         applyFiltersAndRender();
         updateActiveFilters();
+        decorateFacetCounts();
       });
     });
     container.querySelector('.clear-all-filters')?.addEventListener('click', () => {
@@ -340,6 +399,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       writeStateToUrl();
       applyFiltersAndRender();
       updateActiveFilters();
+      decorateFacetCounts();
     });
   }
 
@@ -425,52 +485,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    container.innerHTML = state.filtered.map(aircraft => `
-      <article class="aircraft-card" data-id="${aircraft.id}" tabindex="0" role="link" aria-label="${escapeHtml(aircraft.name)}">
-        <button class="favorite-remove" data-airplane-id="${aircraft.id}" title="${i18n.t('details.remove_favorite')}">
-          <i class="fas fa-heart-broken"></i>
-        </button>
-        <div class="aircraft-image">
-          <img src="${escapeHtml(aircraft.image_url) || 'https://via.placeholder.com/400x300?text=No+Image'}"
-               alt="${escapeHtml(aircraft.name)}"
-               loading="lazy" width="400" height="300">
-          <div class="aircraft-overlay">
-            <div class="aircraft-badges">
-              ${aircraft.generation ? `<span class="aircraft-badge generation">${escapeHtml(aircraft.generation)}e Gén</span>` : ''}
-              ${aircraft.type_name ? `<span class="aircraft-badge type">${escapeHtml(aircraft.type_name)}</span>` : ''}
-            </div>
-          </div>
-        </div>
-        <div class="aircraft-content">
-          <div class="aircraft-header">
-            <div class="aircraft-title">
-              <div class="aircraft-name-row">
-                <h3>${escapeHtml(aircraft.name)}</h3>
-                ${aircraft.country_code && ALPHA3_TO_ALPHA2[aircraft.country_code] ? `<img class="country-flag" src="https://flagcdn.com/w80/${ALPHA3_TO_ALPHA2[aircraft.country_code]}.png" alt="${escapeHtml(aircraft.country_name)}" width="24" height="18">` : ''}
-              </div>
-            </div>
-          </div>
-          <div class="aircraft-specs">
-            ${aircraft.max_speed ? `
-              <div class="spec-item">
-                <i class="fas fa-gauge-high"></i>
-                <span>${escapeHtml(aircraft.max_speed)} km/h</span>
-              </div>
-            ` : ''}
-            ${aircraft.date_operationel ? `
-              <div class="spec-item">
-                <i class="fas fa-calendar"></i>
-                <span>${new Date(aircraft.date_operationel).getFullYear()}</span>
-              </div>
-            ` : ''}
-          </div>
-          <div class="favorited-date">
-            <i class="fas fa-heart"></i>
-            <span>${formatRelativeDate(aircraft.favorited_at)}</span>
-          </div>
-        </div>
-      </article>
-    `).join('');
+    container.innerHTML = state.filtered.map(aircraft => {
+      const footer = `<div class="favorited-date"><i class="fas fa-heart"></i><span>${formatRelativeDate(aircraft.favorited_at)}</span></div>`;
+      return VH.shared.renderAircraftCard(aircraft, {
+        removeBtn: true,
+        showDescription: false,
+        footerHtml: footer,
+      });
+    }).join('');
 
     // Navigate to detail on card click
     container.querySelectorAll('.aircraft-card').forEach(card => {

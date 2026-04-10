@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      if (!validateEmail(email)) {
+      if (!isValidEmail(email)) {
         showToast('Adresse email invalide', 'error');
         return;
       }
@@ -332,16 +332,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  function calculatePasswordStrength(password) {
-    let strength = 0;
-    if (password.length >= 8) strength += 25;
-    if (/[a-z]/.test(password)) strength += 20;
-    if (/[A-Z]/.test(password)) strength += 20;
-    if (/[0-9]/.test(password)) strength += 15;
-    if (password.length >= 12) strength += 10;
-    if (/[^a-zA-Z0-9]/.test(password)) strength += 10;
-    return Math.min(strength, 100);
-  }
+  // calculatePasswordStrength → utils.js
 
   function updatePasswordRequirements(password) {
     const requirements = {
@@ -460,10 +451,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // UTILITY FUNCTIONS
   // ========================================================================
   
-  function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  }
+  // validateEmail → isValidEmail() dans utils.js (même regex que le backend)
 
   function setButtonLoading(button, loading) {
     if (!button) return;

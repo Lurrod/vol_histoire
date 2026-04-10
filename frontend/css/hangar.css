@@ -1,6 +1,5 @@
 /* ======================================================================
    VOL D'HISTOIRE — HANGAR PAGE
-   Dark HUD / Cockpit Theme
    ====================================================================== */
 
 /* Variables, reset, body et container fournis par tokens.css + base.css */
@@ -10,7 +9,7 @@
 /* ======================================================================
    PAGE HERO
    ====================================================================== */
-.page-hero {
+.page-hangar .page-hero {
   position: relative;
   background: var(--night);
   padding: 9rem 0 8rem;
@@ -18,39 +17,39 @@
   overflow: hidden;
 }
 
-.hero-background {
+.page-hangar .hero-background {
   position: absolute; inset: 0;
   background: radial-gradient(ellipse at 80% 20%, rgba(200,169,110,0.04) 0%, transparent 55%);
   z-index: 0;
 }
 
 /* MODERN HERO LAYOUT */
-.page-hero-inner { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: flex-end; gap: 4rem; }
-.hero-text { flex: 1; max-width: 600px; }
-.hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.28); display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
-.hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
-.hero-text h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 700; letter-spacing: -2px; line-height: 1.0; color: var(--white); margin-bottom: 2rem; }
-.hero-muted { display: block; color: rgba(255,255,255,0.22); font-weight: 300; letter-spacing: -1px; }
-.hero-text > p { font-size: 1rem; color: rgba(255,255,255,0.38); max-width: 420px; line-height: 1.85; margin-bottom: 0; }
-.hero-data { display: flex; flex-direction: column; padding-left: 3rem; border-left: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; min-width: 220px; }
-.data-row { display: flex; align-items: baseline; justify-content: space-between; gap: 2rem; padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
-.data-row:last-child { border-bottom: none; padding-bottom: 0; }
-.data-number { font-family: 'DM Sans', sans-serif; font-size: 2.25rem; font-weight: 700; color: var(--white); letter-spacing: -1px; }
-.data-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2.5px; color: rgba(255,255,255,0.28); }
+.page-hangar .page-hero-inner { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: flex-end; gap: 4rem; }
+.page-hangar .hero-text { flex: 1; max-width: 600px; }
+.page-hangar .hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.28); display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
+.page-hangar .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
+.page-hangar .hero-text h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 700; letter-spacing: -2px; line-height: 1.0; color: var(--white); margin-bottom: 2rem; }
+.page-hangar .hero-muted { display: block; color: rgba(255,255,255,0.22); font-weight: 300; letter-spacing: -1px; }
+.page-hangar .hero-text > p { font-size: 1rem; color: rgba(255,255,255,0.38); max-width: 420px; line-height: 1.85; margin-bottom: 0; }
+.page-hangar .hero-data { display: flex; flex-direction: column; padding-left: 3rem; border-left: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; min-width: 220px; }
+.page-hangar .data-row { display: flex; align-items: baseline; justify-content: space-between; gap: 2rem; padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.page-hangar .data-row:last-child { border-bottom: none; padding-bottom: 0; }
+.page-hangar .data-number { font-family: 'DM Sans', sans-serif; font-size: 2.25rem; font-weight: 700; color: var(--white); letter-spacing: -1px; }
+.page-hangar .data-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2.5px; color: rgba(255,255,255,0.28); }
 
 /* ======================================================================
    TOOLBAR (recherche + filtres + tri) — même pattern que favorites
    ====================================================================== */
-.hangar-content { padding: 4rem 0 6rem; }
+.page-hangar .hangar-content { padding: 4rem 0 6rem; }
 
-.hangar-toolbar {
+.page-hangar .hangar-toolbar {
   display: flex; align-items: center; gap: 1rem;
   margin-bottom: 2rem; flex-wrap: wrap;
 }
 
-.search-box { position: relative; flex: 1; min-width: 250px; }
-.search-box i, .search-box .icon, .search-box .icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
-.search-box input {
+.page-hangar .search-box { position: relative; flex: 1; min-width: 250px; }
+.page-hangar .search-box i, .page-hangar .search-box .icon, .page-hangar .search-box .icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
+.page-hangar .search-box input {
   width: 100%; padding: 0.8rem 1rem 0.8rem 3.25rem;
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: 10px; font-size: 0.9rem;
@@ -58,14 +57,14 @@
   font-family: 'DM Sans', sans-serif;
   background: rgba(255,255,255,0.04); color: var(--white);
 }
-.search-box input::placeholder { color: rgba(255,255,255,0.25); }
-.search-box input:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
+.page-hangar .search-box input::placeholder { color: rgba(255,255,255,0.25); }
+.page-hangar .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
 
-.clear-btn { display: none !important; }
+.page-hangar .clear-btn { display: none !important; }
 
-.toolbar-right { display: flex; align-items: center; gap: 0.75rem; position: relative; }
+.page-hangar .toolbar-right { display: flex; align-items: center; gap: 0.75rem; position: relative; }
 
-.filter-btn {
+.page-hangar .filter-btn {
   display: flex; align-items: center; gap: 0.5rem;
   padding: 0.7rem 1.25rem;
   background: rgba(255,255,255,0.04);
@@ -75,12 +74,12 @@
   cursor: pointer; transition: var(--transition-fast);
   color: rgba(255,255,255,0.65); white-space: nowrap;
 }
-.filter-btn:hover { border-color: rgba(255,255,255,0.18); color: var(--white); background: rgba(255,255,255,0.07); }
-.filter-btn.active { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
-.filter-btn .fa-chevron-down { font-size: 0.65rem; transition: var(--transition-fast); }
-.filter-btn.active .fa-chevron-down { transform: rotate(180deg); }
+.page-hangar .filter-btn:hover { border-color: rgba(255,255,255,0.18); color: var(--white); background: rgba(255,255,255,0.07); }
+.page-hangar .filter-btn.active { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
+.page-hangar .filter-btn .fa-chevron-down { font-size: 0.65rem; transition: var(--transition-fast); }
+.page-hangar .filter-btn.active .fa-chevron-down { transform: rotate(180deg); }
 
-.sort-select {
+.page-hangar .sort-select {
   padding: 0.7rem 2.25rem 0.7rem 1rem;
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: 10px; font-family: 'DM Sans', sans-serif; font-weight: 500;
@@ -89,21 +88,21 @@
   background: rgba(255,255,255,0.04) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
   color: rgba(255,255,255,0.65); font-size: 0.85rem; white-space: nowrap;
 }
-.sort-select:hover { border-color: rgba(255,255,255,0.18); }
-.sort-select:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); }
-.sort-select option { background: var(--night-mid); color: var(--white); }
+.page-hangar .sort-select:hover { border-color: rgba(255,255,255,0.18); }
+.page-hangar .sort-select:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); }
+.page-hangar .sort-select option { background: var(--night-mid); color: var(--white); }
 
 /* Active Filters */
-.active-filters { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
-.active-filters-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); font-weight: 500; display: flex; align-items: center; }
-.active-filter { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(200,169,110,0.08); color: var(--hud-cyan); padding: 0.4rem 0.875rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(200,169,110,0.2); }
-.remove-filter-btn { background: rgba(200,169,110,0.15); border: none; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: var(--hud-cyan); font-size: 0.6rem; }
-.remove-filter-btn:hover { background: rgba(200,169,110,0.3); }
-.clear-all-filters { padding: 0.4rem 1rem; background: transparent; border: 1px solid rgba(231,76,60,0.4); color: var(--accent); border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition-fast); }
-.clear-all-filters:hover { background: rgba(231,76,60,0.15); border-color: var(--accent); }
+.page-hangar .active-filters { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.page-hangar .active-filters-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); font-weight: 500; display: flex; align-items: center; }
+.page-hangar .active-filter { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(200,169,110,0.08); color: var(--hud-cyan); padding: 0.4rem 0.875rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(200,169,110,0.2); }
+.page-hangar .remove-filter-btn { background: rgba(200,169,110,0.15); border: none; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: var(--hud-cyan); font-size: 0.6rem; }
+.page-hangar .remove-filter-btn:hover { background: rgba(200,169,110,0.3); }
+.page-hangar .clear-all-filters { padding: 0.4rem 1rem; background: transparent; border: 1px solid rgba(231,76,60,0.4); color: var(--accent); border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition-fast); }
+.page-hangar .clear-all-filters:hover { background: rgba(231,76,60,0.15); border-color: var(--accent); }
 
 /* Filter Dropdowns */
-.filter-dropdown {
+.page-hangar .filter-dropdown {
   position: absolute; top: calc(100% + 0.5rem); right: 0;
   width: 380px; max-width: 90vw;
   background: var(--night-mid); border: 1px solid rgba(255,255,255,0.1);
@@ -112,226 +111,225 @@
   opacity: 0; transform: translateY(-8px);
   transition: var(--transition); pointer-events: none;
 }
-.filter-dropdown.show { opacity: 1; transform: translateY(0); pointer-events: all; }
-.filter-dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.07); position: sticky; top: 0; background: var(--night-mid); z-index: 1; }
-.filter-dropdown-header h3 { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--white); font-size: 0.9rem; }
-.close-dropdown { background: transparent; border: none; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.45); }
-.close-dropdown:hover { background: rgba(255,255,255,0.08); color: var(--white); }
-.filter-options { padding: 0.75rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.5rem; }
-.filter-option { padding: 0.7rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; cursor: pointer; transition: var(--transition-fast); text-align: center; font-weight: 500; font-size: 0.85rem; color: rgba(255,255,255,0.65); }
-.filter-option:hover { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.07); color: var(--white); }
-.filter-option.selected { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
+.page-hangar .filter-dropdown.show { opacity: 1; transform: translateY(0); pointer-events: all; }
+.page-hangar .filter-dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.07); position: sticky; top: 0; background: var(--night-mid); z-index: 1; }
+.page-hangar .filter-dropdown-header h3 { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--white); font-size: 0.9rem; }
+.page-hangar .close-dropdown { background: transparent; border: none; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.45); }
+.page-hangar .close-dropdown:hover { background: rgba(255,255,255,0.08); color: var(--white); }
+.page-hangar .filter-options { padding: 0.75rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.5rem; }
+.page-hangar .filter-option { padding: 0.7rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; cursor: pointer; transition: var(--transition-fast); text-align: center; font-weight: 500; font-size: 0.85rem; color: rgba(255,255,255,0.65); }
+.page-hangar .filter-option:hover { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.07); color: var(--white); }
+.page-hangar .filter-option.selected { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
 
 /* Results count */
-.results-info { font-size: 0.9rem; color: rgba(255,255,255,0.35); font-weight: 500; margin-bottom: 1.5rem; }
+.page-hangar .results-info { font-size: 0.9rem; color: rgba(255,255,255,0.35); font-weight: 500; margin-bottom: 1.5rem; }
 
 /* ======================================================================
    AIRCRAFT GRID — 3 colonnes fixes, même largeur que favorites
    ====================================================================== */
-.aircraft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 5rem; }
-.aircraft-grid.list-view { grid-template-columns: 1fr; }
+.page-hangar .aircraft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 5rem; }
+.page-hangar .aircraft-grid.list-view { grid-template-columns: 1fr; }
 
-.aircraft-card { background: rgba(20,20,20,0.7); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); transition: var(--transition); cursor: pointer; position: relative; }
-.aircraft-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.14); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+.page-hangar .aircraft-card { background: rgba(20,20,20,0.7); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); transition: var(--transition); cursor: pointer; position: relative; }
+.page-hangar .aircraft-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.14); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
 
-.aircraft-image { position: relative; height: 220px; overflow: hidden; background: var(--night-soft); }
-.aircraft-image img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
-.aircraft-card:hover .aircraft-image img { transform: scale(1.08); }
+.page-hangar .aircraft-image { position: relative; height: 220px; overflow: hidden; background: var(--night-soft); }
+.page-hangar .aircraft-image img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
+.page-hangar .aircraft-card:hover .aircraft-image img { transform: scale(1.08); }
 
-.aircraft-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,13,13,0.9) 0%, transparent 50%); display: flex; align-items: flex-end; padding: 1.25rem; }
-.aircraft-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.aircraft-badge { padding: 0.3rem 0.8rem; backdrop-filter: blur(10px); border-radius: 50px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-.aircraft-badge.generation { background: rgba(200,169,110,0.15); border: 1px solid rgba(200,169,110,0.3); color: var(--hud-cyan); }
-.aircraft-badge.type { background: rgba(255,171,0,0.15); border: 1px solid rgba(255,171,0,0.3); color: var(--hud-amber); }
+.page-hangar .aircraft-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,13,13,0.9) 0%, transparent 50%); display: flex; align-items: flex-end; padding: 1.25rem; }
+.page-hangar .aircraft-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.page-hangar .aircraft-badge { padding: 0.3rem 0.8rem; backdrop-filter: blur(10px); border-radius: 50px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.page-hangar .aircraft-badge.generation { background: rgba(200,169,110,0.15); border: 1px solid rgba(200,169,110,0.3); color: var(--hud-cyan); }
+.page-hangar .aircraft-badge.type { background: rgba(255,171,0,0.15); border: 1px solid rgba(255,171,0,0.3); color: var(--hud-amber); }
 
-.aircraft-content { padding: 2rem; }
-.aircraft-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-.aircraft-title { flex: 1; }
-.aircraft-name-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
-.aircraft-name-row h3 { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin: 0; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.aircraft-name-row .country-flag { flex-shrink: 0; border-radius: 2px; }
-.aircraft-title h3 { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
-.aircraft-country { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.45); }
-.country-flag { width: 22px; height: 16px; border-radius: 2px; display: block; object-fit: cover; }
-.aircraft-description { display: none; }
-.aircraft-specs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.07); }
-.spec-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.5); }
-.spec-item i, .spec-item .icon { color: var(--hud-cyan); width: 16px; }
+.page-hangar .aircraft-content { padding: 2rem; }
+.page-hangar .aircraft-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+.page-hangar .aircraft-title { flex: 1; }
+.page-hangar .aircraft-name-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.page-hangar .aircraft-name-row h3 { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin: 0; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.page-hangar .aircraft-name-row .country-flag { flex-shrink: 0; border-radius: 2px; }
+.page-hangar .aircraft-title h3 { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
+.page-hangar .aircraft-country { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.45); }
+.page-hangar .country-flag { width: 22px; height: 16px; border-radius: 2px; display: block; object-fit: cover; }
+.page-hangar .aircraft-description { display: none; }
+.page-hangar .aircraft-specs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.07); }
+.page-hangar .spec-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+.page-hangar .spec-item i, .page-hangar .spec-item .icon { color: var(--hud-cyan); width: 16px; }
 
 /* List View */
-.aircraft-grid.list-view .aircraft-card { display: grid; grid-template-columns: 300px 1fr; }
-.aircraft-grid.list-view .aircraft-image { height: 100%; }
-.aircraft-grid.list-view .aircraft-content { padding: 2.5rem; }
-.aircraft-grid.list-view .aircraft-specs { grid-template-columns: repeat(4, 1fr); }
+.page-hangar .aircraft-grid.list-view .aircraft-card { display: grid; grid-template-columns: 300px 1fr; }
+.page-hangar .aircraft-grid.list-view .aircraft-image { height: 100%; }
+.page-hangar .aircraft-grid.list-view .aircraft-content { padding: 2.5rem; }
+.page-hangar .aircraft-grid.list-view .aircraft-specs { grid-template-columns: repeat(4, 1fr); }
 
 /* Pagination */
-.pagination { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin: 6rem 0 5rem; }
-.pagination button { padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.7); }
-.pagination button:hover:not(:disabled) { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); color: var(--white); }
-.pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
-.pagination .page-info { padding: 0.75rem 1.25rem; font-weight: 600; color: rgba(255,255,255,0.5); }
+.page-hangar .pagination { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin: 6rem 0 5rem; }
+.page-hangar .pagination button { padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.7); }
+.page-hangar .pagination button:hover:not(:disabled) { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); color: var(--white); }
+.page-hangar .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
+.page-hangar .pagination .page-info { padding: 0.75rem 1.25rem; font-weight: 600; color: rgba(255,255,255,0.5); }
 
 /* ======================================================================
    MODAL
    ====================================================================== */
-.modal { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 2rem; }
-.modal.show { display: flex; }
-.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); }
-.modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); max-width: 900px; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn 0.3s ease; }
+.page-hangar .modal { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 2rem; }
+.page-hangar .modal.show { display: flex; }
+.page-hangar .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); }
+.page-hangar .modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); max-width: 900px; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn 0.3s ease; }
 @keyframes modalSlideIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.75rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
-.modal-header h2 { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 0.75rem; }
-.modal-close { background: transparent; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.5); font-size: 1.5rem; }
-.modal-close:hover { background: rgba(255,255,255,0.08); color: var(--white); transform: rotate(90deg); }
+.page-hangar .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.75rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.page-hangar .modal-header h2 { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 0.75rem; }
+.page-hangar .modal-close { background: transparent; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.5); font-size: 1.5rem; }
+.page-hangar .modal-close:hover { background: rgba(255,255,255,0.08); color: var(--white); transform: rotate(90deg); }
 
-.modal-form { flex: 1; overflow-y: auto; padding: 2rem; }
-.form-sections { display: flex; flex-direction: column; gap: 2rem; }
-.form-section { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem; }
-.form-section h3 { font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
-.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
-.form-group { display: flex; flex-direction: column; }
-.form-group.span-2 { grid-column: span 2; }
-.form-group label { font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
-.form-group input, .form-group select, .form-group textarea {
+.page-hangar .modal-form { flex: 1; overflow-y: auto; padding: 2rem; }
+.page-hangar .form-sections { display: flex; flex-direction: column; gap: 2rem; }
+.page-hangar .form-section { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem; }
+.page-hangar .form-section h3 { font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.page-hangar .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+.page-hangar .form-group { display: flex; flex-direction: column; }
+.page-hangar .form-group.span-2 { grid-column: span 2; }
+.page-hangar .form-group label { font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.page-hangar .form-group input, .page-hangar .form-group select, .page-hangar .form-group textarea {
   padding: 0.875rem 1rem; border: 1px solid rgba(255,255,255,0.09);
   border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
   transition: var(--transition-fast); background: rgba(255,255,255,0.03); color: var(--white);
 }
-.form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.22); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
-.form-group select option { background: var(--night-mid); color: var(--white); }
-.form-group textarea { resize: vertical; min-height: 100px; }
+.page-hangar .form-group input::placeholder, .page-hangar .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
+.page-hangar .form-group input:focus, .page-hangar .form-group select:focus, .page-hangar .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.22); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
+.page-hangar .form-group select option { background: var(--night-mid); color: var(--white); }
+.page-hangar .form-group textarea { resize: vertical; min-height: 100px; }
 
-.modal-footer { display: flex; justify-content: flex-end; gap: 1rem; padding: 1.75rem 2rem; border-top: 1px solid rgba(255,255,255,0.07); }
+.page-hangar .modal-footer { display: flex; justify-content: flex-end; gap: 1rem; padding: 1.75rem 2rem; border-top: 1px solid rgba(255,255,255,0.07); }
 
 /* Buttons */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; padding: 0.875rem 1.75rem; border: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: var(--transition); font-family: 'DM Sans', sans-serif; white-space: nowrap; }
-.btn-primary { background: var(--hud-cyan); color: var(--night); border: 1px solid transparent; font-weight: 700; }
-.btn-primary:hover { background: #D4B87E; }
-.btn-secondary { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.12); }
-.btn-secondary:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
-.btn-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
-.btn-outline:hover { background: rgba(255,255,255,0.05); }
-.btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
+.page-hangar .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; padding: 0.875rem 1.75rem; border: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: var(--transition); font-family: 'DM Sans', sans-serif; white-space: nowrap; }
+.page-hangar .btn-primary { background: var(--hud-cyan); color: var(--night); border: 1px solid transparent; font-weight: 700; }
+.page-hangar .btn-primary:hover { background: #D4B87E; }
+.page-hangar .btn-secondary { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.12); }
+.page-hangar .btn-secondary:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+.page-hangar .btn-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+.page-hangar .btn-outline:hover { background: rgba(255,255,255,0.05); }
+.page-hangar .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
 
 /* Empty State */
-.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center; color: rgba(255,255,255,0.4); grid-column: 1 / -1; }
-.empty-state i, .empty-state .icon { font-size: 4rem; color: rgba(200,169,110,0.15); margin-bottom: 1.5rem; }
-.empty-state h3 { font-size: 1.5rem; color: rgba(255,255,255,0.7); margin-bottom: 0.75rem; font-weight: 600; }
-.empty-state p { font-size: 1.1rem; max-width: 400px; }
+.page-hangar .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center; color: rgba(255,255,255,0.4); grid-column: 1 / -1; }
+.page-hangar .empty-state i, .page-hangar .empty-state .icon { font-size: 4rem; color: rgba(200,169,110,0.15); margin-bottom: 1.5rem; }
+.page-hangar .empty-state h3 { font-size: 1.5rem; color: rgba(255,255,255,0.7); margin-bottom: 0.75rem; font-weight: 600; }
+.page-hangar .empty-state p { font-size: 1.1rem; max-width: 400px; }
 
 /* ======================================================================
    RESPONSIVE
    ====================================================================== */
 @media (max-width: 992px) {
-  .hangar-toolbar { flex-direction: column; align-items: stretch; }
-  .search-box { max-width: 100%; }
-  .toolbar-right { flex-wrap: wrap; }
-  .filter-dropdown { max-height: 70vh; }
-  .form-grid { grid-template-columns: 1fr; }
-  .form-group.span-2 { grid-column: span 1; }
-  .filter-btn { min-height: 44px; }
-  .sort-select { min-height: 44px; }
+  .page-hangar .hangar-toolbar { flex-direction: column; align-items: stretch; }
+  .page-hangar .search-box { max-width: 100%; }
+  .page-hangar .toolbar-right { flex-wrap: wrap; }
+  .page-hangar .filter-dropdown { max-height: 70vh; }
+  .page-hangar .form-grid { grid-template-columns: 1fr; }
+  .page-hangar .form-group.span-2 { grid-column: span 1; }
+  .page-hangar .filter-btn { min-height: 44px; }
+  .page-hangar .sort-select { min-height: 44px; }
 }
 
 @media (max-width: 768px) {
-  .container { padding: 0 1.5rem; }
-  .page-hero { padding: 5rem 0 4rem; }
-  .page-hero-inner { flex-direction: column; gap: 2.5rem; align-items: flex-start; }
-  .hero-text h1 { font-size: clamp(2.5rem, 8vw, 4rem); }
-  .hero-data { flex-direction: row; padding-left: 0; border-left: none; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 2rem; width: 100%; min-width: 0; }
-  .data-row { flex-direction: column; gap: 0.2rem; border-bottom: none; padding: 0 1.5rem; border-right: 1px solid rgba(255,255,255,0.06); justify-content: flex-start; align-items: flex-start; }
-  .data-row:first-child { padding-left: 0; }
-  .data-row:last-child { border-right: none; }
-  .data-number { font-size: 1.75rem; }
-  .aircraft-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-  .aircraft-specs { gap: 0.75rem; }
-  .modal-container { max-height: 95vh; margin: 1rem; }
-  .modal-header { padding: 1.5rem 1rem; }
-  .modal-header h2 { font-size: 1.25rem; }
-  .modal-form, .modal-footer { padding: 1.5rem 1rem; }
-  .form-section { padding: 1.25rem; }
-  .pagination { gap: 0.5rem; }
-  .pagination button { padding: 0.65rem 1rem; font-size: 0.9rem; min-height: 44px; }
+  .page-hangar .container { padding: 0 1.5rem; }
+  .page-hangar .page-hero { padding: 5rem 0 4rem; }
+  .page-hangar .page-hero-inner { flex-direction: column; gap: 2.5rem; align-items: flex-start; }
+  .page-hangar .hero-text h1 { font-size: clamp(2.5rem, 8vw, 4rem); }
+  .page-hangar .hero-data { flex-direction: row; padding-left: 0; border-left: none; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 2rem; width: 100%; min-width: 0; }
+  .page-hangar .data-row { flex-direction: column; gap: 0.2rem; border-bottom: none; padding: 0 1.5rem; border-right: 1px solid rgba(255,255,255,0.06); justify-content: flex-start; align-items: flex-start; }
+  .page-hangar .data-row:first-child { padding-left: 0; }
+  .page-hangar .data-row:last-child { border-right: none; }
+  .page-hangar .data-number { font-size: 1.75rem; }
+  .page-hangar .aircraft-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .page-hangar .aircraft-specs { gap: 0.75rem; }
+  .page-hangar .modal-container { max-height: 95vh; margin: 1rem; }
+  .page-hangar .modal-header { padding: 1.5rem 1rem; }
+  .page-hangar .modal-header h2 { font-size: 1.25rem; }
+  .page-hangar .modal-form, .page-hangar .modal-footer { padding: 1.5rem 1rem; }
+  .page-hangar .form-section { padding: 1.25rem; }
+  .page-hangar .pagination { gap: 0.5rem; }
+  .page-hangar .pagination button { padding: 0.65rem 1rem; font-size: 0.9rem; min-height: 44px; }
 }
 
 @media (max-width: 480px) {
-  .page-hero { padding: 4rem 0 3rem; }
-  .hero-text h1 { font-size: clamp(1.75rem, 10vw, 2.5rem); }
-  .aircraft-grid { grid-template-columns: 1fr; }
-  .filter-btn span { display: none; }
-  .aircraft-image { height: 180px; }
-  .aircraft-content { padding: 1rem; }
-  .pagination { margin: 2rem 0; flex-wrap: wrap; }
-  .pagination button { flex: 1; min-width: 100px; }
-  .modal { padding: 0; align-items: flex-end; }
-  .modal-container { max-height: 90vh; border-radius: 16px 16px 0 0; margin: 0; width: 100%; }
-  .modal-header { padding: 1.25rem 1rem; }
-  .modal-header h2 { font-size: 1.1rem; }
-  .modal-close { width: 36px; height: 36px; font-size: 1.25rem; }
-  .modal-form { padding: 1rem; }
-  .form-section { padding: 1rem; }
-  .form-section h3 { font-size: 0.9rem; margin-bottom: 1rem; }
-  .form-grid { gap: 1rem; }
-  .form-group label { font-size: 0.8rem; margin-bottom: 0.375rem; }
-  .form-group input, .form-group select, .form-group textarea { padding: 0.75rem 0.875rem; font-size: 0.9rem; }
-  .form-group textarea { min-height: 80px; }
-  .modal-footer { padding: 1rem; flex-direction: column-reverse; gap: 0.75rem; }
-  .modal-footer .btn { width: 100%; padding: 0.875rem 1.5rem; font-size: 0.9rem; min-height: 48px; }
+  .page-hangar .page-hero { padding: 4rem 0 3rem; }
+  .page-hangar .hero-text h1 { font-size: clamp(1.75rem, 10vw, 2.5rem); }
+  .page-hangar .aircraft-grid { grid-template-columns: 1fr; }
+  .page-hangar .filter-btn span { display: none; }
+  .page-hangar .aircraft-image { height: 180px; }
+  .page-hangar .aircraft-content { padding: 1rem; }
+  .page-hangar .pagination { margin: 2rem 0; flex-wrap: wrap; }
+  .page-hangar .pagination button { flex: 1; min-width: 100px; }
+  .page-hangar .modal { padding: 0; align-items: flex-end; }
+  .page-hangar .modal-container { max-height: 90vh; border-radius: 16px 16px 0 0; margin: 0; width: 100%; }
+  .page-hangar .modal-header { padding: 1.25rem 1rem; }
+  .page-hangar .modal-header h2 { font-size: 1.1rem; }
+  .page-hangar .modal-close { width: 36px; height: 36px; font-size: 1.25rem; }
+  .page-hangar .modal-form { padding: 1rem; }
+  .page-hangar .form-section { padding: 1rem; }
+  .page-hangar .form-section h3 { font-size: 0.9rem; margin-bottom: 1rem; }
+  .page-hangar .form-grid { gap: 1rem; }
+  .page-hangar .form-group label { font-size: 0.8rem; margin-bottom: 0.375rem; }
+  .page-hangar .form-group input, .page-hangar .form-group select, .page-hangar .form-group textarea { padding: 0.75rem 0.875rem; font-size: 0.9rem; }
+  .page-hangar .form-group textarea { min-height: 80px; }
+  .page-hangar .modal-footer { padding: 1rem; flex-direction: column-reverse; gap: 0.75rem; }
+  .page-hangar .modal-footer .btn { width: 100%; padding: 0.875rem 1.5rem; font-size: 0.9rem; min-height: 48px; }
   /* #toast-container, .toast → shared.css */
-  .empty-state { padding: 3rem 1rem; }
-  .empty-state i, .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
-  .empty-state h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
-  .empty-state p { font-size: 0.9rem; }
+  .page-hangar .empty-state { padding: 3rem 1rem; }
+  .page-hangar .empty-state i, .page-hangar .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .page-hangar .empty-state h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+  .page-hangar .empty-state p { font-size: 0.9rem; }
   /* footer → shared.css */
-  #add-airplane-btn { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 900; border-radius: 50px; box-shadow: var(--shadow-xl); min-height: 48px; }
-  #add-airplane-btn span { display: none; }
-  #add-airplane-btn i, #add-airplane-btn .icon { margin: 0; }
+  .page-hangar #add-airplane-btn { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 900; border-radius: 50px; box-shadow: var(--shadow-xl); min-height: 48px; }
+  .page-hangar #add-airplane-btn span { display: none; }
+  .page-hangar #add-airplane-btn i, .page-hangar #add-airplane-btn .icon { margin: 0; }
 }
 
 /* Touch optimizations */
 @media (hover: none) and (pointer: coarse) {
-  .btn { min-height: 44px; }
+  .page-hangar .btn { min-height: 44px; }
   /* .nav-links li a, .dropdown-item → shared.css */
-  .aircraft-card:hover { transform: none; }
-  .aircraft-card:active { transform: scale(0.98); }
+  .page-hangar .aircraft-card:hover { transform: none; }
+  .page-hangar .aircraft-card:active { transform: scale(0.98); }
 }
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .page-hangar *, .page-hangar *::before, .page-hangar *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
 /* Print */
 @media print {
-  header, .filters-section, .pagination, .modal, #toast-container, footer, .hero-hud-grid { display: none !important; }
-  .page-hero { padding: 2rem 0; }
-  * { background: white !important; color: black !important; box-shadow: none !important; }
+  .page-hangar header, .page-hangar .filters-section, .page-hangar .pagination, .page-hangar .modal, .page-hangar #toast-container, .page-hangar footer, .page-hangar .hero-hud-grid { display: none !important; }
+  .page-hangar .page-hero { padding: 2rem 0; }
+  .page-hangar * { background: white !important; color: black !important; box-shadow: none !important; }
 }
 /* Skeleton loader */
 @keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
-.skeleton-card { background: rgba(20,20,20,0.7); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); }
-.skeleton-image { height: 220px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite; }
-.skeleton-content { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
-.skeleton-line { height: 14px; border-radius: 6px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite; }
-.skeleton-line.short { width: 55%; }
-.skeleton-line.medium { width: 75%; }
+.page-hangar .skeleton-card { background: rgba(20,20,20,0.7); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); }
+.page-hangar .skeleton-image { height: 220px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite; }
+.page-hangar .skeleton-content { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.page-hangar .skeleton-line { height: 14px; border-radius: 6px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite; }
+.page-hangar .skeleton-line.short { width: 55%; }
+.page-hangar .skeleton-line.medium { width: 75%; }
 
 /* =====================================================
    V2 — Facet counts, view toggle, compare, mobile sheet
    ===================================================== */
 
-.filter-option .fc { color: var(--text-muted); font-size: 0.75rem; margin-left: 6px; }
-.filter-option-empty { opacity: 0.4; pointer-events: none; }
+/* Règles .filter-option .fc et .filter-option-empty déplacées dans shared.css */
 
-.view-toggle {
+.page-hangar .view-toggle {
   display: inline-flex;
   border: 1px solid var(--border-mid);
   border-radius: var(--r-md);
   overflow: hidden;
   margin-right: var(--sp-2);
 }
-.view-btn {
+.page-hangar .view-btn {
   background: transparent;
   color: var(--text-muted);
   border: none;
@@ -339,15 +337,15 @@
   cursor: pointer;
   transition: var(--transition-fast);
 }
-.view-btn:hover { color: var(--hud-cyan); }
-.view-btn[aria-pressed="true"] {
+.page-hangar .view-btn:hover { color: var(--hud-cyan); }
+.page-hangar .view-btn[aria-pressed="true"] {
   color: var(--hud-cyan);
   background: rgba(200,169,110,0.08);
 }
 
 /* List view */
-.aircraft-list { display: flex; flex-direction: column; gap: 0.5rem; }
-.aircraft-list .aircraft-card {
+.page-hangar .aircraft-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.page-hangar .aircraft-list .aircraft-card {
   display: grid;
   grid-template-columns: 120px 1fr auto;
   gap: 1rem;
@@ -357,21 +355,21 @@
   border-radius: var(--r-lg);
   background: var(--night-mid);
 }
-.aircraft-list .aircraft-card .aircraft-image { height: 80px; width: 120px; }
-.aircraft-list .aircraft-card .aircraft-image img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--r-sm); }
-.aircraft-list .aircraft-card .aircraft-overlay { display: none; }
-.aircraft-list .aircraft-card .aircraft-content { padding: 0; }
-.aircraft-list .aircraft-card .aircraft-description { display: none; }
-.aircraft-list .aircraft-card h3 { margin-bottom: 0.25rem; }
+.page-hangar .aircraft-list .aircraft-card .aircraft-image { height: 80px; width: 120px; }
+.page-hangar .aircraft-list .aircraft-card .aircraft-image img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--r-sm); }
+.page-hangar .aircraft-list .aircraft-card .aircraft-overlay { display: none; }
+.page-hangar .aircraft-list .aircraft-card .aircraft-content { padding: 0; }
+.page-hangar .aircraft-list .aircraft-card .aircraft-description { display: none; }
+.page-hangar .aircraft-list .aircraft-card h3 { margin-bottom: 0.25rem; }
 @media (max-width: 768px) {
-  .aircraft-list .aircraft-card { grid-template-columns: 80px 1fr; }
-  .aircraft-list .aircraft-card .aircraft-image { width: 80px; height: 60px; }
-  .aircraft-list .aircraft-card .aircraft-specs { display: none; }
+  .page-hangar .aircraft-list .aircraft-card { grid-template-columns: 80px 1fr; }
+  .page-hangar .aircraft-list .aircraft-card .aircraft-image { width: 80px; height: 60px; }
+  .page-hangar .aircraft-list .aircraft-card .aircraft-specs { display: none; }
 }
 
 /* Compare checkbox on cards */
-.aircraft-card { position: relative; }
-.compare-check {
+.page-hangar .aircraft-card { position: relative; }
+.page-hangar .compare-check {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
@@ -390,11 +388,11 @@
   letter-spacing: 0.05em;
   border: 1px solid rgba(255,255,255,0.08);
 }
-.compare-check input { cursor: pointer; accent-color: var(--hud-cyan); }
-.compare-check:hover { border-color: var(--hud-cyan); }
+.page-hangar .compare-check input { cursor: pointer; accent-color: var(--hud-cyan); }
+.page-hangar .compare-check:hover { border-color: var(--hud-cyan); }
 
 /* Compare bar */
-.compare-bar {
+.page-hangar .compare-bar {
   position: fixed;
   bottom: 1.5rem;
   left: 50%;
@@ -410,16 +408,16 @@
   z-index: 100;
   animation: compareBarUp 0.25s var(--ease);
 }
-.compare-bar.hidden { display: none; }
-.compare-bar #compare-count { color: var(--hud-cyan); font-weight: 600; font-size: 0.85rem; }
+.page-hangar .compare-bar.hidden { display: none; }
+.page-hangar .compare-bar #compare-count { color: var(--hud-cyan); font-weight: 600; font-size: 0.85rem; }
 @keyframes compareBarUp {
   from { transform: translate(-50%, 20px); opacity: 0; }
   to   { transform: translate(-50%, 0);    opacity: 1; }
 }
 
 /* Compare modal — forcer le display par défaut (certains resets cassent <dialog>) */
-.compare-modal:not([open]) { display: none !important; }
-.compare-modal {
+.page-hangar .compare-modal:not([open]) { display: none !important; }
+.page-hangar .compare-modal {
   background: var(--night-mid);
   color: var(--text-primary);
   border: 1px solid var(--border-cyan-md);
@@ -429,16 +427,19 @@
   width: 92vw;
   max-height: 90vh;
   overflow: hidden;
-  position: relative;
   display: flex;
   flex-direction: column;
+  /* Centrage viewport : le défaut <dialog> est top-left, on force le centre. */
+  position: fixed;
+  inset: 0;
+  margin: auto;
 }
-.compare-modal[open] { display: flex; }
-.compare-modal::backdrop {
+.page-hangar .compare-modal[open] { display: flex; }
+.page-hangar .compare-modal::backdrop {
   background: rgba(0,0,0,0.8);
   backdrop-filter: blur(4px);
 }
-.compare-modal-close {
+.page-hangar .compare-modal-close {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -456,23 +457,23 @@
   z-index: 10;
   transition: var(--transition-fast);
 }
-.compare-modal-close:hover {
+.page-hangar .compare-modal-close:hover {
   color: var(--accent);
   border-color: var(--accent);
 }
 
-#compare-modal-body {
+.page-hangar #compare-modal-body {
   overflow-y: auto;
   padding: 2rem 2rem 2.5rem;
 }
 
-.cmp-head {
+.page-hangar .cmp-head {
   margin-bottom: 1.5rem;
   padding-right: 3rem;
   border-bottom: 1px solid var(--border-subtle);
   padding-bottom: 1.25rem;
 }
-.cmp-eyebrow {
+.page-hangar .cmp-eyebrow {
   display: block;
   color: var(--hud-cyan);
   text-transform: uppercase;
@@ -481,7 +482,7 @@
   font-family: var(--font-display);
   margin-bottom: 0.25rem;
 }
-.cmp-head h2 {
+.page-hangar .cmp-head h2 {
   color: var(--text-primary);
   font-family: var(--font-display);
   font-weight: 600;
@@ -491,17 +492,17 @@
 }
 
 /* Column headers with images */
-.cmp-cols {
+.page-hangar .cmp-cols {
   display: grid;
   grid-template-columns: 140px repeat(var(--cmp-cols), 1fr);
   gap: 1rem;
   margin-bottom: 1.75rem;
 }
-.cmp-cols::before {
+.page-hangar .cmp-cols::before {
   content: "";
   /* Empty spacer for the label column */
 }
-.cmp-col-head {
+.page-hangar .cmp-col-head {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -512,10 +513,10 @@
   border-radius: var(--r-lg);
   transition: var(--transition-fast);
 }
-.cmp-col-head:hover {
+.page-hangar .cmp-col-head:hover {
   border-color: var(--border-cyan-md);
 }
-.cmp-remove {
+.page-hangar .cmp-remove {
   position: absolute;
   top: 6px;
   right: 6px;
@@ -533,23 +534,23 @@
   z-index: 2;
   transition: var(--transition-fast);
 }
-.cmp-remove:hover {
+.page-hangar .cmp-remove:hover {
   color: var(--accent);
   border-color: var(--accent);
 }
-.cmp-img-wrap {
+.page-hangar .cmp-img-wrap {
   aspect-ratio: 16/10;
   overflow: hidden;
   border-radius: var(--r-md);
   background: var(--night);
 }
-.cmp-img-wrap img {
+.page-hangar .cmp-img-wrap img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-.cmp-img-placeholder {
+.page-hangar .cmp-img-placeholder {
   width: 100%;
   height: 100%;
   display: flex;
@@ -558,7 +559,7 @@
   color: var(--text-faint);
   font-size: 2rem;
 }
-.cmp-col-title h3 {
+.page-hangar .cmp-col-title h3 {
   font-family: var(--font-display);
   font-size: 1.1rem;
   color: var(--text-primary);
@@ -566,19 +567,19 @@
   letter-spacing: 0.02em;
   line-height: 1.2;
 }
-.cmp-col-title p {
+.page-hangar .cmp-col-title p {
   font-size: 0.72rem;
   color: var(--text-muted);
   margin: 0.15rem 0 0;
   font-style: italic;
 }
-.cmp-col-meta {
+.page-hangar .cmp-col-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
   margin-top: 0.25rem;
 }
-.cmp-chip {
+.page-hangar .cmp-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
@@ -591,21 +592,21 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-.cmp-chip i, .cmp-chip .icon { color: var(--text-muted); font-size: 0.65rem; }
-.cmp-chip-accent {
+.page-hangar .cmp-chip i, .page-hangar .cmp-chip .icon { color: var(--text-muted); font-size: 0.65rem; }
+.page-hangar .cmp-chip-accent {
   color: var(--hud-cyan);
   border-color: var(--border-cyan-md);
   background: rgba(200,169,110,0.06);
 }
 
 /* Spec groups */
-.cmp-body { display: flex; flex-direction: column; gap: 1.5rem; }
-.cmp-group {
+.page-hangar .cmp-body { display: flex; flex-direction: column; gap: 1.5rem; }
+.page-hangar .cmp-group {
   border: 1px solid var(--border-subtle);
   border-radius: var(--r-lg);
   overflow: hidden;
 }
-.cmp-group-header {
+.page-hangar .cmp-group-header {
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -618,8 +619,8 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
-.cmp-group-header i, .cmp-group-header .icon { font-size: 0.75rem; }
-.cmp-row {
+.page-hangar .cmp-group-header i, .page-hangar .cmp-group-header .icon { font-size: 0.75rem; }
+.page-hangar .cmp-row {
   display: grid;
   grid-template-columns: 140px repeat(var(--cmp-cols), 1fr);
   gap: 1rem;
@@ -628,15 +629,15 @@
   align-items: center;
   transition: background 0.15s var(--ease);
 }
-.cmp-row:last-child { border-bottom: none; }
-.cmp-row:hover { background: rgba(200,169,110,0.02); }
-.cmp-row-label {
+.page-hangar .cmp-row:last-child { border-bottom: none; }
+.page-hangar .cmp-row:hover { background: rgba(200,169,110,0.02); }
+.page-hangar .cmp-row-label {
   color: var(--text-muted);
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-.cmp-cell {
+.page-hangar .cmp-cell {
   color: var(--text-primary);
   font-size: 0.95rem;
   font-family: var(--font-display);
@@ -646,13 +647,13 @@
   border-radius: var(--r-sm);
   transition: var(--transition-fast);
 }
-.cmp-cell.cmp-best {
+.page-hangar .cmp-cell.cmp-best {
   color: var(--hud-cyan);
   background: rgba(200,169,110,0.08);
   box-shadow: inset 0 0 0 1px rgba(200,169,110,0.2);
   position: relative;
 }
-.cmp-cell.cmp-best::after {
+.page-hangar .cmp-cell.cmp-best::after {
   content: "★";
   position: absolute;
   top: 2px;
@@ -660,35 +661,35 @@
   font-size: 0.55rem;
   color: var(--hud-cyan);
 }
-.cmp-unit {
+.page-hangar .cmp-unit {
   color: var(--text-muted);
   font-size: 0.78rem;
   font-weight: 400;
   margin-left: 0.2rem;
 }
-.cmp-dash { color: var(--text-faint); }
+.page-hangar .cmp-dash { color: var(--text-faint); }
 
 /* Mobile compare */
 @media (max-width: 768px) {
-  .compare-modal { width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
-  #compare-modal-body { padding: 1.25rem 1rem; }
-  .cmp-head h2 { font-size: 1.3rem; }
-  .cmp-cols, .cmp-row {
+  .page-hangar .compare-modal { width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
+  .page-hangar #compare-modal-body { padding: 1.25rem 1rem; }
+  .page-hangar .cmp-head h2 { font-size: 1.3rem; }
+  .page-hangar .cmp-cols, .page-hangar .cmp-row {
     grid-template-columns: 110px repeat(var(--cmp-cols), 1fr);
     gap: 0.5rem;
   }
-  .cmp-col-head { padding: 0.5rem; }
-  .cmp-col-title h3 { font-size: 0.9rem; }
-  .cmp-col-title p { display: none; }
-  .cmp-col-meta { gap: 0.25rem; }
-  .cmp-chip { font-size: 0.6rem; padding: 0.15rem 0.35rem; }
-  .cmp-row-label { font-size: 0.7rem; }
-  .cmp-cell { font-size: 0.82rem; padding: 0.25rem 0.35rem; }
+  .page-hangar .cmp-col-head { padding: 0.5rem; }
+  .page-hangar .cmp-col-title h3 { font-size: 0.9rem; }
+  .page-hangar .cmp-col-title p { display: none; }
+  .page-hangar .cmp-col-meta { gap: 0.25rem; }
+  .page-hangar .cmp-chip { font-size: 0.6rem; padding: 0.15rem 0.35rem; }
+  .page-hangar .cmp-row-label { font-size: 0.7rem; }
+  .page-hangar .cmp-cell { font-size: 0.82rem; padding: 0.25rem 0.35rem; }
 }
 
 /* Mobile filter sheet */
-.filter-sheet:not([open]) { display: none !important; }
-.filter-sheet {
+.page-hangar .filter-sheet:not([open]) { display: none !important; }
+.page-hangar .filter-sheet {
   border: none;
   padding: 0;
   width: 100%;
@@ -705,36 +706,36 @@
   border-top: 1px solid var(--border-cyan-md);
   border-radius: var(--r-xl) var(--r-xl) 0 0;
 }
-.filter-sheet[open] { display: flex; flex-direction: column; }
-.filter-sheet::backdrop { background: rgba(0,0,0,0.7); }
-.filter-sheet-header {
+.page-hangar .filter-sheet[open] { display: flex; flex-direction: column; }
+.page-hangar .filter-sheet::backdrop { background: rgba(0,0,0,0.7); }
+.page-hangar .filter-sheet-header {
   display: flex; justify-content: space-between; align-items: center;
   padding: 1rem; border-bottom: 1px solid var(--border-subtle);
 }
-.filter-sheet-header h3 { color: var(--text-primary); margin: 0; }
-.filter-sheet-close {
+.page-hangar .filter-sheet-header h3 { color: var(--text-primary); margin: 0; }
+.page-hangar .filter-sheet-close {
   background: transparent; border: none; color: var(--text-muted);
   cursor: pointer; font-size: 1.2rem;
 }
-.filter-sheet-tabs { display: flex; border-bottom: 1px solid var(--border-subtle); }
-.fs-tab {
+.page-hangar .filter-sheet-tabs { display: flex; border-bottom: 1px solid var(--border-subtle); }
+.page-hangar .fs-tab {
   flex: 1; background: transparent; border: none; color: var(--text-muted);
   padding: 0.75rem; cursor: pointer; font-size: 0.85rem;
 }
-.fs-tab.active { color: var(--hud-cyan); border-bottom: 2px solid var(--hud-cyan); }
-.filter-sheet-body { flex: 1; overflow-y: auto; padding: 1rem; }
-.fs-item {
+.page-hangar .fs-tab.active { color: var(--hud-cyan); border-bottom: 2px solid var(--hud-cyan); }
+.page-hangar .filter-sheet-body { flex: 1; overflow-y: auto; padding: 1rem; }
+.page-hangar .fs-item {
   display: block; width: 100%; text-align: left;
   background: transparent; border: 1px solid var(--border-subtle);
   color: var(--text-primary); padding: 0.75rem; margin-bottom: 0.5rem;
   border-radius: var(--r-md); cursor: pointer; font-size: 0.9rem;
 }
-.fs-item.active { border-color: var(--hud-cyan); color: var(--hud-cyan); }
-.filter-sheet-footer { padding: 1rem; border-top: 1px solid var(--border-subtle); }
-.filter-sheet-footer .btn { width: 100%; }
+.page-hangar .fs-item.active { border-color: var(--hud-cyan); color: var(--hud-cyan); }
+.page-hangar .filter-sheet-footer { padding: 1rem; border-top: 1px solid var(--border-subtle); }
+.page-hangar .filter-sheet-footer .btn { width: 100%; }
 
 @media (min-width: 768px) {
-  .filter-sheet { display: none !important; }
+  .page-hangar .filter-sheet { display: none !important; }
 }
 
 /* lang-switch → shared.css */

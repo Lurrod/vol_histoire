@@ -50,14 +50,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (data.earliest_year && data.latest_year) {
         animateNumber(elYears, data.latest_year - data.earliest_year);
-        elYearsLabel.textContent = 'À nos jours';
+        elYearsLabel.textContent = i18n.t('login.years_label');
       }
     } catch (err) {
       // Fallback statique si l'API n'est pas joignable
       // Stats API indisponible — utilisation des valeurs par défaut
       elAirplanes.textContent = '45+';
       elYears.textContent = '1950';
-      elYearsLabel.textContent = 'À nos jours';
+      elYearsLabel.textContent = i18n.t('login.years_label');
       elCountries.textContent = '12';
     }
   }
@@ -102,16 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  function calculatePasswordStrength(password) {
-    let strength = 0;
-    if (password.length >= 8) strength += 25;
-    if (/[a-z]/.test(password)) strength += 20;
-    if (/[A-Z]/.test(password)) strength += 20;
-    if (/[0-9]/.test(password)) strength += 15;
-    if (password.length >= 12) strength += 10;
-    if (/[^a-zA-Z0-9]/.test(password)) strength += 10;
-    return Math.min(strength, 100);
-  }
+  // calculatePasswordStrength → utils.js
 
   function updatePasswordStrength(strength) {
     const strengthFill = document.querySelector('.strength-fill');
@@ -149,9 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Scroll effect, escapeHtml, showToast → utils.js / nav.js
 
   // ========== Validation ==========
-  function validateEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
+  // validateEmail → isValidEmail() dans utils.js (même regex que le backend)
 
   function validatePassword(password) {
     return password.length >= 8 && /[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password);
@@ -179,12 +168,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     notice.innerHTML = `
       <i class="fas fa-envelope" style="color:#f39c12;margin-top:2px;flex-shrink:0"></i>
       <div style="flex:1">
-        <p style="margin:0 0 0.4rem;font-weight:600;color:#f39c12;font-size:0.88rem;">Email non vérifié</p>
+        <p style="margin:0 0 0.4rem;font-weight:600;color:#f39c12;font-size:0.88rem;">${escapeHtml(i18n.t('login.email_not_verified_title'))}</p>
         <p style="margin:0 0 0.75rem;color:rgba(255,255,255,0.5);font-size:0.82rem;line-height:1.5">
-          Vérifiez votre boîte mail (et vos spams) pour activer votre compte.
+          ${escapeHtml(i18n.t('login.email_not_verified_desc'))}
         </p>
         <button id="resend-verify-btn" style="background:rgba(243,156,18,0.12);border:1px solid rgba(243,156,18,0.3);border-radius:7px;padding:0.45rem 0.9rem;color:#f39c12;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s">
-          <i class="fas fa-redo" style="margin-right:0.3rem"></i>Renvoyer l'email
+          <i class="fas fa-redo" style="margin-right:0.3rem"></i>${escapeHtml(i18n.t('login.resend_email'))}
         </button>
       </div>
     `;
@@ -193,19 +182,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById('resend-verify-btn').addEventListener('click', async function() {
       this.disabled = true;
-      this.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="margin-right:0.3rem"></i>Envoi...';
+      this.innerHTML = `<i class="fas fa-circle-notch fa-spin" style="margin-right:0.3rem"></i>${escapeHtml(i18n.t('login.resending'))}`;
       try {
         await auth.fetchWithTimeout('/api/auth/resend-verification', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: escapedEmail }),
         });
-        this.innerHTML = '<i class="fas fa-check" style="margin-right:0.3rem"></i>Email envoyé !';
+        this.innerHTML = `<i class="fas fa-check" style="margin-right:0.3rem"></i>${escapeHtml(i18n.t('login.resent'))}`;
         this.style.color = '#34d964';
         this.style.borderColor = 'rgba(52,217,100,0.3)';
       } catch {
         this.disabled = false;
-        this.innerHTML = '<i class="fas fa-redo" style="margin-right:0.3rem"></i>Renvoyer l\'email';
+        this.innerHTML = `<i class="fas fa-redo" style="margin-right:0.3rem"></i>${escapeHtml(i18n.t('login.resend_email'))}`;
       }
     });
   }
@@ -230,12 +219,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const password = loginPassword.value;
     const submitBtn = loginForm.querySelector('button[type="submit"]');
 
-    if (!validateEmail(email)) {
-      showToast('Veuillez entrer une adresse email valide.', 'error');
+    if (!isValidEmail(email)) {
+      showToast(i18n.t('login.invalid_email'), 'error');
       return;
     }
     if (!password) {
-      showToast('Veuillez entrer votre mot de passe.', 'error');
+      showToast(i18n.t('login.missing_password'), 'error');
       return;
     }
 
@@ -265,21 +254,21 @@ document.addEventListener("DOMContentLoaded", async () => {
           });
         }
 
-        showToast('Connexion réussie', 'success');
+        showToast(i18n.t('login.login_success'), 'success');
         setTimeout(() => { window.location.href = "/"; }, 1500);
       } else if (response.status === 429) {
-        showToast(data.message || 'Trop de tentatives, réessayez dans quelques minutes.', 'error');
+        showToast(data.message || i18n.t('login.too_many_attempts'), 'error');
         setButtonLoading(submitBtn, false);
       } else if (data.code === 'EMAIL_NOT_VERIFIED') {
         setButtonLoading(submitBtn, false);
         showEmailNotVerifiedNotice(email);
       } else {
-        showToast(data.message || 'Identifiants incorrects.', 'error');
+        showToast(data.message || i18n.t('login.invalid_credentials'), 'error');
         setButtonLoading(submitBtn, false);
       }
     } catch (err) {
       // Erreur gérée via toast
-      showToast('Impossible de se connecter au serveur.', 'error');
+      showToast(i18n.t('login.server_error'), 'error');
       setButtonLoading(submitBtn, false);
     }
   });
@@ -295,19 +284,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const submitBtn = registerForm.querySelector('button[type="submit"]');
 
     if (name.length < 2) {
-      showToast('Le nom doit contenir au moins 2 caractères.', 'error');
+      showToast(i18n.t('login.name_too_short'), 'error');
       return;
     }
-    if (!validateEmail(email)) {
-      showToast('Veuillez entrer une adresse email valide.', 'error');
+    if (!isValidEmail(email)) {
+      showToast(i18n.t('login.invalid_email'), 'error');
       return;
     }
     if (!validatePassword(password)) {
-      showToast('Minimum 8 caractères avec 1 majuscule, 1 minuscule et 1 chiffre.', 'error');
+      showToast(i18n.t('login.password_requirements'), 'error');
       return;
     }
     if (!acceptTerms) {
-      showToast('Vous devez accepter les conditions d\'utilisation.', 'error');
+      showToast(i18n.t('login.accept_terms_error'), 'error');
       return;
     }
 
@@ -330,15 +319,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (response.ok) {
         window.location.href = '/check-email?email=' + encodeURIComponent(email);
       } else if (response.status === 429) {
-        showToast(data.message || 'Trop de tentatives, réessayez dans quelques minutes.', 'error');
+        showToast(data.message || i18n.t('login.too_many_attempts'), 'error');
         setButtonLoading(submitBtn, false);
       } else {
-        showToast(data.message || 'Impossible de créer le compte.', 'error');
+        showToast(data.message || i18n.t('login.account_creation_failed'), 'error');
         setButtonLoading(submitBtn, false);
       }
     } catch (err) {
       // Erreur gérée via toast
-      showToast('Impossible de se connecter au serveur.', 'error');
+      showToast(i18n.t('login.server_error'), 'error');
       setButtonLoading(submitBtn, false);
     }
   });
