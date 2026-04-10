@@ -14,6 +14,7 @@ const jwt = require('jsonwebtoken');
 jest.mock('../mailer', () => ({
   sendVerificationEmail: jest.fn().mockResolvedValue(undefined),
   sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
+  sendContactEmail: jest.fn().mockResolvedValue(undefined),
   verifyConnection: jest.fn().mockResolvedValue(undefined),
 }));
 const mailer = require('../mailer');
@@ -100,12 +101,12 @@ describe('POST /api/register', () => {
     expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('jean@example.com', 'Jean Dupont', expect.any(String));
   });
 
-  test('400 — email déjà utilisé', async () => {
+  test('201 — email déjà utilisé (anti-énumération : même réponse que le succès)', async () => {
     mockPool.query.mockResolvedValueOnce({ rows: [{ id: 1 }] }); // utilisateur existe
 
     const res = await request(app).post('/api/register').send(validPayload);
-    expect(res.status).toBe(400);
-    expect(res.body.message).toBe('Email déjà utilisé');
+    expect(res.status).toBe(201);
+    expect(res.body.message).toBe('Compte créé. Vérifiez votre boîte email pour activer votre compte.');
   });
 
   test('400 — nom invalide (trop court)', async () => {
@@ -853,7 +854,7 @@ describe('Monitoring endpoints', () => {
   });
 
   describe('GET /api/status', () => {
-    test('200 — retourne version, env, uptime, sentry status', async () => {
+    test('200 — retourne version, env, uptime', async () => {
       const res = await request(app).get('/api/status');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('ok');
@@ -861,26 +862,10 @@ describe('Monitoring endpoints', () => {
       expect(typeof res.body.version).toBe('string');
       expect(res.body.version).toMatch(/^\d+\.\d+\.\d+$/);
       expect(res.body.env).toBe('test');
-      expect(typeof res.body.sentry).toBe('boolean');
       expect(typeof res.body.uptimeSec).toBe('number');
       expect(typeof res.body.startedAt).toBe('string');
       // startedAt doit être un ISO 8601 valide
       expect(new Date(res.body.startedAt).toString()).not.toBe('Invalid Date');
-    });
-
-    test('200 — expose le commit si GIT_COMMIT est défini', async () => {
-      process.env.GIT_COMMIT = 'abc1234';
-      const res = await request(app).get('/api/status');
-      expect(res.status).toBe(200);
-      expect(res.body.commit).toBe('abc1234');
-      delete process.env.GIT_COMMIT;
-    });
-
-    test('200 — commit null si GIT_COMMIT non défini', async () => {
-      delete process.env.GIT_COMMIT;
-      const res = await request(app).get('/api/status');
-      expect(res.status).toBe(200);
-      expect(res.body.commit).toBeNull();
     });
   });
 });
@@ -1971,6 +1956,16 @@ describe('GET /sitemap.xml', () => {
     expect(res.text).toContain('/details?id=2');
     expect(res.text).toContain('/details?id=42');
     expect(res.text).toContain('/hangar');
+
+    // hreflang fr/en avec ?lang= distinct pour les pages statiques
+    expect(res.text).toContain('hreflang="fr" href="https://vol-histoire.titouan-borde.com/hangar?lang=fr"');
+    expect(res.text).toContain('hreflang="en" href="https://vol-histoire.titouan-borde.com/hangar?lang=en"');
+    // x-default pointe vers l'URL sans ?lang=
+    expect(res.text).toContain('hreflang="x-default" href="https://vol-histoire.titouan-borde.com/hangar"');
+
+    // hreflang pour les avions avec &amp;lang= (query string existante)
+    expect(res.text).toContain('hreflang="fr" href="https://vol-histoire.titouan-borde.com/details?id=1&amp;lang=fr"');
+    expect(res.text).toContain('hreflang="en" href="https://vol-histoire.titouan-borde.com/details?id=1&amp;lang=en"');
   });
 
   test('500 — erreur BDD → réponse texte erreur serveur', async () => {
@@ -2242,5 +2237,203 @@ describe('cleanupUnverifiedUsers', () => {
   test('propage l\'erreur DB', async () => {
     mockPool.query.mockRejectedValueOnce(new Error('DB locked'));
     await expect(cleanupUnverifiedUsers()).rejects.toThrow('DB locked');
+  });
+});
+
+// =============================================================================
+// POST /api/contact — Route de contact
+// =============================================================================
+describe('POST /api/contact', () => {
+  beforeEach(() => {
+    mailer.sendContactEmail.mockReset();
+    mailer.sendContactEmail.mockResolvedValue(undefined);
+  });
+
+  const validContact = {
+    firstname: 'Jean',
+    lastname: 'Dupont',
+    email: 'jean@example.com',
+    subject: 'general',
+    message: 'Bonjour, super site !',
+  };
+
+  test('200 — envoi réussi avec tous les champs', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.1')
+      .send(validContact);
+    expect(res.status).toBe(200);
+    expect(res.body.message).toBe('Message envoyé avec succès.');
+    expect(mailer.sendContactEmail).toHaveBeenCalledTimes(1);
+    expect(mailer.sendContactEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'Jean Dupont',
+        email: 'jean@example.com',
+        subject: 'Question générale',
+        message: 'Bonjour, super site !',
+      })
+    );
+  });
+
+  test('200 — sans prénom ni nom → "Anonyme"', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.2')
+      .send({ email: 'anon@example.com', message: 'Test anonyme' });
+    expect(res.status).toBe(200);
+    expect(mailer.sendContactEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'Anonyme' })
+    );
+  });
+
+  test('200 — sans sujet → "Question générale" par défaut', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.3')
+      .send({ email: 'test@example.com', message: 'Message sans sujet' });
+    expect(res.status).toBe(200);
+    expect(mailer.sendContactEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ subject: 'Question générale' })
+    );
+  });
+
+  test('200 — sujet "bug" → "Signalement de bug"', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.4')
+      .send({ email: 'bug@example.com', subject: 'bug', message: 'Erreur page details' });
+    expect(res.status).toBe(200);
+    expect(mailer.sendContactEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ subject: 'Signalement de bug' })
+    );
+  });
+
+  test('400 — email invalide', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.5')
+      .send({ ...validContact, email: 'not-an-email' });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/email invalide/i);
+    expect(mailer.sendContactEmail).not.toHaveBeenCalled();
+  });
+
+  test('400 — email absent', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.6')
+      .send({ message: 'Pas d\'email' });
+    expect(res.status).toBe(400);
+    expect(mailer.sendContactEmail).not.toHaveBeenCalled();
+  });
+
+  test('400 — message absent', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.7')
+      .send({ email: 'jean@example.com' });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/message.*requis/i);
+    expect(mailer.sendContactEmail).not.toHaveBeenCalled();
+  });
+
+  test('400 — sujet invalide (non dans la whitelist)', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.8')
+      .send({ ...validContact, subject: 'hacking' });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/sujet invalide/i);
+    expect(mailer.sendContactEmail).not.toHaveBeenCalled();
+  });
+
+  test('500 — erreur mailer → erreur serveur', async () => {
+    mailer.sendContactEmail.mockRejectedValueOnce(new Error('SMTP down'));
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.9')
+      .send(validContact);
+    expect(res.status).toBe(500);
+    expect(res.body.message).toMatch(/erreur.*envoi/i);
+  });
+
+  test('200 — message trimé (espaces en début/fin supprimés)', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.10')
+      .send({ ...validContact, message: '  Espace avant/après  ' });
+    expect(res.status).toBe(200);
+    expect(mailer.sendContactEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Espace avant/après' })
+    );
+  });
+});
+
+// =============================================================================
+// hCaptcha middleware — tests unitaires
+// =============================================================================
+describe('hCaptcha middleware', () => {
+  const { verify } = require('../middleware/hcaptcha');
+
+  test('ok: true si HCAPTCHA_SECRET non défini (mode dev)', async () => {
+    delete process.env.HCAPTCHA_SECRET;
+    const result = await verify('any-token', '127.0.0.1');
+    expect(result.ok).toBe(true);
+    expect(result.skipped).toBe(true);
+  });
+
+  test('ok: false si HCAPTCHA_SECRET défini mais token absent', async () => {
+    process.env.HCAPTCHA_SECRET = 'test-secret';
+    const result = await verify(undefined, '127.0.0.1');
+    expect(result.ok).toBe(false);
+    expect(result.reason).toBe('missing-token');
+    delete process.env.HCAPTCHA_SECRET;
+  });
+
+  test('ok: false si HCAPTCHA_SECRET défini mais token vide', async () => {
+    process.env.HCAPTCHA_SECRET = 'test-secret';
+    const result = await verify('', '127.0.0.1');
+    expect(result.ok).toBe(false);
+    expect(result.reason).toBe('missing-token');
+    delete process.env.HCAPTCHA_SECRET;
+  });
+
+  test('ok: false si token n\'est pas une string', async () => {
+    process.env.HCAPTCHA_SECRET = 'test-secret';
+    const result = await verify(12345, '127.0.0.1');
+    expect(result.ok).toBe(false);
+    expect(result.reason).toBe('missing-token');
+    delete process.env.HCAPTCHA_SECRET;
+  });
+});
+
+// =============================================================================
+// Monitoring — GET /api/status protégé par METRICS_TOKEN
+// =============================================================================
+describe('Monitoring — status protégé', () => {
+  test('401 — METRICS_TOKEN défini mais absent du header', async () => {
+    process.env.METRICS_TOKEN = 'secret-token';
+    const res = await request(app).get('/api/status');
+    expect(res.status).toBe(401);
+    delete process.env.METRICS_TOKEN;
+  });
+
+  test('401 — METRICS_TOKEN défini mais mauvais token', async () => {
+    process.env.METRICS_TOKEN = 'secret-token';
+    const res = await request(app)
+      .get('/api/status')
+      .set('Authorization', 'Bearer wrong-token');
+    expect(res.status).toBe(401);
+    delete process.env.METRICS_TOKEN;
+  });
+
+  test('200 — METRICS_TOKEN défini avec bon token', async () => {
+    process.env.METRICS_TOKEN = 'secret-token';
+    const res = await request(app)
+      .get('/api/status')
+      .set('Authorization', 'Bearer secret-token');
+    expect(res.status).toBe(200);
+    expect(res.body.status).toBe('ok');
+    delete process.env.METRICS_TOKEN;
   });
 });

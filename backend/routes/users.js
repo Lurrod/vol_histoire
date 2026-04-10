@@ -83,9 +83,9 @@ module.exports = function createUsersRouter(getPool) {
     values.push(id);
     const query = `UPDATE users SET ${fields.join(', ')} WHERE id = $${i} RETURNING id, name, email, role_id`;
 
-    // Transaction si changement de mot de passe (update + révocation des sessions)
+    // Transaction si changement de mot de passe ou d'email (update + révocation des sessions)
     let result;
-    if (password) {
+    if (password || email) {
       result = await withTransaction(getPool(), async (client) => {
         const res = await client.query(query, values);
         if (res.rows.length > 0) {
