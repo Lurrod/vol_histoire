@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('Nom invalide (minimum 2 caractères)', 'error');
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!isValidEmail(email)) {
       showToast('Adresse email invalide', 'error');
       return;
     }

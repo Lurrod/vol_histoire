@@ -23,14 +23,48 @@ const i18n = (() => {
 
   /** Detect initial language */
   function detectLang() {
-    // 1) localStorage
+    // 1) ?lang= query parameter (SEO: each language has its own URL)
+    const urlLang = new URLSearchParams(window.location.search).get('lang');
+    if (urlLang && SUPPORTED_LANGS.includes(urlLang)) {
+      localStorage.setItem(STORAGE_KEY, urlLang);
+      return urlLang;
+    }
+    // 2) localStorage
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored && SUPPORTED_LANGS.includes(stored)) return stored;
-    // 2) Browser lang
+    // 3) Browser lang
     const browserLang = (navigator.language || '').slice(0, 2);
     if (SUPPORTED_LANGS.includes(browserLang)) return browserLang;
-    // 3) Default
+    // 4) Default
     return DEFAULT_LANG;
+  }
+
+  /** Update URL, canonical and hreflang tags to reflect the current language */
+  function updateLangMeta(lang) {
+    // Update ?lang= in URL without reload
+    const url = new URL(window.location.href);
+    url.searchParams.set('lang', lang);
+    window.history.replaceState(null, '', url.toString());
+
+    // Update canonical
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      const canonicalUrl = new URL(canonical.href);
+      canonicalUrl.searchParams.set('lang', lang);
+      canonical.href = canonicalUrl.toString();
+    }
+
+    // Update hreflang tags
+    document.querySelectorAll('link[hreflang]').forEach(link => {
+      const hl = link.getAttribute('hreflang');
+      const linkUrl = new URL(link.href);
+      if (hl === 'x-default') {
+        linkUrl.searchParams.delete('lang');
+      } else {
+        linkUrl.searchParams.set('lang', hl);
+      }
+      link.href = linkUrl.toString();
+    });
   }
 
   /** Load JSON translation file */
@@ -53,22 +87,32 @@ const i18n = (() => {
     return key.split('.').reduce((o, k) => (o && o[k] !== undefined ? o[k] : null), obj);
   }
 
+  /** Global interpolation variables available in all translations */
+  const GLOBAL_PARAMS = { year: new Date().getFullYear() };
+
   /** Translate a key, with optional interpolation: {count}, {name}, etc. */
   function t(key, params = {}) {
     let value = getNestedValue(translations, key);
     if (value === null || value === undefined) return key; // fallback = key
-    if (typeof value === 'string' && params) {
-      Object.entries(params).forEach(([k, v]) => {
+    if (typeof value === 'string') {
+      const merged = { ...GLOBAL_PARAMS, ...params };
+      Object.entries(merged).forEach(([k, v]) => {
         value = value.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
       });
     }
     return value;
   }
 
-  /** Sanitize HTML — DOMPurify avec whitelist restrictive */
+  /** Sanitize HTML — DOMPurify avec whitelist étendue pour supporter les
+   *  blocs de contenu des pages légales (pages contrôlées 100% côté auteur,
+   *  jamais d'input user injecté dedans). Les tags exécutables (script, style,
+   *  iframe, object, embed, form, input) restent interdits. */
   const PURIFY_CONFIG = {
-    ALLOWED_TAGS: ['a', 'strong', 'em', 'br', 'span', 'i', 'u', 'b'],
-    ALLOWED_ATTR: ['href', 'class', 'target', 'rel'],
+    ALLOWED_TAGS: [
+      'a', 'strong', 'em', 'br', 'span', 'i', 'u', 'b',
+      'p', 'ul', 'ol', 'li', 'h3', 'h4', 'h5', 'div',
+    ],
+    ALLOWED_ATTR: ['href', 'class', 'target', 'rel', 'id'],
   };
 
   function sanitizeHtml(html) {
@@ -152,6 +196,7 @@ const i18n = (() => {
     translations = await loadTranslations(lang);
     isLoaded = true;
     applyToDOM();
+    updateLangMeta(lang);
     // Dispatch event so JS modules can react
     window.dispatchEvent(new CustomEvent('langChanged', { detail: { lang } }));
     // i18n BD : si la langue change effectivement et qu'on est sur une page
@@ -176,6 +221,7 @@ const i18n = (() => {
     translations = await loadTranslations(currentLang);
     isLoaded = true;
     applyToDOM();
+    updateLangMeta(currentLang);
 
     // Bind lang toggle button + dropdown
     document.addEventListener('click', (e) => {

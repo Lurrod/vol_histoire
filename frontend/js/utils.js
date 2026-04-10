@@ -109,7 +109,32 @@ function setupPasswordToggle(buttonEl, inputEl) {
   });
 }
 
+/**
+ * Calcule la force d'un mot de passe (0–100).
+ * Critères : longueur ≥8, minuscule, majuscule, chiffre, longueur ≥12, caractère spécial.
+ */
+function calculatePasswordStrength(password) {
+  let strength = 0;
+  if (password.length >= 8) strength += 25;
+  if (/[a-z]/.test(password)) strength += 20;
+  if (/[A-Z]/.test(password)) strength += 20;
+  if (/[0-9]/.test(password)) strength += 15;
+  if (password.length >= 12) strength += 10;
+  if (/[^a-zA-Z0-9]/.test(password)) strength += 10;
+  return Math.min(strength, 100);
+}
+
+/**
+ * Valide un email — même regex que le backend (validators.js).
+ * Partie locale : alphanum + _%+-, pas de point en début/fin ni consécutifs.
+ * Domaine : TLD alphabétique ≥ 2 caractères. Max 255 chars.
+ */
+function isValidEmail(email) {
+  if (typeof email !== 'string' || email.length > 255) return false;
+  return /^[a-zA-Z0-9_%+\-]+(\.[a-zA-Z0-9_%+\-]+)*@[a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/.test(email);
+}
+
 // Export conditionnel pour les tests unitaires (Node.js)
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setupPasswordToggle };
+  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setupPasswordToggle, isValidEmail, calculatePasswordStrength };
 }

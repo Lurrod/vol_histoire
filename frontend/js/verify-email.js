@@ -1,4 +1,4 @@
-(async function() {
+document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
 
@@ -10,7 +10,7 @@
   };
 
   if (!token) {
-    document.getElementById('error-message').textContent = 'Aucun token de vérification trouvé dans l\'URL.';
+    document.getElementById('error-message').textContent = i18n.t('verify_email.error_missing_token');
     show('state-error');
     return;
   }
@@ -24,12 +24,12 @@
     } else {
       document.getElementById('error-message').textContent =
         data.code === 'TOKEN_INVALID'
-          ? 'Ce lien est invalide ou a expiré. Reconnectez-vous pour renvoyer un email.'
-          : (data.message || 'Une erreur est survenue.');
+          ? i18n.t('verify_email.error_expired')
+          : (data.message || i18n.t('common.error'));
       show('state-error');
     }
   } catch {
-    document.getElementById('error-message').textContent = 'Impossible de contacter le serveur. Réessayez plus tard.';
+    document.getElementById('error-message').textContent = i18n.t('verify_email.error_network');
     show('state-error');
   }
-})();
+});

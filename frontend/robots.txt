@@ -10,9 +10,6 @@ Disallow: /settings
 Disallow: /favorites
 Disallow: /cookie-consent
 
-# Ressources
-Disallow: /js/
-Disallow: /css/
 
 # Sitemap
 Sitemap: https://vol-histoire.titouan-borde.com/sitemap.xml
