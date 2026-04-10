@@ -176,6 +176,16 @@ const emailLimiter = rateLimit({
   skip: () => process.env.NODE_ENV === 'test',
 });
 
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { message: 'Trop de messages envoyés, réessayez dans 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req) => req.ip,
+  skip: () => process.env.NODE_ENV === 'test',
+});
+
 // Appliquer le limiteur global à toutes les routes API
 app.use('/api/', globalApiLimiter);
 
@@ -366,7 +376,7 @@ app.sendCachedHtml = sendCachedHtml;
 const htmlPages = [
   'verify-email', 'forgot-password', 'reset-password', 'check-email',
   'hangar', 'timeline', 'favorites', 'login', 'settings',
-  'a-propos', 'contact', 'faq', 'support', 'mentions-legales',
+  'contact', 'mentions-legales',
   'politique-confidentialite', 'cgu',
 ];
 htmlPages.forEach(page => {
@@ -420,6 +430,9 @@ app.use('/api', statsRouter);
 
 // Exposer l'invalidation du cache stats (utilisé par les routes airplanes)
 app.invalidateStatsCache = () => statsRouter.invalidateCache?.();
+
+const createContactRouter = require('./routes/contact');
+app.use('/api', createContactRouter(() => pool, { contactLimiter, mailer }));
 
 const createSitemapRouter = require('./routes/sitemap');
 app.use('/', createSitemapRouter(() => pool));

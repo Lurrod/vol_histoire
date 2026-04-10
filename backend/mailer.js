@@ -134,7 +134,7 @@ function buildVerifyTemplate(name, link) {
           <tr>
             <td style="background:#141414;border-top:1px solid rgba(200,169,110,0.1);border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;">
               <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.25);line-height:1.6;">
-                &copy; 2025 Vol d'Histoire &mdash; Si vous n'avez pas cr&eacute;&eacute; de compte, ignorez cet email.
+                &copy; ${new Date().getFullYear()} Vol d'Histoire &mdash; Si vous n'avez pas cr&eacute;&eacute; de compte, ignorez cet email.
               </p>
             </td>
           </tr>
@@ -196,7 +196,82 @@ function buildResetTemplate(name, link) {
           <tr>
             <td style="background:#141414;border-top:1px solid rgba(200,169,110,0.1);border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;">
               <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.25);line-height:1.6;">
-                &copy; 2025 Vol d'Histoire &mdash; Pour votre s&eacute;curit&eacute;, ce lien n'est valable qu'une seule fois.
+                &copy; ${new Date().getFullYear()} Vol d'Histoire &mdash; Pour votre s&eacute;curit&eacute;, ce lien n'est valable qu'une seule fois.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+// -----------------------------------------------------------------------------
+// Email de contact (formulaire public)
+// -----------------------------------------------------------------------------
+async function sendContactEmail({ to, replyTo, name, email, subject, message }) {
+  await transporter.sendMail({
+    from: FROM,
+    to,
+    replyTo,
+    subject: `[Vol d'Histoire] ${subject}`,
+    html: buildContactTemplate(name, email, subject, message),
+  });
+}
+
+function buildContactTemplate(name, email, subject, message) {
+  const safeName = escapeHtmlEmail(name);
+  const safeEmail = escapeHtmlEmail(email);
+  const safeSubject = escapeHtmlEmail(subject);
+  const safeMessage = escapeHtmlEmail(message).replace(/\n/g, '<br>');
+
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nouveau message de contact</title>
+</head>
+<body style="margin:0;padding:0;background:#0D0D0D;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0D0D0D;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+          <tr>
+            <td style="background:#141414;border-radius:12px 12px 0 0;padding:32px 40px;text-align:center;border-bottom:2px solid rgba(200,169,110,0.25);">
+              <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.5);">FORMULAIRE DE CONTACT</p>
+              <h1 style="margin:10px 0 0;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">Vol d'Histoire</h1>
+              <div style="width:32px;height:2px;background:#C8A96E;margin:14px auto 0;border-radius:1px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#1A1A1A;padding:40px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                <tr>
+                  <td style="padding:8px 0;font-size:13px;color:rgba(255,255,255,0.45);width:80px;vertical-align:top;">De</td>
+                  <td style="padding:8px 0;font-size:14px;color:#ffffff;">${safeName}</td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;font-size:13px;color:rgba(255,255,255,0.45);vertical-align:top;">Email</td>
+                  <td style="padding:8px 0;font-size:14px;"><a href="mailto:${safeEmail}" style="color:#C8A96E;text-decoration:none;">${safeEmail}</a></td>
+                </tr>
+                <tr>
+                  <td style="padding:8px 0;font-size:13px;color:rgba(255,255,255,0.45);vertical-align:top;">Sujet</td>
+                  <td style="padding:8px 0;font-size:14px;color:#ffffff;">${safeSubject}</td>
+                </tr>
+              </table>
+              <div style="border-top:1px solid rgba(200,169,110,0.15);padding-top:24px;">
+                <h2 style="margin:0 0 12px;font-size:16px;font-weight:600;color:rgba(255,255,255,0.6);">Message</h2>
+                <p style="margin:0;font-size:15px;color:rgba(255,255,255,0.8);line-height:1.75;">${safeMessage}</p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#141414;border-top:1px solid rgba(200,169,110,0.1);border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.25);line-height:1.6;">
+                R&eacute;pondre directement &agrave; cet email enverra votre r&eacute;ponse &agrave; ${safeEmail}.
               </p>
             </td>
           </tr>
@@ -217,4 +292,4 @@ function escapeHtmlEmail(text) {
     .replace(/"/g, '&quot;');
 }
 
-module.exports = { sendVerificationEmail, sendPasswordResetEmail, verifyConnection };
+module.exports = { sendVerificationEmail, sendPasswordResetEmail, sendContactEmail, verifyConnection };

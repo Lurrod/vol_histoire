@@ -40,12 +40,16 @@ module.exports = function createMonitoringRouter(getPool) {
   });
 
   // Métriques Prometheus (à scraper depuis Prometheus / Grafana Agent)
+  // Protégé par Bearer token — obligatoire en production
   router.get('/metrics', async (req, res) => {
-    // Optionnel : protéger via un token simple si exposé publiquement
-    if (process.env.METRICS_TOKEN) {
+    const token = process.env.METRICS_TOKEN;
+    if (!token && process.env.NODE_ENV === 'production') {
+      return res.status(403).json({ message: 'METRICS_TOKEN requis en production.' });
+    }
+    if (token) {
       const auth = req.headers.authorization || '';
       const provided = auth.startsWith('Bearer ') ? auth.slice(7) : '';
-      if (provided !== process.env.METRICS_TOKEN) {
+      if (provided !== token) {
         return res.status(401).end();
       }
     }
@@ -57,17 +61,23 @@ module.exports = function createMonitoringRouter(getPool) {
     }
   });
 
-  // Statut applicatif lisible (humain + outils d'uptime)
+  // Statut applicatif — protégé par le même token que /metrics
   router.get('/status', (req, res) => {
+    const token = process.env.METRICS_TOKEN;
+    if (token) {
+      const auth = req.headers.authorization || '';
+      const provided = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+      if (provided !== token) {
+        return res.status(401).end();
+      }
+    }
     res.json({
       status: 'ok',
       service: pkg.name,
       version: pkg.version,
       env: process.env.NODE_ENV || 'development',
-      sentry: logger.isSentryEnabled(),
       uptimeSec: Math.round(process.uptime()),
       startedAt: startedAt.toISOString(),
-      commit: process.env.GIT_COMMIT || null,
     });
   });
 

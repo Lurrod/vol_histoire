@@ -39,12 +39,15 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)' });
     }
 
-    const userExists = await getPool().query('SELECT id, email FROM users WHERE email = $1', [email]);
-    if (userExists.rows.length > 0) {
-      return res.status(400).json({ message: 'Email déjà utilisé' });
-    }
+    const userExists = await getPool().query('SELECT id FROM users WHERE email = $1', [email]);
 
+    // Anti-énumération : même réponse et même délai que l'email n'existe ou non.
+    // Le bcrypt.hash ci-dessous garantit un temps de réponse constant.
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    if (userExists.rows.length > 0) {
+      return res.status(201).json({ message: 'Compte créé. Vérifiez votre boîte email pour activer votre compte.' });
+    }
     const defaultRole = 3;
     const verifyToken = crypto.randomBytes(32).toString('hex');
     const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -102,12 +105,14 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       'SELECT id, name, email, password, role_id, email_verified FROM users WHERE email = $1',
       [email]
     );
-    if (user.rows.length === 0) {
-      return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
-    }
 
-    const validPassword = await bcrypt.compare(password, user.rows[0].password);
-    if (!validPassword) {
+    // Anti timing-attack : bcrypt.compare est toujours exécuté, même si
+    // l'utilisateur n'existe pas, pour garantir un temps de réponse constant.
+    const DUMMY_HASH = '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy';
+    const storedHash = user.rows.length > 0 ? user.rows[0].password : DUMMY_HASH;
+    const validPassword = await bcrypt.compare(password, storedHash);
+
+    if (user.rows.length === 0 || !validPassword) {
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
     }
 
