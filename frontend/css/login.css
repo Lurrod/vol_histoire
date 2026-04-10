@@ -299,7 +299,8 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   margin-bottom: 1.25rem;
   border: 1px solid rgba(200, 169, 110, 0.18);
 }
-.page-login .form-header h1 {
+.page-login .form-header h1,
+.page-login .form-header h2 {
   font-family: 'DM Sans', sans-serif;
   font-size: 1.75rem;
   font-weight: 700;
@@ -625,7 +626,8 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 @media (max-width: 768px) {
   .page-login .container { padding: 0 1.5rem; }
   .page-login .auth-form-panel { padding: 2rem 1.5rem; }
-  .page-login .form-header h1 { font-size: 1.5rem; }
+  .page-login .form-header h1,
+  .page-login .form-header h2 { font-size: 1.5rem; }
   .page-login .form-options { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
   .page-login .security-info { gap: 1rem; flex-wrap: wrap; }
   /* footer responsive → shared.css */
@@ -638,7 +640,8 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
     border-radius: 16px;
     margin: 0.5rem;
   }
-  .page-login .form-header h1 { font-size: 1.35rem; }
+  .page-login .form-header h1,
+  .page-login .form-header h2 { font-size: 1.35rem; }
   .page-login .form-icon { width: 44px; height: 44px; font-size: 1rem; border-radius: 12px; margin-bottom: 1rem; }
   .page-login .form-group input { padding: 0.75rem 0.75rem; font-size: 0.9rem; }
   .page-login .btn-submit { padding: 0.875rem; font-size: 0.9rem; min-height: 48px; }
