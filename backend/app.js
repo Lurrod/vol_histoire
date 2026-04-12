@@ -111,51 +111,73 @@ app.use(observability.accessLog);
 // -----------------------------------------------------------------------------
 const rateLimit = require('express-rate-limit');
 
-let rateLimitStore;
-if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
-  try {
-    const { RedisStore } = require('rate-limit-redis');
-    const Redis = require('ioredis');
-    const redisClient = new Redis(process.env.REDIS_URL, {
-      maxRetriesPerRequest: 3,
-      enableReadyCheck: true,
-      lazyConnect: true,
-    });
-    redisClient.connect().catch(err => {
-      logger.warn('Redis rate-limit connexion échouée — fallback mémoire', { error: err.message });
-    });
-    rateLimitStore = new RedisStore({
-      sendCommand: (...args) => redisClient.call(...args),
-      prefix: 'vdh:rl:',
-    });
-    logger.info('Rate-limiter : store Redis activé');
-  } catch (err) {
-    logger.warn('rate-limit-redis ou ioredis non installé — fallback mémoire', { error: err.message });
-    rateLimitStore = undefined;
-  }
-}
+// Store mémoire par défaut (instance unique).
+// Si REDIS_URL est défini, app.initRedis() (appelé depuis server.js avant listen)
+// remplace les stores par des RedisStore pour le scaling horizontal.
+const LIMITER_DEFS = [
+  { key: 'register',      max: 10,  msg: "Trop de tentatives d'inscription, réessayez dans 15 minutes." },
+  { key: 'login',         max: 20,  msg: "Trop de tentatives de connexion, réessayez dans 15 minutes." },
+  { key: 'global',        max: 200, msg: 'Trop de requêtes, réessayez plus tard.' },
+  { key: 'refresh',       max: 30,  msg: 'Trop de tentatives de rafraîchissement, réessayez dans 15 minutes.' },
+  { key: 'resetPassword', max: 5,   msg: 'Trop de tentatives, réessayez dans 15 minutes.' },
+  { key: 'email',         max: 3,   msg: 'Trop de demandes, réessayez dans 15 minutes.' },
+  { key: 'contact',       max: 5,   msg: 'Trop de messages envoyés, réessayez dans 15 minutes.' },
+];
 
-function createLimiter(max, message) {
-  const opts = {
+function buildLimiter({ max, msg }, store) {
+  return rateLimit({
     windowMs: 15 * 60 * 1000,
     max,
-    message: { message },
+    message: { message: msg },
     standardHeaders: true,
     legacyHeaders: false,
     keyGenerator: (req) => req.ip,
     skip: () => process.env.NODE_ENV === 'test',
-  };
-  if (rateLimitStore) opts.store = rateLimitStore;
-  return rateLimit(opts);
+    ...(store ? { store } : {}),
+  });
 }
 
-const registerLimiter      = createLimiter(10, "Trop de tentatives d'inscription, réessayez dans 15 minutes.");
-const loginLimiter         = createLimiter(20, "Trop de tentatives de connexion, réessayez dans 15 minutes.");
-const globalApiLimiter     = createLimiter(200, 'Trop de requêtes, réessayez plus tard.');
-const refreshLimiter       = createLimiter(30, 'Trop de tentatives de rafraîchissement, réessayez dans 15 minutes.');
-const resetPasswordLimiter = createLimiter(5, 'Trop de tentatives, réessayez dans 15 minutes.');
-const emailLimiter         = createLimiter(3, 'Trop de demandes, réessayez dans 15 minutes.');
-const contactLimiter       = createLimiter(5, 'Trop de messages envoyés, réessayez dans 15 minutes.');
+// Implémentations mutables — wrappers qui délèguent au limiter courant
+const _impl = {};
+LIMITER_DEFS.forEach(d => { _impl[d.key] = buildLimiter(d); });
+
+const registerLimiter      = (req, res, next) => _impl.register(req, res, next);
+const loginLimiter         = (req, res, next) => _impl.login(req, res, next);
+const globalApiLimiter     = (req, res, next) => _impl.global(req, res, next);
+const refreshLimiter       = (req, res, next) => _impl.refresh(req, res, next);
+const resetPasswordLimiter = (req, res, next) => _impl.resetPassword(req, res, next);
+const emailLimiter         = (req, res, next) => _impl.email(req, res, next);
+const contactLimiter       = (req, res, next) => _impl.contact(req, res, next);
+
+// Upgrade vers Redis — appelé depuis server.js si REDIS_URL est défini.
+// Ping Redis d'abord, puis remplace chaque limiter par une version RedisStore.
+app.initRedis = async function initRedis() {
+  if (!process.env.REDIS_URL || process.env.NODE_ENV === 'test') return;
+  let client;
+  try {
+    const Redis = require('ioredis');
+    const { RedisStore } = require('rate-limit-redis');
+    client = new Redis(process.env.REDIS_URL, {
+      connectTimeout: 3000,
+      maxRetriesPerRequest: 1,
+      retryStrategy: () => null,
+    });
+    client.on('error', () => {});
+    await client.ping();
+
+    LIMITER_DEFS.forEach(d => {
+      _impl[d.key] = buildLimiter(d, new RedisStore({
+        sendCommand: (...args) => client.call(...args),
+        prefix: `vdh:rl:${d.key}:`,
+      }));
+    });
+    app._redisClient = client; // exposé pour shutdown gracieux
+    logger.info('Rate-limiter Redis activé', { limiters: LIMITER_DEFS.length });
+  } catch (err) {
+    logger.warn('Redis indisponible — rate-limit en mémoire', { error: err.message });
+    try { if (client) client.disconnect(); } catch (_) {}
+  }
+};
 
 // Appliquer le limiteur global à toutes les routes API
 app.use('/api/', globalApiLimiter);

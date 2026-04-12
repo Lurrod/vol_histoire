@@ -55,47 +55,56 @@ const pool = new Pool({
 
 app.setPool(pool);
 
-const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-  logger.info('Serveur démarré', { port, url: `http://localhost:${port}` });
+// Init Redis rate-limiter (si REDIS_URL défini et Redis joignable)
+app.initRedis().then(() => {
+  const port = process.env.PORT || 3000;
+  const server = app.listen(port, () => {
+    logger.info('Serveur démarré', { port, url: `http://localhost:${port}` });
+  });
+
+  // Garder la ref pour le shutdown
+  setupShutdown(server);
+}).catch(err => {
+  logger.error('Erreur init serveur', { error: err.message });
+  process.exit(1);
 });
 
 // -----------------------------------------------------------------------------
 // Arrêt gracieux (SIGTERM / SIGINT)
 // -----------------------------------------------------------------------------
-async function shutdown(signal) {
-  logger.info('Arrêt gracieux en cours', { signal });
+function setupShutdown(server) {
+  async function shutdown(signal) {
+    logger.info('Arrêt gracieux en cours', { signal });
 
-  // 1. Arrêter d'accepter de nouvelles connexions
-  server.close(async () => {
-    try {
-      // 2. Flush Sentry pour ne pas perdre les events en cours
-      await logger.flushSentry(2000);
-      // 3. Fermer le pool PostgreSQL proprement
-      await pool.end();
-      logger.info('Pool PostgreSQL fermé');
-      process.exit(0);
-    } catch (err) {
-      logger.error('Erreur fermeture du pool', { error: err });
+    server.close(async () => {
+      try {
+        // Fermer Redis si connecté
+        if (app._redisClient) await app._redisClient.quit().catch(() => {});
+        await logger.flushSentry(2000);
+        await pool.end();
+        logger.info('Pool PostgreSQL fermé');
+        process.exit(0);
+      } catch (err) {
+        logger.error('Erreur fermeture', { error: err });
+        process.exit(1);
+      }
+    });
+
+    setTimeout(() => {
+      logger.error('Délai dépassé — arrêt forcé');
       process.exit(1);
-    }
-  });
+    }, 10000).unref();
+  }
 
-  // Forcer l'arrêt si les connexions en cours ne se terminent pas dans les 10 s
-  setTimeout(() => {
-    logger.error('Délai dépassé — arrêt forcé');
-    process.exit(1);
-  }, 10000).unref();
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 }
 
-// Erreurs non capturées : forward vers logger → Sentry, puis arrêt propre
+// Erreurs non capturées : forward vers logger → Sentry
 process.on('uncaughtException', (err) => {
   logger.error('uncaughtException', { error: err });
-  shutdown('uncaughtException');
+  process.exit(1);
 });
 process.on('unhandledRejection', (reason) => {
   logger.error('unhandledRejection', { error: reason instanceof Error ? reason : new Error(String(reason)) });
 });
-
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT',  () => shutdown('SIGINT'));
