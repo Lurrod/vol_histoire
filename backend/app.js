@@ -106,85 +106,56 @@ app.use(observability.accessLog);
 // -----------------------------------------------------------------------------
 // Rate-limiter (express-rate-limit)
 // -----------------------------------------------------------------------------
-// En production multi-instances, ajouter un store Redis :
-//   npm install rate-limit-redis ioredis
-//   const RedisStore = require('rate-limit-redis');
-//   const Redis = require('ioredis');
-//   const redisClient = new Redis(process.env.REDIS_URL);
-//   Puis passer { store: new RedisStore({ sendCommand: (...args) => redisClient.call(...args) }) }
-//   dans chaque rateLimit() ci-dessous.
+// Store Redis automatique si REDIS_URL est défini (multi-instances / scaling).
+// Sinon fallback sur le store mémoire (instance unique, dev).
 // -----------------------------------------------------------------------------
 const rateLimit = require('express-rate-limit');
 
-const registerLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: { message: "Trop de tentatives d'inscription, réessayez dans 15 minutes." },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req) => req.ip,
-  skip: () => process.env.NODE_ENV === 'test',
-});
+let rateLimitStore;
+if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
+  try {
+    const { RedisStore } = require('rate-limit-redis');
+    const Redis = require('ioredis');
+    const redisClient = new Redis(process.env.REDIS_URL, {
+      maxRetriesPerRequest: 3,
+      enableReadyCheck: true,
+      lazyConnect: true,
+    });
+    redisClient.connect().catch(err => {
+      logger.warn('Redis rate-limit connexion échouée — fallback mémoire', { error: err.message });
+    });
+    rateLimitStore = new RedisStore({
+      sendCommand: (...args) => redisClient.call(...args),
+      prefix: 'vdh:rl:',
+    });
+    logger.info('Rate-limiter : store Redis activé');
+  } catch (err) {
+    logger.warn('rate-limit-redis ou ioredis non installé — fallback mémoire', { error: err.message });
+    rateLimitStore = undefined;
+  }
+}
 
-const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  message: { message: "Trop de tentatives de connexion, réessayez dans 15 minutes." },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req) => req.ip,
-  skip: () => process.env.NODE_ENV === 'test',
-});
+function createLimiter(max, message) {
+  const opts = {
+    windowMs: 15 * 60 * 1000,
+    max,
+    message: { message },
+    standardHeaders: true,
+    legacyHeaders: false,
+    keyGenerator: (req) => req.ip,
+    skip: () => process.env.NODE_ENV === 'test',
+  };
+  if (rateLimitStore) opts.store = rateLimitStore;
+  return rateLimit(opts);
+}
 
-const globalApiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 200,
-  message: { message: 'Trop de requêtes, réessayez plus tard.' },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req) => req.ip,
-  skip: () => process.env.NODE_ENV === 'test',
-});
-
-const refreshLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 30,
-  message: { message: 'Trop de tentatives de rafraîchissement, réessayez dans 15 minutes.' },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req) => req.ip,
-  skip: () => process.env.NODE_ENV === 'test',
-});
-
-const resetPasswordLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: { message: 'Trop de tentatives, réessayez dans 15 minutes.' },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req) => req.ip,
-  skip: () => process.env.NODE_ENV === 'test',
-});
-
-const emailLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 3,
-  message: { message: 'Trop de demandes, réessayez dans 15 minutes.' },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req) => req.ip,
-  skip: () => process.env.NODE_ENV === 'test',
-});
-
-const contactLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: { message: 'Trop de messages envoyés, réessayez dans 15 minutes.' },
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req) => req.ip,
-  skip: () => process.env.NODE_ENV === 'test',
-});
+const registerLimiter      = createLimiter(10, "Trop de tentatives d'inscription, réessayez dans 15 minutes.");
+const loginLimiter         = createLimiter(20, "Trop de tentatives de connexion, réessayez dans 15 minutes.");
+const globalApiLimiter     = createLimiter(200, 'Trop de requêtes, réessayez plus tard.');
+const refreshLimiter       = createLimiter(30, 'Trop de tentatives de rafraîchissement, réessayez dans 15 minutes.');
+const resetPasswordLimiter = createLimiter(5, 'Trop de tentatives, réessayez dans 15 minutes.');
+const emailLimiter         = createLimiter(3, 'Trop de demandes, réessayez dans 15 minutes.');
+const contactLimiter       = createLimiter(5, 'Trop de messages envoyés, réessayez dans 15 minutes.');
 
 // Appliquer le limiteur global à toutes les routes API
 app.use('/api/', globalApiLimiter);

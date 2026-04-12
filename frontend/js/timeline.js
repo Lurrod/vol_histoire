@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const range = plane.max_range ? `${plane.max_range} km` : null;
     const featureClass = isFeature ? ' feature' : '';
     return `
-      <a class="tl-plane-card${featureClass}" href="/details?id=${encodeURIComponent(plane.id)}">
+      <a class="tl-plane-card${featureClass}" href="${VH.shared.buildDetailsPath(plane.id, plane.name)}">
         <div class="tl-plane-img">
           ${img ? `<img src="${escapeAttr(img)}" alt="${escapeAttr(plane.name)}" loading="lazy">` : ''}
           <span class="tl-plane-year">${year}</span>

@@ -124,4 +124,22 @@
   @media (max-width: 30em) {    /* < 480px */
     .container { padding-inline: var(--sp-3); }
   }
+
+  /* ============================================================
+     ERREURS DE FORMULAIRE (aria-invalid)
+     ============================================================ */
+  .form-error {
+    display: block;
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
+  }
+
+  input[aria-invalid="true"],
+  textarea[aria-invalid="true"],
+  select[aria-invalid="true"] {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
 }

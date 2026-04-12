@@ -68,12 +68,28 @@
    * À appeler après avoir injecté le HTML. */
   function bindCardNavigation(container) {
     container.querySelectorAll('.aircraft-card').forEach(card => {
-      const go = () => { window.location.href = `/details?id=${card.dataset.id}`; };
+      const name = card.querySelector('h3')?.textContent || '';
+      const go = () => { window.location.href = buildDetailsPath(card.dataset.id, name); };
       card.addEventListener('click', go);
       card.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
     });
   }
 
+  function cardSlugify(text) {
+    return String(text || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function buildDetailsPath(id, name) {
+    const slug = cardSlugify(name);
+    return slug ? `/details/${slug}-${id}` : `/details/${id}`;
+  }
+
   VH.shared.renderAircraftCard = renderAircraftCard;
   VH.shared.bindCardNavigation = bindCardNavigation;
+  VH.shared.buildDetailsPath = buildDetailsPath;
 })();

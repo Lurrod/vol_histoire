@@ -145,6 +145,39 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // -------------------------------------------------------------------
+  // Navigation clavier dans les dropdowns (↑↓ Enter Escape)
+  // -------------------------------------------------------------------
+  function setupDropdownKeyboard(container, itemSelector) {
+    if (!container) return;
+    container.addEventListener('keydown', (e) => {
+      const items = Array.from(container.querySelectorAll(itemSelector))
+        .filter(el => el.offsetParent !== null);
+      if (items.length === 0) return;
+
+      const idx = items.indexOf(document.activeElement);
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        items[(idx + 1) % items.length].focus();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        items[(idx - 1 + items.length) % items.length].focus();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        items[0].focus();
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        items[items.length - 1].focus();
+      }
+    });
+  }
+
+  // Fleches dans le dropdown langue
+  setupDropdownKeyboard(document.getElementById('lang-dropdown'), '.lang-option');
+  // Fleches dans le dropdown utilisateur
+  setupDropdownKeyboard(userDropdown, '[role="menuitem"]');
+
+  // -------------------------------------------------------------------
   // ESC pour tout fermer
   // -------------------------------------------------------------------
   document.addEventListener('keydown', (e) => {

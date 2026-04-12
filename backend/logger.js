@@ -57,9 +57,14 @@ function formatEntry(level, message, meta = {}) {
   return entry;
 }
 
+// Scrubbing PII/secrets dans les meta avant log (défense en profondeur)
+let scrub;
+try { scrub = require('./middleware/sanitize-logs').scrub; } catch (_) { scrub = null; }
+
 function log(level, message, meta) {
   if (LEVELS[level] > currentLevel) return;
-  const entry = formatEntry(level, message, meta);
+  const safeMeta = (meta && scrub) ? scrub(meta) : meta;
+  const entry = formatEntry(level, message, safeMeta);
   const output = JSON.stringify(entry);
   if (level === 'error' || level === 'warn') {
     console.error(output);

@@ -134,7 +134,91 @@ function isValidEmail(email) {
   return /^[a-zA-Z0-9_%+\-]+(\.[a-zA-Z0-9_%+\-]+)*@[a-zA-Z0-9\-]+(\.[a-zA-Z0-9\-]+)*\.[a-zA-Z]{2,}$/.test(email);
 }
 
+/**
+ * Focus trap — empêche le focus de sortir d'un conteneur (modal, dialog).
+ * Retourne une fonction cleanup() pour détacher le listener.
+ *
+ * @param {HTMLElement} container — élément contenant les éléments focusables
+ * @returns {{ destroy: () => void }} — appeler destroy() quand la modal se ferme
+ */
+function trapFocus(container) {
+  if (!container) return { destroy() {} };
+
+  const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  function handler(e) {
+    if (e.key !== 'Tab') return;
+
+    const focusable = Array.from(container.querySelectorAll(FOCUSABLE)).filter(el => el.offsetParent !== null);
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }
+
+  container.addEventListener('keydown', handler);
+
+  // Focus le premier élément focusable
+  requestAnimationFrame(() => {
+    const first = container.querySelector(FOCUSABLE);
+    if (first) first.focus();
+  });
+
+  return { destroy() { container.removeEventListener('keydown', handler); } };
+}
+
+/**
+ * Affiche une erreur en ligne sous un champ de formulaire.
+ * Ajoute aria-invalid="true" et lie le message via aria-describedby.
+ */
+function setFieldError(inputEl, message) {
+  if (!inputEl) return;
+  inputEl.setAttribute('aria-invalid', 'true');
+
+  let errorId = inputEl.getAttribute('aria-describedby');
+  let errEl = errorId ? document.getElementById(errorId) : null;
+
+  if (!errEl) {
+    errorId = inputEl.id + '-error';
+    errEl = document.createElement('span');
+    errEl.id = errorId;
+    errEl.className = 'form-error';
+    errEl.setAttribute('role', 'alert');
+    inputEl.parentNode.insertBefore(errEl, inputEl.nextSibling);
+    inputEl.setAttribute('aria-describedby', errorId);
+  }
+
+  errEl.textContent = message;
+}
+
+/**
+ * Retire l'erreur en ligne d'un champ de formulaire.
+ */
+function clearFieldError(inputEl) {
+  if (!inputEl) return;
+  inputEl.removeAttribute('aria-invalid');
+  const errorId = inputEl.getAttribute('aria-describedby');
+  if (errorId) {
+    const errEl = document.getElementById(errorId);
+    if (errEl && errEl.classList.contains('form-error')) {
+      errEl.textContent = '';
+    }
+  }
+}
+
 // Export conditionnel pour les tests unitaires (Node.js)
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setupPasswordToggle, isValidEmail, calculatePasswordStrength };
+  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setupPasswordToggle, isValidEmail, calculatePasswordStrength, setFieldError, clearFieldError };
 }

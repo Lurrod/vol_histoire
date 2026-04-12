@@ -1,5 +1,6 @@
 const express = require('express');
 const asyncHandler = require('../middleware/asyncHandler');
+const { buildDetailsPath } = require('../utils/url');
 
 module.exports = function createSitemapRouter(getPool) {
   const router = express.Router();
@@ -21,33 +22,32 @@ module.exports = function createSitemapRouter(getPool) {
       { loc: '/cgu',                       changefreq: 'yearly',  priority: '0.2' },
     ];
 
-    const result = await getPool().query('SELECT id FROM airplanes ORDER BY id ASC');
+    const result = await getPool().query('SELECT id, name FROM airplanes ORDER BY id ASC');
 
     const staticUrls = staticPages.map(p => {
       const url = `${BASE_URL}${p.loc}`;
-      const sep = p.loc === '/' ? '?' : '?';
       return `
   <url>
     <loc>${url}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${p.changefreq}</changefreq>
     <priority>${p.priority}</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="${url}${sep}lang=fr" />
-    <xhtml:link rel="alternate" hreflang="en" href="${url}${sep}lang=en" />
+    <xhtml:link rel="alternate" hreflang="fr" href="${url}?lang=fr" />
+    <xhtml:link rel="alternate" hreflang="en" href="${url}?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="${url}" />
   </url>`;
     }).join('');
 
     const airplaneUrls = result.rows.map(row => {
-      const url = `${BASE_URL}/details?id=${row.id}`;
+      const url = `${BASE_URL}${buildDetailsPath(row.id, row.name)}`;
       return `
   <url>
     <loc>${url}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="${url}&amp;lang=fr" />
-    <xhtml:link rel="alternate" hreflang="en" href="${url}&amp;lang=en" />
+    <xhtml:link rel="alternate" hreflang="fr" href="${url}?lang=fr" />
+    <xhtml:link rel="alternate" hreflang="en" href="${url}?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="${url}" />
   </url>`;
     }).join('');

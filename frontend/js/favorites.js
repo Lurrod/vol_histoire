@@ -499,8 +499,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       card.addEventListener('click', (e) => {
         // Don't navigate if clicking remove button
         if (e.target.closest('.favorite-remove')) return;
-        const id = card.dataset.id;
-        window.location.href = `/details?id=${id}`;
+        const name = card.querySelector('h3')?.textContent || '';
+        window.location.href = VH.shared.buildDetailsPath(card.dataset.id, name);
       });
     });
 

@@ -221,12 +221,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const password = loginPassword.value;
     const submitBtn = loginForm.querySelector('button[type="submit"]');
 
+    clearFieldError(document.getElementById("login-email"));
+    clearFieldError(loginPassword);
+
     if (!isValidEmail(email)) {
-      showToast(i18n.t('login.invalid_email'), 'error');
+      setFieldError(document.getElementById("login-email"), i18n.t('login.invalid_email'));
       return;
     }
     if (!password) {
-      showToast(i18n.t('login.missing_password'), 'error');
+      setFieldError(loginPassword, i18n.t('login.missing_password'));
       return;
     }
 
@@ -285,16 +288,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     const acceptTerms = document.getElementById("accept-terms").checked;
     const submitBtn = registerForm.querySelector('button[type="submit"]');
 
+    clearFieldError(document.getElementById("register-name"));
+    clearFieldError(document.getElementById("register-email"));
+    clearFieldError(registerPassword);
+
     if (name.length < 2) {
-      showToast(i18n.t('login.name_too_short'), 'error');
+      setFieldError(document.getElementById("register-name"), i18n.t('login.name_too_short'));
       return;
     }
     if (!isValidEmail(email)) {
-      showToast(i18n.t('login.invalid_email'), 'error');
+      setFieldError(document.getElementById("register-email"), i18n.t('login.invalid_email'));
       return;
     }
     if (!validatePassword(password)) {
-      showToast(i18n.t('login.password_requirements'), 'error');
+      setFieldError(registerPassword, i18n.t('login.password_requirements'));
       return;
     }
     if (!acceptTerms) {

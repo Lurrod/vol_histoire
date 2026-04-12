@@ -36,11 +36,17 @@
 
       editModal.classList.add('show');
       document.body.style.overflow = 'hidden';
+      _focusTrap = trapFocus(editModal);
     }
 
+    let _focusTrap = null;
+    let _previousFocus = null;
     function closeEditModal() {
+      _focusTrap?.destroy();
+      _focusTrap = null;
       editModal.classList.remove('show');
       document.body.style.overflow = '';
+      _previousFocus?.focus();
     }
     VH.details.admin.closeEditModal = closeEditModal;
 
@@ -62,7 +68,7 @@
       } catch (_) { /* silencieux */ }
     }
 
-    editBtn?.addEventListener('click', openEditModal);
+    editBtn?.addEventListener('click', () => { _previousFocus = document.activeElement; openEditModal(); });
     [cancelEditBtn, modalClose].forEach(btn => btn?.addEventListener('click', closeEditModal));
     editModal?.addEventListener('click', (e) => {
       if (e.target === editModal || e.target.classList.contains('modal-backdrop')) closeEditModal();

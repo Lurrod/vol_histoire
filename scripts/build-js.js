@@ -80,6 +80,10 @@ const BUNDLES = {
   'favorites.min.js': [
     'favorites.js',
   ],
+
+  'contact.min.js': [
+    'contact.js',
+  ],
 };
 
 // ── Build ──────────────────────────────────────────────────────────────

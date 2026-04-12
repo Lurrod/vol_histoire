@@ -3,7 +3,7 @@
  * escapeHtml, showToast, animateNumber, setupPasswordToggle
  */
 
-const { escapeHtml, showToast, animateNumber, setupPasswordToggle } = require('../js/utils');
+const { escapeHtml, showToast, animateNumber, setupPasswordToggle, setFieldError, clearFieldError, isValidEmail, calculatePasswordStrength } = require('../js/utils');
 
 beforeEach(() => {
   document.body.innerHTML = '';
@@ -185,5 +185,107 @@ describe('setupPasswordToggle', () => {
     expect(input.type).toBe('password');
     expect(icon.classList.contains('fa-eye-slash')).toBe(true);
     expect(icon.classList.contains('fa-eye')).toBe(false);
+  });
+});
+
+// =============================================================================
+// isValidEmail
+// =============================================================================
+describe('isValidEmail', () => {
+  test('accepte un email valide', () => {
+    expect(isValidEmail('user@example.com')).toBe(true);
+  });
+
+  test('refuse un email sans @', () => {
+    expect(isValidEmail('userexample.com')).toBe(false);
+  });
+
+  test('refuse un email trop long (> 255)', () => {
+    expect(isValidEmail('a'.repeat(250) + '@b.com')).toBe(false);
+  });
+
+  test('refuse null/undefined', () => {
+    expect(isValidEmail(null)).toBe(false);
+    expect(isValidEmail(undefined)).toBe(false);
+  });
+});
+
+// =============================================================================
+// calculatePasswordStrength
+// =============================================================================
+describe('calculatePasswordStrength', () => {
+  test('retourne 0 pour un mot de passe vide', () => {
+    expect(calculatePasswordStrength('')).toBe(0);
+  });
+
+  test('retourne 100 pour un mot de passe fort', () => {
+    expect(calculatePasswordStrength('MyStr0ng!Passw0rd')).toBe(100);
+  });
+
+  test('ne dépasse jamais 100', () => {
+    expect(calculatePasswordStrength('A1b2c3d4e5f6!@#$%^&*')).toBeLessThanOrEqual(100);
+  });
+});
+
+// =============================================================================
+// setFieldError / clearFieldError
+// =============================================================================
+describe('setFieldError', () => {
+  test('ne crash pas si inputEl est null', () => {
+    expect(() => setFieldError(null, 'erreur')).not.toThrow();
+  });
+
+  test('ajoute aria-invalid et crée un span.form-error', () => {
+    const container = document.createElement('div');
+    const input = document.createElement('input');
+    input.id = 'test-input';
+    container.appendChild(input);
+    document.body.appendChild(container);
+
+    setFieldError(input, 'Champ requis');
+
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-describedby')).toBe('test-input-error');
+
+    const errEl = document.getElementById('test-input-error');
+    expect(errEl).not.toBeNull();
+    expect(errEl.textContent).toBe('Champ requis');
+    expect(errEl.getAttribute('role')).toBe('alert');
+  });
+
+  test('réutilise le span existant au deuxième appel', () => {
+    const container = document.createElement('div');
+    const input = document.createElement('input');
+    input.id = 'reuse-input';
+    container.appendChild(input);
+    document.body.appendChild(container);
+
+    setFieldError(input, 'Erreur 1');
+    setFieldError(input, 'Erreur 2');
+
+    const spans = container.querySelectorAll('.form-error');
+    expect(spans.length).toBe(1);
+    expect(spans[0].textContent).toBe('Erreur 2');
+  });
+});
+
+describe('clearFieldError', () => {
+  test('ne crash pas si inputEl est null', () => {
+    expect(() => clearFieldError(null)).not.toThrow();
+  });
+
+  test('retire aria-invalid et vide le texte d\'erreur', () => {
+    const container = document.createElement('div');
+    const input = document.createElement('input');
+    input.id = 'clear-input';
+    container.appendChild(input);
+    document.body.appendChild(container);
+
+    setFieldError(input, 'Erreur');
+    clearFieldError(input);
+
+    expect(input.hasAttribute('aria-invalid')).toBe(false);
+    const errEl = document.getElementById('clear-input-error');
+    expect(errEl.textContent).toBe('');
   });
 });

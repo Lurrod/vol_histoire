@@ -8,10 +8,14 @@
   function showError(msg) {
     errorEl.textContent = msg;
     errorEl.style.display = 'block';
+    const emailInput = document.getElementById('fp-email');
+    if (emailInput) emailInput.setAttribute('aria-invalid', 'true');
   }
 
   function hideError() {
     errorEl.style.display = 'none';
+    const emailInput = document.getElementById('fp-email');
+    if (emailInput) emailInput.removeAttribute('aria-invalid');
   }
 
   function setLoading(loading) {

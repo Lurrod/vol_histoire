@@ -16,18 +16,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   const logoutCancel = document.getElementById('logout-cancel');
   const logoutConfirm = document.getElementById('logout-confirm');
 
+  let _logoutTrap = null;
+  let _logoutPrevFocus = null;
   function openLogoutModal() {
+    _logoutPrevFocus = document.activeElement;
     logoutModal?.classList.remove('hidden');
     requestAnimationFrame(() => {
       logoutModal?.classList.add('show');
+      _logoutTrap = trapFocus(logoutModal);
     });
   }
 
   function closeLogoutModal() {
+    _logoutTrap?.destroy();
+    _logoutTrap = null;
     logoutModal?.classList.remove('show');
     setTimeout(() => {
       logoutModal?.classList.add('hidden');
     }, 300);
+    _logoutPrevFocus?.focus();
   }
 
   if (logoutIcon) {
@@ -216,13 +223,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       const email = document.getElementById('email').value.trim();
       
       // Validation
+      clearFieldError(document.getElementById('name'));
+      clearFieldError(document.getElementById('email'));
+
       if (name.length < 2) {
-        showToast(i18n.t('settings.toast_name_min'), 'error');
+        setFieldError(document.getElementById('name'), i18n.t('settings.toast_name_min'));
         return;
       }
 
       if (!isValidEmail(email)) {
-        showToast('Adresse email invalide', 'error');
+        setFieldError(document.getElementById('email'), i18n.t('settings.toast_email_invalid') || 'Adresse email invalide');
         return;
       }
 
@@ -361,13 +371,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       const password = passwordInput.value;
       
+      clearFieldError(passwordInput);
+
       if (!password) {
-        showToast('Veuillez entrer un nouveau mot de passe', 'error');
+        setFieldError(passwordInput, 'Veuillez entrer un nouveau mot de passe');
         return;
       }
 
       if (password.length < 8 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
-        showToast(i18n.t('settings.toast_password_min'), 'error');
+        setFieldError(passwordInput, i18n.t('settings.toast_password_min'));
         return;
       }
 

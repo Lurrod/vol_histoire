@@ -1944,10 +1944,14 @@ describe('Routes i18n — ?lang=en', () => {
 // GET /sitemap.xml
 // =============================================================================
 describe('GET /sitemap.xml', () => {
-  test('200 — retourne un XML valide avec les URLs des avions', async () => {
+  test('200 — retourne un XML valide avec les URLs des avions (slugs SEO)', async () => {
     mockPool.query.mockImplementation(() =>
       Promise.resolve({
-        rows: [{ id: 1 }, { id: 2 }, { id: 42 }],
+        rows: [
+          { id: 1, name: 'F-22 Raptor' },
+          { id: 2, name: 'Rafale' },
+          { id: 42, name: 'MiG-29' },
+        ],
       })
     );
 
@@ -1956,9 +1960,10 @@ describe('GET /sitemap.xml', () => {
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toMatch(/application\/xml/);
     expect(res.text).toContain('<?xml version="1.0" encoding="UTF-8"?>');
-    expect(res.text).toContain('/details?id=1');
-    expect(res.text).toContain('/details?id=2');
-    expect(res.text).toContain('/details?id=42');
+    // URL slugs SEO-friendly
+    expect(res.text).toContain('/details/f-22-raptor-1');
+    expect(res.text).toContain('/details/rafale-2');
+    expect(res.text).toContain('/details/mig-29-42');
     expect(res.text).toContain('/hangar');
 
     // hreflang fr/en avec ?lang= distinct pour les pages statiques
@@ -1967,9 +1972,9 @@ describe('GET /sitemap.xml', () => {
     // x-default pointe vers l'URL sans ?lang=
     expect(res.text).toContain('hreflang="x-default" href="https://vol-histoire.titouan-borde.com/hangar"');
 
-    // hreflang pour les avions avec &amp;lang= (query string existante)
-    expect(res.text).toContain('hreflang="fr" href="https://vol-histoire.titouan-borde.com/details?id=1&amp;lang=fr"');
-    expect(res.text).toContain('hreflang="en" href="https://vol-histoire.titouan-borde.com/details?id=1&amp;lang=en"');
+    // hreflang pour les avions avec ?lang= (URL slug)
+    expect(res.text).toContain('hreflang="fr" href="https://vol-histoire.titouan-borde.com/details/f-22-raptor-1?lang=fr"');
+    expect(res.text).toContain('hreflang="en" href="https://vol-histoire.titouan-borde.com/details/f-22-raptor-1?lang=en"');
   });
 
   test('500 — erreur BDD → réponse texte erreur serveur', async () => {

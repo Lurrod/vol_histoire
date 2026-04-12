@@ -56,8 +56,16 @@
     }
   });
 
-  function showError(msg) { errorEl.textContent = msg; errorEl.style.display = 'block'; }
-  function hideError() { errorEl.style.display = 'none'; }
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.style.display = 'block';
+    pwInput.setAttribute('aria-invalid', 'true');
+  }
+  function hideError() {
+    errorEl.style.display = 'none';
+    pwInput.removeAttribute('aria-invalid');
+    pwConfirmInput.removeAttribute('aria-invalid');
+  }
 
   function setLoading(loading) {
     if (loading) {

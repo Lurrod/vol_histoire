@@ -35,11 +35,21 @@
     const cancelBtn = document.getElementById('cancel-btn');
     const modalClose = document.querySelector('.modal-close');
 
-    function openModal() { modal?.classList.add('show'); document.body.style.overflow = 'hidden'; }
+    let _focusTrap = null;
+    let _previousFocus = null;
+    function openModal() {
+      _previousFocus = document.activeElement;
+      modal?.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      _focusTrap = trapFocus(modal);
+    }
     function closeModal() {
+      _focusTrap?.destroy();
+      _focusTrap = null;
       modal?.classList.remove('show');
       document.body.style.overflow = '';
       modalForm?.reset();
+      _previousFocus?.focus();
     }
 
     addBtn?.addEventListener('click', openModal);
