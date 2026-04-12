@@ -250,29 +250,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/dist/app.min.js"></script>
-  <script defer src="js/dist/home.min.js"></script>
-  <script>
-    // Soumission du formulaire via mailto
-    document.getElementById('contact-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const firstname = document.getElementById('contact-firstname').value.trim();
-      const lastname = document.getElementById('contact-lastname').value.trim();
-      const email = document.getElementById('contact-email').value.trim();
-      const subject = document.getElementById('contact-subject');
-      const subjectText = subject.options[subject.selectedIndex].text;
-      const message = document.getElementById('contact-message').value.trim();
-
-      if (!email || !message) return;
-
-      const body = encodeURIComponent(
-        'De : ' + (firstname + ' ' + lastname).trim() + '\nEmail : ' + email + '\n\n' + message
-      );
-      const subjectEncoded = encodeURIComponent('[Vol d\'Histoire] ' + subjectText);
-      window.location.href = 'mailto:vdh@titouan-borde.com?subject=' + subjectEncoded + '&body=' + body;
-
-      document.getElementById('contact-success').classList.add('visible');
-      this.reset();
-    });
-  </script>
+  <script defer src="js/dist/contact.min.js"></script>
 </body>
 </html>

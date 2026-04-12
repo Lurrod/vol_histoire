@@ -115,12 +115,12 @@ test.describe('Settings — Profil & Sécurité', () => {
     if (await securitySubmit.isVisible()) {
       await securitySubmit.click();
 
-      // Un toast d'erreur ou un message de validation doit apparaître
+      // Validation inline (setFieldError) ou toast — les deux sont acceptables
       await page.waitForTimeout(1000);
-      const toast = page.locator('.toast').first();
-      const hasValidation = await toast.isVisible();
+      const hasInlineError = await page.locator('[aria-invalid="true"], .form-error').first().isVisible().catch(() => false);
+      const hasToast = await page.locator('.toast').first().isVisible().catch(() => false);
       // Le formulaire ne doit pas accepter des champs vides
-      expect(hasValidation).toBe(true);
+      expect(hasInlineError || hasToast).toBe(true);
     }
   });
 

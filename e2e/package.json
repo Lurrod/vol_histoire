@@ -1,6 +1,6 @@
 {
   "name": "vol-histoire-e2e",
-  "version": "1.0.0",
+  "version": "3.7.3",
   "private": true,
   "scripts": {
     "test": "playwright test",

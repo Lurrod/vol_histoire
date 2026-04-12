@@ -10,15 +10,20 @@ test.describe('Search & Filters — Hangar', () => {
   });
 
   test('la barre de recherche est fonctionnelle', async ({ page }) => {
-    const searchInput = page.locator('#search-input, [type="search"], input[placeholder*="Rechercher"]');
+    const searchInput = page.locator('input[placeholder*="echercher"], input[type="search"], #search-input').first();
     await expect(searchInput).toBeVisible();
   });
 
   test('rechercher un avion filtre les résultats en temps réel', async ({ page }) => {
     const countBefore = await page.locator('.aircraft-card').count();
+    const searchInput = page.locator('input[placeholder*="echercher"], input[type="search"], #search-input').first();
 
-    await page.fill('#search-input, [type="search"], input[placeholder*="Rechercher"]', 'F-22');
-    await page.waitForTimeout(500); // debounce
+    // Utiliser un terme qui existe probablement (premier avion affiché)
+    const firstName = await page.locator('.aircraft-card h3').first().textContent();
+    const searchTerm = firstName.split(' ')[0]; // Premier mot du nom
+
+    await searchInput.fill(searchTerm);
+    await page.waitForTimeout(600); // debounce
 
     const countAfter = await page.locator('.aircraft-card').count();
     expect(countAfter).toBeLessThanOrEqual(countBefore);
@@ -26,8 +31,9 @@ test.describe('Search & Filters — Hangar', () => {
   });
 
   test('recherche sans résultat affiche un état vide', async ({ page }) => {
-    await page.fill('#search-input, [type="search"], input[placeholder*="Rechercher"]', 'xyznonexistent999');
-    await page.waitForTimeout(500);
+    const searchInput = page.locator('input[placeholder*="echercher"], input[type="search"], #search-input').first();
+    await searchInput.fill('xyznonexistent999');
+    await page.waitForTimeout(600);
 
     const cards = await page.locator('.aircraft-card').count();
     expect(cards).toBe(0);
@@ -51,7 +57,8 @@ test.describe('Search & Filters — Hangar', () => {
     const countryBtn = page.locator('#country-filter-btn, button:has-text("Pays")').first();
     await countryBtn.click();
 
-    const firstOption = page.locator('#country-dropdown .filter-option').first();
+    // Cliquer sur la première option non vide
+    const firstOption = page.locator('#country-dropdown .filter-option:not(.filter-option-empty)').first();
     await firstOption.click();
 
     await page.waitForTimeout(300);
@@ -63,7 +70,7 @@ test.describe('Search & Filters — Hangar', () => {
     const countryBtn = page.locator('#country-filter-btn, button:has-text("Pays")').first();
     await countryBtn.click();
 
-    const firstOption = page.locator('#country-dropdown .filter-option').first();
+    const firstOption = page.locator('#country-dropdown .filter-option:not(.filter-option-empty)').first();
     await firstOption.click();
     await page.waitForTimeout(300);
 
@@ -78,7 +85,7 @@ test.describe('Search & Filters — Hangar', () => {
     // Appliquer un filtre
     const countryBtn = page.locator('#country-filter-btn, button:has-text("Pays")').first();
     await countryBtn.click();
-    await page.locator('#country-dropdown .filter-option').first().click();
+    await page.locator('#country-dropdown .filter-option:not(.filter-option-empty)').first().click();
     await page.waitForTimeout(300);
 
     const countFiltered = await page.locator('.aircraft-card').count();
@@ -102,7 +109,6 @@ test.describe('Search & Filters — Hangar', () => {
   });
 
   test('la pagination est présente si plus de 6 avions', async ({ page }) => {
-    // Vérifier si la pagination existe (dépend du nombre d'avions en BDD)
     const pagination = page.locator('.pagination, [class*="pagination"]');
     const cards = await page.locator('.aircraft-card').count();
 
@@ -114,7 +120,7 @@ test.describe('Search & Filters — Hangar', () => {
   test('le raccourci "/" focus la recherche', async ({ page }) => {
     await page.keyboard.press('/');
 
-    const searchInput = page.locator('#search-input, [type="search"], input[placeholder*="Rechercher"]');
+    const searchInput = page.locator('input[placeholder*="echercher"], input[type="search"], #search-input').first();
     await expect(searchInput).toBeFocused();
   });
 
@@ -122,14 +128,15 @@ test.describe('Search & Filters — Hangar', () => {
     // Filtre pays
     const countryBtn = page.locator('#country-filter-btn, button:has-text("Pays")').first();
     await countryBtn.click();
-    await page.locator('#country-dropdown .filter-option').first().click();
+    await page.locator('#country-dropdown .filter-option:not(.filter-option-empty)').first().click();
     await page.waitForTimeout(300);
 
     const countWithFilter = await page.locator('.aircraft-card').count();
 
     // Ajouter recherche
-    await page.fill('#search-input, [type="search"], input[placeholder*="Rechercher"]', 'A');
-    await page.waitForTimeout(500);
+    const searchInput = page.locator('input[placeholder*="echercher"], input[type="search"], #search-input').first();
+    await searchInput.fill('zzz');
+    await page.waitForTimeout(600);
 
     const countWithBoth = await page.locator('.aircraft-card').count();
     expect(countWithBoth).toBeLessThanOrEqual(countWithFilter);

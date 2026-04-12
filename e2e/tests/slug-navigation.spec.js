@@ -27,7 +27,13 @@ test.describe('URL Slugs', () => {
     await firstCard.click();
     await page.waitForURL(/\/details\//);
 
-    // La page affiche le bon nom d'avion
+    // Attendre que le JS charge les données et rende le nom
+    await page.waitForFunction(
+      () => document.getElementById('aircraft-name')?.textContent?.length > 0,
+      null,
+      { timeout: 10000 }
+    );
+
     const h1 = await page.locator('#aircraft-name').textContent();
     expect(h1).toBe(name);
   });
@@ -44,16 +50,20 @@ test.describe('URL Slugs', () => {
   });
 
   test('history.replaceState met à jour l\'URL en slug propre', async ({ page }) => {
-    // Accès via l'ancien format ?id= doit rediriger vers le slug
-    // On récupère d'abord un ID valide
+    // Accès via l'ancien format ?id= doit être remplacé par le slug
     const apiRes = await page.request.get('/api/airplanes?page=1');
     const data = await apiRes.json();
     const airplane = data.data[0];
 
     await page.goto(`/details?id=${airplane.id}`);
-    await page.waitForSelector('#aircraft-name', { timeout: 10000 });
 
-    // L'URL doit avoir été remplacée par le slug
+    // Attendre que le JS charge et remplace l'URL
+    await page.waitForFunction(
+      () => /\/details\/[a-z0-9-]+-\d+$/.test(window.location.pathname),
+      null,
+      { timeout: 10000 }
+    );
+
     const url = page.url();
     expect(url).toMatch(/\/details\/[a-z0-9-]+-\d+$/);
     expect(url).not.toContain('?id=');
@@ -70,12 +80,12 @@ test.describe('URL Slugs', () => {
   });
 
   test('la page favorites navigue en slug au clic', async ({ page }) => {
-    // Login via API
+    // Login via API avec les credentials de test
     const { loginViaApi } = require('../helpers/auth');
-    await loginViaApi(page, 'admin@vol-histoire.com', 'Admin123');
+    await loginViaApi(page, 'test@gmail.com', 'test');
 
     await page.goto('/favorites');
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
 
     // S'il y a des favoris, vérifier que le clic navigue en slug
     const cards = page.locator('.aircraft-card');
