@@ -43,7 +43,9 @@
   }
   </script>
   <link rel="preload" href="fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>  <link rel="stylesheet" href="css/app.min.css">
+  <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/core.min.css">
+  <link rel="stylesheet" href="css/legal.min.css">
   </head>
 <body class="page-legal">
 <!-- Google Tag Manager (noscript) -->
@@ -57,8 +59,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <header>
     <nav class="container">
       <div class="logo"><i class="fas fa-jet-fighter"></i><span>Vol d’Histoire</span></div>
-      <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
-      <ul class="nav-links">
+      <button class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+      <ul class="nav-links" id="nav-links">
         <li><a href="/"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a></li>
         <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
         <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
@@ -514,7 +516,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </footer>
   <div id="toast-container" aria-live="polite"></div>
+  <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
+  <script defer src="js/sentry-init.js"></script>
   <script defer src="js/dist/home.min.js"></script>
 </body>
 </html>

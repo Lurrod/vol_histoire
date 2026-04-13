@@ -1,93 +1,100 @@
 #!/usr/bin/env node
 /**
- * Build CSS bundle : concatène tous les fichiers CSS dans le bon ordre,
- * applique une minification basique (commentaires + whitespace), écrit
- * frontend/css/app.min.css.
+ * Build CSS bundles : génère un core partagé + un bundle par page.
  *
- * Utilisé en CI au déploiement (npm run build:css). Le développement local
- * continue à utiliser les fichiers individuels via les <link> existants.
+ * Stratégie :
+ *   1. core.min.css  — tokens, icons, base, shared, fonts, cookies (~30 KB min)
+ *   2. <page>.min.css — CSS spécifique à chaque page (~10-25 KB min chacun)
  *
- * Pourquoi pure Node : pas d'esbuild/webpack, zero dépendance ajoutée.
- * La minification est simple mais sûre (regex sur whitespace + commentaires).
+ * Chaque page HTML charge : core.min.css (bloquant) + <page>.min.css (bloquant).
+ * Le total par page est inférieur à l'ancien app.min.css monolithique (218 KB).
  *
- * Stratégie d'intégration : à toi de mettre à jour les <link> dans les HTML
- * pour pointer vers app.min.css à la place des fichiers individuels — c'est
- * une étape manuelle pour ne pas casser le dev workflow par mégarde.
+ * Usage : node scripts/build-css.js
  */
 
 const fs = require('fs');
 const path = require('path');
 
-// Ordre de chargement : tokens → icons → base → shared → page-specific.
-// Reproduit l'ordre actuel des <link> dans les HTML.
-const ORDER = [
-  'tokens.css',
-  'icons.css',
-  'base.css',
-  'shared.css',
-  'fonts.css',
-  // Page-specific : on les inclut TOUS dans le bundle commun. Si une page
-  // ne les utilise pas, c'est ~quelques Ko de gaspillage mais 0 RTT.
-  'hangar.css',
-  'details.css',
-  'timeline.css',
-  'favorites.css',
-  'login.css',
-  'settings.css',
-  'legal.css',
-  'cookies.css',
-  'style.css',
-  'skeleton.css',
-];
-
 const CSS_DIR = path.join(__dirname, '..', 'frontend', 'css');
-const OUT = path.join(CSS_DIR, 'app.min.css');
+
+// ── Définition des bundles ─────────────────────────────────────────────
+
+const BUNDLES = {
+  // Core partagé — chargé sur toutes les pages
+  'core.min.css': [
+    'tokens.css',
+    'icons.css',
+    'base.css',
+    'shared.css',
+    'fonts.css',
+    'cookies.css',
+  ],
+
+  // Page-specific
+  'home.min.css': ['style.css'],
+  'hangar.min.css': ['hangar.css'],
+  'details.min.css': ['details.css'],
+  'timeline.min.css': ['timeline.css'],
+  'favorites.min.css': ['favorites.css'],
+  'login.min.css': ['login.css'],
+  'settings.min.css': ['settings.css'],
+  'legal.min.css': ['legal.css'],
+};
+
+// ── Minification ──────────────────────────────────────────────────────
 
 function minify(css) {
   return css
-    // Strip /* ... */ comments (non-greedy, multiline)
     .replace(/\/\*[\s\S]*?\*\//g, '')
-    // Collapse whitespace runs (mais préserve les espaces nécessaires)
     .replace(/\s+/g, ' ')
-    // Remove whitespace around { } : ; ,
     .replace(/\s*([{}:;,>+~])\s*/g, '$1')
-    // Remove leading/trailing whitespace
     .replace(/^\s+|\s+$/g, '')
-    // Remove le ; final avant }
     .replace(/;}/g, '}')
-    // Restore newline avant @media / @keyframes / @layer pour la lisibilité
     .replace(/}@/g, '}\n@');
 }
 
+// ── Build ─────────────────────────────────────────────────────────────
+
 function main() {
-  let raw = '';
   let totalIn = 0;
-  const missing = [];
+  let totalOut = 0;
 
-  for (const file of ORDER) {
-    const fp = path.join(CSS_DIR, file);
-    if (!fs.existsSync(fp)) {
-      missing.push(file);
-      continue;
+  for (const [outName, files] of Object.entries(BUNDLES)) {
+    let raw = '';
+    const missing = [];
+
+    for (const file of files) {
+      const fp = path.join(CSS_DIR, file);
+      if (!fs.existsSync(fp)) {
+        missing.push(file);
+        continue;
+      }
+      const content = fs.readFileSync(fp, 'utf8');
+      totalIn += content.length;
+      raw += `\n/* === ${file} === */\n` + content;
     }
-    const content = fs.readFileSync(fp, 'utf8');
-    totalIn += content.length;
-    raw += `\n/* === ${file} === */\n` + content;
+
+    if (missing.length) {
+      console.warn(`  ${outName}: fichiers manquants (skip) :`, missing.join(', '));
+    }
+
+    const minified = minify(raw);
+    const outPath = path.join(CSS_DIR, outName);
+    fs.writeFileSync(outPath, minified, 'utf8');
+    totalOut += minified.length;
+
+    const inKB = (Buffer.byteLength(raw, 'utf8') / 1024).toFixed(1);
+    const outKB = (minified.length / 1024).toFixed(1);
+    const ratio = raw.length > 0
+      ? ((1 - minified.length / Buffer.byteLength(raw, 'utf8')) * 100).toFixed(0)
+      : 0;
+
+    console.log(`  ${outName.padEnd(22)} ${inKB.padStart(7)} KB → ${outKB.padStart(7)} KB  (−${ratio}%)`);
   }
 
-  if (missing.length) {
-    console.warn('  fichiers manquants (skip) :', missing.join(', '));
-  }
-
-  const minified = minify(raw);
-  fs.writeFileSync(OUT, minified, 'utf8');
-
-  const inKB = (totalIn / 1024).toFixed(1);
-  const outKB = (minified.length / 1024).toFixed(1);
-  const ratio = (100 - (minified.length / totalIn) * 100).toFixed(0);
-
-  console.log(`OK ${OUT}`);
-  console.log(`   ${inKB} KB → ${outKB} KB (-${ratio}%)`);
+  console.log('');
+  console.log(`  TOTAL${' '.repeat(16)} ${(totalIn / 1024).toFixed(1).padStart(7)} KB → ${(totalOut / 1024).toFixed(1).padStart(7)} KB  (−${((1 - totalOut / totalIn) * 100).toFixed(0)}%)`);
+  console.log(`\n  ${Object.keys(BUNDLES).length} bundles écrits dans frontend/css/`);
 }
 
 main();

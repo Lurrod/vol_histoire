@@ -7,6 +7,8 @@
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://i.postimg.cc">
   <link rel="preconnect" href="https://flagcdn.com">
   <meta name="theme-color" content="#080c14">
@@ -33,8 +35,9 @@
   <link rel="alternate" hreflang="en" href="https://vol-histoire.titouan-borde.com/?lang=en">
   <link rel="alternate" hreflang="x-default" href="https://vol-histoire.titouan-borde.com/">
   <link rel="preload" href="fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>  <link rel="stylesheet" href="css/app.min.css">
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" as="style">
+  <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/core.min.css">
+  <link rel="stylesheet" href="css/home.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap">
   <script type="application/ld+json">
   {
@@ -63,8 +66,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <header>
     <nav class="container">
       <div class="logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div>
-      <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
-      <ul class="nav-links">
+      <button class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+      <ul class="nav-links" id="nav-links">
         <li><a href="/" class="active" aria-current="page"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a></li>
         <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
         <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
@@ -364,7 +367,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </footer>
   <div id="toast-container" aria-live="polite"></div>
+  <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
+  <script defer src="js/sentry-init.js"></script>
   <script defer src="js/dist/home.min.js"></script>
 </body>
 </html> 

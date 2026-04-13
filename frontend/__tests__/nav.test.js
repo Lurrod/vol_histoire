@@ -24,8 +24,8 @@ beforeEach(() => {
     <header>
       <nav class="container">
         <div class="logo"></div>
-        <button class="hamburger"><span></span><span></span><span></span></button>
-        <ul class="nav-links">
+        <button class="hamburger" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+        <ul class="nav-links" id="nav-links">
           <li><a href="/">Accueil</a></li>
           <li><a href="/hangar">Hangar</a></li>
           <li class="user-menu">

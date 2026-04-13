@@ -1,6 +1,6 @@
 {
   "name": "vol-histoire",
-  "version": "3.6.0",
+  "version": "3.7.5",
   "private": true,
   "scripts": {
     "e2e": "cd e2e && npm test",
@@ -8,9 +8,12 @@
     "build:js": "node scripts/build-js.js",
     "build:css": "node scripts/build-css.js",
     "build": "node scripts/build-js.js && node scripts/build-css.js",
+    "lint": "eslint backend/ frontend/js/ scripts/ --ignore-pattern 'frontend/js/dist' --ignore-pattern 'frontend/js/vendor'",
+    "lint:fix": "eslint backend/ frontend/js/ scripts/ --ignore-pattern 'frontend/js/dist' --ignore-pattern 'frontend/js/vendor' --fix",
     "test:all": "cd backend && npm run test:coverage && cd ../e2e && npm test"
   },
   "devDependencies": {
-    "esbuild": "^0.28.0"
+    "esbuild": "^0.28.0",
+    "eslint": "^9.39.4"
   }
 }

@@ -318,6 +318,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   Object.entries(filterButtons).forEach(([btnId, dropdownId]) => {
     document.getElementById(btnId)?.addEventListener('click', (e) => {
       e.stopPropagation();
+      const btn = document.getElementById(btnId);
       const dropdown = document.getElementById(dropdownId);
       const isOpen = dropdown.classList.contains('show');
       closeAllDropdowns();
@@ -329,6 +330,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         dropdown.classList.remove('hidden');
         setTimeout(() => dropdown.classList.add('show'), 10);
+        btn?.setAttribute('aria-expanded', 'true');
       }
     });
   });
@@ -340,6 +342,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   function closeAllDropdowns() {
     document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
       dropdown.classList.remove('show');
+      // Synchroniser aria-expanded sur le bouton associé
+      const btnId = dropdown.id.replace('-dropdown', '-filter-btn');
+      document.getElementById(btnId)?.setAttribute('aria-expanded', 'false');
       const id = dropdown.id;
       if (dropdownTimeouts.has(id)) clearTimeout(dropdownTimeouts.get(id));
       const timeout = setTimeout(() => {

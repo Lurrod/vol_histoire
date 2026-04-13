@@ -200,6 +200,7 @@
     Object.entries(filterButtons).forEach(([btnId, dropdownId]) => {
       document.getElementById(btnId)?.addEventListener('click', (e) => {
         e.stopPropagation();
+        const btn = document.getElementById(btnId);
         const dropdown = document.getElementById(dropdownId);
         const isOpen = dropdown.classList.contains('show');
         closeAllDropdowns(dropdownId);
@@ -210,6 +211,7 @@
           }
           dropdown.classList.remove('hidden');
           setTimeout(() => dropdown.classList.add('show'), 10);
+          btn?.setAttribute('aria-expanded', 'true');
         }
       });
     });
@@ -230,6 +232,9 @@
     document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
       if (exceptId && dropdown.id === exceptId) return;
       dropdown.classList.remove('show');
+      // Synchroniser aria-expanded sur le bouton associé
+      const btnId = dropdown.id.replace('-dropdown', '-filter-btn');
+      document.getElementById(btnId)?.setAttribute('aria-expanded', 'false');
       if (dropdownTimeouts.has(dropdown.id)) clearTimeout(dropdownTimeouts.get(dropdown.id));
       const timeoutId = setTimeout(() => {
         dropdown.classList.add('hidden');

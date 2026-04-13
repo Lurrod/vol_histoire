@@ -44,7 +44,7 @@ function safeSetHTML(el, html) {
                      'loading', 'style'],
     });
   } else {
-    // eslint-disable-next-line no-console
+     
     console.warn('[safeSetHTML] DOMPurify indisponible, fallback innerHTML brut');
     el.innerHTML = html;
   }

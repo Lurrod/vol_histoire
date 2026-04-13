@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeMenu() {
     navLinks?.classList.remove('show');
     hamburger?.classList.remove('active');
+    hamburger?.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
   }
 

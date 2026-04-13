@@ -1333,3 +1333,302 @@
     }
   }
 }
+
+/* ============================================================
+   ONBOARDING — CINEMATIC BRIEFING
+   Full-screen HUD experience with scan-lines and grid.
+   ============================================================ */
+
+/* ── Overlay ───────────────────────────────────────────────── */
+.ob {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #0A0A0A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.ob.ob-active { opacity: 1; }
+.ob.ob-exit {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+/* ── Scan-lines ────────────────────────────────────────────── */
+.ob-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ── HUD Grid ──────────────────────────────────────────────── */
+.ob-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(200, 169, 110, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 169, 110, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 1;
+}
+
+/* ── Vignette ──────────────────────────────────────────────── */
+.ob-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.6) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── HUD Corners ───────────────────────────────────────────── */
+.ob-hud-tl, .ob-hud-tr, .ob-hud-bl, .ob-hud-br {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  z-index: 4;
+  pointer-events: none;
+}
+.ob-hud-tl::before, .ob-hud-tl::after,
+.ob-hud-tr::before, .ob-hud-tr::after,
+.ob-hud-bl::before, .ob-hud-bl::after,
+.ob-hud-br::before, .ob-hud-br::after {
+  content: '';
+  position: absolute;
+  background: rgba(200, 169, 110, 0.3);
+}
+.ob-hud-tl { top: 20px; left: 20px; }
+.ob-hud-tl::before { top: 0; left: 0; width: 30px; height: 2px; }
+.ob-hud-tl::after  { top: 0; left: 0; width: 2px;  height: 30px; }
+
+.ob-hud-tr { top: 20px; right: 20px; }
+.ob-hud-tr::before { top: 0; right: 0; width: 30px; height: 2px; }
+.ob-hud-tr::after  { top: 0; right: 0; width: 2px;  height: 30px; }
+
+.ob-hud-bl { bottom: 20px; left: 20px; }
+.ob-hud-bl::before { bottom: 0; left: 0; width: 30px; height: 2px; }
+.ob-hud-bl::after  { bottom: 0; left: 0; width: 2px;  height: 30px; }
+
+.ob-hud-br { bottom: 20px; right: 20px; }
+.ob-hud-br::before { bottom: 0; right: 0; width: 30px; height: 2px; }
+.ob-hud-br::after  { bottom: 0; right: 0; width: 2px;  height: 30px; }
+
+/* ── Content ───────────────────────────────────────────────── */
+.ob-content {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  max-width: 580px;
+  width: 90vw;
+  padding: 2rem;
+}
+
+.ob-content.ob-fade-out {
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.ob-content.ob-fade-in {
+  animation: ob-enter 0.4s ease forwards;
+}
+@keyframes ob-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Counter (top right feel) ──────────────────────────────── */
+.ob-counter {
+  font-family: var(--font-display, 'Barlow Condensed', monospace);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: rgba(200, 169, 110, 0.35);
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+/* ── Badge (transmission entrante) ─────────────────────────── */
+.ob-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(200, 169, 110, 0.07);
+  padding: 0.6rem 1.5rem 0.6rem 2rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--hud-cyan, #C8A96E);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border: 1px solid rgba(200, 169, 110, 0.2);
+  margin-bottom: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.ob-badge-pulse {
+  position: absolute;
+  left: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hud-cyan, #C8A96E);
+  animation: ob-pulse 2s infinite;
+}
+@keyframes ob-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(200,169,110,0.4); }
+  50%      { opacity: 0.6; box-shadow: 0 0 0 8px rgba(200,169,110,0); }
+}
+
+/* ── Icon ring ─────────────────────────────────────────────── */
+.ob-icon-ring {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 2rem;
+  border-radius: 50%;
+  border: 2px solid rgba(200, 169, 110, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: rgba(200, 169, 110, 0.04);
+}
+.ob-icon-ring::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(200, 169, 110, 0.12);
+  animation: ob-rotate 20s linear infinite;
+}
+@keyframes ob-rotate {
+  to { transform: rotate(360deg); }
+}
+.ob-icon-ring i {
+  font-size: 2rem;
+  color: var(--hud-cyan, #C8A96E);
+}
+
+/* ── Title ─────────────────────────────────────────────────── */
+.ob-title {
+  font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 1rem;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+/* ── Description ───────────────────────────────────────────── */
+.ob-desc {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.8;
+  margin: 0 0 2.5rem;
+  max-width: 460px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Progress bars ─────────────────────────────────────────── */
+.ob-progress {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+.ob-bar {
+  width: 48px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+.ob-bar.done {
+  background: rgba(200, 169, 110, 0.35);
+}
+.ob-bar.active {
+  background: rgba(200, 169, 110, 0.2);
+}
+.ob-bar.active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--hud-cyan, #C8A96E);
+  animation: ob-fill 0.6s ease forwards;
+  border-radius: 2px;
+}
+@keyframes ob-fill {
+  from { transform: scaleX(0); transform-origin: left; }
+  to   { transform: scaleX(1); transform-origin: left; }
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.ob-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.ob-btn {
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.45);
+  transition: all 0.25s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 0.3px;
+}
+.ob-btn:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ob-btn.ob-primary {
+  background: rgba(200, 169, 110, 0.1);
+  color: var(--hud-cyan, #C8A96E);
+  border-color: rgba(200, 169, 110, 0.3);
+}
+.ob-btn.ob-primary:hover {
+  background: rgba(200, 169, 110, 0.18);
+  border-color: rgba(200, 169, 110, 0.5);
+  box-shadow: 0 0 20px rgba(200, 169, 110, 0.1);
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 30em) {
+  .ob-content { padding: 1.5rem 1rem; }
+  .ob-icon-ring { width: 70px; height: 70px; }
+  .ob-icon-ring i { font-size: 1.5rem; }
+  .ob-actions { flex-direction: column; gap: 0.75rem; }
+  .ob-btn { width: 100%; justify-content: center; }
+  .ob-bar { width: 36px; }
+  .ob-hud-tl, .ob-hud-tr, .ob-hud-bl, .ob-hud-br { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ob-scanlines { display: none; }
+  .ob-icon-ring::before { animation: none; }
+  .ob-badge-pulse { animation: none; }
+  .ob-bar.active::after { animation: none; transform: scaleX(1); }
+  .ob, .ob-content { transition: none; }
+}

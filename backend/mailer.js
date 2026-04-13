@@ -124,7 +124,7 @@ function buildVerifyTemplate(name, link) {
                   </td>
                 </tr>
               </table>
-              <p style="margin:0 0 10px;font-size:13px;color:rgba(255,255,255,0.35);text-align:center;">Ce lien expire dans <strong style="color:rgba(255,255,255,0.55);">24 heures</strong>.</p>
+              <p style="margin:0 0 10px;font-size:13px;color:rgba(255,255,255,0.35);text-align:center;">Ce lien expire dans <strong style="color:rgba(255,255,255,0.55);">30 minutes</strong>.</p>
               <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.25);text-align:center;line-height:1.6;">
                 Si le bouton ne fonctionne pas, copiez ce lien :<br>
                 <a href="${link}" style="color:#C8A96E;word-break:break-all;">${link}</a>
@@ -183,7 +183,7 @@ function buildResetTemplate(name, link) {
                   </td>
                 </tr>
               </table>
-              <p style="margin:0 0 10px;font-size:13px;color:rgba(255,255,255,0.35);text-align:center;">Ce lien expire dans <strong style="color:rgba(255,255,255,0.55);">1 heure</strong>.</p>
+              <p style="margin:0 0 10px;font-size:13px;color:rgba(255,255,255,0.35);text-align:center;">Ce lien expire dans <strong style="color:rgba(255,255,255,0.55);">15 minutes</strong>.</p>
               <p style="margin:0 0 20px;font-size:12px;color:rgba(255,255,255,0.25);text-align:center;line-height:1.6;">
                 Si le bouton ne fonctionne pas, copiez ce lien :<br>
                 <a href="${link}" style="color:#C8A96E;word-break:break-all;">${link}</a>
@@ -292,4 +292,95 @@ function escapeHtmlEmail(text) {
     .replace(/"/g, '&quot;');
 }
 
-module.exports = { sendVerificationEmail, sendPasswordResetEmail, sendContactEmail, verifyConnection };
+// -----------------------------------------------------------------------------
+// Email de bienvenue (envoyé après vérification de l'email)
+// -----------------------------------------------------------------------------
+async function sendWelcomeEmail(to, name) {
+  await transporter.sendMail({
+    from: FROM,
+    to,
+    subject: "Bienvenue sur Vol d'Histoire !",
+    html: buildWelcomeTemplate(name),
+  });
+}
+
+function buildWelcomeTemplate(name) {
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenue sur Vol d'Histoire</title>
+</head>
+<body style="margin:0;padding:0;background:#0D0D0D;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0D0D0D;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+          <tr>
+            <td style="background:#141414;border-radius:12px 12px 0 0;padding:32px 40px;text-align:center;border-bottom:2px solid rgba(200,169,110,0.25);">
+              <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.5);">AVIATION MILITAIRE</p>
+              <h1 style="margin:10px 0 0;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">Vol d'Histoire</h1>
+              <div style="width:32px;height:2px;background:#C8A96E;margin:14px auto 0;border-radius:1px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#1A1A1A;padding:40px 40px 32px;">
+              <h2 style="margin:0 0 16px;font-size:20px;font-weight:700;color:#ffffff;">Bienvenue &agrave; bord, ${escapeHtmlEmail(name)}&nbsp;!</h2>
+              <p style="margin:0 0 28px;font-size:15px;color:rgba(255,255,255,0.55);line-height:1.75;">
+                Votre compte est activ&eacute; et pr&ecirc;t. Voici ce que vous pouvez faire sur <strong style="color:#C8A96E;">Vol d'Histoire</strong>&nbsp;:
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid rgba(200,169,110,0.1);">
+                    <table cellpadding="0" cellspacing="0"><tr>
+                      <td style="width:36px;vertical-align:top;padding-top:2px;font-size:18px;color:#C8A96E;">&#9992;</td>
+                      <td style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;"><strong style="color:#fff;">Explorez le Hangar</strong><br>Parcourez notre catalogue de plus de 50 avions de chasse avec fiches techniques, armement et historique.</td>
+                    </tr></table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px solid rgba(200,169,110,0.1);">
+                    <table cellpadding="0" cellspacing="0"><tr>
+                      <td style="width:36px;vertical-align:top;padding-top:2px;font-size:18px;color:#C8A96E;">&#128150;</td>
+                      <td style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;"><strong style="color:#fff;">Sauvegardez vos favoris</strong><br>Ajoutez des avions &agrave; votre collection personnelle d'un clic.</td>
+                    </tr></table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 0;">
+                    <table cellpadding="0" cellspacing="0"><tr>
+                      <td style="width:36px;vertical-align:top;padding-top:2px;font-size:18px;color:#C8A96E;">&#128336;</td>
+                      <td style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;"><strong style="color:#fff;">Parcourez la Chronologie</strong><br>Voyagez &agrave; travers 75 ans d'aviation militaire sur notre frise interactive.</td>
+                    </tr></table>
+                  </td>
+                </tr>
+              </table>
+              <table cellpadding="0" cellspacing="0" width="100%" style="margin-top:28px;">
+                <tr>
+                  <td align="center">
+                    <a href="${BASE_URL}/hangar"
+                       style="display:inline-block;background:#141414;color:#C8A96E;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:0.5px;padding:15px 40px;border-radius:8px;border:2px solid rgba(200,169,110,0.4);">
+                      Commencer l'exploration
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#141414;border-top:1px solid rgba(200,169,110,0.1);border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.25);line-height:1.6;">
+                &copy; ${new Date().getFullYear()} Vol d'Histoire &mdash; Une question&nbsp;? Contactez-nous &agrave; <a href="mailto:vdh@titouan-borde.com" style="color:#C8A96E;text-decoration:none;">vdh@titouan-borde.com</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+module.exports = { sendVerificationEmail, sendPasswordResetEmail, sendContactEmail, sendWelcomeEmail, verifyConnection };

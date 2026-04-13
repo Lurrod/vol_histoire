@@ -21,11 +21,11 @@ const DIST = path.join(JS, 'dist');
 // ── Définition des bundles ─────────────────────────────────────────────
 
 const BUNDLES = {
-  // Core partagé — chargé sur toutes les pages principales
+  // Core partagé — chargé sur toutes les pages principales.
+  // vendor/purify.min.js est chargé en <script defer> séparé (déjà minifié, cache immutable).
+  // sentry-init.js est chargé en <script defer> séparé après app.min.js (non-critique).
   'app.min.js': [
-    'vendor/purify.min.js',
     'app-version.js',
-    'sentry-init.js',
     'i18n.js',
     'icons.js',
     'auth.js',
@@ -39,6 +39,7 @@ const BUNDLES = {
   // Pages principales
   'home.min.js': [
     'script.js',
+    'onboarding.js',
   ],
 
   'hangar.min.js': [

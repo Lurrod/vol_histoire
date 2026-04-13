@@ -50,7 +50,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     }
     const defaultRole = 3;
     const verifyToken = crypto.randomBytes(32).toString('hex');
-    const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const tokenExpiry = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
 
     // Transaction : créer user + token de vérification atomiquement
     const newUser = await withTransaction(getPool(), async (client) => {
@@ -228,6 +228,17 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       await client.query('UPDATE email_tokens SET used_at = NOW() WHERE id = $1', [tokenId]);
     });
 
+    // Envoi de l'email de bienvenue (non bloquant)
+    try {
+      const userResult = await getPool().query('SELECT name, email FROM users WHERE id = $1', [userId]);
+      if (userResult.rows.length > 0) {
+        const { name, email } = userResult.rows[0];
+        mailer.sendWelcomeEmail(email, name).catch(err =>
+          logger.warn('Échec envoi email bienvenue', { error: err.message, userId })
+        );
+      }
+    } catch (_) { /* non bloquant */ }
+
     res.json({ message: 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.' });
   }));
 
@@ -253,7 +264,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
       // Transaction : invalider anciens tokens + créer le nouveau
       const verifyToken = crypto.randomBytes(32).toString('hex');
-      const tokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      const tokenExpiry = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
 
       await withTransaction(getPool(), async (client) => {
         await client.query(
@@ -295,7 +306,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
       // Transaction : invalider anciens tokens + créer le nouveau
       const resetToken = crypto.randomBytes(32).toString('hex');
-      const tokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 heure
+      const tokenExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
       await withTransaction(getPool(), async (client) => {
         await client.query(

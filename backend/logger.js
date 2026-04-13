@@ -35,11 +35,11 @@ if (process.env.SENTRY_DSN && process.env.NODE_ENV !== 'test') {
         return event;
       },
     });
-    // eslint-disable-next-line no-console
+     
     console.log(JSON.stringify({ level: 'info', message: 'Sentry activé', env: process.env.SENTRY_ENVIRONMENT }));
   } catch (err) {
     // @sentry/node non installé — on continue sans
-    // eslint-disable-next-line no-console
+     
     console.warn(JSON.stringify({ level: 'warn', message: 'SENTRY_DSN défini mais @sentry/node non installé', hint: 'npm install @sentry/node' }));
   }
 }
