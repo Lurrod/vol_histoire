@@ -1049,6 +1049,13 @@
     to { transform: rotate(360deg); }
   }
 
+  /* Alias sémantique : même animation que `spin` mais utilisée par les
+     effets de balayage radar (login.html, favorites.html). Centralisé pour
+     éviter la duplication cross-page. */
+  @keyframes radarSpin {
+    to { transform: rotate(360deg); }
+  }
+
   /* Spinner partagé */
   .spinner {
     display: inline-block;
@@ -1293,6 +1300,58 @@
   .hidden {
     display: none !important;
   }
+
+  /* GTM noscript iframe (remplace style="display:none;visibility:hidden") */
+  .gtm-noscript {
+    display: none !important;
+    visibility: hidden;
+  }
+
+  /* Puce inline (icône ronde) — ex. status alert 404 */
+  .u-inline-dot {
+    font-size: 0.5rem;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+
+  /* Message "vide" centré (onglets détails) */
+  .details-empty-hint {
+    color: var(--text-secondary);
+    text-align: center;
+  }
+
+  /* Skeleton loaders — tailles fixes pour éviter layout shift */
+  .skeleton-inline-xl { display: inline-block; width: 320px; height: 48px; vertical-align: middle; }
+  .skeleton-inline-md { display: inline-block; width: 220px; height: 16px; }
+  .skeleton-inline-meta { display: inline-block; width: 80px; height: 14px; }
+  .skeleton-inline-badge { display: inline-block; width: 90px; height: 20px; }
+  .skeleton-block { display: block; margin-bottom: 8px; }
+  .skeleton-block-last { display: block; }
+
+  /* Bouton "Nouveau lien" reset-password invalide */
+  .rp-newlink-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.7rem 1.5rem;
+    background: rgba(200, 169, 110, 0.1);
+    border: 1px solid rgba(200, 169, 110, 0.25);
+    border-radius: 10px;
+    color: #C8A96E;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  /* Modale édition utilisateur (settings) */
+  .edit-modal-container { max-width: 460px; width: 92%; }
+  .edit-modal-icon-champagne {
+    background: rgba(200, 169, 110, 0.08);
+    border-color: rgba(200, 169, 110, 0.2);
+  }
+  .edit-modal-icon-champagne i { color: var(--hud-cyan); }
+  .edit-modal-body { width: 100%; margin: 1.25rem 0 1.5rem; text-align: left; }
+  .edit-modal-form-group { margin-bottom: 1rem; }
 
   /* Accessibility : screen reader only */
   .sr-only {

@@ -23,7 +23,7 @@ info:
     Toutes les pages HTML sont servies avec un query string `?v=<version>`
     sur les assets pour bust le cache navigateur à chaque déploiement.
     Les statiques (CSS/JS/fonts) ont un `Cache-Control` long.
-  version: 3.3.0
+  version: 3.8.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -694,6 +694,28 @@ paths:
           schema:
             type: string
           description: Filtrer par nom de type
+        - name: search
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+          description: |
+            Recherche full-text (PostgreSQL `websearch_to_tsquery`) sur nom,
+            nom complet, résumé et description (FR+EN). Syntaxe : mots libres,
+            `"phrase exacte"`, `-exclusion`, `OR`. Quand `search` est présent,
+            les résultats sont triés par pertinence (`ts_rank`), le paramètre
+            `sort` est ignoré.
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
       responses:
         '200':
           description: Liste des avions
@@ -1172,7 +1194,7 @@ paths:
                 properties:
                   version:
                     type: string
-                    example: "3.3.0"
+                    example: "3.8.0"
                   hcaptchaSitekey:
                     type: string
                     nullable: true
@@ -1274,7 +1296,7 @@ paths:
                 properties:
                   status: { type: string, example: ok }
                   service: { type: string, example: "Vol d'histoire" }
-                  version: { type: string, example: "3.3.0" }
+                  version: { type: string, example: "3.8.0" }
                   env: { type: string, example: production }
                   sentry: { type: boolean, example: true }
                   uptimeSec: { type: integer, example: 3600 }

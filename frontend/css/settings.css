@@ -203,7 +203,7 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; }
 
 /* SPINNER */
 .page-settings .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(200,169,110,0.2); border-top-color: var(--hud-cyan); border-radius: 50%; animation: spin 0.6s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
+/* @keyframes spin → shared.css (dédupliqué) */
 
 /* LOGOUT MODAL */
 .page-settings .logout-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }

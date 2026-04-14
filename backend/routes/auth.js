@@ -13,6 +13,7 @@ const {
   storeRefreshToken,
   isRefreshTokenValid,
   revokeRefreshToken,
+  rotateRefreshToken,
   revokeAllUserRefreshTokens,
   setRefreshCookie,
   clearRefreshCookie,
@@ -165,16 +166,31 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
         return res.status(401).json({ message: 'Utilisateur introuvable', code: 'USER_NOT_FOUND' });
       }
 
-      // Rotation du refresh token : révoquer l'ancien, émettre un nouveau
-      await revokeRefreshToken(decoded.jti);
-
+      // Rotation atomique (BEGIN/COMMIT) : révocation ancienne + insertion
+      // nouvelle dans la même transaction. Protège contre :
+      //   - Crash entre les 2 étapes (session orpheline ou double-active)
+      //   - Race condition 2 requêtes concurrentes de /refresh avec le même JTI
       const user = result.rows[0];
       const newAccessToken = generateAccessToken(user);
       const { token: newRefreshToken, jti: newJti } = generateRefreshToken(user);
 
-      await storeRefreshToken(newJti, user.id);
-      setRefreshCookie(res, newRefreshToken);
+      try {
+        await rotateRefreshToken(decoded.jti, newJti, user.id);
+      } catch (rotationError) {
+        // Replay détecté : un attaquant tente de réutiliser un ancien token.
+        // Défense en profondeur : on révoque TOUTES les sessions de l'user.
+        if (rotationError.code === 'REFRESH_REPLAY') {
+          logger.warn('Replay refresh token détecté — révocation totale', {
+            userId: user.id, jti: decoded.jti, route: 'POST /refresh',
+          });
+          await revokeAllUserRefreshTokens(user.id).catch(() => {});
+          clearRefreshCookie(res);
+          return res.status(401).json({ message: 'Session compromise', code: 'REFRESH_REPLAY' });
+        }
+        throw rotationError;
+      }
 
+      setRefreshCookie(res, newRefreshToken);
       res.json({ token: newAccessToken });
     } catch (error) {
       logger.warn('Refresh token invalide', { error: error.message, route: 'POST /refresh' });

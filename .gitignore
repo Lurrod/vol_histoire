@@ -11,3 +11,5 @@ install.cmd
 docs/superpowers/
 e2e/test-results/
 e2e/playwright-report/
+.agents/
+skills-lock.json

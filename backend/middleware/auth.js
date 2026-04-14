@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { withTransaction } = require('../db');
 
 // -----------------------------------------------------------------------------
 // Pool PostgreSQL (injecté depuis app.js via setPool)
@@ -71,6 +72,37 @@ async function revokeRefreshToken(jti) {
     'UPDATE refresh_tokens SET revoked = TRUE WHERE jti = $1',
     [jti]
   );
+}
+
+/**
+ * Rotation atomique : révoque l'ancien refresh token ET insère le nouveau dans
+ * une même transaction Postgres (BEGIN/COMMIT). Garantit qu'un crash ou une
+ * erreur entre les deux étapes laisse la base dans un état cohérent (pas de
+ * double session active, pas de session orpheline).
+ *
+ * Bonus sécurité : si le UPDATE révoque 0 ligne (token déjà révoqué ou absent),
+ * on assume un replay attack et on throw `REFRESH_REPLAY`. Le caller doit
+ * alors révoquer toutes les sessions de l'utilisateur (défense en profondeur).
+ *
+ * @throws {Error & { code: 'REFRESH_REPLAY' }} si l'ancien jti était déjà révoqué
+ */
+async function rotateRefreshToken(oldJti, newJti, userId) {
+  const expiresAt = new Date(Date.now() + REFRESH_COOKIE_MAX_AGE);
+  return withTransaction(pool, async (client) => {
+    const revokeResult = await client.query(
+      'UPDATE refresh_tokens SET revoked = TRUE WHERE jti = $1 AND revoked = FALSE',
+      [oldJti]
+    );
+    if (revokeResult.rowCount === 0) {
+      const err = new Error('Refresh token déjà rotaté (replay détecté)');
+      err.code = 'REFRESH_REPLAY';
+      throw err;
+    }
+    await client.query(
+      'INSERT INTO refresh_tokens (jti, user_id, expires_at) VALUES ($1, $2, $3)',
+      [newJti, userId, expiresAt]
+    );
+  });
 }
 
 /**
@@ -178,6 +210,7 @@ module.exports = {
   storeRefreshToken,
   isRefreshTokenValid,
   revokeRefreshToken,
+  rotateRefreshToken,
   revokeAllUserRefreshTokens,
   cleanupExpiredTokens,
   cleanupUnverifiedUsers,

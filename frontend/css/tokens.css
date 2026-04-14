@@ -47,15 +47,15 @@
      ============================================================ */
   --text-light:     #E8E6E1;               /* blanc légèrement chaud */
   --text-primary:   #F0EDE8;               /* blanc cassé premium */
-  --text-secondary: rgba(240, 237, 232, 0.65);
-  --text-muted:     rgba(240, 237, 232, 0.40);
-  --text-faint:     rgba(240, 237, 232, 0.24);
-  --text-ghost:     rgba(240, 237, 232, 0.16);
+  --text-secondary: rgba(240, 237, 232, 0.72);
+  --text-muted:     rgba(240, 237, 232, 0.55);
+  --text-faint:     rgba(240, 237, 232, 0.40);
+  --text-ghost:     rgba(240, 237, 232, 0.55);
 
   /* ============================================================
      BORDURES
      ============================================================ */
-  --border-subtle:  rgba(255, 255, 255, 0.06);
+  --border-subtle:  rgba(255, 255, 255, 0.12);
   --border-mid:     rgba(255, 255, 255, 0.10);
   --border-cyan:    rgba(200, 169, 110, 0.16);
   --border-cyan-md: rgba(200, 169, 110, 0.28);

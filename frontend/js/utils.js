@@ -3,6 +3,7 @@
    Fonctions réutilisées par toutes les pages.
    Chargé avant les scripts de page via <script defer>.
    ====================================================================== */
+/* global DOMParser */
 
 /**
  * Échappe le HTML pour éviter les injections XSS.
@@ -43,10 +44,30 @@ function safeSetHTML(el, html) {
                      'aria-label', 'aria-hidden', 'tabindex', 'width', 'height',
                      'loading', 'style'],
     });
-  } else {
-     
-    console.warn('[safeSetHTML] DOMPurify indisponible, fallback innerHTML brut');
-    el.innerHTML = html;
+    return;
+  }
+
+  // Fallback sans DOMPurify : parse via DOMParser puis supprime
+  // scripts/iframes/objets + handlers on* + URLs javascript:. Moins strict
+  // que DOMPurify mais coupe les principaux vecteurs XSS.
+  console.warn('[safeSetHTML] DOMPurify indisponible, fallback DOMParser scrub');
+  try {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    doc.querySelectorAll('script, iframe, object, embed, link[rel="import"], meta[http-equiv]')
+      .forEach(n => n.remove());
+    doc.querySelectorAll('*').forEach(node => {
+      for (const attr of Array.from(node.attributes)) {
+        const name = attr.name.toLowerCase();
+        const val = (attr.value || '').trim().toLowerCase();
+        if (name.startsWith('on') || val.startsWith('javascript:') || val.startsWith('data:text/html')) {
+          node.removeAttribute(attr.name);
+        }
+      }
+    });
+    el.replaceChildren(...Array.from(doc.body.childNodes));
+  } catch (e) {
+    console.error('[safeSetHTML] fallback DOMParser a échoué, injection refusée', e);
+    el.textContent = '';
   }
 }
 
@@ -141,12 +162,18 @@ function isValidEmail(email) {
  * @param {HTMLElement} container — élément contenant les éléments focusables
  * @returns {{ destroy: () => void }} — appeler destroy() quand la modal se ferme
  */
-function trapFocus(container) {
+function trapFocus(container, options = {}) {
   if (!container) return { destroy() {} };
 
   const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  const onEscape = typeof options.onEscape === 'function' ? options.onEscape : null;
 
   function handler(e) {
+    if (e.key === 'Escape' && onEscape) {
+      e.preventDefault();
+      onEscape();
+      return;
+    }
     if (e.key !== 'Tab') return;
 
     const focusable = Array.from(container.querySelectorAll(FOCUSABLE)).filter(el => el.offsetParent !== null);

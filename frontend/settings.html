@@ -31,7 +31,7 @@
 <body class="page-settings">
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KB3P52VK"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+height="0" width="0" class="gtm-noscript"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 <a href="#main-content" class="skip-link">Aller au contenu</a>
 <!-- Cookies compact -->
@@ -88,13 +88,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="settings-grid">
           <!-- Sidebar -->
           <aside class="settings-sidebar">
-            <nav class="sidebar-nav">
-              <a href="#dashboard" class="sidebar-link active" data-section="dashboard"><div class="link-icon"><i class="fas fa-chart-bar"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_dashboard">Dashboard</span><span class="link-description" data-i18n="settings.sidebar_dashboard_desc">Mes statistiques</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
-              <a href="#profile" class="sidebar-link" data-section="profile"><div class="link-icon"><i class="fas fa-user"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_profile">Profil</span><span class="link-description" data-i18n="settings.sidebar_profile_desc">Informations personnelles</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
-              <a href="#security" class="sidebar-link" data-section="security"><div class="link-icon"><i class="fas fa-shield"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_security">Sécurité</span><span class="link-description" data-i18n="settings.sidebar_security_desc">Mot de passe & protection</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
-              <a href="#privacy" class="sidebar-link" data-section="privacy"><div class="link-icon"><i class="fas fa-cookie-bite"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_privacy">Cookies & Confidentialité</span><span class="link-description" data-i18n="settings.sidebar_privacy_desc">Gestion des cookies</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
-              <a href="#admin" class="sidebar-link hidden" data-section="admin" id="admin-nav-link"><div class="link-icon"><i class="fas fa-users-cog"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_admin">Administration</span><span class="link-description" data-i18n="settings.sidebar_admin_desc">Gestion utilisateurs</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
-              <a href="#danger" class="sidebar-link danger-link" data-section="danger"><div class="link-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_danger">Zone Danger</span><span class="link-description" data-i18n="settings.sidebar_danger_desc">Suppression du compte</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+            <nav class="sidebar-nav" role="tablist" aria-orientation="vertical" aria-label="Sections des paramètres">
+              <a href="#dashboard" class="sidebar-link active" data-section="dashboard" id="tab-dashboard" role="tab" aria-selected="true" aria-controls="dashboard" tabindex="0"><div class="link-icon"><i class="fas fa-chart-bar"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_dashboard">Dashboard</span><span class="link-description" data-i18n="settings.sidebar_dashboard_desc">Mes statistiques</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#profile" class="sidebar-link" data-section="profile" id="tab-profile" role="tab" aria-selected="false" aria-controls="profile" tabindex="-1"><div class="link-icon"><i class="fas fa-user"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_profile">Profil</span><span class="link-description" data-i18n="settings.sidebar_profile_desc">Informations personnelles</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#security" class="sidebar-link" data-section="security" id="tab-security" role="tab" aria-selected="false" aria-controls="security" tabindex="-1"><div class="link-icon"><i class="fas fa-shield"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_security">Sécurité</span><span class="link-description" data-i18n="settings.sidebar_security_desc">Mot de passe & protection</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#privacy" class="sidebar-link" data-section="privacy" id="tab-privacy" role="tab" aria-selected="false" aria-controls="privacy" tabindex="-1"><div class="link-icon"><i class="fas fa-cookie-bite"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_privacy">Cookies & Confidentialité</span><span class="link-description" data-i18n="settings.sidebar_privacy_desc">Gestion des cookies</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#admin" class="sidebar-link hidden" data-section="admin" id="admin-nav-link" role="tab" aria-selected="false" aria-controls="admin" tabindex="-1"><div class="link-icon"><i class="fas fa-users-cog"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_admin">Administration</span><span class="link-description" data-i18n="settings.sidebar_admin_desc">Gestion utilisateurs</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
+              <a href="#danger" class="sidebar-link danger-link" data-section="danger" id="tab-danger" role="tab" aria-selected="false" aria-controls="danger" tabindex="-1"><div class="link-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="link-content"><span class="link-title" data-i18n="settings.sidebar_danger">Zone Danger</span><span class="link-description" data-i18n="settings.sidebar_danger_desc">Suppression du compte</span></div><i class="fas fa-chevron-right link-arrow"></i></a>
             </nav>
           </aside>
 
@@ -102,7 +102,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="settings-content">
 
             <!-- Dashboard -->
-            <div id="dashboard" class="content-section active">
+            <div id="dashboard" class="content-section active" role="tabpanel" aria-labelledby="tab-dashboard" tabindex="0">
               <div class="section-card">
                 <!-- Profile card -->
                 <div class="db-profile">
@@ -165,7 +165,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
 
             <!-- Profile -->
-            <div id="profile" class="content-section">
+            <div id="profile" class="content-section" role="tabpanel" aria-labelledby="tab-profile" tabindex="0" hidden>
               <div class="section-card">
                 <div class="section-header"><div class="header-icon"><i class="fas fa-user"></i></div><div class="header-text"><h2 data-i18n="settings.profile_title">Informations du Profil</h2><p data-i18n="settings.profile_desc">Mettez à jour vos informations personnelles</p></div></div>
                 <form id="profile-form" class="modern-form">
@@ -179,7 +179,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
 
             <!-- Security -->
-            <div id="security" class="content-section">
+            <div id="security" class="content-section" role="tabpanel" aria-labelledby="tab-security" tabindex="0" hidden>
               <div class="section-card">
                 <div class="section-header"><div class="header-icon"><i class="fas fa-shield"></i></div><div class="header-text"><h2 data-i18n="settings.security_title">Sécurité du Compte</h2><p data-i18n="settings.security_desc">Protégez votre compte avec un mot de passe sécurisé</p></div></div>
                 <form id="security-form" class="modern-form">
@@ -195,7 +195,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
 
             <!-- Privacy -->
-            <div id="privacy" class="content-section">
+            <div id="privacy" class="content-section" role="tabpanel" aria-labelledby="tab-privacy" tabindex="0" hidden>
               <div class="section-card">
                 <div class="section-header"><div class="header-icon"><i class="fas fa-cookie-bite"></i></div><div class="header-text"><h2 data-i18n="settings.privacy_title">Cookies & Confidentialité</h2><p data-i18n="settings.privacy_desc">Gérez vos préférences de cookies et de confidentialité</p></div></div>
                 <div class="privacy-overview"><div class="overview-header"><i class="fas fa-info-circle"></i><h3 data-i18n="settings.privacy_overview_title">État actuel de vos cookies</h3></div><div class="overview-content"><p data-i18n="settings.privacy_overview_desc">Vous contrôlez les données que nous collectons et la manière dont nous les utilisons.</p><div class="consent-date"><i class="fas fa-calendar-check"></i><span data-i18n="settings.last_modified">Dernière modification : <strong id="consent-date">Jamais</strong></span></div></div></div>
@@ -211,7 +211,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
 
             <!-- Admin -->
-            <div id="admin" class="content-section hidden">
+            <div id="admin" class="content-section hidden" role="tabpanel" aria-labelledby="admin-nav-link" tabindex="0" hidden>
               <div class="section-card">
                 <div class="section-header"><div class="header-icon"><i class="fas fa-users-cog"></i></div><div class="header-text"><h2 data-i18n="settings.admin_title">Gestion des Utilisateurs</h2><p data-i18n="settings.admin_desc">Administrez les comptes et permissions</p></div></div>
                 <div class="admin-tools"><div class="search-box"><i class="fas fa-search"></i><input type="search" id="user-filter" placeholder="Rechercher un utilisateur..." data-i18n-placeholder="settings.admin_search" autocomplete="off"></div><div class="admin-stats"><div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><span class="stat-value" id="total-users">0</span><span class="stat-label" data-i18n="settings.admin_users">Utilisateurs</span></div></div></div></div>
@@ -220,7 +220,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
 
             <!-- Danger Zone -->
-            <div id="danger" class="content-section">
+            <div id="danger" class="content-section" role="tabpanel" aria-labelledby="tab-danger" tabindex="0" hidden>
               <div class="section-card danger-card">
                 <div class="section-header danger-header"><div class="header-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="header-text"><h2 data-i18n="settings.danger_title">Zone de Danger</h2><p data-i18n="settings.danger_desc">Actions irréversibles affectant votre compte</p></div></div>
                 <div class="danger-box"><div class="danger-content"><div class="danger-icon"><i class="fas fa-trash-alt"></i></div><div class="danger-text"><h3 data-i18n="settings.danger_delete_title">Supprimer mon compte</h3><p>Cette action est <strong data-i18n="settings.danger_delete_desc_bold">définitive et irréversible</strong>. Toutes vos données, favoris et paramètres seront supprimés de manière permanente.</p><ul class="danger-list"><li><i class="fas fa-times"></i> Suppression de toutes vos données</li><li><i class="fas fa-times"></i> Perte de tous vos favoris</li><li><i class="fas fa-times"></i> Aucune récupération possible</li></ul></div></div><button id="delete-account-btn" class="btn btn-danger"><i class="fas fa-trash-alt"></i><span data-i18n="settings.btn_delete_account">Supprimer définitivement mon compte</span></button></div>
@@ -248,15 +248,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- Edit User Modal -->
   <div id="edit-user-modal" class="logout-modal hidden">
     <div class="logout-modal-backdrop"></div>
-    <div class="logout-modal-container" style="max-width: 460px; width: 92%;">
-      <div class="logout-modal-icon" style="background: rgba(200,169,110,0.08); border-color: rgba(200,169,110,0.2);"><i class="fas fa-user-edit" style="color: var(--hud-cyan);"></i></div>
+    <div class="logout-modal-container edit-modal-container">
+      <div class="logout-modal-icon edit-modal-icon-champagne"><i class="fas fa-user-edit"></i></div>
       <h3 class="logout-modal-title" id="edit-user-modal-title" data-i18n="settings.edit_user_title_default">Modifier l'utilisateur</h3>
-      <div style="width: 100%; margin: 1.25rem 0 1.5rem; text-align: left;">
-        <div class="form-group" style="margin-bottom: 1rem;">
+      <div class="edit-modal-body">
+        <div class="form-group edit-modal-form-group">
           <label><i class="fas fa-user"></i><span data-i18n="settings.edit_label_name">Nom</span></label>
           <input type="text" id="edit-user-name" autocomplete="off">
         </div>
-        <div class="form-group" style="margin-bottom: 1rem;">
+        <div class="form-group edit-modal-form-group">
           <label><i class="fas fa-envelope"></i><span data-i18n="settings.edit_label_email">Email</span></label>
           <input type="email" id="edit-user-email" autocomplete="off">
         </div>

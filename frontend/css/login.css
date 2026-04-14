@@ -85,7 +85,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   animation: radarSpin 4s linear infinite;
 }
 
-@keyframes radarSpin { to { transform: rotate(360deg); } }
+/* @keyframes radarSpin → shared.css (dédupliqué) */
 .page-login .radar-dot {
   position: absolute;
   width: 5px;
@@ -659,11 +659,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   .page-login .btn-submit:active { transform: scale(0.98); }
 }
 
-/* Loading */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+/* Loading (@keyframes spin → shared.css, dédupliqué) */
 .page-login .loading {
   display: inline-block;
   width: 20px;

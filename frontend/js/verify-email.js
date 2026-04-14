@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const token = params.get('token');
 
   const show = (id) => {
-    document.getElementById('state-loading').style.display = 'none';
-    document.getElementById('state-success').style.display = 'none';
-    document.getElementById('state-error').style.display = 'none';
-    document.getElementById(id).style.display = 'block';
+    ['state-loading', 'state-success', 'state-error'].forEach(s => {
+      document.getElementById(s)?.classList.add('hidden');
+    });
+    document.getElementById(id)?.classList.remove('hidden');
   };
 
   if (!token) {

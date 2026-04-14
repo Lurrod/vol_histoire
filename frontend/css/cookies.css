@@ -2,6 +2,19 @@
    COOKIE CONSENT SYSTEM STYLES
    ================================================================ */
 
+/* Lien "Paramètres des cookies" (footer optionnel) */
+.cookie-settings-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: var(--transition);
+}
+.cookie-settings-link:hover { color: var(--secondary); }
+.cookie-settings-link i { font-size: 1rem; }
+
 /* Cookie Banner */
 .cookie-banner {
   position: fixed;

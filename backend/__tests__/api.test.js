@@ -316,8 +316,8 @@ describe('POST /api/refresh', () => {
       .mockResolvedValueOnce({                                 // SELECT user
         rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1 }],
       })
-      .mockResolvedValueOnce({ rows: [] })                     // revokeRefreshToken (UPDATE)
-      .mockResolvedValueOnce({ rows: [] });                    // storeRefreshToken (INSERT)
+      .mockResolvedValueOnce({ rows: [], rowCount: 1 })         // rotateRefreshToken: UPDATE (revoke)
+      .mockResolvedValueOnce({ rows: [] });                    // rotateRefreshToken: INSERT (store)
 
     const res = await request(app)
       .post('/api/refresh')
@@ -393,8 +393,8 @@ describe('POST /api/refresh', () => {
       .mockResolvedValueOnce({                                 // SELECT user (données modifiées)
         rows: [{ id: 1, name: 'Admin Renamed', email: 'new@test.com', role_id: 2 }],
       })
-      .mockResolvedValueOnce({ rows: [] })                     // revokeRefreshToken
-      .mockResolvedValueOnce({ rows: [] });                    // storeRefreshToken
+      .mockResolvedValueOnce({ rows: [], rowCount: 1 })         // rotateRefreshToken: UPDATE
+      .mockResolvedValueOnce({ rows: [] });                    // rotateRefreshToken: INSERT
 
     const res = await request(app)
       .post('/api/refresh')
@@ -405,6 +405,51 @@ describe('POST /api/refresh', () => {
     expect(payload.name).toBe('Admin Renamed');
     expect(payload.email).toBe('new@test.com');
     expect(payload.role).toBe(2);
+  });
+
+  test('401 REFRESH_REPLAY — token déjà rotaté → toutes les sessions révoquées', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ '?column?': 1 }] })  // isRefreshTokenValid (passe — race avec rotate)
+      .mockResolvedValueOnce({                                 // SELECT user
+        rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1 }],
+      })
+      .mockResolvedValueOnce({ rows: [], rowCount: 0 })         // rotateRefreshToken: UPDATE ne révoque rien → REPLAY
+      .mockResolvedValueOnce({ rows: [] });                    // revokeAllUserRefreshTokens (UPDATE)
+
+    const res = await request(app)
+      .post('/api/refresh')
+      .set('Cookie', `refreshToken=${refreshTokenValid}`);
+
+    expect(res.status).toBe(401);
+    expect(res.body.code).toBe('REFRESH_REPLAY');
+    expect(res.body.message).toMatch(/compromise/i);
+    // Cookie effacé
+    const cookies = res.headers['set-cookie'];
+    expect(cookies).toBeDefined();
+    expect(cookies.find(c => c.startsWith('refreshToken=;'))).toBeDefined();
+  });
+
+  test('rotation : UPDATE et INSERT dans la même transaction (atomicité)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ '?column?': 1 }] })
+      .mockResolvedValueOnce({
+        rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1 }],
+      })
+      .mockResolvedValueOnce({ rows: [], rowCount: 1 })         // UPDATE revoke
+      .mockResolvedValueOnce({ rows: [] });                    // INSERT new
+
+    const res = await request(app)
+      .post('/api/refresh')
+      .set('Cookie', `refreshToken=${refreshTokenValid}`);
+
+    expect(res.status).toBe(200);
+    // pool.connect() appelé exactement 1 fois pour la rotation (ouverture de tx)
+    expect(mockPool.connect).toHaveBeenCalled();
+    // Vérifie la séquence : UPDATE ... refresh_tokens SET revoked puis INSERT INTO refresh_tokens
+    const updateCall = mockPool.query.mock.calls.find(c => /UPDATE refresh_tokens SET revoked/.test(c[0]));
+    const insertCall = mockPool.query.mock.calls.find(c => /INSERT INTO refresh_tokens/.test(c[0]));
+    expect(updateCall).toBeDefined();
+    expect(insertCall).toBeDefined();
   });
 });
 
@@ -740,6 +785,61 @@ describe('GET /api/airplanes', () => {
 
     const res = await request(app).get('/api/airplanes');
     expect(res.status).toBe(500);
+  });
+
+  test('200 — full-text search via ?search= utilise websearch_to_tsquery + ts_rank', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '1' }] })
+      .mockResolvedValueOnce({ rows: [mockPlanes[1]] }); // rafale
+
+    const res = await request(app).get('/api/airplanes?search=rafale');
+    expect(res.status).toBe(200);
+    expect(res.body.data).toHaveLength(1);
+
+    const mainCall = mockPool.query.mock.calls[1];
+    expect(mainCall[0]).toContain('search_vector @@ websearch_to_tsquery');
+    expect(mainCall[0]).toContain('ORDER BY ts_rank');
+    expect(mainCall[1]).toEqual(expect.arrayContaining(['rafale']));
+  });
+
+  test('200 — search vide ignoré (aucune condition FTS)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '0' }] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).get('/api/airplanes?search=');
+    expect(res.status).toBe(200);
+    const mainCall = mockPool.query.mock.calls[1];
+    expect(mainCall[0]).not.toContain('search_vector');
+  });
+
+  test('200 — search combinable avec filtres (AND)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '1' }] })
+      .mockResolvedValueOnce({ rows: [mockPlanes[0]] });
+
+    const res = await request(app).get('/api/airplanes?country=USA&search=F-22');
+    expect(res.status).toBe(200);
+
+    const countCall = mockPool.query.mock.calls[0];
+    expect(countCall[0]).toContain('c.name = $1');
+    expect(countCall[0]).toContain('search_vector @@');
+    expect(countCall[0]).toContain('AND');
+    // queryParams est muté post-appel (push de limit/offset), donc on
+    // vérifie seulement la présence des 2 premiers params de la recherche.
+    expect(countCall[1][0]).toBe('USA');
+    expect(countCall[1][1]).toBe('F-22');
+  });
+
+  test('200 — search trop long (>100 chars) ignoré', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '0' }] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).get('/api/airplanes?search=' + 'a'.repeat(101));
+    expect(res.status).toBe(200);
+    const mainCall = mockPool.query.mock.calls[1];
+    expect(mainCall[0]).not.toContain('search_vector');
   });
 });
 
@@ -1763,6 +1863,30 @@ describe('En-tête Content-Security-Policy', () => {
     expect(csp).toContain("object-src 'none'");
     expect(csp).toContain("frame-ancestors 'none'");
   });
+
+  test('style-src-elem utilise un nonce par requête (pas unsafe-inline)', async () => {
+    mockPool.query.mockResolvedValue({ rows: [] });
+    const r1 = await request(app).get('/api/countries');
+    const r2 = await request(app).get('/api/countries');
+    const csp1 = r1.headers['content-security-policy'];
+    const csp2 = r2.headers['content-security-policy'];
+
+    // style-src-elem doit contenir un nonce
+    const m1 = csp1.match(/style-src-elem[^;]*'nonce-([A-Za-z0-9+/=]+)'/);
+    const m2 = csp2.match(/style-src-elem[^;]*'nonce-([A-Za-z0-9+/=]+)'/);
+    expect(m1).not.toBeNull();
+    expect(m2).not.toBeNull();
+
+    // Nonces uniques par requête (anti-replay)
+    expect(m1[1]).not.toBe(m2[1]);
+
+    // style-src-elem NE doit PAS contenir 'unsafe-inline'
+    const elemDir = csp1.match(/style-src-elem[^;]*/)[0];
+    expect(elemDir).not.toContain("'unsafe-inline'");
+
+    // style-src-attr tolère encore 'unsafe-inline' (style="..." legacy)
+    expect(csp1).toContain("style-src-attr 'unsafe-inline'");
+  });
 });
 
 // =============================================================================
@@ -1944,6 +2068,11 @@ describe('Routes i18n — ?lang=en', () => {
 // GET /sitemap.xml
 // =============================================================================
 describe('GET /sitemap.xml', () => {
+  beforeEach(() => {
+    // Sitemap est mis en cache 24h — reset pour isoler chaque test
+    require('../utils/cache')._resetForTests();
+  });
+
   test('200 — retourne un XML valide avec les URLs des avions (slugs SEO)', async () => {
     mockPool.query.mockImplementation(() =>
       Promise.resolve({
@@ -1987,6 +2116,26 @@ describe('GET /sitemap.xml', () => {
     expect(res.status).toBe(500);
     expect(res.body.message).toBe('Erreur interne du serveur');
     expect(res.body.errorId).toBeDefined();
+  });
+
+  test('cache HIT : 2e requête ne touche pas la BDD', async () => {
+    mockPool.query.mockResolvedValue({ rows: [{ id: 1, name: 'F-35' }] });
+    const r1 = await request(app).get('/sitemap.xml');
+    expect(r1.headers['x-cache']).toBe('MISS');
+    const callsAfterMiss = mockPool.query.mock.calls.length;
+
+    const r2 = await request(app).get('/sitemap.xml');
+    expect(r2.headers['x-cache']).toBe('HIT');
+    expect(r2.text).toBe(r1.text);
+    // La 2e requête ne doit PAS avoir interrogé la BDD
+    expect(mockPool.query.mock.calls.length).toBe(callsAfterMiss);
+  });
+
+  test('Cache-Control : public, max-age=3600 pour navigateur/CDN', async () => {
+    mockPool.query.mockResolvedValue({ rows: [] });
+    const res = await request(app).get('/sitemap.xml');
+    expect(res.headers['cache-control']).toContain('public');
+    expect(res.headers['cache-control']).toContain('max-age=3600');
   });
 });
 

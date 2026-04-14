@@ -293,8 +293,11 @@ module.exports = function createDetailsSsrRouter(getPool) {
       if (!html) return next();
 
       res.set('Content-Type', 'text/html; charset=utf-8');
-      res.set('Cache-Control', 'public, max-age=300, s-maxage=600');
-      res.send(html);
+      // 1h côté navigateur, 2h côté CDN ; stale-while-revalidate pour éviter
+      // qu'une régénération lente ne bloque un crawler.
+      res.set('Cache-Control', 'public, max-age=3600, s-maxage=7200, stale-while-revalidate=86400');
+      const inject = req.app.injectCspNonce;
+      res.send(typeof inject === 'function' ? inject(html, res.locals.cspNonce) : html);
     } catch (err) {
       next(err);
     }

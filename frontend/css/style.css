@@ -125,10 +125,7 @@
   opacity: 0.9;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(40px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* @keyframes fadeInUp → shared.css (dédupliqué) */
 
 .page-home .hero-title {
   font-family: 'Barlow Condensed', sans-serif;

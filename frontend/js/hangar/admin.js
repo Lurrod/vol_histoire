@@ -41,7 +41,7 @@
       _previousFocus = document.activeElement;
       modal?.classList.add('show');
       document.body.style.overflow = 'hidden';
-      _focusTrap = trapFocus(modal);
+      _focusTrap = trapFocus(modal, { onEscape: closeModal });
     }
     function closeModal() {
       _focusTrap?.destroy();

@@ -42,7 +42,7 @@
 
     const heroImage = document.getElementById('hero-image');
     heroImage.src = a.image_url || 'https://via.placeholder.com/800x500?text=No+Image';
-    heroImage.alt = a.name;
+    heroImage.alt = [a.name, a.manufacturer_name, a.country_name].filter(Boolean).join(' — ');
     heroImage.loading = 'lazy';
 
     document.getElementById('stat-speed').textContent = a.max_speed ? `${a.max_speed} km/h` : 'N/A';
@@ -60,7 +60,7 @@
     if (!container) return;
     if (!items || items.length === 0) {
       container.className = '';
-      container.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${emptyMsg}</p>`;
+      container.innerHTML = `<p class="details-empty-hint">${emptyMsg}</p>`;
       return;
     }
     container.className = 'chip-grid';
@@ -86,7 +86,7 @@
   function renderMissions(missions) {
     const container = document.getElementById('missions-list');
     if (!missions || missions.length === 0) {
-      container.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${i18n.t('details.no_mission')}</p>`;
+      container.innerHTML = `<p class="details-empty-hint">${i18n.t('details.no_mission')}</p>`;
       return;
     }
     const missionIcons = {
@@ -113,7 +113,7 @@
   function renderWars(wars) {
     const container = document.getElementById('wars-list');
     if (!wars || wars.length === 0) {
-      container.innerHTML = `<p style="color: var(--text-secondary); text-align: center;">${i18n.t('details.no_war')}</p>`;
+      container.innerHTML = `<p class="details-empty-hint">${i18n.t('details.no_war')}</p>`;
       return;
     }
     container.innerHTML = wars.map(war => {

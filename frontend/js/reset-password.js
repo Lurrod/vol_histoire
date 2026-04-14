@@ -4,8 +4,8 @@
 
   // Vérifier la présence du token
   if (!token) {
-    document.getElementById('rp-form-section').style.display = 'none';
-    document.getElementById('rp-invalid').style.display = 'block';
+    document.getElementById('rp-form-section').classList.add('hidden');
+    document.getElementById('rp-invalid').classList.remove('hidden');
     return;
   }
 

@@ -3,6 +3,7 @@ const express = require('express');
 const compression = require('compression');
 const cors = require('cors');
 const path = require('path');
+const crypto = require('crypto');
 const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yaml');
@@ -39,7 +40,19 @@ app.use(compression({
 // -----------------------------------------------------------------------------
 // Sécurité : Headers HTTP
 // -----------------------------------------------------------------------------
+// Nonce CSP : généré par requête, injecté dans chaque <style> servi par
+// sendCachedHtml + dans le header style-src-elem. Les vieux navigateurs
+// (sans support style-src-elem) tombent sur style-src qui garde
+// 'unsafe-inline' pour compat, mais les modernes (~95%) bloquent toute
+// injection de <style> XSS.
 app.use((req, res, next) => {
+  res.locals.cspNonce = crypto.randomBytes(16).toString('base64');
+  next();
+});
+
+app.use((req, res, next) => {
+  const nonce = res.locals.cspNonce;
+  const styleHosts = "https://fonts.googleapis.com https://cdnjs.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com";
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
@@ -49,7 +62,12 @@ app.use((req, res, next) => {
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
     "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://browser.sentry-cdn.com https://hcaptcha.com https://*.hcaptcha.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com",
+    // CSP L3 : nonce sur <style> (élément), 'unsafe-inline' toléré uniquement
+    // sur les attributs style="..." (vecteur XSS bien moins exploitable).
+    `style-src-elem 'self' 'nonce-${nonce}' ${styleHosts}`,
+    "style-src-attr 'unsafe-inline'",
+    // Fallback pour les vieux navigateurs qui ignorent style-src-elem/attr.
+    `style-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${styleHosts}`,
     "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
     "img-src 'self' https://i.postimg.cc https://flagcdn.com https://www.googletagmanager.com https://picsum.photos https://fastly.picsum.photos data:",
     "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.ingest.sentry.io https://*.sentry.io https://hcaptcha.com https://*.hcaptcha.com",
@@ -172,6 +190,7 @@ app.initRedis = async function initRedis() {
       }));
     });
     app._redisClient = client; // exposé pour shutdown gracieux
+    require('./utils/cache').setRedisClient(client); // cache applicatif partagé
     logger.info('Rate-limiter Redis activé', { limiters: LIMITER_DEFS.length });
   } catch (err) {
     logger.warn('Redis indisponible — rate-limit en mémoire', { error: err.message });
@@ -353,17 +372,28 @@ const frontendRoot = path.join(__dirname, '../frontend');
 const htmlCache = buildHtmlCache(frontendRoot, pkgVersion);
 logger.info && logger.info('HTML cache initialisé', { count: htmlCache.count, version: pkgVersion });
 
+// Injecte le nonce CSP sur chaque balise <style> (sans attribut nonce existant).
+// Coût : O(n) sur la taille du HTML (~sub-ms pour 50 Ko), acceptable en runtime.
+function injectCspNonce(html, nonce) {
+  if (!nonce) return html;
+  return html.replace(/<style(\s+[^>]*)?>/gi, (match, attrs) => {
+    if (attrs && /\bnonce\s*=/.test(attrs)) return match; // déjà nonçé
+    return `<style${attrs || ''} nonce="${nonce}">`;
+  });
+}
+
 function sendCachedHtml(res, filePath) {
   const cached = htmlCache.get(filePath);
   if (cached !== null) {
     res.set('Content-Type', 'text/html; charset=utf-8');
-    return res.send(cached);
+    return res.send(injectCspNonce(cached, res.locals.cspNonce));
   }
   // Fallback : fichier ajouté après le boot, on le sert via sendFile
   return res.sendFile(filePath);
 }
 app.htmlCache = htmlCache;          // exposé pour le SSR router /details
 app.sendCachedHtml = sendCachedHtml;
+app.injectCspNonce = injectCspNonce; // exposé pour le SSR router /details
 
 // Routes HTML sans extension (utile en dev local — en prod c'est Apache/.htaccess qui gère)
 const htmlPages = [
@@ -408,8 +438,12 @@ const createFacetsRouter = require('./routes/facets');
 app.use('/api', createFacetsRouter(() => pool));
 
 const createAirplanesRouter = require('./routes/airplanes');
+const { invalidateSitemap } = require('./routes/sitemap');
 const airplanesRouter = createAirplanesRouter(() => pool, {
-  onAirplaneChange: () => app.invalidateStatsCache?.(),
+  onAirplaneChange: () => {
+    app.invalidateStatsCache?.();
+    invalidateSitemap().catch(() => {}); // sitemap stale si Redis down, non-bloquant
+  },
 });
 app.use('/api', airplanesRouter);
 app.invalidateAirplanesReferentialCache = () => airplanesRouter.invalidateReferentialCache?.();

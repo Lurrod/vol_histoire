@@ -67,6 +67,10 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     const country = req.query.country || '';
     const generation = req.query.generation || '';
     const type = req.query.type || '';
+    // Full-text search : trimé, max 100 chars (websearch_to_tsquery ignore les
+    // caractères non-alphanumériques bizarres, donc pas de sanitization à faire)
+    const searchRaw = (req.query.search || '').toString().trim();
+    const search = searchRaw.length > 0 && searchRaw.length <= 100 ? searchRaw : '';
 
     // Validation format (sans DB) — rejette texte, 0, négatif
     if (generation && !/^[1-9]\d*$/.test(generation)) {
@@ -113,6 +117,15 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       conditions.push(`t.name = $${queryParams.length}`);
     }
 
+    // Full-text search : match sur search_vector (tsvector généré côté DB)
+    // websearch_to_tsquery accepte "F-16 chasseur", "rafale -mirage", "\"exact phrase\"", etc.
+    let searchParamIdx = null;
+    if (search) {
+      queryParams.push(search);
+      searchParamIdx = queryParams.length;
+      conditions.push(`a.search_vector @@ websearch_to_tsquery('simple', $${searchParamIdx})`);
+    }
+
     if (conditions.length > 0) {
       query += ' WHERE ' + conditions.join(' AND ');
     }
@@ -125,7 +138,13 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       'generation': 'g.generation DESC',
       'type': 't.name ASC',
     };
-    query += ' ORDER BY ' + (sortMap[sort] || 'a.id ASC');
+    // Si une recherche est en cours, on trie par pertinence (ts_rank) — sinon
+    // on applique le sort demandé ou le défaut.
+    if (search) {
+      query += ` ORDER BY ts_rank(a.search_vector, websearch_to_tsquery('simple', $${searchParamIdx})) DESC, a.id ASC`;
+    } else {
+      query += ' ORDER BY ' + (sortMap[sort] || 'a.id ASC');
+    }
 
     // Pagination
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);

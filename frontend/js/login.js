@@ -81,7 +81,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function showSlide(toShow, toHide) {
     toHide.classList.remove('active');
+    toHide.setAttribute('aria-hidden', 'true');
     toShow.classList.add('active');
+    toShow.setAttribute('aria-hidden', 'false');
+    // Met le focus sur le premier champ du slide visible (UX clavier/SR)
+    const firstInput = toShow.querySelector('input:not([type="hidden"])');
+    firstInput?.focus({ preventScroll: true });
   }
 
   function resetForms() {

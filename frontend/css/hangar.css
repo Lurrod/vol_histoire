@@ -177,7 +177,7 @@
 .page-hangar .modal.show { display: flex; }
 .page-hangar .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); }
 .page-hangar .modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); max-width: 64em; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn 0.3s ease; }
-@keyframes modalSlideIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+/* @keyframes modalSlideIn → shared.css (dédupliqué) */
 .page-hangar .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.75rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
 .page-hangar .modal-header h2 { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 0.75rem; }
 .page-hangar .modal-close { background: transparent; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.5); font-size: 1.5rem; }
@@ -312,14 +312,7 @@
   .page-hangar .page-hero { padding: 2rem 0; }
   .page-hangar * { background: white !important; color: black !important; box-shadow: none !important; }
 }
-/* Skeleton loader */
-@keyframes shimmer { 0% { background-position: -600px 0; } 100% { background-position: 600px 0; } }
-.page-hangar .skeleton-card { background: rgba(20,20,20,0.7); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); }
-.page-hangar .skeleton-image { height: 220px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite; }
-.page-hangar .skeleton-content { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
-.page-hangar .skeleton-line { height: 14px; border-radius: 6px; background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 600px 100%; animation: shimmer 1.4s infinite; }
-.page-hangar .skeleton-line.short { width: 55%; }
-.page-hangar .skeleton-line.medium { width: 75%; }
+/* Skeleton loader (@keyframes shimmer + .skeleton-* → shared.css, dédupliqués) */
 
 /* =====================================================
    V2 — Facet counts, view toggle, compare, mobile sheet

@@ -36,7 +36,7 @@
 
       editModal.classList.add('show');
       document.body.style.overflow = 'hidden';
-      _focusTrap = trapFocus(editModal);
+      _focusTrap = trapFocus(editModal, { onEscape: closeEditModal });
     }
 
     let _focusTrap = null;

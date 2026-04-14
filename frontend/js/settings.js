@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     logoutModal?.classList.remove('hidden');
     requestAnimationFrame(() => {
       logoutModal?.classList.add('show');
-      _logoutTrap = trapFocus(logoutModal);
+      _logoutTrap = trapFocus(logoutModal, { onEscape: closeLogoutModal });
     });
   }
 
@@ -77,25 +77,61 @@ document.addEventListener("DOMContentLoaded", async () => {
   const sidebarLinks = document.querySelectorAll('.sidebar-link');
   const contentSections = document.querySelectorAll('.content-section');
 
+  function activateTab(link, { focusTab = false, scroll = true } = {}) {
+    if (!link || link.classList.contains('hidden')) return;
+    const targetSection = link.dataset.section;
+
+    sidebarLinks.forEach(l => {
+      const isActive = l === link;
+      l.classList.toggle('active', isActive);
+      l.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      l.setAttribute('tabindex', isActive ? '0' : '-1');
+    });
+
+    contentSections.forEach(section => {
+      const isTarget = section.id === targetSection;
+      section.classList.toggle('active', isTarget);
+      if (isTarget) section.removeAttribute('hidden');
+      else section.setAttribute('hidden', '');
+    });
+
+    if (focusTab) link.focus();
+    if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   sidebarLinks.forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      
-      const targetSection = link.dataset.section;
-      
-      // Update active states
-      sidebarLinks.forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-      
-      contentSections.forEach(section => {
-        section.classList.remove('active');
-        if (section.id === targetSection) {
-          section.classList.add('active');
-        }
-      });
+      activateTab(link);
+    });
 
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Navigation clavier tabs pattern (WAI-ARIA Authoring Practices)
+    link.addEventListener('keydown', (e) => {
+      const visible = Array.from(sidebarLinks).filter(l => !l.classList.contains('hidden'));
+      const idx = visible.indexOf(link);
+      if (idx === -1) return;
+
+      let target = null;
+      switch (e.key) {
+        case 'ArrowDown':
+        case 'ArrowRight':
+          target = visible[(idx + 1) % visible.length];
+          break;
+        case 'ArrowUp':
+        case 'ArrowLeft':
+          target = visible[(idx - 1 + visible.length) % visible.length];
+          break;
+        case 'Home':
+          target = visible[0];
+          break;
+        case 'End':
+          target = visible[visible.length - 1];
+          break;
+        default:
+          return;
+      }
+      e.preventDefault();
+      activateTab(target, { focusTab: true, scroll: false });
     });
   });
 

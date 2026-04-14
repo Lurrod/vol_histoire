@@ -45,11 +45,7 @@ class CookieConsent {
       if (!res.ok) return;
       const html = await res.text();
       const container = document.createElement('div');
-      if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
-        container.innerHTML = DOMPurify.sanitize(html, { WHOLE_DOCUMENT: false, RETURN_DOM: false });
-      } else {
-        container.innerHTML = html;
-      }
+      safeSetHTML(container, html);
       // Insérer au début du body (avant le header)
       document.body.insertBefore(container, document.body.firstChild);
       // Appliquer les traductions i18n au contenu injecté

@@ -14,22 +14,22 @@
 
   function mountDetailsSkeletons() {
     const name = document.getElementById('aircraft-name');
-    if (name) name.innerHTML = '<span class="skeleton-line" style="display:inline-block;width:320px;height:48px;vertical-align:middle"></span>';
+    if (name) name.innerHTML = '<span class="skeleton-line skeleton-inline-xl"></span>';
     const sub = document.getElementById('aircraft-complete-name');
-    if (sub) sub.innerHTML = '<span class="skeleton-line" style="display:inline-block;width:220px;height:16px"></span>';
+    if (sub) sub.innerHTML = '<span class="skeleton-line skeleton-inline-md"></span>';
     ['hero-country', 'hero-manufacturer', 'hero-year'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = '<span class="skeleton-line" style="display:inline-block;width:80px;height:14px"></span>';
+      if (el) el.innerHTML = '<span class="skeleton-line skeleton-inline-meta"></span>';
     });
     ['stat-speed', 'stat-range', 'stat-weight', 'stat-status'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = '<span class="skeleton-line" style="display:inline-block;width:90px;height:20px"></span>';
+      if (el) el.innerHTML = '<span class="skeleton-line skeleton-inline-badge"></span>';
     });
     const desc = document.getElementById('aircraft-description');
     if (desc) desc.innerHTML =
-      '<span class="skeleton-line" style="display:block;margin-bottom:8px"></span>' +
-      '<span class="skeleton-line" style="display:block;margin-bottom:8px"></span>' +
-      '<span class="skeleton-line medium" style="display:block"></span>';
+      '<span class="skeleton-line skeleton-block"></span>' +
+      '<span class="skeleton-line skeleton-block"></span>' +
+      '<span class="skeleton-line medium skeleton-block-last"></span>';
   }
 
   async function loadAircraftDetails(state) {

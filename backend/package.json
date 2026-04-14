@@ -1,6 +1,6 @@
 {
   "name": "Vol d'histoire",
-  "version": "3.7.5",
+  "version": "3.8.0",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

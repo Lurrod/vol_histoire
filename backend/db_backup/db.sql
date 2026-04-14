@@ -136,6 +136,22 @@ CREATE INDEX IF NOT EXISTS idx_airplanes_filters        ON airplanes (country_id
 -- Index pour le JOIN manufacturer → countries (page /manufacturers)
 CREATE INDEX IF NOT EXISTS idx_manufacturer_country_id  ON manufacturer (country_id);
 
+-- Full-text search : colonne générée + GIN index
+-- (voir aussi migrations/001_airplanes_search_vector.sql pour les bases existantes)
+ALTER TABLE airplanes
+  ADD COLUMN IF NOT EXISTS search_vector tsvector
+  GENERATED ALWAYS AS (
+    setweight(to_tsvector('simple', coalesce(name, '')),                'A') ||
+    setweight(to_tsvector('simple', coalesce(name_en, '')),             'A') ||
+    setweight(to_tsvector('simple', coalesce(complete_name, '')),       'B') ||
+    setweight(to_tsvector('simple', coalesce(complete_name_en, '')),    'B') ||
+    setweight(to_tsvector('simple', coalesce(little_description, '')),  'C') ||
+    setweight(to_tsvector('simple', coalesce(little_description_en, '')),'C') ||
+    setweight(to_tsvector('simple', coalesce(description, '')),         'D') ||
+    setweight(to_tsvector('simple', coalesce(description_en, '')),      'D')
+  ) STORED;
+CREATE INDEX IF NOT EXISTS idx_airplanes_search_vector  ON airplanes USING GIN (search_vector);
+
 CREATE TABLE favorites (
   user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   airplane_id INTEGER NOT NULL REFERENCES airplanes(id) ON DELETE CASCADE,
