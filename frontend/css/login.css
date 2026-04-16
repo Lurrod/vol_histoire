@@ -266,12 +266,57 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   overflow: hidden;
 }
 
+/* ARIA tablist : bascule connexion / inscription (a11y + clavier) */
+.page-login .form-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(200, 169, 110, 0.1);
+}
+.page-login .form-tab {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+}
+.page-login .form-tab i {
+  font-size: 0.9rem;
+}
+.page-login .form-tab:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+.page-login .form-tab.active,
+.page-login .form-tab[aria-selected="true"] {
+  color: var(--hud-cyan);
+  background: rgba(200, 169, 110, 0.06);
+  border-color: rgba(200, 169, 110, 0.22);
+}
+.page-login .form-tab:focus-visible {
+  outline: 2px solid var(--hud-cyan);
+  outline-offset: 2px;
+}
+
 .page-login .form-slide {
   display: none;
   animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .page-login .form-slide.active {
   display: block;
+}
+.page-login .form-slide:focus {
+  outline: none;
 }
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(40px); }
@@ -565,29 +610,6 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 .page-login .switch-form:hover i, .page-login .switch-form:hover .icon { transform: translateX(3px); }
 
 /* Security Footer */
-.page-login .security-info {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  padding-top: 2rem;
-  margin-top: 2rem;
-  border-top: 1px solid var(--border);
-}
-.page-login .security-item {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--text-secondary);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.page-login .security-item i, .page-login .security-item .icon {
-  color: var(--success);
-  font-size: 0.8rem;
-}
-
-
 /* toast → shared.css */
 
 
@@ -629,7 +651,6 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   .page-login .form-header h1,
   .page-login .form-header h2 { font-size: 1.5rem; }
   .page-login .form-options { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-  .page-login .security-info { gap: 1rem; flex-wrap: wrap; }
   /* footer responsive → shared.css */
 }
 
@@ -646,7 +667,6 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   .page-login .form-group input { padding: 0.75rem 0.75rem; font-size: 0.9rem; }
   .page-login .btn-submit { padding: 0.875rem; font-size: 0.9rem; min-height: 48px; }
   .page-login .switch-form { font-size: 0.85rem; }
-  .page-login .security-info { flex-direction: column; align-items: center; gap: 0.5rem; }
   /* toast/footer responsive → shared.css */
 }
 
@@ -677,9 +697,82 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 /* Print */
 @media print {
   /* header/footer print → shared.css */
-  .page-login .auth-visual, .page-login .security-info { display: none !important; }
+  .page-login .auth-visual { display: none !important; }
   .page-login .auth-section { min-height: auto; padding: 0; }
   .page-login .auth-form-panel { box-shadow: none; border: 1px solid #000; }
 }
 /* lang-switch → shared.css */
+
+/* ============================================================
+   NOTICE "Email non vérifié" (injectée dynamiquement par login.js).
+   Extraite des styles inline pour supporter la CSP sans 'unsafe-inline'
+   sur style-src-attr.
+   ============================================================ */
+.ev-notice {
+  background: rgba(243, 156, 18, 0.08);
+  border: 1px solid rgba(243, 156, 18, 0.25);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+.ev-notice-icon {
+  color: #f39c12;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.ev-notice-body { flex: 1; }
+.ev-notice-title {
+  margin: 0 0 0.4rem;
+  font-weight: 600;
+  color: #f39c12;
+  font-size: 0.88rem;
+}
+.ev-notice-desc {
+  margin: 0 0 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+.ev-resend-btn {
+  background: rgba(243, 156, 18, 0.12);
+  border: 1px solid rgba(243, 156, 18, 0.3);
+  border-radius: 7px;
+  padding: 0.45rem 0.9rem;
+  color: #f39c12;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+.ev-resend-btn.ev-resend-success {
+  color: #34d964;
+  border-color: rgba(52, 217, 100, 0.3);
+}
+.ev-btn-icon { margin-right: 0.3rem; }
+
+/* ============================================================
+   PANNEAU DE SUCCÈS (reset-password)
+   ============================================================ */
+.rp-success {
+  text-align: center;
+  padding: 1rem 0;
+}
+.rp-success-icon {
+  font-size: 2.5rem;
+  color: #34d964;
+  display: block;
+  margin-bottom: 1rem;
+}
+.rp-success h2 {
+  color: #fff;
+  margin: 0 0 0.5rem;
+}
+.rp-success p {
+  color: rgba(255, 255, 255, 0.45);
+  margin: 0 0 1.5rem;
+}
 

@@ -743,6 +743,19 @@
 
   .toast i, .toast .icon { font-size: var(--text-2xl); }
 
+  /* Toast avec bouton d'annulation (favorites) — remplace les styles inline */
+  .toast .toast-msg { flex: 1; }
+  .toast .toast-undo-btn {
+    background: none;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    padding: 0.2rem 0.6rem;
+    cursor: pointer;
+    font-weight: 700;
+    color: inherit;
+    font-size: 0.85rem;
+  }
+
   /* ============================================================
      SKELETON LOADER
      ============================================================ */

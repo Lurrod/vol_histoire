@@ -32,7 +32,10 @@
   <meta name="twitter:title" content="Détails de l'Avion | Vol d'Histoire">
   <meta name="twitter:description" content="Découvrez les spécifications détaillées, l'armement, les technologies et l'historique de cet avion de chasse.">
   <meta property="og:image" content="https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg">
+  <meta property="og:image:alt" content="Vol d'Histoire — encyclopédie aviation militaire">
+  <meta property="og:image:type" content="image/jpeg">
   <meta name="twitter:image" content="https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg">
+  <meta name="twitter:image:alt" content="Vol d'Histoire — encyclopédie aviation militaire">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -58,10 +61,6 @@
   <link rel="stylesheet" href="css/details.min.css">
   </head>
 <body class="page-details">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KB3P52VK"
-height="0" width="0" class="gtm-noscript"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 <a href="#main-content" class="skip-link">Aller au contenu</a>
 <!-- Cookies (compact) -->
 
@@ -191,10 +190,46 @@ height="0" width="0" class="gtm-noscript"></iframe></noscript>
         <div class="timeline-item" id="date-first-fly"><div class="timeline-marker"><i class="fas fa-plane-departure"></i></div><div class="timeline-content"><h4 data-i18n="details.first_flight">Premier Vol</h4><p class="timeline-date">-</p></div></div>
         <div class="timeline-item" id="date-operational"><div class="timeline-marker"><i class="fas fa-shield"></i></div><div class="timeline-content"><h4 data-i18n="details.in_service">Mise en Service</h4><p class="timeline-date">-</p></div></div>
       </div></div></section>
+      <!-- Strate 1+2 : Fiche technique étendue — placée avant les engagements historiques -->
+      <section class="content-section specs-section hidden" id="specs-section">
+        <div class="section-header"><h2><i class="fas fa-ruler-combined"></i> <span data-i18n="details.full_specs">Fiche technique</span></h2></div>
+        <div class="section-content">
+          <div class="specs-grid" id="specs-grid"></div>
+        </div>
+      </section>
+
+      <!-- Strate 3 : Production & Service -->
+      <section class="content-section production-section hidden" id="production-section">
+        <div class="section-header"><h2><i class="fas fa-industry"></i> <span data-i18n="details.production_service">Production &amp; Service</span></h2></div>
+        <div class="section-content">
+          <div class="production-grid" id="production-grid"></div>
+          <div id="variants-block" class="variants-block hidden">
+            <h3 data-i18n="details.variants">Variantes principales</h3>
+            <div id="variants-content" class="variants-content"></div>
+          </div>
+        </div>
+      </section>
+
       <section class="content-section armament-section"><div class="section-header"><h2><i class="fas fa-crosshairs"></i> <span data-i18n="details.armament">Armement</span></h2></div><div class="section-content"><div id="armament-list" class="feature-grid"></div></div></section>
       <section class="content-section tech-section"><div class="section-header"><h2><i class="fas fa-microchip"></i> <span data-i18n="details.technologies">Technologies</span></h2></div><div class="section-content"><div id="tech-list" class="feature-grid"></div></div></section>
       <section class="content-section missions-section"><div class="section-header"><h2><i class="fas fa-bullseye"></i> <span data-i18n="details.missions">Missions</span></h2></div><div class="section-content"><div id="missions-list" class="mission-grid"></div></div></section>
       <section class="content-section wars-section"><div class="section-header"><h2><i class="fas fa-burst"></i> <span data-i18n="details.wars">Engagements Historiques</span></h2></div><div class="section-content"><div id="wars-list" class="wars-timeline"></div></div></section>
+
+      <!-- Strate 4 : Appareils liés (predecessor / successor / rival) -->
+      <section class="content-section related-section hidden" id="related-aircraft-section">
+        <div class="section-header"><h2><i class="fas fa-diagram-project"></i> <span data-i18n="details.related_aircraft">Appareils liés</span></h2></div>
+        <div class="section-content">
+          <div class="related-grid" id="related-grid"></div>
+        </div>
+      </section>
+
+      <!-- Strate 6 : Liens externes -->
+      <section class="content-section sources-section hidden" id="sources-section">
+        <div class="section-header"><h2><i class="fas fa-link"></i> <span data-i18n="details.sources">Pour aller plus loin</span></h2></div>
+        <div class="section-content">
+          <div class="sources-list" id="sources-list"></div>
+        </div>
+      </section>
     </div>
   </main>
 
@@ -224,10 +259,65 @@ height="0" width="0" class="gtm-noscript"></iframe></noscript>
             <div class="form-group"><label for="edit-date-first-fly" data-i18n="details.date_first_fly">Premier vol</label><input type="date" id="edit-date-first-fly"></div>
             <div class="form-group"><label for="edit-date-operationel" data-i18n="details.date_operational">Mise en service</label><input type="date" id="edit-date-operationel"></div>
           </div></div>
-          <div class="form-section"><h3><i class="fas fa-tachometer-alt"></i> <span data-i18n="details.specs">Spécifications</span></h3><div class="form-grid">
-            <div class="form-group"><label for="edit-max-speed" data-i18n="details.max_speed">Vitesse max (km/h)</label><input type="number" id="edit-max-speed"></div>
-            <div class="form-group"><label for="edit-max-range" data-i18n="details.max_range">Portée max (km)</label><input type="number" id="edit-max-range"></div>
-            <div class="form-group"><label for="edit-weight" data-i18n="details.weight_kg">Poids (kg)</label><input type="number" id="edit-weight"></div>
+          <div class="form-section"><h3><i class="fas fa-tachometer-alt"></i> <span data-i18n="details.admin_section_basic_specs">Spécifications de base</span></h3><div class="form-grid">
+            <div class="form-group"><label for="edit-max-speed" data-i18n="details.max_speed">Vitesse max (km/h)</label><input type="number" id="edit-max-speed" step="any"></div>
+            <div class="form-group"><label for="edit-max-range" data-i18n="details.max_range">Portée max (km)</label><input type="number" id="edit-max-range" step="any"></div>
+            <div class="form-group"><label for="edit-weight" data-i18n="details.weight_kg">Poids (kg)</label><input type="number" id="edit-weight" step="any"></div>
+          </div></div>
+
+          <div class="form-section"><h3><i class="fas fa-ruler-combined"></i> <span data-i18n="details.admin_section_extended_specs">Dimensions &amp; performances étendues</span></h3><div class="form-grid">
+            <div class="form-group"><label for="edit-length" data-i18n="details.admin_length">Longueur (m)</label><input type="number" id="edit-length" step="any"></div>
+            <div class="form-group"><label for="edit-wingspan" data-i18n="details.admin_wingspan">Envergure (m)</label><input type="number" id="edit-wingspan" step="any"></div>
+            <div class="form-group"><label for="edit-height" data-i18n="details.admin_height">Hauteur (m)</label><input type="number" id="edit-height" step="any"></div>
+            <div class="form-group"><label for="edit-wing-area" data-i18n="details.admin_wing_area">Surface alaire (m²)</label><input type="number" id="edit-wing-area" step="any"></div>
+            <div class="form-group"><label for="edit-empty-weight" data-i18n="details.admin_empty_weight">Poids à vide (kg)</label><input type="number" id="edit-empty-weight" step="any"></div>
+            <div class="form-group"><label for="edit-mtow" data-i18n="details.admin_mtow">MTOW (kg)</label><input type="number" id="edit-mtow" step="any"></div>
+            <div class="form-group"><label for="edit-service-ceiling" data-i18n="details.admin_service_ceiling">Plafond opérationnel (m)</label><input type="number" id="edit-service-ceiling"></div>
+            <div class="form-group"><label for="edit-climb-rate" data-i18n="details.admin_climb_rate">Taux de montée (m/s)</label><input type="number" id="edit-climb-rate" step="any"></div>
+            <div class="form-group"><label for="edit-g-limit-pos" data-i18n="details.admin_g_pos">Facteur de charge + (g)</label><input type="number" id="edit-g-limit-pos" step="any"></div>
+            <div class="form-group"><label for="edit-g-limit-neg" data-i18n="details.admin_g_neg">Facteur de charge − (g)</label><input type="number" id="edit-g-limit-neg" step="any"></div>
+            <div class="form-group"><label for="edit-combat-radius" data-i18n="details.admin_combat_radius">Rayon de combat (km)</label><input type="number" id="edit-combat-radius" step="any"></div>
+            <div class="form-group"><label for="edit-crew" data-i18n="details.admin_crew">Équipage (nb)</label><input type="number" id="edit-crew"></div>
+          </div></div>
+
+          <div class="form-section"><h3><i class="fas fa-cogs"></i> <span data-i18n="details.admin_section_engine">Motorisation</span></h3><div class="form-grid">
+            <div class="form-group span-2"><label for="edit-engine-name" data-i18n="details.admin_engine_name">Nom du moteur</label><input type="text" id="edit-engine-name" placeholder="Snecma M88-2E4"></div>
+            <div class="form-group"><label for="edit-engine-count" data-i18n="details.admin_engine_count">Nombre de moteurs</label><input type="number" id="edit-engine-count"></div>
+            <div class="form-group"><label for="edit-engine-type" data-i18n="details.admin_engine_type">Type</label><input type="text" id="edit-engine-type" placeholder="Turbofan"></div>
+            <div class="form-group"><label for="edit-thrust-dry" data-i18n="details.admin_thrust_dry">Poussée sèche (kN)</label><input type="number" id="edit-thrust-dry" step="any"></div>
+            <div class="form-group"><label for="edit-thrust-wet" data-i18n="details.admin_thrust_wet">Poussée PC (kN)</label><input type="number" id="edit-thrust-wet" step="any"></div>
+          </div></div>
+
+          <div class="form-section"><h3><i class="fas fa-industry"></i> <span data-i18n="details.admin_section_production">Production &amp; service</span></h3><div class="form-grid">
+            <div class="form-group"><label for="edit-production-start" data-i18n="details.admin_production_start">Début production</label><input type="number" id="edit-production-start" placeholder="1986"></div>
+            <div class="form-group"><label for="edit-production-end" data-i18n="details.admin_production_end">Fin production (vide = en cours)</label><input type="number" id="edit-production-end"></div>
+            <div class="form-group"><label for="edit-units-built" data-i18n="details.admin_units_built">Unités produites</label><input type="number" id="edit-units-built"></div>
+            <div class="form-group"><label for="edit-unit-cost-usd" data-i18n="details.admin_unit_cost">Coût unitaire (USD)</label><input type="number" id="edit-unit-cost-usd"></div>
+            <div class="form-group"><label for="edit-unit-cost-year" data-i18n="details.admin_unit_cost_year">Année réf. coût</label><input type="number" id="edit-unit-cost-year" placeholder="2024"></div>
+            <div class="form-group"><label for="edit-operators-count" data-i18n="details.admin_operators_count">Nombre d'opérateurs</label><input type="number" id="edit-operators-count"></div>
+            <div class="form-group span-2"><label for="edit-variants" data-i18n="details.admin_variants">Variantes (texte libre / markdown)</label><textarea id="edit-variants" rows="3"></textarea></div>
+          </div></div>
+
+          <div class="form-section"><h3><i class="fas fa-award"></i> <span data-i18n="details.admin_section_qualitative">Qualitatif &amp; liens croisés</span></h3><div class="form-grid">
+            <div class="form-group"><label for="edit-stealth-level" data-i18n="details.admin_stealth">Niveau de furtivité</label><select id="edit-stealth-level">
+              <option value="">—</option>
+              <option value="aucune" data-i18n="details.stealth_none">Aucune</option>
+              <option value="reduite" data-i18n="details.stealth_reduced">Réduite</option>
+              <option value="moderee" data-i18n="details.stealth_moderate">Modérée</option>
+              <option value="elevee" data-i18n="details.stealth_high">Élevée</option>
+              <option value="tres_elevee" data-i18n="details.stealth_very_high">Très élevée</option>
+            </select></div>
+            <div class="form-group"><label for="edit-nickname" data-i18n="details.admin_nickname">Surnom</label><input type="text" id="edit-nickname"></div>
+            <div class="form-group"><label for="edit-predecessor-id" data-i18n="details.admin_predecessor">Prédécesseur</label><select id="edit-predecessor-id"><option value="">—</option></select></div>
+            <div class="form-group"><label for="edit-successor-id" data-i18n="details.admin_successor">Successeur</label><select id="edit-successor-id"><option value="">—</option></select></div>
+            <div class="form-group"><label for="edit-rival-id" data-i18n="details.admin_rival">Rival direct</label><select id="edit-rival-id"><option value="">—</option></select></div>
+          </div></div>
+
+          <div class="form-section"><h3><i class="fas fa-link"></i> <span data-i18n="details.admin_section_external_links">Liens externes</span></h3><div class="form-grid">
+            <div class="form-group span-2"><label for="edit-wikipedia-fr" data-i18n="details.admin_wikipedia_fr">Wikipedia FR</label><input type="url" id="edit-wikipedia-fr" placeholder="https://fr.wikipedia.org/wiki/…"></div>
+            <div class="form-group span-2"><label for="edit-wikipedia-en" data-i18n="details.admin_wikipedia_en">Wikipedia EN</label><input type="url" id="edit-wikipedia-en" placeholder="https://en.wikipedia.org/wiki/…"></div>
+            <div class="form-group span-2"><label for="edit-youtube-showcase" data-i18n="details.admin_youtube">YouTube (présentation)</label><input type="url" id="edit-youtube-showcase" placeholder="https://youtube.com/watch?v=…"></div>
+            <div class="form-group span-2"><label for="edit-manufacturer-page" data-i18n="details.admin_manufacturer_page">Page constructeur</label><input type="url" id="edit-manufacturer-page"></div>
           </div></div>
         </div>
         <div class="modal-footer">
@@ -244,7 +334,7 @@ height="0" width="0" class="gtm-noscript"></iframe></noscript>
         <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p></div>
         <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="/contact" data-i18n="footer.contact">Contact</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" class="cookie-settings-link" data-i18n="footer.cookies">Cookies</a></li></ul></div>
       </div>
       <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2026 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
     </div>

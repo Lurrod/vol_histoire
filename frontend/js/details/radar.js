@@ -71,7 +71,7 @@
     }).join('');
 
     chartEl.innerHTML = `
-      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;overflow:visible;">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" class="radar-svg">
         <defs>
           <radialGradient id="radarFill_${state.aircraftId}" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="rgba(200,169,110,0.3)" />
@@ -80,10 +80,9 @@
         </defs>
         ${gridPolygons}
         ${axisLines}
-        <polygon points="${dataPolygonPts}"
+        <polygon class="radar-polygon" points="${dataPolygonPts}"
           fill="url(#radarFill_${state.aircraftId})"
-          stroke="#C8A96E" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.85"
-          style="transition: all 0.5s ease;" />
+          stroke="#C8A96E" stroke-width="2" stroke-linejoin="round" stroke-opacity="0.85" />
         ${dataDots}
         ${axisLabels}
       </svg>

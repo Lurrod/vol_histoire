@@ -39,6 +39,7 @@ const BUNDLES = {
   'login.min.css': ['login.css'],
   'settings.min.css': ['settings.css'],
   'legal.min.css': ['legal.css'],
+  'contact.min.css': ['contact.css'],
 };
 
 // ── Détection de duplication ──────────────────────────────────────────

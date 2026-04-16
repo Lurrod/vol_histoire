@@ -30,12 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { window.location.href = '/login'; }, 1500);
       } else {
         if (userList) {
-          userList.innerHTML = `<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">${i18n.t('settings.admin_api_unavailable')}</p>`;
+          userList.innerHTML = `<p class="admin-empty-msg">${i18n.t('settings.admin_api_unavailable')}</p>`;
         }
       }
     } catch (err) {
       if (userList) {
-        userList.innerHTML = `<p style="text-align: center; padding: 2rem; color: var(--text-secondary);">${i18n.t('settings.toast_users_error')}</p>`;
+        userList.innerHTML = `<p class="admin-empty-msg">${i18n.t('settings.toast_users_error')}</p>`;
       }
     }
   }

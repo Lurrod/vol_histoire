@@ -281,6 +281,13 @@ class CookieConsent {
     // Update GTM Consent Mode
     this.updateGTMConsent();
 
+    // CNIL : on ne charge gtm.js externe QUE si l'utilisateur a donné son
+    // consentement analytics. __loadGTM est idempotent → safe de l'appeler
+    // plusieurs fois. Aucune requête vers googletagmanager.com avant ce point.
+    if (this.preferences.analytics && typeof window.__loadGTM === 'function') {
+      window.__loadGTM();
+    }
+
     // Apply analytics cookies
     if (this.preferences.analytics) {
       this.enableAnalytics();

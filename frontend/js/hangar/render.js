@@ -60,6 +60,15 @@
     state.currentPage = page;
     renderAircraft(state);
     renderPagination(state);
+    // Persister page + filters en URL et session → permet au user
+    // de revenir à la bonne page après visite d'une fiche.
+    VH.hangar.filters.writeStateToUrl(state);
+    // Clé alignée avec hangar/filters.js (SESSION_KEY = 'hangar_filters')
+    try {
+      sessionStorage.setItem('hangar_filters', JSON.stringify({
+        filters: state.filters, sort: state.sort, currentPage: state.currentPage,
+      }));
+    } catch (_) { /* quota plein : on ignore */ }
     const toolbar = document.querySelector('.hangar-toolbar');
     const offset = toolbar ? toolbar.offsetTop - 80 : 0;
     window.scrollTo({ top: offset, behavior: 'smooth' });

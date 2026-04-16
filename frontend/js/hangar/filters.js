@@ -276,6 +276,7 @@
   VH.hangar.filters = {
     populateFilterOptions, applyFiltersAndRender, updateActiveFilters,
     saveFiltersToSession, readStateFromUrl, restoreFiltersFromSession,
+    writeStateToUrl,
     setupDropdowns, setupSearchAndSort, closeAllDropdowns,
     removeFilter, clearAllFilters,
   };

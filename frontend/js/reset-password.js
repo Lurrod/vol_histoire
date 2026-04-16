@@ -104,10 +104,10 @@
 
       if (res.ok) {
         document.getElementById('rp-form-section').innerHTML =
-          '<div style="text-align:center;padding:1rem 0">' +
-          '<i class="fas fa-check-circle" style="font-size:2.5rem;color:#34d964;display:block;margin-bottom:1rem"></i>' +
-          '<h2 style="color:#fff;margin:0 0 0.5rem">Mot de passe modifié !</h2>' +
-          '<p style="color:rgba(255,255,255,0.45);margin:0 0 1.5rem">Redirection vers la connexion...</p>' +
+          '<div class="rp-success">' +
+          '<i class="fas fa-check-circle rp-success-icon"></i>' +
+          '<h2>Mot de passe modifié !</h2>' +
+          '<p>Redirection vers la connexion...</p>' +
           '</div>';
         setTimeout(() => { window.location.href = '/login'; }, 2000);
       } else {

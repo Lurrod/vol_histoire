@@ -226,8 +226,6 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; }
 /* ======================================================================
    RESPONSIVE
    ====================================================================== */
-@media (min-width: 90em) { .page-settings .container { max-width: 75em; } }
-
 /* ── laptop (≤ 64em) ──────────────────────────────────────────────── */
 @media (max-width: 64em) {
   .page-settings .container { padding: 0 2rem; }
@@ -441,3 +439,10 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; }
 }
 
 
+
+/* Messages vides / erreur du panneau admin (injectés via JS, CSP-safe) */
+.page-settings .admin-empty-msg {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}

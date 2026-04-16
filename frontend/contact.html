@@ -45,42 +45,10 @@
   <link rel="preload" href="fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/core.min.css">
-  <style>
-    .contact-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-    .contact-card { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; padding: 1.5rem; background: rgba(200,169,110,0.04); border: 1px solid rgba(200,169,110,0.1); border-radius: 12px; transition: border-color 0.2s; }
-    .contact-card:hover { border-color: rgba(200,169,110,0.3); }
-    .contact-card-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(200,169,110,0.08); border-radius: 10px; color: var(--hud-cyan); font-size: 1.3rem; }
-    .contact-card h3 { font-size: 1rem; font-weight: 600; color: var(--white); margin: 0; }
-    .contact-card p { font-size: 0.875rem; color: rgba(255,255,255,0.45); margin: 0; line-height: 1.5; }
-    .contact-card a { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--hud-cyan); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
-    .contact-card a:hover { color: var(--white); }
-    .contact-form { margin-top: 3rem; }
-    .contact-form h2 { display: flex; align-items: center; gap: 0.75rem; font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem; }
-    .contact-form h2 i { color: var(--hud-cyan); }
-    .contact-form > p { color: rgba(255,255,255,0.45); margin-bottom: 2rem; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
-    .form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
-    .form-group label { font-size: 0.875rem; font-weight: 500; color: rgba(255,255,255,0.7); }
-    .form-group input, .form-group select, .form-group textarea { background: rgba(255,255,255,0.04); border: 1px solid rgba(200,169,110,0.12); border-radius: 8px; padding: 0.75rem 1rem; color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; transition: border-color 0.2s; outline: none; }
-    .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: rgba(200,169,110,0.4); }
-    .form-group select option { background: #0f1626; color: var(--white); }
-    .form-group textarea { resize: vertical; min-height: 140px; }
-    .form-submit-row { display: flex; align-items: center; gap: 1.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
-    .btn-send { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.8rem 2rem; background: var(--hud-cyan); color: var(--night); font-weight: 600; font-size: 0.9rem; border: none; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; font-family: 'DM Sans', sans-serif; }
-    .btn-send:hover { opacity: 0.85; }
-    .form-data-note { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: rgba(255,255,255,0.3); }
-    .form-data-note i { color: rgba(200,169,110,0.4); }
-    .form-success-msg { display: none; margin-top: 1.5rem; padding: 1rem 1.5rem; background: rgba(200,169,110,0.06); border-left: 3px solid rgba(200,169,110,0.4); border-radius: 8px; color: var(--hud-cyan); font-size: 0.9rem; }
-    .form-success-msg.visible { display: flex; align-items: center; gap: 0.75rem; }
-  </style>
+  <link rel="stylesheet" href="css/legal.min.css">
+  <link rel="stylesheet" href="css/contact.min.css">
 </head>
 <body class="page-legal">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KB3P52VK"
-height="0" width="0" class="gtm-noscript"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 <a href="#main-content" class="skip-link">Aller au contenu</a>
 
 
@@ -243,7 +211,7 @@ height="0" width="0" class="gtm-noscript"></iframe></noscript>
         <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p></div>
         <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="/contact" data-i18n="footer.contact">Contact</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" class="cookie-settings-link" data-i18n="footer.cookies">Cookies</a></li></ul></div>
       </div>
       <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2026 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
     </div>

@@ -190,12 +190,18 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
               generation.generation,
               generation.description AS generation_description, generation.description_en AS generation_description_en,
               type.name AS type_name, type.name_en AS type_name_en,
-              countries.name AS country_name, countries.name_en AS country_name_en
+              countries.name AS country_name, countries.name_en AS country_name_en,
+              predecessor.name AS predecessor_name, predecessor.name_en AS predecessor_name_en, predecessor.image_url AS predecessor_image,
+              successor.name AS successor_name, successor.name_en AS successor_name_en, successor.image_url AS successor_image,
+              rival.name AS rival_name, rival.name_en AS rival_name_en, rival.image_url AS rival_image
        FROM airplanes
        LEFT JOIN manufacturer ON airplanes.id_manufacturer = manufacturer.id
        LEFT JOIN generation ON airplanes.id_generation = generation.id
        LEFT JOIN type ON airplanes.type = type.id
        LEFT JOIN countries ON airplanes.country_id = countries.id
+       LEFT JOIN airplanes predecessor ON airplanes.predecessor_id = predecessor.id
+       LEFT JOIN airplanes successor ON airplanes.successor_id = successor.id
+       LEFT JOIN airplanes rival ON airplanes.rival_id = rival.id
        WHERE airplanes.id = $1`,
       [id]
     );
@@ -206,8 +212,11 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       result.rows[0],
       req.lang,
       ['name', 'complete_name', 'little_description', 'description', 'status',
-       'manufacturer_name', 'type_name', 'country_name', 'generation_description'],
-      ['name', 'complete_name', 'manufacturer_name', 'country_name'] // noms propres
+       'manufacturer_name', 'type_name', 'country_name', 'generation_description',
+       'predecessor_name', 'successor_name', 'rival_name',
+       'variants', 'engine_type'],
+      ['name', 'complete_name', 'manufacturer_name', 'country_name',
+       'predecessor_name', 'successor_name', 'rival_name'] // noms propres
     );
     res.json(row);
   }));
@@ -430,9 +439,22 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     }
 
     const {
+      // Champs existants
       name, complete_name, little_description, image_url, description,
       country_id, date_concept, date_first_fly, date_operationel,
       max_speed, max_range, id_manufacturer, id_generation, type, status, weight,
+      // Strate 1 : fiche technique étendue
+      length: len, wingspan, height, wing_area, empty_weight, mtow,
+      service_ceiling, climb_rate, g_limit_pos, g_limit_neg, combat_radius, crew,
+      // Strate 2 : motorisation
+      engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
+      // Strate 3 : production
+      production_start, production_end, units_built, unit_cost_usd, unit_cost_year,
+      operators_count, variants, variants_en,
+      // Strate 4 : qualitatif
+      stealth_level, nickname, predecessor_id, successor_id, rival_id,
+      // Strate 6 : médias externes
+      wikipedia_fr, wikipedia_en, youtube_showcase, manufacturer_page,
     } = req.body;
 
     const clean = (v) => (v === '' || v === undefined) ? null : v;
@@ -442,18 +464,49 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       return res.status(400).json({ message: 'Référence invalide', errors: fkErrors });
     }
 
+    // Sanity : un avion ne peut pas se référencer lui-même comme predecessor/successor/rival
+    const selfRefIds = [predecessor_id, successor_id, rival_id]
+      .map(v => v == null || v === '' ? null : Number(v))
+      .filter(v => v != null && v === Number(id));
+    if (selfRefIds.length > 0) {
+      return res.status(400).json({ message: "Un avion ne peut pas se référencer lui-même (prédécesseur / successeur / rival)." });
+    }
+
     const result = await getPool().query(
       `UPDATE airplanes SET
         name = $1, complete_name = $2, little_description = $3, image_url = $4,
         description = $5, country_id = $6, date_concept = $7, date_first_fly = $8,
         date_operationel = $9, max_speed = $10, max_range = $11,
-        id_manufacturer = $12, id_generation = $13, type = $14, status = $15, weight = $16
-       WHERE id = $17 RETURNING *`,
+        id_manufacturer = $12, id_generation = $13, type = $14, status = $15, weight = $16,
+        length = $17, wingspan = $18, height = $19, wing_area = $20,
+        empty_weight = $21, mtow = $22, service_ceiling = $23, climb_rate = $24,
+        g_limit_pos = $25, g_limit_neg = $26, combat_radius = $27, crew = $28,
+        engine_name = $29, engine_count = $30, engine_type = $31, engine_type_en = $32,
+        thrust_dry = $33, thrust_wet = $34,
+        production_start = $35, production_end = $36, units_built = $37,
+        unit_cost_usd = $38, unit_cost_year = $39, operators_count = $40,
+        variants = $41, variants_en = $42,
+        stealth_level = $43, nickname = $44,
+        predecessor_id = $45, successor_id = $46, rival_id = $47,
+        wikipedia_fr = $48, wikipedia_en = $49, youtube_showcase = $50, manufacturer_page = $51
+       WHERE id = $52 RETURNING *`,
       [
         name.trim(), clean(complete_name), clean(little_description), clean(image_url),
         clean(description), clean(country_id), clean(date_concept), clean(date_first_fly),
         clean(date_operationel), clean(max_speed), clean(max_range), clean(id_manufacturer),
-        clean(id_generation), clean(type), clean(status), clean(weight), id,
+        clean(id_generation), clean(type), clean(status), clean(weight),
+        clean(len), clean(wingspan), clean(height), clean(wing_area),
+        clean(empty_weight), clean(mtow), clean(service_ceiling), clean(climb_rate),
+        clean(g_limit_pos), clean(g_limit_neg), clean(combat_radius), clean(crew),
+        clean(engine_name), clean(engine_count), clean(engine_type), clean(engine_type_en),
+        clean(thrust_dry), clean(thrust_wet),
+        clean(production_start), clean(production_end), clean(units_built),
+        clean(unit_cost_usd), clean(unit_cost_year), clean(operators_count),
+        clean(variants), clean(variants_en),
+        clean(stealth_level), clean(nickname),
+        clean(predecessor_id), clean(successor_id), clean(rival_id),
+        clean(wikipedia_fr), clean(wikipedia_en), clean(youtube_showcase), clean(manufacturer_page),
+        id,
       ]
     );
 

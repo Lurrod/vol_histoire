@@ -59,17 +59,26 @@ app.use((req, res, next) => {
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  // Isolation cross-origin (protection Spectre, tabnabbing, xsleaks).
+  // same-origin sur COOP = isolation stricte de la fenêtre (empêche window.opener cross-origin).
+  // same-site sur CORP = permet les images postimg.cc et fonts externes tout en bloquant l'embed hostile.
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
     "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://browser.sentry-cdn.com https://hcaptcha.com https://*.hcaptcha.com",
-    // CSP L3 : nonce sur <style> (élément), 'unsafe-inline' toléré uniquement
-    // sur les attributs style="..." (vecteur XSS bien moins exploitable).
+    // CSP L3 : nonce sur <style>, pas d'inline style="" autorisé.
+    // Tous les styles dynamiques injectés via innerHTML passent par des
+    // classes CSS ou element.style.setProperty() post-insertion (non bloqués
+    // car c'est une API DOM, pas un attribut parsé).
     `style-src-elem 'self' 'nonce-${nonce}' ${styleHosts}`,
-    "style-src-attr 'unsafe-inline'",
+    "style-src-attr 'none'",
     // Fallback pour les vieux navigateurs qui ignorent style-src-elem/attr.
+    // 'unsafe-inline' reste ici car certaines pages (reset-password) ont
+    // encore des blocs <style> inline non nonce-és (à migrer).
     `style-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${styleHosts}`,
     "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-    "img-src 'self' https://i.postimg.cc https://flagcdn.com https://www.googletagmanager.com https://picsum.photos https://fastly.picsum.photos data:",
+    "img-src 'self' https://flagcdn.com https://www.googletagmanager.com https://picsum.photos https://fastly.picsum.photos data:",
     "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.ingest.sentry.io https://*.sentry.io https://hcaptcha.com https://*.hcaptcha.com",
     "frame-src https://hcaptcha.com https://*.hcaptcha.com",
     "media-src 'self'",
@@ -215,106 +224,12 @@ try {
       res.status(404).sendFile(path.join(__dirname, '../frontend/index.html'));
     });
   } else {
+    const swaggerThemeCss = fs.readFileSync(path.join(__dirname, 'assets/swagger-theme.css'), 'utf8');
     app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapiDoc, {
-    customCss: `
-      /* Fond global */
-      html, body, #swagger-ui, .swagger-ui { background: #0a0a0a !important; }
-      .swagger-ui .wrapper { background: #0a0a0a !important; }
-      .swagger-ui .topbar { display: none !important; }
-
-      /* Polices */
-      .swagger-ui, .swagger-ui .opblock-body, .swagger-ui .opblock-description-wrapper,
-      .swagger-ui table, .swagger-ui .btn { font-family: 'Space Grotesk', sans-serif !important; }
-      .swagger-ui .info .title, .swagger-ui .opblock-tag { font-family: 'Orbitron', sans-serif !important; }
-
-      /* Titres et texte */
-      .swagger-ui .info .title { color: #C8A96E !important; }
-      .swagger-ui .info .title small { background: #C8A96E !important; color: #0a0a0a !important; }
-      .swagger-ui .info .title small pre { color: #0a0a0a !important; }
-      .swagger-ui .info { margin: 30px 0 !important; }
-      .swagger-ui .info p, .swagger-ui .info a { color: #aaa !important; }
-      .swagger-ui p, .swagger-ui .markdown p, .swagger-ui .renderedMarkdown p { color: #aaa !important; }
-      .swagger-ui h4, .swagger-ui h5, .swagger-ui label { color: #ddd !important; }
-      .swagger-ui a { color: #C8A96E !important; }
-      .swagger-ui .opblock-tag { color: #C8A96E !important; border-bottom: 1px solid #1a1a1a !important; }
-      .swagger-ui .opblock-tag small { color: #888 !important; }
-
-      /* Scheme container */
-      .swagger-ui .scheme-container { background: #111 !important; border-bottom: 1px solid #222 !important; box-shadow: none !important; }
-
-      /* Blocs opérations */
-      .swagger-ui .opblock { border-color: #222 !important; background: #111 !important; box-shadow: none !important; }
-      .swagger-ui .opblock .opblock-summary { border-color: #222 !important; }
-      .swagger-ui .opblock .opblock-summary-description { color: #aaa !important; }
-      .swagger-ui .opblock .opblock-summary-path, .swagger-ui .opblock .opblock-summary-path span { color: #ddd !important; }
-      .swagger-ui .opblock.opblock-get { background: rgba(26,58,92,0.15) !important; border-color: #1a3a5c !important; }
-      .swagger-ui .opblock.opblock-get .opblock-summary { border-color: #1a3a5c !important; background: rgba(26,58,92,0.25) !important; }
-      .swagger-ui .opblock.opblock-post { background: rgba(26,92,58,0.15) !important; border-color: #1a5c3a !important; }
-      .swagger-ui .opblock.opblock-post .opblock-summary { border-color: #1a5c3a !important; background: rgba(26,92,58,0.25) !important; }
-      .swagger-ui .opblock.opblock-put { background: rgba(92,74,26,0.15) !important; border-color: #5c4a1a !important; }
-      .swagger-ui .opblock.opblock-put .opblock-summary { border-color: #5c4a1a !important; background: rgba(92,74,26,0.25) !important; }
-      .swagger-ui .opblock.opblock-delete { background: rgba(92,26,26,0.15) !important; border-color: #5c1a1a !important; }
-      .swagger-ui .opblock.opblock-delete .opblock-summary { border-color: #5c1a1a !important; background: rgba(92,26,26,0.25) !important; }
-      .swagger-ui .opblock-body { background: #0d0d0d !important; }
-      .swagger-ui .opblock-body pre { background: #111 !important; color: #ccc !important; }
-      .swagger-ui .opblock-description-wrapper p { color: #aaa !important; }
-
-      /* Boutons */
-      .swagger-ui .btn { border-color: #C8A96E !important; color: #C8A96E !important; background: transparent !important; }
-      .swagger-ui .btn:hover { background: rgba(200,169,110,0.1) !important; }
-      .swagger-ui .btn.execute { background: #C8A96E !important; color: #0a0a0a !important; border-color: #C8A96E !important; }
-      .swagger-ui .btn.cancel { background: transparent !important; }
-
-      /* Inputs */
-      .swagger-ui select { background: #1a1a1a !important; color: #e0e0e0 !important; border-color: #333 !important; }
-      .swagger-ui input[type=text], .swagger-ui input[type=password], .swagger-ui input[type=search],
-      .swagger-ui input[type=email], .swagger-ui input[type=file] { background: #1a1a1a !important; color: #e0e0e0 !important; border-color: #333 !important; }
-      .swagger-ui textarea { background: #1a1a1a !important; color: #e0e0e0 !important; border-color: #333 !important; }
-
-      /* Tables */
-      .swagger-ui table { background: transparent !important; }
-      .swagger-ui table thead tr th { color: #C8A96E !important; border-bottom: 1px solid #222 !important; background: transparent !important; }
-      .swagger-ui table tbody tr td { border-bottom: 1px solid #1a1a1a !important; color: #ccc !important; background: transparent !important; }
-      .swagger-ui .parameters-col_description input { background: #1a1a1a !important; color: #e0e0e0 !important; }
-
-      /* Paramètres */
-      .swagger-ui .parameter__name { color: #e0e0e0 !important; }
-      .swagger-ui .parameter__name.required::after { color: #e74c3c !important; }
-      .swagger-ui .parameter__type { color: #888 !important; }
-      .swagger-ui .parameter__in { color: #666 !important; }
-
-      /* Réponses */
-      .swagger-ui .response-col_status { color: #C8A96E !important; }
-      .swagger-ui .response-col_description { color: #ccc !important; }
-      .swagger-ui .responses-inner { background: #0d0d0d !important; }
-      .swagger-ui .responses-table { background: transparent !important; }
-      .swagger-ui .response { color: #ccc !important; }
-      .swagger-ui .microlight { background: #111 !important; color: #ccc !important; }
-      .swagger-ui .highlight-code { background: #111 !important; }
-      .swagger-ui .highlight-code .microlight { background: #111 !important; }
-      .swagger-ui .copy-to-clipboard { background: #222 !important; }
-
-      /* Modèles */
-      .swagger-ui section.models { border: 1px solid #222 !important; background: #0d0d0d !important; }
-      .swagger-ui section.models h4 { color: #C8A96E !important; border-bottom: 1px solid #222 !important; }
-      .swagger-ui .model-title { color: #C8A96E !important; }
-      .swagger-ui .model-box { background: #111 !important; }
-      .swagger-ui .model { color: #ccc !important; }
-      .swagger-ui .prop-type { color: #C8A96E !important; }
-      .swagger-ui .prop-format { color: #888 !important; }
-
-      /* Authorize */
-      .swagger-ui .auth-wrapper { background: #0d0d0d !important; }
-      .swagger-ui .dialog-ux .modal-ux { background: #111 !important; border: 1px solid #222 !important; }
-      .swagger-ui .dialog-ux .modal-ux-header { border-bottom: 1px solid #222 !important; }
-      .swagger-ui .dialog-ux .modal-ux-header h3 { color: #C8A96E !important; }
-      .swagger-ui .dialog-ux .modal-ux-content p { color: #ccc !important; }
-      .swagger-ui .dialog-ux .modal-ux-content h4 { color: #ddd !important; }
-      .swagger-ui .auth-btn-wrapper .btn-done { background: #C8A96E !important; color: #0a0a0a !important; }
-    `,
-    customSiteTitle: 'Vol d\'Histoire — API Docs',
-    customfavIcon: '/favicon.ico',
-  }));
+      customCss: swaggerThemeCss,
+      customSiteTitle: 'Vol d\'Histoire — API Docs',
+      customfavIcon: '/favicon.ico',
+    }));
   }
 } catch { /* openapi.yaml absent (tests) — Swagger désactivé */ }
 

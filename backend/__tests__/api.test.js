@@ -1016,7 +1016,7 @@ describe('GET /details/:slug — server-rendered meta', () => {
     expect([200, 404]).toContain(res.status);
   });
 
-  test('200 — supporte aussi /details?id=X', async () => {
+  test('301 — /details?id=X redirige vers /details/<slug>-X (canonicalisation SEO)', async () => {
     mockPool.query.mockResolvedValueOnce({
       rows: [{
         id: 5,
@@ -1032,9 +1032,39 @@ describe('GET /details/:slug — server-rendered meta', () => {
     });
 
     const res = await request(app).get('/details?id=5');
-    expect(res.status).toBe(200);
-    expect(res.text).toContain('<title>Mirage 2000');
-    expect(res.text).toContain('https://example.com/mirage.jpg');
+    expect(res.status).toBe(301);
+    expect(res.headers.location).toBe('/details/mirage-2000-5');
+  });
+
+  test('301 — préserve les query params (ex: ?lang=en) lors du redirect', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 7,
+        name: 'Rafale',
+        complete_name: 'Dassault Rafale',
+        country_name: 'France',
+        generation: 4,
+      }],
+    });
+
+    const res = await request(app).get('/details?id=7&lang=en');
+    expect(res.status).toBe(301);
+    expect(res.headers.location).toBe('/details/rafale-7?lang=en');
+  });
+
+  test('301 — /details/<mauvais-slug>-X redirige vers le slug canonique', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 12,
+        name: 'F-16 Fighting Falcon',
+        country_name: 'États-Unis',
+        generation: 4,
+      }],
+    });
+
+    const res = await request(app).get('/details/ancien-nom-12');
+    expect(res.status).toBe(301);
+    expect(res.headers.location).toBe('/details/f-16-fighting-falcon-12');
   });
 });
 
@@ -1884,8 +1914,10 @@ describe('En-tête Content-Security-Policy', () => {
     const elemDir = csp1.match(/style-src-elem[^;]*/)[0];
     expect(elemDir).not.toContain("'unsafe-inline'");
 
-    // style-src-attr tolère encore 'unsafe-inline' (style="..." legacy)
-    expect(csp1).toContain("style-src-attr 'unsafe-inline'");
+    // style-src-attr 'none' : aucun attribut style="" toléré.
+    // Toutes les valeurs dynamiques passent par element.style.setProperty().
+    expect(csp1).toContain("style-src-attr 'none'");
+    expect(csp1).not.toContain("style-src-attr 'unsafe-inline'");
   });
 });
 

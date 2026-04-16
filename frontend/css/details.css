@@ -1,6 +1,11 @@
 /* ======================================================================
    VOL D'HISTOIRE — DETAILS PAGE
    ====================================================================== */
+
+/* Radar SVG injecté via innerHTML — classes au lieu de style= inline (CSP) */
+.radar-svg { width: 100%; height: auto; overflow: visible; }
+.radar-polygon { transition: all 0.5s ease; }
+
 /* Variables, reset, body et container fournis par tokens.css + base.css */
 
 /* header/nav/footer/toast/lang → shared.css */
@@ -254,17 +259,77 @@ body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
 
 /* Feature Grid (Armament & Tech) */
 .page-details .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.75rem; }
-.page-details .feature-card { background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 12px; border-left: 3px solid rgba(255,255,255,0.15); transition: var(--transition); border-top: 1px solid rgba(255,255,255,0.06); border-right: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); }
-.page-details .feature-card:hover { transform: translateX(4px); border-left-color: var(--hud-cyan); background: rgba(255,255,255,0.04); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
-.page-details .feature-card h4 { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; font-size: 1.05rem; }
-.page-details .feature-card p { color: rgba(255,255,255,0.45); line-height: 1.6; }
+.page-details .feature-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 3px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: transform 0.25s ease, border-color 0.25s ease,
+              background-color 0.25s ease, box-shadow 0.25s ease;
+}
+.page-details .feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(200, 169, 110, 0.08), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.page-details .feature-card:hover {
+  transform: translateX(6px);
+  border-left-color: var(--hud-cyan);
+  border-top-color: rgba(200, 169, 110, 0.18);
+  border-right-color: rgba(200, 169, 110, 0.18);
+  border-bottom-color: rgba(200, 169, 110, 0.18);
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(200, 169, 110, 0.06);
+}
+.page-details .feature-card:hover::before { opacity: 1; }
+.page-details .feature-card h4 { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; font-size: 1.05rem; transition: color 0.25s ease; }
+.page-details .feature-card:hover h4 { color: var(--hud-cyan); }
+.page-details .feature-card p { color: rgba(255, 255, 255, 0.45); line-height: 1.6; position: relative; z-index: 1; }
 
 /* Mission Grid */
 .page-details .mission-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.75rem; }
-.page-details .mission-card { background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 12px; text-align: center; transition: var(--transition); border: 1px solid rgba(255,255,255,0.06); }
-.page-details .mission-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.12); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+.page-details .mission-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: transform 0.25s ease, border-color 0.25s ease,
+              background-color 0.25s ease, box-shadow 0.25s ease;
+}
+.page-details .mission-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--hud-cyan), transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.35s ease;
+}
+.page-details .mission-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(200, 169, 110, 0.25);
+  background: rgba(200, 169, 110, 0.03);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3);
+}
+.page-details .mission-card:hover::after { transform: scaleX(1); }
 .page-details .mission-icon { width: 56px; height: 56px; background: rgba(255,171,0,0.1); border: 1px solid rgba(255,171,0,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.5rem; color: var(--hud-amber); }
-.page-details .mission-card h4 { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; font-size: 1rem; }
+.page-details .mission-card h4 { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; font-size: 1rem; transition: color 0.25s ease; }
+.page-details .mission-card:hover h4 { color: var(--hud-cyan); }
 .page-details .mission-card p { color: rgba(255,255,255,0.45); font-size: 0.95rem; }
 
 /* Wars Timeline */
@@ -637,6 +702,254 @@ body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
     padding-top: 0.3cm;
     border-top: 1px solid #ddd !important;
   }
+
+  /* ============================================================
+     SECTIONS ENRICHIES (strates 1-6) — adaptation impression
+     ============================================================ */
+
+  /* Fiche technique + production : tuiles compactes, 4 colonnes */
+  .page-details .specs-grid,
+  .page-details .production-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 0.25cm !important;
+  }
+  .page-details .spec-tile {
+    border: 1px solid #ddd !important;
+    background: #fafafa !important;
+    padding: 0.25cm !important;
+    page-break-inside: avoid;
+  }
+  .page-details .spec-tile > i { color: #444 !important; font-size: 10pt; margin-bottom: 0.1cm; }
+  .page-details .spec-label { color: #666 !important; font-size: 7pt; }
+  .page-details .spec-value { color: #000 !important; font-size: 10pt; }
+
+  /* Variantes (bloc markdown) */
+  .page-details .variants-block {
+    background: #fafafa !important;
+    border: 1px solid #ddd !important;
+    padding: 0.3cm !important;
+    margin-top: 0.3cm !important;
+    page-break-inside: avoid;
+  }
+  .page-details .variants-block h3 { color: #333 !important; font-size: 10pt; }
+  .page-details .variants-content p,
+  .page-details .variants-content li { color: #333 !important; }
+
+  /* Appareils liés : 3 colonnes, sans image (économie d'encre) */
+  .page-details .related-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.3cm !important;
+  }
+  .page-details .related-card {
+    background: #fafafa !important;
+    border: 1px solid #ddd !important;
+    padding: 0.3cm !important;
+    page-break-inside: avoid;
+  }
+  .page-details .related-img { display: none !important; }   /* image retirée en print */
+  .page-details .related-relation { color: #666 !important; font-size: 8pt; }
+  .page-details .related-card h4 { color: #000 !important; font-size: 10pt; }
+  .page-details .related-arrow { display: none !important; }
+
+  /* Description markdown : hiérarchie noir/gris lisible */
+  .page-details .markdown-body h3.md-section {
+    color: #111 !important;
+    font-size: 12pt;
+    margin: 0.5cm 0 0.2cm;
+    border-bottom: 1px solid #ddd !important;
+    padding-bottom: 0.1cm;
+    page-break-after: avoid;
+  }
+  .page-details .markdown-body h4.md-subsection { color: #333 !important; font-size: 10.5pt; }
+  .page-details .markdown-body p,
+  .page-details .markdown-body li { color: #333 !important; }
+  .page-details .markdown-body a { color: #444 !important; text-decoration: underline; }
+  .page-details .markdown-body strong { color: #000 !important; }
+
+  /* Sources externes : liste compacte */
+  .page-details .sources-list { gap: 0.2cm !important; }
+  .page-details .source-link {
+    background: #fafafa !important;
+    border: 1px solid #ddd !important;
+    color: #333 !important;
+    font-size: 9pt;
+  }
+  .page-details .source-link .source-arrow { display: none !important; }
 }
+/* ============================================================
+   ENRICHISSEMENT (strates 1–6) : fiche technique, production,
+   appareils liés, sources externes.
+   ============================================================ */
+
+/* Grilles de tuiles spec */
+.page-details .specs-grid,
+.page-details .production-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.page-details .spec-tile {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 1.1rem 1rem;
+  text-align: center;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.page-details .spec-tile:hover {
+  border-color: rgba(200, 169, 110, 0.2);
+  background: rgba(200, 169, 110, 0.03);
+}
+.page-details .spec-tile > i {
+  color: var(--hud-cyan);
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+.page-details .spec-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.38);
+  margin-bottom: 0.35rem;
+}
+.page-details .spec-value {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  color: var(--white);
+  font-size: 1rem;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+/* Variantes (markdown libre) */
+.page-details .variants-block {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+.page-details .variants-block h3 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 0.75rem;
+}
+.page-details .variants-content p { color: rgba(255, 255, 255, 0.55); line-height: 1.7; }
+.page-details .variants-content ul { color: rgba(255, 255, 255, 0.55); padding-left: 1.5rem; }
+
+/* Appareils liés (predecessor / successor / rival) */
+.page-details .related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+}
+.page-details .related-card {
+  position: relative;
+  display: block;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+.page-details .related-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(200, 169, 110, 0.3);
+  background: rgba(200, 169, 110, 0.04);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.3);
+}
+.page-details .related-relation {
+  display: inline-block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--hud-cyan);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+.page-details .related-img {
+  width: 100%;
+  height: 110px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.3);
+  margin-bottom: 0.75rem;
+}
+.page-details .related-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.page-details .related-card:hover .related-img img { transform: scale(1.05); }
+.page-details .related-card h4 {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+  font-size: 1rem;
+}
+.page-details .related-arrow {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+.page-details .related-card:hover .related-arrow {
+  color: var(--hud-cyan);
+  transform: translateX(4px);
+}
+
+/* Liens externes ("Pour aller plus loin") */
+.page-details .sources-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.page-details .source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.7rem 1.1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.page-details .source-link:hover {
+  border-color: rgba(200, 169, 110, 0.3);
+  color: var(--hud-cyan);
+  background: rgba(200, 169, 110, 0.04);
+}
+.page-details .source-link .source-arrow { font-size: 0.75rem; opacity: 0.6; }
+
+/* Description markdown (strate 5) */
+.page-details .markdown-body h3.md-section {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--hud-cyan);
+  margin: 1.75rem 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+.page-details .markdown-body h4.md-subsection {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--white);
+  margin: 1.25rem 0 0.5rem;
+}
+.page-details .markdown-body p { color: rgba(255, 255, 255, 0.55); line-height: 1.8; margin-bottom: 1rem; }
+.page-details .markdown-body ul { color: rgba(255, 255, 255, 0.55); padding-left: 1.5rem; margin-bottom: 1rem; }
+.page-details .markdown-body ul li { margin-bottom: 0.35rem; line-height: 1.7; }
+.page-details .markdown-body a { color: var(--hud-cyan); text-decoration: underline; text-underline-offset: 3px; }
+.page-details .markdown-body strong { color: var(--white); font-weight: 700; }
+
 /* lang-switch → shared.css */
 

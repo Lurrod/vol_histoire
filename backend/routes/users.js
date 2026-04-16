@@ -64,7 +64,7 @@ module.exports = function createUsersRouter(getPool) {
 
     let hashedPassword;
     if (password) {
-      hashedPassword = await bcrypt.hash(password, 10);
+      hashedPassword = await bcrypt.hash(password, 12);
     }
 
     const ALLOWED_FIELDS = { name: 'name', email: 'email', password: 'password' };
@@ -136,10 +136,29 @@ module.exports = function createUsersRouter(getPool) {
 
     try {
       values.push(id);
-      const result = await getPool().query(
-        `UPDATE users SET ${fields.join(', ')} WHERE id = $${i} RETURNING id, name, email, role_id`,
-        values
-      );
+      const query = `UPDATE users SET ${fields.join(', ')} WHERE id = $${i} RETURNING id, name, email, role_id`;
+
+      // Un changement d'email ou de role par un admin doit invalider les
+      // sessions en cours : l'identité ou le scope d'autorisation change,
+      // les JWT/refresh tokens existants ne doivent plus être utilisables.
+      const revokeSessions = email !== undefined || role_id !== undefined;
+
+      let result;
+      if (revokeSessions) {
+        result = await withTransaction(getPool(), async (client) => {
+          const upd = await client.query(query, values);
+          if (upd.rows.length > 0) {
+            await client.query(
+              'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
+              [id]
+            );
+          }
+          return upd;
+        });
+      } else {
+        result = await getPool().query(query, values);
+      }
+
       if (result.rows.length === 0) {
         return res.status(404).json({ message: 'Utilisateur non trouvé' });
       }

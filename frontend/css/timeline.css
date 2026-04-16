@@ -728,3 +728,10 @@ body.page-timeline.tl-has-cinematic::before {
   .page-timeline .tl-plane-img img { transition: none; }
   .page-timeline .tl-progress { transition: none; }
 }
+
+/* Message "aucun avion" (timeline vide) — classe CSS, plus d'inline style */
+.page-timeline .tl-empty-msg {
+  text-align: center;
+  padding: 6rem;
+  color: var(--text-secondary);
+}

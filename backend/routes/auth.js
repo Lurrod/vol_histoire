@@ -44,7 +44,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
     // Anti-énumération : même réponse et même délai que l'email n'existe ou non.
     // Le bcrypt.hash ci-dessous garantit un temps de réponse constant.
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     if (userExists.rows.length > 0) {
       return res.status(201).json({ message: 'Compte créé. Vérifiez votre boîte email pour activer votre compte.' });
@@ -91,6 +91,12 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     }
   }));
 
+  // Lockout par compte — défense contre credential-stuffing distribué
+  // (rate-limit IP insuffisant si botnet). Constantes volontairement
+  // conservatrices : un user qui oublie son mdp a 10 essais avant blocage.
+  const LOCKOUT_MAX_ATTEMPTS = 10;
+  const LOCKOUT_DURATION_MIN = 15;
+
   router.post('/login', loginLimiter, asyncHandler(async (req, res) => {
     const { password } = req.body;
     const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : req.body.email;
@@ -103,7 +109,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     }
 
     const user = await getPool().query(
-      'SELECT id, name, email, password, role_id, email_verified FROM users WHERE email = $1',
+      'SELECT id, name, email, password, role_id, email_verified, failed_login_count, locked_until FROM users WHERE email = $1',
       [email]
     );
 
@@ -113,11 +119,38 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     const storedHash = user.rows.length > 0 ? user.rows[0].password : DUMMY_HASH;
     const validPassword = await bcrypt.compare(password, storedHash);
 
-    if (user.rows.length === 0 || !validPassword) {
+    const userData = user.rows[0];
+
+    // Compte verrouillé : message générique pour ne pas leaker l'existence
+    // d'un compte (user enumeration). Même status/message qu'un mdp incorrect
+    // côté client, mais on log le blocage côté serveur.
+    if (userData && userData.locked_until && new Date(userData.locked_until) > new Date()) {
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-    const userData = user.rows[0];
+    if (user.rows.length === 0 || !validPassword) {
+      // Incrément du compteur d'échecs si le compte existe.
+      // Si seuil atteint : verrouillage du compte pour LOCKOUT_DURATION_MIN minutes.
+      // On ne révèle pas au client qu'un compte existe : 400 générique dans tous les cas.
+      if (userData) {
+        const newCount = userData.failed_login_count + 1;
+        if (newCount >= LOCKOUT_MAX_ATTEMPTS) {
+          await getPool().query(
+            `UPDATE users
+             SET failed_login_count = $1,
+                 locked_until = NOW() + ($2 || ' minutes')::interval
+             WHERE id = $3`,
+            [newCount, String(LOCKOUT_DURATION_MIN), userData.id]
+          );
+        } else {
+          await getPool().query(
+            'UPDATE users SET failed_login_count = $1 WHERE id = $2',
+            [newCount, userData.id]
+          );
+        }
+      }
+      return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
+    }
 
     // Bloquer la connexion si l'email n'est pas vérifié
     if (!userData.email_verified) {
@@ -126,6 +159,15 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
         code: 'EMAIL_NOT_VERIFIED',
       });
     }
+
+    // Login réussi : reset compteur + lockout
+    if (userData.failed_login_count > 0 || userData.locked_until) {
+      await getPool().query(
+        'UPDATE users SET failed_login_count = 0, locked_until = NULL WHERE id = $1',
+        [userData.id]
+      );
+    }
+
     const accessToken = generateAccessToken(userData);
     const { token: refreshToken, jti } = generateRefreshToken(userData);
 
@@ -363,7 +405,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     }
 
     const { id: tokenId, user_id: userId } = result.rows[0];
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     // Transaction : changer le mot de passe + invalider le token + révoquer les sessions
     await withTransaction(getPool(), async (client) => {

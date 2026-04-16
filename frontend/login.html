@@ -32,10 +32,6 @@
   <link rel="stylesheet" href="css/login.min.css">
   </head>
 <body class="page-login">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KB3P52VK"
-height="0" width="0" class="gtm-noscript"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 <a href="#main-content" class="skip-link">Aller au contenu</a>
 
   <!-- Header -->
@@ -156,9 +152,24 @@ height="0" width="0" class="gtm-noscript"></iframe></noscript>
       <div class="form-panel-inner">
 
         <div class="form-container">
-          
+
+          <!-- Tablist (ARIA) -->
+          <div class="form-tabs" role="tablist" aria-label="Modes d'accès">
+            <button type="button" role="tab" id="tab-login" class="form-tab active"
+                    aria-controls="login-slide" aria-selected="true">
+              <i class="fas fa-fingerprint" aria-hidden="true"></i>
+              <span data-i18n="login.login_title">Identification</span>
+            </button>
+            <button type="button" role="tab" id="tab-register" class="form-tab"
+                    aria-controls="register-slide" aria-selected="false" tabindex="-1">
+              <i class="fas fa-user-plus" aria-hidden="true"></i>
+              <span data-i18n="login.register_title">Enregistrement</span>
+            </button>
+          </div>
+
           <!-- Login -->
-          <div class="form-slide form-login active" id="login-slide" aria-hidden="false">
+          <div class="form-slide form-login active" id="login-slide"
+               role="tabpanel" aria-labelledby="tab-login" aria-hidden="false" tabindex="0">
             <div class="form-header">
               <div class="form-icon"><i class="fas fa-fingerprint"></i></div>
               <h1 data-i18n="login.login_title">Identification</h1>
@@ -211,7 +222,8 @@ height="0" width="0" class="gtm-noscript"></iframe></noscript>
           </div>
 
           <!-- Register -->
-          <div class="form-slide form-register" id="register-slide" aria-hidden="true">
+          <div class="form-slide form-register" id="register-slide"
+               role="tabpanel" aria-labelledby="tab-register" aria-hidden="true" tabindex="0">
             <div class="form-header">
               <div class="form-icon"><i class="fas fa-user-plus"></i></div>
               <h2 data-i18n="login.register_title">Enregistrement</h2>
@@ -256,7 +268,7 @@ height="0" width="0" class="gtm-noscript"></iframe></noscript>
                 <label class="checkbox-wrapper">
                   <input type="checkbox" id="accept-terms" required>
                   <span class="custom-check"><i class="fas fa-check"></i></span>
-                  <span class="checkbox-label">J'accepte les <a href="/cgu" data-i18n="login.terms_link_text">conditions d'utilisation</a></span>
+                  <span class="checkbox-label"><span data-i18n="login.accept_terms">J'accepte les</span> <a href="/cgu" data-i18n="login.terms_link_text">conditions d'utilisation</a></span>
                 </label>
               </div>
               <button type="submit" class="btn-submit">
@@ -275,12 +287,6 @@ height="0" width="0" class="gtm-noscript"></iframe></noscript>
           </div>
         </div>
 
-        <!-- Security -->
-        <div class="security-info">
-          <div class="security-item"><i class="fas fa-shield-alt"></i><span data-i18n="login.security_secure">Connexion sécurisée</span></div>
-          <div class="security-item"><i class="fas fa-lock"></i><span data-i18n="login.security_encrypted">Chiffrement</span></div>
-          <div class="security-item"><i class="fas fa-user-shield"></i><span data-i18n="login.security_gdpr">RGPD</span></div>
-        </div>
       </div>
     </div>
   </section>
@@ -293,7 +299,7 @@ height="0" width="0" class="gtm-noscript"></iframe></noscript>
         <div class="footer-section"><div class="footer-logo"><i class="fas fa-jet-fighter"></i><span>Vol d'Histoire</span></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p></div>
         <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="/contact" data-i18n="footer.contact">Contact</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" data-i18n="footer.cookies">Cookies</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" class="cookie-settings-link" data-i18n="footer.cookies">Cookies</a></li></ul></div>
       </div>
       <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2026 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
     </div>

@@ -1,6 +1,7 @@
 'use strict';
 const { Router } = require('express');
 const { isValidEmail, isValidString } = require('../validators');
+const verifyHcaptcha = require('../middleware/hcaptcha');
 const logger = require('../logger');
 
 const VALID_SUBJECTS = ['general', 'bug', 'contrib', 'partner', 'other'];
@@ -9,7 +10,7 @@ const CONTACT_TO = process.env.CONTACT_EMAIL || process.env.MAIL_USER || 'vdh@ti
 function createContactRouter(getPool, { contactLimiter, mailer }) {
   const router = Router();
 
-  router.post('/contact', contactLimiter, async (req, res) => {
+  router.post('/contact', contactLimiter, verifyHcaptcha, async (req, res) => {
     const { firstname, lastname, email, subject, message } = req.body;
 
     // Validation

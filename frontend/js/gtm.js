@@ -1,12 +1,15 @@
-// Google Tag Manager — lazy loader (déféré hors du critical path).
+// Google Tag Manager — chargement conditionné au consentement (conformité CNIL).
 //
-// Stratégie : on enregistre les consent defaults immédiatement (Google
-// recommande qu'ils soient posés AVANT gtm.js sinon le consent v2 ne marche pas)
-// mais on retarde le chargement de gtm.js externe au premier idle ou
-// première interaction utilisateur — selon le premier qui arrive.
+// 1. On enregistre immédiatement les Consent Defaults v2 sur 'denied' (requis
+//    par Google Consent Mode v2 AVANT tout appel à gtm.js).
+// 2. Le script externe https://www.googletagmanager.com/gtm.js N'EST PAS CHARGÉ
+//    automatiquement. Il ne se charge que si l'utilisateur a explicitement
+//    accordé le consentement 'analytics' via la bannière cookies (cookies.js
+//    appelle window.__loadGTM() dans applyConsent()).
 //
-// Gain : -100 à -300 ms de blocking sur le LCP (gtm.js depuis googletagmanager
-// fait ~70 Ko et déclenche plusieurs sous-requêtes).
+// Jurisprudence CNIL (délib. 2020-091 + décision 10/02/2022 sur Google
+// Analytics) : charger gtm.js transmet IP + URL à Google → doit avoir
+// consentement préalable, même en mode "cookieless ping".
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('consent', 'default', {
@@ -14,14 +17,17 @@ gtag('consent', 'default', {
   ad_user_data: 'denied',
   ad_personalization: 'denied',
   analytics_storage: 'denied',
+  functionality_storage: 'denied',
+  personalization_storage: 'denied',
+  security_storage: 'granted',
   wait_for_update: 500
 });
 
-(function () {
+// Exposé à cookies.js — idempotent, ne charge qu'une fois.
+window.__loadGTM = (function () {
   var GTM_ID = 'GTM-KB3P52VK';
   var loaded = false;
-
-  function loadGtm() {
+  return function loadGtm() {
     if (loaded) return;
     loaded = true;
     window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
@@ -30,26 +36,5 @@ gtag('consent', 'default', {
     j.async = true;
     j.src = 'https://www.googletagmanager.com/gtm.js?id=' + GTM_ID;
     f.parentNode.insertBefore(j, f);
-  }
-
-  // Premier déclencheur qui arrive : interaction utilisateur OU 4 secondes
-  // d'inactivité (= largement après le LCP et le paint initial).
-  var FIRST_INTERACTIONS = ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'];
-  function onFirstInteraction() {
-    FIRST_INTERACTIONS.forEach(function (ev) {
-      window.removeEventListener(ev, onFirstInteraction, { passive: true });
-    });
-    loadGtm();
-  }
-  FIRST_INTERACTIONS.forEach(function (ev) {
-    window.addEventListener(ev, onFirstInteraction, { passive: true, once: true });
-  });
-
-  // Fallback timer : si l'utilisateur ne touche à rien, on charge quand même
-  // après 4 secondes (laisse le temps au LCP, au TTI et aux animations d'init).
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(loadGtm, { timeout: 4000 });
-  } else {
-    setTimeout(loadGtm, 4000);
-  }
+  };
 })();

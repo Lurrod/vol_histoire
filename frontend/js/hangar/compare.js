@@ -140,11 +140,24 @@
       return v === target ? ' cmp-best' : '';
     }
 
-    // Barre de progression visuelle
+    // Barre de progression visuelle.
+    // data-* encodent les dimensions dynamiques ; elles sont converties en
+    // custom properties CSS via applyCompareCssVars() après insertion DOM
+    // (évite l'attribut style="..." bloqué par la CSP).
     function bar_html(value, max, color) {
       if (value == null || isNaN(value) || max == null || max === 0) return '';
       var pct = Math.min(Math.round((value / max) * 100), 100);
-      return '<div class="cmp-bar-track"><div class="cmp-bar-fill" style="width:' + pct + '%;background:' + (color || 'var(--hud-cyan)') + '"></div></div>';
+      return '<div class="cmp-bar-track"><div class="cmp-bar-fill" data-pct="' + pct + '" data-bg="' + escapeHtml(color || 'var(--hud-cyan)') + '"></div></div>';
+    }
+
+    function applyCompareCssVars(root) {
+      root.querySelectorAll('.cmp-bar-fill[data-pct]').forEach(function (el) {
+        el.style.width = el.dataset.pct + '%';
+        el.style.background = el.dataset.bg || 'var(--hud-cyan)';
+      });
+      root.querySelectorAll('[data-cmp-cols]').forEach(function (el) {
+        el.style.setProperty('--cmp-cols', el.dataset.cmpCols);
+      });
     }
 
     // ── Modale ───────────────────────────────────────────────────────
@@ -203,14 +216,14 @@
             var barStr = isNaN(v) ? '' : bar_html(v, max, cls ? 'var(--hud-cyan)' : 'rgba(255,255,255,0.12)');
             return '<div class="cmp-cell cmp-cell-perf' + cls + '">' + valStr + barStr + '</div>';
           }).join('');
-          return '<div class="cmp-row" style="--cmp-cols:' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
+          return '<div class="cmp-row" data-cmp-cols="' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
         }
 
         function textRow(label, fn) {
           var cells = items.map(function (a) {
             return '<div class="cmp-cell">' + fn(a) + '</div>';
           }).join('');
-          return '<div class="cmp-row" style="--cmp-cols:' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
+          return '<div class="cmp-row" data-cmp-cols="' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
         }
 
         function tagRow(label, key) {
@@ -222,7 +235,7 @@
             }).join('');
             return '<div class="cmp-cell cmp-cell-tags">' + tags + '</div>';
           }).join('');
-          return '<div class="cmp-row cmp-row-tags" style="--cmp-cols:' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
+          return '<div class="cmp-row cmp-row-tags" data-cmp-cols="' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
         }
 
         // ── Assemble ─────────────────────────────────────────────
@@ -266,8 +279,11 @@
               '<h2>' + escapeHtml(i18n.t('hangar.compare_title', 'Comparaison')) + ' \u2014 ' + n + ' ' + escapeHtml(n > 1 ? i18n.t('hangar.compare_aircraft_plural', 'appareils') : i18n.t('hangar.compare_aircraft_single', 'appareil')) + '</h2>' +
             '</div>' +
           '</div>' +
-          '<div class="cmp-cols" style="--cmp-cols:' + n + '">' + headers + '</div>' +
+          '<div class="cmp-cols" data-cmp-cols="' + n + '">' + headers + '</div>' +
           '<div class="cmp-body">' + classificationHtml + chronoHtml + perfHtml + armamentHtml + techHtml + '</div>';
+
+        // Applique width/background/--cmp-cols via DOM API après insertion (CSP-safe)
+        applyCompareCssVars(body);
 
         // Bind remove buttons
         body.querySelectorAll('.cmp-remove').forEach(function (btn) {

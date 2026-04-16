@@ -54,6 +54,7 @@ const BUNDLES = {
   ],
 
   'details.min.js': [
+    'details/markdown.js',
     'details/data.js',
     'details/render.js',
     'details/radar.js',
@@ -72,6 +73,7 @@ const BUNDLES = {
     'settings.js',
     'settings-admin.js',
     'settings-dashboard.js',
+    'settings-cookies.js',
   ],
 
   'timeline.min.js': [
@@ -83,6 +85,7 @@ const BUNDLES = {
   ],
 
   'contact.min.js': [
+    'captcha.js',
     'contact.js',
   ],
 };

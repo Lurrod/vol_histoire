@@ -12,8 +12,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     toast.setAttribute('role', 'status');
     toast.innerHTML = `
       <i class="fas fa-heart-broken" aria-hidden="true"></i>
-      <span style="flex:1">${escapeHtml(message)}</span>
-      <button class="toast-undo-btn" style="background:none;border:1px solid currentColor;border-radius:6px;padding:0.2rem 0.6rem;cursor:pointer;font-weight:700;color:inherit;font-size:0.85rem">${escapeHtml(i18n.t('favorites.undo'))}</button>
+      <span class="toast-msg">${escapeHtml(message)}</span>
+      <button class="toast-undo-btn">${escapeHtml(i18n.t('favorites.undo'))}</button>
     `;
 
     let undone = false;

@@ -1,15 +1,45 @@
-# .gitignore
-*.log
+# ─── Secrets & environnement ─────────────────────────────────
 *.env
+!*.env.example
+
+# ─── Node.js ─────────────────────────────────────────────────
 node_modules/
-.DS_Store
-CLAUDE.md
-.claude/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 backend/coverage/
-install.cmd
-.superpowers/
-docs/superpowers/
+coverage/
+
+# ─── Python (build-icons.py) ─────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+
+# ─── Tests E2E ───────────────────────────────────────────────
 e2e/test-results/
 e2e/playwright-report/
+e2e/.auth/
+
+# ─── OS ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Éditeurs / IDE ──────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ─── Outils agents / IA ──────────────────────────────────────
+CLAUDE.md
+.claude/
 .agents/
+.superpowers/
+docs/superpowers/
 skills-lock.json
+
+# ─── Installeurs locaux ──────────────────────────────────────
+install.cmd

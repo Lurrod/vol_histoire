@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const registerSlide = document.getElementById("register-slide");
   const loginPassword = document.getElementById('login-password');
   const registerPassword = document.getElementById('register-password');
+  // ARIA tablist controls (pattern WAI-ARIA APG)
+  const tabLogin = document.getElementById('tab-login');
+  const tabRegister = document.getElementById('tab-register');
 
   // Check required elements
   if (!loginForm || !registerForm || !switchToRegister || !switchToLogin) {
@@ -64,29 +67,77 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // animateNumber, setupPasswordToggle → utils.js
 
-  // ========== Form Switching (Slide) ==========
+  // ========== Form Switching (tabs ARIA + slide transition) ==========
   function setupFormSwitching() {
-    switchToRegister.addEventListener("click", (e) => {
+    // Boutons CTA dans le footer de chaque panneau — délèguent à la tab correspondante
+    switchToRegister?.addEventListener("click", (e) => {
       e.preventDefault();
-      showSlide(registerSlide, loginSlide);
-      resetForms();
+      activateTab(tabRegister, { focusInput: true });
+    });
+    switchToLogin?.addEventListener("click", (e) => {
+      e.preventDefault();
+      activateTab(tabLogin, { focusInput: true });
     });
 
-    switchToLogin.addEventListener("click", (e) => {
-      e.preventDefault();
-      showSlide(loginSlide, registerSlide);
-      resetForms();
-    });
+    // Clic sur les tabs de la tablist
+    tabLogin?.addEventListener('click', () => activateTab(tabLogin, { focusInput: true }));
+    tabRegister?.addEventListener('click', () => activateTab(tabRegister, { focusInput: true }));
+
+    // Navigation clavier dans la tablist (ArrowLeft/ArrowRight, Home/End).
+    // Activation automatique : la tab focalisée devient active immédiatement.
+    const tabs = [tabLogin, tabRegister].filter(Boolean);
+    tabs.forEach(tab => tab.addEventListener('keydown', (e) => onTabKeydown(e, tabs)));
   }
 
-  function showSlide(toShow, toHide) {
-    toHide.classList.remove('active');
-    toHide.setAttribute('aria-hidden', 'true');
-    toShow.classList.add('active');
-    toShow.setAttribute('aria-hidden', 'false');
-    // Met le focus sur le premier champ du slide visible (UX clavier/SR)
-    const firstInput = toShow.querySelector('input:not([type="hidden"])');
-    firstInput?.focus({ preventScroll: true });
+  function onTabKeydown(e, tabs) {
+    const idx = tabs.indexOf(e.currentTarget);
+    if (idx < 0) return;
+    let next = -1;
+    if (e.key === 'ArrowRight') next = (idx + 1) % tabs.length;
+    else if (e.key === 'ArrowLeft') next = (idx - 1 + tabs.length) % tabs.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = tabs.length - 1;
+    if (next < 0) return;
+    e.preventDefault();
+    tabs[next].focus();
+    activateTab(tabs[next], { focusInput: false });
+  }
+
+  function activateTab(tab, { focusInput } = { focusInput: false }) {
+    if (!tab) return;
+    const panelId = tab.getAttribute('aria-controls');
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+
+    // Désactive toutes les tabs du même tablist
+    const tabs = tab.parentElement.querySelectorAll('[role="tab"]');
+    tabs.forEach(t => {
+      t.setAttribute('aria-selected', 'false');
+      t.setAttribute('tabindex', '-1');
+      t.classList.remove('active');
+    });
+    tab.setAttribute('aria-selected', 'true');
+    tab.setAttribute('tabindex', '0');
+    tab.classList.add('active');
+
+    // Affiche le panneau correspondant (les autres sont masqués via CSS .active)
+    [loginSlide, registerSlide].forEach(p => {
+      if (!p) return;
+      if (p === panel) {
+        p.classList.add('active');
+        p.setAttribute('aria-hidden', 'false');
+      } else {
+        p.classList.remove('active');
+        p.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    resetForms();
+
+    if (focusInput) {
+      const firstInput = panel.querySelector('input:not([type="hidden"])');
+      firstInput?.focus({ preventScroll: true });
+    }
   }
 
   function resetForms() {
@@ -158,27 +209,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const notice = document.createElement('div');
     notice.id = 'email-not-verified-notice';
-    notice.style.cssText = [
-      'background:rgba(243,156,18,0.08)',
-      'border:1px solid rgba(243,156,18,0.25)',
-      'border-radius:10px',
-      'padding:1rem 1.25rem',
-      'margin-top:1rem',
-      'display:flex',
-      'align-items:flex-start',
-      'gap:0.75rem',
-    ].join(';');
+    notice.className = 'ev-notice';
 
     const escapedEmail = escapeHtml(email);
     notice.innerHTML = `
-      <i class="fas fa-envelope" style="color:#f39c12;margin-top:2px;flex-shrink:0"></i>
-      <div style="flex:1">
-        <p style="margin:0 0 0.4rem;font-weight:600;color:#f39c12;font-size:0.88rem;">${escapeHtml(i18n.t('login.email_not_verified_title'))}</p>
-        <p style="margin:0 0 0.75rem;color:rgba(255,255,255,0.5);font-size:0.82rem;line-height:1.5">
-          ${escapeHtml(i18n.t('login.email_not_verified_desc'))}
-        </p>
-        <button id="resend-verify-btn" style="background:rgba(243,156,18,0.12);border:1px solid rgba(243,156,18,0.3);border-radius:7px;padding:0.45rem 0.9rem;color:#f39c12;font-size:0.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s">
-          <i class="fas fa-redo" style="margin-right:0.3rem"></i>${escapeHtml(i18n.t('login.resend_email'))}
+      <i class="fas fa-envelope ev-notice-icon"></i>
+      <div class="ev-notice-body">
+        <p class="ev-notice-title">${escapeHtml(i18n.t('login.email_not_verified_title'))}</p>
+        <p class="ev-notice-desc">${escapeHtml(i18n.t('login.email_not_verified_desc'))}</p>
+        <button id="resend-verify-btn" class="ev-resend-btn">
+          <i class="fas fa-redo ev-btn-icon"></i>${escapeHtml(i18n.t('login.resend_email'))}
         </button>
       </div>
     `;
@@ -187,20 +227,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById('resend-verify-btn').addEventListener('click', async function() {
       this.disabled = true;
-      this.innerHTML = `<i class="fas fa-circle-notch fa-spin" style="margin-right:0.3rem"></i>${escapeHtml(i18n.t('login.resending'))}`;
+      this.innerHTML = `<i class="fas fa-circle-notch fa-spin ev-btn-icon"></i>${escapeHtml(i18n.t('login.resending'))}`;
       try {
         await auth.fetchWithTimeout('/api/auth/resend-verification', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: escapedEmail }),
         });
-        this.innerHTML = `<i class="fas fa-check" style="margin-right:0.3rem"></i>${escapeHtml(i18n.t('login.resent'))}`;
-        this.style.color = '#34d964';
-        this.style.borderColor = 'rgba(52,217,100,0.3)';
+        this.innerHTML = `<i class="fas fa-check ev-btn-icon"></i>${escapeHtml(i18n.t('login.resent'))}`;
+        this.classList.add('ev-resend-success');
         showToast(i18n.t('login.resent'), 'success');
       } catch {
         this.disabled = false;
-        this.innerHTML = `<i class="fas fa-redo" style="margin-right:0.3rem"></i>${escapeHtml(i18n.t('login.resend_email'))}`;
+        this.innerHTML = `<i class="fas fa-redo ev-btn-icon"></i>${escapeHtml(i18n.t('login.resend_email'))}`;
         showToast(i18n.t('login.server_error'), 'error');
       }
     });

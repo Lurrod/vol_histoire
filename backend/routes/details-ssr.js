@@ -94,8 +94,25 @@ module.exports = function createDetailsSsrRouter(getPool) {
       ? cleanDesc.slice(0, 157) + '…'
       : cleanDesc || `Découvrez les spécifications, l'armement et l'historique du ${name}.`;
 
-    // OG image : image de l'avion, fallback default
-    const ogImage = aircraft.image_url || DEFAULT_OG;
+    // OG image : image de l'avion, fallback default.
+    // - HTTP → HTTPS (crawlers sociaux stricts refusent HTTP).
+    // - Chemin relatif (/assets/airplanes/...) → préfixer SITE_URL
+    //   (les OG tags exigent une URL absolue).
+    const rawImage = aircraft.image_url || DEFAULT_OG;
+    let ogImage;
+    if (rawImage.startsWith('http://')) {
+      ogImage = rawImage.replace(/^http:\/\//, 'https://');
+    } else if (rawImage.startsWith('/')) {
+      ogImage = SITE_URL + rawImage;
+    } else {
+      ogImage = rawImage;
+    }
+
+    // Alt descriptif par fiche : "F-16 Fighting Falcon — chasseur 4e gen · États-Unis"
+    const altParts = [name];
+    if (generation) altParts.push(isEn ? `${generation}th gen fighter` : `chasseur ${generation}e gen`);
+    if (country) altParts.push(country);
+    const ogImageAlt = altParts.join(' — ');
 
     // URL canonique : /details/<slug>-<id>
     const slug = `${slugify(name)}-${aircraft.id}`;
@@ -220,8 +237,13 @@ module.exports = function createDetailsSsrRouter(getPool) {
       /<meta property="og:image" content="[^"]*">/,
       `<meta property="og:image" content="${escapeHtml(ogImage)}">`
     );
+    // og:image:alt → texte contextualisé (SEO + accessibilité partage social)
+    html = html.replace(
+      /<meta property="og:image:alt" content="[^"]*">/,
+      `<meta property="og:image:alt" content="${escapeHtml(ogImageAlt)}">`
+    );
 
-    // twitter:title / twitter:description / twitter:image
+    // twitter:title / twitter:description / twitter:image + alt
     html = html.replace(
       /<meta name="twitter:title" content="[^"]*">/,
       `<meta name="twitter:title" content="${escapeHtml(title)}">`
@@ -233,6 +255,10 @@ module.exports = function createDetailsSsrRouter(getPool) {
     html = html.replace(
       /<meta name="twitter:image" content="[^"]*">/,
       `<meta name="twitter:image" content="${escapeHtml(ogImage)}">`
+    );
+    html = html.replace(
+      /<meta name="twitter:image:alt" content="[^"]*">/,
+      `<meta name="twitter:image:alt" content="${escapeHtml(ogImageAlt)}">`
     );
 
     // Remplacer le bloc JSON-LD existant par notre Article + BreadcrumbList
@@ -267,16 +293,27 @@ module.exports = function createDetailsSsrRouter(getPool) {
     return result.rows[0] || null;
   }
 
+  // Construit la querystring canonique à préserver lors d'une 301
+  // (ex. ?lang=en doit survivre, ?id=X doit être retiré).
+  function buildExtraQuery(query) {
+    const extras = {};
+    for (const [k, v] of Object.entries(query || {})) {
+      if (k === 'id') continue;
+      extras[k] = v;
+    }
+    const qs = new URLSearchParams(extras).toString();
+    return qs ? `?${qs}` : '';
+  }
+
   async function handle(req, res, next) {
     try {
       // Extraction de l'id : depuis le slug d'URL ou ?id=
+      const slugParam = req.params && req.params.slug ? req.params.slug : null;
+      const queryIdRaw = req.query && req.query.id ? req.query.id : null;
+
       let id = null;
-      if (req.params && req.params.slug) {
-        id = idFromSlug(req.params.slug);
-      }
-      if (!id && req.query && req.query.id) {
-        id = Number(req.query.id);
-      }
+      if (slugParam) id = idFromSlug(slugParam);
+      if (!id && queryIdRaw) id = Number(queryIdRaw);
 
       // Pas d'id → laisser le HTML statique se charger (le JS gérera la redirection)
       if (!id || isNaN(id)) {
@@ -286,6 +323,17 @@ module.exports = function createDetailsSsrRouter(getPool) {
       const aircraft = await fetchAircraft(id);
       if (!aircraft) {
         return next(); // 404 standard
+      }
+
+      // Slug canonique basé sur le nom réel en base + id.
+      const canonicalSlug = `${slugify(aircraft.name)}-${aircraft.id}`;
+      const extraQs = buildExtraQuery(req.query);
+
+      // Cas 1 : URL legacy /details?id=X → 301 vers /details/<slug>-<id>
+      // Cas 2 : /details/<mauvais-slug>-X (slug ne correspond plus au nom actuel)
+      //         → 301 vers le slug canonique. Évite la double-indexation.
+      if (!slugParam || slugParam !== canonicalSlug) {
+        return res.redirect(301, `/details/${canonicalSlug}${extraQs}`);
       }
 
       const lang = req.lang || 'fr';

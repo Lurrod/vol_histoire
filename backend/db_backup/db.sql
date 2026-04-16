@@ -17,12 +17,15 @@ CREATE TABLE users (
     password TEXT NOT NULL,
     role_id INTEGER REFERENCES roles(id) ON DELETE SET NULL DEFAULT 3,
     email_verified BOOLEAN NOT NULL DEFAULT false,
+    failed_login_count INTEGER NOT NULL DEFAULT 0,
+    locked_until TIMESTAMPTZ NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- Index pour les recherches fréquentes par email (login, register, reset password)
 CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
+CREATE INDEX IF NOT EXISTS idx_users_locked_until ON users (locked_until) WHERE locked_until IS NOT NULL;
 
 CREATE TABLE IF NOT EXISTS refresh_tokens (
     id          SERIAL PRIMARY KEY,
@@ -122,9 +125,54 @@ CREATE TABLE airplanes (
     status VARCHAR(50),
     status_en VARCHAR(50),
     weight FLOAT,
+    -- Strate 1 : fiche technique étendue
+    length FLOAT,
+    wingspan FLOAT,
+    height FLOAT,
+    wing_area FLOAT,
+    empty_weight FLOAT,
+    mtow FLOAT,
+    service_ceiling INTEGER,
+    climb_rate FLOAT,
+    g_limit_pos FLOAT,
+    g_limit_neg FLOAT,
+    combat_radius FLOAT,
+    crew SMALLINT,
+    -- Strate 2 : motorisation
+    engine_name VARCHAR(255),
+    engine_count SMALLINT,
+    engine_type VARCHAR(100),
+    engine_type_en VARCHAR(100),
+    thrust_dry FLOAT,
+    thrust_wet FLOAT,
+    -- Strate 3 : production & service
+    production_start SMALLINT,
+    production_end SMALLINT,
+    units_built INTEGER,
+    unit_cost_usd BIGINT,
+    unit_cost_year SMALLINT,
+    operators_count SMALLINT,
+    variants TEXT,
+    variants_en TEXT,
+    -- Strate 4 : qualitatif + références croisées
+    stealth_level VARCHAR(20) CHECK (stealth_level IS NULL OR stealth_level IN ('aucune','reduite','moderee','elevee','tres_elevee')),
+    nickname VARCHAR(255),
+    predecessor_id INTEGER REFERENCES airplanes(id) ON DELETE SET NULL,
+    successor_id INTEGER REFERENCES airplanes(id) ON DELETE SET NULL,
+    rival_id INTEGER REFERENCES airplanes(id) ON DELETE SET NULL,
+    -- Strate 6 : médias externes
+    wikipedia_fr VARCHAR(500),
+    wikipedia_en VARCHAR(500),
+    youtube_showcase VARCHAR(500),
+    manufacturer_page VARCHAR(500),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+-- Index pour navigation prédécesseur/successeur/rival (strate 4)
+CREATE INDEX IF NOT EXISTS idx_airplanes_predecessor ON airplanes (predecessor_id) WHERE predecessor_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_airplanes_successor   ON airplanes (successor_id)   WHERE successor_id   IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_airplanes_rival       ON airplanes (rival_id)       WHERE rival_id       IS NOT NULL;
 
 -- Indexes pour les filtres et tris fréquents sur /api/airplanes
 CREATE INDEX IF NOT EXISTS idx_airplanes_country_id     ON airplanes (country_id);

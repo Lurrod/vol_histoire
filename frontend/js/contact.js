@@ -35,6 +35,11 @@ document.addEventListener('DOMContentLoaded', function () {
     submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>' + i18n.t('contact.form_sending') + '</span>';
 
     try {
+      // Token hCaptcha (invisible). Null si HCAPTCHA_SITEKEY non configuré
+      // côté backend → le middleware skippe aussi la vérification.
+      const captchaToken = window.getHcaptchaToken ? await window.getHcaptchaToken('contact') : null;
+      if (captchaToken) payload['h-captcha-response'] = captchaToken;
+
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

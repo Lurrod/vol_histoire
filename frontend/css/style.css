@@ -823,7 +823,6 @@
 
 /* ── desktop (> 90em) ─────────────────────────────────────────────── */
 @media (min-width: 90em) {
-  .page-home main .container { max-width: 75em; }
   .page-home .featured-grid { grid-template-columns: repeat(3, 1fr); }
 }
 

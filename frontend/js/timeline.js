@@ -71,8 +71,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   function splitWords(text) {
     return text.split(/(\s+)/).map((part, i) => {
       if (/^\s+$/.test(part)) return part;
-      return `<span class="tl-split-word" style="--i:${i}">${escapeHtml(part)}</span>`;
+      return `<span class="tl-split-word" data-i="${i}">${escapeHtml(part)}</span>`;
     }).join('');
+  }
+
+  // Applique les custom properties CSS (--i, --era-color, --era-bg) après
+  // insertion DOM pour éviter style="..." en attribut (interdit par CSP).
+  function applyTimelineCssVars(root) {
+    root.querySelectorAll('.tl-split-word[data-i]').forEach(el => {
+      el.style.setProperty('--i', el.dataset.i);
+    });
+    root.querySelectorAll('.tl-chapter[data-era-color]').forEach(el => {
+      el.style.setProperty('--era-color', el.dataset.eraColor);
+      if (el.dataset.eraBg) el.style.setProperty('--era-bg', `url('${el.dataset.eraBg}')`);
+    });
   }
 
   function renderChapters(chapters) {
@@ -84,9 +96,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Backdrop image: first aircraft with an image
       const backdropPlane = ch.items.find(a => a.image_url) || ch.items[0];
       const bgUrl = backdropPlane && backdropPlane.image_url ? backdropPlane.image_url : '';
-      const bgStyle = bgUrl ? `--era-bg:url('${escapeAttr(bgUrl)}');` : '';
+      const bgAttr = bgUrl ? ` data-era-bg="${escapeAttr(bgUrl)}"` : '';
       return `
-        <section class="tl-chapter" id="ch-${ch.decade}" data-decade="${ch.decade}" style="--era-color:${era.color};${bgStyle}">
+        <section class="tl-chapter" id="ch-${ch.decade}" data-decade="${ch.decade}" data-era-color="${escapeAttr(era.color)}"${bgAttr}>
           <div class="tl-chapter-backdrop" aria-hidden="true"></div>
           <div class="tl-chapter-inner">
             <aside class="tl-chapter-side">
@@ -114,6 +126,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         </section>
       `;
     }).join('');
+    // Applique les custom properties CSS via DOM API (non bloquées par CSP)
+    applyTimelineCssVars(root);
   }
 
   function escapeAttr(s) {
@@ -389,7 +403,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const aircraft = await loadAllAircraft();
     if (aircraft.length === 0) {
       document.getElementById('tl-chapters').innerHTML =
-        `<p style="text-align:center;padding:6rem;color:var(--text-secondary)">${i18n.t('timeline.no_aircraft')}</p>`;
+        `<p class="tl-empty-msg">${i18n.t('timeline.no_aircraft')}</p>`;
       document.getElementById('tl-loading').classList.add('gone');
       return;
     }

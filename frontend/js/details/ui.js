@@ -137,6 +137,9 @@
     });
   }
 
+  // ── Pagination PDF : table des matières automatique ───────────────
+  // Non utilisée actuellement mais réservée pour évolution future.
+
   VH.details.ui = {
     setupShareBar, syncMiniBar, setupMiniBarVisibility,
     setupScrollProgress, setupSectionAnimations, setupPdfExport,
