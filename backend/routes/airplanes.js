@@ -402,6 +402,18 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       name, complete_name, little_description, image_url, description,
       country_id, date_concept, date_first_fly, date_operationel,
       max_speed, max_range, id_manufacturer, id_generation, type, status, weight,
+      // Strate 1 : fiche technique étendue
+      length: len, wingspan, height, wing_area, empty_weight, mtow,
+      service_ceiling, climb_rate, g_limit_pos, g_limit_neg, combat_radius, crew,
+      // Strate 2 : motorisation
+      engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
+      // Strate 3 : production
+      production_start, production_end, units_built, unit_cost_usd, unit_cost_year,
+      operators_count, variants, variants_en,
+      // Strate 4 : qualitatif
+      stealth_level, nickname, predecessor_id, successor_id, rival_id,
+      // Strate 6 : médias externes
+      wikipedia_fr, wikipedia_en, youtube_showcase, manufacturer_page,
     } = req.body;
 
     const clean = (v) => (v === '' || v === undefined) ? null : v;
@@ -415,14 +427,37 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       `INSERT INTO airplanes
         (name, complete_name, little_description, image_url, description, country_id,
          date_concept, date_first_fly, date_operationel, max_speed, max_range,
-         id_manufacturer, id_generation, type, status, weight)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+         id_manufacturer, id_generation, type, status, weight,
+         length, wingspan, height, wing_area, empty_weight, mtow,
+         service_ceiling, climb_rate, g_limit_pos, g_limit_neg, combat_radius, crew,
+         engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
+         production_start, production_end, units_built, unit_cost_usd, unit_cost_year,
+         operators_count, variants, variants_en,
+         stealth_level, nickname, predecessor_id, successor_id, rival_id,
+         wikipedia_fr, wikipedia_en, youtube_showcase, manufacturer_page)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16,
+               $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28,
+               $29, $30, $31, $32, $33, $34,
+               $35, $36, $37, $38, $39, $40, $41, $42,
+               $43, $44, $45, $46, $47,
+               $48, $49, $50, $51)
        RETURNING *`,
       [
         name.trim(), clean(complete_name), clean(little_description), clean(image_url),
         clean(description), clean(country_id), clean(date_concept), clean(date_first_fly),
         clean(date_operationel), clean(max_speed), clean(max_range), clean(id_manufacturer),
         clean(id_generation), clean(type), clean(status), clean(weight),
+        clean(len), clean(wingspan), clean(height), clean(wing_area),
+        clean(empty_weight), clean(mtow), clean(service_ceiling), clean(climb_rate),
+        clean(g_limit_pos), clean(g_limit_neg), clean(combat_radius), clean(crew),
+        clean(engine_name), clean(engine_count), clean(engine_type), clean(engine_type_en),
+        clean(thrust_dry), clean(thrust_wet),
+        clean(production_start), clean(production_end), clean(units_built),
+        clean(unit_cost_usd), clean(unit_cost_year), clean(operators_count),
+        clean(variants), clean(variants_en),
+        clean(stealth_level), clean(nickname),
+        clean(predecessor_id), clean(successor_id), clean(rival_id),
+        clean(wikipedia_fr), clean(wikipedia_en), clean(youtube_showcase), clean(manufacturer_page),
       ]
     );
 

@@ -37,7 +37,7 @@ fa-ruler-combined fa-ruler-horizontal fa-ruler-vertical fa-arrows-left-right
 fa-feather-pointed fa-scale-balanced fa-arrow-trend-up fa-location-crosshairs
 fa-arrow-up-wide-short fa-arrow-down-wide-short fa-user-tie fa-gears fa-cogs
 fa-bolt fa-rocket fa-fire fa-coins fa-flag fa-quote-right fa-diagram-project
-fa-arrow-up-right-from-square
+fa-arrow-up-right-from-square fa-bomb fa-binoculars
 fa-facebook fa-twitter fa-instagram fa-youtube fa-github fa-linkedin fa-reddit
 fa-wikipedia-w
 """

@@ -64,8 +64,12 @@
       const dlg = document.createElement('dialog');
       dlg.id = 'compare-modal';
       dlg.className = 'compare-modal';
+      dlg.setAttribute('aria-labelledby', 'compare-modal-title');
       dlg.innerHTML =
-        '<button class="compare-modal-close" aria-label="Fermer"><i class="fas fa-times"></i></button>' +
+        '<div class="compare-modal-header">' +
+          '<h2 id="compare-modal-title"><i class="fas fa-crosshairs"></i><span>' + escapeHtml(i18n.t('hangar.compare_title', 'Comparaison')) + '</span></h2>' +
+          '<button class="compare-modal-close" aria-label="' + escapeHtml(i18n.t('common.close', 'Fermer')) + '"><i class="fas fa-times"></i></button>' +
+        '</div>' +
         '<div id="compare-modal-body"></div>';
       document.body.appendChild(dlg);
     }
@@ -273,14 +277,18 @@
         );
 
         body.innerHTML =
-          '<div class="cmp-head">' +
-            '<div>' +
-              '<span class="cmp-eyebrow"><i class="fas fa-crosshairs"></i> ' + escapeHtml(i18n.t('hangar.compare_eyebrow', 'Analyse comparée')) + '</span>' +
-              '<h2>' + escapeHtml(i18n.t('hangar.compare_title', 'Comparaison')) + ' \u2014 ' + n + ' ' + escapeHtml(n > 1 ? i18n.t('hangar.compare_aircraft_plural', 'appareils') : i18n.t('hangar.compare_aircraft_single', 'appareil')) + '</h2>' +
-            '</div>' +
+          '<div class="cmp-summary">' +
+            '<span class="cmp-eyebrow"><i class="fas fa-crosshairs"></i> ' + escapeHtml(i18n.t('hangar.compare_eyebrow', 'Analyse comparée')) + '</span>' +
+            '<span class="cmp-summary-count">' + n + ' ' + escapeHtml(n > 1 ? i18n.t('hangar.compare_aircraft_plural', 'appareils') : i18n.t('hangar.compare_aircraft_single', 'appareil')) + '</span>' +
           '</div>' +
           '<div class="cmp-cols" data-cmp-cols="' + n + '">' + headers + '</div>' +
           '<div class="cmp-body">' + classificationHtml + chronoHtml + perfHtml + armamentHtml + techHtml + '</div>';
+
+        // Met à jour le titre du header avec le compteur
+        var headerTitle = document.querySelector('#compare-modal-title span');
+        if (headerTitle) {
+          headerTitle.textContent = i18n.t('hangar.compare_title', 'Comparaison') + ' — ' + n;
+        }
 
         // Applique width/background/--cmp-cols via DOM API après insertion (CSP-safe)
         applyCompareCssVars(body);
@@ -295,8 +303,10 @@
       }
     });
 
-    document.querySelector('#compare-modal .compare-modal-close').addEventListener('click', function () {
-      document.getElementById('compare-modal').close();
+    document.querySelectorAll('#compare-modal .compare-modal-close').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.getElementById('compare-modal').close();
+      });
     });
 
     // Purge ids orphelins

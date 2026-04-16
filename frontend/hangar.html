@@ -179,10 +179,65 @@
             <div class="form-group"><label for="aircraft-date-first-fly" data-i18n="hangar.date_first_fly">Premier vol</label><input type="date" id="aircraft-date-first-fly"></div>
             <div class="form-group"><label for="aircraft-date-operational" data-i18n="hangar.date_operational">Mise en service</label><input type="date" id="aircraft-date-operational"></div>
           </div></div>
-          <div class="form-section"><h3><i class="fas fa-tachometer-alt"></i> <span data-i18n="hangar.tech_specs">Spécifications techniques</span></h3><div class="form-grid">
-            <div class="form-group"><label for="aircraft-max-speed" data-i18n="hangar.max_speed">Vitesse max (km/h)</label><input type="number" id="aircraft-max-speed" placeholder="2400"></div>
-            <div class="form-group"><label for="aircraft-max-range" data-i18n="hangar.max_range">Portée max (km)</label><input type="number" id="aircraft-max-range" placeholder="4000"></div>
-            <div class="form-group"><label for="aircraft-weight" data-i18n="hangar.weight_kg">Poids (kg)</label><input type="number" id="aircraft-weight" placeholder="8000"></div>
+          <div class="form-section"><h3><i class="fas fa-tachometer-alt"></i> <span data-i18n="hangar.tech_specs">Spécifications de base</span></h3><div class="form-grid">
+            <div class="form-group"><label for="aircraft-max-speed" data-i18n="hangar.max_speed">Vitesse max (km/h)</label><input type="number" id="aircraft-max-speed" step="any" placeholder="2400"></div>
+            <div class="form-group"><label for="aircraft-max-range" data-i18n="hangar.max_range">Portée max (km)</label><input type="number" id="aircraft-max-range" step="any" placeholder="4000"></div>
+            <div class="form-group"><label for="aircraft-weight" data-i18n="hangar.weight_kg">Poids (kg)</label><input type="number" id="aircraft-weight" step="any" placeholder="8000"></div>
+          </div></div>
+
+          <div class="form-section"><h3><i class="fas fa-ruler-combined"></i> <span data-i18n="details.admin_section_extended_specs">Dimensions &amp; performances étendues</span></h3><div class="form-grid">
+            <div class="form-group"><label for="aircraft-length" data-i18n="details.admin_length">Longueur (m)</label><input type="number" id="aircraft-length" step="any"></div>
+            <div class="form-group"><label for="aircraft-wingspan" data-i18n="details.admin_wingspan">Envergure (m)</label><input type="number" id="aircraft-wingspan" step="any"></div>
+            <div class="form-group"><label for="aircraft-height" data-i18n="details.admin_height">Hauteur (m)</label><input type="number" id="aircraft-height" step="any"></div>
+            <div class="form-group"><label for="aircraft-wing-area" data-i18n="details.admin_wing_area">Surface alaire (m²)</label><input type="number" id="aircraft-wing-area" step="any"></div>
+            <div class="form-group"><label for="aircraft-empty-weight" data-i18n="details.admin_empty_weight">Poids à vide (kg)</label><input type="number" id="aircraft-empty-weight" step="any"></div>
+            <div class="form-group"><label for="aircraft-mtow" data-i18n="details.admin_mtow">MTOW (kg)</label><input type="number" id="aircraft-mtow" step="any"></div>
+            <div class="form-group"><label for="aircraft-service-ceiling" data-i18n="details.admin_service_ceiling">Plafond opérationnel (m)</label><input type="number" id="aircraft-service-ceiling"></div>
+            <div class="form-group"><label for="aircraft-climb-rate" data-i18n="details.admin_climb_rate">Taux de montée (m/s)</label><input type="number" id="aircraft-climb-rate" step="any"></div>
+            <div class="form-group"><label for="aircraft-g-limit-pos" data-i18n="details.admin_g_pos">Facteur de charge + (g)</label><input type="number" id="aircraft-g-limit-pos" step="any"></div>
+            <div class="form-group"><label for="aircraft-g-limit-neg" data-i18n="details.admin_g_neg">Facteur de charge − (g)</label><input type="number" id="aircraft-g-limit-neg" step="any"></div>
+            <div class="form-group"><label for="aircraft-combat-radius" data-i18n="details.admin_combat_radius">Rayon de combat (km)</label><input type="number" id="aircraft-combat-radius" step="any"></div>
+            <div class="form-group"><label for="aircraft-crew" data-i18n="details.admin_crew">Équipage (nb)</label><input type="number" id="aircraft-crew"></div>
+          </div></div>
+
+          <div class="form-section"><h3><i class="fas fa-cogs"></i> <span data-i18n="details.admin_section_engine">Motorisation</span></h3><div class="form-grid">
+            <div class="form-group span-2"><label for="aircraft-engine-name" data-i18n="details.admin_engine_name">Nom du moteur</label><input type="text" id="aircraft-engine-name" placeholder="Snecma M88-2E4"></div>
+            <div class="form-group"><label for="aircraft-engine-count" data-i18n="details.admin_engine_count">Nombre de moteurs</label><input type="number" id="aircraft-engine-count"></div>
+            <div class="form-group"><label for="aircraft-engine-type" data-i18n="details.admin_engine_type">Type</label><input type="text" id="aircraft-engine-type" placeholder="Turbofan"></div>
+            <div class="form-group"><label for="aircraft-thrust-dry" data-i18n="details.admin_thrust_dry">Poussée sèche (kN)</label><input type="number" id="aircraft-thrust-dry" step="any"></div>
+            <div class="form-group"><label for="aircraft-thrust-wet" data-i18n="details.admin_thrust_wet">Poussée PC (kN)</label><input type="number" id="aircraft-thrust-wet" step="any"></div>
+          </div></div>
+
+          <div class="form-section"><h3><i class="fas fa-industry"></i> <span data-i18n="details.admin_section_production">Production &amp; service</span></h3><div class="form-grid">
+            <div class="form-group"><label for="aircraft-production-start" data-i18n="details.admin_production_start">Début production</label><input type="number" id="aircraft-production-start" placeholder="1986"></div>
+            <div class="form-group"><label for="aircraft-production-end" data-i18n="details.admin_production_end">Fin production (vide = en cours)</label><input type="number" id="aircraft-production-end"></div>
+            <div class="form-group"><label for="aircraft-units-built" data-i18n="details.admin_units_built">Unités produites</label><input type="number" id="aircraft-units-built"></div>
+            <div class="form-group"><label for="aircraft-unit-cost-usd" data-i18n="details.admin_unit_cost">Coût unitaire (USD)</label><input type="number" id="aircraft-unit-cost-usd"></div>
+            <div class="form-group"><label for="aircraft-unit-cost-year" data-i18n="details.admin_unit_cost_year">Année réf. coût</label><input type="number" id="aircraft-unit-cost-year" placeholder="2024"></div>
+            <div class="form-group"><label for="aircraft-operators-count" data-i18n="details.admin_operators_count">Nombre d'opérateurs</label><input type="number" id="aircraft-operators-count"></div>
+            <div class="form-group span-2"><label for="aircraft-variants" data-i18n="details.admin_variants">Variantes (texte libre / markdown)</label><textarea id="aircraft-variants" rows="3"></textarea></div>
+          </div></div>
+
+          <div class="form-section"><h3><i class="fas fa-award"></i> <span data-i18n="details.admin_section_qualitative">Qualitatif &amp; liens croisés</span></h3><div class="form-grid">
+            <div class="form-group"><label for="aircraft-stealth-level" data-i18n="details.admin_stealth">Niveau de furtivité</label><select id="aircraft-stealth-level">
+              <option value="">—</option>
+              <option value="aucune" data-i18n="details.stealth_none">Aucune</option>
+              <option value="reduite" data-i18n="details.stealth_reduced">Réduite</option>
+              <option value="moderee" data-i18n="details.stealth_moderate">Modérée</option>
+              <option value="elevee" data-i18n="details.stealth_high">Élevée</option>
+              <option value="tres_elevee" data-i18n="details.stealth_very_high">Très élevée</option>
+            </select></div>
+            <div class="form-group"><label for="aircraft-nickname" data-i18n="details.admin_nickname">Surnom</label><input type="text" id="aircraft-nickname"></div>
+            <div class="form-group"><label for="aircraft-predecessor-id" data-i18n="details.admin_predecessor">Prédécesseur</label><select id="aircraft-predecessor-id"><option value="">—</option></select></div>
+            <div class="form-group"><label for="aircraft-successor-id" data-i18n="details.admin_successor">Successeur</label><select id="aircraft-successor-id"><option value="">—</option></select></div>
+            <div class="form-group"><label for="aircraft-rival-id" data-i18n="details.admin_rival">Rival direct</label><select id="aircraft-rival-id"><option value="">—</option></select></div>
+          </div></div>
+
+          <div class="form-section"><h3><i class="fas fa-link"></i> <span data-i18n="details.admin_section_external_links">Liens externes</span></h3><div class="form-grid">
+            <div class="form-group span-2"><label for="aircraft-wikipedia-fr" data-i18n="details.admin_wikipedia_fr">Wikipedia FR</label><input type="url" id="aircraft-wikipedia-fr" placeholder="https://fr.wikipedia.org/wiki/…"></div>
+            <div class="form-group span-2"><label for="aircraft-wikipedia-en" data-i18n="details.admin_wikipedia_en">Wikipedia EN</label><input type="url" id="aircraft-wikipedia-en" placeholder="https://en.wikipedia.org/wiki/…"></div>
+            <div class="form-group span-2"><label for="aircraft-youtube-showcase" data-i18n="details.admin_youtube">YouTube (présentation)</label><input type="url" id="aircraft-youtube-showcase" placeholder="https://youtube.com/watch?v=…"></div>
+            <div class="form-group span-2"><label for="aircraft-manufacturer-page" data-i18n="details.admin_manufacturer_page">Page constructeur</label><input type="url" id="aircraft-manufacturer-page"></div>
           </div></div>
         </div>
         <div class="modal-footer">

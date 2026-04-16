@@ -2,9 +2,18 @@
 INSERT INTO manufacturer (name, country_id, code) VALUES
 ('Hongdu Aviation Industry', (SELECT id FROM countries WHERE code = 'CHN'), 'HONG');
 
--- Insertion du nouveau type
-INSERT INTO type (name, description) VALUES
-('Entraîneur', 'Avion d''entraînement conçu pour la formation des pilotes militaires');
+-- Insertion du nouveau type (idempotent : ne réinsère pas si déjà présent)
+INSERT INTO type (name, name_en, description, description_en)
+SELECT 'Entraîneur', 'Trainer',
+       'Avion d''entraînement conçu pour la formation des pilotes militaires',
+       'Aircraft designed for the training of military pilots'
+WHERE NOT EXISTS (SELECT 1 FROM type WHERE name = 'Entraîneur');
+
+-- Renseigne la traduction si la ligne existe déjà mais sans name_en
+UPDATE type
+   SET name_en = COALESCE(name_en, 'Trainer'),
+       description_en = COALESCE(description_en, 'Aircraft designed for the training of military pilots')
+ WHERE name = 'Entraîneur';
 
 -- Insertion dans airplanes
 INSERT INTO airplanes (

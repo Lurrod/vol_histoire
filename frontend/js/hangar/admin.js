@@ -28,6 +28,27 @@
     }
   }
 
+  // Charge la liste complète d'avions pour les selects predecessor / successor / rival.
+  async function populateRelationSelects() {
+    const ids = ['aircraft-predecessor-id', 'aircraft-successor-id', 'aircraft-rival-id'];
+    if (!ids.some(id => document.getElementById(id))) return;
+    try {
+      const res = await auth.fetchWithTimeout('/api/airplanes?limit=500');
+      if (!res.ok) return;
+      const payload = await res.json();
+      const list = Array.isArray(payload) ? payload : (payload.data || []);
+      const options = ['<option value="">—</option>'].concat(
+        list
+          .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+          .map(ap => `<option value="${ap.id}">${escapeHtml(ap.name || '')}</option>`)
+      ).join('');
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = options;
+      });
+    } catch (_) { /* silencieux */ }
+  }
+
   function setupAdminModal(state) {
     const modal = document.getElementById('aircraft-modal');
     const modalForm = document.getElementById('aircraft-form');
@@ -42,6 +63,7 @@
       modal?.classList.add('show');
       document.body.style.overflow = 'hidden';
       _focusTrap = trapFocus(modal, { onEscape: closeModal });
+      populateRelationSelects();
     }
     function closeModal() {
       _focusTrap?.destroy();
@@ -65,23 +87,85 @@
       const userRole = Number(payload.role);
       if (userRole !== 1 && userRole !== 2) { showToast(i18n.t('common.unauthorized'), 'error'); return; }
 
+      const num = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return null;
+        const v = el.value;
+        if (v === '' || v == null) return null;
+        const n = Number(v);
+        return isNaN(n) ? null : n;
+      };
+      const intOrNull = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return null;
+        const v = el.value;
+        if (v === '' || v == null) return null;
+        const n = parseInt(v, 10);
+        return isNaN(n) ? null : n;
+      };
+      const str = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return null;
+        const v = el.value;
+        return v === '' ? null : v;
+      };
+
       const formData = {
-        name: document.getElementById('aircraft-name').value,
-        complete_name: document.getElementById('aircraft-complete-name').value,
-        little_description: document.getElementById('aircraft-little-description').value,
-        image_url: document.getElementById('aircraft-image-url').value,
-        description: document.getElementById('aircraft-description').value,
-        country_id: parseInt(document.getElementById('aircraft-country').value),
-        id_manufacturer: parseInt(document.getElementById('aircraft-manufacturer').value) || null,
-        id_generation: parseInt(document.getElementById('aircraft-generation').value),
-        type: parseInt(document.getElementById('aircraft-type').value),
-        status: document.getElementById('aircraft-status').value,
-        date_concept: document.getElementById('aircraft-date-concept').value || null,
-        date_first_fly: document.getElementById('aircraft-date-first-fly').value || null,
-        date_operationel: document.getElementById('aircraft-date-operational').value || null,
-        max_speed: parseFloat(document.getElementById('aircraft-max-speed').value) || null,
-        max_range: parseFloat(document.getElementById('aircraft-max-range').value) || null,
-        weight: parseFloat(document.getElementById('aircraft-weight').value) || null
+        // base
+        name: str('aircraft-name') || '',
+        complete_name: str('aircraft-complete-name'),
+        little_description: str('aircraft-little-description'),
+        image_url: str('aircraft-image-url'),
+        description: str('aircraft-description'),
+        country_id: intOrNull('aircraft-country'),
+        id_manufacturer: intOrNull('aircraft-manufacturer'),
+        id_generation: intOrNull('aircraft-generation'),
+        type: intOrNull('aircraft-type'),
+        status: str('aircraft-status'),
+        date_concept: str('aircraft-date-concept'),
+        date_first_fly: str('aircraft-date-first-fly'),
+        date_operationel: str('aircraft-date-operational'),
+        max_speed: num('aircraft-max-speed'),
+        max_range: num('aircraft-max-range'),
+        weight: num('aircraft-weight'),
+        // strate 1
+        length: num('aircraft-length'),
+        wingspan: num('aircraft-wingspan'),
+        height: num('aircraft-height'),
+        wing_area: num('aircraft-wing-area'),
+        empty_weight: num('aircraft-empty-weight'),
+        mtow: num('aircraft-mtow'),
+        service_ceiling: intOrNull('aircraft-service-ceiling'),
+        climb_rate: num('aircraft-climb-rate'),
+        g_limit_pos: num('aircraft-g-limit-pos'),
+        g_limit_neg: num('aircraft-g-limit-neg'),
+        combat_radius: num('aircraft-combat-radius'),
+        crew: intOrNull('aircraft-crew'),
+        // strate 2
+        engine_name: str('aircraft-engine-name'),
+        engine_count: intOrNull('aircraft-engine-count'),
+        engine_type: str('aircraft-engine-type'),
+        thrust_dry: num('aircraft-thrust-dry'),
+        thrust_wet: num('aircraft-thrust-wet'),
+        // strate 3
+        production_start: intOrNull('aircraft-production-start'),
+        production_end: intOrNull('aircraft-production-end'),
+        units_built: intOrNull('aircraft-units-built'),
+        unit_cost_usd: intOrNull('aircraft-unit-cost-usd'),
+        unit_cost_year: intOrNull('aircraft-unit-cost-year'),
+        operators_count: intOrNull('aircraft-operators-count'),
+        variants: str('aircraft-variants'),
+        // strate 4
+        stealth_level: str('aircraft-stealth-level'),
+        nickname: str('aircraft-nickname'),
+        predecessor_id: intOrNull('aircraft-predecessor-id'),
+        successor_id: intOrNull('aircraft-successor-id'),
+        rival_id: intOrNull('aircraft-rival-id'),
+        // strate 6
+        wikipedia_fr: str('aircraft-wikipedia-fr'),
+        wikipedia_en: str('aircraft-wikipedia-en'),
+        youtube_showcase: str('aircraft-youtube-showcase'),
+        manufacturer_page: str('aircraft-manufacturer-page'),
       };
 
       try {
