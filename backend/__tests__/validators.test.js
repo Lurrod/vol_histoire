@@ -629,3 +629,134 @@ describe('validateAirplaneData — champs optionnels invalides', () => {
     expect(errors.length).toBe(3);
   });
 });
+
+// =============================================================================
+// validateAirplaneData — strates 1 à 6 (enrichissement)
+// =============================================================================
+describe('validateAirplaneData — strates enrichissement', () => {
+  const base = { name: 'Rafale' };
+
+  test('length négatif → erreur strate 1', () => {
+    const errors = validateAirplaneData({ ...base, length: -2 });
+    expect(errors).toContain('La longueur doit être un nombre positif.');
+  });
+
+  test('wingspan non numérique → erreur strate 1', () => {
+    const errors = validateAirplaneData({ ...base, wingspan: 'abc' });
+    expect(errors).toContain("L'envergure doit être un nombre positif.");
+  });
+
+  test('service_ceiling négatif → erreur strate 1', () => {
+    const errors = validateAirplaneData({ ...base, service_ceiling: -1 });
+    expect(errors).toContain('Le plafond opérationnel doit être un entier positif.');
+  });
+
+  test('service_ceiling décimal → erreur', () => {
+    const errors = validateAirplaneData({ ...base, service_ceiling: 15.5 });
+    expect(errors).toContain('Le plafond opérationnel doit être un entier positif.');
+  });
+
+  test('g_limit_neg peut être négatif (isOptionalNumber)', () => {
+    const errors = validateAirplaneData({ ...base, g_limit_neg: -3.5 });
+    expect(errors).not.toContain('g_limit_neg invalide.');
+  });
+
+  test('g_limit_pos non numérique → erreur', () => {
+    const errors = validateAirplaneData({ ...base, g_limit_pos: 'xx' });
+    expect(errors).toContain('g_limit_pos invalide.');
+  });
+
+  test('g_limit_pos Infinity → erreur (isFinite)', () => {
+    const errors = validateAirplaneData({ ...base, g_limit_pos: Infinity });
+    expect(errors).toContain('g_limit_pos invalide.');
+  });
+
+  test('crew négatif → erreur', () => {
+    const errors = validateAirplaneData({ ...base, crew: -1 });
+    expect(errors).toContain('Le nombre de pilotes doit être un entier positif.');
+  });
+
+  test('engine_name > 255 car. → erreur strate 2', () => {
+    const errors = validateAirplaneData({ ...base, engine_name: 'x'.repeat(256) });
+    expect(errors).toContain('Nom du moteur > 255 caractères.');
+  });
+
+  test('engine_count négatif → erreur strate 2', () => {
+    const errors = validateAirplaneData({ ...base, engine_count: -1 });
+    expect(errors).toContain('Le nombre de moteurs doit être un entier ≥ 0.');
+  });
+
+  test('thrust_dry négatif → erreur strate 2', () => {
+    const errors = validateAirplaneData({ ...base, thrust_dry: -100 });
+    expect(errors).toContain('La poussée sèche doit être un nombre positif.');
+  });
+
+  test('production_start < 1900 → erreur strate 3', () => {
+    const errors = validateAirplaneData({ ...base, production_start: 1800 });
+    expect(errors).toContain('Année de début de production invalide.');
+  });
+
+  test('production_end > 2100 → erreur strate 3', () => {
+    const errors = validateAirplaneData({ ...base, production_end: 2200 });
+    expect(errors).toContain('Année de fin de production invalide.');
+  });
+
+  test('production_start non entier → erreur', () => {
+    const errors = validateAirplaneData({ ...base, production_start: 1980.5 });
+    expect(errors).toContain('Année de début de production invalide.');
+  });
+
+  test('units_built négatif → erreur strate 3', () => {
+    const errors = validateAirplaneData({ ...base, units_built: -5 });
+    expect(errors).toContain('Unités produites doit être un entier ≥ 0.');
+  });
+
+  test('variants > 5000 car. → erreur strate 3', () => {
+    const errors = validateAirplaneData({ ...base, variants: 'a'.repeat(5001) });
+    expect(errors).toContain('Variantes > 5000 caractères.');
+  });
+
+  test('variants_en > 5000 car. → erreur strate 3', () => {
+    const errors = validateAirplaneData({ ...base, variants_en: 'b'.repeat(5001) });
+    expect(errors).toContain('Variants (EN) > 5000 caractères.');
+  });
+
+  test('stealth_level hors enum → erreur strate 4', () => {
+    const errors = validateAirplaneData({ ...base, stealth_level: 'super' });
+    expect(errors.some(e => e.startsWith('stealth_level doit être'))).toBe(true);
+  });
+
+  test('stealth_level valide (tres_elevee) → pas d\'erreur', () => {
+    const errors = validateAirplaneData({ ...base, stealth_level: 'tres_elevee' });
+    expect(errors.some(e => e.startsWith('stealth_level'))).toBe(false);
+  });
+
+  test('nickname > 255 car. → erreur strate 4', () => {
+    const errors = validateAirplaneData({ ...base, nickname: 'n'.repeat(256) });
+    expect(errors).toContain('Surnom > 255 caractères.');
+  });
+
+  test('predecessor_id invalide → erreur strate 4', () => {
+    const errors = validateAirplaneData({ ...base, predecessor_id: 0 });
+    expect(errors).toContain('predecessor_id doit être un entier positif.');
+  });
+
+  test('wikipedia_fr non URL → erreur strate 6', () => {
+    const errors = validateAirplaneData({ ...base, wikipedia_fr: 'pas-une-url' });
+    expect(errors).toContain('wikipedia_fr doit être une URL http/https valide (max 500).');
+  });
+
+  test('youtube_showcase URL > 500 car. → 2 erreurs (URL + longueur)', () => {
+    const longUrl = 'https://youtube.com/watch?v=' + 'x'.repeat(480);
+    const errors = validateAirplaneData({ ...base, youtube_showcase: longUrl });
+    expect(errors.some(e => e.includes('youtube_showcase'))).toBe(true);
+  });
+
+  test('manufacturer_page exactement 501 caractères → erreur longueur', () => {
+    const errors = validateAirplaneData({
+      ...base,
+      manufacturer_page: 'https://example.com/' + 'a'.repeat(481),
+    });
+    expect(errors).toContain('manufacturer_page > 500 caractères.');
+  });
+});

@@ -1523,6 +1523,44 @@ describe('Favoris', () => {
     expect(res.status).toBe(200);
     expect(res.body.isFavorite).toBe(false);
   });
+
+  test('POST /api/favorites/:airplaneId — 400 ID non numérique', async () => {
+    const res = await request(app)
+      .post('/api/favorites/abc')
+      .set('Authorization', `Bearer ${tokenMember}`);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe('ID avion invalide');
+  });
+
+  test('POST /api/favorites/:airplaneId — 404 avion inexistant (FK 23503)', async () => {
+    const fkError = new Error('violates foreign key constraint');
+    fkError.code = '23503';
+    mockPool.query.mockRejectedValueOnce(fkError);
+
+    const res = await request(app)
+      .post('/api/favorites/99999')
+      .set('Authorization', `Bearer ${tokenMember}`);
+    expect(res.status).toBe(404);
+    expect(res.body.message).toBe('Avion introuvable');
+  });
+
+  test('POST /api/favorites/:airplaneId — 500 erreur DB non gérée (propagée)', async () => {
+    const dbError = new Error('DB down');
+    dbError.code = '08006';
+    mockPool.query.mockRejectedValueOnce(dbError);
+
+    const res = await request(app)
+      .post('/api/favorites/1')
+      .set('Authorization', `Bearer ${tokenMember}`);
+    expect(res.status).toBe(500);
+  });
+
+  test('DELETE /api/favorites/:airplaneId — 400 ID non numérique', async () => {
+    const res = await request(app)
+      .delete('/api/favorites/xyz')
+      .set('Authorization', `Bearer ${tokenMember}`);
+    expect(res.status).toBe(400);
+  });
 });
 
 // =============================================================================
@@ -1547,6 +1585,25 @@ describe('GET /api/stats', () => {
     mockPool.query.mockRejectedValueOnce(new Error('DB fail'));
     const res = await request(app).get('/api/stats');
     expect(res.status).toBe(500);
+  });
+
+  test('200 — second appel retourne le cache (pas de nouvelle requête)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ total: 68 }] })
+      .mockResolvedValueOnce({ rows: [{ earliest: 1970, latest: 2024 }] })
+      .mockResolvedValueOnce({ rows: [{ total: 15 }] });
+
+    const first = await request(app).get('/api/stats');
+    expect(first.status).toBe(200);
+    expect(first.body.airplanes).toBe(68);
+
+    const callsBefore = mockPool.query.mock.calls.length;
+
+    const second = await request(app).get('/api/stats');
+    expect(second.status).toBe(200);
+    expect(second.body.airplanes).toBe(68);
+
+    expect(mockPool.query.mock.calls.length).toBe(callsBefore);
   });
 });
 
@@ -2594,6 +2651,74 @@ describe('hCaptcha middleware', () => {
     expect(result.ok).toBe(false);
     expect(result.reason).toBe('missing-token');
     delete process.env.HCAPTCHA_SECRET;
+  });
+
+  // Mocks fetch global pour tester les branches HTTP / network
+  describe('verify — avec fetch mocké', () => {
+    let originalFetch;
+    beforeEach(() => {
+      originalFetch = global.fetch;
+      process.env.HCAPTCHA_SECRET = 'test-secret';
+    });
+    afterEach(() => {
+      global.fetch = originalFetch;
+      delete process.env.HCAPTCHA_SECRET;
+    });
+
+    test('ok: true quand hCaptcha API répond success:true', async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true, hostname: 'test.com' }),
+      });
+      const result = await verify('valid-token', '1.2.3.4');
+      expect(result.ok).toBe(true);
+      expect(result.raw.success).toBe(true);
+      expect(global.fetch).toHaveBeenCalledWith(
+        'https://api.hcaptcha.com/siteverify',
+        expect.objectContaining({ method: 'POST' })
+      );
+    });
+
+    test('ok: false quand hCaptcha API répond success:false', async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: false, 'error-codes': ['invalid-input-response'] }),
+      });
+      const result = await verify('bad-token');
+      expect(result.ok).toBe(false);
+      expect(result.raw.success).toBe(false);
+    });
+
+    test('ok: false avec reason http-500 si hCaptcha API renvoie une erreur HTTP', async () => {
+      global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 500 });
+      const result = await verify('any-token');
+      expect(result.ok).toBe(false);
+      expect(result.reason).toBe('http-500');
+    });
+
+    test('ok: false avec reason network-error si fetch throw', async () => {
+      global.fetch = jest.fn().mockRejectedValue(new Error('ECONNREFUSED'));
+      const result = await verify('any-token');
+      expect(result.ok).toBe(false);
+      expect(result.reason).toBe('network-error');
+      expect(result.error).toBe('ECONNREFUSED');
+    });
+
+    test('verifyHcaptcha middleware appelle next() si vérification OK', async () => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true }),
+      });
+      const middleware = require('../middleware/hcaptcha');
+      const req = { body: { 'h-captcha-response': 'valid-token' }, ip: '1.2.3.4' };
+      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+      const next = jest.fn();
+      await new Promise((resolve) => {
+        middleware(req, res, () => { next(); resolve(); });
+      });
+      expect(next).toHaveBeenCalled();
+      expect(res.status).not.toHaveBeenCalled();
+    });
   });
 });
 
