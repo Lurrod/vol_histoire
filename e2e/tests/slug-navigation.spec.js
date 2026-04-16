@@ -64,9 +64,11 @@ test.describe('URL Slugs', () => {
       { timeout: 10000 }
     );
 
+    // Le pathname doit être en slug ; la query peut contenir ?lang= (i18n canonical)
     const url = page.url();
-    expect(url).toMatch(/\/details\/[a-z0-9-]+-\d+$/);
+    expect(url).toMatch(/\/details\/[a-z0-9-]+-\d+(\?.*)?$/);
     expect(url).not.toContain('?id=');
+    expect(url).not.toContain('&id=');
   });
 
   test('le sitemap XML contient des URL slugs', async ({ page }) => {

@@ -13,7 +13,7 @@ test.describe('Settings — Profil & Sécurité', () => {
     await page.waitForLoadState('networkidle');
     // Section dashboard est active par défaut → switch vers profil
     await page.click('[data-section="profile"]');
-    await page.waitForTimeout(300);
+    await expect(page.locator('#profile')).toBeVisible({ timeout: 8000 });
 
     const nameInput = page.locator('#name');
     await expect(nameInput).toBeVisible({ timeout: 8000 });
@@ -30,7 +30,7 @@ test.describe('Settings — Profil & Sécurité', () => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
     await page.click('[data-section="profile"]');
-    await page.waitForTimeout(300);
+    await expect(page.locator('#profile')).toBeVisible({ timeout: 8000 });
 
     const nameInput = page.locator('#name');
     await expect(nameInput).toBeVisible({ timeout: 8000 });
@@ -61,7 +61,7 @@ test.describe('Settings — Profil & Sécurité', () => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
     await page.click('[data-section="profile"]');
-    await page.waitForTimeout(300);
+    await expect(page.locator('#profile')).toBeVisible({ timeout: 8000 });
 
     const nameInput = page.locator('#name');
     await expect(nameInput).toBeVisible({ timeout: 8000 });
