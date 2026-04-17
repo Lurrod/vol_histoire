@@ -182,6 +182,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       btn.addEventListener('click', () => {
         const target = document.getElementById(btn.dataset.target);
         if (!target) return;
+        const decade = Number(target.dataset.decade);
+        // Feedback immédiat : l'observer peut tarder à déclencher sur de grands chapitres
+        mm.querySelectorAll('.tl-mm-btn').forEach(b => b.classList.toggle('active', b === btn));
+        const era = getEra(decade);
+        const yearNum = document.getElementById('tl-year-hud-num');
+        const yearLbl = document.getElementById('tl-year-hud-label');
+        if (yearNum) yearNum.textContent = decade + 's';
+        if (yearLbl) yearLbl.textContent = era.label || '';
+        document.body.style.setProperty('--tl-active-era', era.color);
         const y = target.getBoundingClientRect().top + window.pageYOffset - 80;
         window.scrollTo({ top: y, behavior: 'smooth' });
       });
@@ -202,19 +211,33 @@ document.addEventListener("DOMContentLoaded", async () => {
       entries.forEach(entry => {
         const section = entry.target;
         const decade = Number(section.dataset.decade);
-        if (entry.isIntersecting) {
-          section.classList.add('in-view');
-          // Update year HUD + body tint on "dominant" chapter
-          if (entry.intersectionRatio > 0.2) {
-            yearNum.textContent = decade + 's';
-            const era = getEra(decade);
-            if (yearLbl) yearLbl.textContent = era.label || '';
-            document.body.style.setProperty('--tl-active-era', era.color);
-            mmButtons.forEach(b => b.classList.toggle('active', b.dataset.target === `ch-${decade}`));
+        if (entry.isIntersecting) section.classList.add('in-view');
+      });
+      // Détection du chapitre dominant par ancre verticale (robuste quelle que
+      // soit la hauteur du chapitre — le ratio d'intersection ne marche pas
+      // pour les grands chapitres car il est borné par band_h / chapter_h).
+      const anchor = window.innerHeight * 0.35;
+      let dominant = null;
+      let bestDistance = Infinity;
+      document.querySelectorAll('.tl-chapter').forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= anchor && rect.bottom >= anchor) {
+          const distance = Math.abs(rect.top + rect.height / 2 - anchor);
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            dominant = section;
           }
         }
       });
-    }, { threshold: [0, 0.2, 0.5, 1], rootMargin: '-20% 0px -40% 0px' });
+      if (dominant) {
+        const decade = Number(dominant.dataset.decade);
+        const era = getEra(decade);
+        yearNum.textContent = decade + 's';
+        if (yearLbl) yearLbl.textContent = era.label || '';
+        document.body.style.setProperty('--tl-active-era', era.color);
+        mmButtons.forEach(b => b.classList.toggle('active', b.dataset.target === `ch-${decade}`));
+      }
+    }, { threshold: [0, 0.25, 0.5, 0.75, 1], rootMargin: '-20% 0px -40% 0px' });
 
     document.querySelectorAll('.tl-chapter').forEach(c => observer.observe(c));
 

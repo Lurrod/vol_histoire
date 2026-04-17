@@ -87,48 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  /* =========================================================================
-     PARALLAX EFFECT FOR HERO
-     ========================================================================= */
-
-  const heroVideo = document.querySelector('.hero-video');
-  const heroContent = document.querySelector('.hero-content');
-
-  window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const heroHeight = document.querySelector('.hero')?.offsetHeight || 0;
-
-    if (scrolled < heroHeight) {
-      if (heroVideo) {
-        heroVideo.style.transform = `translate(-50%, -50%) scale(${1 + scrolled * 0.0002})`;
-      }
-      if (heroContent) {
-        heroContent.style.transform = `translateY(${scrolled * 0.4}px)`;
-        heroContent.style.opacity = Math.max(0, 1 - (scrolled / heroHeight) * 1.5);
-      }
-    }
-  });
-
   /* Provided by utils.js — escapeHtml, showToast */
-
-  /* =========================================================================
-     VIDEO CONTROLS
-     ========================================================================= */
-
-  const videoObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      const video = entry.target;
-      if (entry.isIntersecting) {
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-      }
-    });
-  }, { threshold: 0.5 });
-
-  if (heroVideo) {
-    videoObserver.observe(heroVideo);
-  }
 
   /* =========================================================================
      FEATURED CARDS HOVER EFFECT
@@ -183,9 +142,9 @@ document.addEventListener("DOMContentLoaded", async () => {
      ========================================================================= */
 
   const preloadImages = [
-    'https://i.postimg.cc/d0fvshX3/f16-fighting-falcon.jpg',
-    'https://i.postimg.cc/bwnsrntT/mig21.jpg',
-    'https://i.postimg.cc/W4rW55Jk/su27.jpg'
+    '/assets/airplanes/f16-fighting-falcon.jpg',
+    '/assets/airplanes/mig21.jpg',
+    '/assets/airplanes/su27.jpg'
   ];
 
   preloadImages.forEach(src => {

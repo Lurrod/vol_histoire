@@ -9,18 +9,49 @@
 /* ======================================================================
    PAGE HERO
    ====================================================================== */
+/* Backdrop "1960 timeline" sur toute la page hangar */
+body.page-hangar {
+  background: var(--night);
+}
+body.page-hangar::before,
+body.page-hangar::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+body.page-hangar::before {
+  background-image: url('/assets/airplanes/f4-phantom-2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(30px) brightness(0.28) saturate(0.7);
+  transform: scale(1.15);
+  opacity: 0.55;
+  z-index: -2;
+}
+body.page-hangar::after {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    radial-gradient(ellipse at 20% 20%, rgba(255, 140, 0, 0.45) 0%, transparent 55%);
+  background-size: 60px 60px, 60px 60px, 100% 100%;
+}
+
 .page-hangar .page-hero {
   position: relative;
-  background: var(--night);
-  padding: 9rem 0 8rem;
+  background: transparent;
+  padding: 7rem 0 6rem;
   margin-top: 70px;
   overflow: hidden;
 }
 
 .page-hangar .hero-background {
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 80% 20%, rgba(200,169,110,0.04) 0%, transparent 55%);
   z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 /* MODERN HERO LAYOUT */
@@ -59,6 +90,22 @@
 }
 .page-hangar .search-box input::placeholder { color: rgba(255,255,255,0.25); }
 .page-hangar .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
+.page-hangar .search-box input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-right: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.45);
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z'/></svg>") center/contain no-repeat;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z'/></svg>") center/contain no-repeat;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.page-hangar .search-box input::-webkit-search-cancel-button:hover {
+  background-color: var(--hud-cyan);
+}
+.page-hangar .search-box input::-ms-clear { display: none; }
 
 .page-hangar .clear-btn { display: none !important; }
 
@@ -105,14 +152,15 @@
 .page-hangar .filter-dropdown {
   position: absolute; top: calc(100% + 0.5rem); right: 0;
   width: 380px; max-width: 90vw;
-  background: var(--night-mid); border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 12px; box-shadow: 0 20px 56px rgba(0,0,0,0.6);
+  background: rgba(20,20,20,0.72); backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px; box-shadow: 0 20px 56px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.02) inset;
   max-height: 400px; overflow-y: auto; z-index: 999;
   opacity: 0; transform: translateY(-8px);
   transition: var(--transition); pointer-events: none;
 }
 .page-hangar .filter-dropdown.show { opacity: 1; transform: translateY(0); pointer-events: all; }
-.page-hangar .filter-dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.07); position: sticky; top: 0; background: var(--night-mid); z-index: 1; }
+.page-hangar .filter-dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.07); position: sticky; top: 0; background: rgba(20,20,20,0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); z-index: 1; }
 .page-hangar .filter-dropdown-header h3 { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--white); font-size: 0.9rem; }
 .page-hangar .close-dropdown { background: transparent; border: none; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.45); }
 .page-hangar .close-dropdown:hover { background: rgba(255,255,255,0.08); color: var(--white); }
@@ -130,8 +178,8 @@
 .page-hangar .aircraft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 5rem; }
 .page-hangar .aircraft-grid.list-view { grid-template-columns: 1fr; }
 
-.page-hangar .aircraft-card { background: rgba(20,20,20,0.7); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); transition: var(--transition); cursor: pointer; position: relative; }
-.page-hangar .aircraft-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.14); box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+.page-hangar .aircraft-card { background: rgba(255,255,255,0.04); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.09); transition: var(--transition); cursor: pointer; position: relative; }
+.page-hangar .aircraft-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.07); border-color: rgba(200,169,110,0.28); box-shadow: 0 12px 32px rgba(0,0,0,0.35), 0 0 30px rgba(200,169,110,0.08); }
 
 .page-hangar .aircraft-image { position: relative; height: 220px; overflow: hidden; background: var(--night-soft); }
 .page-hangar .aircraft-image img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }

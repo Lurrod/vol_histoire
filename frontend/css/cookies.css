@@ -319,7 +319,7 @@
   cursor: not-allowed;
 }
 
-.toggle-slider {
+.cookie-toggle .toggle-slider {
   position: absolute;
   top: 3px;
   left: 3px;
@@ -363,14 +363,29 @@
 }
 
 .cookie-category-details ul {
-  margin: 0.5rem 0 1rem 1.5rem;
-  padding-left: 0.5rem;
+  margin: 0.5rem 0 1rem 0;
+  padding-left: 0;
+  list-style: none;
 }
 
 .cookie-category-details li {
   color: rgba(255, 255, 255, 0.5);
   line-height: 1.8;
   margin-bottom: 0.25rem;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.cookie-category-details li::before {
+  content: "";
+  position: absolute;
+  left: 0.25rem;
+  top: 0.75em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--hud-cyan, #C8A96E);
+  opacity: 0.6;
 }
 
 .cookie-duration {

@@ -81,4 +81,25 @@ test.describe('Timeline', () => {
     const text = await statEl.textContent();
     expect(Number(text)).toBeGreaterThan(0);
   });
+
+  test('clic sur un bouton de la minimap met à jour l\'état actif', async ({ page }) => {
+    await page.evaluate(() => window.scrollBy(0, 800));
+    await page.waitForTimeout(500);
+
+    const buttons = page.locator('#tl-minimap .tl-mm-btn');
+    const count = await buttons.count();
+    if (count < 2) test.skip(true, 'Pas assez de chapitres pour tester le switch');
+
+    // Clique sur le dernier bouton (garantit un changement)
+    const targetBtn = buttons.nth(count - 1);
+    await targetBtn.click();
+    await page.waitForTimeout(800);
+
+    // Feedback immédiat : le bouton cliqué doit porter la classe active
+    await expect(targetBtn).toHaveClass(/active/);
+
+    // Et il doit être le seul actif
+    const activeCount = await page.locator('#tl-minimap .tl-mm-btn.active').count();
+    expect(activeCount).toBe(1);
+  });
 });

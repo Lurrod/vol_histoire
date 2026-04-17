@@ -42,7 +42,7 @@ function safeSetHTML(el, html) {
       ALLOWED_ATTR: ['class', 'id', 'href', 'src', 'alt', 'title', 'data-id',
                      'data-user-id', 'data-value', 'value', 'type', 'role',
                      'aria-label', 'aria-hidden', 'tabindex', 'width', 'height',
-                     'loading', 'style'],
+                     'loading'],
     });
     return;
   }

@@ -115,7 +115,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
     // Anti timing-attack : bcrypt.compare est toujours exécuté, même si
     // l'utilisateur n'existe pas, pour garantir un temps de réponse constant.
-    const DUMMY_HASH = '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy';
+    const DUMMY_HASH = '$2a$12$mPEeg.GN9eKdtN4Hd23tve9R3aTnsNjlXIz9.tO5hM2ZU1EPP3BvC';
     const storedHash = user.rows.length > 0 ? user.rows[0].password : DUMMY_HASH;
     const validPassword = await bcrypt.compare(password, storedHash);
 

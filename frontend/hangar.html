@@ -7,7 +7,6 @@
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <link rel="preconnect" href="https://i.postimg.cc">
   <link rel="preconnect" href="https://flagcdn.com">
   <meta name="theme-color" content="#080c14">
   <meta name="mobile-web-app-capable" content="yes">
@@ -30,8 +29,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Hangar - Collection d'Avions de Chasse | Vol d'Histoire">
   <meta name="twitter:description" content="Explorez notre collection complète d'avions de chasse historiques avec filtres avancés et fiches détaillées.">
-  <meta property="og:image" content="https://i.postimg.cc/qM3ncn0c/f22-raptor.jpg">
-  <meta name="twitter:image" content="https://i.postimg.cc/qM3ncn0c/f22-raptor.jpg">
+  <meta property="og:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/f22-raptor.jpg">
+  <meta name="twitter:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/f22-raptor.jpg">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -45,6 +44,16 @@
       "name": "Vol d'Histoire",
       "url": "https://vol-histoire.titouan-borde.com/"
     }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://vol-histoire.titouan-borde.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Hangar", "item": "https://vol-histoire.titouan-borde.com/hangar" }
+    ]
   }
   </script>
   <link rel="preload" href="fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
@@ -90,6 +99,11 @@
   <section class="page-hero">
     <div class="hero-background"></div>
     <div class="container">
+      <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <a href="/"><i class="fas fa-home" aria-hidden="true"></i> <span data-i18n="nav.home">Accueil</span></a>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        <span aria-current="page" data-i18n="nav.hangar">Hangar</span>
+      </nav>
       <div class="page-hero-inner">
         <div class="hero-text">
           <div class="hero-eyebrow"><span data-i18n="hangar.badge">Collection Complète</span></div>

@@ -19,7 +19,7 @@
     const cleanPath = `/details/${slug}-${state.aircraftId}`;
     history.replaceState({ id: state.aircraftId }, document.title, cleanPath);
     const pageUrl = `https://vol-histoire.titouan-borde.com${cleanPath}`;
-    const imageUrl = a.image_url || 'https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg';
+    const imageUrl = a.image_url || 'https://vol-histoire.titouan-borde.com/assets/airplanes/a10-thunderbolt-2.jpg';
     VH.details.data.updateSeoMeta(state, a.name, a.description, imageUrl, pageUrl);
 
     document.getElementById('breadcrumb-name').textContent = a.name;

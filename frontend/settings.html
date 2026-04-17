@@ -68,6 +68,11 @@
     <section class="page-hero">
       <div class="hero-background"></div>
       <div class="container">
+        <nav class="breadcrumb" aria-label="Fil d'Ariane">
+          <a href="/"><i class="fas fa-home" aria-hidden="true"></i> <span data-i18n="nav.home">Accueil</span></a>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          <span aria-current="page" data-i18n="nav.settings">Paramètres</span>
+        </nav>
         <div class="page-hero-inner">
           <div class="hero-text">
             <div class="hero-eyebrow"><span data-i18n="settings.badge">Paramètres</span></div>
@@ -219,7 +224,7 @@
             <div id="danger" class="content-section" role="tabpanel" aria-labelledby="tab-danger" tabindex="0" hidden>
               <div class="section-card danger-card">
                 <div class="section-header danger-header"><div class="header-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="header-text"><h2 data-i18n="settings.danger_title">Zone de Danger</h2><p data-i18n="settings.danger_desc">Actions irréversibles affectant votre compte</p></div></div>
-                <div class="danger-box"><div class="danger-content"><div class="danger-icon"><i class="fas fa-trash-alt"></i></div><div class="danger-text"><h3 data-i18n="settings.danger_delete_title">Supprimer mon compte</h3><p>Cette action est <strong data-i18n="settings.danger_delete_desc_bold">définitive et irréversible</strong>. Toutes vos données, favoris et paramètres seront supprimés de manière permanente.</p><ul class="danger-list"><li><i class="fas fa-times"></i> Suppression de toutes vos données</li><li><i class="fas fa-times"></i> Perte de tous vos favoris</li><li><i class="fas fa-times"></i> Aucune récupération possible</li></ul></div></div><button id="delete-account-btn" class="btn btn-danger"><i class="fas fa-trash-alt"></i><span data-i18n="settings.btn_delete_account">Supprimer définitivement mon compte</span></button></div>
+                <div class="danger-box"><div class="danger-content"><div class="danger-icon"><i class="fas fa-trash-alt"></i></div><div class="danger-text"><h3 data-i18n="settings.danger_delete_title">Supprimer mon compte</h3><p data-i18n-html="settings.danger_delete_desc">Cette action est <strong>définitive et irréversible</strong>. Toutes vos données, favoris et paramètres seront supprimés de manière permanente.</p><ul class="danger-list"><li><i class="fas fa-times"></i> <span data-i18n="settings.danger_delete_data">Suppression de toutes vos données</span></li><li><i class="fas fa-times"></i> <span data-i18n="settings.danger_delete_favs">Perte de tous vos favoris</span></li><li><i class="fas fa-times"></i> <span data-i18n="settings.danger_delete_no_recovery">Aucune récupération possible</span></li></ul></div></div><button id="delete-account-btn" class="btn btn-danger"><i class="fas fa-trash-alt"></i><span data-i18n="settings.btn_delete_account">Supprimer définitivement mon compte</span></button></div>
               </div>
             </div>
           </div>
@@ -269,17 +274,6 @@
         <button id="edit-user-cancel" class="logout-modal-btn logout-modal-btn-cancel" data-i18n="settings.edit_cancel">Annuler</button>
         <button id="edit-user-save" class="logout-modal-btn logout-modal-btn-save"><i class="fas fa-save"></i> <span data-i18n="settings.edit_save">Enregistrer</span></button>
       </div>
-    </div>
-  </div>
-
-  <!-- Logout Modal -->
-  <div id="logout-modal" class="logout-modal hidden">
-    <div class="logout-modal-backdrop"></div>
-    <div class="logout-modal-container">
-      <div class="logout-modal-icon"><i class="fas fa-sign-out-alt"></i></div>
-      <h3 class="logout-modal-title" data-i18n="settings.logout_title">Déconnexion</h3>
-      <p class="logout-modal-text" data-i18n="settings.logout_confirm">Êtes-vous sûr de vouloir vous déconnecter ?</p>
-      <div class="logout-modal-actions"><button id="logout-cancel" class="logout-modal-btn logout-modal-btn-cancel" data-i18n="settings.logout_cancel">Annuler</button><button id="logout-confirm" class="logout-modal-btn logout-modal-btn-confirm" data-i18n="settings.logout_btn">Se déconnecter</button></div>
     </div>
   </div>
 

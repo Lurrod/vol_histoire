@@ -48,7 +48,7 @@
   --text-light:     #E8E6E1;               /* blanc légèrement chaud */
   --text-primary:   #F0EDE8;               /* blanc cassé premium */
   --text-secondary: rgba(240, 237, 232, 0.72);
-  --text-muted:     rgba(240, 237, 232, 0.55);
+  --text-muted:     rgba(240, 237, 232, 0.62);
   --text-faint:     rgba(240, 237, 232, 0.40);
   --text-ghost:     rgba(240, 237, 232, 0.55);
 

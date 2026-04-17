@@ -52,7 +52,7 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   const nonce = res.locals.cspNonce;
-  const styleHosts = "https://fonts.googleapis.com https://cdnjs.cloudflare.com https://hcaptcha.com https://*.hcaptcha.com";
+  const styleHosts = "https://hcaptcha.com https://*.hcaptcha.com";
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
@@ -61,7 +61,7 @@ app.use((req, res, next) => {
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   // Isolation cross-origin (protection Spectre, tabnabbing, xsleaks).
   // same-origin sur COOP = isolation stricte de la fenêtre (empêche window.opener cross-origin).
-  // same-site sur CORP = permet les images postimg.cc et fonts externes tout en bloquant l'embed hostile.
+  // same-site sur CORP = permet les assets cross-sous-domaine tout en bloquant l'embed hostile.
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
   res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
   res.setHeader('Content-Security-Policy', [
@@ -77,7 +77,7 @@ app.use((req, res, next) => {
     // 'unsafe-inline' reste ici car certaines pages (reset-password) ont
     // encore des blocs <style> inline non nonce-és (à migrer).
     `style-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${styleHosts}`,
-    "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
+    "font-src 'self'",
     "img-src 'self' https://flagcdn.com https://www.googletagmanager.com https://picsum.photos https://fastly.picsum.photos data:",
     "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.ingest.sentry.io https://*.sentry.io https://hcaptcha.com https://*.hcaptcha.com",
     "frame-src https://hcaptcha.com https://*.hcaptcha.com",

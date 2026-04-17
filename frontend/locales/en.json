@@ -124,6 +124,8 @@
     "rafale_desc": "Versatile French multirole fighter, capable of operating from aircraft carriers and excelling in air superiority and precision strikes.",
     "f22_desc": "The first 5th-generation stealth fighter, dominating air superiority through stealth, supercruise, and exceptional agility.",
     "mig29_desc": "A formidable Soviet multirole fighter in close combat, exported worldwide and battle-proven in numerous conflicts.",
+    "f16_desc": "American lightweight 4th-generation multirole fighter, famed for its agility, fly-by-wire controls and iconic role in every major NATO air force.",
+    "mirage2000_desc": "French delta-wing fighter embodying the elegance of French aeronautics: nimble, enduring and exported to every corner of the globe throughout the Cold War.",
     "gen_3": "3rd Generation",
     "gen_5": "5th Generation",
     "type_superiority": "Superiority",
@@ -724,11 +726,7 @@
     "role_editor": "Editor",
     "km_h": "km/h",
     "km": "km",
-    "kg": "kg",
-    "logout_title": "Log out",
-    "logout_confirm": "Are you sure you want to log out?",
-    "logout_cancel": "Cancel",
-    "logout_btn": "Log out"
+    "kg": "kg"
   },
   "settings": {
     "title": "Account Settings | Vol d'Histoire",
@@ -832,10 +830,6 @@
     "danger_delete_favs": "All your favorites will be lost",
     "danger_delete_no_recovery": "No recovery possible",
     "btn_delete_account": "Permanently delete my account",
-    "logout_title": "Log out",
-    "logout_confirm": "Are you sure you want to log out?",
-    "logout_cancel": "Cancel",
-    "logout_btn": "Log out",
     "toast_logout": "Successfully logged out",
     "toast_session_expired": "Session expired, please log in again",
     "toast_name_min": "Name must be at least 2 characters",
@@ -877,7 +871,8 @@
     "desc": "The aircraft may have been decommissioned, or the coordinates are incorrect.",
     "btn_home": "Return to base",
     "btn_hangar": "Explore the hangar",
-    "search_desc": "The search squadron could not locate the requested page."
+    "search_desc": "The search squadron could not locate the requested page.",
+    "beacon_callsign": "Callsign"
   },
   "about": {
     "title": "About | Vol d'Histoire",

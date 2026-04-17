@@ -49,9 +49,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const countries   = new Set(favorites.map(f => f.country_name).filter(Boolean));
+    const isEn = i18n.currentLang === 'en';
+    const countryKey = isEn ? 'country_name_en' : 'country_name';
+    const typeKey    = isEn ? 'type_name_en'    : 'type_name';
+    const pickCountry = f => f[countryKey] || f.country_name;
+    const pickType    = f => f[typeKey]    || f.type_name;
+
+    const countries   = new Set(favorites.map(pickCountry).filter(Boolean));
     const generations = new Set(favorites.map(f => f.generation).filter(Boolean));
-    const types       = new Set(favorites.map(f => f.type_name).filter(Boolean));
+    const types       = new Set(favorites.map(pickType).filter(Boolean));
 
     dbAnimateCounter('db-total-fav',       favorites.length);
     dbAnimateCounter('db-total-countries', countries.size);
@@ -59,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dbAnimateCounter('db-total-types',     types.size);
 
     // Par pays (top 6)
-    dbRenderBars('db-country-bars', dbGroupBy(favorites, 'country_name'), 6);
+    dbRenderBars('db-country-bars', dbGroupByFn(favorites, pickCountry), 6);
 
     // Par génération
     const genRaw = dbGroupBy(favorites, 'generation');
@@ -67,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .sort(([a], [b]) => Number(a) - Number(b))
       .reduce((acc, [k, v]) => {
         const suffix = i18n.currentLang === 'en'
-          ? (['st','nd','rd'][Number(k)-1] || 'th') + ' Gen'
+          ? `${k}${['st','nd','rd'][Number(k)-1] || 'th'} Gen`
           : `Gen ${k}`;
         acc[suffix] = v;
         return acc;
@@ -75,12 +81,16 @@ document.addEventListener('DOMContentLoaded', () => {
     dbRenderBars('db-gen-bars', genLabeled, 5, false);
 
     // Par type (top 6)
-    dbRenderBars('db-type-bars', dbGroupBy(favorites, 'type_name'), 6);
+    dbRenderBars('db-type-bars', dbGroupByFn(favorites, pickType), 6);
   }
 
   function dbGroupBy(arr, key) {
+    return dbGroupByFn(arr, item => item[key]);
+  }
+
+  function dbGroupByFn(arr, fn) {
     return arr.reduce((acc, item) => {
-      const val = item[key];
+      const val = fn(item);
       if (val != null) acc[val] = (acc[val] || 0) + 1;
       return acc;
     }, {});
@@ -124,6 +134,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (current >= target) clearInterval(timer);
     }, 24);
   }
+
+  // Re-render on language change (profile name, role badge, chart labels)
+  window.addEventListener('langChanged', () => {
+    if (ctx()?.currentUser) loadDashboard();
+  });
 
   // Expose for settings.js
   window.settingsDashboard = { loadDashboard };

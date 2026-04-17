@@ -124,6 +124,8 @@
     "rafale_desc": "Chasseur multirôle français polyvalent, capable d'opérer depuis un porte-avions et d'exceller en supériorité aérienne comme en frappe de précision.",
     "f22_desc": "Premier chasseur furtif de 5e génération, dominant la supériorité aérienne grâce à sa furtivité, sa supercroisière et son agilité exceptionnelle.",
     "mig29_desc": "Chasseur multirôle soviétique redoutable en combat rapproché, exporté dans le monde entier et éprouvé dans de nombreux conflits.",
+    "f16_desc": "Chasseur léger multirôle américain de 4e génération, célèbre pour son agilité, ses commandes de vol électriques et son rôle iconique dans toutes les grandes forces aériennes de l'OTAN.",
+    "mirage2000_desc": "Chasseur à aile delta français, incarnant l'élégance de l'aéronautique tricolore : vif, endurant et exporté aux quatre coins du globe tout au long de la guerre froide.",
     "gen_3": "3e Génération",
     "gen_5": "5e Génération",
     "type_superiority": "Supériorité",
@@ -724,11 +726,7 @@
     "role_editor": "Éditeur",
     "km_h": "km/h",
     "km": "km",
-    "kg": "kg",
-    "logout_title": "Déconnexion",
-    "logout_confirm": "Êtes-vous sûr de vouloir vous déconnecter ?",
-    "logout_cancel": "Annuler",
-    "logout_btn": "Se déconnecter"
+    "kg": "kg"
   },
   "settings": {
     "title": "Paramètres du Compte | Vol d'Histoire",
@@ -832,10 +830,6 @@
     "danger_delete_favs": "Perte de tous vos favoris",
     "danger_delete_no_recovery": "Aucune récupération possible",
     "btn_delete_account": "Supprimer définitivement mon compte",
-    "logout_title": "Déconnexion",
-    "logout_confirm": "Êtes-vous sûr de vouloir vous déconnecter ?",
-    "logout_cancel": "Annuler",
-    "logout_btn": "Se déconnecter",
     "toast_logout": "Déconnexion réussie",
     "toast_session_expired": "Session expirée, veuillez vous reconnecter",
     "toast_name_min": "Le nom doit contenir au moins 2 caractères",
@@ -877,7 +871,8 @@
     "desc": "L'appareil a peut-être été retiré du service, ou les coordonnées sont incorrectes.",
     "btn_home": "Retour à la base",
     "btn_hangar": "Explorer le hangar",
-    "search_desc": "L'escadron de recherche n'a pas pu localiser la page demandée."
+    "search_desc": "L'escadron de recherche n'a pas pu localiser la page demandée.",
+    "beacon_callsign": "Indicatif"
   },
   "about": {
     "title": "À Propos | Vol d'Histoire",

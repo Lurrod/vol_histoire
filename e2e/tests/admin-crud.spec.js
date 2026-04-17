@@ -31,7 +31,7 @@ test.describe('Admin — CRUD Avions', () => {
     // Remplir TOUS les champs obligatoires (la validation HTML5 bloque sinon)
     await page.fill('#aircraft-name', 'E2E Test Aircraft');
     await page.fill('#aircraft-little-description', 'Avion créé par les tests E2E');
-    await page.fill('#aircraft-image-url', 'https://i.postimg.cc/gcysXwvG/a10-thunderbolt-2.jpg');
+    await page.fill('#aircraft-image-url', 'https://vol-histoire.titouan-borde.com/assets/airplanes/a10-thunderbolt-2.jpg');
 
     // Attendre que les dropdowns soient peuplés par l'API référentiels
     await page.waitForFunction(

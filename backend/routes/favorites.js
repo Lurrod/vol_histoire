@@ -21,8 +21,8 @@ module.exports = function createFavoritesRouter(getPool) {
     const result = await getPool().query(
       `SELECT a.id, a.name, a.complete_name, a.little_description, a.image_url,
               a.max_speed, a.date_operationel,
-              c.name AS country_name, c.code AS country_code,
-              g.generation, t.name AS type_name,
+              c.name AS country_name, c.name_en AS country_name_en, c.code AS country_code,
+              g.generation, t.name AS type_name, t.name_en AS type_name_en,
               f.created_at AS favorited_at
        FROM favorites f
        JOIN airplanes a ON f.airplane_id = a.id

@@ -2,9 +2,29 @@
    LEGAL PAGES — Dark HUD / Cockpit Theme
    ================================================================ */
 
+/* Backdrop unifié — même pattern que hangar/details */
+body.page-legal { background: var(--night); }
+body.page-legal::before,
+body.page-legal::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
+}
+body.page-legal::before {
+  background-image: url('/assets/airplanes/f4-phantom-2.jpg');
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  filter: blur(30px) brightness(0.28) saturate(0.7);
+  transform: scale(1.15); opacity: 0.55; z-index: -2;
+}
+body.page-legal::after {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+    radial-gradient(ellipse at 20% 20%, rgba(255,140,0,0.45) 0%, transparent 55%);
+  background-size: 60px 60px, 60px 60px, 100% 100%;
+}
+
 /* Page Hero */
-.page-legal .page-hero { position: relative; background: var(--night); padding: 7rem 0; margin-top: 70px; overflow: hidden; }
-.page-legal .hero-background { position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 20%, rgba(200,169,110,0.04) 0%, transparent 55%); z-index: 0; }
+.page-legal .page-hero { position: relative; background: transparent; padding: 7rem 0; margin-top: 70px; overflow: hidden; }
+.page-legal .hero-background { position: absolute; inset: 0; background: transparent; z-index: 0; }
 .page-legal .page-hero-inner { position: relative; z-index: 1; display: flex; justify-content: center; align-items: center; }
 .page-legal .hero-text { text-align: center; max-width: 700px; }
 .page-legal .hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.28); display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 2.5rem; }
@@ -13,8 +33,8 @@
 .page-legal .hero-text > p { font-size: 1rem; color: rgba(255,255,255,0.38); max-width: 520px; line-height: 1.85; margin: 0 auto; }
 
 /* Main Content */
-.page-legal .legal-content { padding: 3rem 0 5rem; background: var(--night); }
-.page-legal .legal-container { max-width: 1000px; margin: 0 auto; background: rgba(20,20,20,0.7); border: 1px solid rgba(200,169,110,0.06); border-radius: 16px; padding: 3rem; }
+.page-legal .legal-content { padding: 3rem 0 5rem; background: transparent; }
+.page-legal .legal-container { max-width: 1000px; margin: 0 auto; background: rgba(255,255,255,0.04); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 3rem; }
 
 /* Breadcrumb */
 .page-legal .legal-content .breadcrumb, .page-legal .legal-container .breadcrumb { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(200,169,110,0.08); font-size: 0.875rem; color: rgba(255,255,255,0.4); }

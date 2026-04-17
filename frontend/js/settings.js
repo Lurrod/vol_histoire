@@ -8,67 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const API_BASE = "/api";
   let currentUser = null;
 
-  /* showToast → utils.js | navigation → nav.js */
-
-  // Logout handler - Modal (overrides nav.js simple logout)
-  const logoutIcon = document.getElementById('logout-icon');
-  const logoutModal = document.getElementById('logout-modal');
-  const logoutCancel = document.getElementById('logout-cancel');
-  const logoutConfirm = document.getElementById('logout-confirm');
-
-  let _logoutTrap = null;
-  let _logoutPrevFocus = null;
-  function openLogoutModal() {
-    _logoutPrevFocus = document.activeElement;
-    logoutModal?.classList.remove('hidden');
-    requestAnimationFrame(() => {
-      logoutModal?.classList.add('show');
-      _logoutTrap = trapFocus(logoutModal, { onEscape: closeLogoutModal });
-    });
-  }
-
-  function closeLogoutModal() {
-    _logoutTrap?.destroy();
-    _logoutTrap = null;
-    logoutModal?.classList.remove('show');
-    setTimeout(() => {
-      logoutModal?.classList.add('hidden');
-    }, 300);
-    _logoutPrevFocus?.focus();
-  }
-
-  if (logoutIcon) {
-    logoutIcon.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      openLogoutModal();
-    });
-  }
-
-  logoutCancel?.addEventListener('click', closeLogoutModal);
-
-  logoutModal?.querySelector('.logout-modal-backdrop')?.addEventListener('click', closeLogoutModal);
-
-  logoutConfirm?.addEventListener('click', async () => {
-    await auth.logout();
-    closeLogoutModal();
-    showToast(i18n.t('common.logout_success'), 'success');
-    
-    setTimeout(() => {
-      window.location.href = '/login';
-    }, 1500);
-  });
-
-  // Keyboard navigation - ESC to close logout modal (nav handled by nav.js)
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (logoutModal?.classList.contains('show')) {
-        closeLogoutModal();
-      }
-    }
-  });
-
-  /* touch gestures → nav.js */
+  /* showToast → utils.js | navigation + logout → nav.js | touch gestures → nav.js */
 
   // ========================================================================
   // SECTION NAVIGATION

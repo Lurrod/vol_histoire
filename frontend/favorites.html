@@ -7,7 +7,6 @@
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <link rel="preconnect" href="https://i.postimg.cc">
   <link rel="preconnect" href="https://flagcdn.com">
   <meta name="theme-color" content="#080c14">
   <meta name="mobile-web-app-capable" content="yes">
@@ -73,6 +72,11 @@
   <section class="page-hero">
     <div class="hero-background"></div>
     <div class="container">
+      <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <a href="/"><i class="fas fa-home" aria-hidden="true"></i> <span data-i18n="nav.home">Accueil</span></a>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        <span aria-current="page" data-i18n="nav.favorites">Favoris</span>
+      </nav>
       <div class="page-hero-inner">
         <div class="hero-text">
           <div class="hero-eyebrow"><span data-i18n="favorites.badge">Collection Personnelle</span></div>
@@ -131,7 +135,7 @@
   <section id="favorites-content" class="favorites-section hidden">
     <div class="container">
       <div class="favorites-toolbar">
-        <div class="search-box"><i class="fas fa-search"></i><input type="text" id="search-input" placeholder="Rechercher dans mes favoris..." data-i18n-placeholder="favorites.search_placeholder"></div>
+        <div class="search-box"><i class="fas fa-search"></i><input type="search" id="search-input" placeholder="Rechercher dans mes favoris..." data-i18n-placeholder="favorites.search_placeholder" autocomplete="off"></div>
         <div class="toolbar-right">
           <button class="filter-btn" id="country-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="country-dropdown"><i class="fas fa-globe"></i><span data-i18n="hangar.filter_country">Pays</span><i class="fas fa-chevron-down"></i></button>
           <button class="filter-btn" id="generation-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="generation-dropdown"><i class="fas fa-layer-group"></i><span data-i18n="hangar.gen_label">Génération</span><i class="fas fa-chevron-down"></i></button>

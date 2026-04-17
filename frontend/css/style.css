@@ -9,81 +9,66 @@
 /* ======================================================================
    HERO SECTION
    ====================================================================== */
-.page-home .hero {
+/* Fond solide — chaque section gère son propre backdrop avion (voir plus bas) */
+/* Backdrop unifié de la landing page — même pattern que hangar */
+body.page-home {
+  background: var(--night);
+}
+body.page-home::before,
+body.page-home::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+body.page-home::before {
+  background-image: url('/assets/airplanes/f15-eagle.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(30px) brightness(0.28) saturate(0.7);
+  transform: scale(1.15);
+  opacity: 0.55;
+  z-index: -2;
+}
+body.page-home::after {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    radial-gradient(ellipse at 20% 20%, rgba(255, 140, 0, 0.45) 0%, transparent 55%);
+  background-size: 60px 60px, 60px 60px, 100% 100%;
+}
+
+/* Sections : conteneurs transparents au-dessus du backdrop body */
+.page-home .hero,
+.page-home .features,
+.page-home .featured,
+.page-home .personal-space,
+.page-home .timeline-preview,
+.page-home .search-showcase,
+.page-home .cta-section {
   position: relative;
-  height: 100vh;
-  min-height: 700px;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+.page-home .hero::before,
+.page-home .features::before,
+.page-home .featured::before,
+.page-home .personal-space::before,
+.page-home .timeline-preview::before,
+.page-home .search-showcase::before,
+.page-home .cta-section::before { content: none; }
+
+.page-home .hero {
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  background: var(--night);
 }
 
-.page-home .hero-video {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
-  transform: translate(-50%, -50%);
-  object-fit: cover;
-  z-index: 0;
-}
-
-.page-home .hero-overlay {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(13, 13, 13, 0.7) 0%, rgba(13, 13, 13, 0.4) 40%, rgba(13, 13, 13, 0.75) 100%),
-    radial-gradient(ellipse at 30% 50%, rgba(200, 169, 110, 0.06) 0%, transparent 60%);
-  z-index: 1;
-}
-
-/* HUD Grid overlay */
-.page-home .hero-hud-grid {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 80px 80px;
-  opacity: 1;
-}
-
-/* HUD Corner brackets */
-.page-home .hero-hud-corner {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.page-home .hero-hud-corner::before, .page-home .hero-hud-corner::after {
-  content: '';
-  position: absolute;
-  background: rgba(200, 169, 110, 0.2);
-}
-
-.page-home .hud-tl { top: 80px; left: 24px; }
-.page-home .hud-tl::before { top: 0; left: 0; width: 40px; height: 2px; }
-.page-home .hud-tl::after  { top: 0; left: 0; width: 2px; height: 40px; }
-
-.page-home .hud-tr { top: 80px; right: 24px; }
-.page-home .hud-tr::before { top: 0; right: 0; width: 40px; height: 2px; }
-.page-home .hud-tr::after  { top: 0; right: 0; width: 2px; height: 40px; }
-
-.page-home .hud-bl { bottom: 24px; left: 24px; }
-.page-home .hud-bl::before { bottom: 0; left: 0; width: 40px; height: 2px; }
-.page-home .hud-bl::after  { bottom: 0; left: 0; width: 2px; height: 40px; }
-
-.page-home .hud-br { bottom: 24px; right: 24px; }
-.page-home .hud-br::before { bottom: 0; right: 0; width: 40px; height: 2px; }
-.page-home .hud-br::after  { bottom: 0; right: 0; width: 2px; height: 40px; }
+.page-home .hero-overlay { display: none; }
 
 /* Hero Content */
 .page-home .hero-content {
@@ -197,14 +182,16 @@
 }
 
 .page-home .btn-ghost {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.09);
 }
 
 .page-home .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.18);
   color: var(--white);
 }
 
@@ -272,7 +259,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Scroll Indicator */
+/* Scroll Indicator — Approach Lights (feux d'approche) */
 .page-home .scroll-indicator {
   position: absolute;
   bottom: 2rem;
@@ -282,28 +269,68 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.9rem;
+  padding: 0.25rem 0.75rem;
   cursor: pointer;
   transition: var(--transition);
+  background: transparent;
+  border: none;
 }
 
-.page-home .scroll-indicator span {
-  font-size: 0.65rem;
+.page-home .scroll-approach {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.page-home .scroll-approach span {
+  display: block;
+  height: 1.5px;
+  background: var(--hud-cyan);
+  border-radius: 1px;
+  opacity: 0.22;
+  transform-origin: center;
+  animation: approachSweep 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.page-home .scroll-approach span:nth-child(1) { width: 28px; animation-delay: 0s; }
+.page-home .scroll-approach span:nth-child(2) { width: 22px; animation-delay: 0.18s; }
+.page-home .scroll-approach span:nth-child(3) { width: 17px; animation-delay: 0.36s; }
+.page-home .scroll-approach span:nth-child(4) { width: 12px; animation-delay: 0.54s; }
+.page-home .scroll-approach span:nth-child(5) { width: 7px; animation-delay: 0.72s; }
+
+@keyframes approachSweep {
+  0%, 80%, 100% {
+    opacity: 0.2;
+    transform: scaleX(1);
+    box-shadow: none;
+  }
+  18% {
+    opacity: 1;
+    transform: scaleX(1.25);
+    box-shadow: 0 0 8px rgba(200, 169, 110, 0.55);
+  }
+}
+
+.page-home .scroll-label {
+  font-family: 'JetBrains Mono', ui-monospace, 'DM Sans', sans-serif;
+  font-size: 0.62rem;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 3.5px;
+  color: rgba(255, 255, 255, 0.38);
+  transition: color 0.3s ease;
 }
 
-.page-home .scroll-line {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(180deg, rgba(200, 169, 110, 0.4), transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
+.page-home .scroll-indicator:hover .scroll-label,
+.page-home .scroll-indicator:focus-visible .scroll-label {
+  color: var(--hud-cyan);
 }
 
-@keyframes scrollPulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(1); }
-  50% { opacity: 1; transform: scaleY(1.2); }
+.page-home .scroll-indicator:focus-visible {
+  outline: 1px solid rgba(200, 169, 110, 0.4);
+  outline-offset: 6px;
+  border-radius: 4px;
 }
 
 /* ======================================================================
@@ -357,28 +384,29 @@
 /* ======================================================================
    FEATURES SECTION
    ====================================================================== */
+/* Era 1970 — rouge-orangé (F-14 Tomcat) */
 .page-home .features {
   padding: 13rem 0;
-  background: var(--night);
-  position: relative;
 }
 
-/* Subtle top separator */
-.page-home .features::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200, 169, 110, 0.15), transparent);
-}
+.page-home .features::after { content: none; }
+
+.page-home .features > .container { position: relative; z-index: 2; }
 
 .page-home .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
   margin-top: 0;
+}
+
+/* 4 cartes sur une ligne à partir de 1280px (garanti en 1920x1080) */
+@media (min-width: 1280px) {
+  .page-home .features > .container { max-width: 1680px; }
+  .page-home .features-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
 }
 
 .page-home .feature-card {
@@ -449,21 +477,14 @@
 /* ======================================================================
    FEATURED AIRCRAFT SECTION
    ====================================================================== */
+/* Era 1980 — champagne (F-15 Eagle) */
 .page-home .featured {
   padding: 10rem 0;
-  background: var(--night-mid);
-  position: relative;
 }
 
-.page-home .featured::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200, 169, 110, 0.12), transparent);
-}
+.page-home .featured::after { content: none; }
+
+.page-home .featured > .container { position: relative; z-index: 2; }
 
 .page-home .featured-grid {
   display: grid;
@@ -473,19 +494,36 @@
 }
 
 .page-home .aircraft-card {
-  background: rgba(10, 12, 18, 0.9);
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(200, 169, 110, 0.10);
   transition: var(--transition);
   position: relative;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 32px rgba(0, 0, 0, 0.28);
+}
+
+.page-home .aircraft-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200, 169, 110, 0.35), transparent);
+  opacity: 0;
+  transition: var(--transition);
+  z-index: 3;
 }
 
 .page-home .aircraft-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.13);
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
+  border-color: rgba(200, 169, 110, 0.28);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 22px 52px rgba(0, 0, 0, 0.4), 0 0 30px rgba(200, 169, 110, 0.08);
 }
+
+.page-home .aircraft-card:hover::before { opacity: 1; }
 
 .page-home .aircraft-image {
   position: relative;
@@ -508,7 +546,9 @@
 .page-home .aircraft-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 30%, rgba(13, 13, 13, 0.95) 100%);
+  background:
+    linear-gradient(180deg, transparent 35%, rgba(13, 13, 13, 0.55) 70%, rgba(13, 13, 13, 0.92) 100%),
+    linear-gradient(180deg, rgba(200, 169, 110, 0.05) 0%, transparent 20%);
   display: flex;
   align-items: flex-end;
   padding: 1.5rem;
@@ -521,16 +561,17 @@
 }
 
 .page-home .tag {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(200, 169, 110, 0.10);
   backdrop-filter: blur(10px);
-  color: rgba(255, 255, 255, 0.75);
-  padding: 0.25rem 0.75rem;
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--hud-cyan);
+  padding: 0.3rem 0.8rem;
   border-radius: 6px;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(200, 169, 110, 0.22);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 }
 
 .page-home .aircraft-content { padding: 2rem; }
@@ -603,32 +644,14 @@
 /* ======================================================================
    TIMELINE PREVIEW
    ====================================================================== */
+/* Era 2000 — bleu (F-22 Raptor) */
 .page-home .timeline-preview {
-  position: relative;
   padding: 10rem 0;
-  background: var(--night);
-  overflow: hidden;
 }
 
-.page-home .timeline-bg {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 20% 50%, rgba(200, 169, 110, 0.04) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(102, 126, 234, 0.04) 0%, transparent 50%);
-  z-index: 0;
-}
+.page-home .timeline-bg { display: none; }
 
-.page-home .timeline-preview::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(200, 169, 110, 0.12), transparent);
-  z-index: 1;
-}
+.page-home .timeline-preview > .container { position: relative; z-index: 2; }
 
 .page-home .timeline-content {
   position: relative;
@@ -730,27 +753,17 @@
 /* ======================================================================
    CTA SECTION
    ====================================================================== */
+/* Era 2020 — rose vif (J-20) */
 .page-home .cta-section {
   padding: 12rem 0;
-  background: var(--night-mid);
   text-align: center;
-  position: relative;
-  overflow: hidden;
 }
 
-.page-home .cta-grid-bg {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(200, 169, 110, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200, 169, 110, 0.02) 1px, transparent 1px);
-  background-size: 80px 80px;
-  z-index: 0;
-}
+.page-home .cta-grid-bg { display: none; }
 
 .page-home .cta-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .page-home .cta-icon {
@@ -854,7 +867,7 @@
 /* ── tablet (≤ 48em) ──────────────────────────────────────────────── */
 @media (max-width: 48em) {
   .page-home main .container { padding: 0 1.5rem; }
-  .page-home .hero { min-height: 500px; }
+  .page-home .hero { min-height: 100vh; min-height: 100svh; }
   .page-home .hero-content { padding: 1.5rem 1rem; }
   .page-home .hero-badge { font-size: 0.65rem; padding: 0.4rem 0.9rem 0.4rem 1.7rem; margin-bottom: 1.5rem; }
   .page-home .hero-title { margin-bottom: 1.25rem; }
@@ -890,10 +903,11 @@
 /* ── phone (≤ 30em) ───────────────────────────────────────────────── */
 @media (max-width: 30em) {
   .page-home main .container { padding: 0 0.875rem; }
-  .page-home .hero { min-height: 450px; }
+  .page-home .hero { min-height: 100vh; min-height: 100svh; padding-bottom: 5rem; }
   .page-home .hero-content { padding: 0.75rem; }
   .page-home .hero-badge { font-size: 0.6rem; padding: 0.35rem 0.8rem 0.35rem 1.6rem; margin-bottom: 1rem; }
 
+  .page-home .scroll-indicator { bottom: 1.25rem; }
   .page-home .hero-stats { gap: 1rem; margin-top: 1.5rem; }
   .page-home .stat-number { font-size: 1.6rem; }
   .page-home .stat-label { font-size: 0.6rem; }
@@ -967,20 +981,14 @@
    ====================================================================== */
 
 /* === SECTION ESPACE PERSONNEL === */
+/* Era 1990 — violet (Su-27) */
 .page-home .personal-space {
   padding: 6rem 0;
-  background: var(--night-mid);
-  position: relative;
-  overflow: hidden;
 }
 
-.page-home .personal-space::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse at 80% 50%, rgba(200, 169, 110, 0.04) 0%, transparent 70%);
-  pointer-events: none;
-}
+.page-home .personal-space::after { content: none; }
+
+.page-home .personal-space > .container { position: relative; z-index: 2; }
 
 .page-home .personal-space-grid {
   display: grid;
@@ -1112,20 +1120,14 @@
 .page-home .role-badge.member .role-icon { color: var(--hud-green); }
 
 /* === SECTION RECHERCHE AVANCÉE === */
+/* Era 2010 — magenta (F-35 Lightning II) */
 .page-home .search-showcase {
   padding: 6rem 0;
-  background: var(--night);
-  position: relative;
-  overflow: hidden;
 }
 
-.page-home .search-showcase::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse at 20% 50%, rgba(0, 230, 118, 0.03) 0%, transparent 60%);
-  pointer-events: none;
-}
+.page-home .search-showcase::after { content: none; }
+
+.page-home .search-showcase > .container { position: relative; z-index: 2; }
 
 .page-home .search-showcase-content {
   display: grid;

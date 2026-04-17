@@ -7,9 +7,6 @@
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://i.postimg.cc">
   <link rel="preconnect" href="https://flagcdn.com">
   <meta name="theme-color" content="#080c14">
   <meta name="mobile-web-app-capable" content="yes">
@@ -29,8 +26,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Vol d'Histoire - Explorez l'Aviation Militaire">
   <meta name="twitter:description" content="Découvrez l'histoire de l'aviation militaire à travers notre collection d'avions de chasse historiques et leur évolution technique.">
-  <meta property="og:image" content="https://i.postimg.cc/3NhD2ZCd/rafale.jpg">
-  <meta name="twitter:image" content="https://i.postimg.cc/3NhD2ZCd/rafale.jpg">
+  <meta property="og:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/rafale.jpg">
+  <meta name="twitter:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/rafale.jpg">
   <link rel="alternate" hreflang="fr" href="https://vol-histoire.titouan-borde.com/?lang=fr">
   <link rel="alternate" hreflang="en" href="https://vol-histoire.titouan-borde.com/?lang=en">
   <link rel="alternate" hreflang="x-default" href="https://vol-histoire.titouan-borde.com/">
@@ -38,7 +35,6 @@
   <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/core.min.css">
   <link rel="stylesheet" href="css/home.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -92,16 +88,9 @@
   <!-- HERO -->
   <main id="main-content">
   <section class="hero">
-    <video class="hero-video" autoplay muted loop playsinline><source src="hero.mp4" type="video/mp4"></video>
     <div class="hero-overlay"></div>
-    <div class="hero-hud-grid"></div>
-    <div class="hero-hud-corner hud-tl"></div>
-    <div class="hero-hud-corner hud-tr"></div>
-    <div class="hero-hud-corner hud-bl"></div>
-    <div class="hero-hud-corner hud-br"></div>
 
     <div class="hero-content">
-      <div class="hero-badge"><span class="badge-pulse"></span><i class="fas fa-satellite-dish"></i><span data-i18n="home.hero_badge_text">Base Opérationnelle Active</span></div>
       <h1 class="hero-title"><span data-i18n="home.hero_title_1_full">Découvrez l'Histoire de</span> <span class="gradient-text" data-i18n="home.hero_title_2_full">l'Aviation Militaire</span></h1>
       <p class="hero-description" data-i18n="home.hero_desc_full">Explorez notre collection exclusive d'avions de chasse historiques et plongez dans l'évolution technique fascinante de l'aviation depuis ses débuts jusqu'à nos jours.</p>
       <div class="hero-actions">
@@ -116,7 +105,12 @@
         <div class="stat-item"><div class="stat-number" id="hero-stat-countries">0</div><div class="stat-label" data-i18n="home.stat_nations">Nations</div></div>
       </div>
     </div>
-    <div class="scroll-indicator"><div class="scroll-line"></div><span data-i18n="home.scroll">Défiler</span></div>
+    <div class="scroll-indicator" role="button" tabindex="0" aria-label="Défiler vers la suite">
+      <div class="scroll-approach" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <span class="scroll-label" data-i18n="home.scroll">Défiler</span>
+    </div>
   </section>
 
   <!-- FEATURES -->
@@ -138,12 +132,12 @@
       <div class="section-header light"><span class="section-badge"><i class="fas fa-star"></i> <span data-i18n="home.featured_badge">Sélection</span></span><h2 data-i18n="home.featured_title">Avions en Vedette</h2><p data-i18n="home.showcase_desc">Découvrez quelques-uns des appareils les plus emblématiques de notre collection</p></div>
       <div class="featured-grid">
         <article class="aircraft-card" data-aos="zoom-in" data-aos-delay="0">
-          <div class="aircraft-image"><img src="/assets/airplanes/rafale.jpg" alt="Rafale" loading="lazy"><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_4">4e Génération</span><span class="tag" data-i18n="home.type_multirole">Multirôle</span></div></div></div>
-          <div class="aircraft-content"><div class="aircraft-header"><h3>Rafale</h3><div class="aircraft-flag"><img src="https://flagcdn.com/w40/fr.png" alt="France" width="24"></div></div><p class="aircraft-description" data-i18n="home.rafale_desc">Chasseur multirôle français polyvalent, capable d'opérer depuis un porte-avions et d'exceller en supériorité aérienne comme en frappe de précision.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 1.8</span></div><div class="spec"><i class="fas fa-calendar"></i><span>2001</span></div></div><a href="/details?id=30" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
+          <div class="aircraft-image"><img src="/assets/airplanes/rafale.jpg" alt="Rafale" loading="lazy"><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_4_5">4.5e Génération</span><span class="tag" data-i18n="home.type_multirole">Multirôle</span></div></div></div>
+          <div class="aircraft-content"><div class="aircraft-header"><h3>Dassault Rafale</h3><div class="aircraft-flag"><img src="https://flagcdn.com/w40/fr.png" alt="France" width="24"></div></div><p class="aircraft-description" data-i18n="home.rafale_desc">Chasseur polyvalent français omnirôle, incarnation de l'excellence aéronautique tricolore alliant performance, autonomie stratégique et innovation.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 1.8</span></div><div class="spec"><i class="fas fa-calendar"></i><span>2001</span></div></div><a href="/details?id=30" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
         </article>
         <article class="aircraft-card" data-aos="zoom-in" data-aos-delay="100">
-          <div class="aircraft-image"><img src="/assets/airplanes/f22-raptor.jpg" alt="F-22 Raptor" loading="lazy"><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_5">5e Génération</span><span class="tag" data-i18n="home.type_fighter">Chasseur</span></div></div></div>
-          <div class="aircraft-content"><div class="aircraft-header"><h3>F-22 Raptor</h3><div class="aircraft-flag"><img src="https://flagcdn.com/w40/us.png" alt="USA" width="24"></div></div><p class="aircraft-description" data-i18n="home.f22_desc">Premier chasseur furtif de 5e génération, dominant la supériorité aérienne grâce à sa furtivité, sa supercroisière et son agilité exceptionnelle.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 2.25</span></div><div class="spec"><i class="fas fa-calendar"></i><span>2005</span></div></div><a href="/details?id=12" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
+          <div class="aircraft-image"><img src="/assets/airplanes/f22-raptor.jpg" alt="F-22 Raptor" loading="lazy"><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_5">5e Génération</span><span class="tag" data-i18n="home.type_superiority">Supériorité aérienne</span></div></div></div>
+          <div class="aircraft-content"><div class="aircraft-header"><h3>F-22 Raptor</h3><div class="aircraft-flag"><img src="https://flagcdn.com/w40/us.png" alt="USA" width="24"></div></div><p class="aircraft-description" data-i18n="home.f22_desc">Premier chasseur de 5e génération opérationnel, référence absolue de la supériorité aérienne grâce à sa furtivité, sa super-croisière et son avionique avancée.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 2.25</span></div><div class="spec"><i class="fas fa-calendar"></i><span>2005</span></div></div><a href="/details?id=12" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
         </article>
         <article class="aircraft-card" data-aos="zoom-in" data-aos-delay="200">
           <div class="aircraft-image"><img src="/assets/airplanes/mig29.jpg" alt="MiG-29" loading="lazy"><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_4">4e Génération</span><span class="tag" data-i18n="home.type_multirole">Multirôle</span></div></div></div>

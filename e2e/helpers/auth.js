@@ -23,11 +23,12 @@ async function loginViaApi(page, email, password) {
   }
 
   // 2. Navigate to home — déclenche auth.init() → /api/refresh → token en mémoire.
-  await page.goto('/');
+  //    On attend networkidle pour laisser /api/refresh se terminer avant de
+  //    poller auth.getPayload() (réduit la flakiness sur charge CI/parallèle).
+  await page.goto('/', { waitUntil: 'networkidle' });
 
   // 3. Attend que auth.getPayload() retourne un payload non-null.
-  //    C'est la VRAIE condition de succès : pas de timing, pas de proxy,
-  //    pas de networkidle. On vérifie directement l'état applicatif.
+  //    C'est la VRAIE condition de succès : pas de timing, pas de proxy.
   // Note : `auth` est un `const` au top-level d'un script classique → vit
   // dans le scope script partagé, accessible depuis waitForFunction sans
   // préfixe window. (window.auth n'existe PAS car const ne s'attache pas
@@ -41,7 +42,7 @@ async function loginViaApi(page, email, password) {
       }
     },
     null,
-    { timeout: 10000 }
+    { timeout: 20000 }
   );
 }
 

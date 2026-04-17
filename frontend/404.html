@@ -3,10 +3,10 @@
 <head>
 
 <!-- Google Tag Manager -->
-<script defer src="js/gtm.js?v=1775742573525"></script>
+<script defer src="/js/gtm.js"></script>
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <meta name="theme-color" content="#080c14">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,39 +15,58 @@
   <meta name="description" content="Page introuvable — L'appareil demandé a disparu du radar.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/404">
   <meta name="robots" content="noindex, nofollow">
-  <link rel="stylesheet" href="css/core.min.css">
+  <meta property="og:title" content="404 — Contact Perdu | Vol d'Histoire">
+  <meta property="og:description" content="Page introuvable — L'appareil demandé a disparu du radar.">
+  <meta property="og:url" content="https://vol-histoire.titouan-borde.com/404">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Vol d'Histoire">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/a10-thunderbolt-2.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="404 — Contact Perdu | Vol d'Histoire">
+  <meta name="twitter:description" content="Page introuvable — L'appareil demandé a disparu du radar.">
+  <meta name="twitter:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/a10-thunderbolt-2.jpg">
+  <link rel="preload" href="/fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/core.min.css">
   <style>
     /* ============================================================
        404 PAGE — RADAR CONTACT LOST
        ============================================================ */
+    /* Backdrop aligné sur le pattern hangar */
+    body.page-404 { background: var(--night); }
+    body.page-404::before,
+    body.page-404::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+    body.page-404::before {
+      background-image: url('/assets/airplanes/f4-phantom-2.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: blur(30px) brightness(0.28) saturate(0.7);
+      transform: scale(1.15);
+      opacity: 0.55;
+      z-index: -2;
+    }
+    body.page-404::after {
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        radial-gradient(ellipse at 20% 20%, rgba(231, 76, 60, 0.22) 0%, transparent 55%);
+      background-size: 60px 60px, 60px 60px, 100% 100%;
+    }
+
     .error-page {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      background: var(--night);
+      background: transparent;
       position: relative;
-      overflow: hidden;
-    }
-
-    .error-hud-grid {
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(200, 169, 110, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(200, 169, 110, 0.02) 1px, transparent 1px);
-      background-size: 60px 60px;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .error-ambient {
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at 50% 40%, rgba(231, 76, 60, 0.06) 0%, transparent 60%),
-        radial-gradient(ellipse at 20% 80%, rgba(200, 169, 110, 0.04) 0%, transparent 50%);
-      z-index: 0;
-      pointer-events: none;
     }
 
     .error-main {
@@ -226,39 +245,94 @@
     /* ---- TEXT CONTENT ---- */
     .error-text { flex: 1; min-width: 0; }
 
-    .error-warning {
+    /* ---- SOS BEACON (remplace l'ancien warning) ----
+       Balise de détresse : code Morse SOS (· · · — — — · · ·) animé
+       en vraie cadence, avec indicatif de vol. */
+    .error-beacon {
       display: inline-flex;
       align-items: center;
-      gap: 0.6rem;
-      background: rgba(231, 76, 60, 0.08);
-      padding: 0.5rem 1.2rem;
-      border-radius: 50px;
-      font-size: 0.75rem;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+      padding-bottom: 0.9rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
       font-weight: 600;
-      margin-bottom: 1.5rem;
-      border: 1px solid rgba(231, 76, 60, 0.2);
-      color: var(--accent);
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      animation: warningPulse 2s ease-in-out infinite;
+      letter-spacing: 3px;
     }
 
-    .warning-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+    .beacon-morse {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 10px;
+    }
+
+    .beacon-morse span {
+      display: block;
+      height: 6px;
+      width: 6px;
       background: var(--accent);
-      animation: warningDot 1s ease-in-out infinite;
+      border-radius: 50%;
+      opacity: 0.1;
+      box-shadow: 0 0 0 rgba(231, 76, 60, 0);
+      animation: morseBlink 6s linear infinite;
+    }
+    .beacon-morse span.dash {
+      width: 18px;
+      border-radius: 3px;
     }
 
-    @keyframes warningDot {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+    /* Timing SOS authentique — 6s par cycle.
+       S (· · ·) de 0 à 0.9s · pause lettre 0.6s
+       O (— — —) de 1.5 à 3.3s · pause lettre 0.6s
+       S (· · ·) de 3.9 à 4.8s · silence 1.2s */
+    .beacon-morse span:nth-child(1) { animation-delay: 0.0s; }
+    .beacon-morse span:nth-child(2) { animation-delay: 0.3s; }
+    .beacon-morse span:nth-child(3) { animation-delay: 0.6s; }
+    .beacon-morse span:nth-child(4) { animation-delay: 1.5s; animation-name: morseBlinkLong; }
+    .beacon-morse span:nth-child(5) { animation-delay: 2.1s; animation-name: morseBlinkLong; }
+    .beacon-morse span:nth-child(6) { animation-delay: 2.7s; animation-name: morseBlinkLong; }
+    .beacon-morse span:nth-child(7) { animation-delay: 3.9s; }
+    .beacon-morse span:nth-child(8) { animation-delay: 4.2s; }
+    .beacon-morse span:nth-child(9) { animation-delay: 4.5s; }
+
+    @keyframes morseBlink {
+      0%, 100% { opacity: 0.1; box-shadow: 0 0 0 rgba(231, 76, 60, 0); }
+      1%       { opacity: 1;   box-shadow: 0 0 10px rgba(231, 76, 60, 0.7); }
+      4%       { opacity: 1;   box-shadow: 0 0 10px rgba(231, 76, 60, 0.7); }
+      5%       { opacity: 0.1; box-shadow: 0 0 0 rgba(231, 76, 60, 0); }
+    }
+    @keyframes morseBlinkLong {
+      0%, 100% { opacity: 0.1; box-shadow: 0 0 0 rgba(231, 76, 60, 0); }
+      1%       { opacity: 1;   box-shadow: 0 0 10px rgba(231, 76, 60, 0.7); }
+      14%      { opacity: 1;   box-shadow: 0 0 10px rgba(231, 76, 60, 0.7); }
+      15%      { opacity: 0.1; box-shadow: 0 0 0 rgba(231, 76, 60, 0); }
     }
 
-    @keyframes warningPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.15); }
-      50% { box-shadow: 0 0 0 8px rgba(231, 76, 60, 0); }
+    .beacon-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .beacon-label-dim { color: rgba(255, 255, 255, 0.3); }
+    .beacon-callsign {
+      color: var(--hud-cyan);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+    .beacon-sep {
+      width: 18px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .beacon-morse span { animation: none; opacity: 0.7; }
     }
 
     .error-code {
@@ -298,35 +372,58 @@
     }
 
     .error-telemetry {
-      background: rgba(15, 22, 38, 0.6);
-      border: 1px solid rgba(200, 169, 110, 0.08);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
+      position: relative;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
       margin-bottom: 2rem;
-      font-family: 'DM Sans', monospace;
-      font-size: 0.8rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
       max-width: 460px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .error-telemetry::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 14px; bottom: 14px;
+      width: 2px;
+      background: linear-gradient(180deg, transparent, var(--hud-cyan) 30%, var(--hud-cyan) 70%, transparent);
+      border-radius: 2px;
+      opacity: 0.6;
     }
 
     .telemetry-line {
       display: flex;
+      align-items: baseline;
       justify-content: space-between;
-      padding: 0.3rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      gap: 1.5rem;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     }
 
-    .telemetry-line:last-child { border-bottom: none; }
+    .telemetry-line:first-child { padding-top: 0; }
+    .telemetry-line:last-child { border-bottom: none; padding-bottom: 0; }
 
     .telemetry-key {
-      color: rgba(200, 169, 110, 0.5);
+      color: rgba(255, 255, 255, 0.4);
       text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 0.7rem;
+      letter-spacing: 2px;
+      font-size: 0.68rem;
+      font-weight: 600;
     }
 
-    .telemetry-value { color: rgba(255, 255, 255, 0.6); font-weight: 500; }
+    .telemetry-value {
+      color: rgba(255, 255, 255, 0.78);
+      font-weight: 500;
+      font-feature-settings: 'tnum' 1;
+    }
     .telemetry-value.alert { color: var(--accent); font-weight: 600; }
-    .telemetry-value.ok { color: var(--hud-green); }
+    .telemetry-value.ok { color: var(--hud-green, #4ade80); }
+    .telemetry-value .u-inline-dot { font-size: 0.5rem; vertical-align: middle; margin-right: 0.35rem; }
 
     .error-actions {
       display: flex;
@@ -346,7 +443,9 @@
     @media (max-width: 639px) {
       .error-main { padding: 5rem 1rem 3rem; }
       .radar-container { width: 220px; height: 220px; }
-      .error-warning { font-size: 0.65rem; padding: 0.4rem 1rem; }
+      .error-beacon { font-size: 0.65rem; letter-spacing: 2px; gap: 0.75rem; }
+      .beacon-morse span { width: 5px; height: 5px; }
+      .beacon-morse span.dash { width: 14px; }
       .error-telemetry { font-size: 0.75rem; padding: 0.875rem 1rem; }
       .btn { width: 100%; max-width: 320px; }
     }
@@ -358,7 +457,7 @@
     }
   </style>
 </head>
-<body>
+<body class="page-404">
 <!-- Header -->
   <header>
     <nav class="container">
@@ -392,9 +491,6 @@
 
   <!-- 404 Content -->
   <div class="error-page">
-    <div class="error-hud-grid"></div>
-    <div class="error-ambient"></div>
-
     <main class="error-main">
       <div class="error-content">
 
@@ -418,10 +514,17 @@
 
         <!-- Text -->
         <div class="error-text">
-          <div class="error-warning">
-            <span class="warning-dot"></span>
-            <i class="fas fa-triangle-exclamation"></i>
-            <span data-i18n="error404.radar_lost">Contact radar perdu</span>
+          <div class="error-beacon" aria-label="Signal de détresse SOS">
+            <span class="beacon-morse" aria-hidden="true">
+              <span></span><span></span><span></span>
+              <span class="dash"></span><span class="dash"></span><span class="dash"></span>
+              <span></span><span></span><span></span>
+            </span>
+            <span class="beacon-sep" aria-hidden="true"></span>
+            <span class="beacon-label">
+              <span class="beacon-label-dim" data-i18n="error404.beacon_callsign">Indicatif</span>
+              <span class="beacon-callsign">GHOST-404</span>
+            </span>
           </div>
 
           <div class="error-code">404</div>
@@ -473,24 +576,10 @@
     </div>
   </footer>
 
-  <script>
-    // Display the requested path in the telemetry panel
-    document.getElementById('requested-path').textContent = window.location.pathname || '/unknown';
-
-    // Hamburger menu toggle
-    const hamburger = document.querySelector('.hamburger');
-    const navLinks = document.querySelector('.nav-links');
-    if (hamburger && navLinks) {
-      hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navLinks.classList.toggle('show');
-      });
-    }
-  </script>
-  <script defer src="js/vendor/purify.min.js?v=1775742573525"></script>
-  <script defer src="js/app-version.js?v=1775742573525"></script>
-  <script defer src="js/sentry-init.js?v=1775742573525"></script>
-  <script defer src="/js/i18n.js"></script>
-  <script defer src="/js/cookies.js"></script>
+  <div id="toast-container" aria-live="polite"></div>
+  <script defer src="/js/vendor/purify.min.js"></script>
+  <script defer src="/js/dist/app.min.js"></script>
+  <script defer src="/js/sentry-init.js"></script>
+  <script defer src="/js/404.js"></script>
 </body>
 </html>
