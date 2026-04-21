@@ -133,9 +133,14 @@ class CookieConsent {
       });
     });
     
-    // Keyboard navigation
+    // Fermeture ESC : ne se déclenche que si la modal est visible,
+    // pour éviter de consommer ESC globalement (cause d'effets de bord ailleurs).
+    // Le focus trap attaché dans openModal() gère aussi ESC quand il est actif,
+    // mais ce listener sert de filet si le trap n'a pas pu s'attacher (HTML absent).
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
+      if (e.key !== 'Escape') return;
+      const modal = document.getElementById('cookie-modal');
+      if (modal && !modal.classList.contains('hidden')) {
         this.closeModal();
       }
     });
@@ -164,16 +169,30 @@ class CookieConsent {
   openModal() {
     const modal = document.getElementById('cookie-modal');
     if (modal) {
+      // Mémorise l'élément focusé avant ouverture pour le restaurer à la fermeture.
+      this._previousFocus = document.activeElement;
+
+      // Attributs ARIA requis par WCAG 2.1 4.1.2 (rôles dialogue modaux).
+      // Appliqués dynamiquement car le HTML est injecté depuis cookie-consent.html
+      // qui ne les porte pas, et pour éviter une régression si le template change.
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      const header = modal.querySelector('.cookie-modal-header h2, .cookie-modal-header h3');
+      if (header) {
+        if (!header.id) header.id = 'cookie-modal-title';
+        modal.setAttribute('aria-labelledby', header.id);
+      }
+
       // Load current preferences
       const consent = this.getConsent();
       if (consent) {
         this.preferences = consent;
       }
-      
+
       // Update toggle states
       const analyticsToggle = document.getElementById('cookie-analytics');
       const preferenceToggle = document.getElementById('cookie-preference');
-      
+
       if (analyticsToggle) {
         analyticsToggle.checked = this.preferences.analytics;
       }
@@ -186,17 +205,33 @@ class CookieConsent {
       modal.offsetHeight;
       modal.classList.add('show');
       document.body.style.overflow = 'hidden';
+
+      // Focus trap + ESC fournis par trapFocus (utils.js, concaténé en amont
+      // dans app.min.js). Bind la fermeture pour préserver le contexte this.
+      if (typeof trapFocus === 'function') {
+        this._focusTrap = trapFocus(modal, { onEscape: this.closeModal.bind(this) });
+      }
     }
   }
-  
+
   closeModal() {
     const modal = document.getElementById('cookie-modal');
     if (modal) {
+      if (this._focusTrap) {
+        this._focusTrap.destroy();
+        this._focusTrap = null;
+      }
       modal.classList.remove('show');
       document.body.style.overflow = '';
       setTimeout(() => {
         modal.classList.add('hidden');
       }, 300);
+      // Restaure le focus sur l'élément qui a ouvert la modal
+      // (ex. bouton « Paramétrer » de la bannière).
+      if (this._previousFocus && typeof this._previousFocus.focus === 'function') {
+        this._previousFocus.focus();
+        this._previousFocus = null;
+      }
     }
   }
   

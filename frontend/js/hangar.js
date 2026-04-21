@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const state = {
     aircraft: [],
-    filteredAircraft: [],
+    total: 0,
     currentPage: 1,
     itemsPerPage: 6,
     filters: { country: null, generation: null, type: null, search: '' },
@@ -37,8 +37,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   VH.hangar.filters.setupSearchAndSort(state);
   VH.hangar.admin.setupAdminModal(state);
 
-  // Restauration session → URL (URL prioritaire)
+  // Restauration session → URL (URL prioritaire) — appliquées AVANT le premier
+  // loadAircraft pour éviter un double appel /api/airplanes au boot.
   VH.hangar.filters.restoreFiltersFromSession(state);
+  VH.hangar.filters.readStateFromUrl(state);
   const searchInput = document.getElementById('search-input');
   const sortSelect = document.getElementById('sort-select');
   if (searchInput && state.filters.search) searchInput.value = state.filters.search;

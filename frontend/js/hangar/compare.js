@@ -196,7 +196,7 @@
             '<button class="cmp-remove" data-remove="' + a.id + '" aria-label="Retirer"><i class="fas fa-times"></i></button>' +
             '<div class="cmp-img-wrap">' +
               (a.image_url
-                ? '<img src="' + escapeHtml(a.image_url) + '" alt="' + escapeHtml(a.name || '') + '" loading="lazy">'
+                ? VH.shared.picture.pictureHtml(a.image_url, { alt: a.name || '', loading: 'lazy', width: '300', height: '200' })
                 : '<div class="cmp-img-placeholder"><i class="fas fa-plane"></i></div>') +
             '</div>' +
             '<div class="cmp-col-title">' +

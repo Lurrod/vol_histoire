@@ -304,6 +304,52 @@ describe('Middleware authorize', () => {
       .set('Authorization', `Bearer ${tokenAdmin}`);
     expect(res.status).toBe(200);
   });
+
+  test('200 — /api/users?search=jean filtre name/email via ILIKE', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ count: '1' }] }); // COUNT WHERE ILIKE
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{ id: 9, name: 'Jean Dupont', email: 'jean@test.fr', role_id: 3 }],
+    }); // SELECT WHERE ILIKE
+    const res = await request(app)
+      .get('/api/users?search=jean')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(200);
+    expect(res.body.data).toHaveLength(1);
+
+    const countCall = mockPool.query.mock.calls[0];
+    const listCall = mockPool.query.mock.calls[1];
+    // Les deux requêtes doivent utiliser une clause WHERE paramétrée
+    expect(countCall[0]).toMatch(/WHERE\s+\(name ILIKE \$1 OR email ILIKE \$1\)/);
+    expect(countCall[1]).toEqual(['%jean%']);
+    expect(listCall[0]).toMatch(/WHERE\s+\(name ILIKE \$1 OR email ILIKE \$1\)/);
+    expect(listCall[1]).toEqual(['%jean%', 20, 0]); // search, limit, offset
+  });
+
+  test('200 — /api/users sans ?search= n\'ajoute pas de clause WHERE', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ count: '42' }] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const res = await request(app)
+      .get('/api/users?page=2&limit=10')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(200);
+
+    const countCall = mockPool.query.mock.calls[0];
+    const listCall = mockPool.query.mock.calls[1];
+    expect(countCall[0]).not.toMatch(/WHERE/);
+    expect(countCall[1]).toEqual([]);
+    // Pagination : page=2, limit=10 → offset=10
+    expect(listCall[1]).toEqual([10, 10]);
+  });
+
+  test('200 — /api/users?search=  (espaces) est traité comme vide', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ count: '0' }] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const res = await request(app)
+      .get('/api/users?search=%20%20%20')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(200);
+    expect(mockPool.query.mock.calls[0][0]).not.toMatch(/WHERE/);
+  });
 });
 
 // =============================================================================
@@ -904,6 +950,11 @@ describe('Monitoring endpoints', () => {
   });
 
   describe('GET /api/ready', () => {
+    afterEach(() => {
+      // Nettoie l'éventuel client Redis mocké entre les tests
+      delete app._redisClient;
+    });
+
     test('200 — DB OK retourne ready avec latence', async () => {
       mockPool.query.mockResolvedValueOnce({ rows: [{ '?column?': 1 }] });
       const res = await request(app).get('/api/ready');
@@ -912,6 +963,8 @@ describe('Monitoring endpoints', () => {
       expect(res.body.db.ok).toBe(true);
       expect(typeof res.body.db.latencyMs).toBe('number');
       expect(res.body.db.latencyMs).toBeGreaterThanOrEqual(0);
+      // Sans REDIS_URL, le statut Redis doit indiquer non configuré
+      expect(res.body.redis).toEqual({ configured: false });
     });
 
     test('503 — DB inaccessible retourne not_ready', async () => {
@@ -920,6 +973,37 @@ describe('Monitoring endpoints', () => {
       expect(res.status).toBe(503);
       expect(res.body.status).toBe('not_ready');
       expect(res.body.db.ok).toBe(false);
+      expect(res.body.redis).toEqual({ configured: false });
+    });
+
+    test('200 — Redis OK, expose latence ping dans le payload', async () => {
+      app._redisClient = { ping: jest.fn().mockResolvedValue('PONG') };
+      mockPool.query.mockResolvedValueOnce({ rows: [{ '?column?': 1 }] });
+      const res = await request(app).get('/api/ready');
+      expect(res.status).toBe(200);
+      expect(app._redisClient.ping).toHaveBeenCalledTimes(1);
+      expect(res.body.redis.configured).toBe(true);
+      expect(res.body.redis.ok).toBe(true);
+      expect(typeof res.body.redis.latencyMs).toBe('number');
+    });
+
+    test('200 — Redis KO (ping reject) NE fait PAS basculer en not_ready', async () => {
+      // Le fallback mémoire suffit : Redis down est informatif, pas bloquant
+      app._redisClient = { ping: jest.fn().mockRejectedValue(new Error('ECONNREFUSED')) };
+      mockPool.query.mockResolvedValueOnce({ rows: [{ '?column?': 1 }] });
+      const res = await request(app).get('/api/ready');
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe('ready');
+      expect(res.body.redis).toEqual({ configured: true, ok: false, error: 'ECONNREFUSED' });
+    });
+
+    test('503 — DB KO + Redis KO : redis reporté dans la réponse', async () => {
+      app._redisClient = { ping: jest.fn().mockRejectedValue(new Error('timeout')) };
+      mockPool.query.mockRejectedValueOnce(new Error('DB down'));
+      const res = await request(app).get('/api/ready');
+      expect(res.status).toBe(503);
+      expect(res.body.db.ok).toBe(false);
+      expect(res.body.redis.ok).toBe(false);
     });
   });
 
@@ -1065,6 +1149,68 @@ describe('GET /details/:slug — server-rendered meta', () => {
     const res = await request(app).get('/details/ancien-nom-12');
     expect(res.status).toBe(301);
     expect(res.headers.location).toBe('/details/f-16-fighting-falcon-12');
+  });
+
+  test('200 — preload AVIF injecté pour un asset local JPG (LCP hint)', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 42,
+        name: 'Rafale',
+        complete_name: 'Dassault Rafale',
+        little_description: 'Chasseur omnirôle français',
+        image_url: '/assets/airplanes/rafale.jpg',
+        date_operationel: '2001-05-18',
+        country_name: 'France',
+        country_code: 'FRA',
+        generation: 4,
+        type_name: 'Chasseur',
+        manufacturer_name: 'Dassault',
+      }],
+    });
+    const res = await request(app).get('/details/rafale-42');
+    expect(res.status).toBe(200);
+    // Le preload cible la variante .avif du même nom de base
+    expect(res.text).toMatch(/<link rel="preload" as="image" href="\/assets\/airplanes\/rafale\.avif" type="image\/avif" fetchpriority="high">/);
+  });
+
+  test('200 — pas de preload AVIF pour une image distante (URL externe)', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 13,
+        name: 'Su-57',
+        complete_name: 'Sukhoi Su-57',
+        little_description: 'Chasseur furtif russe',
+        image_url: 'https://cdn.example.com/su57.jpg',
+        date_operationel: '2020-12-25',
+        country_name: 'Russie',
+        country_code: 'RUS',
+        generation: 5,
+      }],
+    });
+    const res = await request(app).get('/details/su-57-13');
+    expect(res.status).toBe(200);
+    // Aucun preload d'image injecté quand l'asset n'est pas local
+    expect(res.text).not.toMatch(/<link rel="preload"[^>]*as="image"[^>]*type="image\/avif"/);
+  });
+
+  test('200 — preload AVIF idempotent (remplacement, pas duplication)', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 7,
+        name: 'Mirage 2000',
+        complete_name: 'Dassault Mirage 2000',
+        little_description: 'Chasseur multirôle',
+        image_url: '/assets/airplanes/mirage-2000.png',
+        date_operationel: '1984-07-02',
+        country_name: 'France',
+        country_code: 'FRA',
+        generation: 4,
+      }],
+    });
+    const res = await request(app).get('/details/mirage-2000-7');
+    expect(res.status).toBe(200);
+    const matches = res.text.match(/<link rel="preload"[^>]*as="image"[^>]*type="image\/avif"/g) || [];
+    expect(matches).toHaveLength(1);
   });
 });
 
@@ -1975,6 +2121,12 @@ describe('En-tête Content-Security-Policy', () => {
     // Toutes les valeurs dynamiques passent par element.style.setProperty().
     expect(csp1).toContain("style-src-attr 'none'");
     expect(csp1).not.toContain("style-src-attr 'unsafe-inline'");
+
+    // style-src (fallback navigateurs sans style-src-elem) doit aussi être
+    // strictement nonce-based depuis v4.1.1 — aucun 'unsafe-inline' toléré.
+    const fallbackDir = csp1.match(/style-src (?!-)[^;]*/)[0];
+    expect(fallbackDir).toMatch(/'nonce-[A-Za-z0-9+/=]+'/);
+    expect(fallbackDir).not.toContain("'unsafe-inline'");
   });
 });
 

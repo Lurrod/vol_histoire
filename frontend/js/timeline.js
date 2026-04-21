@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return `
       <a class="tl-plane-card${featureClass}" href="${VH.shared.buildDetailsPath(plane.id, plane.name)}">
         <div class="tl-plane-img">
-          ${img ? `<img src="${escapeAttr(img)}" alt="${escapeAttr(plane.name)}" loading="lazy">` : ''}
+          ${img ? VH.shared.picture.pictureHtml(img, { alt: plane.name, loading: 'lazy', width: '400', height: '300' }) : ''}
           <span class="tl-plane-year">${year}</span>
           ${gen ? `<span class="tl-plane-gen">${gen}</span>` : ''}
         </div>

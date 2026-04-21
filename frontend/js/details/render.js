@@ -41,7 +41,8 @@
     }
 
     const heroImage = document.getElementById('hero-image');
-    heroImage.src = a.image_url || 'https://via.placeholder.com/800x500?text=No+Image';
+    const heroUrl = a.image_url || 'https://via.placeholder.com/800x500?text=No+Image';
+    VH.shared.picture.applySourcesTo(heroImage, heroUrl);
     heroImage.alt = [a.name, a.manufacturer_name, a.country_name].filter(Boolean).join(' — ');
     heroImage.loading = 'lazy';
 
@@ -198,10 +199,17 @@
       const slug = VH.details.data.slugify(name);
       const href = `/details/${slug}-${id}`;
       const imgSrc = img || '/assets/airplanes/placeholder.jpg';
+      const relPic = VH.shared.picture.pictureHtml(imgSrc, {
+        alt: '',
+        loading: 'lazy',
+        width: '300',
+        height: '200',
+        onerror: "this.closest('picture').style.display='none'",
+      });
       cards.push(`
         <a class="related-card" href="${href}">
           <span class="related-relation">${relation}</span>
-          <div class="related-img"><img src="${escapeHtml(imgSrc)}" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+          <div class="related-img">${relPic}</div>
           <h4>${escapeHtml(name)}</h4>
           <span class="related-arrow"><i class="fas fa-arrow-right"></i></span>
         </a>

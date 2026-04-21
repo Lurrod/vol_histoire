@@ -23,6 +23,11 @@ body.page-hangar::after {
 }
 body.page-hangar::before {
   background-image: url('/assets/airplanes/f4-phantom-2.jpg');
+  background-image: image-set(
+    url('/assets/airplanes/f4-phantom-2.avif') type('image/avif'),
+    url('/assets/airplanes/f4-phantom-2.webp') type('image/webp'),
+    url('/assets/airplanes/f4-phantom-2.jpg') type('image/jpeg')
+  );
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -149,6 +154,7 @@ body.page-hangar::after {
 .page-hangar .clear-all-filters:hover { background: rgba(231,76,60,0.15); border-color: var(--accent); }
 
 /* Filter Dropdowns */
+.page-hangar .filter-group { position: relative; display: inline-flex; }
 .page-hangar .filter-dropdown {
   position: absolute; top: calc(100% + 0.5rem); right: 0;
   width: 380px; max-width: 90vw;

@@ -33,6 +33,7 @@ const BUNDLES = {
     'nav.js',
     'cookies.js',
     'shared/alpha3.js',
+    'shared/picture.js',
     'shared/card.js',
   ],
 

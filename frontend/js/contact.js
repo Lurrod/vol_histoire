@@ -6,18 +6,30 @@ document.addEventListener('DOMContentLoaded', function () {
   const submitBtn = form.querySelector('.btn-send');
   const successMsg = document.getElementById('contact-success');
 
+  const emailEl = document.getElementById('contact-email');
+  const messageEl = document.getElementById('contact-message');
+
+  // Nettoyage de l'erreur au fur et à mesure que l'utilisateur corrige.
+  emailEl?.addEventListener('input', () => clearFieldError(emailEl));
+  messageEl?.addEventListener('input', () => clearFieldError(messageEl));
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
-    const email = document.getElementById('contact-email').value.trim();
-    const message = document.getElementById('contact-message').value.trim();
+    const email = emailEl.value.trim();
+    const message = messageEl.value.trim();
+
+    clearFieldError(emailEl);
+    clearFieldError(messageEl);
 
     if (!email || !isValidEmail(email)) {
-      showToast(i18n.t('contact.form_error_email'), 'error');
+      setFieldError(emailEl, i18n.t('contact.form_error_email'));
+      emailEl.focus();
       return;
     }
     if (!message) {
-      showToast(i18n.t('contact.form_error_message'), 'error');
+      setFieldError(messageEl, i18n.t('contact.form_error_message'));
+      messageEl.focus();
       return;
     }
 

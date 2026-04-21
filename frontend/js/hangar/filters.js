@@ -45,47 +45,11 @@
     });
   }
 
+  // Depuis la pagination serveur, tout filtre / recherche / tri déclenche
+  // un nouvel appel API. On garde l'alias `applyFiltersAndRender` pour
+  // compatibilité avec les callers existants (hangar.js, popstate, langChanged).
   function applyFiltersAndRender(state) {
-    let filtered = [...state.aircraft];
-    if (state.filters.search) {
-      const q = state.filters.search;
-      filtered = filtered.filter(a =>
-        a.name?.toLowerCase().includes(q) ||
-        a.complete_name?.toLowerCase().includes(q) ||
-        a.country_name?.toLowerCase().includes(q) ||
-        a.little_description?.toLowerCase().includes(q)
-      );
-    }
-    if (state.filters.country) {
-      filtered = filtered.filter(a => (a.country_name_fr || a.country_name) === state.filters.country);
-    }
-    if (state.filters.generation) {
-      filtered = filtered.filter(a => a.generation === parseInt(state.filters.generation));
-    }
-    if (state.filters.type) {
-      filtered = filtered.filter(a => (a.type_name_fr || a.type_name) === state.filters.type);
-    }
-    filtered = sortAircraft(filtered, state.sort);
-    state.filteredAircraft = filtered;
-    VH.hangar.render.renderAircraft(state);
-    VH.hangar.render.renderPagination(state);
-    VH.hangar.render.updateResultsCount(state);
-  }
-
-  function sortAircraft(aircraft, sort) {
-    switch (sort) {
-      case 'alphabetical': return aircraft.sort((a, b) => a.name.localeCompare(b.name));
-      case 'nation':       return aircraft.sort((a, b) => (a.country_name || '').localeCompare(b.country_name || ''));
-      case 'service-date':
-        return aircraft.sort((a, b) => {
-          const dA = a.date_operationel ? new Date(a.date_operationel) : new Date(0);
-          const dB = b.date_operationel ? new Date(b.date_operationel) : new Date(0);
-          return dB - dA;
-        });
-      case 'generation':   return aircraft.sort((a, b) => (b.generation || 0) - (a.generation || 0));
-      case 'type':         return aircraft.sort((a, b) => (a.type_name || '').localeCompare(b.type_name || ''));
-      default:             return aircraft;
-    }
+    VH.hangar.data.loadAircraft(state);
   }
 
   function updateActiveFilters(state) {
@@ -253,15 +217,16 @@
       clearTimeout(searchDebounceTimer);
       searchDebounceTimer = setTimeout(() => {
         saveFiltersToSession(state);
-        applyFiltersAndRender(state);
+        VH.hangar.data.loadAircraft(state);
       }, 300);
     });
 
     const sortSelect = document.getElementById('sort-select');
     sortSelect?.addEventListener('change', (e) => {
       state.sort = e.target.value;
+      state.currentPage = 1;
       saveFiltersToSession(state);
-      applyFiltersAndRender(state);
+      VH.hangar.data.loadAircraft(state);
     });
 
     window.addEventListener('popstate', () => {

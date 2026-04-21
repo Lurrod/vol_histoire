@@ -7,22 +7,50 @@
 document.addEventListener('DOMContentLoaded', () => {
   const ctx = () => window.settings;
   const API_BASE = '/api';
-  let allUsers = [];
+
+  // State de pagination + recherche côté serveur
+  const state = {
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 1,
+    search: '',
+    users: [],
+  };
 
   const userFilter = document.getElementById('user-filter');
   const userList = document.getElementById('user-list');
+  const userPagination = document.getElementById('user-pagination');
 
   // -------------------------------------------------------------------
   // Load & display users
   // -------------------------------------------------------------------
   async function loadUsers() {
     try {
-      const response = await auth.authFetch(`${API_BASE}/users?limit=100`);
+      const params = new URLSearchParams({
+        page: String(state.page),
+        limit: String(state.limit),
+      });
+      if (state.search) params.set('search', state.search);
+
+      const response = await auth.authFetch(`${API_BASE}/users?${params}`);
 
       if (response.ok) {
         const body = await response.json();
-        allUsers = Array.isArray(body) ? body : body.data || [];
-        displayUsers(allUsers);
+        state.users = Array.isArray(body.data) ? body.data : [];
+        const meta = body.meta || {};
+        state.total = Number.isFinite(meta.total) ? meta.total : state.users.length;
+        state.totalPages = Math.max(1, meta.totalPages || Math.ceil(state.total / state.limit));
+
+        // Si la page demandée dépasse le total (après suppression ou recherche),
+        // reculer à la dernière page valide et refetch une seule fois.
+        if (state.page > state.totalPages) {
+          state.page = state.totalPages;
+          return loadUsers();
+        }
+
+        displayUsers(state.users);
+        renderUserPagination();
         updateUserStats();
       } else if (response.status === 401 || response.status === 403) {
         auth.clearSession();
@@ -69,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.btn-edit').forEach(btn => {
       btn.addEventListener('click', () => {
-        const user = allUsers.find(u => u.id === parseInt(btn.dataset.userId));
+        const user = state.users.find(u => u.id === parseInt(btn.dataset.userId));
         if (user) openEditUserModal(user);
       });
     });
@@ -78,9 +106,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function renderUserPagination() {
+    if (!userPagination) return;
+    if (state.total === 0) { userPagination.innerHTML = ''; return; }
+
+    userPagination.innerHTML = `
+      <button class="prev-page-btn" ${state.page <= 1 ? 'disabled' : ''}>
+        <i class="fas fa-chevron-left"></i> ${i18n.t('hangar.prev_page')}
+      </button>
+      <span class="page-info">${i18n.t('hangar.page_info', { current: state.page, total: state.totalPages })}</span>
+      <button class="next-page-btn" ${state.page >= state.totalPages ? 'disabled' : ''}>
+        ${i18n.t('hangar.next_page')} <i class="fas fa-chevron-right"></i>
+      </button>
+    `;
+    userPagination.querySelector('.prev-page-btn')?.addEventListener('click', () => {
+      if (state.page > 1) { state.page--; loadUsers(); }
+    });
+    userPagination.querySelector('.next-page-btn')?.addEventListener('click', () => {
+      if (state.page < state.totalPages) { state.page++; loadUsers(); }
+    });
+  }
+
   function updateUserStats() {
     const totalUsersEl = document.getElementById('total-users');
-    if (totalUsersEl) totalUsersEl.textContent = allUsers.length;
+    if (totalUsersEl) totalUsersEl.textContent = state.total;
   }
 
   async function deleteUser(userId) {
@@ -91,9 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (response.ok) {
         showToast(i18n.t('settings.toast_user_deleted'), 'success');
-        allUsers = allUsers.filter(u => u.id !== parseInt(userId));
-        displayUsers(allUsers);
-        updateUserStats();
+        // Recharger la page courante depuis le serveur (avec auto-rewind
+        // si la suppression a vidé la page).
+        await loadUsers();
       } else {
         const data = await response.json();
         showToast(data.message || 'Erreur lors de la suppression', 'error');
@@ -132,17 +181,25 @@ document.addEventListener('DOMContentLoaded', () => {
   editUserCancel?.addEventListener('click', closeEditUserModal);
   editUserModal?.querySelector('.logout-modal-backdrop')?.addEventListener('click', closeEditUserModal);
 
+  editUserName?.addEventListener('input', () => clearFieldError(editUserName));
+  editUserEmail?.addEventListener('input', () => clearFieldError(editUserEmail));
+
   editUserSave?.addEventListener('click', async () => {
     const name = editUserName.value.trim();
     const email = editUserEmail.value.trim();
     const role_id = parseInt(editUserRole.value);
 
+    clearFieldError(editUserName);
+    clearFieldError(editUserEmail);
+
     if (name.length < 2) {
-      showToast('Nom invalide (minimum 2 caractères)', 'error');
+      setFieldError(editUserName, i18n.t('settings.toast_name_min') || 'Nom invalide (minimum 2 caractères)');
+      editUserName.focus();
       return;
     }
     if (!isValidEmail(email)) {
-      showToast('Adresse email invalide', 'error');
+      setFieldError(editUserEmail, i18n.t('settings.toast_email_invalid') || 'Adresse email invalide');
+      editUserEmail.focus();
       return;
     }
 
@@ -155,11 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (response.ok) {
-        const updated = await response.json();
-        allUsers = allUsers.map(u => u.id === editingUserId ? updated : u);
-        displayUsers(allUsers);
         closeEditUserModal();
         showToast('Utilisateur modifié avec succès', 'success');
+        // Refetch la page courante pour refléter le changement
+        await loadUsers();
       } else {
         const data = await response.json();
         showToast(data.message || 'Erreur lors de la modification', 'error');
@@ -171,15 +227,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // User search/filter
+  // User search/filter — côté serveur, debounced
   if (userFilter) {
+    let searchDebounceTimer = null;
     userFilter.addEventListener('input', (e) => {
-      const query = e.target.value.toLowerCase();
-      const filtered = allUsers.filter(user =>
-        user.name.toLowerCase().includes(query) ||
-        user.email.toLowerCase().includes(query)
-      );
-      displayUsers(filtered);
+      state.search = e.target.value.trim();
+      state.page = 1;
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => loadUsers(), 300);
     });
   }
 

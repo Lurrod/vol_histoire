@@ -42,9 +42,9 @@ app.use(compression({
 // -----------------------------------------------------------------------------
 // Nonce CSP : généré par requête, injecté dans chaque <style> servi par
 // sendCachedHtml + dans le header style-src-elem. Les vieux navigateurs
-// (sans support style-src-elem) tombent sur style-src qui garde
-// 'unsafe-inline' pour compat, mais les modernes (~95%) bloquent toute
-// injection de <style> XSS.
+// (sans support style-src-elem) tombent sur style-src, également nonce-based
+// depuis v4.1.1 — plus d'unsafe-inline. Les modernes (~99%) passent par
+// style-src-elem et bloquent toute injection de <style> XSS.
 app.use((req, res, next) => {
   res.locals.cspNonce = crypto.randomBytes(16).toString('base64');
   next();
@@ -73,10 +73,10 @@ app.use((req, res, next) => {
     // car c'est une API DOM, pas un attribut parsé).
     `style-src-elem 'self' 'nonce-${nonce}' ${styleHosts}`,
     "style-src-attr 'none'",
-    // Fallback pour les vieux navigateurs qui ignorent style-src-elem/attr.
-    // 'unsafe-inline' reste ici car certaines pages (reset-password) ont
-    // encore des blocs <style> inline non nonce-és (à migrer).
-    `style-src 'self' 'nonce-${nonce}' 'unsafe-inline' ${styleHosts}`,
+    // Fallback pour navigateurs ignorant style-src-elem (< 1% du trafic).
+    // Tous les <style> inline sont nonce-és au runtime via injectCspNonce(),
+    // donc 'unsafe-inline' n'est plus nécessaire — CSP strictement nonce-based.
+    `style-src 'self' 'nonce-${nonce}' ${styleHosts}`,
     "font-src 'self'",
     "img-src 'self' https://flagcdn.com https://www.googletagmanager.com https://picsum.photos https://fastly.picsum.photos data:",
     "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.ingest.sentry.io https://*.sentry.io https://hcaptcha.com https://*.hcaptcha.com",
@@ -177,7 +177,10 @@ const emailLimiter         = (req, res, next) => _impl.email(req, res, next);
 const contactLimiter       = (req, res, next) => _impl.contact(req, res, next);
 
 // Upgrade vers Redis — appelé depuis server.js si REDIS_URL est défini.
-// Ping Redis d'abord, puis remplace chaque limiter par une version RedisStore.
+// 1. Connexion paresseuse + ping pour valider rapidement (échec → fallback mémoire)
+// 2. Si OK, branche les RedisStore du rate-limiter et le cache applicatif
+// 3. En cas de déconnexion runtime, ioredis reconnecte avec backoff ; les appels
+//    échouent vite (offlineQueue=false) et cache.js/rate-limit tombent en mémoire.
 app.initRedis = async function initRedis() {
   if (!process.env.REDIS_URL || process.env.NODE_ENV === 'test') return;
   let client;
@@ -185,11 +188,31 @@ app.initRedis = async function initRedis() {
     const Redis = require('ioredis');
     const { RedisStore } = require('rate-limit-redis');
     client = new Redis(process.env.REDIS_URL, {
+      lazyConnect: true,
       connectTimeout: 3000,
-      maxRetriesPerRequest: 1,
-      retryStrategy: () => null,
+      maxRetriesPerRequest: 3,
+      enableOfflineQueue: false,
+      retryStrategy: (times) => {
+        if (times > 20) return null; // abandonne au bout de ~40s cumulées
+        return Math.min(times * 200, 2000); // backoff 200ms → 2s
+      },
+      reconnectOnError: (err) => /READONLY|ECONNRESET/i.test(err.message),
     });
-    client.on('error', () => {});
+
+    // Log throttlé : on ne veut pas spammer le logger pendant une panne Redis
+    let lastErrorLoggedAt = 0;
+    client.on('error', (err) => {
+      const now = Date.now();
+      if (now - lastErrorLoggedAt > 60_000) {
+        logger.warn('Redis erreur', { error: err.message });
+        lastErrorLoggedAt = now;
+      }
+    });
+    client.on('reconnecting', (delay) => logger.info('Redis reconnexion', { delayMs: delay }));
+    client.on('ready', () => logger.info('Redis prêt'));
+    client.on('end', () => logger.info('Redis déconnecté'));
+
+    await client.connect();
     await client.ping();
 
     LIMITER_DEFS.forEach(d => {
@@ -198,11 +221,11 @@ app.initRedis = async function initRedis() {
         prefix: `vdh:rl:${d.key}:`,
       }));
     });
-    app._redisClient = client; // exposé pour shutdown gracieux
+    app._redisClient = client; // exposé pour shutdown gracieux et /ready
     require('./utils/cache').setRedisClient(client); // cache applicatif partagé
-    logger.info('Rate-limiter Redis activé', { limiters: LIMITER_DEFS.length });
+    logger.info('Redis activé', { limiters: LIMITER_DEFS.length, cache: true });
   } catch (err) {
-    logger.warn('Redis indisponible — rate-limit en mémoire', { error: err.message });
+    logger.warn('Redis indisponible — fallback mémoire', { error: err.message });
     try { if (client) client.disconnect(); } catch (_) {}
   }
 };

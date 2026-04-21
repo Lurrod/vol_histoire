@@ -162,8 +162,7 @@ body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
 
 /* HERO PROMOTION on large screens */
 @media (min-width: 64em) {
-  .page-details .hero-main { display: grid; grid-template-columns: 1.1fr 1fr; gap: 3rem; align-items: stretch; }
-  .page-details .hero-right .aircraft-image-container img { height: 500px; width: 100%; object-fit: cover; }
+  .page-details .hero-main { display: grid; grid-template-columns: 1.1fr 1fr; gap: 3rem; align-items: start; }
 }
 
 /* EDITORIAL DESCRIPTION */
@@ -187,6 +186,11 @@ body.page-details::after {
 }
 body.page-details::before {
   background-image: url('/assets/airplanes/f4-phantom-2.jpg');
+  background-image: image-set(
+    url('/assets/airplanes/f4-phantom-2.avif') type('image/avif'),
+    url('/assets/airplanes/f4-phantom-2.webp') type('image/webp'),
+    url('/assets/airplanes/f4-phantom-2.jpg') type('image/jpeg')
+  );
   background-size: cover; background-position: center; background-repeat: no-repeat;
   filter: blur(30px) brightness(0.28) saturate(0.7);
   transform: scale(1.15); opacity: 0.55; z-index: -2;
@@ -694,7 +698,7 @@ body.page-details::after {
 
   /* Image */
   .page-details .aircraft-image-container { border: 1px solid #ccc !important; border-radius: 8px; overflow: hidden; }
-  .page-details .aircraft-image { max-height: 7cm; object-fit: cover; }
+  .page-details .aircraft-image { max-height: 7cm; object-fit: contain; }
 
   /* Stats */
   .page-details .quick-stats { padding: 0.5cm 0 !important; margin: 0 !important; border-bottom: 1px solid #ccc !important; }

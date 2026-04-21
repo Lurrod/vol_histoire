@@ -25,15 +25,31 @@
     try {
       const params = new URLSearchParams({
         sort: state.sort,
-        ...(state.filters.country && { country: state.filters.country }),
-        ...(state.filters.generation && { generation: state.filters.generation }),
-        ...(state.filters.type && { type: state.filters.type })
+        page: String(state.currentPage),
+        limit: String(state.itemsPerPage),
       });
+      if (state.filters.country)    params.set('country', state.filters.country);
+      if (state.filters.generation) params.set('generation', state.filters.generation);
+      if (state.filters.type)       params.set('type', state.filters.type);
+      if (state.filters.search)     params.set('search', state.filters.search);
+
       const response = await auth.fetchWithTimeout(`/api/airplanes?${params}`);
       if (!response.ok) throw new Error('Erreur serveur');
       const data = await response.json();
       state.aircraft = Array.isArray(data.data) ? data.data : [];
-      VH.hangar.filters.applyFiltersAndRender(state);
+      state.total = Number.isFinite(data.total) ? data.total : state.aircraft.length;
+
+      // Si la page demandée dépasse le total (après suppression ou filtre),
+      // reculer à la dernière page valide et refetch une seule fois.
+      const totalPages = Math.max(1, Math.ceil(state.total / state.itemsPerPage));
+      if (state.currentPage > totalPages) {
+        state.currentPage = totalPages;
+        return loadAircraft(state);
+      }
+
+      VH.hangar.render.renderAircraft(state);
+      VH.hangar.render.renderPagination(state);
+      VH.hangar.render.updateResultsCount(state);
       VH.hangar.render.updateStats(state);
     } catch (error) {
       showToast(i18n.t('common.loading_error'), 'error');

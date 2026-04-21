@@ -315,8 +315,13 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 .page-login .form-slide.active {
   display: block;
 }
-.page-login .form-slide:focus {
+.page-login .form-slide:focus:not(:focus-visible) {
   outline: none;
+}
+.page-login .form-slide:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--r-sm);
 }
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(40px); }
@@ -399,9 +404,14 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   background: transparent;
   transition: var(--transition);
 }
-.page-login .form-group input:focus {
+.page-login .form-group input:focus:not(:focus-visible) {
   outline: none;
   border-bottom-color: var(--secondary);
+}
+.page-login .form-group input:focus-visible {
+  outline: none;
+  border-bottom-color: var(--secondary);
+  box-shadow: var(--focus-ring);
 }
 .page-login .form-group input::placeholder {
   color: var(--text-secondary);

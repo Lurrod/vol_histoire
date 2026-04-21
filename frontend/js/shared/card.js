@@ -36,13 +36,18 @@
     const typeBadge = aircraft.type_name
       ? `<span class="aircraft-badge type">${esc(aircraft.type_name)}</span>` : '';
 
+    const imgUrl = aircraft.image_url || 'https://via.placeholder.com/400x300?text=No+Image';
+    const pic = VH.shared.picture.pictureHtml(imgUrl, {
+      alt: aircraft.name || '',
+      loading: 'lazy',
+      width: '400',
+      height: '300',
+    });
     return `
       <article class="aircraft-card" data-id="${aircraft.id}" tabindex="0" role="link" aria-label="${esc(aircraft.name)}">
         ${removeBtn}
         <div class="aircraft-image">
-          <img src="${esc(aircraft.image_url) || 'https://via.placeholder.com/400x300?text=No+Image'}"
-               alt="${esc(aircraft.name)}"
-               loading="lazy" width="400" height="300">
+          ${pic}
           <div class="aircraft-overlay">
             <div class="aircraft-badges">${genBadge}${typeBadge}</div>
           </div>

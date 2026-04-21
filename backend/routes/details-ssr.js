@@ -108,6 +108,17 @@ module.exports = function createDetailsSsrRouter(getPool) {
       ogImage = rawImage;
     }
 
+    // Preload LCP : image hero AVIF (si asset local). Le browser lance la requête
+    // avant que le JS n'ait résolu l'URL via l'API — gain typique 300-800 ms sur LCP.
+    // On préload AVIF uniquement (Safari 16+ / Chrome / Firefox 113+) ; navigateurs
+    // plus anciens retombent sur JPG via le <picture> normal.
+    let heroPreloadTag = '';
+    const localAssetMatch = /^\/assets\/airplanes\/([^/?#]+)\.(jpe?g|png)(\?.*)?$/i.exec(rawImage);
+    if (localAssetMatch) {
+      const avifHref = `/assets/airplanes/${localAssetMatch[1]}.avif`;
+      heroPreloadTag = `  <link rel="preload" as="image" href="${escapeHtml(avifHref)}" type="image/avif" fetchpriority="high">\n`;
+    }
+
     // Alt descriptif par fiche : "F-16 Fighting Falcon — chasseur 4e gen · États-Unis"
     const altParts = [name];
     if (generation) altParts.push(isEn ? `${generation}th gen fighter` : `chasseur ${generation}e gen`);
@@ -266,6 +277,20 @@ module.exports = function createDetailsSsrRouter(getPool) {
       /<script type="application\/ld\+json">[\s\S]*?<\/script>/,
       ldJsonScript
     );
+
+    // Injecter le preload AVIF du hero juste après les preloads de fonts.
+    // Idempotent : on remplace tout preload image existant pour éviter les doublons
+    // lors de re-rendus ou de tests.
+    html = html.replace(
+      /\s*<link rel="preload"[^>]*as="image"[^>]*>/g,
+      ''
+    );
+    if (heroPreloadTag) {
+      html = html.replace(
+        /(<link rel="preload" href="[^"]*BarlowCondensed[^"]*"[^>]*>\s*)/,
+        `$1${heroPreloadTag}`
+      );
+    }
 
     // <html lang="..."> ajustement (default fr, switch en si besoin)
     if (isEn) {

@@ -127,7 +127,18 @@
   font-family: 'DM Sans', sans-serif;
   font-size: 0.9rem;
   transition: border-color 0.2s;
-  outline: none;
+}
+
+.form-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%23C8A96E' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'><path d='M1 1.5l5 5 5-5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px 8px;
+  cursor: pointer;
 }
 
 .form-group input::placeholder,
@@ -135,15 +146,33 @@
   color: rgba(255, 255, 255, 0.25);
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.form-group input:focus:not(:focus-visible),
+.form-group select:focus:not(:focus-visible),
+.form-group textarea:focus:not(:focus-visible) {
+  outline: none;
   border-color: rgba(200, 169, 110, 0.4);
+}
+.form-group input:focus-visible,
+.form-group select:focus-visible,
+.form-group textarea:focus-visible {
+  outline: none;
+  border-color: rgba(200, 169, 110, 0.7);
+  box-shadow: var(--focus-ring);
+}
+
+.form-group select:hover {
+  border-color: rgba(200, 169, 110, 0.28);
 }
 
 .form-group select option {
-  background: #0f1626;
+  background: var(--night-mid);
   color: var(--white);
+  padding: 0.5rem 1rem;
+}
+.form-group select option:checked,
+.form-group select option:hover {
+  background: linear-gradient(0deg, rgba(200, 169, 110, 0.18), rgba(200, 169, 110, 0.18)), var(--night-mid);
+  color: var(--hud-cyan);
 }
 
 .form-group textarea {

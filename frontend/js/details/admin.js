@@ -67,6 +67,7 @@
         document.getElementById('edit-rival-id').value = a.rival_id || '';
       });
 
+      _previousFocus = document.activeElement;
       editModal.classList.add('show');
       document.body.style.overflow = 'hidden';
       _focusTrap = trapFocus(editModal, { onEscape: closeEditModal });

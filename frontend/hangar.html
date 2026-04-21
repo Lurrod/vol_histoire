@@ -7,6 +7,7 @@
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://flagcdn.com">
   <meta name="theme-color" content="#080c14">
   <meta name="mobile-web-app-capable" content="yes">
@@ -135,9 +136,18 @@
       <div class="hangar-toolbar">
         <div class="search-box"><i class="fas fa-search"></i><input type="search" id="search-input" placeholder="Rechercher un avion..." data-i18n-placeholder="hangar.search_placeholder" autocomplete="off"></div>
         <div class="toolbar-right">
-          <button class="filter-btn" id="country-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="country-dropdown"><i class="fas fa-globe"></i><span data-i18n="hangar.filter_country">Pays</span><i class="fas fa-chevron-down"></i></button>
-          <button class="filter-btn" id="generation-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="generation-dropdown"><i class="fas fa-layer-group"></i><span data-i18n="hangar.gen_label">Génération</span><i class="fas fa-chevron-down"></i></button>
-          <button class="filter-btn" id="type-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="type-dropdown"><i class="fas fa-tags"></i><span data-i18n="hangar.filter_type">Type</span><i class="fas fa-chevron-down"></i></button>
+          <div class="filter-group">
+            <button class="filter-btn" id="country-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="country-dropdown" aria-label="Pays" data-i18n-aria="hangar.filter_country"><i class="fas fa-globe"></i><span data-i18n="hangar.filter_country">Pays</span><i class="fas fa-chevron-down"></i></button>
+            <div id="country-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_country">Filtrer par pays</h3><button class="close-dropdown" data-dropdown="country"><i class="fas fa-times"></i></button></div><div class="filter-options" id="country-options"></div></div>
+          </div>
+          <div class="filter-group">
+            <button class="filter-btn" id="generation-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="generation-dropdown" aria-label="Génération" data-i18n-aria="hangar.gen_label"><i class="fas fa-layer-group"></i><span data-i18n="hangar.gen_label">Génération</span><i class="fas fa-chevron-down"></i></button>
+            <div id="generation-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_gen">Filtrer par génération</h3><button class="close-dropdown" data-dropdown="generation"><i class="fas fa-times"></i></button></div><div class="filter-options" id="generation-options"></div></div>
+          </div>
+          <div class="filter-group">
+            <button class="filter-btn" id="type-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="type-dropdown" aria-label="Type" data-i18n-aria="hangar.filter_type"><i class="fas fa-tags"></i><span data-i18n="hangar.filter_type">Type</span><i class="fas fa-chevron-down"></i></button>
+            <div id="type-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_type">Filtrer par type</h3><button class="close-dropdown" data-dropdown="type"><i class="fas fa-times"></i></button></div><div class="filter-options" id="type-options"></div></div>
+          </div>
           <select id="sort-select" class="sort-select">
             <option value="default" data-i18n="hangar.sort_default">Trier par défaut</option>
             <option value="alphabetical" data-i18n="hangar.sort_alpha">Ordre alphabétique</option>
@@ -147,10 +157,6 @@
             <option value="type" data-i18n="hangar.sort_type">Type</option>
           </select>
           <button id="add-airplane-btn" class="btn btn-primary hidden"><i class="fas fa-plus"></i><span data-i18n="hangar.add_aircraft">Ajouter</span></button>
-          <!-- Filter Dropdowns -->
-          <div id="country-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_country">Filtrer par pays</h3><button class="close-dropdown" data-dropdown="country"><i class="fas fa-times"></i></button></div><div class="filter-options" id="country-options"></div></div>
-          <div id="generation-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_gen">Filtrer par génération</h3><button class="close-dropdown" data-dropdown="generation"><i class="fas fa-times"></i></button></div><div class="filter-options" id="generation-options"></div></div>
-          <div id="type-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_type">Filtrer par type</h3><button class="close-dropdown" data-dropdown="type"><i class="fas fa-times"></i></button></div><div class="filter-options" id="type-options"></div></div>
         </div>
       </div>
 

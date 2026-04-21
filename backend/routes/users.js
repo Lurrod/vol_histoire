@@ -24,13 +24,26 @@ module.exports = function createUsersRouter(getPool) {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
     const offset = (page - 1) * limit;
+    const search = typeof req.query.search === 'string' ? req.query.search.trim() : '';
 
-    const countResult = await getPool().query('SELECT COUNT(*) FROM users');
+    const whereParts = [];
+    const whereValues = [];
+    if (search) {
+      whereValues.push(`%${search}%`);
+      whereParts.push(`(name ILIKE $${whereValues.length} OR email ILIKE $${whereValues.length})`);
+    }
+    const whereSql = whereParts.length ? `WHERE ${whereParts.join(' AND ')}` : '';
+
+    const countResult = await getPool().query(
+      `SELECT COUNT(*) FROM users ${whereSql}`,
+      whereValues
+    );
     const total = parseInt(countResult.rows[0].count, 10);
 
+    const listValues = [...whereValues, limit, offset];
     const result = await getPool().query(
-      'SELECT id, name, email, role_id FROM users ORDER BY id LIMIT $1 OFFSET $2',
-      [limit, offset]
+      `SELECT id, name, email, role_id FROM users ${whereSql} ORDER BY id LIMIT $${listValues.length - 1} OFFSET $${listValues.length}`,
+      listValues
     );
     res.json({
       data: result.rows,

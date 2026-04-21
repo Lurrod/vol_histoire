@@ -21,10 +21,22 @@ module.exports = function createMonitoringRouter(getPool) {
   });
 
   // Readiness — vérifie la dépendance critique (PostgreSQL)
+  // Le statut Redis est informatif : Redis down ≠ not_ready (fallback mémoire OK)
   router.get('/ready', async (req, res) => {
     const pool = getPool();
     if (!pool) {
       return res.status(503).json({ status: 'not_ready', reason: 'pool_not_initialized' });
+    }
+    const redisClient = req.app._redisClient;
+    let redisStatus = { configured: false };
+    if (redisClient) {
+      const start = Date.now();
+      try {
+        await redisClient.ping();
+        redisStatus = { configured: true, ok: true, latencyMs: Date.now() - start };
+      } catch (err) {
+        redisStatus = { configured: true, ok: false, error: err.message };
+      }
     }
     try {
       const start = Date.now();
@@ -32,10 +44,11 @@ module.exports = function createMonitoringRouter(getPool) {
       res.json({
         status: 'ready',
         db: { ok: true, latencyMs: Date.now() - start },
+        redis: redisStatus,
       });
     } catch (err) {
       logger.error('readiness_check_failed', { error: err });
-      res.status(503).json({ status: 'not_ready', db: { ok: false } });
+      res.status(503).json({ status: 'not_ready', db: { ok: false }, redis: redisStatus });
     }
   });
 
