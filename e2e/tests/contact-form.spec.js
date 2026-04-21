@@ -26,29 +26,29 @@ test.describe('Contact Form', () => {
     await expect(cards).toHaveCount(3);
   });
 
-  test('soumission avec email vide → toast erreur', async ({ page }) => {
+  test('soumission avec email vide → erreur inline sur le champ email', async ({ page }) => {
     await page.fill('#contact-message', 'Test message');
     await page.click('.btn-send');
 
-    const toast = page.locator('.toast');
-    await expect(toast.first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#contact-email')).toHaveAttribute('aria-invalid', 'true', { timeout: 5000 });
+    await expect(page.locator('#contact-email-error')).toBeVisible();
   });
 
-  test('soumission avec message vide → toast erreur', async ({ page }) => {
+  test('soumission avec message vide → erreur inline sur le champ message', async ({ page }) => {
     await page.fill('#contact-email', 'test@example.com');
     await page.click('.btn-send');
 
-    const toast = page.locator('.toast');
-    await expect(toast.first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#contact-message')).toHaveAttribute('aria-invalid', 'true', { timeout: 5000 });
+    await expect(page.locator('#contact-message-error')).toBeVisible();
   });
 
-  test('soumission avec email invalide → toast erreur', async ({ page }) => {
+  test('soumission avec email invalide → erreur inline sur le champ email', async ({ page }) => {
     await page.fill('#contact-email', 'pas-un-email');
     await page.fill('#contact-message', 'Un message de test');
     await page.click('.btn-send');
 
-    const toast = page.locator('.toast');
-    await expect(toast.first()).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#contact-email')).toHaveAttribute('aria-invalid', 'true', { timeout: 5000 });
+    await expect(page.locator('#contact-email-error')).toBeVisible();
   });
 
   test('soumission valide → message de confirmation visible', async ({ page }) => {
