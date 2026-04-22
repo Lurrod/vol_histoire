@@ -133,6 +133,10 @@ jobs:
       - name: Seed test data (countries, manufacturers, airplanes...)
         run: cd e2e && node seed-test-data.js
 
+      - name: Seed timeline events (54 événements éditoriaux)
+        run: |
+          PGPASSWORD=testpassword psql -h localhost -U vol_user -d vol_histoire_test -f backend/db_backup/timeline_events.sql
+
       - name: Install E2E dependencies
         run: cd e2e && npm ci
 
