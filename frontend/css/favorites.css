@@ -295,7 +295,7 @@ body.page-favorites::after {
 .page-favorites .aircraft-title { flex: 1; }
 .page-favorites .aircraft-name-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
 .page-favorites .aircraft-name-row h3 { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin: 0; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.page-favorites .country-flag { width: 24px; height: 18px; border-radius: 3px; display: block; object-fit: cover; flex-shrink: 0; }
+.page-favorites .country-flag { width: 24px; height: auto; border-radius: 3px; display: block; flex-shrink: 0; }
 .page-favorites .aircraft-title h3 { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
 .page-favorites .aircraft-country { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.45); }
 .page-favorites .aircraft-description { color: rgba(255,255,255,0.45); line-height: 1.7; margin-bottom: 1.25rem; font-size: 0.95rem; }

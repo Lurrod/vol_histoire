@@ -73,6 +73,7 @@ beforeEach(() => {
   mockPool.query.mockReset();
   app.invalidateStatsCache?.();
   app.invalidateAirplanesReferentialCache?.();
+  app.invalidateTimelineCache?.();
 });
 
 afterAll(() => {
@@ -2902,5 +2903,119 @@ describe('Monitoring — status protégé', () => {
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ok');
     delete process.env.METRICS_TOKEN;
+  });
+});
+
+// =============================================================================
+// TIMELINE — GET /api/timeline (chronologie cinématographique)
+// =============================================================================
+describe('GET /api/timeline', () => {
+  test('200 — renvoie 9 décennies avec events + aircraft regroupés', async () => {
+    // Requête 1 : events + LEFT JOIN airplanes
+    mockPool.query.mockResolvedValueOnce({
+      rows: [
+        {
+          id: 1,
+          event_date: '1945-08-06',
+          era_decade: 1940,
+          kind: 'milestone',
+          title_fr: 'Hiroshima',
+          title_en: 'Hiroshima',
+          body_fr: 'Bombe atomique.',
+          body_en: 'Atomic bomb.',
+          quote_author_fr: null,
+          quote_author_en: null,
+          airplane_id: 12,
+          airplane_name: 'B-29',
+          airplane_name_en: 'B-29',
+          airplane_image_url: 'b29.jpg',
+          airplane_little_description: 'Bombardier',
+          airplane_little_description_en: 'Bomber',
+        },
+        {
+          id: 2,
+          event_date: '1962-10-16',
+          era_decade: 1960,
+          kind: 'war',
+          title_fr: 'Crise de Cuba',
+          title_en: 'Cuban Missile Crisis',
+          body_fr: '13 jours.',
+          body_en: '13 days.',
+          quote_author_fr: null,
+          quote_author_en: null,
+          airplane_id: null,
+          airplane_name: null,
+          airplane_name_en: null,
+          airplane_image_url: null,
+          airplane_little_description: null,
+          airplane_little_description_en: null,
+        },
+      ],
+    });
+    // Requête 2 : aircraft par décennie
+    mockPool.query.mockResolvedValueOnce({
+      rows: [
+        {
+          id: 10,
+          name: 'F-14 Tomcat',
+          name_en: 'F-14 Tomcat',
+          image_url: 'f14.jpg',
+          little_description: 'Intercepteur naval',
+          little_description_en: 'Naval interceptor',
+          date_operationel: '1974-09-22',
+          era_decade: 1970,
+          country_name: 'États-Unis',
+          country_name_en: 'United States',
+          generation: 4,
+          type_name: 'Chasseur',
+          type_name_en: 'Fighter',
+        },
+      ],
+    });
+
+    const res = await request(app).get('/api/timeline');
+    expect(res.status).toBe(200);
+    expect(res.headers['x-cache']).toBe('MISS');
+    expect(Array.isArray(res.body.decades)).toBe(true);
+    expect(res.body.decades.length).toBe(9); // 1940 → 2020
+    const d40 = res.body.decades.find(d => d.decade === 1940);
+    expect(d40.events.length).toBe(1);
+    expect(d40.events[0].airplane.name).toBe('B-29');
+    const d60 = res.body.decades.find(d => d.decade === 1960);
+    expect(d60.events[0].airplane).toBeNull();
+    const d70 = res.body.decades.find(d => d.decade === 1970);
+    expect(d70.aircraft.length).toBe(1);
+    expect(d70.aircraft[0].name).toBe('F-14 Tomcat');
+  });
+
+  test('X-Cache HIT au second appel sans ?force=1', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    await request(app).get('/api/timeline'); // premier appel → MISS + warm cache
+    const res = await request(app).get('/api/timeline');
+    expect(res.status).toBe(200);
+    expect(res.headers['x-cache']).toBe('HIT');
+  });
+
+  test('?force=1 bypasse le cache', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    await request(app).get('/api/timeline');
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).get('/api/timeline?force=1');
+    expect(res.status).toBe(200);
+    expect(res.headers['x-cache']).toBe('MISS');
+  });
+
+  test('app.invalidateTimelineCache vide le cache', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    await request(app).get('/api/timeline');
+    await app.invalidateTimelineCache?.();
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).get('/api/timeline');
+    expect(res.headers['x-cache']).toBe('MISS');
   });
 });

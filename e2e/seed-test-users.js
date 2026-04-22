@@ -71,9 +71,43 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+// Mot de passe commun aux comptes de peuplement (respecte isValidPassword :
+// 8-128 chars, ≥1 maj, ≥1 min, ≥1 chiffre). Trivial volontairement — test only.
+const FILLER_PASSWORD = 'Testuser1';
+
+const FILLER_USERS = [
+  { name: 'Alice Martin',      email: 'alice.martin@test.local',      role_id: 3 },
+  { name: 'Bob Durand',        email: 'bob.durand@test.local',        role_id: 3 },
+  { name: 'Clara Dubois',      email: 'clara.dubois@test.local',      role_id: 3 },
+  { name: 'David Laurent',     email: 'david.laurent@test.local',     role_id: 3 },
+  { name: 'Emma Moreau',       email: 'emma.moreau@test.local',       role_id: 3 },
+  { name: 'François Petit',    email: 'francois.petit@test.local',    role_id: 2 },
+  { name: 'Gabriel Leroy',     email: 'gabriel.leroy@test.local',     role_id: 3 },
+  { name: 'Hélène Roux',       email: 'helene.roux@test.local',       role_id: 3 },
+  { name: 'Isabelle Girard',   email: 'isabelle.girard@test.local',   role_id: 3 },
+  { name: 'Julien Bonnet',     email: 'julien.bonnet@test.local',     role_id: 2 },
+  { name: 'Karine Fontaine',   email: 'karine.fontaine@test.local',   role_id: 3 },
+  { name: 'Louis Chevalier',   email: 'louis.chevalier@test.local',   role_id: 3 },
+  { name: 'Marie Lambert',     email: 'marie.lambert@test.local',     role_id: 3 },
+  { name: 'Nicolas Mercier',   email: 'nicolas.mercier@test.local',   role_id: 3 },
+  { name: 'Océane Blanc',      email: 'oceane.blanc@test.local',      role_id: 3 },
+  { name: 'Paul Rousseau',     email: 'paul.rousseau@test.local',     role_id: 2 },
+  { name: 'Quentin Vincent',   email: 'quentin.vincent@test.local',   role_id: 3 },
+  { name: 'Raphaëlle Morel',   email: 'raphaelle.morel@test.local',   role_id: 3 },
+  { name: 'Sébastien Garnier', email: 'sebastien.garnier@test.local', role_id: 3 },
+  { name: 'Thomas Faure',      email: 'thomas.faure@test.local',      role_id: 3 },
+  { name: 'Ursula Noel',       email: 'ursula.noel@test.local',       role_id: 3 },
+  { name: 'Victor Perrin',     email: 'victor.perrin@test.local',     role_id: 3 },
+  { name: 'Wendy Lemoine',     email: 'wendy.lemoine@test.local',     role_id: 3 },
+  { name: 'Xavier Robin',      email: 'xavier.robin@test.local',      role_id: 3 },
+  { name: 'Yasmine Clement',   email: 'yasmine.clement@test.local',   role_id: 2 },
+  { name: 'Zoé Bernard',       email: 'zoe.bernard@test.local',       role_id: 3 },
+];
+
 const TEST_USERS = [
   { name: 'Admin',    email: 'test@gmail.com',                password: 'test',      role_id: 1 },
   { name: 'Titouan',  email: 'titouan.borde.47@gmail.com',    password: 'Titouan1.', role_id: 3 },
+  ...FILLER_USERS.map(u => ({ ...u, password: FILLER_PASSWORD })),
 ];
 
 async function seed() {

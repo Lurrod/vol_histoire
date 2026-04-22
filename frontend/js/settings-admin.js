@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // State de pagination + recherche côté serveur
   const state = {
     page: 1,
-    limit: 20,
+    limit: 8,
     total: 0,
     totalPages: 1,
     search: '',
@@ -119,11 +119,17 @@ document.addEventListener('DOMContentLoaded', () => {
         ${i18n.t('hangar.next_page')} <i class="fas fa-chevron-right"></i>
       </button>
     `;
+    const scrollToListTop = () => {
+      const target = document.getElementById('admin') || userList;
+      if (target && typeof target.scrollIntoView === 'function') {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
     userPagination.querySelector('.prev-page-btn')?.addEventListener('click', () => {
-      if (state.page > 1) { state.page--; loadUsers(); }
+      if (state.page > 1) { state.page--; loadUsers(); scrollToListTop(); }
     });
     userPagination.querySelector('.next-page-btn')?.addEventListener('click', () => {
-      if (state.page < state.totalPages) { state.page++; loadUsers(); }
+      if (state.page < state.totalPages) { state.page++; loadUsers(); scrollToListTop(); }
     });
   }
 

@@ -208,6 +208,15 @@
   opacity: 0.85;
 }
 
+.btn-send:disabled,
+.btn-send[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btn-send:disabled:hover {
+  opacity: 0.5;
+}
+
 .form-data-note {
   display: flex;
   align-items: center;

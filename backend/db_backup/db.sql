@@ -677,3 +677,32 @@ INSERT INTO tech (name, name_en, description, description_en) VALUES
 ('Configuration bi-moteurs superposés', 'Stacked twin-engine configuration', 'Moteurs empilés verticalement pour réduire la traînée', 'Engines stacked vertically to reduce drag'),
 ('Système de décollage et d''atterrissage sur porte-avions', 'Carrier take-off and landing system', 'Renforcement structurel et corrosion contrôlée pour porte-avions', 'Structural reinforcement and corrosion control for carriers'),
 ('Conception aérodynamique pour haute altitude', 'High-altitude aerodynamic design', 'Forme optimisée pour le vol à haute altitude et haute vitesse', 'Optimized shape for high-altitude and high-speed flight');
+
+-- =============================================================================
+-- timeline_events — chronologie éditoriale du ciel militaire (1945 → aujourd'hui).
+-- Les INSERT (54 événements éditoriaux) sont fournis par db_backup/timeline_events.sql
+-- qui est autonome et re-runnable (DELETE + INSERT).
+-- =============================================================================
+
+CREATE TABLE IF NOT EXISTS timeline_events (
+    id              SERIAL PRIMARY KEY,
+    event_date      DATE NOT NULL,
+    era_decade      SMALLINT NOT NULL,
+    kind            VARCHAR(16) NOT NULL CHECK (kind IN ('milestone','war','tech','doctrine','rupture')),
+    title_fr        VARCHAR(160) NOT NULL,
+    title_en        VARCHAR(160) NOT NULL,
+    body_fr         TEXT NOT NULL,
+    body_en         TEXT NOT NULL,
+    airplane_id     INTEGER REFERENCES airplanes(id) ON DELETE SET NULL,
+    quote_author_fr VARCHAR(160),
+    quote_author_en VARCHAR(160),
+    created_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_timeline_events_decade   ON timeline_events (era_decade, event_date);
+CREATE INDEX IF NOT EXISTS idx_timeline_events_airplane ON timeline_events (airplane_id) WHERE airplane_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_timeline_events_kind     ON timeline_events (kind);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON timeline_events TO vol_user;
+GRANT USAGE, SELECT ON SEQUENCE timeline_events_id_seq TO vol_user;

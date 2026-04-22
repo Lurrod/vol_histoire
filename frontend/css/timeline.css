@@ -1,11 +1,12 @@
 /* ======================================================================
-   VOL D'HISTOIRE — TIMELINE CINEMATIC
-   Scroll-driven narrative, full-bleed chapters, fixed HUD elements.
+   VOL D'HISTOIRE — TIMELINE « LE JOURNAL DE BORD »
+   Récit documentaire : couverture → chapitres (title card + narratif
+   éditorial + événements marquants + appareils) → générique.
    ====================================================================== */
 
 body.page-timeline { background: var(--night); }
 
-/* Global era tint wash — drives the ambient color as decades scroll past */
+/* Teinte ambiante globale qui suit la décennie active */
 body.page-timeline.tl-has-cinematic::before {
   content: "";
   position: fixed;
@@ -26,7 +27,7 @@ body.page-timeline.tl-has-cinematic::before {
   overflow-x: hidden;
 }
 
-/* Ambient particles canvas */
+/* Canvas particules ambiante */
 .page-timeline .tl-particles {
   position: fixed;
   inset: 0;
@@ -69,7 +70,7 @@ body.page-timeline.tl-has-cinematic::before {
 @keyframes tl-spin { to { transform: rotate(360deg); } }
 
 /* ============================================================
-   HERO INTRO
+   COUVERTURE / HERO
    ============================================================ */
 .page-timeline .tl-intro {
   position: relative;
@@ -101,6 +102,32 @@ body.page-timeline.tl-has-cinematic::before {
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
 }
+
+/* Tampon « Dossier · VH · 01 » style archive */
+.page-timeline .tl-intro-stamp {
+  position: absolute;
+  top: calc(var(--header-h) + 1.5rem);
+  right: 2rem;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--border-cyan-md);
+  background: rgba(13, 13, 13, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--hud-cyan);
+  font-family: 'Courier New', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  opacity: 0;
+  animation: tl-fade-up 0.9s var(--ease) 0.4s forwards;
+}
+.page-timeline .tl-stamp-line { color: var(--text-muted); font-size: 0.6rem; }
+.page-timeline .tl-stamp-num  { color: var(--hud-cyan); font-weight: 700; }
+
 .page-timeline .tl-intro-inner {
   max-width: 1100px;
   margin: 0 auto;
@@ -203,54 +230,37 @@ body.page-timeline.tl-has-cinematic::before {
   opacity: 0;
   animation: tl-fade-up 1s var(--ease) 1s forwards, tl-bounce 2.2s var(--ease) 1.8s infinite;
 }
-.page-timeline .tl-scroll-hint i, .page-timeline .tl-scroll-hint .icon { font-size: 0.85rem; color: var(--hud-cyan); }
+.page-timeline .tl-scroll-hint i, .page-timeline .tl-scroll-hint .icon {
+  font-size: 0.85rem;
+  color: var(--hud-cyan);
+}
 @keyframes tl-bounce {
   0%, 100% { transform: translate(-50%, 0); }
   50%      { transform: translate(-50%, 8px); }
 }
 
 /* ============================================================
-   CHAPTERS
+   CHAPITRES — STRUCTURE GÉNÉRALE
    ============================================================ */
 .page-timeline .tl-chapters { position: relative; }
 
 .page-timeline .tl-chapter {
   position: relative;
-  min-height: 100vh;
-  padding: 8rem 2rem 10rem;
   isolation: isolate;
-  overflow: hidden;
+  padding: 0 0 8rem;
 }
 
-/* Backdrop image: first aircraft photo of the decade, heavy blur + darken */
-.page-timeline .tl-chapter-backdrop {
-  position: absolute;
-  inset: 0;
-  z-index: -3;
-  background-image: var(--era-bg, none);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: blur(30px) brightness(0.28) saturate(0.7);
-  opacity: 0;
-  transform: scale(1.15);
-  transition: opacity 1.6s var(--ease), transform 3s var(--ease);
-  will-change: opacity, transform;
-}
-.page-timeline .tl-chapter.in-view .tl-chapter-backdrop {
-  opacity: 0.55;
-  transform: scale(1);
-}
-
-.page-timeline .tl-chapter::before {
-  content: "";
+.page-timeline .tl-chapter-tint {
   position: absolute;
   inset: 0;
   z-index: -2;
   background: radial-gradient(ellipse at 20% 20%, var(--era-color, var(--hud-cyan)) 0%, transparent 45%);
-  opacity: 0.08;
+  opacity: 0;
   transition: opacity 1s var(--ease);
+  pointer-events: none;
 }
+.page-timeline .tl-chapter.in-view .tl-chapter-tint { opacity: 0.12; }
+
 .page-timeline .tl-chapter::after {
   content: "";
   position: absolute;
@@ -260,130 +270,362 @@ body.page-timeline.tl-has-cinematic::before {
     linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   background-size: 60px 60px;
+  pointer-events: none;
 }
-.page-timeline .tl-chapter.in-view::before { opacity: 0.20; }
 
-.page-timeline .tl-chapter-inner {
-  max-width: 75em;
-  margin: 0 auto;
+/* ============================================================
+   TITLE CARD — écran pleine hauteur par décennie
+   ============================================================ */
+.page-timeline .tl-title-card {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(320px, 440px) 1fr;
-  gap: 4rem;
-  align-items: start;
-}
-
-/* Sticky left column: decade number + era text stay pinned while cards scroll */
-.page-timeline .tl-chapter-side {
-  position: sticky;
-  top: calc(var(--header-h) + 3rem);
-  align-self: start;
-  min-height: calc(100vh - var(--header-h) - 6rem);
+  min-height: 90vh;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 2rem;
+  padding: 4rem 2rem;
+  overflow: hidden;
+}
+.page-timeline .tl-title-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse at 50% 50%, var(--era-color, var(--hud-cyan)) 0%, transparent 60%);
+  opacity: 0.08;
+}
+.page-timeline .tl-title-card-inner {
+  max-width: 1200px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
+}
+.page-timeline .tl-title-card.reveal .tl-title-card-inner {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.page-timeline .tl-decade-block { position: relative; }
-.page-timeline .tl-decade-num {
+.page-timeline .tl-title-meta {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+.page-timeline .tl-title-chapter {
+  color: var(--era-color, var(--hud-cyan));
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--era-color, var(--border-cyan-md));
+  border-radius: 2px;
+}
+.page-timeline .tl-title-span {
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+}
+
+.page-timeline .tl-title-decade {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 2rem;
+}
+.page-timeline .tl-title-decade-num {
   font-family: var(--font-display);
-  font-size: clamp(6rem, 14vw, 11rem);
+  font-size: clamp(8rem, 22vw, 18rem);
   font-weight: 700;
-  line-height: 0.85;
-  letter-spacing: -0.02em;
-  background: linear-gradient(180deg, var(--era-color, var(--hud-cyan)) 0%, transparent 90%);
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  background: linear-gradient(180deg, var(--era-color, var(--hud-cyan)) 0%, transparent 95%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  display: block;
+  display: inline-block;
 }
-.page-timeline .tl-decade-suffix {
+.page-timeline .tl-title-decade-suffix {
   position: absolute;
-  top: 0.4em;
-  right: -0.5em;
+  top: 0.45em;
+  right: -0.6em;
   font-family: var(--font-display);
   font-size: 0.18em;
   color: var(--era-color, var(--hud-cyan));
   letter-spacing: 0.1em;
 }
-.page-timeline .tl-era-text {
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--era-color, var(--border-subtle));
-  max-width: 100%;
-}
-.page-timeline .tl-era-label {
-  font-family: 'Courier New', monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
+
+.page-timeline .tl-title-label {
+  display: inline-block;
   color: var(--era-color, var(--hud-cyan));
-  margin-bottom: 0.75rem;
-  display: block;
-}
-.page-timeline .tl-era-title {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2.2rem);
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 1.25rem;
-  line-height: 1.15;
-  letter-spacing: 0.01em;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-}
-.page-timeline .tl-era-desc {
-  color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.75;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--era-color, var(--border-cyan-md));
+  border-radius: 2px;
   margin-bottom: 1.5rem;
 }
-.page-timeline .tl-era-meta {
-  display: flex;
-  gap: 2rem;
-  color: var(--text-muted);
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-}
-.page-timeline .tl-era-meta strong {
-  display: block;
-  color: var(--text-primary);
-  font-size: 1.35rem;
+.page-timeline .tl-title-era {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  margin-top: 0.25rem;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0;
+  max-width: 22em;
+  margin-inline: auto;
 }
 
-/* Aircraft grid (right column, narrower than before since side is sticky) */
-.page-timeline .tl-chapter-main { min-width: 0; }
-.page-timeline .tl-aircraft-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-.page-timeline .tl-aircraft-grid .tl-plane-card.feature {
-  grid-column: 1 / -1;
-}
-.page-timeline .tl-aircraft-grid .tl-plane-card.feature .tl-plane-img {
-  aspect-ratio: 21/9;
-}
-.page-timeline .tl-aircraft-grid .tl-plane-card.feature .tl-plane-name {
-  font-size: 1.65rem;
-}
-
-/* Split-text reveal — words appear stagger on viewport entry */
-.page-timeline .tl-split-word {
-  display: inline-block;
+/* ============================================================
+   NARRATIVE — paragraphe éditorial introductif
+   ============================================================ */
+.page-timeline .tl-narrative {
+  max-width: 52em;
+  margin: 0 auto 5rem;
+  padding: 0 2rem;
   opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
-  transition-delay: calc(var(--i, 0) * 40ms);
+  transform: translateY(24px);
+  transition: opacity 1s var(--ease), transform 1s var(--ease);
 }
-.page-timeline .tl-split.revealed .tl-split-word {
+.page-timeline .tl-narrative.reveal {
   opacity: 1;
   transform: translateY(0);
+}
+.page-timeline .tl-section-label {
+  display: inline-block;
+  color: var(--era-color, var(--hud-cyan));
+  font-family: 'Courier New', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--era-color, var(--border-cyan-md));
+}
+.page-timeline .tl-section-label strong {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+}
+.page-timeline .tl-narrative-text {
+  color: var(--text-primary);
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  line-height: 1.75;
+  font-weight: 300;
+  letter-spacing: 0.005em;
+}
+.page-timeline .tl-narrative-text::first-letter {
+  font-family: var(--font-display);
+  font-size: 3.2em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.85;
+  padding: 0.1em 0.15em 0 0;
+  color: var(--era-color, var(--hud-cyan));
+}
+
+/* ============================================================
+   EVENTS — événements éditoriaux (frise verticale)
+   ============================================================ */
+.page-timeline .tl-events {
+  max-width: 62em;
+  margin: 0 auto 5rem;
+  padding: 0 2rem;
+}
+.page-timeline .tl-events-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+.page-timeline .tl-events-list::before {
+  content: "";
+  position: absolute;
+  left: 7.5rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent 0%,
+    var(--era-color, var(--hud-cyan)) 10%,
+    var(--era-color, var(--hud-cyan)) 90%,
+    transparent 100%);
+  opacity: 0.35;
+}
+
+.page-timeline .tl-event {
+  position: relative;
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 2.5rem;
+  opacity: 0;
+  transform: translateY(24px);
+}
+.page-timeline .tl-event.reveal {
+  animation: tl-event-in 0.8s var(--ease) forwards;
+}
+@keyframes tl-event-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-timeline .tl-event::before {
+  content: "";
+  position: absolute;
+  left: 7.5rem;
+  top: 0.85rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--era-color, var(--hud-cyan));
+  box-shadow: 0 0 0 3px var(--night), 0 0 12px var(--era-color, var(--hud-cyan));
+  transform: translate(-50%, 0);
+  z-index: 1;
+}
+
+.page-timeline .tl-event-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  text-align: right;
+  padding-top: 0.25rem;
+}
+.page-timeline .tl-event-year {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--era-color, var(--hud-cyan));
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+.page-timeline .tl-event-kind {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  background: rgba(13, 13, 13, 0.7);
+  border: 1px solid var(--era-color, var(--border-cyan-md));
+  color: var(--era-color, var(--hud-cyan));
+  font-family: 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+.page-timeline .tl-event-date {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  font-family: 'Courier New', monospace;
+}
+
+.page-timeline .tl-event-body {
+  position: relative;
+  background: rgba(20, 20, 20, 0.55);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-lg);
+  padding: 1.5rem 1.75rem;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.page-timeline .tl-event:hover .tl-event-body {
+  border-color: var(--era-color, var(--hud-cyan));
+}
+.page-timeline .tl-event-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem;
+  line-height: 1.25;
+  letter-spacing: 0.005em;
+}
+.page-timeline .tl-event-text {
+  color: var(--text-secondary);
+  font-size: 0.98rem;
+  line-height: 1.7;
+  margin: 0 0 1rem;
+}
+.page-timeline .tl-event-author {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  margin-top: 0.75rem;
+}
+
+/* Carte d'appareil intégrée à l'événement */
+.page-timeline .tl-event-plane {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding: 0.6rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  color: inherit;
+  transition: var(--transition-fast);
+}
+.page-timeline .tl-event-plane:hover {
+  border-color: var(--era-color, var(--hud-cyan));
+  background: rgba(0, 0, 0, 0.55);
+}
+.page-timeline .tl-event-plane-img {
+  aspect-ratio: 16/9;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--night-soft);
+}
+.page-timeline .tl-event-plane-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.page-timeline .tl-event-plane-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.page-timeline .tl-event-plane-name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.page-timeline .tl-event-plane-cta {
+  color: var(--era-color, var(--hud-cyan));
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ============================================================
+   AIRCRAFT SECTION — grille des appareils de la décennie
+   ============================================================ */
+.page-timeline .tl-aircraft-section {
+  max-width: 75em;
+  margin: 0 auto 2rem;
+  padding: 0 2rem;
+}
+.page-timeline .tl-aircraft-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
 }
 
 .page-timeline .tl-plane-card {
@@ -413,7 +655,6 @@ body.page-timeline.tl-has-cinematic::before {
 .page-timeline .tl-plane-card:hover .tl-plane-img img {
   transform: scale(1.06);
 }
-
 .page-timeline .tl-plane-img {
   aspect-ratio: 16/9;
   overflow: hidden;
@@ -465,11 +706,11 @@ body.page-timeline.tl-has-cinematic::before {
   z-index: 2;
 }
 .page-timeline .tl-plane-body {
-  padding: 1rem 1.1rem 1.1rem;
+  padding: 0.9rem 1rem 1rem;
 }
 .page-timeline .tl-plane-name {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0 0 0.2rem;
@@ -478,28 +719,10 @@ body.page-timeline.tl-has-cinematic::before {
   line-height: 1.2;
 }
 .page-timeline .tl-plane-country {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 0.75rem;
-}
-.page-timeline .tl-plane-specs {
-  display: flex;
-  gap: 1rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  font-size: 0.78rem;
-}
-.page-timeline .tl-plane-specs span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-.page-timeline .tl-plane-specs i, .page-timeline .tl-plane-specs .icon {
-  color: var(--era-color, var(--hud-cyan));
-  font-size: 0.72rem;
 }
 
 /* ============================================================
@@ -552,9 +775,8 @@ body.page-timeline.tl-has-cinematic::before {
 }
 
 /* ============================================================
-   FIXED HUD
+   HUD FIXE
    ============================================================ */
-
 .page-timeline .tl-progress {
   position: fixed;
   top: 0;
@@ -646,7 +868,8 @@ body.page-timeline.tl-has-cinematic::before {
   transition: var(--transition-fast);
   flex-shrink: 0;
 }
-.page-timeline .tl-mm-btn:hover .tl-mm-label, .page-timeline .tl-mm-btn.active .tl-mm-label {
+.page-timeline .tl-mm-btn:hover .tl-mm-label,
+.page-timeline .tl-mm-btn.active .tl-mm-label {
   opacity: 1;
   transform: translateX(0);
 }
@@ -667,19 +890,19 @@ body.page-timeline.tl-has-cinematic::before {
    RESPONSIVE
    ============================================================ */
 @media (max-width: 64em) {
+  .page-timeline .tl-intro-stamp { right: 1rem; top: calc(var(--header-h) + 0.75rem); font-size: 0.6rem; }
   .page-timeline .tl-year-hud { right: 1rem; padding: 0.4rem 0.7rem; }
   .page-timeline #tl-year-hud-num { font-size: 1.15rem; }
-  .page-timeline .tl-chapter { padding: 6rem 1.25rem 7rem; }
-  .page-timeline .tl-chapter-inner { grid-template-columns: 1fr; gap: 2rem; }
-  .page-timeline .tl-chapter-side {
-    position: static;
-    min-height: auto;
-    margin-bottom: 1rem;
-  }
-  .page-timeline .tl-era-text { padding-top: 1.25rem; }
-  .page-timeline .tl-aircraft-grid { grid-template-columns: 1fr; gap: 1rem; }
-  .page-timeline .tl-aircraft-grid .tl-plane-card.feature .tl-plane-img { aspect-ratio: 16/9; }
-  .page-timeline .tl-aircraft-grid .tl-plane-card.feature .tl-plane-name { font-size: 1.25rem; }
+  .page-timeline .tl-chapter { padding-bottom: 5rem; }
+  .page-timeline .tl-title-card { min-height: 70vh; padding: 3rem 1.25rem; }
+  .page-timeline .tl-narrative { margin-bottom: 3.5rem; padding: 0 1.25rem; }
+  .page-timeline .tl-events { margin-bottom: 3.5rem; padding: 0 1.25rem; }
+  .page-timeline .tl-events-list::before { left: 5.5rem; }
+  .page-timeline .tl-event { grid-template-columns: 5rem 1fr; gap: 1.5rem; }
+  .page-timeline .tl-event::before { left: 5.5rem; }
+  .page-timeline .tl-event-year { font-size: 1.3rem; }
+  .page-timeline .tl-aircraft-section { padding: 0 1.25rem; }
+  .page-timeline .tl-aircraft-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
   .page-timeline .tl-intro-stats { gap: 2rem; margin-bottom: 3rem; }
   .page-timeline .tl-intro { padding: calc(var(--header-h) + 1rem) 1.25rem 3rem; }
 }
@@ -687,26 +910,48 @@ body.page-timeline.tl-has-cinematic::before {
 @media (max-width: 48em) {
   .page-timeline .tl-minimap { display: none; }
   .page-timeline .tl-year-hud { display: none; }
+  .page-timeline .tl-intro-stamp { display: none; }
   .page-timeline .tl-intro-stats { gap: 1.25rem; }
   .page-timeline .tl-stat-lbl { font-size: 0.62rem; }
-  .page-timeline .tl-decade-num { font-size: clamp(4.5rem, 18vw, 6rem); }
-  .page-timeline .tl-chapter { padding: 4rem 1rem 5rem; }
+  .page-timeline .tl-title-decade-num { font-size: clamp(5rem, 28vw, 9rem); }
+  .page-timeline .tl-title-card { min-height: 60vh; }
+  .page-timeline .tl-chapter { padding-bottom: 4rem; }
+  .page-timeline .tl-narrative { padding: 0 1rem; margin-bottom: 3rem; }
+  .page-timeline .tl-narrative-text { font-size: 1rem; }
+  .page-timeline .tl-events { padding: 0 1rem; margin-bottom: 3rem; }
+  .page-timeline .tl-events-list { gap: 2rem; }
+  .page-timeline .tl-events-list::before { display: none; }
+  .page-timeline .tl-event { grid-template-columns: 1fr; gap: 0.75rem; }
+  .page-timeline .tl-event::before { display: none; }
+  .page-timeline .tl-event-rail {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .page-timeline .tl-event-year { font-size: 1.15rem; }
+  .page-timeline .tl-event-body { padding: 1.15rem 1.1rem; }
+  .page-timeline .tl-event-plane { grid-template-columns: 1fr; }
+  .page-timeline .tl-event-plane-img { aspect-ratio: 21/9; }
+  .page-timeline .tl-aircraft-section { padding: 0 1rem; }
+  .page-timeline .tl-aircraft-grid { grid-template-columns: 1fr; gap: 1rem; }
   .page-timeline .tl-intro { padding: calc(var(--header-h) + 0.75rem) 1rem 2rem; }
   .page-timeline .tl-outro-inner { padding: 3rem 1rem; }
   .page-timeline .tl-outro h2 { font-size: 1.5rem; }
 }
 
-/* ── phone (≤ 30em) ───────────────────────────────────────────────── */
 @media (max-width: 30em) {
-  .page-timeline .tl-chapter { padding: 3rem 0.75rem 4rem; }
-  .page-timeline .tl-chapter-inner { gap: 1.5rem; }
   .page-timeline .tl-intro-stats { gap: 0.75rem; flex-direction: column; align-items: center; }
   .page-timeline .tl-stat-num { font-size: 2rem; }
   .page-timeline .tl-stat-lbl { font-size: 0.58rem; }
-  .page-timeline .tl-decade-num { font-size: clamp(3.5rem, 16vw, 5rem); }
-  .page-timeline .tl-era-text { font-size: 0.8rem; padding-top: 1rem; }
-  .page-timeline .tl-plane-card .tl-plane-name { font-size: 0.9rem; }
-  .page-timeline .tl-plane-card .tl-plane-desc { font-size: 0.8rem; }
+  .page-timeline .tl-title-decade-num { font-size: clamp(4rem, 24vw, 7rem); }
+  .page-timeline .tl-title-era { font-size: 1.3rem; }
+  .page-timeline .tl-title-label { font-size: 0.75rem; }
+  .page-timeline .tl-narrative-text::first-letter { font-size: 2.6em; }
+  .page-timeline .tl-event-title { font-size: 1rem; }
+  .page-timeline .tl-event-text { font-size: 0.92rem; }
+  .page-timeline .tl-plane-card .tl-plane-name { font-size: 0.95rem; }
   .page-timeline .tl-intro { padding: calc(var(--header-h) + 0.5rem) 0.75rem 1.5rem; }
   .page-timeline .tl-outro-inner { padding: 2.5rem 0.75rem; }
   .page-timeline .tl-outro h2 { font-size: 1.3rem; }
@@ -717,19 +962,30 @@ body.page-timeline.tl-has-cinematic::before {
    MOTION PREFERENCES
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .page-timeline .tl-title-line-1, .page-timeline .tl-title-line-2, .page-timeline .tl-lede, .page-timeline .tl-intro-stats, .page-timeline .tl-scroll-hint, .page-timeline .tl-plane-card {
-    opacity: 1;
-    transform: none;
-    animation: none;
+  .page-timeline .tl-title-line-1,
+  .page-timeline .tl-title-line-2,
+  .page-timeline .tl-lede,
+  .page-timeline .tl-intro-stats,
+  .page-timeline .tl-scroll-hint,
+  .page-timeline .tl-intro-stamp,
+  .page-timeline .tl-title-card-inner,
+  .page-timeline .tl-narrative,
+  .page-timeline .tl-event,
+  .page-timeline .tl-plane-card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
-  .page-timeline .tl-chapter::before { opacity: 0.16; transition: none; }
-  .page-timeline .tl-plane-card { transition: none; }
+  .page-timeline .tl-chapter-tint { opacity: 0.12; transition: none; }
+  .page-timeline .tl-plane-card,
+  .page-timeline .tl-event-body,
+  .page-timeline .tl-event-plane { transition: none; }
   .page-timeline .tl-plane-card:hover { transform: none; }
   .page-timeline .tl-plane-img img { transition: none; }
   .page-timeline .tl-progress { transition: none; }
 }
 
-/* Message "aucun avion" (timeline vide) — classe CSS, plus d'inline style */
+/* Message « aucune donnée » */
 .page-timeline .tl-empty-msg {
   text-align: center;
   padding: 6rem;

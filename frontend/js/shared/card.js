@@ -29,7 +29,7 @@
       ? `<div class="spec-item"><i class="fas fa-gauge-high"></i><span>${esc(aircraft.max_speed)} km/h</span></div>`
       : '';
     const flag = (aircraft.country_code && alpha[aircraft.country_code])
-      ? `<img class="country-flag" src="https://flagcdn.com/w40/${alpha[aircraft.country_code]}.png" alt="${esc(aircraft.country_name)}" width="24" height="18">`
+      ? `<img class="country-flag" src="https://flagcdn.com/${alpha[aircraft.country_code]}.svg" alt="${esc(aircraft.country_name)}" width="24" loading="lazy">`
       : '';
     const genBadge = aircraft.generation
       ? `<span class="aircraft-badge generation">${esc(aircraft.generation)}e Gén</span>` : '';

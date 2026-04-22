@@ -54,7 +54,7 @@ body.page-settings::after {
 .page-settings .sidebar-link.danger-link { color: var(--accent); }
 .page-settings .sidebar-link.danger-link:hover { background: rgba(231,76,60,0.06); border-color: rgba(231,76,60,0.15); }
 .page-settings .link-icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; font-size: 1.1rem; color: rgba(255,255,255,0.5); }
-.page-settings .sidebar-link.active .link-icon { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); color: var(--white); }
+.page-settings .sidebar-link.active .link-icon { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.25); color: var(--hud-cyan); }
 .page-settings .sidebar-link.danger-link .link-icon { background: rgba(231,76,60,0.08); border-color: rgba(231,76,60,0.15); color: var(--accent); }
 .page-settings .link-content { display: flex; flex-direction: column; gap: 0.25rem; }
 .page-settings .link-title { font-weight: 600; font-size: 0.95rem; }
@@ -149,6 +149,14 @@ body.page-settings::after {
 .page-settings .btn-delete { background: rgba(231,76,60,0.08); color: var(--accent); border: 1px solid rgba(231,76,60,0.15); }
 .page-settings .btn-delete:hover { background: rgba(231,76,60,0.15); border-color: var(--accent); }
 .page-settings .role-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-left: 0.5rem; vertical-align: middle; }
+
+/* Pagination utilisateurs — alignée sur le style hangar */
+.page-settings #user-pagination { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1rem; }
+.page-settings #user-pagination:empty { display: none; }
+.page-settings #user-pagination button { padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.7); }
+.page-settings #user-pagination button:hover:not(:disabled) { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); color: var(--white); }
+.page-settings #user-pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
+.page-settings #user-pagination .page-info { padding: 0.75rem 1.25rem; font-weight: 600; color: rgba(255,255,255,0.5); }
 .page-settings .badge-admin { background: rgba(231,76,60,0.15); color: var(--accent); border: 1px solid rgba(231,76,60,0.2); }
 .page-settings .badge-editor { background: rgba(255,165,0,0.12); color: #ffa500; border: 1px solid rgba(255,165,0,0.2); }
 .page-settings .badge-member { background: rgba(200,169,110,0.08); color: var(--hud-cyan); border: 1px solid rgba(200,169,110,0.15); }
@@ -327,6 +335,9 @@ body.page-settings::after {
   .page-settings .user-info-name { font-size: 0.95rem; }
   .page-settings .user-info-email { font-size: 0.8rem; }
   .page-settings .user-actions button { padding: 0.5rem 0.875rem; font-size: 0.8rem; }
+  .page-settings #user-pagination { margin: 2rem 0 0.5rem; gap: 0.5rem; flex-wrap: wrap; }
+  .page-settings #user-pagination button { padding: 0.65rem 1rem; font-size: 0.9rem; min-height: 44px; flex: 1; min-width: 100px; }
+  .page-settings #user-pagination .page-info { padding: 0.65rem 1rem; font-size: 0.85rem; width: 100%; text-align: center; order: 3; }
   .page-settings .danger-box { padding: 1.5rem; }
   .page-settings .danger-content { gap: 1rem; margin-bottom: 1.5rem; }
   .page-settings .danger-icon { width: 44px; height: 44px; font-size: 1.2rem; }

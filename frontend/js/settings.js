@@ -36,7 +36,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     if (focusTab) link.focus();
-    if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (scroll) {
+      const anchor = document.querySelector('.settings-section');
+      if (anchor && typeof anchor.scrollIntoView === 'function') {
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
   }
 
   sidebarLinks.forEach(link => {

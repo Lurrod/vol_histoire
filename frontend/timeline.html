@@ -11,22 +11,22 @@
   <link rel="preconnect" href="https://flagcdn.com">
   <meta name="theme-color" content="#080c14">
   <title data-i18n="timeline.title">Chronologie de l'Aviation Militaire | Vol d'Histoire</title>
-  <meta name="description" content="Explorez l'évolution de l'aviation militaire à travers une frise chronologique interactive des avions de chasse.">
+  <meta name="description" content="Le Journal de Bord — huit décennies d'aviation militaire racontées comme un documentaire : événements marquants, doctrines, ruptures technologiques, appareils clés.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/timeline">
   <link rel="alternate" hreflang="fr" href="https://vol-histoire.titouan-borde.com/timeline?lang=fr">
   <link rel="alternate" hreflang="en" href="https://vol-histoire.titouan-borde.com/timeline?lang=en">
   <link rel="alternate" hreflang="x-default" href="https://vol-histoire.titouan-borde.com/timeline">
   <meta name="robots" content="index, follow">
-  <meta name="keywords" content="chronologie aviation militaire, frise chronologique avions, évolution avions de chasse">
-  <meta property="og:title" content="Chronologie de l'Aviation Militaire | Vol d'Histoire">
-  <meta property="og:description" content="Explorez l'évolution de l'aviation militaire à travers une frise chronologique interactive des avions de chasse.">
+  <meta name="keywords" content="chronologie aviation militaire, frise chronologique avions, évolution avions de chasse, histoire guerre froide, 5e génération">
+  <meta property="og:title" content="Le Journal de Bord — 80 ans d'aviation militaire | Vol d'Histoire">
+  <meta property="og:description" content="Huit décennies d'aviation militaire racontées comme un documentaire : événements, doctrines, ruptures, appareils clés.">
   <meta property="og:url" content="https://vol-histoire.titouan-borde.com/timeline">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Vol d'Histoire">
   <meta property="og:locale" content="fr_FR">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Chronologie de l'Aviation Militaire | Vol d'Histoire">
-  <meta name="twitter:description" content="Explorez l'évolution de l'aviation militaire à travers une frise chronologique interactive des avions de chasse.">
+  <meta name="twitter:title" content="Le Journal de Bord — 80 ans d'aviation militaire | Vol d'Histoire">
+  <meta name="twitter:description" content="Huit décennies d'aviation militaire racontées comme un documentaire : événements, doctrines, ruptures, appareils clés.">
   <meta property="og:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/mig29.jpg">
   <meta name="twitter:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/mig29.jpg">
   <script type="application/ld+json">
@@ -34,7 +34,7 @@
     "@context": "https://schema.org",
     "@type": "ItemList",
     "name": "Chronologie de l'Aviation Militaire",
-    "description": "Frise chronologique interactive de l'aviation militaire de 1960 à aujourd'hui.",
+    "description": "Frise chronologique documentaire de l'aviation militaire de 1945 à aujourd'hui.",
     "url": "https://vol-histoire.titouan-borde.com/timeline",
     "inLanguage": "fr",
     "isPartOf": {
@@ -84,65 +84,70 @@
   </nav>
 </header>
 
-<!-- Cinematic Timeline -->
+<!-- Journal de Bord — timeline documentaire -->
 <main id="main-content" class="tl-cinematic">
 
-  <!-- Ambient particle field -->
+  <!-- Champ de particules d'ambiance -->
   <canvas id="tl-particles" class="tl-particles" aria-hidden="true"></canvas>
 
-  <!-- Hero intro -->
+  <!-- Couverture du dossier -->
   <section class="tl-intro" id="tl-intro">
     <div class="tl-intro-bg" aria-hidden="true"></div>
+    <div class="tl-intro-stamp" aria-hidden="true">
+      <span class="tl-stamp-line">Dossier</span>
+      <span class="tl-stamp-num">VH · 01</span>
+    </div>
     <div class="tl-intro-inner">
-      <span class="tl-eyebrow">Chronique · 1950 — aujourd'hui</span>
+      <span class="tl-eyebrow" data-i18n="timeline.dossier_eyebrow">Le Journal de Bord</span>
       <h1 class="tl-title">
-        <span class="tl-title-line-1">Soixante-quinze ans</span>
-        <span class="tl-title-line-2">d'aviation militaire</span>
+        <span class="tl-title-line-1" data-i18n="timeline.dossier_title">Huit décennies</span>
+        <span class="tl-title-line-2" data-i18n="timeline.dossier_title_accent">au-dessus du silence</span>
       </h1>
-      <p class="tl-lede">
-        Des premiers chasseurs à réaction de la Guerre Froide aux appareils furtifs
-        de cinquième génération — une chronique des appareils qui ont
-        redéfini la supériorité aérienne.
+      <p class="tl-lede" data-i18n="timeline.dossier_lede">
+        Depuis Hiroshima, l'aviation militaire n'a cessé de redessiner les règles de la puissance.
+        Chaque décennie a son décollage, son crash, son virage doctrinal — et ses machines qui,
+        parfois, parlent plus fort que les traités.
       </p>
       <div class="tl-intro-stats">
         <div class="tl-stat">
-          <span class="tl-stat-num" id="tl-stat-aircraft">0</span>
-          <span class="tl-stat-lbl">appareils</span>
+          <span class="tl-stat-num" id="tl-stat-events">0</span>
+          <span class="tl-stat-lbl" data-i18n="timeline.chapter_events_label">Événements marquants</span>
         </div>
         <div class="tl-stat">
-          <span class="tl-stat-num" id="tl-stat-years">0</span>
-          <span class="tl-stat-lbl">années</span>
+          <span class="tl-stat-num" id="tl-stat-aircraft">0</span>
+          <span class="tl-stat-lbl" data-i18n="timeline.stat_aircraft_lbl">appareils</span>
         </div>
         <div class="tl-stat">
           <span class="tl-stat-num" id="tl-stat-decades">0</span>
-          <span class="tl-stat-lbl">décennies</span>
+          <span class="tl-stat-lbl" data-i18n="timeline.stat_decades_lbl">décennies</span>
         </div>
       </div>
       <div class="tl-scroll-hint" aria-hidden="true">
-        <span>Scroll</span>
+        <span data-i18n="timeline.dossier_scroll">Continuer la lecture</span>
         <i class="fas fa-chevron-down"></i>
       </div>
     </div>
   </section>
 
-  <!-- Chapters injected by JS -->
+  <!-- Chapitres injectés par JS : 1 title-card + 1 chapter par décennie -->
   <div id="tl-chapters" class="tl-chapters" aria-live="polite"></div>
 
-  <!-- End marker -->
-  <section class="tl-outro" id="tl-outro" aria-hidden="true">
+  <!-- Générique de fin -->
+  <section class="tl-outro" id="tl-outro" aria-labelledby="tl-outro-title">
     <div class="tl-outro-inner">
-      <span class="tl-eyebrow">— fin de chronique —</span>
-      <h2>Et demain ?</h2>
-      <p>La sixième génération est en développement. NGAD, FCAS, Tempest…</p>
+      <span class="tl-eyebrow" data-i18n="timeline.outro_eyebrow">— fin de chronique —</span>
+      <h2 id="tl-outro-title" data-i18n="timeline.outro_title">Et demain ?</h2>
+      <p data-i18n="timeline.outro_desc">La sixième génération est en développement. NGAD, FCAS, Tempest…</p>
       <a href="/hangar" class="tl-cta">
-        Explorer le hangar complet <i class="fas fa-arrow-right"></i>
+        <span data-i18n="timeline.outro_cta">Explorer le hangar complet</span>
+        <i class="fas fa-arrow-right"></i>
       </a>
     </div>
   </section>
 
-  <!-- Fixed HUD elements -->
+  <!-- HUD fixe -->
   <div id="tl-year-hud" class="tl-year-hud" aria-hidden="true">
-    <span id="tl-year-hud-num">1950</span>
+    <span id="tl-year-hud-num">1945</span>
     <span id="tl-year-hud-label" class="tl-year-hud-lbl"></span>
   </div>
 
@@ -150,9 +155,10 @@
 
   <div id="tl-progress" class="tl-progress" aria-hidden="true"></div>
 
-  <!-- Loading state -->
-  <div id="tl-loading" class="tl-loading">
-    <div class="tl-loader"></div>
+  <!-- État de chargement -->
+  <div id="tl-loading" class="tl-loading" role="status" aria-live="polite">
+    <div class="tl-loader" aria-hidden="true"></div>
+    <span class="visually-hidden" data-i18n="timeline.loading">Chargement des données...</span>
   </div>
 </main>
 

@@ -1,6 +1,6 @@
 {
   "name": "vol-histoire",
-  "version": "4.1.1",
+  "version": "4.2.0",
   "private": true,
   "scripts": {
     "e2e": "cd e2e && npm test",

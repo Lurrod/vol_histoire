@@ -10,6 +10,8 @@
     const editForm = document.getElementById('edit-form');
     const cancelEditBtn = document.getElementById('cancel-edit-btn');
     const modalClose = document.querySelector('.modal-close');
+    let _focusTrap = null;
+    let _previousFocus = null;
 
     // Liste des couples (id dom, prop du modèle) pour éviter la duplication
     // texte/nombre : map des champs simples (value attr). Les dates et selects
@@ -71,10 +73,15 @@
       editModal.classList.add('show');
       document.body.style.overflow = 'hidden';
       _focusTrap = trapFocus(editModal, { onEscape: closeEditModal });
+
+      // Déplace le focus dans la modale pour annonce AT (WCAG 2.4.3).
+      // Premier champ de formulaire, repli sur le bouton fermer.
+      requestAnimationFrame(() => {
+        const initial = editForm?.querySelector('input:not([type="hidden"]), select, textarea') || modalClose;
+        initial?.focus();
+      });
     }
 
-    let _focusTrap = null;
-    let _previousFocus = null;
     function closeEditModal() {
       _focusTrap?.destroy();
       _focusTrap = null;
@@ -119,7 +126,7 @@
       } catch (_) { /* silencieux */ }
     }
 
-    editBtn?.addEventListener('click', () => { _previousFocus = document.activeElement; openEditModal(); });
+    editBtn?.addEventListener('click', openEditModal);
     [cancelEditBtn, modalClose].forEach(btn => btn?.addEventListener('click', closeEditModal));
     editModal?.addEventListener('click', (e) => {
       if (e.target === editModal || e.target.classList.contains('modal-backdrop')) closeEditModal();

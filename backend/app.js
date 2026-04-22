@@ -380,6 +380,7 @@ const { invalidateSitemap } = require('./routes/sitemap');
 const airplanesRouter = createAirplanesRouter(() => pool, {
   onAirplaneChange: () => {
     app.invalidateStatsCache?.();
+    app.invalidateTimelineCache?.();
     invalidateSitemap().catch(() => {}); // sitemap stale si Redis down, non-bloquant
   },
 });
@@ -395,6 +396,12 @@ app.use('/api', statsRouter);
 
 // Exposer l'invalidation du cache stats (utilisé par les routes airplanes)
 app.invalidateStatsCache = () => statsRouter.invalidateCache?.();
+
+const createTimelineRouter = require('./routes/timeline');
+const timelineRouter = createTimelineRouter(() => pool);
+app.use('/api', timelineRouter);
+// Exposer l'invalidation cache timeline (appelée après CRUD avions)
+app.invalidateTimelineCache = () => timelineRouter.invalidateCache?.();
 
 const createContactRouter = require('./routes/contact');
 app.use('/api', createContactRouter(() => pool, { contactLimiter, mailer }));
