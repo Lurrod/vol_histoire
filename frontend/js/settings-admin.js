@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
           userList.innerHTML = `<p class="admin-empty-msg">${i18n.t('settings.admin_api_unavailable')}</p>`;
         }
       }
-    } catch (err) {
+    } catch {
       if (userList) {
         userList.innerHTML = `<p class="admin-empty-msg">${i18n.t('settings.toast_users_error')}</p>`;
       }
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
         showToast(data.message || 'Erreur lors de la suppression', 'error');
       }
-    } catch (err) {
+    } catch {
       showToast(i18n.t('settings.toast_network_error'), 'error');
     }
   }
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
         showToast(data.message || 'Erreur lors de la modification', 'error');
       }
-    } catch (err) {
+    } catch {
       showToast(i18n.t('settings.toast_network_error'), 'error');
     } finally {
       ctx()?.setButtonLoading(editUserSave, false);

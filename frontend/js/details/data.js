@@ -41,7 +41,7 @@
       VH.details.render.renderAircraftDetails(state);
       loadRelatedData(state);
       VH.details.favorites.checkFavoriteStatus(state);
-    } catch (error) {
+    } catch {
       window.location.href = '/404';
     }
   }
@@ -56,7 +56,7 @@
       VH.details.render.renderMissions(missions);
       VH.details.render.renderWars(wars);
       VH.details.radar.render(state, armament, tech, missions);
-    } catch (_) { /* silencieux */ }
+    } catch { /* silencieux */ }
   }
 
   /* Mise à jour des balises SEO dynamiques + JSON-LD Vehicle + BreadcrumbList.

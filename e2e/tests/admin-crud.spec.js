@@ -5,8 +5,6 @@ const { loginViaApi } = require('../helpers/auth');
 
 // Ces tests nécessitent un compte admin en BDD (id=1, role_id=1)
 test.describe('Admin — CRUD Avions', () => {
-  let createdAircraftId;
-
   test.beforeEach(async ({ page }) => {
     await loginViaApi(page, 'test@gmail.com', 'test');
   });
@@ -56,7 +54,6 @@ test.describe('Admin — CRUD Avions', () => {
     const data = await response.json();
     const created = data.data?.find(a => a.name === 'E2E Test Aircraft');
     expect(created).toBeDefined();
-    createdAircraftId = created.id;
   });
 
   test('la page détails affiche l\'avion créé', async ({ page }) => {

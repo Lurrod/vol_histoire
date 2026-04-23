@@ -298,7 +298,7 @@
           btn.addEventListener('click', function () { removeFromCompare(Number(btn.dataset.remove)); });
         });
 
-      } catch (_) {
+      } catch {
         body.innerHTML = '<div class="cmp-loading cmp-error"><i class="fas fa-triangle-exclamation"></i> ' + escapeHtml(i18n.t('common.loading_error')) + '</div>';
       }
     });

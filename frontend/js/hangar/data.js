@@ -15,7 +15,7 @@
       state.manufacturers = Array.isArray(manufacturers) ? manufacturers : [];
       VH.hangar.filters.populateFilterOptions(state);
       VH.hangar.admin.populateFormSelects(state);
-    } catch (error) {
+    } catch {
       showToast(i18n.t('common.loading_error'), 'error');
     }
   }
@@ -51,7 +51,7 @@
       VH.hangar.render.renderPagination(state);
       VH.hangar.render.updateResultsCount(state);
       VH.hangar.render.updateStats(state);
-    } catch (error) {
+    } catch {
       showToast(i18n.t('common.loading_error'), 'error');
     }
   }
@@ -66,7 +66,7 @@
       if (!res.ok) return;
       state.facets = await res.json();
       decorateFacetCounts(state);
-    } catch (_) { /* ignore */ }
+    } catch { /* ignore */ }
   }
 
   function decorateFacetCounts(state) {

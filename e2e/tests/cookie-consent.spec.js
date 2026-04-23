@@ -14,7 +14,7 @@ test.describe('Cookie Consent', () => {
       try {
         window.localStorage.removeItem('voldhistoire_cookie_consent');
         window.localStorage.setItem('vol-histoire-lang', 'fr');
-      } catch (_) {}
+      } catch {}
     });
   });
 
@@ -116,7 +116,7 @@ test.describe('Cookie Consent', () => {
           version: '1.0',
         }));
         window.localStorage.setItem('vol-histoire-lang', 'fr');
-      } catch (_) {}
+      } catch {}
     });
 
     await page.goto('/');

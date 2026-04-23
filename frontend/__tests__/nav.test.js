@@ -182,7 +182,7 @@ describe('hamburger click', () => {
 // =============================================================================
 describe('ESC key', () => {
   test('ferme le menu et le dropdown', () => {
-    const nav = loadNav();
+    loadNav();
     const navLinks = document.querySelector('.nav-links');
     navLinks.classList.add('show');
 

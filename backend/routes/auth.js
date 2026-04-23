@@ -295,7 +295,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
           logger.warn('Échec envoi email bienvenue', { error: err.message, userId })
         );
       }
-    } catch (_) { /* non bloquant */ }
+    } catch { /* non bloquant */ }
 
     res.json({ message: 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.' });
   }));

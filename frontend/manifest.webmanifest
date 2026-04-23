@@ -1,0 +1,50 @@
+{
+  "name": "Vol d'Histoire",
+  "short_name": "Vol d'Histoire",
+  "description": "Encyclopédie de l'aviation militaire : 68 fiches détaillées, chronologie cinématographique, hangar interactif.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080c14",
+  "theme_color": "#080c14",
+  "categories": ["education", "reference", "books"],
+  "icons": [
+    {
+      "src": "/assets/logo/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/logo/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/logo/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Hangar",
+      "short_name": "Hangar",
+      "description": "Catalogue complet des appareils",
+      "url": "/hangar",
+      "icons": [{ "src": "/assets/logo/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Chronologie",
+      "short_name": "Timeline",
+      "description": "Journal de Bord de l'aviation militaire",
+      "url": "/timeline",
+      "icons": [{ "src": "/assets/logo/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

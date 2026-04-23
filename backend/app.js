@@ -11,7 +11,7 @@ const fs = require('fs');
 const authMiddleware = require('./middleware/auth');
 const logger = require('./logger');
 const {
-  authorize, cleanupExpiredTokens, cleanupUnverifiedUsers, revokeAllUserRefreshTokens,
+  cleanupExpiredTokens, cleanupUnverifiedUsers, revokeAllUserRefreshTokens,
 } = authMiddleware;
 const mailer = require('./mailer');
 const { langMiddleware } = require('./i18n');
@@ -86,6 +86,8 @@ app.use((req, res, next) => {
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
+    "worker-src 'self'",
+    "manifest-src 'self'",
   ].join('; '));
   res.removeHeader('X-Powered-By');
   next();
@@ -226,7 +228,7 @@ app.initRedis = async function initRedis() {
     logger.info('Redis activé', { limiters: LIMITER_DEFS.length, cache: true });
   } catch (err) {
     logger.warn('Redis indisponible — fallback mémoire', { error: err.message });
-    try { if (client) client.disconnect(); } catch (_) {}
+    try { if (client) client.disconnect(); } catch {}
   }
 };
 
@@ -243,7 +245,7 @@ try {
   const openapiDoc = YAML.parse(fs.readFileSync(path.join(__dirname, 'openapi.yaml'), 'utf8'));
   // En production, restreindre l'accès à la doc API aux admins
   if (process.env.NODE_ENV === 'production') {
-    app.use('/api/docs', (req, res, next) => {
+    app.use('/api/docs', (req, res) => {
       res.status(404).sendFile(path.join(__dirname, '../frontend/index.html'));
     });
   } else {
@@ -279,7 +281,18 @@ app.use('/api', createMonitoringRouter(() => pool));
 const STATIC_OPTS = {
   setHeaders: (res, filePath) => {
     const ext = path.extname(filePath).toLowerCase();
-    if (ext === '.html') {
+    const base = path.basename(filePath).toLowerCase();
+    if (base === 'sw.js') {
+      // Service worker : pas de cache pour que les updates soient déployées
+      // immédiatement. Les browsers capent de toute façon la revérification à 24h.
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Service-Worker-Allowed', '/');
+    } else if (ext === '.webmanifest') {
+      // Manifest PWA : revalider à chaque nav. Assez petit pour que ce ne soit
+      // pas un souci bandwidth.
+      res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
+      res.setHeader('Content-Type', 'application/manifest+json; charset=utf-8');
+    } else if (ext === '.html') {
       res.setHeader('Cache-Control', 'no-cache');
     } else if (ext === '.woff2' || ext === '.woff') {
       // Fonts : long cache + immutable (le contenu ne change jamais)
@@ -479,7 +492,7 @@ app.get('*', async (req, res, next) => {
 // -----------------------------------------------------------------------------
 // Gestionnaire d'erreurs global
 // -----------------------------------------------------------------------------
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   if (err.message === 'Origine non autorisée par CORS') {
     return res.status(403).json({ message: 'Origine non autorisée' });
   }

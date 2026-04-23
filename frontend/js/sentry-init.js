@@ -19,7 +19,7 @@
   try {
     var consent = JSON.parse(localStorage.getItem('cookie-consent') || 'null');
     if (consent && consent.analytics === false) return;
-  } catch (e) { /* ignore */ }
+  } catch { /* ignore */ }
 
   // Queue les erreurs survenant AVANT que Sentry soit chargé
   var preloadQueue = [];
@@ -68,14 +68,14 @@
           } else if (e instanceof PromiseRejectionEvent) {
             window.Sentry.captureException(e.reason);
           }
-        } catch (_) { /* ignore */ }
+        } catch { /* ignore */ }
       });
       preloadQueue = [];
 
       // On peut maintenant retirer les listeners de queue (Sentry installe les siens)
       window.removeEventListener('error', captureBeforeLoad);
       window.removeEventListener('unhandledrejection', captureBeforeLoad);
-    } catch (e) {
+    } catch {
       // Init silencieux en cas d'erreur (ne pas casser la page)
     }
   }

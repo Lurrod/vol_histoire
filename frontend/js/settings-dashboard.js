@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) return;
       const favorites = await response.json();
       renderDashboardStats(favorites);
-    } catch (err) {
+    } catch {
       // Dashboard non critique — fail silently
     }
   }

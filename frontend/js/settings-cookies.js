@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const consent = localStorage.getItem('voldhistoire_cookie_consent');
     if (!consent) return;
     let data;
-    try { data = JSON.parse(consent); } catch (_) { return; }
+    try { data = JSON.parse(consent); } catch { return; }
     const prefs = data.preferences;
 
     const analyticsToggle = document.getElementById('pref-analytics');

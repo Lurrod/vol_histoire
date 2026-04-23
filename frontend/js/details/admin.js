@@ -123,7 +123,7 @@
           document.getElementById('edit-successor-id').innerHTML = options;
           document.getElementById('edit-rival-id').innerHTML = options;
         }
-      } catch (_) { /* silencieux */ }
+      } catch { /* silencieux */ }
     }
 
     editBtn?.addEventListener('click', openEditModal);

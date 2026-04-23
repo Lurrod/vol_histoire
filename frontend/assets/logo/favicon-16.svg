@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-label="Vol d&#39;Histoire">
+  <rect width="16" height="16" rx="2" fill="#0B0B0C"></rect>
+  <g fill="#C8A96E">
+    <path d="M8 3 L8.5 8 L8.5 11 L9 13 L8 12.5 L7 13 L7.5 11 L7.5 8 Z"></path>
+    <path d="M8 7.5 L13 11.5 L13 12.5 L8 11 L3 12.5 L3 11.5 Z"></path>
+    <path d="M8 11 L10 12.5 L10 13 L8 12.4 L6 13 L6 12.5 Z"></path>
+  </g>
+</svg>

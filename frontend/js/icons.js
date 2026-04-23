@@ -186,8 +186,6 @@
     return null;
   }
 
-  // Liste des classes Font Awesome à NE PAS recopier sur le SVG cible
-  var FA_PREFIXES = ['fa-', 'fas', 'far', 'fab', 'fa '];
   function isFaClass(c) {
     if (c === 'fas' || c === 'far' || c === 'fab' || c === 'fa') return true;
     return c.indexOf('fa-') === 0;
@@ -200,7 +198,7 @@
       nodes = (root.matches && root.matches('i.fas, i.far, i.fab, i.fa, i[class*="fa-"]'))
         ? [root]
         : root.querySelectorAll('i.fas, i.far, i.fab, i.fa, i[class*="fa-"]');
-    } catch (e) { return; }
+    } catch { return; }
     for (var i = 0; i < nodes.length; i++) {
       var el = nodes[i];
       if (el.dataset && el.dataset.iconSwapped) continue;

@@ -24,7 +24,7 @@
       const data = await res.json();
       sitekey = data.hcaptchaSitekey || null;
       return sitekey;
-    } catch (_) {
+    } catch {
       return null;
     }
   }

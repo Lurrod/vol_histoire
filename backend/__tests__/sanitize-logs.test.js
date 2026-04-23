@@ -9,7 +9,6 @@ process.env.NODE_ENV = 'test';
 const {
   scrub,
   isSensitiveKey,
-  SENSITIVE_FIELDS,
   REDACTED,
   MAX_DEPTH,
 } = require('../middleware/sanitize-logs');
@@ -310,6 +309,29 @@ describe('scrub — Error instances', () => {
     expect(output.status).toBe(500);
     expect(output.code).toBe('ERR_API');
     expect(output.token).toBe(REDACTED);
+  });
+
+  test('ignore les clés name/message/stack en cas de redéfinition explicite (ligne 89)', () => {
+    // Quand on assigne err.name directement, Object.keys() le liste.
+    // La branche `continue` de la ligne 89 empêche d'écraser les valeurs déjà copiées.
+    const err = new Error('test error');
+    err.name = 'ValidationError'; // fait apparaître 'name' dans Object.keys(err)
+    err.password = 'should-be-redacted'; // propriété sensible normale
+    const output = scrub(err);
+    // La valeur de name vient de la copie initiale (ligne 83), pas de la boucle
+    expect(output.name).toBe('ValidationError');
+    expect(output.message).toBe('test error');
+    expect(output.password).toBe(REDACTED);
+  });
+
+  test('Error avec propriété non-sensible custom → copiée normalement (deep scrub)', () => {
+    const err = new Error('db error');
+    err.query = 'SELECT * FROM users'; // non-sensible
+    err.userId = 42;                   // non-sensible
+    const output = scrub(err);
+    expect(output.message).toBe('db error');
+    expect(output.query).toBe('SELECT * FROM users');
+    expect(output.userId).toBe(42);
   });
 });
 

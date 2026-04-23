@@ -68,7 +68,7 @@
       sessionStorage.setItem('hangar_filters', JSON.stringify({
         filters: state.filters, sort: state.sort, currentPage: state.currentPage,
       }));
-    } catch (_) { /* quota plein : on ignore */ }
+    } catch { /* quota plein : on ignore */ }
     VH.hangar.data.loadAircraft(state);
     const toolbar = document.querySelector('.hangar-toolbar');
     const offset = toolbar ? toolbar.offsetTop - 80 : 0;

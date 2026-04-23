@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let saved;
     try {
       saved = JSON.parse(sessionStorage.getItem('hangar_filters') || 'null');
-    } catch (_) { return; }
+    } catch { return; }
     if (!saved) return;
 
     const p = new URLSearchParams();

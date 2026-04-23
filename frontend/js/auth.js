@@ -13,6 +13,7 @@
  *   const res = await auth.authFetch('/api/x'); // Requête authentifiée
  */
 
+// eslint-disable-next-line no-unused-vars -- exposé via concaténation de bundle aux autres scripts
 const auth = (() => {
   let accessToken = null; // Mémoire uniquement — jamais persisté
   let userInfo = null;    // Infos utilisateur en mémoire uniquement (pas localStorage)

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="VH">
+  <rect x="1" y="1" width="126" height="126" fill="none" stroke="#C8A96E" stroke-width="1" opacity=".35"></rect>
+  <g font-family="&#39;Barlow Condensed&#39;, &#39;Arial Narrow&#39;, sans-serif" font-weight="300" fill="#C8A96E" text-anchor="middle">
+    <text x="64" y="74" font-size="72" letter-spacing="-2">V<tspan fill="#C8A96E" opacity=".55">H</tspan></text>
+  </g>
+  <g fill="#C8A96E" opacity=".7">
+    <path d="M64 102 L78 114 L78 116 L64 112 L50 116 L50 114 Z"></path>
+  </g>
+</svg>

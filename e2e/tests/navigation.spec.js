@@ -121,8 +121,6 @@ test.describe('Recherche et filtres', () => {
     await page.locator('.filter-option').first().click();
     await page.waitForTimeout(500);
 
-    const filteredCount = await page.locator('.aircraft-card').count();
-
     // S'il y a un bouton "Effacer tout", cliquer dessus
     const clearBtn = page.locator('.clear-all-filters');
     if (await clearBtn.isVisible()) {

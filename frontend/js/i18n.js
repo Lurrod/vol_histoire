@@ -13,6 +13,7 @@
  *   i18n.currentLang → 'fr' | 'en'
  */
 
+// eslint-disable-next-line no-unused-vars -- exposé via concaténation de bundle aux autres scripts
 const i18n = (() => {
   const SUPPORTED_LANGS = ['fr', 'en'];
   const DEFAULT_LANG = 'fr';
@@ -76,7 +77,7 @@ const i18n = (() => {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return await res.json();
-    } catch (err) {
+    } catch {
       // Échec silencieux du chargement i18n
       return {};
     }

@@ -1,6 +1,5 @@
 const express = require('express');
 const asyncHandler = require('../middleware/asyncHandler');
-const logger = require('../logger');
 
 module.exports = function createStatsRouter(getPool) {
   const router = express.Router();

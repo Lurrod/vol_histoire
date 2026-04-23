@@ -69,7 +69,7 @@ module.exports = function createMonitoringRouter(getPool) {
     try {
       res.setHeader('Content-Type', register.contentType);
       res.end(await register.metrics());
-    } catch (err) {
+    } catch {
       res.status(500).end();
     }
   });

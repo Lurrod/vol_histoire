@@ -52,7 +52,7 @@ class CookieConsent {
       if (typeof i18n !== 'undefined' && i18n.applyToDOM) {
         i18n.applyToDOM(container);
       }
-    } catch (e) {
+    } catch {
       // Échec silencieux — le banner inline sert de fallback
     }
   }
@@ -304,7 +304,7 @@ class CookieConsent {
       try {
         const parsed = JSON.parse(consentData);
         return parsed.preferences;
-      } catch (e) {
+      } catch {
         // Erreur silencieuse — données de consentement corrompues
         return null;
       }

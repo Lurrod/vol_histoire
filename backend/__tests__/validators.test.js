@@ -760,3 +760,55 @@ describe('validateAirplaneData — strates enrichissement', () => {
     expect(errors).toContain('manufacturer_page > 500 caractères.');
   });
 });
+
+// =============================================================================
+// validateAirplaneData — strates 2-4 champs spécifiques non couverts
+// =============================================================================
+describe('validateAirplaneData — strate 2 et strate 4 champs non couverts', () => {
+  const base = { name: 'Rafale' };
+
+  test('g_limit_neg non numérique → erreur (ligne 161)', () => {
+    const errors = validateAirplaneData({ ...base, g_limit_neg: 'xx' });
+    expect(errors).toContain('g_limit_neg invalide.');
+  });
+
+  test('engine_type > 100 car. → erreur (ligne 166)', () => {
+    const errors = validateAirplaneData({ ...base, engine_type: 'x'.repeat(101) });
+    expect(errors).toContain('Type du moteur > 100 caractères.');
+  });
+
+  test('engine_type_en > 100 car. → erreur (ligne 167)', () => {
+    const errors = validateAirplaneData({ ...base, engine_type_en: 'x'.repeat(101) });
+    expect(errors).toContain('Type du moteur (EN) > 100 caractères.');
+  });
+
+  test('thrust_wet négatif → erreur isOptionalPositiveNumber (ligne 170)', () => {
+    const errors = validateAirplaneData({ ...base, thrust_wet: -100 });
+    expect(errors).toContain('La poussée PC doit être un nombre positif.');
+  });
+
+  test('unit_cost_usd négatif → erreur isOptionalNonNegativeInt (ligne 176)', () => {
+    const errors = validateAirplaneData({ ...base, unit_cost_usd: -10 });
+    expect(errors).toContain('Coût unitaire doit être un entier ≥ 0.');
+  });
+
+  test('unit_cost_year hors plage 1900-2100 → erreur isOptionalYear (ligne 177)', () => {
+    const errors = validateAirplaneData({ ...base, unit_cost_year: 1800 });
+    expect(errors).toContain("Année de référence du coût invalide.");
+  });
+
+  test('operators_count négatif → erreur isOptionalNonNegativeInt (ligne 178)', () => {
+    const errors = validateAirplaneData({ ...base, operators_count: -1 });
+    expect(errors).toContain("Nombre d'opérateurs doit être un entier ≥ 0.");
+  });
+
+  test('successor_id égal à 0 → erreur isOptionalId (ligne 189)', () => {
+    const errors = validateAirplaneData({ ...base, successor_id: 0 });
+    expect(errors).toContain('successor_id doit être un entier positif.');
+  });
+
+  test('rival_id négatif → erreur isOptionalId (ligne 190)', () => {
+    const errors = validateAirplaneData({ ...base, rival_id: -5 });
+    expect(errors).toContain('rival_id doit être un entier positif.');
+  });
+});

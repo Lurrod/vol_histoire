@@ -37,7 +37,7 @@ if (process.env.SENTRY_DSN && process.env.NODE_ENV !== 'test') {
     });
      
     console.log(JSON.stringify({ level: 'info', message: 'Sentry activé', env: process.env.SENTRY_ENVIRONMENT }));
-  } catch (err) {
+  } catch {
     // @sentry/node non installé — on continue sans
      
     console.warn(JSON.stringify({ level: 'warn', message: 'SENTRY_DSN défini mais @sentry/node non installé', hint: 'npm install @sentry/node' }));
@@ -59,7 +59,7 @@ function formatEntry(level, message, meta = {}) {
 
 // Scrubbing PII/secrets dans les meta avant log (défense en profondeur)
 let scrub;
-try { scrub = require('./middleware/sanitize-logs').scrub; } catch (_) { scrub = null; }
+try { scrub = require('./middleware/sanitize-logs').scrub; } catch { scrub = null; }
 
 function log(level, message, meta) {
   if (LEVELS[level] > currentLevel) return;

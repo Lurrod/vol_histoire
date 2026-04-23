@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (state.sort && state.sort !== 'recent') p.set('sort', state.sort);
     const qs = p.toString();
     const url = qs ? `${location.pathname}?${qs}` : location.pathname;
-    try { history.replaceState(null, '', url); } catch (_) { /* ignore */ }
+    try { history.replaceState(null, '', url); } catch { /* ignore */ }
   }
 
   window.addEventListener('popstate', () => {
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       applyFiltersAndRender();
       updateStats();
 
-    } catch (error) {
+    } catch {
       // Erreur gérée via toast
       showToast(i18n.t('common.loading_error'), 'error');
     }

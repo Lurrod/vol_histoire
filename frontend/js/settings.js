@@ -86,17 +86,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // AUTH CHECK & USER DATA
   // ========================================================================
   
-  // Token expiration check utility
-  function isTokenExpired(token) {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (!payload.exp) return false;
-      return Date.now() >= payload.exp * 1000;
-    } catch {
-      return true;
-    }
-  }
-
   async function checkAuth() {
     const payload = auth.getPayload();
     
@@ -162,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         return true;
       }
-    } catch (err) {
+    } catch {
       // Erreur réseau — authentification par token uniquement
       const p = auth.getPayload();
       currentUser = p ? { id: p.id, name: p.name || 'Utilisateur', email: p.email || '', role: Number(p.role) } : { name: 'Utilisateur', email: '' };
@@ -239,7 +228,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           showToast(data.message || i18n.t('settings.toast_profile_error'), 'error');
         }
-      } catch (err) {
+      } catch {
         // Erreur gérée via toast
         showToast(i18n.t('settings.toast_network_error'), 'error');
       } finally {
@@ -386,7 +375,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           showToast(data.message || i18n.t('settings.toast_profile_error'), 'error');
         }
-      } catch (err) {
+      } catch {
         // Erreur gérée via toast
         showToast('API non disponible. Connectez votre backend pour changer le mot de passe.', 'error');
       } finally {
@@ -431,7 +420,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             showToast(data.message || 'Erreur lors de la suppression', 'error');
             setButtonLoading(deleteAccountBtn, false);
           }
-        } catch (err) {
+        } catch {
           // Erreur gérée via toast
           showToast(i18n.t('settings.toast_network_error'), 'error');
           setButtonLoading(deleteAccountBtn, false);

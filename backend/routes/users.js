@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { isValidEmail, isValidName, isValidPassword } = require('../validators');
-const { authorize, isOwnerOrAdmin, revokeAllUserRefreshTokens } = require('../middleware/auth');
+const { authorize, isOwnerOrAdmin } = require('../middleware/auth');
 const logger = require('../logger');
 const { withTransaction } = require('../db');
 const asyncHandler = require('../middleware/asyncHandler');

@@ -20,7 +20,7 @@
     }
     if (generationSelect) {
       generationSelect.innerHTML = placeholder +
-        state.generations.map(g => `<option value="${g}">${g}e Génération</option>`).join('');
+        state.generations.map(g => `<option value="${escapeHtml(String(g))}">${escapeHtml(String(g))}e Génération</option>`).join('');
     }
     if (typeSelect) {
       typeSelect.innerHTML = placeholder +
@@ -46,7 +46,7 @@
         const el = document.getElementById(id);
         if (el) el.innerHTML = options;
       });
-    } catch (_) { /* silencieux */ }
+    } catch { /* silencieux */ }
   }
 
   function setupAdminModal(state) {

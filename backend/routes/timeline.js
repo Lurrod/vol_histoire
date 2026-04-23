@@ -157,7 +157,7 @@ module.exports = function createTimelineRouter(getPool) {
   // quand une fiche est créée/modifiée/supprimée — la liste des appareils
   // par décennie peut changer).
   router.invalidateCache = async () => {
-    try { await cache.del(CACHE_KEY); } catch (_) { /* noop */ }
+    try { await cache.del(CACHE_KEY); } catch { /* noop */ }
   };
 
   return router;

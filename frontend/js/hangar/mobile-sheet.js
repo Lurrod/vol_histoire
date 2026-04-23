@@ -87,7 +87,7 @@
           e.preventDefault();
           currentTab = id.split('-')[0];
           renderTab();
-          try { dlg.showModal(); } catch (_) { dlg.setAttribute('open', ''); }
+          try { dlg.showModal(); } catch { dlg.setAttribute('open', ''); }
         }
       }, true);
     });

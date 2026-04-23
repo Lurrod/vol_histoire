@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 360" role="img" aria-label="Vol d&#39;Histoire">
+  <g transform="translate(96 32)">
+    <circle cx="64" cy="64" r="58" fill="none" stroke="#F0EDE8" stroke-width="1" opacity=".4"></circle>
+    <g stroke="#F0EDE8" stroke-width="1" opacity=".55">
+      <line x1="64" y1="2" x2="64" y2="10"></line>
+      <line x1="64" y1="118" x2="64" y2="126"></line>
+      <line x1="2" y1="64" x2="10" y2="64"></line>
+      <line x1="118" y1="64" x2="126" y2="64"></line>
+    </g>
+    <circle cx="64" cy="64" r="44" fill="none" stroke="#F0EDE8" stroke-width=".5" opacity=".25"></circle>
+    <g fill="#F0EDE8">
+      <path d="M64 22 L66.2 58 L66.2 82 L68.5 96 L64 94 L59.5 96 L61.8 82 L61.8 58 Z"></path>
+      <path d="M64 56 L100 86 L100 90 L64 78 L28 90 L28 86 Z"></path>
+      <path d="M64 86 L78 98 L78 100 L64 96 L50 100 L50 98 Z"></path>
+    </g>
+  </g>
+  <g font-family="&#39;Barlow Condensed&#39;, &#39;Arial Narrow&#39;, sans-serif" text-anchor="middle" fill="#F0EDE8">
+    <text x="160" y="258" font-size="60" font-weight="400" letter-spacing="-0.5">VOL</text>
+    <text x="160" y="318" font-size="60" font-weight="300" letter-spacing="-0.5">D&#39;HISTOIRE</text>
+  </g>
+</svg>

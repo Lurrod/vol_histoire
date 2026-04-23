@@ -280,6 +280,10 @@ body.page-home::after {
   transition: var(--transition);
   background: transparent;
   border: none;
+  appearance: none;
+  -webkit-appearance: none;
+  color: inherit;
+  font: inherit;
 }
 
 .page-home .scroll-approach {

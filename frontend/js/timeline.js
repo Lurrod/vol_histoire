@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       return d.toLocaleDateString(lang === 'en' ? 'en-US' : 'fr-FR',
         { day: 'numeric', month: 'long', year: 'numeric' });
-    } catch (_) {
+    } catch {
       return d.toISOString().slice(0, 10);
     }
   }
@@ -507,7 +507,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById('tl-loading')?.classList.add('gone');
     });
 
-  } catch (err) {
+  } catch {
     document.getElementById('tl-loading')?.classList.add('gone');
     const root = document.getElementById('tl-chapters');
     if (root) {

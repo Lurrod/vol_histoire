@@ -128,7 +128,7 @@
     if (state.currentPage > 1)    p.set('page', String(state.currentPage));
     const qs = p.toString();
     const url = qs ? `${location.pathname}?${qs}` : location.pathname;
-    try { history.replaceState(null, '', url); } catch (_) { /* ignore */ }
+    try { history.replaceState(null, '', url); } catch { /* ignore */ }
   }
 
   function readStateFromUrl(state) {
@@ -150,12 +150,12 @@
       if (filters) Object.assign(state.filters, filters);
       if (sort) state.sort = sort;
       if (currentPage) state.currentPage = currentPage;
-    } catch (_) {
+    } catch {
       sessionStorage.removeItem(SESSION_KEY);
     }
   }
 
-  function setupDropdowns(state) {
+  function setupDropdowns() {
     const filterButtons = {
       'country-filter-btn': 'country-dropdown',
       'generation-filter-btn': 'generation-dropdown',

@@ -87,16 +87,17 @@ test.describe('Settings — Profil & Sécurité', () => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
 
-    // Naviguer vers la section sécurité via le sidebar
+    // Naviguer vers la section sécurité via le sidebar.
+    // activateTab() ne se câble qu'après `await auth.init()` dans settings.js
+    // (DOMContentLoaded async) — sous charge workers parallèles, 3s peut être
+    // court. On s'aligne sur les 8s des autres tests du fichier (profile).
     const securityLink = page.locator('[data-section="security"]');
-    if (await securityLink.isVisible()) {
-      await securityLink.click();
-      await page.waitForTimeout(300);
+    await expect(securityLink).toBeVisible({ timeout: 8000 });
+    await securityLink.click();
 
-      // Le formulaire de changement de mot de passe doit être visible
-      const passwordSection = page.locator('#security');
-      await expect(passwordSection).toBeVisible({ timeout: 3000 });
-    }
+    // Le panneau sécurité doit être visible (hidden retiré par activateTab)
+    const passwordSection = page.locator('#security');
+    await expect(passwordSection).toBeVisible({ timeout: 8000 });
   });
 
   test('changement de mot de passe — validation champs vides', async ({ page }) => {

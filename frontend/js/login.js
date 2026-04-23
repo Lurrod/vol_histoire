@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         animateNumber(elYears, data.latest_year - data.earliest_year);
         elYearsLabel.textContent = i18n.t('login.years_label');
       }
-    } catch (err) {
+    } catch {
       // Fallback statique si l'API n'est pas joignable
       // Stats API indisponible — utilisation des valeurs par défaut
       elAirplanes.textContent = '45+';
@@ -120,15 +120,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     tab.setAttribute('tabindex', '0');
     tab.classList.add('active');
 
-    // Affiche le panneau correspondant (les autres sont masqués via CSS .active)
+    // Affiche le panneau correspondant (les autres sont masqués via CSS .active).
+    // `inert` remplace le couple aria-hidden + tabindex : une seule propriété
+    // exclut le sous-arbre du tab order ET des AT, évitant l'antipattern
+    // « aria-hidden sur conteneur focusable » (WCAG 4.1.2).
     [loginSlide, registerSlide].forEach(p => {
       if (!p) return;
       if (p === panel) {
         p.classList.add('active');
-        p.setAttribute('aria-hidden', 'false');
+        p.inert = false;
       } else {
         p.classList.remove('active');
-        p.setAttribute('aria-hidden', 'true');
+        p.inert = true;
       }
     });
 
@@ -315,7 +318,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         showToast(data.message || i18n.t('login.invalid_credentials'), 'error');
         setButtonLoading(submitBtn, false);
       }
-    } catch (err) {
+    } catch {
       // Erreur gérée via toast
       showToast(i18n.t('login.server_error'), 'error');
       setButtonLoading(submitBtn, false);
@@ -379,7 +382,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         showToast(data.message || i18n.t('login.account_creation_failed'), 'error');
         setButtonLoading(submitBtn, false);
       }
-    } catch (err) {
+    } catch {
       // Erreur gérée via toast
       showToast(i18n.t('login.server_error'), 'error');
       setButtonLoading(submitBtn, false);

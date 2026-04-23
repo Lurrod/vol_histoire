@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         animateNumber(elYears, span);
         if (elYearsLbl) elYearsLbl.textContent = i18n.t('home.stat_years');
       }
-    } catch (err) {
+    } catch {
       // Fallback: hardcoded values if API unreachable
       // Stats API indisponible — valeurs par défaut
       animateNumber(elAirplanes, 45);

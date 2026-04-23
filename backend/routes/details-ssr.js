@@ -54,9 +54,9 @@ module.exports = function createDetailsSsrRouter(getPool) {
   try {
     const raw = fs.readFileSync(templatePath, 'utf8');
     let pkgVersion = 'dev';
-    try { pkgVersion = require('../package.json').version || 'dev'; } catch (_) {}
+    try { pkgVersion = require('../package.json').version || 'dev'; } catch {}
     template = rewriteAssets(raw, pkgVersion);
-  } catch (err) {
+  } catch {
     // En tests, le fichier peut être absent — pas bloquant
     template = '';
   }
@@ -68,7 +68,6 @@ module.exports = function createDetailsSsrRouter(getPool) {
     const name = aircraft.name || 'Avion';
     const completeName = aircraft.complete_name || name;
     const country = aircraft.country_name || '';
-    const manufacturer = aircraft.manufacturer_name || '';
     const year = aircraft.date_operationel
       ? new Date(aircraft.date_operationel).getFullYear()
       : null;
@@ -114,9 +113,13 @@ module.exports = function createDetailsSsrRouter(getPool) {
     // plus anciens retombent sur JPG via le <picture> normal.
     let heroPreloadTag = '';
     const localAssetMatch = /^\/assets\/airplanes\/([^/?#]+)\.(jpe?g|png)(\?.*)?$/i.exec(rawImage);
+    let heroAvif = '';
+    let heroWebp = '';
     if (localAssetMatch) {
-      const avifHref = `/assets/airplanes/${localAssetMatch[1]}.avif`;
-      heroPreloadTag = `  <link rel="preload" as="image" href="${escapeHtml(avifHref)}" type="image/avif" fetchpriority="high">\n`;
+      const base = `/assets/airplanes/${localAssetMatch[1]}`;
+      heroAvif = `${base}.avif`;
+      heroWebp = `${base}.webp`;
+      heroPreloadTag = `  <link rel="preload" as="image" href="${escapeHtml(heroAvif)}" type="image/avif" fetchpriority="high">\n`;
     }
 
     // Alt descriptif par fiche : "F-16 Fighting Falcon — chasseur 4e gen · États-Unis"
@@ -291,6 +294,32 @@ module.exports = function createDetailsSsrRouter(getPool) {
         `$1${heroPreloadTag}`
       );
     }
+
+    // <h1> côté serveur : remplir le titre de la fiche pour les crawlers
+    // (Googlebot exécute JS mais valide le H1 au premier rendu ; bots sociaux
+    // — Facebook, Twitter, LinkedIn, Slack — ne l'exécutent pas du tout).
+    // Le client JS écrasera ensuite cette valeur avec la même donnée.
+    html = html.replace(
+      /<h1 id="aircraft-name"[^>]*>[^<]*<\/h1>/,
+      `<h1 id="aircraft-name">${escapeHtml(name)}</h1>`
+    );
+
+    // Hero <picture> : remplir les sources AVIF/WebP + src img côté serveur.
+    // Le template part d'un data-URI 1×1 transparent (src="") évité : voir
+    // details.html. Ici on injecte la vraie image pour zero-JS rendering
+    // (bots sociaux) + LCP immédiat (pas d'attente du fetch /api).
+    html = html.replace(
+      /<source id="hero-image-avif"[^>]*>/,
+      `<source id="hero-image-avif" type="image/avif" srcset="${escapeHtml(heroAvif)}">`
+    );
+    html = html.replace(
+      /<source id="hero-image-webp"[^>]*>/,
+      `<source id="hero-image-webp" type="image/webp" srcset="${escapeHtml(heroWebp)}">`
+    );
+    html = html.replace(
+      /<img id="hero-image"[^>]*>/,
+      `<img id="hero-image" src="${escapeHtml(rawImage)}" alt="${escapeHtml(ogImageAlt)}" class="aircraft-image" width="800" height="500" fetchpriority="high" decoding="async">`
+    );
 
     // <html lang="..."> ajustement (default fr, switch en si besoin)
     if (isEn) {

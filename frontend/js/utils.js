@@ -162,6 +162,7 @@ function isValidEmail(email) {
  * @param {HTMLElement} container — élément contenant les éléments focusables
  * @returns {{ destroy: () => void }} — appeler destroy() quand la modal se ferme
  */
+// eslint-disable-next-line no-unused-vars -- exposé via concaténation de bundle aux autres scripts
 function trapFocus(container, options = {}) {
   if (!container) return { destroy() {} };
 

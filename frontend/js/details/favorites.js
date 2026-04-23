@@ -10,7 +10,7 @@
       const data = await response.json();
       state.isFavorite = data.isFavorite;
       updateFavoriteButton(state);
-    } catch (_) { /* silencieux */ }
+    } catch { /* silencieux */ }
   }
 
   function updateFavoriteButton(state) {

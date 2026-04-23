@@ -24,7 +24,7 @@
     try {
       var payload = auth.getPayload();
       if (payload && payload.name) userName = payload.name;
-    } catch (_) {}
+    } catch {}
 
     var steps = [
       {

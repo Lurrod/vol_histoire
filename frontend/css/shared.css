@@ -68,6 +68,18 @@
     align-items: center;
     gap: var(--sp-2);
     transition: var(--transition-fast);
+    text-decoration: none;
+  }
+
+  .logo picture {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .logo-lockup {
+    height: 2.5rem;
+    width: auto;
+    display: block;
   }
 
   .logo:hover {
@@ -874,6 +886,20 @@
 
   .footer-logo i, .footer-logo .icon { color: var(--hud-cyan); }
 
+  .footer-lockup {
+    height: 3rem;
+    width: auto;
+    display: block;
+  }
+
+  /* Logos des pages d'authentification (login/check-email/forgot-password/reset-password/verify-email) */
+  .auth-lockup {
+    height: 3.5rem;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
   .footer-section p {
     color: rgba(255, 255, 255, 0.45);
     line-height: var(--leading-relaxed);
@@ -1281,6 +1307,7 @@
 
     .logo span { display: none; }
     .logo i, .logo .icon    { font-size: 1.75rem; }
+    .logo-lockup            { height: 2rem; }
 
     header { padding-block: var(--sp-3); }
 
@@ -1298,6 +1325,8 @@
 
     .footer-content { gap: var(--sp-8); }
     .footer-logo    { font-size: var(--text-xl); }
+    .footer-lockup  { height: 2.5rem; }
+    .auth-lockup    { height: 3rem; }
   }
 
 /* Facet counts (hangar + favorites) */

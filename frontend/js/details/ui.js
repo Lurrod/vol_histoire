@@ -31,14 +31,14 @@
           showToast(i18n.currentLang === 'en' ? 'Link copied' : 'Lien copié', 'success');
         }
         setTimeout(() => btn.classList.remove('flash'), 800);
-      } catch (_) {
+      } catch {
         window.prompt('Copier le lien :', url);
       }
     }
 
     async function nativeShare() {
       const { name, text, url } = getShareData();
-      try { await navigator.share({ title: name, text, url }); } catch (_) { /* cancel */ }
+      try { await navigator.share({ title: name, text, url }); } catch { /* cancel */ }
     }
 
     if ('share' in navigator) {
