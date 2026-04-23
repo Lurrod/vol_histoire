@@ -86,13 +86,12 @@
 
 ### Italie :
 
-1. **Lockheed F-104 Starfighter Italien**  
-2. **Aeritalia F-104S Starfighter Italien**  
-3. **Panavia Tornado Italien**  
-4. **Eurofighter Typhoon Italien**  
-5. **Lockheed Martin F-35 Lightning II Italien**  
-6. **Aermacchi MB-339**  
-7. **AMX International AMX**  
+1. **Aeritalia F-104S Starfighter Italien**  
+2. **Panavia Tornado Italien**  
+3. **Eurofighter Typhoon Italien**  
+4. **Lockheed Martin F-35 Lightning II Italien**  
+5. **Aermacchi MB-339**  
+6. **AMX International AMX**  
 
 ### Suède 
 
