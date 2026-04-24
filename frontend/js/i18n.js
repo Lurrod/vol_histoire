@@ -274,3 +274,9 @@ const i18n = (() => {
     SUPPORTED_LANGS
   };
 })();
+
+// Expose globalement : `const` top-level dans un script classique ne crée pas
+// window.i18n, alors que plusieurs modules (timeline.js, shared/card.js) testent
+// `window.i18n` comme garde avant usage. Sans cette ligne, le garde échoue
+// toujours et les fonctions tombent sur leur fallback FR.
+window.i18n = i18n;

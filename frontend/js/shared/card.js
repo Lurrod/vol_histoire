@@ -36,7 +36,8 @@
     const typeBadge = aircraft.type_name
       ? `<span class="aircraft-badge type">${esc(aircraft.type_name)}</span>` : '';
 
-    const imgUrl = aircraft.image_url || 'https://via.placeholder.com/400x300?text=No+Image';
+    const lang = (window.i18n && i18n.currentLang === 'en') ? 'en' : 'fr';
+    const imgUrl = aircraft.image_url || `/assets/logo/placeholder-airplane-${lang}.svg`;
     const pic = VH.shared.picture.pictureHtml(imgUrl, {
       alt: aircraft.name || '',
       loading: 'lazy',

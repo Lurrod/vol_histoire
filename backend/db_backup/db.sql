@@ -552,7 +552,17 @@ INSERT INTO armement (name, name_en, description, description_en) VALUES
 ('HF-16', NULL, 'Roquettes non guidées, 57 mm', 'Unguided rockets, 57 mm'),
 ('HVAR 70 mm', NULL, 'Roquettes non guidées, 70 mm', 'Unguided rockets, 70 mm'),
 ('APR-3', NULL, 'Torpille légère anti-sous-marine, guidage acoustique', 'Lightweight anti-submarine torpedo, acoustic guidance'),
-('RGB-75', NULL, 'Bouée acoustique pour détection sous-marine', 'Acoustic sonobuoy for underwater detection');
+('RGB-75', NULL, 'Bouée acoustique pour détection sous-marine', 'Acoustic sonobuoy for underwater detection'),
+('Shafrir 2', NULL, 'Missile air-air courte portée israélien, guidage infrarouge, 5 km', 'Israeli short-range air-to-air missile, infrared guidance, 5 km'),
+('Rampage', NULL, 'Missile air-sol supersonique stand-off israélien, portée 150 km', 'Israeli supersonic stand-off air-to-surface missile, 150 km range'),
+('Delilah', NULL, 'Missile de croisière israélien air-sol/antinavire, portée 250 km', 'Israeli air-to-surface/anti-ship cruise missile, 250 km range'),
+('Rb 04E', NULL, 'Missile antinavire suédois subsonique, portée 32 km', 'Swedish subsonic anti-ship missile, 32 km range'),
+('Rb 05A', NULL, 'Missile air-sol suédois, guidage radio, portée 9 km', 'Swedish air-to-surface missile, radio guidance, 9 km range'),
+('Rb 15F', NULL, 'Missile antinavire suédois turbo, portée 200 km', 'Swedish turbojet anti-ship missile, 200 km range'),
+('Astra Mk1', NULL, 'Missile air-air BVR indien à guidage radar actif, portée 110 km', 'Indian BVR air-to-air missile with active radar guidance, 110 km range'),
+('BrahMos-A', NULL, 'Missile de croisière supersonique indo-russe air-sol/antinavire, portée 450 km', 'Indo-Russian supersonic air-to-surface/anti-ship cruise missile, 450 km range'),
+('ASM-3', NULL, 'Missile antinavire supersonique japonais, portée 200 km', 'Japanese supersonic anti-ship missile, 200 km range'),
+('Popeye Turbo', NULL, 'Missile de croisière israélien à longue portée, 1500 km', 'Israeli long-range cruise missile, 1500 km range');
 
 -- Technologies génériques réutilisables
 INSERT INTO tech (name, name_en, description, description_en) VALUES

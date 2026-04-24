@@ -41,7 +41,7 @@
     }
 
     const heroImage = document.getElementById('hero-image');
-    const heroUrl = a.image_url || 'https://via.placeholder.com/800x500?text=No+Image';
+    const heroUrl = a.image_url || `/assets/logo/placeholder-airplane-${i18n.currentLang === 'en' ? 'en' : 'fr'}.svg`;
     VH.shared.picture.applySourcesTo(heroImage, heroUrl);
     heroImage.alt = [a.name, a.manufacturer_name, a.country_name].filter(Boolean).join(' — ');
     heroImage.loading = 'lazy';
@@ -248,58 +248,50 @@
     list.innerHTML = items.join('');
   }
 
-  function renderChipGrid(container, items, iconClass, emptyMsg) {
-    if (!container) return;
+  function renderCapabilityList(items, listId, countId, columnId) {
+    const list = document.getElementById(listId);
+    const column = document.getElementById(columnId);
+    const count = document.getElementById(countId);
+    if (!list || !column) return 0;
     if (!items || items.length === 0) {
-      container.className = '';
-      container.innerHTML = `<p class="details-empty-hint">${emptyMsg}</p>`;
-      return;
+      column.classList.add('hidden');
+      list.innerHTML = '';
+      if (count) count.textContent = '';
+      return 0;
     }
-    container.className = 'chip-grid';
-    container.innerHTML = items.map(item => {
+    column.classList.remove('hidden');
+    if (count) count.textContent = String(items.length);
+    list.innerHTML = items.map(item => {
       const name = escapeHtml(item.name || '');
       const desc = escapeHtml(item.description || '');
-      return `<button class="chip" type="button" tabindex="0">
-        <i class="fas ${iconClass}"></i>
-        <span class="chip-label">${name}</span>
-        ${desc ? `<span class="chip-tooltip" role="tooltip">${desc}</span>` : ''}
-      </button>`;
+      return `<li class="capability-item">
+        <span class="capability-name">${name}</span>
+        ${desc ? `<span class="capability-desc">${desc}</span>` : ''}
+      </li>`;
     }).join('');
+    return items.length;
   }
 
   function renderArmament(armament) {
-    renderChipGrid(document.getElementById('armament-list'), armament, 'fa-crosshairs', i18n.t('details.no_armament'));
+    return renderCapabilityList(armament, 'armament-list', 'armament-count', 'col-armament');
   }
 
   function renderTechnologies(tech) {
-    renderChipGrid(document.getElementById('tech-list'), tech, 'fa-microchip', i18n.t('details.no_tech'));
+    return renderCapabilityList(tech, 'tech-list', 'tech-count', 'col-tech');
   }
 
   function renderMissions(missions) {
-    const container = document.getElementById('missions-list');
-    if (!missions || missions.length === 0) {
-      container.innerHTML = `<p class="details-empty-hint">${i18n.t('details.no_mission')}</p>`;
-      return;
-    }
-    const missionIcons = {
-      'Appui aérien rapproché': 'crosshairs',
-      'Frappe tactique': 'bomb',
-      'Supériorité aérienne': 'jet-fighter',
-      'Interception': 'bullseye',
-      'Reconnaissance': 'binoculars',
-      'Escorte': 'shield-halved'
-    };
-    container.className = 'chip-grid';
-    container.innerHTML = missions.map(item => {
-      const icon = missionIcons[item.name] || 'bullseye';
-      const name = escapeHtml(item.name || '');
-      const desc = escapeHtml(item.description || '');
-      return `<button class="chip" type="button" tabindex="0">
-        <i class="fas fa-${icon}"></i>
-        <span class="chip-label">${name}</span>
-        ${desc ? `<span class="chip-tooltip" role="tooltip">${desc}</span>` : ''}
-      </button>`;
-    }).join('');
+    return renderCapabilityList(missions, 'missions-list', 'missions-count', 'col-missions');
+  }
+
+  function finalizeCapabilities() {
+    const section = document.getElementById('capabilities-section');
+    if (!section) return;
+    const cols = ['col-armament', 'col-tech', 'col-missions']
+      .map(id => document.getElementById(id))
+      .filter(Boolean);
+    const allHidden = cols.length > 0 && cols.every(c => c.classList.contains('hidden'));
+    section.classList.toggle('hidden', allHidden);
   }
 
   function renderWars(wars) {
@@ -321,5 +313,5 @@
     }).join('');
   }
 
-  VH.details.render = { renderAircraftDetails, renderArmament, renderTechnologies, renderMissions, renderWars };
+  VH.details.render = { renderAircraftDetails, renderArmament, renderTechnologies, renderMissions, finalizeCapabilities, renderWars };
 })();

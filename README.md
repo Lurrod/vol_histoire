@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.2.1-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.3.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/tests-435-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>Encyclopedie interactive de l'aviation militaire depuis 1960</strong><br>
-  <em>68 appareils &middot; 12 nations &middot; 17 conflits &middot; 150+ systemes d'armes</em>
+  <em>74 appareils &middot; 12 nations &middot; 17 conflits &middot; 150+ systemes d'armes</em>
 </p>
 
 <p align="center">
@@ -81,11 +81,11 @@ vol_histoire/
 │   │   └── load.test.js           Tests de charge (autocannon)
 │   └── db_backup/
 │       ├── db.sql                 Schema complet (14 tables + triggers)
-│       └── *.sql                  68 fichiers avions (INSERT + enrichissement complet)
+│       └── *.sql                  74 fichiers avions (INSERT + enrichissement complet)
 │
 ├── frontend/                      Vanilla HTML / CSS / JS (pas de framework)
 │   ├── assets/
-│   │   └── airplanes/             68 images locales (JPG/PNG)
+│   │   └── airplanes/             74 appareils en tri-format (AVIF + WebP + JPG)
 │   ├── css/
 │   │   ├── tokens.css             Design tokens (source unique de verite)
 │   │   ├── base.css               Reset, container, typographie
@@ -123,7 +123,7 @@ vol_histoire/
 │   │   └── utils.test.js          Tests unitaires utils (Jest + jsdom)
 │   └── *.html                     18 pages
 │
-├── e2e/                           Tests Playwright (11 specs)
+├── e2e/                           Tests Playwright (16 specs)
 │   ├── tests/
 │   │   ├── auth-flow.spec.js      Register, login, favoris, logout
 │   │   ├── admin-crud.spec.js     CRUD avions (admin)
@@ -213,7 +213,7 @@ createdb vol_histoire
 # 1. Schema complet (14 tables, triggers, index, FTS)
 psql -U vol_user -d vol_histoire -f backend/db_backup/db.sql
 
-# 2. Importer les 68 avions (chaque fichier contient INSERT + enrichissement)
+# 2. Importer les 74 avions (chaque fichier contient INSERT + enrichissement)
 for f in backend/db_backup/*.sql; do
   [ "$f" != "backend/db_backup/db.sql" ] && psql -U vol_user -d vol_histoire -f "$f"
 done
@@ -262,7 +262,7 @@ La documentation API Swagger est sur `http://localhost:3000/api/docs` (mode dev 
 Le projet dispose de **435 tests backend** + **tests frontend et E2E** :
 
 ```bash
-# Backend — 431 tests unitaires + integration
+# Backend — 508 tests unitaires + integration
 cd backend && npm test
 
 # Backend — couverture de code
@@ -274,7 +274,7 @@ npm run test:load
 # Frontend — tests unitaires (utils.js)
 cd frontend && npm test
 
-# E2E — Playwright (11 specs)
+# E2E — Playwright (16 specs)
 cd e2e && npx playwright test
 ```
 
@@ -344,13 +344,13 @@ cd e2e && npx playwright test
 | **CI/CD** | GitHub Actions |
 | **Typographie** | DM Sans + Barlow Condensed (woff2 self-hosted) |
 | **Icones** | 159 icones Font Awesome self-hosted (script `build-icons.py`) |
-| **Images** | 68 images d'avions en local (pas de CDN tiers) |
+| **Images** | 74 appareils en tri-format AVIF + WebP + JPG, servis via `<picture>` (pas de CDN tiers) |
 
 ---
 
 ## Nations couvertes
 
-France (9) &middot; Etats-Unis (13) &middot; Russie (17) &middot; Chine (13) &middot; Royaume-Uni (8) &middot; Allemagne (8) &middot; Italie (7) &middot; Suede (3) &middot; Inde (11) &middot; Japon (6) &middot; Bresil (5) &middot; Israel (8)
+France (9) &middot; Etats-Unis (13) &middot; Russie (17) &middot; Chine (13) &middot; Royaume-Uni (8) &middot; Allemagne (8) &middot; Italie (13) &middot; Suede (3) &middot; Inde (11) &middot; Japon (6) &middot; Bresil (5) &middot; Israel (8)
 
 ---
 

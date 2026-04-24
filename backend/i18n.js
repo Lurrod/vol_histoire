@@ -75,10 +75,14 @@ function pickLang(row, lang, fields, fallbackFields = []) {
   const result = { ...row };
   for (const field of fields) {
     const enValue = row[`${field}_en`];
+    const frValue = row[field];
     if (enValue != null && enValue !== '') {
       result[field] = enValue;
     } else if (fallbackFields.includes(field)) {
       // Nom propre sans traduction → garde l'original FR (déjà dans result[field])
+    } else if (frValue == null || frValue === '') {
+      // FR et EN absents → rien à traduire, on préserve la valeur vide
+      result[field] = frValue;
     } else {
       result[field] = TRANSLATION_NEEDED;
     }

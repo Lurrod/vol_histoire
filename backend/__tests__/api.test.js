@@ -2242,6 +2242,19 @@ describe('i18n — pickLang helper', () => {
     expect(result[1].name).toBe(TRANSLATION_NEEDED);
   });
 
+  test('lang=en avec FR et EN tous deux NULL préserve null (rien à traduire)', () => {
+    const row = { id: 1, name: 'Rafale', name_en: 'Rafale', variants: null, variants_en: null };
+    const result = pickLang(row, 'en', ['name', 'variants']);
+    expect(result.variants).toBeNull();
+    expect(result.name).toBe('Rafale');
+  });
+
+  test('lang=en avec FR et EN tous deux chaîne vide préserve la chaîne vide', () => {
+    const row = { id: 1, variants: '', variants_en: '' };
+    const result = pickLang(row, 'en', ['variants']);
+    expect(result.variants).toBe('');
+  });
+
   test('resolveLang lit ?lang= en priorité', () => {
     const req = { query: { lang: 'en' }, headers: { 'accept-language': 'fr-FR,fr' } };
     expect(resolveLang(req)).toBe('en');
@@ -3141,7 +3154,6 @@ describe('GET /api/metrics — catch register.metrics() throw (ligne 73)', () =>
 // =============================================================================
 describe('verifyHcaptcha — .catch(next) branch (ligne 62)', () => {
   test('next(err) appelé quand verify() rejette', async () => {
-    const verifyHcaptcha = require('../middleware/hcaptcha');
     const hcaptchaModule = require('../middleware/hcaptcha');
 
     // Simuler verify() qui rejette (on remplace le module global fetch)
@@ -3197,7 +3209,7 @@ describe('verifyHcaptcha — .catch(next) branch (ligne 62)', () => {
 // =============================================================================
 describe('cleanupExpiredTokens (ligne 123)', () => {
   test('émet la requête DELETE de nettoyage des tokens expirés', async () => {
-    const { cleanupExpiredTokens, setPool: setAuthPool } = require('../middleware/auth');
+    const { cleanupExpiredTokens } = require('../middleware/auth');
     mockPool.query.mockResolvedValueOnce({ rowCount: 3 });
     await cleanupExpiredTokens();
     const call = mockPool.query.mock.calls[0];

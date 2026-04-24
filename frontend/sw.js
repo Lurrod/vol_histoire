@@ -11,7 +11,7 @@
  * Versioning : bumper CACHE_VERSION à chaque déploiement pour purger les vieux caches.
  */
 
-const CACHE_VERSION = 'v4.2.1';
+const CACHE_VERSION = 'v4.3.0';
 const SHELL_CACHE = `vh-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `vh-runtime-${CACHE_VERSION}`;
 

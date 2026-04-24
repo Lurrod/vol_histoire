@@ -54,6 +54,7 @@
       VH.details.render.renderArmament(armament);
       VH.details.render.renderTechnologies(tech);
       VH.details.render.renderMissions(missions);
+      VH.details.render.finalizeCapabilities();
       VH.details.render.renderWars(wars);
       VH.details.radar.render(state, armament, tech, missions);
     } catch { /* silencieux */ }

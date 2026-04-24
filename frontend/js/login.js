@@ -193,6 +193,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========== Auth Status ==========
   function checkAuthStatus() {
     if (auth.getToken()) {
+      // Pas de redirection automatique : l'utilisateur peut vouloir se
+      // reconnecter avec un autre compte depuis cette page.
     }
   }
 

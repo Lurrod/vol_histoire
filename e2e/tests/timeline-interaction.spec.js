@@ -1,5 +1,5 @@
 // e2e/tests/timeline-interaction.spec.js
-// Parcours critique : timeline « Le Journal de Bord » (v4.2.1)
+// Parcours critique : timeline « Le Journal de Bord » (v4.3.0)
 // - Hero couverture : stamp + 3 stats animés
 // - Chapitres par décennie : title card + narratif + événements + grille avions
 // - Navigation : minimap, clavier, HUD décennie, progress bar
