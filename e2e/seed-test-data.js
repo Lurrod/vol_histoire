@@ -125,6 +125,26 @@ async function seed() {
   `);
   await pool.query("SELECT setval('airplanes_id_seq', GREATEST((SELECT MAX(id) FROM airplanes), 1))");
 
+  // ── Relations airplane_armement / airplane_tech / airplane_missions ───
+  // Au moins id=1 (Rafale) doit avoir ≥1 item par colonne pour que les tests
+  // E2E de la section capabilities passent (details.spec.js).
+  // INSERT ... SELECT tolérant : si la ref name n'existe pas en db.sql, skip.
+  await pool.query(`
+    INSERT INTO airplane_armement (id_airplane, id_armement)
+    SELECT 1, id FROM armement WHERE name IN ('DEFA 554', 'MICA IR', 'MICA EM', 'Meteor', 'SCALP EG', 'AASM Hammer')
+    ON CONFLICT DO NOTHING
+  `);
+  await pool.query(`
+    INSERT INTO airplane_tech (id_airplane, id_tech)
+    SELECT 1, id FROM tech WHERE name IN ('Aile delta', 'Commande de vol électrique (fly-by-wire)', 'Aile delta-canard')
+    ON CONFLICT DO NOTHING
+  `);
+  await pool.query(`
+    INSERT INTO airplane_missions (id_airplane, id_mission)
+    SELECT 1, id FROM missions WHERE name IN ('Supériorité aérienne', 'Interception', 'Frappe stratégique')
+    ON CONFLICT DO NOTHING
+  `);
+
   // ── Compteurs ──────────────────────────────────────────────
   const counts = await pool.query(`
     SELECT
