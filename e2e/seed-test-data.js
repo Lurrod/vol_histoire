@@ -129,21 +129,22 @@ async function seed() {
   // Au moins id=1 (Rafale) doit avoir ≥1 item par colonne pour que les tests
   // E2E de la section capabilities passent (details.spec.js).
   // INSERT ... SELECT tolérant : si la ref name n'existe pas en db.sql, skip.
-  await pool.query(`
+  const armRes = await pool.query(`
     INSERT INTO airplane_armement (id_airplane, id_armement)
     SELECT 1, id FROM armement WHERE name IN ('DEFA 554', 'MICA IR', 'MICA EM', 'Meteor', 'SCALP EG', 'AASM Hammer')
     ON CONFLICT DO NOTHING
   `);
-  await pool.query(`
+  const techRes = await pool.query(`
     INSERT INTO airplane_tech (id_airplane, id_tech)
     SELECT 1, id FROM tech WHERE name IN ('Aile delta', 'Commande de vol électrique (fly-by-wire)', 'Aile delta-canard')
     ON CONFLICT DO NOTHING
   `);
-  await pool.query(`
+  const missRes = await pool.query(`
     INSERT INTO airplane_missions (id_airplane, id_mission)
     SELECT 1, id FROM missions WHERE name IN ('Supériorité aérienne', 'Interception', 'Frappe stratégique')
     ON CONFLICT DO NOTHING
   `);
+  console.log(`Relations id=1 : armement=${armRes.rowCount} tech=${techRes.rowCount} missions=${missRes.rowCount}`);
 
   // ── Compteurs ──────────────────────────────────────────────
   const counts = await pool.query(`
