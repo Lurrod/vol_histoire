@@ -1,0 +1,31 @@
+# EditorConfig — Vol d'Histoire
+# https://editorconfig.org
+#
+# Convention projet (cf CLAUDE.md) : 2 espaces, guillemets simples JS,
+# UTF-8, LF, trim trailing whitespace, final newline.
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Markdown : trailing whitespace est sémantique (double espace = <br>),
+# donc on ne trim pas. On garde tout le reste.
+[*.md]
+trim_trailing_whitespace = false
+
+# Fichiers Windows (.cmd) : CRLF requis.
+[*.cmd]
+end_of_line = crlf
+
+# Fichiers minifiés et bundles : ne pas reformater.
+[**/{*.min.css,*.min.js,dist/**,vendor/**,node_modules/**}]
+indent_style = unset
+indent_size = unset
+trim_trailing_whitespace = unset
+insert_final_newline = unset

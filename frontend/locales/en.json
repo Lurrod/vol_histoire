@@ -9,7 +9,8 @@
     "login": "Log in",
     "user_default": "User",
     "user_role": "Member",
-    "language": "Language"
+    "language": "Language",
+    "primary_label": "Main navigation"
   },
   "cookie": {
     "title": "We use cookies",
@@ -216,6 +217,7 @@
     "capabilities": "Operational capabilities",
     "wars": "Combat History",
     "loading_desc": "Loading description...",
+    "aircraft_default_title": "Aircraft details",
     "no_war": "No combat engagement listed",
     "radar_title": "Capabilities Profile",
     "radar_subtitle": "Normalized performance analysis",

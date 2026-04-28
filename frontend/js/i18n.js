@@ -1,19 +1,19 @@
 /**
  * i18n — Internationalization module for Vol d'Histoire
  * Supports: fr (default), en
- * 
+ *
  * Usage in HTML:
  *   <span data-i18n="nav.home">Accueil</span>
  *   <input data-i18n-placeholder="hangar.search_placeholder" placeholder="Rechercher...">
  *   <meta data-i18n-content="meta.description" content="...">
- * 
+ *
  * Usage in JS:
  *   i18n.t('details.no_armament')  → returns translated string
  *   i18n.t('hangar.results', { count: 5 }) → "5 avions trouvés" / "5 aircraft found"
  *   i18n.currentLang → 'fr' | 'en'
  */
 
-// eslint-disable-next-line no-unused-vars -- exposé via concaténation de bundle aux autres scripts
+ 
 const i18n = (() => {
   const SUPPORTED_LANGS = ['fr', 'en'];
   const DEFAULT_LANG = 'fr';

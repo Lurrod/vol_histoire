@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========================================================================
   // INITIALIZATION & UTILITIES
   // ========================================================================
-  
+
   const API_BASE = "/api";
   let currentUser = null;
 
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========================================================================
   // SECTION NAVIGATION
   // ========================================================================
-  
+
   const sidebarLinks = document.querySelectorAll('.sidebar-link');
   const contentSections = document.querySelectorAll('.content-section');
 
@@ -85,10 +85,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========================================================================
   // AUTH CHECK & USER DATA
   // ========================================================================
-  
+
   async function checkAuth() {
     const payload = auth.getPayload();
-    
+
     if (!payload) {
       // Try a refresh before giving up
       try {
@@ -127,16 +127,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentUser = await response.json();
         auth.setUserInfo(currentUser);
         updateUserDisplay();
-        
+
         document.getElementById('name').value = currentUser.name || '';
         document.getElementById('email').value = currentUser.email || '';
-        
+
         if (Number(currentUser.role) === 1) {
           document.getElementById('admin-nav-link').classList.remove('hidden');
           document.getElementById('admin')?.classList.remove('hidden');
           // loadUsers déplacé dans l'init (via settingsAdmin)
         }
-        
+
         return true;
       } else {
         // API failed, decode JWT for user info
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     userNameElements.forEach(el => {
       el.textContent = currentUser?.name || i18n.t('nav.user_default');
     });
-    
+
     // Update role display in user menu dropdown
     const userRoleEl = document.querySelector('.user-role');
     if (userRoleEl && currentUser) {
@@ -183,17 +183,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========================================================================
   // PROFILE FORM
   // ========================================================================
-  
+
   const profileForm = document.getElementById('profile-form');
   const resetProfileBtn = document.getElementById('reset-profile-btn');
 
   if (profileForm) {
     profileForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const name = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
-      
+
       // Validation
       clearFieldError(document.getElementById('name'));
       clearFieldError(document.getElementById('email'));
@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========================================================================
   // SECURITY FORM & PASSWORD STRENGTH
   // ========================================================================
-  
+
   const securityForm = document.getElementById('security-form');
   const passwordInput = document.getElementById('password');
   const togglePasswordBtn = document.getElementById('toggle-password');
@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   function updatePasswordStrength(password) {
     const bars = document.querySelectorAll('.strength-bar');
     const strengthText = document.getElementById('strength-text');
-    
+
     if (!bars.length || !strengthText) return;
 
     const strength = calculatePasswordStrength(password);
@@ -340,9 +340,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (securityForm) {
     securityForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const password = passwordInput.value;
-      
+
       clearFieldError(passwordInput);
 
       if (!password) {
@@ -389,7 +389,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========================================================================
   // DANGER ZONE
   // ========================================================================
-  
+
   const deleteAccountBtn = document.getElementById('delete-account-btn');
 
   if (deleteAccountBtn) {
@@ -411,7 +411,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (response.ok) {
             showToast(i18n.t('settings.toast_account_deleted'), 'success');
             await auth.logout();
-            
+
             setTimeout(() => {
               window.location.href = '/';
             }, 2000);
@@ -434,12 +434,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========================================================================
   // UTILITY FUNCTIONS
   // ========================================================================
-  
+
   // validateEmail → isValidEmail() dans utils.js (même regex que le backend)
 
   function setButtonLoading(button, loading) {
     if (!button) return;
-    
+
     if (loading) {
       button.disabled = true;
       button.dataset.originalHtml = button.innerHTML;

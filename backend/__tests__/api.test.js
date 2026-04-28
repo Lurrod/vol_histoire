@@ -3481,6 +3481,92 @@ describe('GET /details/:slug — catch err → 500 (ligne 404)', () => {
 });
 
 // =============================================================================
+// SSR — fallbacks renderHtml (branches manquantes details-ssr.js)
+// =============================================================================
+describe('GET /details/:slug — branches renderHtml fallbacks', () => {
+  test('200 — aircraft minimal sans complete_name/country/year/gen/desc → title + description fallback', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 99,
+        name: 'Avion Test',
+      }],
+    });
+    const res = await request(app).get('/details/avion-test-99');
+    expect(res.status).toBe(200);
+    // escapeHtml encode l'apostrophe en &#39;
+    expect(res.text).toMatch(/<title>Avion Test \| Vol d&#39;Histoire<\/title>/);
+    expect(res.text).toContain('Découvrez les spécifications');
+    expect(res.text).not.toMatch(/"datePublished":/);
+  });
+
+  test('200 — description > 160 chars → tronquée à 157 + …', async () => {
+    const longDesc = 'A'.repeat(200);
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 100,
+        name: 'LongDesc',
+        little_description: longDesc,
+        country_name: 'France',
+      }],
+    });
+    const res = await request(app).get('/details/longdesc-100');
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/A{157}…/);
+  });
+
+  test('200 — fallback sur description si little_description manque', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 102,
+        name: 'FallbackDesc',
+        description: 'Description principale en lieu et place',
+      }],
+    });
+    const res = await request(app).get('/details/fallbackdesc-102');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Description principale en lieu et place');
+  });
+
+  test('200 — image_url sans scheme et sans slash → utilisée telle quelle (branche else)', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 101,
+        name: 'DataUri',
+        image_url: 'data:image/jpeg;base64,abc',
+      }],
+    });
+    const res = await request(app).get('/details/datauri-101');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('data:image/jpeg;base64,abc');
+  });
+
+  test('200 — image_url relative non-asset → préfixée SITE_URL pour og:image', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{
+        id: 103,
+        name: 'OgDefault',
+        image_url: '/og-default.jpg',
+      }],
+    });
+    const res = await request(app).get('/details/ogdefault-103');
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/og:image"[^>]*content="https:\/\/vol-histoire\.titouan-borde\.com\/og-default\.jpg"/);
+  });
+
+  test('next() — slug sans suffixe numérique → handle delegue au static (idFromSlug → null)', async () => {
+    const res = await request(app).get('/details/no-digits-here');
+    expect([200, 404]).toContain(res.status);
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+
+  test('next() — query id non numérique → handle delegue au static (Number(id) NaN)', async () => {
+    const res = await request(app).get('/details?id=abc');
+    expect([200, 404]).toContain(res.status);
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+});
+
+// =============================================================================
 // AUTH — POST /api/login — compte verrouillé (ligne 128)
 // =============================================================================
 describe('POST /api/login — compte verrouillé (ligne 128)', () => {

@@ -35,11 +35,11 @@ if (process.env.SENTRY_DSN && process.env.NODE_ENV !== 'test') {
         return event;
       },
     });
-     
+
     console.log(JSON.stringify({ level: 'info', message: 'Sentry activé', env: process.env.SENTRY_ENVIRONMENT }));
   } catch {
     // @sentry/node non installé — on continue sans
-     
+
     console.warn(JSON.stringify({ level: 'warn', message: 'SENTRY_DSN défini mais @sentry/node non installé', hint: 'npm install @sentry/node' }));
   }
 }

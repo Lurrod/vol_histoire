@@ -166,10 +166,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   function updatePasswordStrength(strength) {
     const strengthFill = document.querySelector('.strength-fill');
     const strengthText = document.querySelector('.strength-text');
-    
+
     if (strengthFill && strengthText) {
       strengthFill.style.width = `${strength}%`;
-      
+
       if (strength === 0) {
         strengthText.textContent = i18n.t('login.password_strength');
         strengthText.style.color = 'var(--text-secondary)';
@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========== Login Handler ==========
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    
+
     const email = document.getElementById("login-email").value.trim();
     const password = loginPassword.value;
     const submitBtn = loginForm.querySelector('button[type="submit"]');
@@ -330,7 +330,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ========== Register Handler ==========
   registerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    
+
     const name = document.getElementById("register-name").value.trim();
     const email = document.getElementById("register-email").value.trim();
     const password = registerPassword.value;

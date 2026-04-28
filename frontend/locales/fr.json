@@ -9,7 +9,8 @@
     "login": "Connexion",
     "user_default": "Utilisateur",
     "user_role": "Membre",
-    "language": "Langue"
+    "language": "Langue",
+    "primary_label": "Navigation principale"
   },
   "cookie": {
     "title": "Nous utilisons des cookies",
@@ -216,6 +217,7 @@
     "capabilities": "Capacités opérationnelles",
     "wars": "Engagements Historiques",
     "loading_desc": "Chargement de la description...",
+    "aircraft_default_title": "Détails de l'appareil",
     "no_war": "Aucun engagement historique répertorié",
     "radar_title": "Profil de Capacités",
     "radar_subtitle": "Analyse normalisée des performances",
