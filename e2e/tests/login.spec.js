@@ -1,4 +1,5 @@
 // e2e/tests/login.spec.js
+/* global HTMLFormElement */ // utilisé dans page.addInitScript (contexte navigateur)
 const { test, expect } = require('../helpers/fixtures');
 
 test.describe('Login / Logout', () => {
@@ -24,8 +25,8 @@ test.describe('Login / Logout', () => {
   test('login réussi → API renvoie 200 et redirige', async ({ page }) => {
     await gotoLoginAndWaitReady(page);
 
-    await page.fill('#login-email', 'titouan.borde.47@gmail.com');
-    await page.fill('#login-password', 'Titouan1.');
+    await page.fill('#login-email', 'user@test.local');
+    await page.fill('#login-password', 'Testuser1');
 
     const [response] = await Promise.all([
       page.waitForResponse(r => r.url().includes('/api/login') && r.request().method() === 'POST', { timeout: 15000 }),

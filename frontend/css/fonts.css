@@ -27,38 +27,16 @@
   font-display: swap;
   src: url('../fonts/BarlowCondensed-700.woff2') format('woff2');
 }
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('../fonts/DMSans.woff2') format('woff2');
-}
+/* DM Sans : un seul fichier static 400. Les graisses 300/500/600/700 sont synthetisees
+   par le navigateur (font-synthesis: weight par defaut). DMSans.woff2 n'est pas une
+   variable font (pas de table fvar/axe wght) — declarer 5 @font-face vers le meme
+   fichier creait l'illusion de 5 fontes distinctes alors que le rendu etait deja
+   synthetique. Si la qualite typographique des graisses devient un sujet, passer
+   en variable font (DMSans-VariableFont_opsz,wght.woff2 ~100 Ko, +60 Ko critical path). */
 @font-face {
   font-family: 'DM Sans';
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
-  src: url('../fonts/DMSans.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('../fonts/DMSans.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('../fonts/DMSans.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'DM Sans';
-  font-style: normal;
-  font-weight: 700;
   font-display: swap;
   src: url('../fonts/DMSans.woff2') format('woff2');
 }

@@ -13,7 +13,7 @@ test.describe('Favoris', () => {
   });
 
   test('utilisateur connecté → contenu favoris accessible', async ({ page }) => {
-    await loginViaApi(page, 'titouan.borde.47@gmail.com', 'Titouan1.');
+    await loginViaApi(page, 'user@test.local', 'Testuser1');
     await page.goto('/favorites');
 
     // Pas de redirection vers login

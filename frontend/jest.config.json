@@ -2,5 +2,46 @@
   "testEnvironment": "jsdom",
   "testMatch": ["**/__tests__/**/*.test.js"],
   "verbose": true,
-  "rootDir": "."
+  "rootDir": ".",
+  "collectCoverageFrom": [
+    "js/utils.js",
+    "js/auth.js",
+    "js/nav.js",
+    "js/i18n.js",
+    "js/cookies.js",
+    "js/details/render.js"
+  ],
+  "coverageReporters": ["text", "lcov"],
+  "coverageThreshold": {
+    "global": {
+      "statements": 35,
+      "branches": 25,
+      "functions": 30,
+      "lines": 35
+    },
+    "./js/utils.js": {
+      "statements": 55,
+      "branches": 55,
+      "functions": 50,
+      "lines": 55
+    },
+    "./js/i18n.js": {
+      "statements": 50,
+      "branches": 30,
+      "functions": 60,
+      "lines": 50
+    },
+    "./js/cookies.js": {
+      "statements": 40,
+      "branches": 35,
+      "functions": 35,
+      "lines": 45
+    },
+    "./js/details/render.js": {
+      "statements": 25,
+      "branches": 20,
+      "functions": 40,
+      "lines": 25
+    }
+  }
 }

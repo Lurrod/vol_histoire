@@ -472,3 +472,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // Listen to cookie consent events (GTM integration)
 document.addEventListener('cookieConsent', () => {
 });
+
+// Export conditionnel pour les tests unitaires (Node.js / jsdom)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { CookieConsent };
+}

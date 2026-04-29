@@ -162,7 +162,6 @@
     "btn_see_favorites": "Voir mes favoris",
     "btn_explore_timeline": "Explorer la Chronologie",
     "hero_title_1_full": "Découvrez l'Histoire de",
-    "features_badge": "Fonctionnalités",
     "feat_catalog_title": "Catalogue Exhaustif",
     "feat_timeline_title": "Frise Interactive",
     "feat_wars_title": "Historique des Conflits",
@@ -255,13 +254,11 @@
     "missing_id": "ID d'avion manquant",
     "not_found": "Avion non trouvé",
     "in_favorites": "Dans les favoris",
-
     "full_specs": "Fiche technique",
     "production_service": "Production & Service",
     "variants": "Variantes principales",
     "related_aircraft": "Appareils liés",
     "sources": "Pour aller plus loin",
-
     "spec_length": "Longueur",
     "spec_wingspan": "Envergure",
     "spec_height": "Hauteur",
@@ -279,7 +276,6 @@
     "spec_engine_type": "Type moteur",
     "spec_thrust_dry": "Poussée sèche",
     "spec_thrust_wet": "Poussée PC",
-
     "prod_years": "Années de production",
     "prod_today": "aujourd'hui",
     "prod_units_built": "Unités produites",
@@ -287,22 +283,18 @@
     "prod_operators": "Opérateurs",
     "prod_stealth": "Niveau de furtivité",
     "prod_nickname": "Surnom",
-
     "stealth_none": "Aucune",
     "stealth_reduced": "Réduite",
     "stealth_moderate": "Modérée",
     "stealth_high": "Élevée",
     "stealth_very_high": "Très élevée",
-
     "related_predecessor": "Prédécesseur",
     "related_successor": "Successeur",
     "related_rival": "Rival direct",
-
     "source_wikipedia_fr": "Wikipedia (FR)",
     "source_wikipedia_en": "Wikipedia (EN)",
     "source_youtube": "Vidéo YouTube",
     "source_manufacturer": "Page constructeur",
-
     "admin_section_basic_specs": "Spécifications de base",
     "admin_section_extended_specs": "Dimensions & performances étendues",
     "admin_section_engine": "Motorisation",
@@ -1108,7 +1100,8 @@
     "form_data_protected": "Vos données sont protégées",
     "form_error_email": "Veuillez entrer une adresse email valide.",
     "form_error_message": "Veuillez entrer votre message.",
-    "form_error_send": "Erreur lors de l'envoi. Réessayez ou contactez-nous par email."
+    "form_error_send": "Erreur lors de l'envoi. Réessayez ou contactez-nous par email.",
+    "form_rgpd_notice": "Vos données (nom, email, message) sont traitées pour répondre à votre demande et conservées 12 mois maximum. Conformément au RGPD, vous disposez d’un droit d’accès, de rectification et de suppression. Pour en savoir plus, consultez notre <a href=\"/politique-confidentialite\">politique de confidentialité</a>."
   },
   "legal": {
     "page_eyebrow": "Légal",
@@ -1118,7 +1111,6 @@
     "last_update": "Dernière mise à jour : avril 2026",
     "version": "Version 1.1",
     "rgpd_compliant": "Conforme au RGPD (UE) 2016/679",
-
     "mentions_title": "Mentions Légales | Vol d'Histoire",
     "ml_hero_title_1": "Mentions",
     "ml_hero_title_2": "Légales",
@@ -1141,7 +1133,6 @@
     "ml_sec8_body": "<p>Les présentes mentions légales sont régies par le droit français.</p><p>En cas de litige et à défaut d'accord amiable, le litige sera porté devant les tribunaux français compétents.</p>",
     "ml_sec9_title": "9. Contact",
     "ml_sec9_body": "<p>Pour toute question concernant les mentions légales :</p><div class=\"contact-info\"><p><strong>Email :</strong> <a href=\"mailto:vdh@titouan-borde.com\">vdh@titouan-borde.com</a></p></div>",
-
     "privacy_title": "Politique de Confidentialité | Vol d'Histoire",
     "pc_hero_title_1": "Politique de",
     "pc_hero_title_2": "Confidentialité",
@@ -1170,7 +1161,6 @@
     "pc_sec10_body": "<p>Nous nous réservons le droit de modifier cette politique de confidentialité pour refléter les évolutions du site ou de la réglementation.</p><p>En cas de modification substantielle, nous vous informerons par :</p><ul><li>Un message visible sur le site</li><li>Un email à l'adresse enregistrée (pour les utilisateurs inscrits)</li><li>Une notification à la prochaine connexion</li></ul><p>La date de dernière mise à jour est indiquée en bas de cette page.</p>",
     "pc_sec11_title": "11. Questions",
     "pc_sec11_body": "<p>Pour toute question concernant cette politique ou le traitement de vos données :</p><div class=\"contact-info\"><p><strong>Email :</strong> <a href=\"mailto:vdh@titouan-borde.com\">vdh@titouan-borde.com</a></p><p><strong>Responsable du traitement :</strong> Titouan Borde</p></div>",
-
     "terms_title": "Conditions Générales d'Utilisation | Vol d'Histoire",
     "cgu_hero_title_1": "Conditions Générales",
     "cgu_hero_title_2": "d'Utilisation",

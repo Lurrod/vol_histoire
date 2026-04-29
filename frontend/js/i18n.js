@@ -280,3 +280,8 @@ const i18n = (() => {
 // `window.i18n` comme garde avant usage. Sans cette ligne, le garde échoue
 // toujours et les fonctions tombent sur leur fallback FR.
 window.i18n = i18n;
+
+// Export conditionnel pour les tests unitaires (Node.js / jsdom)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = i18n;
+}

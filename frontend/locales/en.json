@@ -162,7 +162,6 @@
     "btn_see_favorites": "View my Favorites",
     "btn_explore_timeline": "Explore the Timeline",
     "hero_title_1_full": "Discover the History of",
-    "features_badge": "Features",
     "feat_catalog_title": "Comprehensive Catalog",
     "feat_timeline_title": "Interactive Timeline",
     "feat_wars_title": "Conflict History",
@@ -255,13 +254,11 @@
     "missing_id": "Missing aircraft ID",
     "not_found": "Aircraft not found",
     "in_favorites": "In favorites",
-
     "full_specs": "Technical specifications",
     "production_service": "Production & Service",
     "variants": "Main variants",
     "related_aircraft": "Related aircraft",
     "sources": "Learn more",
-
     "spec_length": "Length",
     "spec_wingspan": "Wingspan",
     "spec_height": "Height",
@@ -279,7 +276,6 @@
     "spec_engine_type": "Engine type",
     "spec_thrust_dry": "Thrust (dry)",
     "spec_thrust_wet": "Thrust (A/B)",
-
     "prod_years": "Production years",
     "prod_today": "today",
     "prod_units_built": "Units built",
@@ -287,22 +283,18 @@
     "prod_operators": "Operators",
     "prod_stealth": "Stealth level",
     "prod_nickname": "Nickname",
-
     "stealth_none": "None",
     "stealth_reduced": "Reduced",
     "stealth_moderate": "Moderate",
     "stealth_high": "High",
     "stealth_very_high": "Very high",
-
     "related_predecessor": "Predecessor",
     "related_successor": "Successor",
     "related_rival": "Direct rival",
-
     "source_wikipedia_fr": "Wikipedia (FR)",
     "source_wikipedia_en": "Wikipedia (EN)",
     "source_youtube": "YouTube video",
     "source_manufacturer": "Manufacturer page",
-
     "admin_section_basic_specs": "Basic specifications",
     "admin_section_extended_specs": "Dimensions & extended performance",
     "admin_section_engine": "Engine",
@@ -1108,7 +1100,8 @@
     "form_data_protected": "Your data is protected",
     "form_error_email": "Please enter a valid email address.",
     "form_error_message": "Please enter your message.",
-    "form_error_send": "Error sending message. Please try again or contact us by email."
+    "form_error_send": "Error sending message. Please try again or contact us by email.",
+    "form_rgpd_notice": "Your data (name, email, message) is processed to respond to your request and retained for up to 12 months. Under GDPR, you have the right to access, rectify, and delete your data. For more details, see our <a href=\"/politique-confidentialite\">privacy policy</a>."
   },
   "legal": {
     "page_eyebrow": "Legal",
@@ -1118,7 +1111,6 @@
     "last_update": "Last updated: April 2026",
     "version": "Version 1.1",
     "rgpd_compliant": "GDPR compliant (EU) 2016/679",
-
     "mentions_title": "Legal Notices | Vol d'Histoire",
     "ml_hero_title_1": "Legal",
     "ml_hero_title_2": "Notices",
@@ -1141,7 +1133,6 @@
     "ml_sec8_body": "<p>These legal notices are governed by French law.</p><p>In case of dispute and failing an amicable agreement, the dispute will be brought before the competent French courts.</p>",
     "ml_sec9_title": "9. Contact",
     "ml_sec9_body": "<p>For any questions regarding the legal notices:</p><div class=\"contact-info\"><p><strong>Email:</strong> <a href=\"mailto:vdh@titouan-borde.com\">vdh@titouan-borde.com</a></p></div>",
-
     "privacy_title": "Privacy Policy | Vol d'Histoire",
     "pc_hero_title_1": "Privacy",
     "pc_hero_title_2": "Policy",
@@ -1170,7 +1161,6 @@
     "pc_sec10_body": "<p>We reserve the right to modify this privacy policy to reflect changes to the site or regulations.</p><p>In case of substantial change, we will inform you via:</p><ul><li>A visible message on the site</li><li>An email to the registered address (for registered users)</li><li>A notification upon next login</li></ul><p>The last update date is always shown at the bottom of this page.</p>",
     "pc_sec11_title": "11. Questions",
     "pc_sec11_body": "<p>For any questions about this policy or the processing of your data:</p><div class=\"contact-info\"><p><strong>Email:</strong> <a href=\"mailto:vdh@titouan-borde.com\">vdh@titouan-borde.com</a></p><p><strong>Data controller:</strong> Titouan Borde</p></div>",
-
     "terms_title": "Terms of Use | Vol d'Histoire",
     "cgu_hero_title_1": "Terms",
     "cgu_hero_title_2": "of Use",

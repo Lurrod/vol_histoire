@@ -229,6 +229,29 @@
   color: rgba(200, 169, 110, 0.4);
 }
 
+.form-rgpd-notice {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.form-rgpd-notice a {
+  color: var(--hud-cyan);
+  text-decoration: underline;
+  text-decoration-color: rgba(200, 169, 110, 0.35);
+  text-underline-offset: 2px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.form-rgpd-notice a:hover,
+.form-rgpd-notice a:focus-visible {
+  color: var(--white);
+  text-decoration-color: var(--hud-cyan);
+}
+
 .form-success-msg {
   display: none;
   margin-top: 1.5rem;

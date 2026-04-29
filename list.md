@@ -141,5 +141,5 @@
 7. **General Dynamics F-16 Fighting Falcon**  
 8. **Lockheed Martin F-35I Adir**  
 
-### Total : 108
+### Total : 107
 

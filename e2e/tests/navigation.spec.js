@@ -135,7 +135,7 @@ test.describe('Recherche et filtres', () => {
 
 test.describe('Settings (authentifié)', () => {
   test('la page settings est accessible et affiche le profil', async ({ page }) => {
-    await loginViaApi(page, 'titouan.borde.47@gmail.com', 'Titouan1.');
+    await loginViaApi(page, 'user@test.local', 'Testuser1');
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
     // Section dashboard est active par défaut → switch vers profil

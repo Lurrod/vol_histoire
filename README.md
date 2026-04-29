@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.3.1-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.3.2-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
-  <img src="https://img.shields.io/badge/tests-435-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-517-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
   <img src="https://img.shields.io/badge/licence-All%20Rights%20Reserved-C0392B?style=for-the-badge&labelColor=0D0D0D" alt="Licence">
 </p>
 
@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>Encyclopedie interactive de l'aviation militaire depuis 1960</strong><br>
-  <em>74 appareils &middot; 12 nations &middot; 17 conflits &middot; 150+ systemes d'armes</em>
+  <em>107 appareils &middot; 12 nations &middot; 17 conflits &middot; 150+ systemes d'armes</em>
 </p>
 
 <p align="center">
@@ -81,11 +81,11 @@ vol_histoire/
 │   │   └── load.test.js           Tests de charge (autocannon)
 │   └── db_backup/
 │       ├── db.sql                 Schema complet (14 tables + triggers)
-│       └── *.sql                  74 fichiers avions (INSERT + enrichissement complet)
+│       └── *.sql                  107 fichiers avions (INSERT + enrichissement complet)
 │
 ├── frontend/                      Vanilla HTML / CSS / JS (pas de framework)
 │   ├── assets/
-│   │   └── airplanes/             74 appareils en tri-format (AVIF + WebP + JPG)
+│   │   └── airplanes/             107 appareils en tri-format (AVIF + WebP + JPG)
 │   ├── css/
 │   │   ├── tokens.css             Design tokens (source unique de verite)
 │   │   ├── base.css               Reset, container, typographie
@@ -213,7 +213,7 @@ createdb vol_histoire
 # 1. Schema complet (14 tables, triggers, index, FTS)
 psql -U vol_user -d vol_histoire -f backend/db_backup/db.sql
 
-# 2. Importer les 74 avions (chaque fichier contient INSERT + enrichissement)
+# 2. Importer les 107 avions (chaque fichier contient INSERT + enrichissement)
 for f in backend/db_backup/*.sql; do
   [ "$f" != "backend/db_backup/db.sql" ] && psql -U vol_user -d vol_histoire -f "$f"
 done
@@ -259,10 +259,10 @@ La documentation API Swagger est sur `http://localhost:3000/api/docs` (mode dev 
 
 ## Tests
 
-Le projet dispose de **435 tests backend** + **tests frontend et E2E** :
+Le projet dispose de **517 tests backend** + **tests frontend et E2E** :
 
 ```bash
-# Backend — 508 tests unitaires + integration
+# Backend — 517 tests unitaires + integration
 cd backend && npm test
 
 # Backend — couverture de code
@@ -344,7 +344,7 @@ cd e2e && npx playwright test
 | **CI/CD** | GitHub Actions |
 | **Typographie** | DM Sans + Barlow Condensed (woff2 self-hosted) |
 | **Icones** | 159 icones Font Awesome self-hosted (script `build-icons.py`) |
-| **Images** | 74 appareils en tri-format AVIF + WebP + JPG, servis via `<picture>` (pas de CDN tiers) |
+| **Images** | 107 appareils en tri-format AVIF + WebP + JPG, servis via `<picture>` (pas de CDN tiers) |
 
 ---
 

@@ -1,5 +1,6 @@
 // e2e/tests/auth-flow.spec.js
 // Flux complet : inscription → vérification → connexion → favoris → déconnexion
+/* global HTMLFormElement */ // utilisé dans page.addInitScript (contexte navigateur)
 const { test, expect } = require('../helpers/fixtures');
 const { loginViaApi } = require('../helpers/auth');
 
@@ -38,7 +39,7 @@ test.describe('Flux authentification complet', () => {
 
     await page.fill('#register-name', `Test ${unique}`);
     await page.fill('#register-email', `${unique}@test-e2e.com`);
-    await page.fill('#register-password', 'Titouan1.');
+    await page.fill('#register-password', 'Testuser1');
     // Le checkbox réel est masqué (CSS custom-check), on force le check via JS
     await page.evaluate(() => {
       const cb = document.getElementById('accept-terms');
@@ -58,7 +59,7 @@ test.describe('Flux authentification complet', () => {
 
   test('login avec mauvais mot de passe → API renvoie 400/401', async ({ page }) => {
     await gotoLoginReady(page);
-    await page.fill('#login-email', 'titouan.borde.47@gmail.com');
+    await page.fill('#login-email', 'user@test.local');
     await page.fill('#login-password', 'MauvaisMdp999');
 
     const [response] = await Promise.all([
@@ -70,7 +71,7 @@ test.describe('Flux authentification complet', () => {
 
   test('login réussi → favoris accessible', async ({ page }) => {
     // Login via API pour éviter la dépendance au formulaire
-    await loginViaApi(page, 'titouan.borde.47@gmail.com', 'Titouan1.');
+    await loginViaApi(page, 'user@test.local', 'Testuser1');
     await page.goto('/favorites');
 
     // Pas de redirection vers login
@@ -83,7 +84,7 @@ test.describe('Flux authentification complet', () => {
   });
 
   test('déconnexion redirige vers l\'accueil', async ({ page }) => {
-    await loginViaApi(page, 'titouan.borde.47@gmail.com', 'Titouan1.');
+    await loginViaApi(page, 'user@test.local', 'Testuser1');
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 

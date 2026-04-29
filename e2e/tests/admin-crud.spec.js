@@ -50,7 +50,7 @@ test.describe('Admin — CRUD Avions', () => {
     await expect(modal).toBeHidden({ timeout: 5000 });
 
     // Vérifier qu'un avion a été ajouté (via API, limite 100 = tous les avions)
-    const response = await page.request.get('http://localhost:3000/api/airplanes?limit=100');
+    const response = await page.request.get('http://localhost:3000/api/airplanes?search=E2E+Test+Aircraft&limit=100');
     const data = await response.json();
     const created = data.data?.find(a => a.name === 'E2E Test Aircraft');
     expect(created).toBeDefined();
@@ -58,7 +58,7 @@ test.describe('Admin — CRUD Avions', () => {
 
   test('la page détails affiche l\'avion créé', async ({ page }) => {
     // Chercher l'avion par son nom via l'API
-    const response = await page.request.get('http://localhost:3000/api/airplanes?limit=100');
+    const response = await page.request.get('http://localhost:3000/api/airplanes?search=E2E+Test+Aircraft&limit=100');
     const data = await response.json();
     const aircraft = data.data?.find(a => a.name === 'E2E Test Aircraft');
 
@@ -77,7 +77,7 @@ test.describe('Admin — CRUD Avions', () => {
     await page.waitForLoadState('networkidle');
 
     // Chercher l'avion par nom (toutes pages, limit max)
-    const listResponse = await page.request.get('http://localhost:3000/api/airplanes?limit=100');
+    const listResponse = await page.request.get('http://localhost:3000/api/airplanes?search=E2E+Test+Aircraft&limit=100');
     const data = await listResponse.json();
     const aircraft = data.data?.find(a => a.name === 'E2E Test Aircraft');
 

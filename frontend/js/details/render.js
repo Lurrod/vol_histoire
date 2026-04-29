@@ -314,4 +314,9 @@
   }
 
   VH.details.render = { renderAircraftDetails, renderArmament, renderTechnologies, renderMissions, finalizeCapabilities, renderWars };
+
+  // Export conditionnel pour les tests unitaires (Node.js / jsdom)
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = VH.details.render;
+  }
 })();

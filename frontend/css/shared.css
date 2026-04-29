@@ -26,6 +26,46 @@
   outline-offset: 2px;
 }
 
+/* ---- Scrollbar globale (charcoal + hud-cyan) ----
+   S'applique a toutes les zones scrollables (page, modals, panneaux, dropdowns).
+   Firefox : scrollbar-color cascade depuis :root.
+   WebKit/Chromium/Safari : pseudo-elements ::-webkit-scrollbar non-scopes.
+   Pas dans @layer pour garder la priorite sur les regles layered. */
+:root {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200, 169, 110, 0.35) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(200, 169, 110, 0.28);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 169, 110, 0.55);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--hud-cyan);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 @layer components {
 
   /* ============================================================

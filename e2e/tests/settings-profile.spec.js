@@ -5,7 +5,7 @@ const { loginViaApi } = require('../helpers/auth');
 
 test.describe('Settings — Profil & Sécurité', () => {
   test.beforeEach(async ({ page }) => {
-    await loginViaApi(page, 'titouan.borde.47@gmail.com', 'Titouan1.');
+    await loginViaApi(page, 'user@test.local', 'Testuser1');
   });
 
   test('la page settings affiche le nom et l\'email pré-remplis', async ({ page }) => {

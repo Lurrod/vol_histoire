@@ -127,6 +127,22 @@ body.page-settings::after {
 .page-settings .search-box input { width: 100%; padding: 0.9rem 1rem 0.9rem 3rem; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; background: rgba(255,255,255,0.03); color: var(--white); transition: var(--transition); }
 .page-settings .search-box input::placeholder { color: rgba(255,255,255,0.3); }
 .page-settings .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); }
+.page-settings .search-box input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-right: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.45);
+  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z'/></svg>") center/contain no-repeat;
+          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z'/></svg>") center/contain no-repeat;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.page-settings .search-box input::-webkit-search-cancel-button:hover {
+  background-color: var(--hud-cyan);
+}
+.page-settings .search-box input::-ms-clear { display: none; }
 .page-settings .admin-stats { display: flex; gap: 1rem; }
 .page-settings .stat-card { display: flex; align-items: center; gap: 1rem; padding: 1.25rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; flex: 1; }
 .page-settings .stat-icon { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); color: var(--hud-cyan); border-radius: 12px; font-size: 1.3rem; }

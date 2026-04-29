@@ -139,7 +139,7 @@
   <!-- Favorites Content (logged in) -->
   <section id="favorites-content" class="favorites-section hidden">
     <div class="container">
-      <div class="favorites-toolbar" role="region" aria-label="Filtres" data-i18n-aria="favorites.filters_landmark">
+      <section class="favorites-toolbar" aria-label="Filtres" data-i18n-aria="favorites.filters_landmark">
         <div class="search-box"><label for="search-input" class="sr-only" data-i18n="favorites.search_label">Rechercher dans mes favoris</label><i class="fas fa-search" aria-hidden="true"></i><input type="search" id="search-input" placeholder="Rechercher dans mes favoris..." data-i18n-placeholder="favorites.search_placeholder" autocomplete="off"></div>
         <div class="toolbar-right">
           <div class="filter-group">
@@ -162,10 +162,10 @@
             <option value="generation" data-i18n="favorites.sort_gen">Par génération</option>
           </select>
         </div>
-      </div>
+      </section>
       <div id="active-filters" class="active-filters hidden"></div>
       <div class="results-bar"><span id="results-count" data-i18n="favorites.results">0 favoris</span></div>
-      <div id="favorites-container" class="aircraft-grid" role="region" aria-label="Résultats" data-i18n-aria="favorites.results_landmark"></div>
+      <section id="favorites-container" class="aircraft-grid" aria-label="Résultats" data-i18n-aria="favorites.results_landmark"></section>
       <div id="empty-state" class="empty-state hidden">
         <i class="fas fa-heart-crack"></i>
         <h3 data-i18n="favorites.empty_title">Aucun favori pour l'instant</h3>

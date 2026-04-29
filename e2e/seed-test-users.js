@@ -48,18 +48,21 @@
   }
 })();
 
-// dotenv optionnel : en CI les variables sont déjà injectées via l'env du job.
-// En local, charge backend/.env si dotenv est disponible (via backend/node_modules).
-try {
-  require('dotenv').config({ path: require('path').join(__dirname, '../backend/.env') });
-} catch {
-  // dotenv non disponible — on suppose que les env vars sont déjà définies
-}
-// pg et bcryptjs sont résolus depuis backend/node_modules (pas de dépendance e2e dédiée)
+// pg, bcryptjs, dotenv sont resolus depuis backend/node_modules (pas de
+// dependance e2e dediee — e2e n'installe que @playwright/test).
 const path = require('path');
 const Module = require('module');
 const backendNodeModules = path.join(__dirname, '../backend/node_modules');
 Module.globalPaths.push(backendNodeModules);
+
+// dotenv optionnel : en CI les variables sont injectees via l'env du job.
+// En local, charge backend/.env. Resolution explicite depuis backend/node_modules
+// car require('dotenv') sans chemin echoue depuis e2e/ (pas de dotenv local).
+try {
+  require(path.join(backendNodeModules, 'dotenv')).config({ path: path.join(__dirname, '../backend/.env') });
+} catch {
+  // dotenv non disponible — on suppose que les env vars sont deja definies
+}
 const { Pool } = require(path.join(backendNodeModules, 'pg'));
 const bcrypt = require(path.join(backendNodeModules, 'bcryptjs'));
 
@@ -106,11 +109,12 @@ const FILLER_USERS = [
 
 const TEST_USERS = [
   { name: 'Admin',    email: 'test@gmail.com',                password: 'test',      role_id: 1 },
-  { name: 'Titouan',  email: 'titouan.borde.47@gmail.com',    password: 'Titouan1.', role_id: 3 },
+  { name: 'User',     email: 'user@test.local',               password: FILLER_PASSWORD, role_id: 3 },
   ...FILLER_USERS.map(u => ({ ...u, password: FILLER_PASSWORD })),
 ];
 
 async function seed() {
+
   for (const user of TEST_USERS) {
     const exists = await pool.query('SELECT id FROM users WHERE email = $1', [user.email]);
     if (exists.rows.length > 0) {

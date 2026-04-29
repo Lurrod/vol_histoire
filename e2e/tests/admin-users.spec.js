@@ -152,7 +152,7 @@ test.describe('Admin — Gestion des utilisateurs', () => {
 
 test.describe('Non-admin — Section admin masquée', () => {
   test('un membre ne voit pas la section admin', async ({ page }) => {
-    await loginViaApi(page, 'titouan.borde.47@gmail.com', 'Titouan1.');
+    await loginViaApi(page, 'user@test.local', 'Testuser1');
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
 

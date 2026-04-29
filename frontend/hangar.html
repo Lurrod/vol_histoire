@@ -137,7 +137,7 @@
   <section class="hangar-content">
     <div class="container">
       <!-- Toolbar : recherche + filtres + tri (une ligne) -->
-      <div class="hangar-toolbar" role="region" aria-label="Filtres" data-i18n-aria="hangar.filters_landmark">
+      <section class="hangar-toolbar" aria-label="Filtres" data-i18n-aria="hangar.filters_landmark">
         <div class="search-box"><label for="search-input" class="sr-only" data-i18n="hangar.search_label">Rechercher un appareil</label><i class="fas fa-search" aria-hidden="true"></i><input type="search" id="search-input" placeholder="Rechercher un avion..." data-i18n-placeholder="hangar.search_placeholder" autocomplete="off"></div>
         <div class="toolbar-right">
           <div class="filter-group">
@@ -163,14 +163,14 @@
           </select>
           <button type="button" id="add-airplane-btn" class="btn btn-primary hidden"><i class="fas fa-plus"></i><span data-i18n="hangar.add_aircraft">Ajouter</span></button>
         </div>
-      </div>
+      </section>
 
       <!-- Active filters tags -->
       <div id="active-filters" class="active-filters hidden"></div>
 
       <!-- Results -->
       <div class="results-info"><span id="results-count">0 avions trouvés</span></div>
-      <div id="airplanes-container" class="aircraft-grid" role="region" aria-label="Résultats" data-i18n-aria="hangar.results_landmark"></div>
+      <section id="airplanes-container" class="aircraft-grid" aria-label="Résultats" data-i18n-aria="hangar.results_landmark"></section>
       <div id="pagination-container" class="pagination"></div>
     </div>
   </section>
