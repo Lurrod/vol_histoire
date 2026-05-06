@@ -1,7 +1,8 @@
 {
+  "id": "/",
   "name": "Vol d'Histoire",
   "short_name": "Vol d'Histoire",
-  "description": "Encyclopédie de l'aviation militaire : 68 fiches détaillées, chronologie cinématographique, hangar interactif.",
+  "description": "Encyclopédie de l'aviation militaire : 107 fiches détaillées, chronologie cinématographique, hangar interactif.",
   "lang": "fr",
   "dir": "ltr",
   "start_url": "/?source=pwa",

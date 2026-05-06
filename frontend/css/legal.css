@@ -178,6 +178,20 @@ body.page-legal::after {
   .page-legal .legal-section h2 { font-size: 1.3rem; }
   .page-legal .purpose-grid, .page-legal .security-grid, .page-legal .rights-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 }
+/* Inventaire détaillé des cookies (CNIL — politique de confidentialité §6.2) */
+.page-legal .cookies-inventory-wrap { margin: 1.5rem 0; overflow-x: auto; border: 1px solid rgba(200,169,110,0.12); border-radius: 12px; background: rgba(200,169,110,0.02); }
+.page-legal .cookies-inventory { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 720px; }
+.page-legal .cookies-inventory thead th { padding: 0.85rem 0.9rem; text-align: left; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary, #C8A96E); border-bottom: 1px solid rgba(200,169,110,0.18); background: rgba(200,169,110,0.04); }
+.page-legal .cookies-inventory tbody td { padding: 0.75rem 0.9rem; border-bottom: 1px solid rgba(200,169,110,0.06); color: rgba(255,255,255,0.72); vertical-align: top; line-height: 1.5; }
+.page-legal .cookies-inventory tbody tr:last-child td { border-bottom: none; }
+.page-legal .cookies-inventory tbody tr:hover td { background: rgba(200,169,110,0.025); }
+.page-legal .cookies-inventory code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82em; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.04); color: var(--hud-cyan, #5BC0BE); white-space: nowrap; }
+.page-legal .cookies-marketing-note { margin: 1rem 0 1.5rem; padding: 0.85rem 1rem; border-left: 3px solid var(--hud-cyan, #5BC0BE); background: rgba(91,192,190,0.04); border-radius: 0 8px 8px 0; font-size: 0.9rem; }
+@media (max-width: 48em) {
+  .page-legal .cookies-inventory { font-size: 0.78rem; }
+  .page-legal .cookies-inventory thead th, .page-legal .cookies-inventory tbody td { padding: 0.6rem 0.7rem; }
+}
+
 @media (max-width: 48em) {
   .page-legal .page-hero { padding: 5rem 0 4rem; }
   .page-legal .page-hero-inner { flex-direction: column; gap: 2.5rem; align-items: center; text-align: center; }

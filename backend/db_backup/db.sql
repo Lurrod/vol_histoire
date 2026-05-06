@@ -181,6 +181,11 @@ CREATE INDEX IF NOT EXISTS idx_airplanes_type           ON airplanes (type);
 CREATE INDEX IF NOT EXISTS idx_airplanes_id_manufacturer ON airplanes (id_manufacturer);
 -- Index composite pour les requêtes combinant les 3 filtres principaux
 CREATE INDEX IF NOT EXISTS idx_airplanes_filters        ON airplanes (country_id, id_generation, type);
+
+-- Index pour les sorts (sortMap dans backend/routes/airplanes.js).
+-- Tie-breaker `id` pour un ordre stable entre pages.
+CREATE INDEX IF NOT EXISTS idx_airplanes_date_operationel ON airplanes (date_operationel DESC NULLS LAST, id);
+CREATE INDEX IF NOT EXISTS idx_airplanes_name             ON airplanes (name ASC, id);
 -- Index pour le JOIN manufacturer → countries (page /manufacturers)
 CREATE INDEX IF NOT EXISTS idx_manufacturer_country_id  ON manufacturer (country_id);
 

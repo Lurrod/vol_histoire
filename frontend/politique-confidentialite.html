@@ -335,8 +335,103 @@
               </div>
             </div>
 
-            <h3>6.2 Gestion des cookies</h3>
-            <p>Vous pouvez à tout moment :</p>
+            <h3>6.2 Inventaire détaillé</h3>
+            <p>Liste exhaustive des cookies et traceurs déposés ou susceptibles de l'être, conformément à la délibération CNIL n° 2020-091&nbsp;:</p>
+
+            <div class="cookies-inventory-wrap">
+              <table class="cookies-inventory">
+                <caption class="sr-only">Inventaire détaillé des cookies et traceurs : nom, type, durée, finalité, stockage et exigence de consentement.</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Durée</th>
+                    <th scope="col">Finalité</th>
+                    <th scope="col">Stockage</th>
+                    <th scope="col">Consentement</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>refreshToken</code></td>
+                    <td>Essentiel</td>
+                    <td>7 jours</td>
+                    <td>Renouvellement de session authentifiée (rotation jti)</td>
+                    <td>Cookie HttpOnly · SameSite=Strict · Path=/api</td>
+                    <td>Exempté (CNIL)</td>
+                  </tr>
+                  <tr>
+                    <td><code>voldhistoire_cookie_consent</code></td>
+                    <td>Essentiel</td>
+                    <td>365 jours</td>
+                    <td>Mémorisation de vos préférences RGPD</td>
+                    <td>Cookie + localStorage</td>
+                    <td>Exempté (CNIL)</td>
+                  </tr>
+                  <tr>
+                    <td><code>vol-histoire-lang</code></td>
+                    <td>Essentiel</td>
+                    <td>Persistant</td>
+                    <td>Langue d'affichage (FR / EN)</td>
+                    <td>localStorage</td>
+                    <td>Exempté (UX de base)</td>
+                  </tr>
+                  <tr>
+                    <td><code>vh_hangar_view</code></td>
+                    <td>Préférence</td>
+                    <td>Persistant</td>
+                    <td>Vue grille ou liste sur le hangar</td>
+                    <td>localStorage</td>
+                    <td>Requis</td>
+                  </tr>
+                  <tr>
+                    <td><code>vh_compare_ids</code></td>
+                    <td>Préférence</td>
+                    <td>Persistant</td>
+                    <td>Liste des appareils sélectionnés pour comparaison</td>
+                    <td>localStorage</td>
+                    <td>Requis</td>
+                  </tr>
+                  <tr>
+                    <td><code>vh-onboarding-done</code></td>
+                    <td>Préférence</td>
+                    <td>Persistant</td>
+                    <td>Indicateur «&nbsp;onboarding vu&nbsp;» (évite la ré-affichage)</td>
+                    <td>localStorage</td>
+                    <td>Requis</td>
+                  </tr>
+                  <tr>
+                    <td><code>_ga</code></td>
+                    <td>Analytique</td>
+                    <td>13 mois</td>
+                    <td>Mesure d'audience Google Analytics 4 — utilisateur unique</td>
+                    <td>Cookie tiers (Google)</td>
+                    <td>Requis</td>
+                  </tr>
+                  <tr>
+                    <td><code>_ga_&lt;ID&gt;</code></td>
+                    <td>Analytique</td>
+                    <td>13 mois</td>
+                    <td>Identifiant de session GA4 par container</td>
+                    <td>Cookie tiers (Google)</td>
+                    <td>Requis</td>
+                  </tr>
+                  <tr>
+                    <td><code>_gid</code></td>
+                    <td>Analytique</td>
+                    <td>24 heures</td>
+                    <td>Distinction des utilisateurs sur 24&nbsp;h</td>
+                    <td>Cookie tiers (Google)</td>
+                    <td>Requis</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="cookies-marketing-note"><strong>Cookies marketing&nbsp;:</strong> aucun cookie publicitaire ou de retargeting n'est actuellement déposé sur ce site.</p>
+
+            <h3>6.3 Gestion des cookies</h3>
+            <p>Vous pouvez à tout moment&nbsp;:</p>
             <ul>
               <li>Accepter ou refuser les cookies via notre bandeau de consentement</li>
               <li>Modifier vos préférences dans les paramètres de votre compte</li>

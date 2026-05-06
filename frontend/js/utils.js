@@ -50,7 +50,7 @@ function safeSetHTML(el, html) {
   // Fallback sans DOMPurify : parse via DOMParser puis supprime
   // scripts/iframes/objets + handlers on* + URLs javascript:. Moins strict
   // que DOMPurify mais coupe les principaux vecteurs XSS.
-  console.warn('[safeSetHTML] DOMPurify indisponible, fallback DOMParser scrub');
+  _safeReport('warn', '[safeSetHTML] DOMPurify indisponible, fallback DOMParser scrub');
   try {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     doc.querySelectorAll('script, iframe, object, embed, link[rel="import"], meta[http-equiv]')
@@ -66,9 +66,31 @@ function safeSetHTML(el, html) {
     });
     el.replaceChildren(...Array.from(doc.body.childNodes));
   } catch (e) {
-    console.error('[safeSetHTML] fallback DOMParser a échoué, injection refusée', e);
+    _safeReport('error', '[safeSetHTML] fallback DOMParser a échoué, injection refusée', e);
     el.textContent = '';
   }
+}
+
+/**
+ * Reporte un événement de chemin de panic (DOMPurify down, etc.) en privilégiant
+ * Sentry quand il est disponible (cf. js/sentry-init.js, attaché à window.Sentry
+ * post-LCP). Fallback console sinon — utile en dev/local et si Sentry n'a pas
+ * encore fini de booter quand le panic se déclenche. Évite de polluer la console
+ * des visiteurs en prod tout en gardant la visibilité côté monitoring.
+ */
+function _safeReport(level, message, error) {
+  const S = (typeof window !== 'undefined') ? window.Sentry : null;
+  if (S && typeof S.captureMessage === 'function') {
+    if (error && typeof S.captureException === 'function') {
+      S.captureException(error);
+    } else {
+      S.captureMessage(message, level === 'error' ? 'error' : 'warning');
+    }
+    return;
+  }
+  // Fallback diag quand Sentry est indisponible (dev/local ou panic pré-init).
+  if (level === 'error') console.error(message, error);
+  else console.warn(message);
 }
 
 /**
