@@ -19,7 +19,7 @@ module.exports = function createStatsRouter(getPool) {
       return res.json(cached);
     }
 
-    const [countRes, datesRes, countriesRes] = await Promise.all([
+    const [countRes, datesRes, countriesRes, generationsRes] = await Promise.all([
       getPool().query('SELECT COUNT(*)::int AS total FROM airplanes'),
       getPool().query(`
         SELECT
@@ -29,6 +29,7 @@ module.exports = function createStatsRouter(getPool) {
         WHERE date_first_fly IS NOT NULL
       `),
       getPool().query('SELECT COUNT(DISTINCT country_id)::int AS total FROM airplanes WHERE country_id IS NOT NULL'),
+      getPool().query('SELECT COUNT(DISTINCT id_generation)::int AS total FROM airplanes WHERE id_generation IS NOT NULL'),
     ]);
 
     const data = {
@@ -36,6 +37,7 @@ module.exports = function createStatsRouter(getPool) {
       earliest_year: datesRes.rows[0].earliest ?? null,
       latest_year: datesRes.rows[0].latest ?? null,
       countries: countriesRes.rows[0].total,
+      generations: generationsRes.rows[0].total,
     };
 
     cached = data;

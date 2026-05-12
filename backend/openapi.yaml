@@ -23,7 +23,7 @@ info:
     Toutes les pages HTML sont servies avec un query string `?v=<version>`
     sur les assets pour bust le cache navigateur à chaque déploiement.
     Les statiques (CSS/JS/fonts) ont un `Cache-Control` long.
-  version: 4.3.2
+  version: 4.3.4
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -282,6 +282,8 @@ components:
           type: integer
           nullable: true
         countries:
+          type: integer
+        generations:
           type: integer
 
   parameters:
@@ -1174,6 +1176,50 @@ paths:
                 $ref: '#/components/schemas/Stats'
 
   # ═══════════════════════════════════════════════════════════
+  # HERO
+  # ═══════════════════════════════════════════════════════════
+  /hero/discoveries:
+    get:
+      tags: [Hero]
+      summary: Données dynamiques des widgets de la home
+      description: |
+        Renvoie en un seul payload les facts éditoriaux (timeline_events liés à
+        un appareil) et la liste des appareils avec image, utilisés par les
+        widgets "Saviez-vous ?" et "Devine l'avion" sur la landing page.
+        Cache 10 min (Redis ou mémoire), invalidé à chaque CRUD avion.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  generated_at:
+                    type: string
+                    format: date-time
+                  facts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        year: { type: integer, nullable: true }
+                        title_fr: { type: string }
+                        title_en: { type: string }
+                        airplane_name: { type: string, nullable: true }
+                        airplane_name_en: { type: string, nullable: true }
+                  aircraft:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name: { type: string }
+                        name_en: { type: string, nullable: true }
+                        image_url: { type: string }
+                        generation: { type: integer, nullable: true }
+                        type_name: { type: string, nullable: true }
+                        type_name_en: { type: string, nullable: true }
+
+  # ═══════════════════════════════════════════════════════════
   # CONFIG
   # ═══════════════════════════════════════════════════════════
   /config:
@@ -1194,7 +1240,7 @@ paths:
                 properties:
                   version:
                     type: string
-                    example: "4.3.2"
+                    example: "4.3.4"
                   hcaptchaSitekey:
                     type: string
                     nullable: true
@@ -1296,7 +1342,7 @@ paths:
                 properties:
                   status: { type: string, example: ok }
                   service: { type: string, example: "Vol d'histoire" }
-                  version: { type: string, example: "4.3.2" }
+                  version: { type: string, example: "4.3.4" }
                   env: { type: string, example: production }
                   sentry: { type: boolean, example: true }
                   uptimeSec: { type: integer, example: 3600 }

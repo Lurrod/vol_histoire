@@ -70,8 +70,11 @@
 
   /* ============================================================
      HEADER
+     Scopé à body > header pour ne PAS capter les <header> nichés
+     (ex : <header class="hero-aside-header"> dans les cards de la home),
+     qui hériteraient sinon de position:fixed et se superposeraient.
      ============================================================ */
-  header {
+  body > header {
     position: fixed;
     inset-block-start: 0;
     inset-inline: 0;
@@ -84,7 +87,7 @@
     transition: var(--transition);
   }
 
-  header.scrolled {
+  body > header.scrolled {
     padding-block: var(--sp-3);
     background: rgba(13, 13, 13, 0.98);
     border-bottom-color: rgba(255, 255, 255, 0.08);
@@ -1350,7 +1353,7 @@
     .logo i, .logo .icon    { font-size: 1.75rem; }
     .logo-lockup            { height: 2rem; }
 
-    header { padding-block: var(--sp-3); }
+    body > header { padding-block: var(--sp-3); }
 
     .modal {
       padding: 0;
@@ -1470,7 +1473,7 @@
 
   /* Print : masquer la chrome */
   @media print {
-    header, footer, .hamburger, .lang-switch, #toast-container, .modal {
+    body > header, footer, .hamburger, .lang-switch, #toast-container, .modal {
       display: none;
     }
   }

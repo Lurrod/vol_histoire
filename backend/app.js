@@ -393,6 +393,7 @@ const airplanesRouter = createAirplanesRouter(() => pool, {
   onAirplaneChange: () => {
     app.invalidateStatsCache?.();
     app.invalidateTimelineCache?.();
+    app.invalidateHeroCache?.();
     invalidateSitemap().catch(() => {}); // sitemap stale si Redis down, non-bloquant
   },
 });
@@ -414,6 +415,12 @@ const timelineRouter = createTimelineRouter(() => pool);
 app.use('/api', timelineRouter);
 // Exposer l'invalidation cache timeline (appelée après CRUD avions)
 app.invalidateTimelineCache = () => timelineRouter.invalidateCache?.();
+
+const createHeroRouter = require('./routes/hero');
+const heroRouter = createHeroRouter(() => pool);
+app.use('/api', heroRouter);
+// Exposer l'invalidation cache hero (appelée après CRUD avions)
+app.invalidateHeroCache = () => heroRouter.invalidateCache?.();
 
 const createContactRouter = require('./routes/contact');
 app.use('/api', createContactRouter(() => pool, { contactLimiter, mailer }));

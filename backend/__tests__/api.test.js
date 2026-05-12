@@ -1723,7 +1723,8 @@ describe('GET /api/stats', () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ total: 47 }] })
       .mockResolvedValueOnce({ rows: [{ earliest: 1953, latest: 2023 }] })
-      .mockResolvedValueOnce({ rows: [{ total: 12 }] });
+      .mockResolvedValueOnce({ rows: [{ total: 12 }] })
+      .mockResolvedValueOnce({ rows: [{ total: 5 }] });
 
     const res = await request(app).get('/api/stats');
     expect(res.status).toBe(200);
@@ -1731,6 +1732,7 @@ describe('GET /api/stats', () => {
     expect(res.body.earliest_year).toBe(1953);
     expect(res.body.latest_year).toBe(2023);
     expect(res.body.countries).toBe(12);
+    expect(res.body.generations).toBe(5);
   });
 
   test('500 — erreur DB', async () => {
@@ -1743,7 +1745,8 @@ describe('GET /api/stats', () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ total: 68 }] })
       .mockResolvedValueOnce({ rows: [{ earliest: 1970, latest: 2024 }] })
-      .mockResolvedValueOnce({ rows: [{ total: 15 }] });
+      .mockResolvedValueOnce({ rows: [{ total: 15 }] })
+      .mockResolvedValueOnce({ rows: [{ total: 5 }] });
 
     const first = await request(app).get('/api/stats');
     expect(first.status).toBe(200);
@@ -3065,6 +3068,69 @@ describe('GET /api/timeline', () => {
 });
 
 // =============================================================================
+// HERO — GET /api/hero/discoveries (widgets dynamiques landing)
+// =============================================================================
+describe('GET /api/hero/discoveries', () => {
+  test('200 — renvoie facts + aircraft normalisés', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [
+        {
+          id: 1, year: 1961,
+          title_fr: 'Mach 2', title_en: 'Mach 2',
+          airplane_name: 'Mirage III', airplane_name_en: 'Mirage III',
+        },
+      ],
+    });
+    mockPool.query.mockResolvedValueOnce({
+      rows: [
+        {
+          id: 10, name: 'F-15 Eagle', name_en: 'F-15 Eagle',
+          image_url: '/assets/airplanes/f15-eagle.jpg',
+          generation: 4, type_name: 'Supériorité aérienne', type_name_en: 'Air superiority',
+        },
+      ],
+    });
+
+    const res = await request(app).get('/api/hero/discoveries');
+    expect(res.status).toBe(200);
+    expect(res.headers['x-cache']).toBe('MISS');
+    expect(Array.isArray(res.body.facts)).toBe(true);
+    expect(Array.isArray(res.body.aircraft)).toBe(true);
+    expect(res.body.facts[0]).toMatchObject({
+      year: 1961, title_fr: 'Mach 2', airplane_name: 'Mirage III',
+    });
+    expect(res.body.aircraft[0]).toMatchObject({
+      name: 'F-15 Eagle', image_url: '/assets/airplanes/f15-eagle.jpg', generation: 4,
+    });
+  });
+
+  test('X-Cache HIT au second appel sans ?force=1', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    await request(app).get('/api/hero/discoveries');
+    const res = await request(app).get('/api/hero/discoveries');
+    expect(res.headers['x-cache']).toBe('HIT');
+  });
+
+  test('app.invalidateHeroCache vide le cache', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    await request(app).get('/api/hero/discoveries');
+    await app.invalidateHeroCache?.();
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).get('/api/hero/discoveries');
+    expect(res.headers['x-cache']).toBe('MISS');
+  });
+
+  test('500 — erreur DB propage en 500', async () => {
+    mockPool.query.mockRejectedValueOnce(new Error('DB fail'));
+    const res = await request(app).get('/api/hero/discoveries?force=1');
+    expect(res.status).toBe(500);
+  });
+});
+
+// =============================================================================
 // STATISTIQUES — GET /api/stats — cas null (earliest/latest nulls, ligne 36-37)
 // =============================================================================
 describe('GET /api/stats — valeurs null (lignes 36-37)', () => {
@@ -3072,6 +3138,7 @@ describe('GET /api/stats — valeurs null (lignes 36-37)', () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ total: 0 }] })
       .mockResolvedValueOnce({ rows: [{ earliest: null, latest: null }] })
+      .mockResolvedValueOnce({ rows: [{ total: 0 }] })
       .mockResolvedValueOnce({ rows: [{ total: 0 }] });
 
     const res = await request(app).get('/api/stats');
@@ -3080,6 +3147,7 @@ describe('GET /api/stats — valeurs null (lignes 36-37)', () => {
     expect(res.body.earliest_year).toBeNull();
     expect(res.body.latest_year).toBeNull();
     expect(res.body.countries).toBe(0);
+    expect(res.body.generations).toBe(0);
   });
 });
 

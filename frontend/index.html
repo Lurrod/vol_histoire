@@ -93,30 +93,85 @@
 
   <!-- HERO -->
   <main id="main-content">
-  <section class="hero">
-    <div class="hero-overlay"></div>
-
-    <div class="hero-content">
-      <h1 class="hero-title"><span data-i18n="home.hero_title_1_full">Découvrez l'Histoire de</span> <span class="gradient-text" data-i18n="home.hero_title_2_full">l'Aviation Militaire</span></h1>
-      <p class="hero-description" data-i18n="home.hero_desc_full">Explorez notre collection exclusive d'avions de chasse historiques et plongez dans l'évolution technique fascinante de l'aviation depuis ses débuts jusqu'à nos jours.</p>
-      <div class="hero-actions">
-        <a href="/hangar" class="btn btn-primary"><i class="fas fa-plane-departure"></i><span data-i18n="home.hero_btn_explore">Explorer le Hangar</span></a>
-        <a href="/timeline" class="btn btn-ghost"><i class="fas fa-clock"></i><span data-i18n="home.hero_btn_timeline">Voir la Chronologie</span></a>
+  <section class="hero hero-split">
+    <div class="hero-split-grid">
+      <!-- Colonne éditoriale (gauche, 40%) -->
+      <div class="hero-split-left">
+        <h1 class="hero-split-title">
+          <span data-i18n="home.hero_split_title_l1">L'aviation</span><br>
+          <span data-i18n="home.hero_split_title_l2">militaire,</span><br>
+          <span class="gradient-text" data-i18n="home.hero_split_title_l3">une fiche à la fois.</span>
+        </h1>
+        <p class="hero-split-baseline" data-i18n="home.hero_split_baseline">
+          Catalogue offline. Recherche full-text. Fiches enrichies.
+        </p>
+        <div class="hero-split-meta">
+          <span><strong id="hero-split-stat-airplanes">107</strong> <span data-i18n="home.hero_split_meta_aircraft">appareils</span></span>
+          <span class="hero-split-dot" aria-hidden="true">·</span>
+          <span><strong id="hero-split-stat-countries">18</strong> <span data-i18n="home.hero_split_meta_nations">nations</span></span>
+          <span class="hero-split-dot" aria-hidden="true">·</span>
+          <span><strong id="hero-split-stat-generations">5</strong> <span data-i18n="home.hero_split_meta_generations">générations</span></span>
+        </div>
+        <a href="/hangar" class="btn btn-primary hero-split-cta">
+          <i class="fas fa-plane-departure" aria-hidden="true"></i>
+          <span data-i18n="home.hero_split_cta">Tout le hangar</span>
+          <i class="fas fa-arrow-right hero-split-cta-arrow" aria-hidden="true"></i>
+        </a>
       </div>
-      <div class="hero-stats">
-        <div class="stat-item"><div class="stat-number" id="hero-stat-airplanes">0</div><div class="stat-label" data-i18n="home.stat_aircraft">Appareils</div></div>
-        <div class="stat-divider"></div>
-        <div class="stat-item"><div class="stat-number" id="hero-stat-years">0</div><div class="stat-label" id="hero-stat-years-label" data-i18n="home.stat_years_label">Années d'Histoire</div></div>
-        <div class="stat-divider"></div>
-        <div class="stat-item"><div class="stat-number" id="hero-stat-countries">0</div><div class="stat-label" data-i18n="home.stat_nations">Nations</div></div>
+
+      <!-- Colonne droite — 2 widgets stackés (Saviez-vous ? + Devine l'avion) -->
+      <div class="hero-split-right">
+        <aside class="hero-aside-stack" aria-label="Découvertes" data-i18n-aria="home.hero_aside_label">
+
+          <!-- Widget 1 : Saviez-vous ? -->
+          <article class="hero-aside-card hero-fact-card" id="hero-fact-card">
+            <header class="hero-aside-header">
+              <span class="hero-aside-label">
+                <i class="fas fa-bolt" aria-hidden="true"></i>
+                <span data-i18n="home.hero_fact_label">Saviez-vous&nbsp;?</span>
+              </span>
+              <button type="button" class="hero-aside-reroll" id="hero-fact-reroll" aria-label="Tirer un autre fait" data-i18n-aria="home.hero_fact_reroll_aria">
+                <i class="fas fa-sync-alt" aria-hidden="true"></i>
+              </button>
+            </header>
+            <p class="hero-fact-body" id="hero-fact-body" data-i18n="home.hero_fact_loading">
+              Tirage en cours…
+            </p>
+            <a href="#" class="hero-aside-link" id="hero-fact-link">
+              <span data-i18n="home.hero_fact_link">Voir la fiche</span>
+              <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </article>
+
+          <!-- Widget 2 : Devine l'avion -->
+          <article class="hero-aside-card hero-quiz-card" id="hero-quiz-card">
+            <header class="hero-aside-header">
+              <span class="hero-aside-label">
+                <i class="fas fa-question-circle" aria-hidden="true"></i>
+                <span data-i18n="home.hero_quiz_label">Devine l'avion</span>
+              </span>
+              <button type="button" class="hero-aside-reroll" id="hero-quiz-reroll" aria-label="Changer d'avion" data-i18n-aria="home.hero_quiz_reroll_aria">
+                <i class="fas fa-sync-alt" aria-hidden="true"></i>
+              </button>
+            </header>
+            <div class="hero-quiz-stage">
+              <img class="hero-quiz-image" id="hero-quiz-image" src="/assets/airplanes/f15-eagle.jpg" alt="Silhouette à deviner" data-i18n-alt="home.hero_quiz_image_alt" width="640" height="280">
+              <span class="hero-quiz-badge" id="hero-quiz-badge" aria-hidden="true">?</span>
+            </div>
+            <div class="hero-quiz-options" id="hero-quiz-options" role="group" aria-label="Trois propositions de réponse" data-i18n-aria="home.hero_quiz_options_aria">
+              <button type="button" class="hero-quiz-option">—</button>
+              <button type="button" class="hero-quiz-option">—</button>
+              <button type="button" class="hero-quiz-option">—</button>
+            </div>
+            <a href="#" class="hero-aside-link hero-quiz-link" id="hero-quiz-link" hidden>
+              <span id="hero-quiz-link-label" data-i18n="home.hero_quiz_link_default">Voir la fiche</span>
+              <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </article>
+
+        </aside>
       </div>
     </div>
-    <button type="button" class="scroll-indicator" aria-label="Défiler vers la suite">
-      <span class="scroll-approach" aria-hidden="true">
-        <span></span><span></span><span></span><span></span><span></span>
-      </span>
-      <span class="scroll-label" data-i18n="home.scroll">Défiler</span>
-    </button>
   </section>
 
   <!-- FEATURES -->
