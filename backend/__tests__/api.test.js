@@ -3077,6 +3077,7 @@ describe('GET /api/hero/discoveries', () => {
         {
           id: 1, year: 1961,
           title_fr: 'Mach 2', title_en: 'Mach 2',
+          airplane_id: 7,
           airplane_name: 'Mirage III', airplane_name_en: 'Mirage III',
         },
       ],
@@ -3097,10 +3098,10 @@ describe('GET /api/hero/discoveries', () => {
     expect(Array.isArray(res.body.facts)).toBe(true);
     expect(Array.isArray(res.body.aircraft)).toBe(true);
     expect(res.body.facts[0]).toMatchObject({
-      year: 1961, title_fr: 'Mach 2', airplane_name: 'Mirage III',
+      year: 1961, title_fr: 'Mach 2', airplane_id: 7, airplane_name: 'Mirage III',
     });
     expect(res.body.aircraft[0]).toMatchObject({
-      name: 'F-15 Eagle', image_url: '/assets/airplanes/f15-eagle.jpg', generation: 4,
+      id: 10, name: 'F-15 Eagle', image_url: '/assets/airplanes/f15-eagle.jpg', generation: 4,
     });
   });
 

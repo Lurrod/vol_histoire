@@ -66,12 +66,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
-      if (href !== '#') {
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+      // Le href peut avoir été muté vers un chemin après le parse (widgets
+      // hero qui passent de href="#" à "/hangar?..." une fois l'API résolue).
+      if (!href || !href.startsWith('#') || href.length <= 1) return;
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
   });
@@ -327,7 +328,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       void body.offsetWidth; // force reflow pour rejouer l'animation
       body.style.animation = '';
       body.innerHTML = `<span class="hero-fact-year">${escapeHtml(String(f.year || ''))}</span>${boldedTitle}`;
-      if (link && name) link.setAttribute('href', '/hangar?search=' + encodeURIComponent(nameToSearchSlug(name)));
+      if (link) {
+        // Lien direct sur la fiche si l'API expose l'airplane_id ; fallback
+        // sur la recherche /hangar pour les facts servis depuis FALLBACK_FACTS
+        // (PWA offline / API down) où l'ID DB est inconnu.
+        const href = f.airplane_id
+          ? '/details?id=' + encodeURIComponent(f.airplane_id)
+          : (name ? '/hangar?search=' + encodeURIComponent(nameToSearchSlug(name)) : '#');
+        link.setAttribute('href', href);
+      }
     }
 
     function pick() {
@@ -397,7 +406,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             ? 'It was the ' + current.name + ' — see the record'
             : 'C\'était le ' + current.name + ' — voir la fiche';
         }
-        link.setAttribute('href', '/hangar?search=' + encodeURIComponent(nameToSearchSlug(current.name)));
+        // Lien direct sur la fiche si l'API expose l'id ; fallback sur la
+        // recherche /hangar pour les appareils issus de FALLBACK_AIRCRAFT.
+        const href = current.id
+          ? '/details?id=' + encodeURIComponent(current.id)
+          : '/hangar?search=' + encodeURIComponent(nameToSearchSlug(current.name));
+        link.setAttribute('href', href);
         link.removeAttribute('hidden');
       }
     }

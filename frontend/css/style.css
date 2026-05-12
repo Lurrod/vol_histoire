@@ -1764,12 +1764,16 @@ body.page-home::after {
 }
 .page-home .hero-aside-card {
   position: relative;
-  background: rgba(13, 13, 13, 0.94);
-  border: 1px solid rgba(200, 169, 110, 0.28);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 1.4rem 1.5rem;
   overflow: hidden;
-  box-shadow: 0 8px 28px -16px rgba(0, 0, 0, 0.7);
+  box-shadow:
+    0 8px 28px -16px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .page-home .hero-aside-card::before {
   content: '';
@@ -1801,8 +1805,8 @@ body.page-home::after {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   color: rgba(255, 255, 255, 0.55);
   cursor: pointer;
   display: flex;
@@ -1924,8 +1928,8 @@ body.page-home::after {
 }
 .page-home .hero-quiz-option {
   padding: 0.6rem 0.5rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   color: rgba(255, 255, 255, 0.78);
   border-radius: 8px;
   font-size: 0.78rem;

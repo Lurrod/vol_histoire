@@ -48,6 +48,7 @@ module.exports = function createHeroRouter(getPool) {
         EXTRACT(YEAR FROM e.event_date)::int AS year,
         e.title_fr,
         e.title_en,
+        a.id      AS airplane_id,
         a.name    AS airplane_name,
         a.name_en AS airplane_name_en
       FROM timeline_events e
@@ -82,10 +83,12 @@ module.exports = function createHeroRouter(getPool) {
         year: r.year,
         title_fr: r.title_fr,
         title_en: r.title_en,
+        airplane_id: r.airplane_id,
         airplane_name: r.airplane_name,
         airplane_name_en: r.airplane_name_en,
       })),
       aircraft: aircraftRes.rows.map(r => ({
+        id: r.id,
         name: r.name,
         name_en: r.name_en,
         image_url: r.image_url,
