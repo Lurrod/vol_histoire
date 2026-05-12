@@ -101,7 +101,7 @@
   </header>
 
   <!-- Page Header -->
-  <section class="page-hero">
+  <section class="page-hero" aria-labelledby="page-hero-heading">
     <div class="hero-background"></div>
     <div class="container">
       <nav class="breadcrumb" aria-label="Fil d'Ariane">
@@ -112,7 +112,7 @@
       <div class="page-hero-inner">
         <div class="hero-text">
           <div class="hero-eyebrow"><span data-i18n="hangar.badge">Collection Complète</span></div>
-          <h1>Hangar<span class="hero-muted" data-i18n="hangar.hero_title_muted">des Avions</span></h1>
+          <h1 id="page-hero-heading">Hangar<span class="hero-muted" data-i18n="hangar.hero_title_muted">des Avions</span></h1>
           <p data-i18n="hangar.hero_desc">Explorez notre collection exhaustive d'avions militaires historiques et modernes</p>
         </div>
         <div class="hero-data">
@@ -169,7 +169,7 @@
       <div id="active-filters" class="active-filters hidden"></div>
 
       <!-- Results -->
-      <div class="results-info"><span id="results-count">0 avions trouvés</span></div>
+      <div class="results-info" role="status" aria-live="polite"><span id="results-count">0 avions trouvés</span></div>
       <section id="airplanes-container" class="aircraft-grid" aria-label="Résultats" data-i18n-aria="hangar.results_landmark"></section>
       <div id="pagination-container" class="pagination"></div>
     </div>

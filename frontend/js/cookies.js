@@ -49,6 +49,11 @@ class CookieConsent {
       const res = await fetch(`${basePath}cookie-consent.html`);
       if (!res.ok) return;
       const html = await res.text();
+      // Garde-fou : un serveur statique en mode SPA-fallback peut servir
+      // index.html (33 Ko de DOM en flow normal) à la place du fragment, ce
+      // qui pousse tout le contenu en bas de page et plombe CLS à 1.0.
+      // On vérifie la présence du marker du fragment avant d'insérer.
+      if (!/id=["']cookie-banner["']/i.test(html)) return;
       const container = document.createElement('div');
       safeSetHTML(container, html);
       // Insérer au début du body (avant le header)

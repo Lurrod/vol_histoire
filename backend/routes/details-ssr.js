@@ -275,10 +275,22 @@ module.exports = function createDetailsSsrRouter(getPool) {
       `<meta name="twitter:image:alt" content="${escapeHtml(ogImageAlt)}">`
     );
 
-    // Remplacer le bloc JSON-LD existant par notre Article + BreadcrumbList
+    // Remplacer TOUS les blocs JSON-LD existants par notre Article + BreadcrumbList.
+    // Le template details.html contient désormais 2 blocs ld+json (Article placeholder
+    // + BreadcrumbList placeholder à 2 items, sans nom d'appareil). On injecte notre
+    // version hydratée (Article + Breadcrumb 3 items) à la place du 1er, et on
+    // supprime les blocs ld+json restants pour éviter la double-indexation par
+    // Googlebot d'un breadcrumb partiel + complet.
+    let firstLdJsonReplaced = false;
     html = html.replace(
-      /<script type="application\/ld\+json">[\s\S]*?<\/script>/,
-      ldJsonScript
+      /\s*<script type="application\/ld\+json">[\s\S]*?<\/script>/g,
+      () => {
+        if (!firstLdJsonReplaced) {
+          firstLdJsonReplaced = true;
+          return '\n  ' + ldJsonScript;
+        }
+        return '';
+      }
     );
 
     // Injecter le preload AVIF du hero juste après les preloads de fonts.

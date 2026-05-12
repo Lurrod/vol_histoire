@@ -35,14 +35,21 @@ function safeSetHTML(el, html) {
   if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
     el.innerHTML = DOMPurify.sanitize(html, {
       // Configuration permissive : autorise les balises HTML standards + Font Awesome
+      // + landmarks ARIA (aside/section/nav/header/footer/main) pour préserver
+      // les rôles a11y du fragment injecté (ex: cookie-banner = <aside>).
       ALLOWED_TAGS: ['div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
                      'a', 'i', 'b', 'strong', 'em', 'br', 'hr', 'img',
                      'ul', 'ol', 'li', 'button', 'input', 'option',
-                     'table', 'tr', 'td', 'th', 'thead', 'tbody'],
+                     'table', 'tr', 'td', 'th', 'thead', 'tbody',
+                     'aside', 'section', 'nav', 'header', 'footer', 'main', 'article'],
+      // data-i18n* : attributs déclaratifs lus par i18n.applyToDOM pour
+      // traduire le contenu injecté (sans ces attributs, le banner reste figé en FR).
       ALLOWED_ATTR: ['class', 'id', 'href', 'src', 'alt', 'title', 'data-id',
                      'data-user-id', 'data-value', 'value', 'type', 'role',
-                     'aria-label', 'aria-hidden', 'tabindex', 'width', 'height',
-                     'loading'],
+                     'aria-label', 'aria-labelledby', 'aria-hidden', 'aria-live',
+                     'tabindex', 'width', 'height', 'loading',
+                     'data-i18n', 'data-i18n-html', 'data-i18n-aria',
+                     'data-i18n-alt', 'data-i18n-placeholder', 'data-i18n-title'],
     });
     return;
   }

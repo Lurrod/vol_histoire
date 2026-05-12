@@ -13,6 +13,7 @@
     "primary_label": "Main navigation"
   },
   "cookie": {
+    "banner_aria": "Cookie consent",
     "title": "We use cookies",
     "message": "We use cookies to improve your experience, analyze traffic and personalize content. By clicking \"Accept all\", you consent to the use of all cookies.",
     "message_short": "We use cookies to improve your experience.",
