@@ -47,7 +47,7 @@
 
 .contact-card p {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.66);
   margin: 0;
   line-height: 1.5;
 }
@@ -87,7 +87,7 @@
 }
 
 .contact-form > p {
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.66);
   margin-bottom: 2rem;
 }
 
@@ -222,7 +222,7 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.66);
 }
 
 .form-data-note i {

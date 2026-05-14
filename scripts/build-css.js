@@ -21,17 +21,31 @@ const CSS_DIR = path.join(__dirname, '..', 'frontend', 'css');
 
 const BUNDLES = {
   // Core partagé — chargé sur toutes les pages
+  // shared.css a été éclaté en 4 fichiers pour passer sous le budget 800 lignes
+  // de CLAUDE.md (1833 → 4 chunks). L'ordre est CRITIQUE : shared-base contient
+  // @layer components, suivi du @media responsive, puis @layer utilities, puis
+  // l'onboarding hors-layer.
   'core.min.css': [
     'tokens.css',
     'icons.css',
     'base.css',
-    'shared.css',
+    'shared-base.css',
+    'shared-responsive.css',
+    'shared-utilities.css',
+    'shared-onboarding.css',
     'fonts.css',
     'cookies.css',
   ],
 
-  // Page-specific
-  'home.min.css': ['style.css'],
+  // Page-specific — style.css (2027 lignes) éclaté en 4 chunks ordonnés.
+  // L'ordre de concaténation respecte exactement l'ancien source pour préserver
+  // la cascade CSS (hero → sections → extras/responsive → hero-split v4.3.4).
+  'home.min.css': [
+    'style-hero.css',
+    'style-sections.css',
+    'style-extras.css',
+    'style-hero-split.css',
+  ],
   'hangar.min.css': ['hangar.css'],
   'details.min.css': ['details.css'],
   'timeline.min.css': ['timeline.css'],

@@ -35,11 +35,11 @@ body.page-favorites::after {
 .page-favorites .hero-background { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .page-favorites .page-hero-inner { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: flex-end; gap: 4rem; }
 .page-favorites .hero-text { flex: 1; max-width: 48em; }
-.page-favorites .hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.28); display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
+.page-favorites .hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.66); display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
 .page-favorites .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
 .page-favorites .hero-text h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 700; letter-spacing: -2px; line-height: 1.0; color: var(--white); margin-bottom: 2rem; }
-.page-favorites .hero-muted { display: block; color: rgba(255,255,255,0.22); font-weight: 300; letter-spacing: -1px; }
-.page-favorites .hero-text > p { font-size: 1rem; color: rgba(255,255,255,0.38); max-width: 420px; line-height: 1.85; margin-bottom: 0; }
+.page-favorites .hero-muted { display: block; color: rgba(255,255,255,0.55); font-weight: 300; letter-spacing: -1px; }
+.page-favorites .hero-text > p { font-size: 1rem; color: rgba(255,255,255,0.62); max-width: 420px; line-height: 1.85; margin-bottom: 0; }
 .page-favorites .hero-data { display: flex; flex-direction: column; padding-left: 3rem; border-left: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; min-width: 220px; }
 .page-favorites .data-row { display: flex; align-items: baseline; justify-content: space-between; gap: 2rem; padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
 .page-favorites .data-row:last-child { border-bottom: none; padding-bottom: 0; }

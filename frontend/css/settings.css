@@ -34,11 +34,11 @@ body.page-settings::after {
 .page-settings .hero-background { position: absolute; inset: 0; background: transparent; z-index: 0; pointer-events: none; }
 .page-settings .page-hero-inner { position: relative; z-index: 1; display: flex; justify-content: center; align-items: center; }
 .page-settings .hero-text { text-align: center; max-width: 700px; }
-.page-settings .hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.28); display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 2.5rem; }
+.page-settings .hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.66); display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 2.5rem; }
 .page-settings .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
 .page-settings .hero-text h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 700; letter-spacing: -1.5px; line-height: 1.05; color: var(--white); margin-bottom: 1.5rem; }
-.page-settings .hero-muted { display: block; color: rgba(255,255,255,0.22); font-weight: 300; letter-spacing: -1px; }
-.page-settings .hero-text p { font-size: 1rem; color: rgba(255,255,255,0.38); line-height: 1.85; max-width: 30em; margin-inline: auto; }
+.page-settings .hero-muted { display: block; color: rgba(255,255,255,0.55); font-weight: 300; letter-spacing: -1px; }
+.page-settings .hero-text p { font-size: 1rem; color: rgba(255,255,255,0.62); line-height: 1.85; max-width: 30em; margin-inline: auto; }
 
 /* SETTINGS LAYOUT */
 .page-settings .settings-page { flex: 1; display: flex; flex-direction: column; }

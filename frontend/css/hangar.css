@@ -62,11 +62,11 @@ body.page-hangar::after {
 /* MODERN HERO LAYOUT */
 .page-hangar .page-hero-inner { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: flex-end; gap: 4rem; }
 .page-hangar .hero-text { flex: 1; max-width: 48em; }
-.page-hangar .hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.28); display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
+.page-hangar .hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.66); display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
 .page-hangar .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
 .page-hangar .hero-text h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 700; letter-spacing: -2px; line-height: 1.0; color: var(--white); margin-bottom: 2rem; }
-.page-hangar .hero-muted { display: block; color: rgba(255,255,255,0.22); font-weight: 300; letter-spacing: -1px; }
-.page-hangar .hero-text > p { font-size: 1rem; color: rgba(255,255,255,0.38); max-width: 420px; line-height: 1.85; margin-bottom: 0; }
+.page-hangar .hero-muted { display: block; color: rgba(255,255,255,0.55); font-weight: 300; letter-spacing: -1px; }
+.page-hangar .hero-text > p { font-size: 1rem; color: rgba(255,255,255,0.62); max-width: 420px; line-height: 1.85; margin-bottom: 0; }
 .page-hangar .hero-data { display: flex; flex-direction: column; padding-left: 3rem; border-left: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; min-width: 220px; }
 .page-hangar .data-row { display: flex; align-items: baseline; justify-content: space-between; gap: 2rem; padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
 .page-hangar .data-row:last-child { border-bottom: none; padding-bottom: 0; }
@@ -176,7 +176,7 @@ body.page-hangar::after {
 .page-hangar .filter-option.selected { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
 
 /* Results count */
-.page-hangar .results-info { font-size: 0.9rem; color: rgba(255,255,255,0.35); font-weight: 500; margin-bottom: 1.5rem; }
+.page-hangar .results-info { font-size: 0.9rem; color: rgba(255,255,255,0.66); font-weight: 500; margin-bottom: 1.5rem; }
 
 /* ======================================================================
    AIRCRAFT GRID — 3 colonnes fixes, même largeur que favorites

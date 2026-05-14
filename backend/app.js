@@ -137,7 +137,7 @@ app.use(observability.accessLog);
 // Store Redis automatique si REDIS_URL est défini (multi-instances / scaling).
 // Sinon fallback sur le store mémoire (instance unique, dev).
 // -----------------------------------------------------------------------------
-const rateLimit = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 
 // Store mémoire par défaut (instance unique).
 // Si REDIS_URL est défini, app.initRedis() (appelé depuis server.js avant listen)
@@ -155,11 +155,13 @@ const LIMITER_DEFS = [
 function buildLimiter({ max, msg }, store) {
   return rateLimit({
     windowMs: 15 * 60 * 1000,
-    max,
+    // v8 a renommé `max` → `limit` ; on garde un alias pour la lisibilité.
+    limit: max,
     message: { message: msg },
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req) => req.ip,
+    // ipKeyGenerator normalise les IPv6 (sinon v8 bloque au boot : ERR_ERL_KEY_GEN_IPV6).
+    keyGenerator: (req) => ipKeyGenerator(req.ip),
     skip: () => process.env.NODE_ENV === 'test',
     ...(store ? { store } : {}),
   });
@@ -302,7 +304,11 @@ const STATIC_OPTS = {
     }
   },
 };
-app.use(express.static(path.join(__dirname, '../frontend/'), STATIC_OPTS));
+// `index: false` : empêche express.static de servir frontend/index.html auto pour GET /
+// (sans ça, le auto-index court-circuiterait app.get('/') et donc injectCspNonce(),
+// laissant tout inline <style> sans nonce — CSP bloquerait). Notre route explicite
+// app.get('/') passe par sendCachedHtml() qui nonce les <style> à l'exécution.
+app.use(express.static(path.join(__dirname, '../frontend/'), { ...STATIC_OPTS, index: false }));
 app.use('/css', express.static(path.join(__dirname, '../frontend/css'), STATIC_OPTS));
 app.use('/js', express.static(path.join(__dirname, '../frontend/js'), STATIC_OPTS));
 
@@ -457,19 +463,36 @@ const fsPromises = fs.promises;
 
 // Pré-construction de la liste des pages HTML valides au démarrage (évite fs à chaque requête)
 const frontendDir = path.join(__dirname, '../frontend');
+// Pages physiques mais NON exposées en URL propre (fragments chargés par JS, fichiers de vérif tiers).
+// Le fichier .html reste accessible via express.static (consommé par cookies.js fetch), mais
+// l'URL propre /cookie-consent renvoie 404 — évite l'indexation d'un partial sans <html lang>.
+const HIDDEN_CLEAN_URLS = new Set(['/cookie-consent']);
 const validPages = new Set();
 try {
   fs.readdirSync(frontendDir).forEach((file) => {
     if (file.endsWith('.html')) {
-      validPages.add('/' + file.slice(0, -5)); // /hangar, /details, /a-propos, etc.
+      const cleanUrl = '/' + file.slice(0, -5); // /hangar, /details, /a-propos, etc.
+      if (!HIDDEN_CLEAN_URLS.has(cleanUrl)) validPages.add(cleanUrl);
     }
   });
 } catch { /* Silencieux si le dossier n'existe pas encore (tests) */ }
 
-app.get('*', async (req, res, next) => {
+// Express 5 / path-to-regexp v6 rejette le wildcard '*' tel quel.
+// app.use((req,res,next)=>...) en dernière position joue le même rôle de catch-all
+// HTML pour les URLs propres sans extension.
+app.use(async (req, res, next) => {
+  if (req.method !== 'GET') return next();
   // Ignorer les requêtes API et les fichiers avec extension
   if (req.path.startsWith('/api/') || path.extname(req.path)) {
     return next();
+  }
+
+  // URLs propres masquées (fragment cookie-consent etc.) : 404 immédiat sans
+  // tomber sur le fichier .html, qui reste atteignable uniquement via /xxx.html.
+  if (HIDDEN_CLEAN_URLS.has(req.path)) {
+    const notFoundFile = path.join(frontendDir, '404.html');
+    res.status(404);
+    return sendCachedHtml(res, notFoundFile);
   }
 
   // Vérification rapide via le Set pré-construit
