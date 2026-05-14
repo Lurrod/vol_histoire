@@ -6,7 +6,7 @@
     "start": "node server.js",
     "test": "jest --config jest.config.json --testPathIgnorePatterns=load",
     "test:coverage": "jest --config jest.config.json --coverage --testPathIgnorePatterns=load",
-    "test:load": "jest --config jest.config.json --testPathPattern=load",
+    "test:load": "jest --config jest.config.json --testPathPatterns=load",
     "build:css": "node ../scripts/build-css.js",
     "build:icons": "python ../scripts/build-icons.py"
   },

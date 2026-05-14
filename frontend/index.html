@@ -44,11 +44,9 @@
   <!-- VH-P2 : critical CSS inliné — anti-FOUC + layout above-the-fold AVANT que les bundles ne soient parsés.
        Le nonce CSP est injecté à l'exécution par backend/app.js injectCspNonce() pour rester strict CSP L3. -->
   <style>
-    html, body { background: #080c14; color: #f0ede8; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; margin: 0; }
-    body { min-height: 100vh; overflow-x: hidden; }
+    body { background: #0D0D0D; color: #f0ede8; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; overflow-x: hidden; }
     .skip-link { position: absolute; left: -9999px; }
     .skip-link:focus { left: 1rem; top: 1rem; z-index: 9999; }
-    .header { position: fixed; top: 0; left: 0; right: 0; height: 70px; z-index: 100; }
     .page-home .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
   </style>
   <script type="application/ld+json">
