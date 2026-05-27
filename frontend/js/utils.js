@@ -291,7 +291,30 @@ function clearFieldError(inputEl) {
   }
 }
 
+/**
+ * transitions-dev (number pop-in) — réécrit el avec des <span.t-digit>
+ * (les 2 derniers caractères décalés via data-stagger) puis rejoue
+ * l'animation d'entrée. prefers-reduced-motion géré par le guard CSS.
+ */
+function setNumberPopIn(el, value) {
+  if (!el) return;
+  const chars = String(value).split('');
+  el.classList.add('t-digit-group');
+  el.classList.remove('is-animating');
+  el.replaceChildren();
+  chars.forEach((ch, i) => {
+    const span = document.createElement('span');
+    span.className = 't-digit';
+    span.textContent = ch;
+    if (i === chars.length - 2) span.dataset.stagger = '1';
+    else if (i === chars.length - 1) span.dataset.stagger = '2';
+    el.appendChild(span);
+  });
+  void el.offsetHeight; // reflow → rejoue l'animation
+  el.classList.add('is-animating');
+}
+
 // Export conditionnel pour les tests unitaires (Node.js)
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setupPasswordToggle, isValidEmail, calculatePasswordStrength, setFieldError, clearFieldError };
+  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setNumberPopIn, setupPasswordToggle, isValidEmail, calculatePasswordStrength, setFieldError, clearFieldError };
 }

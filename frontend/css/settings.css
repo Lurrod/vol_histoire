@@ -258,8 +258,8 @@ body.page-settings::after {
 .page-settings .logout-modal.show { opacity: 1; visibility: visible; }
 .page-settings .logout-modal.hidden { display: none; }
 .page-settings .logout-modal-backdrop { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); }
-.page-settings .logout-modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 2rem 2.5rem; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.5); transform: scale(0.9) translateY(20px); transition: transform 0.3s var(--ease); }
-.page-settings .logout-modal.show .logout-modal-container { transform: scale(1) translateY(0); }
+.page-settings .logout-modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 2rem 2.5rem; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.5); transform: scale(var(--modal-scale)); transition: transform var(--modal-close-dur) var(--modal-ease); }
+.page-settings .logout-modal.show .logout-modal-container { transform: scale(1); transition: transform var(--modal-open-dur) var(--modal-ease); }
 .page-settings .logout-modal-icon { width: 60px; height: 60px; margin: 0 auto 1.25rem; border-radius: 50%; background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.2); display: flex; align-items: center; justify-content: center; }
 .page-settings .logout-modal-icon i, .page-settings .logout-modal-icon .icon { font-size: 1.5rem; color: var(--accent); }
 .page-settings .logout-modal-title { font-size: 1.25rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }

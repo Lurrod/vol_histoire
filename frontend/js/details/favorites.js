@@ -16,12 +16,27 @@
   function updateFavoriteButton(state) {
     const btn = document.getElementById('favorite-btn');
     if (!btn) return;
+    // transitions-dev (icon swap) : les deux cœurs (plein / contour) restent
+    // empilés dans le DOM ; on bascule data-state pour le cross-fade au lieu
+    // de reconstruire l'innerHTML (ce qui tuerait la transition).
+    let swap = btn.querySelector('.t-icon-swap');
+    let label = btn.querySelector('.fav-label');
+    if (!swap) {
+      btn.innerHTML = '<span class="t-icon-swap" data-state="b" aria-hidden="true">'
+        + '<i class="t-icon fas fa-heart" data-icon="a"></i>'
+        + '<i class="t-icon far fa-heart" data-icon="b"></i>'
+        + '</span><span class="fav-label"></span>';
+      swap = btn.querySelector('.t-icon-swap');
+      label = btn.querySelector('.fav-label');
+    }
     if (state.isFavorite) {
       btn.classList.add('favorited');
-      btn.innerHTML = `<i class="fas fa-heart"></i><span>${i18n.t('details.remove_favorite')}</span>`;
+      swap.setAttribute('data-state', 'a');
+      label.textContent = i18n.t('details.remove_favorite');
     } else {
       btn.classList.remove('favorited');
-      btn.innerHTML = `<i class="far fa-heart"></i><span>${i18n.t('details.add_favorite')}</span>`;
+      swap.setAttribute('data-state', 'b');
+      label.textContent = i18n.t('details.add_favorite');
     }
   }
 

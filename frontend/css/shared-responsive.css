@@ -12,7 +12,10 @@
     }
 
     .nav-links {
-      display: none;
+      /* transitions-dev (panel reveal) : panneau fixe qui descend sous le
+         header avec fondu + flou. visibility (et non display) pour préserver
+         le retrait du focus tout en autorisant la transition d'ouverture. */
+      display: flex;
       position: fixed;
       top: var(--header-h);
       inset-inline: 0;
@@ -24,10 +27,30 @@
       max-height: calc(100vh - var(--header-h));
       overflow-y: auto;
       z-index: var(--z-header);
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-16px);
+      filter: blur(var(--panel-blur));
+      pointer-events: none;
+      will-change: transform, opacity, filter;
+      transition:
+        opacity    var(--panel-close-dur) var(--panel-ease),
+        transform  var(--panel-close-dur) var(--panel-ease),
+        filter     var(--panel-close-dur) var(--panel-ease),
+        visibility 0s linear var(--panel-close-dur);
     }
 
     .nav-links.show {
-      display: flex;
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+      pointer-events: auto;
+      transition:
+        opacity    var(--panel-open-dur) var(--panel-ease),
+        transform  var(--panel-open-dur) var(--panel-ease),
+        filter     var(--panel-open-dur) var(--panel-ease),
+        visibility 0s linear 0s;
     }
 
     .nav-links li {

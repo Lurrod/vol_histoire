@@ -1,3 +1,4 @@
+/* global setNumberPopIn */
 document.addEventListener("DOMContentLoaded", async () => {
   /* =========================================================================
      AUTH INITIALIZATION
@@ -22,15 +23,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!res.ok) throw new Error('API stats error');
       const data = await res.json();
 
-      if (elAirplanes   && Number.isFinite(data.airplanes))   animateNumber(elAirplanes,   data.airplanes);
-      if (elCountries   && Number.isFinite(data.countries))   animateNumber(elCountries,   data.countries);
-      if (elGenerations && Number.isFinite(data.generations)) animateNumber(elGenerations, data.generations);
+      if (elAirplanes   && Number.isFinite(data.airplanes))   setNumberPopIn(elAirplanes,   data.airplanes);
+      if (elCountries   && Number.isFinite(data.countries))   setNumberPopIn(elCountries,   data.countries);
+      if (elGenerations && Number.isFinite(data.generations)) setNumberPopIn(elGenerations, data.generations);
     } catch {
       // Stats API indisponible — on conserve les valeurs hardcodées du HTML SSR.
     }
   }
 
-  /* Provided by utils.js — animateNumber */
+  /* Provided by utils.js — setNumberPopIn (number pop-in) / animateNumber */
 
   /* =========================================================================
      SCROLL ANIMATIONS (AOS-like)
