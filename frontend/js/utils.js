@@ -258,6 +258,21 @@ function setFieldError(inputEl, message) {
   }
 
   errEl.textContent = message;
+
+  // transitions-dev (error state shake) : rejoue le shake depuis une base
+  // propre (retrait → reflow → ré-ajout). Les durées sont lues sur les
+  // tokens CSS (--shake-dur-a/-b) pour rester synchronisées. Le respect de
+  // prefers-reduced-motion est assuré par le guard CSS de .is-shaking.
+  inputEl.classList.remove('is-shaking');
+  void inputEl.offsetWidth; // force reflow
+  inputEl.classList.add('is-shaking');
+  const cs = window.getComputedStyle(document.documentElement);
+  const ms = (name, fb) => {
+    const v = parseFloat(cs.getPropertyValue(name));
+    return Number.isFinite(v) ? v : fb;
+  };
+  const shakeMs = ms('--shake-dur-a', 80) * 2 + ms('--shake-dur-b', 60) * 2;
+  setTimeout(() => inputEl.classList.remove('is-shaking'), shakeMs + 20);
 }
 
 /**
@@ -266,6 +281,7 @@ function setFieldError(inputEl, message) {
 function clearFieldError(inputEl) {
   if (!inputEl) return;
   inputEl.removeAttribute('aria-invalid');
+  inputEl.classList.remove('is-shaking');
   const errorId = inputEl.getAttribute('aria-describedby');
   if (errorId) {
     const errEl = document.getElementById(errorId);

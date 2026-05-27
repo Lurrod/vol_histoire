@@ -310,7 +310,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 
 .page-login .form-slide {
   display: none;
-  animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideIn 0.5s var(--ease);
 }
 .page-login .form-slide.active {
   display: block;
@@ -426,7 +426,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   height: 2px;
   width: 0;
   background: linear-gradient(90deg, var(--hud-cyan), var(--secondary));
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.4s var(--ease);
   z-index: 1;
 }
 .page-login .form-group:focus-within .input-line, .page-login .password-wrapper:focus-within + .input-line {

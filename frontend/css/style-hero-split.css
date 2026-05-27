@@ -244,8 +244,8 @@
   display: block;
   filter: blur(18px) brightness(0.55) contrast(1.1) saturate(0.7);
   transform: scale(1.08); /* compense la zone floue qui dépasse les bords */
-  transition: filter 0.65s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: filter 0.65s var(--ease),
+              transform 0.65s var(--ease);
 }
 .page-home .hero-quiz-card.is-revealed .hero-quiz-image {
   filter: blur(0) brightness(1) contrast(1) saturate(1);

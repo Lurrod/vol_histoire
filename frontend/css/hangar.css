@@ -822,7 +822,7 @@ body.page-hangar::after {
 .page-hangar .cmp-bar-fill {
   height: 100%;
   border-radius: 2px;
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.6s var(--ease);
 }
 .page-hangar .cmp-cell-perf.cmp-best .cmp-bar-fill {
   box-shadow: 0 0 6px rgba(200,169,110,0.3);

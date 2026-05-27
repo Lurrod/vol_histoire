@@ -258,7 +258,7 @@ body.page-settings::after {
 .page-settings .logout-modal.show { opacity: 1; visibility: visible; }
 .page-settings .logout-modal.hidden { display: none; }
 .page-settings .logout-modal-backdrop { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); }
-.page-settings .logout-modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 2rem 2.5rem; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.5); transform: scale(0.9) translateY(20px); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.page-settings .logout-modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 2rem 2.5rem; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 24px 64px rgba(0,0,0,0.5); transform: scale(0.9) translateY(20px); transition: transform 0.3s var(--ease); }
 .page-settings .logout-modal.show .logout-modal-container { transform: scale(1) translateY(0); }
 .page-settings .logout-modal-icon { width: 60px; height: 60px; margin: 0 auto 1.25rem; border-radius: 50%; background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.2); display: flex; align-items: center; justify-content: center; }
 .page-settings .logout-modal-icon i, .page-settings .logout-modal-icon .icon { font-size: 1.5rem; color: var(--accent); }
@@ -468,7 +468,7 @@ body.page-settings::after {
 .page-settings .db-bar-row { display: flex; align-items: center; gap: 0.75rem; }
 .page-settings .db-bar-label { font-size: 0.82rem; color: rgba(255,255,255,0.7); min-width: 90px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .page-settings .db-bar-track { flex: 1; height: 6px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
-.page-settings .db-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, rgba(200,169,110,0.5), #C8A96E); border-radius: 3px; transition: width 0.9s cubic-bezier(0.4,0,0.2,1); }
+.page-settings .db-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, rgba(200,169,110,0.5), #C8A96E); border-radius: 3px; transition: width 0.9s var(--ease); }
 .page-settings .db-bar-count { font-size: 0.78rem; font-weight: 700; color: var(--hud-cyan, #C8A96E); min-width: 1.5rem; text-align: right; font-family: 'Barlow Condensed', sans-serif; }
 
 /* Empty state */

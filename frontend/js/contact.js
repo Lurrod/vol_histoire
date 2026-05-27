@@ -60,6 +60,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (response.ok) {
         successMsg.classList.add('visible');
+        // transitions-dev (success check) : l'élément est désormais visible,
+        // on mesure le tracé puis on rejoue le stroke-draw via data-state.
+        const successCheck = successMsg.querySelector('.t-success-check');
+        if (successCheck) {
+          const checkPath = successCheck.querySelector('svg path');
+          if (checkPath && typeof checkPath.getTotalLength === 'function') {
+            const len = Math.ceil(checkPath.getTotalLength()) || 32;
+            checkPath.style.strokeDasharray = String(len);
+            checkPath.style.strokeDashoffset = String(len);
+          }
+          successCheck.setAttribute('data-state', 'out');
+          void successCheck.offsetWidth; // reflow → rejoue le tracé
+          successCheck.setAttribute('data-state', 'in');
+        }
         form.reset();
         showToast(i18n.t('contact.form_success'), 'success');
       } else if (response.status === 429) {
