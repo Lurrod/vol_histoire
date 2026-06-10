@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ARIA tablist controls (pattern WAI-ARIA APG)
   const tabLogin = document.getElementById('tab-login');
   const tabRegister = document.getElementById('tab-register');
+  const tabPill = document.querySelector('.form-tab-pill');
 
   // Check required elements
   if (!loginForm || !registerForm || !switchToRegister || !switchToLogin) {
@@ -87,6 +88,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Activation automatique : la tab focalisée devient active immédiatement.
     const tabs = [tabLogin, tabRegister].filter(Boolean);
     tabs.forEach(tab => tab.addEventListener('keydown', (e) => onTabKeydown(e, tabs)));
+
+    // Position initiale du pill (sans animation) + recalage au resize.
+    const activeTab = () => tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0];
+    requestAnimationFrame(() => movePill(activeTab(), false));
+    window.addEventListener('resize', () => movePill(activeTab(), false));
   }
 
   function onTabKeydown(e, tabs) {
@@ -101,6 +107,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     e.preventDefault();
     tabs[next].focus();
     activateTab(tabs[next], { focusInput: false });
+  }
+
+  // Déplace le pill glissant (transitions-dev 16) sous l'onglet actif.
+  // `animate=false` suspend la transition (snap sans animation) pour le
+  // premier rendu et les resize, sinon le pill arriverait depuis width:0.
+  function movePill(tab, animate) {
+    if (!tabPill || !tab) return;
+    if (animate) {
+      tabPill.style.transform = `translateX(${tab.offsetLeft}px)`;
+      tabPill.style.width = `${tab.offsetWidth}px`;
+    } else {
+      const prev = tabPill.style.transition;
+      tabPill.style.transition = 'none';
+      tabPill.style.transform = `translateX(${tab.offsetLeft}px)`;
+      tabPill.style.width = `${tab.offsetWidth}px`;
+      void tabPill.offsetWidth;
+      tabPill.style.transition = prev;
+    }
   }
 
   function activateTab(tab, { focusInput } = { focusInput: false }) {
@@ -119,6 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     tab.setAttribute('aria-selected', 'true');
     tab.setAttribute('tabindex', '0');
     tab.classList.add('active');
+    movePill(tab, true);
 
     // Affiche le panneau correspondant (les autres sont masqués via CSS .active).
     // `inert` remplace le couple aria-hidden + tabindex : une seule propriété
