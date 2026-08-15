@@ -184,10 +184,6 @@
   --dropdown-pre-scale: 0.97;
   --dropdown-closing-scale: 0.99;
   --dropdown-ease: var(--ease);
-
-  /* Tabs sliding (transitions-dev 16) — pill glissant du segmented control login */
-  --tabs-dur: 220ms;
-  --tabs-ease: var(--ease);
   /* Modal open / close */
   --modal-open-dur: 250ms;
   --modal-close-dur: 150ms;
