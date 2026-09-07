@@ -152,6 +152,7 @@
             <button type="button" class="filter-btn" id="type-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="type-dropdown" aria-label="Type" data-i18n-aria="hangar.filter_type"><i class="fas fa-tags"></i><span data-i18n="hangar.filter_type">Type</span><i class="fas fa-chevron-down"></i></button>
             <div id="type-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_type">Filtrer par type</h3><button type="button" class="close-dropdown" data-dropdown="type" aria-label="Fermer le filtre type" data-i18n-aria="hangar.close_filter_type"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="type-options"></div></div>
           </div>
+          <button type="button" class="filter-btn" id="map-filter-btn" aria-expanded="false" aria-controls="nations-map-panel" aria-label="Carte des nations" data-i18n-aria="hangar.map_toggle"><i class="fas fa-map"></i><span data-i18n="hangar.map_toggle">Carte</span></button>
           <label for="sort-select" class="sr-only" data-i18n="hangar.sort_label">Trier les résultats</label>
           <select id="sort-select" class="sort-select">
             <option value="default" data-i18n="hangar.sort_default">Trier par défaut</option>
@@ -163,6 +164,24 @@
           </select>
           <button type="button" id="add-airplane-btn" class="btn btn-primary hidden"><i class="fas fa-plus"></i><span data-i18n="hangar.add_aircraft">Ajouter</span></button>
         </div>
+      </section>
+
+      <!-- Carte des nations : seconde vue du filtre pays, repliée par défaut.
+           Le SVG n'est chargé qu'à la première ouverture. -->
+      <section class="nations-map-panel hidden" id="nations-map-panel" aria-labelledby="map-filter-btn">
+        <div class="nations-map-frame">
+          <div class="nations-map-canvas" id="hangar-map-canvas"></div>
+          <div class="nations-map-tooltip" id="hangar-map-tooltip" role="status" aria-live="polite"></div>
+        </div>
+        <div class="nations-map-panel-footer">
+          <p class="nations-map-legend">
+            <span data-i18n="home.nations_map_legend_low">1 fiche</span>
+            <span class="nm-scale" aria-hidden="true"><i class="nm-swatch nm-tier-1"></i><i class="nm-swatch nm-tier-2"></i><i class="nm-swatch nm-tier-3"></i><i class="nm-swatch nm-tier-4"></i></span>
+            <span class="nations-map-legend-max">—</span>
+          </p>
+          <p class="nations-map-hint" data-i18n="hangar.map_hint">Cliquez un pays pour filtrer la collection. Les entités disparues sont figurées par leurs frontières actuelles.</p>
+        </div>
+        <p class="nations-map-status" role="status"></p>
       </section>
 
       <!-- Active filters tags -->

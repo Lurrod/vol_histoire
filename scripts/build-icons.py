@@ -38,6 +38,7 @@ fa-feather-pointed fa-scale-balanced fa-arrow-trend-up fa-location-crosshairs
 fa-arrow-up-wide-short fa-arrow-down-wide-short fa-user-tie fa-gears fa-cogs
 fa-bolt fa-rocket fa-fire fa-coins fa-flag fa-quote-right fa-diagram-project
 fa-arrow-up-right-from-square fa-bomb fa-binoculars
+fa-map fa-code-branch fa-award
 fa-facebook fa-twitter fa-instagram fa-youtube fa-github fa-linkedin fa-reddit
 fa-wikipedia-w
 """
@@ -169,8 +170,7 @@ JS_RUNTIME = r'''
     return null;
   }
 
-  // Liste des classes Font Awesome à NE PAS recopier sur le SVG cible
-  var FA_PREFIXES = ['fa-', 'fas', 'far', 'fab', 'fa '];
+  // Classes Font Awesome à NE PAS recopier sur le SVG cible
   function isFaClass(c) {
     if (c === 'fas' || c === 'far' || c === 'fab' || c === 'fa') return true;
     return c.indexOf('fa-') === 0;
@@ -183,7 +183,7 @@ JS_RUNTIME = r'''
       nodes = (root.matches && root.matches('i.fas, i.far, i.fab, i.fa, i[class*="fa-"]'))
         ? [root]
         : root.querySelectorAll('i.fas, i.far, i.fab, i.fa, i[class*="fa-"]');
-    } catch (e) { return; }
+    } catch { return; }
     for (var i = 0; i < nodes.length; i++) {
       var el = nodes[i];
       if (el.dataset && el.dataset.iconSwapped) continue;

@@ -304,6 +304,66 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     });
   }));
 
+  // ---------------------------------------------------------------------------
+  // Filiation : chaîne complète predecessor → … → appareil → … → successor.
+  //
+  // Les colonnes predecessor_id / successor_id ne portent qu'un maillon chacune ;
+  // la lignée entière (Ouragan → Mystère IV → … → Rafale) n'est reconstituable
+  // qu'en remontant la chaîne de proche en proche. Deux CTE récursives le font
+  // en une requête, avec deux garde-fous : profondeur bornée à MAX_LINEAGE_DEPTH
+  // et tableau `path` interdisant de repasser sur un id déjà visité (le graphe
+  // n'est pas garanti acyclique — rien en base n'empêche A → B → A).
+  // ---------------------------------------------------------------------------
+  const MAX_LINEAGE_DEPTH = 6;
+
+  router.get('/airplanes/:id/lineage', asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const result = await getPool().query(
+      `WITH RECURSIVE ancestors AS (
+         SELECT a.id, a.predecessor_id, 0 AS depth, ARRAY[a.id] AS path
+         FROM airplanes a WHERE a.id = $1
+         UNION ALL
+         SELECT p.id, p.predecessor_id, anc.depth - 1, anc.path || p.id
+         FROM ancestors anc
+         JOIN airplanes p ON p.id = anc.predecessor_id
+         WHERE anc.depth > -$2::int AND NOT (p.id = ANY(anc.path))
+       ),
+       descendants AS (
+         SELECT a.id, a.successor_id, 0 AS depth, ARRAY[a.id] AS path
+         FROM airplanes a WHERE a.id = $1
+         UNION ALL
+         SELECT s.id, s.successor_id, des.depth + 1, des.path || s.id
+         FROM descendants des
+         JOIN airplanes s ON s.id = des.successor_id
+         WHERE des.depth < $2::int AND NOT (s.id = ANY(des.path))
+       ),
+       chain AS (
+         SELECT id, MIN(depth) AS depth FROM (
+           SELECT id, depth FROM ancestors
+           UNION ALL
+           SELECT id, depth FROM descendants
+         ) u GROUP BY id
+       )
+       SELECT a.id, a.name, a.name_en, a.image_url, chain.depth,
+              c.code AS country_code,
+              EXTRACT(YEAR FROM COALESCE(a.date_operationel, a.date_first_fly))::int AS year
+       FROM chain
+       JOIN airplanes a ON a.id = chain.id
+       LEFT JOIN countries c ON a.country_id = c.id
+       ORDER BY chain.depth ASC`,
+      [id, MAX_LINEAGE_DEPTH]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Avion non trouvé' });
+    }
+
+    res.json({
+      chain: pickLangMany(result.rows, req.lang, ['name'], ['name']),
+      truncated: result.rows.length >= MAX_LINEAGE_DEPTH * 2 + 1,
+    });
+  }));
+
   router.get('/airplanes/:id/favorite', authorize([1, 2, 3]), asyncHandler(async (req, res) => {
     const { id } = req.params;
     const userId = req.user.id;
@@ -326,6 +386,24 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     );
     res.set('Cache-Control', REFERENTIALS_CACHE);
     res.json(pickLangMany(result.rows, req.lang, ['name'], ['name']));
+  }));
+
+  // Nations de conception + nombre de fiches — alimente la carte de l'accueil.
+  // `name` (FR canonique) est renvoyé en plus du nom traduit : c'est la valeur
+  // qu'attend le filtre `country` de GET /airplanes, qui compare sur countries.name.
+  router.get('/nations', asyncHandler(async (req, res) => {
+    const result = await getPool().query(
+      `SELECT c.code, c.name, c.name_en, COUNT(a.id)::int AS count
+       FROM countries c
+       JOIN airplanes a ON a.country_id = c.id
+       GROUP BY c.code, c.name, c.name_en
+       ORDER BY count DESC, c.name ASC`
+    );
+    const nameFr = result.rows.map((r) => r.name);
+    const rows = pickLangMany(result.rows, req.lang, ['name'], ['name'])
+      .map((row, i) => ({ ...row, name_fr: nameFr[i] }));
+    res.set('Cache-Control', REFERENTIALS_CACHE);
+    res.json(rows);
   }));
 
   router.get('/generations', asyncHandler(async (req, res) => {

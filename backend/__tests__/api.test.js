@@ -1536,6 +1536,41 @@ describe('Relations avions', () => {
     expect(res.body.armament[0].name).toBe('Missile MICA');
   });
 
+  test('GET /api/airplanes/:id/lineage — 200 (chaîne ordonnée par profondeur)', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [
+        { id: 7, name: 'Mystère IV', name_en: null, image_url: '/a.jpg', depth: -1, country_code: 'FRA', year: 1955 },
+        { id: 8, name: 'Mirage III', name_en: null, image_url: '/b.jpg', depth: 0, country_code: 'FRA', year: 1961 },
+        { id: 9, name: 'Mirage F1', name_en: null, image_url: '/c.jpg', depth: 1, country_code: 'FRA', year: 1973 },
+      ],
+    });
+
+    const res = await request(app).get('/api/airplanes/8/lineage');
+
+    expect(res.status).toBe(200);
+    expect(res.body.chain).toHaveLength(3);
+    expect(res.body.chain.map((a) => a.depth)).toEqual([-1, 0, 1]);
+    expect(res.body.chain[1].name).toBe('Mirage III');
+    expect(res.body.truncated).toBe(false);
+  });
+
+  test('GET /api/airplanes/:id/lineage — 404 si l\'appareil n\'existe pas', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).get('/api/airplanes/9999/lineage');
+    expect(res.status).toBe(404);
+  });
+
+  test('GET /api/airplanes/:id/lineage — 400 ID non numérique', async () => {
+    const res = await request(app).get('/api/airplanes/abc/lineage');
+    expect(res.status).toBe(400);
+  });
+
+  test('GET /api/airplanes/:id/lineage — 500 erreur BDD', async () => {
+    mockPool.query.mockRejectedValueOnce(new Error('DB fail'));
+    const res = await request(app).get('/api/airplanes/1/lineage');
+    expect(res.status).toBe(500);
+  });
+
   test('GET /api/airplanes/:id/related — 500 erreur BDD', async () => {
     mockPool.query.mockRejectedValueOnce(new Error('DB error'));
 
@@ -1558,6 +1593,30 @@ describe('Référentiels', () => {
     const res = await request(app).get('/api/countries');
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(2);
+  });
+
+  test('GET /api/nations — 200 (code, comptage, nom FR canonique)', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [
+        { code: 'USA', name: 'États-Unis', name_en: 'United States', count: 120 },
+        { code: 'FRA', name: 'France', name_en: 'France', count: 42 },
+      ],
+    });
+    const res = await request(app).get('/api/nations');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(2);
+    expect(res.body[0]).toMatchObject({ code: 'USA', count: 120, name_fr: 'États-Unis' });
+    expect(res.headers['cache-control']).toContain('max-age');
+  });
+
+  test('GET /api/nations?lang=en — nom traduit, name_fr préservé', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{ code: 'USA', name: 'États-Unis', name_en: 'United States', count: 120 }],
+    });
+    const res = await request(app).get('/api/nations?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.body[0].name).toBe('United States');
+    expect(res.body[0].name_fr).toBe('États-Unis');
   });
 
   test('GET /api/generations — 200', async () => {

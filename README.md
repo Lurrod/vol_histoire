@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.7.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.8.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/tests-539-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
@@ -30,7 +30,7 @@
 
 ## Fonctionnalites
 
-**Visiteurs** — Hangar avec filtres (nation, generation, type, tri), recherche full-text PostgreSQL, fiches detaillees enrichies (specs dimensionnelles, motorisation, production, appareils lies, liens externes Wikipedia / YouTube), frise chronologique interactive, statistiques globales, export PDF.
+**Visiteurs** — Hangar avec filtres (nation, generation, type, tri), recherche full-text PostgreSQL, fiches detaillees enrichies (specs dimensionnelles, motorisation, production, appareils lies, chaine de filiation complete, liens externes Wikipedia / YouTube), carte des nations de conception sur l'accueil et comme filtre du hangar, comparateur de trois appareils partageable par lien, frise chronologique interactive, statistiques globales, export PDF.
 
 **Membres** — Favoris personnels, preferences cookies, parametres de compte (nom, email, mot de passe, suppression).
 
@@ -262,6 +262,10 @@ node scripts/build-js.js
 
 # Icones locales (regenere icons.js depuis Font Awesome)
 python scripts/build-icons.py
+
+# Carte des nations (regenere le planisphere depuis Natural Earth 110m)
+# A relancer seulement apres l'ajout d'un pays dans db.sql
+node scripts/build-map.js
 ```
 
 Le site est accessible sur `http://localhost:8080`.
@@ -271,10 +275,10 @@ La documentation API Swagger est sur `http://localhost:3000/api/docs` (mode dev 
 
 ## Tests
 
-Le projet dispose de **521 tests backend** + **tests frontend et E2E** :
+Le projet dispose de **545 tests backend** + **tests frontend et E2E** :
 
 ```bash
-# Backend — 521 tests unitaires + integration
+# Backend — 545 tests unitaires + integration
 cd backend && npm test
 
 # Backend — couverture de code
@@ -283,19 +287,19 @@ npm run test:coverage
 # Backend — tests de charge (autocannon, 50-100 connexions)
 npm run test:load
 
-# Frontend — tests unitaires (utils.js)
+# Frontend — tests unitaires (utils, i18n, cookies, nav, render, comparateur, filiation, carte)
 cd frontend && npm test
 
-# E2E — Playwright (16 specs)
+# E2E — Playwright (18 specs)
 cd e2e && npx playwright test
 ```
 
 | Suite | Tests | Outil |
 |-------|-------|-------|
-| Backend unit/integration | 388 | Jest + Supertest |
-| Backend charge | 5 | autocannon |
-| Frontend unit | 20 | Jest + jsdom |
-| E2E | 49 | Playwright |
+| Backend unit/integration | 545 | Jest + Supertest |
+| Backend charge | inclus | autocannon |
+| Frontend unit | 128 | Jest + jsdom |
+| E2E | 117 | Playwright |
 
 ---
 

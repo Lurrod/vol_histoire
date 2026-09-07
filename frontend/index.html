@@ -217,6 +217,31 @@
     </div>
   </section>
 
+  <!-- CARTE DES NATIONS DE CONCEPTION -->
+  <section class="nations-map-section" id="nations-map-section" aria-labelledby="nations-map-title">
+    <div class="container">
+      <div class="section-header light">
+        <span class="section-badge"><i class="fas fa-globe"></i> <span data-i18n="home.nations_map_badge">Géographie</span></span>
+        <h2 id="nations-map-title" data-i18n="home.nations_map_title">Qui Construit Quoi</h2>
+        <p data-i18n="home.nations_map_desc">Chaque nation qui a conçu un appareil du catalogue depuis 1945. Cliquez sur un pays pour ouvrir le hangar filtré.</p>
+      </div>
+      <div class="nations-map-frame">
+        <div class="nations-map-canvas" id="nations-map-canvas"></div>
+        <div class="nations-map-tooltip" id="nations-map-tooltip" role="status" aria-live="polite"></div>
+      </div>
+      <div class="nations-map-footer">
+        <p class="nations-map-summary" id="nations-map-summary"></p>
+        <p class="nations-map-legend">
+          <span data-i18n="home.nations_map_legend_low">1 fiche</span>
+          <span class="nm-scale" aria-hidden="true"><i class="nm-swatch nm-tier-1"></i><i class="nm-swatch nm-tier-2"></i><i class="nm-swatch nm-tier-3"></i><i class="nm-swatch nm-tier-4"></i></span>
+          <span class="nations-map-legend-max" id="nations-map-legend-max">—</span>
+        </p>
+      </div>
+      <p class="nations-map-note" data-i18n="home.nations_map_note">Les entités disparues sont figurées par leurs frontières actuelles : la Tchécoslovaquie par la Tchéquie et la Slovaquie, la Yougoslavie par ses six républiques, l'URSS par la Russie.</p>
+      <p class="nations-map-status" id="nations-map-status" role="status"></p>
+    </div>
+  </section>
+
   <!-- ESPACE PERSONNEL -->
   <section class="personal-space">
     <div class="container">

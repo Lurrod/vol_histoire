@@ -209,7 +209,18 @@
     "timeline_badge": "Time Journey",
     "search_badge": "Advanced Search",
     "search_title_1": "Find the Aircraft",
-    "search_title_2": "You're Looking For"
+    "search_title_2": "You're Looking For",
+    "nations_map_badge": "Geography",
+    "nations_map_title": "Who Builds What",
+    "nations_map_desc": "Every nation that has designed an aircraft in the catalogue since 1945. Click a country to open the hangar filtered on it.",
+    "nations_map_aria": "Map of designing nations",
+    "nations_map_count_one": "{n} aircraft",
+    "nations_map_count_many": "{n} aircraft",
+    "nations_map_total_one": "{n} designing nation",
+    "nations_map_total_many": "{n} designing nations",
+    "nations_map_legend_low": "1 entry",
+    "nations_map_note": "Former states are shown with present-day borders: Czechoslovakia as Czechia and Slovakia, Yugoslavia as its six republics, the USSR as Russia.",
+    "nations_map_error": "The map could not be loaded. Filtering by nation is still available in the hangar."
   },
   "details": {
     "title": "Aircraft Details | Vol d'Histoire",
@@ -310,6 +321,12 @@
     "related_predecessor": "Predecessor",
     "related_successor": "Successor",
     "related_rival": "Direct rival",
+    "lineage": "Lineage",
+    "lineage_aria": "Lineage chain",
+    "lineage_note": "Chain of aircraft replaced then replacing one another in their operator's service. The year shown is the entry into service.",
+    "compare_add": "Compare",
+    "compare_added": "Added to the comparator",
+    "compare_removed": "Removed from the comparator",
     "source_wikipedia_fr": "Wikipedia (FR)",
     "source_wikipedia_en": "Wikipedia (EN)",
     "source_youtube": "YouTube video",
@@ -450,7 +467,11 @@
     "compare_verdict": "Verdict",
     "compare_fastest": "is the fastest",
     "compare_longest_range": "has the longest range",
-    "compare_lightest": "is the lightest"
+    "compare_lightest": "is the lightest",
+    "compare_share": "Copy link",
+    "compare_link_copied": "Comparison link copied",
+    "map_toggle": "Map",
+    "map_hint": "Click a country to filter the collection. Former states are shown with present-day borders."
   },
   "favorites": {
     "title": "My Favorites - Vol d'Histoire",
@@ -777,7 +798,8 @@
     "role_editor": "Editor",
     "km_h": "km/h",
     "km": "km",
-    "kg": "kg"
+    "kg": "kg",
+    "remove": "Remove"
   },
   "settings": {
     "title": "Account Settings | Vol d'Histoire",

@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     manufacturers: [],
     facets: null,
     view: localStorage.getItem('vh_hangar_view') || 'grid',
-    compareIds: JSON.parse(localStorage.getItem('vh_compare_ids') || '[]'),
+    // Miroir de VH.shared.compare, renseigné par VH.hangar.compare.init()
+    compareIds: [],
   };
 
   nav.updateAuthUI();
@@ -77,6 +78,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   VH.hangar.viewToggle.init(state);
   VH.hangar.compare.init(state);
   VH.hangar.mobileSheet.init(state);
+  VH.hangar.nationsMapFilter.init(state);
 
   // Raccourcis clavier
   document.addEventListener('keydown', (e) => {

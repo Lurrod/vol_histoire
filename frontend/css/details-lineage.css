@@ -1,0 +1,125 @@
+/* ======================================================================
+   FICHE — FILIATION
+   Bande horizontale des prédécesseurs et successeurs (js/details/lineage.js).
+   Fichier séparé : details.css est déjà à ~990 lignes.
+   ====================================================================== */
+
+/* La section est une cellule de `.content-layout`, en grid : sans min-width: 0,
+   sa taille minimale automatique est celle de son contenu, la bande ne peut
+   pas rétrécir et elle élargit toute la colonne — donc toutes les autres
+   sections avec elle. C'est ce qui faisait déborder la fiche sous 400 px. */
+.page-details .lineage-section { min-width: 0; }
+
+.page-details .lineage-chain {
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0 0.75rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+}
+
+.page-details .lineage-node {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+/* Connecteur entre deux maillons — rendu comme premier enfant flex du maillon
+   suivant, donc jamais de trait pendant après le dernier. */
+.page-details .lineage-node + .lineage-node::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(200, 169, 110, 0.12), rgba(200, 169, 110, 0.45));
+}
+
+.page-details .lineage-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 8.5rem;
+  padding: 0.6rem 0.9rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.page-details a.lineage-link:hover {
+  transform: translateY(-2px);
+  border-color: rgba(200, 169, 110, 0.35);
+  background: rgba(200, 169, 110, 0.04);
+}
+
+.page-details a.lineage-link:focus-visible {
+  outline: 2px solid var(--hud-cyan);
+  outline-offset: 2px;
+}
+
+.page-details .lineage-year {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--text-ghost);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-details .lineage-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-light);
+  line-height: 1.25;
+}
+
+/* Appareil courant — seul maillon non cliquable. */
+.page-details .lineage-node.is-current .lineage-link {
+  border-color: var(--border-cyan-md);
+  background: rgba(200, 169, 110, 0.07);
+  cursor: default;
+}
+
+.page-details .lineage-node.is-current .lineage-name { color: var(--hud-cyan); }
+.page-details .lineage-node.is-current .lineage-year { color: rgba(200, 169, 110, 0.75); }
+
+.page-details .lineage-note {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-ghost);
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-details .lineage-chain { scroll-behavior: auto; }
+  .page-details a.lineage-link:hover { transform: none; }
+}
+
+@media (max-width: 600px) {
+  .page-details .lineage-link { min-width: 7.5rem; padding: 0.5rem 0.7rem; }
+  .page-details .lineage-node + .lineage-node::before { width: 1.25rem; }
+}
+
+/* Impression (export PDF de la fiche) — la bande devient une liste qui passe
+   à la ligne, sans scroll ni couleurs de fond. */
+@media print {
+  .page-details .lineage-chain {
+    overflow: visible;
+    flex-wrap: wrap;
+    gap: 0.15cm;
+  }
+  .page-details .lineage-link {
+    background: #fafafa !important;
+    border: 1px solid #ddd !important;
+    min-width: 0;
+    padding: 0.15cm 0.25cm;
+  }
+  .page-details .lineage-name { color: #000 !important; font-size: 9pt; }
+  .page-details .lineage-year { color: #666 !important; font-size: 7.5pt; }
+  .page-details .lineage-node + .lineage-node::before { width: 0.3cm; background: #ccc !important; }
+  .page-details .lineage-note { color: #666 !important; font-size: 8pt; }
+}

@@ -41,9 +41,12 @@ const BUNDLES = {
   'home.min.js': [
     'script.js',
     'onboarding.js',
+    'nations-map.js',
   ],
 
   'hangar.min.js': [
+    'shared/compare.js',
+    'nations-map.js',
     'hangar/data.js',
     'hangar/filters.js',
     'hangar/render.js',
@@ -51,16 +54,20 @@ const BUNDLES = {
     'hangar/compare.js',
     'hangar/view-toggle.js',
     'hangar/mobile-sheet.js',
+    'hangar/nations-map-filter.js',
     'hangar.js',
   ],
 
   'details.min.js': [
+    'shared/compare.js',
     'details/markdown.js',
     'details/data.js',
     'details/render.js',
     'details/radar.js',
     'details/favorites.js',
     'details/admin.js',
+    'details/lineage.js',
+    'details/compare.js',
     'details/ui.js',
     'details.js',
   ],

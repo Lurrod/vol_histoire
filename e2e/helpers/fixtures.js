@@ -12,15 +12,20 @@ const test = base.test.extend({
   page: async ({ page }, use) => {
     await page.addInitScript(() => {
       try {
-        // Cookie consent : toujours forcé (le banner n'est pas testé en tant que tel)
+        // Cookie consent : toujours forcé (le banner n'est pas testé en tant que tel).
+        // La forme compte : cookies.js lit `parsed.preferences` (getConsent()), et
+        // des préférences posées à plat étaient donc ignorées — le bandeau
+        // s'affichait malgré ce fixture et recouvrait tout élément en bas d'écran.
         window.localStorage.setItem(
           'voldhistoire_cookie_consent',
           JSON.stringify({
-            essential: true,
-            analytics: false,
-            preference: false,
-            marketing: false,
-            timestamp: Date.now(),
+            preferences: {
+              essential: true,
+              analytics: false,
+              preference: false,
+              marketing: false,
+            },
+            timestamp: new Date().toISOString(),
             version: '1.0',
           })
         );

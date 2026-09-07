@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Setup des listeners (handlers attachés une seule fois)
   VH.details.favorites.setup(state);
+  VH.details.compare.setup(state);
   VH.details.admin.setup(state);
   VH.details.ui.setupShareBar(state);
   VH.details.ui.setupScrollProgress();
@@ -74,6 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (state.aircraftData) {
       VH.details.render.renderAircraftDetails(state);
       VH.details.data.loadRelatedData(state);
+      VH.details.lineage.load(state);
       VH.details.favorites.updateFavoriteButton(state);
     }
   });

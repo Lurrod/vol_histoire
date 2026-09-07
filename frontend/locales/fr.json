@@ -209,7 +209,18 @@
     "timeline_badge": "Voyage Temporel",
     "search_badge": "Recherche Avancée",
     "search_title_1": "Trouvez l'Appareil",
-    "search_title_2": "que Vous Cherchez"
+    "search_title_2": "que Vous Cherchez",
+    "nations_map_badge": "Géographie",
+    "nations_map_title": "Qui Construit Quoi",
+    "nations_map_desc": "Chaque nation qui a conçu un appareil du catalogue depuis 1945. Cliquez sur un pays pour ouvrir le hangar filtré.",
+    "nations_map_aria": "Carte des nations de conception",
+    "nations_map_count_one": "{n} appareil",
+    "nations_map_count_many": "{n} appareils",
+    "nations_map_total_one": "{n} nation de conception",
+    "nations_map_total_many": "{n} nations de conception",
+    "nations_map_legend_low": "1 fiche",
+    "nations_map_note": "Les entités disparues sont figurées par leurs frontières actuelles : la Tchécoslovaquie par la Tchéquie et la Slovaquie, la Yougoslavie par ses six républiques, l'URSS par la Russie.",
+    "nations_map_error": "La carte n'a pas pu être chargée. Le filtre par nation reste disponible dans le hangar."
   },
   "details": {
     "title": "Détails de l'Avion | Vol d'Histoire",
@@ -310,6 +321,12 @@
     "related_predecessor": "Prédécesseur",
     "related_successor": "Successeur",
     "related_rival": "Rival direct",
+    "lineage": "Filiation",
+    "lineage_aria": "Chaîne de filiation",
+    "lineage_note": "Chaîne des appareils remplacés puis remplaçants, dans le service de leur opérateur. L'année indiquée est celle de la mise en service.",
+    "compare_add": "Comparer",
+    "compare_added": "Ajouté au comparateur",
+    "compare_removed": "Retiré du comparateur",
     "source_wikipedia_fr": "Wikipedia (FR)",
     "source_wikipedia_en": "Wikipedia (EN)",
     "source_youtube": "Vidéo YouTube",
@@ -450,7 +467,11 @@
     "compare_verdict": "Verdict",
     "compare_fastest": "est le plus rapide",
     "compare_longest_range": "a la meilleure portée",
-    "compare_lightest": "est le plus léger"
+    "compare_lightest": "est le plus léger",
+    "compare_share": "Copier le lien",
+    "compare_link_copied": "Lien de comparaison copié",
+    "map_toggle": "Carte",
+    "map_hint": "Cliquez un pays pour filtrer la collection. Les entités disparues sont figurées par leurs frontières actuelles."
   },
   "favorites": {
     "title": "Mes Favoris - Vol d'Histoire",
@@ -777,7 +798,8 @@
     "role_editor": "Éditeur",
     "km_h": "km/h",
     "km": "km",
-    "kg": "kg"
+    "kg": "kg",
+    "remove": "Retirer"
   },
   "settings": {
     "title": "Paramètres du Compte | Vol d'Histoire",

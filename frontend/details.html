@@ -146,6 +146,7 @@
             </div>
             <div class="hero-actions">
               <button type="button" id="favorite-btn" class="btn btn-favorite"><i class="far fa-heart"></i><span data-i18n="details.add_favorite">Ajouter aux favoris</span></button>
+              <button type="button" id="compare-btn" class="btn btn-secondary" aria-pressed="false"><i class="fas fa-crosshairs"></i><span data-i18n="details.compare_add">Comparer</span></button>
               <button type="button" id="pdf-btn" class="btn btn-secondary"><i class="fas fa-file-pdf"></i><span data-i18n="details.export_pdf">Exporter en PDF</span></button>
               <button type="button" id="edit-btn" class="btn btn-secondary hidden"><i class="fas fa-edit"></i><span data-i18n="details.edit">Modifier</span></button>
               <button type="button" id="delete-btn" class="btn btn-danger hidden"><i class="fas fa-trash"></i><span data-i18n="details.delete">Supprimer</span></button>
@@ -257,6 +258,15 @@
         </div>
       </section>
       <section class="content-section wars-section"><div class="section-header"><h2><i class="fas fa-burst"></i> <span data-i18n="details.wars">Engagements Historiques</span></h2></div><div class="section-content"><div id="wars-list" class="wars-timeline"></div></div></section>
+
+      <!-- Strate 4 : Filiation (chaîne complète, /api/airplanes/:id/lineage) -->
+      <section class="content-section lineage-section hidden" id="lineage-section">
+        <div class="section-header"><h2><i class="fas fa-code-branch"></i> <span data-i18n="details.lineage">Filiation</span></h2></div>
+        <div class="section-content">
+          <ol class="lineage-chain" id="lineage-chain" tabindex="0" data-i18n-aria="details.lineage_aria" aria-label="Chaîne de filiation"></ol>
+          <p class="lineage-note" data-i18n="details.lineage_note">Chaîne des appareils remplacés puis remplaçants, dans le service de leur opérateur.</p>
+        </div>
+      </section>
 
       <!-- Strate 4 : Appareils liés (predecessor / successor / rival) -->
       <section class="content-section related-section hidden" id="related-aircraft-section">

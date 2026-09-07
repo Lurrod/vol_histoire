@@ -126,6 +126,10 @@
     if (state.sort && state.sort !== 'default') p.set('sort', state.sort);
     if (state.view === 'list')    p.set('view', 'list');
     if (state.currentPage > 1)    p.set('page', String(state.currentPage));
+    // La sélection du comparateur est écrite par VH.shared.compare : on la
+    // reporte telle quelle, sinon un changement de filtre l'effacerait de l'URL.
+    const compare = new URLSearchParams(location.search).get('compare');
+    if (compare) p.set('compare', compare);
     const qs = p.toString();
     const url = qs ? `${location.pathname}?${qs}` : location.pathname;
     try { history.replaceState(null, '', url); } catch { /* ignore */ }

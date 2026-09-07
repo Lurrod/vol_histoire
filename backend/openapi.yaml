@@ -23,7 +23,7 @@ info:
     Toutes les pages HTML sont servies avec un query string `?v=<version>`
     sur les assets pour bust le cache navigateur à chaque déploiement.
     Les statiques (CSS/JS/fonts) ont un `Cache-Control` long.
-  version: 4.7.0
+  version: 4.8.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -944,6 +944,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/RelatedData'
 
+  /airplanes/{id}/lineage:
+    get:
+      tags: [Airplanes]
+      summary: Chaîne de filiation complète (prédécesseurs et successeurs)
+      description: >
+        Remonte `predecessor_id` puis redescend `successor_id` de proche en
+        proche, jusqu'à 6 maillons de chaque côté. `depth` vaut 0 pour
+        l'appareil demandé, négatif pour ses prédécesseurs, positif pour ses
+        successeurs ; la chaîne est triée par `depth` croissant.
+      parameters:
+        - $ref: '#/components/parameters/AirplaneId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chain:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer, example: 68 }
+                        name: { type: string, example: "Mirage 2000" }
+                        image_url: { type: string, nullable: true }
+                        depth: { type: integer, example: -1 }
+                        country_code: { type: string, nullable: true, example: "FRA" }
+                        year: { type: integer, nullable: true, example: 1984 }
+                  truncated:
+                    type: boolean
+                    description: Vrai si la profondeur maximale a été atteinte des deux côtés.
+        '404':
+          description: Avion non trouvé
+
   /airplanes/{id}/favorite:
     get:
       tags: [Favorites]
@@ -977,6 +1012,28 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Country'
+
+  /nations:
+    get:
+      tags: [Referentials]
+      summary: Nations de conception et nombre de fiches
+      description: >
+        Alimente la carte de l'accueil. `name` suit la langue demandée ;
+        `name_fr` porte le nom canonique français, seule valeur acceptée par le
+        filtre `country` de `/airplanes`.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    code: { type: string, example: "FRA" }
+                    name: { type: string, example: "France" }
+                    name_fr: { type: string, example: "France" }
+                    count: { type: integer, example: 42 }
 
   /generations:
     get:

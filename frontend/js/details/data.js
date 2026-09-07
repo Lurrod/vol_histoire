@@ -40,6 +40,7 @@
       state.aircraftData = await response.json();
       VH.details.render.renderAircraftDetails(state);
       loadRelatedData(state);
+      VH.details.lineage.load(state);
       VH.details.favorites.checkFavoriteStatus(state);
     } catch {
       window.location.href = '/404';

@@ -1,0 +1,246 @@
+/* ======================================================================
+   ACCUEIL — CARTE DES NATIONS
+   Planisphère injecté par js/nations-map.js. Les paliers de teinte suivent
+   le nombre de fiches par nation ; la palette reste celle du site (champagne
+   sur charcoal), du plus discret au plus affirmé.
+   ====================================================================== */
+
+.nations-map-section {
+  padding: 5rem 0;
+  background: var(--night);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.nations-map-frame {
+  position: relative;
+  margin: 2.5rem auto 0;
+  max-width: 1000px;
+}
+
+.nations-map-canvas {
+  /* Réserve la place avant l'injection : évite le saut de mise en page
+     quand le SVG arrive (ratio du viewBox généré, 936 × 426). */
+  aspect-ratio: 936 / 426;
+  width: 100%;
+}
+
+.nations-map-canvas svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+/* Fond : le reste du monde, présent pour situer le regard. */
+.wm-land {
+  fill: rgba(255, 255, 255, 0.045);
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 0.4;
+  stroke-linejoin: round;
+}
+
+/* Pays du référentiel sans aucune fiche : traités comme du fond. */
+.wm-nation-empty {
+  fill: rgba(255, 255, 255, 0.045);
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 0.4;
+  pointer-events: none;
+}
+
+.wm-nation-active {
+  stroke: rgba(200, 169, 110, 0.55);
+  stroke-width: 0.5;
+  stroke-linejoin: round;
+  cursor: pointer;
+  transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+.wm-tier-1 { fill: rgba(200, 169, 110, 0.16); }
+.wm-tier-2 { fill: rgba(200, 169, 110, 0.32); }
+.wm-tier-3 { fill: rgba(200, 169, 110, 0.52); }
+.wm-tier-4 { fill: rgba(200, 169, 110, 0.78); }
+
+.wm-nation-active:hover,
+.wm-nation-active:focus {
+  fill: var(--hud-cyan);
+  stroke: var(--white);
+  stroke-width: 1;
+  outline: none;
+}
+
+/* Infobulle — positionnée par le JS via l'API DOM (la CSP interdit les
+   attributs style écrits dans le HTML). */
+.nations-map-tooltip {
+  position: absolute;
+  z-index: 4;
+  transform: translate(-50%, -115%);
+  padding: 0.4rem 0.7rem;
+  background: var(--night-mid);
+  border: 1px solid var(--border-cyan-md);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  line-height: 1.3;
+}
+
+.nations-map-tooltip.is-visible { opacity: 1; }
+.nations-map-tooltip strong { color: var(--text-primary); font-size: 0.85rem; }
+.nations-map-tooltip span { color: var(--hud-cyan); font-size: 0.72rem; }
+
+/* Pied : synthèse à gauche, échelle à droite. */
+.nations-map-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1000px;
+  margin: 1.5rem auto 0;
+}
+
+.nations-map-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.nm-total {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.nm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border-cyan);
+  border-radius: var(--r-full);
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.nm-chip:hover { border-color: var(--border-cyan-md); background: rgba(200, 169, 110, 0.06); }
+.nm-chip-count { color: var(--hud-cyan); font-variant-numeric: tabular-nums; font-weight: 600; }
+
+.nations-map-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--text-ghost);
+  font-variant-numeric: tabular-nums;
+}
+
+.nm-scale { display: inline-flex; gap: 3px; }
+
+.nm-swatch {
+  width: 22px;
+  height: 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(200, 169, 110, 0.35);
+}
+
+.nm-swatch.nm-tier-1 { background: rgba(200, 169, 110, 0.16); }
+.nm-swatch.nm-tier-2 { background: rgba(200, 169, 110, 0.32); }
+.nm-swatch.nm-tier-3 { background: rgba(200, 169, 110, 0.52); }
+.nm-swatch.nm-tier-4 { background: rgba(200, 169, 110, 0.78); }
+
+/* ── Panneau du hangar ───────────────────────────────────────────────
+   Même carte, montée en mode filtre sous la barre d'outils. */
+
+.nations-map-panel {
+  margin: 0 0 1.5rem;
+  padding: 1.25rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-cyan);
+  border-radius: var(--r-xl);
+}
+
+.nations-map-panel.hidden { display: none; }
+
+/* Le cadre est plafonné à 1000 px sur l'accueil ; ici on prend toute la
+   largeur de la barre d'outils — c'est ce qui rend les petites nations
+   cliquables, et c'est la raison d'être de ce second emplacement. */
+.nations-map-panel .nations-map-frame {
+  margin-top: 0;
+  max-width: none;
+}
+
+.nations-map-panel-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.nations-map-hint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-ghost);
+  flex: 1 1 20rem;
+}
+
+/* Sous 768 px, un planisphère de 350 px réduit l'Allemagne à 8 px : ce n'est
+   plus un contrôle. Le filtre pays passe par la feuille mobile, et le bouton
+   « Carte » disparaît plutôt que de promettre l'impossible. */
+@media (max-width: 47.99em) {
+  #map-filter-btn,
+  .nations-map-panel { display: none !important; }
+}
+
+/* Pays actuellement filtré : il reste plein, même après repli du panneau. */
+.wm-nation-active.is-selected {
+  fill: var(--hud-cyan);
+  stroke: var(--white);
+  stroke-width: 1;
+}
+
+.nations-map-note,
+.nations-map-status {
+  max-width: 1000px;
+  margin: 1rem auto 0;
+  font-size: 0.75rem;
+  color: var(--text-ghost);
+  line-height: 1.55;
+}
+
+.nations-map-status:empty { display: none; }
+.nations-map-status { color: var(--warning); }
+
+/* Échec de chargement : on retire le cadre vide, le texte suffit. */
+.nations-map-failed .nations-map-frame,
+.nations-map-failed .nations-map-footer { display: none; }
+
+@media (max-width: 48em) {
+  .nations-map-section { padding: 3.5rem 0; }
+  .nations-map-footer { justify-content: flex-start; }
+  .nations-map-legend { order: 2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wm-nation-active,
+  .nations-map-tooltip { transition: none; }
+}
+
+@media print {
+  .nations-map-section { display: none; }
+}
