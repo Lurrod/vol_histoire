@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'HAL Ajeet',
     'HAL Ajeet',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Chasseur'),
     'Retiré',
-    'Retired',
-    2810.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -94,3 +92,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nDéveloppement lancé en **1972** par HAL comme évolution indienne profonde du Folland Gnat Mk.1 produit sous licence depuis 1962. Principales améliorations : quatre points d''emport au lieu de deux, réservoirs de voilure accrus (18,2 % de capacité en plus), avionique modernisée. Premier vol le **5 mars 1975**.\n\n## Carrière opérationnelle\n**89 exemplaires produits** (79 de série + 10 conversions de Gnat). Le Gnat et l''Ajeet étaient réputés pour leur supériorité au combat tournoyant contre les F-86 Sabre et F-104 Starfighter pakistanais — le Gnat avait reçu le surnom de "Sabre Slayer" en 1965 et 1971. L''Ajeet a servi en première ligne jusqu''en 1991.\n\n## Héritage\nDernier chasseur de la lignée Folland Gnat / HAL Ajeet. A cristallisé l''expertise HAL avant le HF-24 Marut et plus tard le Tejas.',
   description_en = E'## Genesis\nDevelopment launched in **1972** by HAL as a deep Indian evolution of the Folland Gnat Mk.1 produced under licence since 1962. Main improvements: four hardpoints instead of two, increased wing tanks (18.2 % more capacity), upgraded avionics. First flight on **5 March 1975**.\n\n## Operational career\n**89 airframes built** (79 production + 10 Gnat conversions). The Gnat and Ajeet were renowned for their dogfight superiority against Pakistani F-86 Sabres and F-104 Starfighters — the Gnat earned the "Sabre Slayer" nickname in 1965 and 1971. The Ajeet served on the front line until 1991.\n\n## Legacy\nLast fighter of the Folland Gnat / HAL Ajeet lineage. Crystallised HAL expertise before the HF-24 Marut and later the Tejas.'
 WHERE name = 'HAL Ajeet';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'HAL Ajeet';

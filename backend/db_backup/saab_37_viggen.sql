@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Saab 37 Viggen',
     'Saab 37 Viggen',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'Retiré',
-    'Retired',
-    9500.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -103,3 +101,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nLancé en **1961** comme système d''arme national intégré (Système 37), le Viggen ("Foudre") est conçu pour opérer depuis des tronçons d''autoroute dans le cadre de la doctrine **Bas 90** de dispersion anti-nucléaire. Sa configuration **canard-delta** est une première mondiale sur un avion de série, et son inverseur de poussée réduit la distance d''atterrissage à moins de 500 m. Premier vol le **8 février 1967**, mise en service AJ 37 en **juin 1971**.\n\n## Carrière opérationnelle\n**329 exemplaires produits** en 4 sous-types (AJ/SF/SH/SK/JA). Aucune exportation — l''Autriche, le Danemark, l''Inde et la Finlande avaient été prospectés mais les restrictions américaines sur le moteur RM8 (dérivé JT8D) ont bloqué les contrats. Jamais engagé en combat. Retiré en **2005**, remplacé par le Gripen.\n\n## Héritage\nPremier avion suédois à embarquer un **ordinateur numérique de bord** (CK37, conçu par Saab et Singer-Kearfott). Premier lien de données tactique opérationnel au monde (1972). Référence technique pour le Gripen.',
   description_en = E'## Genesis\nLaunched in **1961** as an integrated national weapon system (System 37), the Viggen ("Thunderbolt") is designed to operate from motorway stretches under the **Bas 90** anti-nuclear dispersal doctrine. Its **canard-delta** configuration is a world first on a production aircraft, and its thrust reverser cuts landing distance below 500 m. First flight on **8 February 1967**, AJ 37 service entry in **June 1971**.\n\n## Operational career\n**329 airframes built** in 4 sub-types (AJ/SF/SH/SK/JA). No exports — Austria, Denmark, India and Finland were approached but US restrictions on the RM8 engine (JT8D-derivative) blocked the contracts. Never engaged in combat. Retired in **2005**, replaced by the Gripen.\n\n## Legacy\nFirst Swedish aircraft to carry a **digital on-board computer** (CK37, designed by Saab and Singer-Kearfott). World''s first operational tactical data link (1972). Technical reference for the Gripen.'
 WHERE name = 'Saab 37 Viggen';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Saab 37 Viggen';

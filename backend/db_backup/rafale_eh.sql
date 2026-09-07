@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Rafale EH',
     'Rafale EH',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'DAS'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    10300.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -102,3 +100,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nContrat **inter-gouvernemental** signé le **23 septembre 2016** entre Jean-Yves Le Drian et Manohar Parrikar : 36 Rafale pour **7,87 milliards d''euros** (coût flyaway ~120 M€, support/armement ~120 M€ chacun). Résultat du long programme MMRCA (2007-2015) où le Rafale avait gagné contre Typhoon mais où Paris avait renoncé au cadre export commercial au profit du G2G.\n\n## Carrière opérationnelle\n**36 appareils livrés** entre juillet 2020 et décembre 2022 — livraison la plus rapide de l''histoire Dassault pour un client export (un avion par mois en moyenne). Escadron 17 "Golden Arrows" à **Ambala** (face au Pakistan) et escadron 101 "Falcons" à **Hashimara** (face à la Chine). Engagé lors des tensions Ladakh (2020) — **premier vol opérationnel d''un Rafale de combat moderne contre la Chine**.\n\n## Héritage\nPremier chasseur de **4++ génération** de l''IAF, ouvre l''accès Meteor BVR (portée ~200 km no-escape zone) et SCALP cruise missile à l''arsenal indien. Commande supplémentaire de **26 Rafale Marine** en juillet 2024 pour porte-avions INS Vikrant (Tejas Navy Mk1 insuffisant). Exercices internationaux : Red Flag Alaska 2024, Garuda avec l''Armée de l''Air française.',
   description_en = E'## Genesis\n**Inter-governmental contract** signed on **23 September 2016** between Jean-Yves Le Drian and Manohar Parrikar: 36 Rafale for **€7.87 billion** (flyaway cost ~€120M, support/weapons ~€120M each). Result of the long MMRCA programme (2007-2015) where the Rafale had won against Typhoon but where Paris eventually gave up the commercial export framework in favour of G2G.\n\n## Operational career\n**36 aircraft delivered** between July 2020 and December 2022 — the fastest delivery in Dassault history for an export customer (one aircraft per month on average). 17th "Golden Arrows" squadron at **Ambala** (facing Pakistan) and 101st "Falcons" squadron at **Hashimara** (facing China). Deployed during the Ladakh tensions (2020) — **first operational flight of a modern Rafale combat aircraft against China**.\n\n## Legacy\nFirst **4++ generation** fighter of the IAF, opens Meteor BVR access (range ~200 km no-escape zone) and SCALP cruise missile to the Indian arsenal. Additional order of **26 Rafale Marine** in July 2024 for INS Vikrant carrier (Tejas Navy Mk1 insufficient). International exercises: Red Flag Alaska 2024, Garuda with the French Air Force.'
 WHERE name = 'Rafale EH';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'reduite' WHERE name = 'Rafale EH';

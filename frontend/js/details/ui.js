@@ -73,7 +73,7 @@
     const rn = document.getElementById('mini-range');
     if (rn) rn.innerHTML = a.max_range ? '<i class="fas fa-route"></i>' + a.max_range + ' km' : '';
     const wt = document.getElementById('mini-weight');
-    if (wt) wt.innerHTML = a.weight ? '<i class="fas fa-weight-hanging"></i>' + a.weight + ' kg' : '';
+    if (wt) wt.innerHTML = a.empty_weight ? '<i class="fas fa-weight-hanging"></i>' + a.empty_weight + ' kg' : '';
   }
 
   function setupMiniBarVisibility() {

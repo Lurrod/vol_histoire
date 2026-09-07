@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Mitsubishi F-1',
     'Mitsubishi F-1',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
     'Retiré',
-    'Retired',
-    6358.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -97,3 +95,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme FS-T2-Kai lancé en **1972** pour doter la JASDF d''un chasseur-bombardier **de conception entièrement japonaise** remplaçant les F-86F Sabre. Le F-1 est la première cellule de combat conçue au Japon depuis la capitulation de 1945. Premier vol le **3 juin 1975**, mise en service le **16 septembre 1977**.\n\n## Carrière opérationnelle\n**77 exemplaires produits** sur 10 ans. Spécialisé dans la **défense antinavire** avec le missile national **ASM-1** (Mitsubishi, 50 km portée) puis **ASM-2** (100 km, IR guidance). Mission principale : interdire à une flotte soviétique d''approcher les côtes japonaises depuis Misawa (Pacifique Nord) et Tsuiki (mer du Japon).\n\n## Héritage\nValidation de la chaîne industrielle militaire japonaise d''après-guerre. A ouvert la voie au **F-2** (1995) qui en partage la philosophie antinavire. Retiré en **2006** après 29 ans de service, remplacé par le Mitsubishi F-2.',
   description_en = E'## Genesis\nFS-T2-Kai programme launched in **1972** to give the JASDF a **fully Japanese-designed** fighter-bomber replacing F-86F Sabres. The F-1 is the first combat airframe designed in Japan since the 1945 surrender. First flight on **3 June 1975**, service entry on **16 September 1977**.\n\n## Operational career\n**77 airframes built** over 10 years. Specialised in **anti-ship defence** with the domestic **ASM-1** missile (Mitsubishi, 50 km range) then **ASM-2** (100 km, IR guidance). Main mission: deny a Soviet fleet approach to the Japanese coast from Misawa (North Pacific) and Tsuiki (Sea of Japan).\n\n## Legacy\nValidation of the post-war Japanese military industrial chain. Paved the way for the **F-2** (1995) which shares its anti-ship philosophy. Retired in **2006** after 29 years of service, replaced by the Mitsubishi F-2.'
 WHERE name = 'Mitsubishi F-1';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Mitsubishi F-1';

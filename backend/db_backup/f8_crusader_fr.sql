@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-8E (FN) Crusader',
     'F-8E (FN) Crusader',
@@ -37,12 +36,11 @@ INSERT INTO airplanes (
     '1964-11-01',
     1915.0,
     1730.0,
-    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM manufacturer WHERE code = 'VOU'),
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Intercepteur'),
     'Retiré',
-    NULL,
-    10990.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -99,3 +97,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nIntercepteur embarqué US Navy des années 1950, réputé pour sa vitesse (Mach 1.8) mais aussi pour sa difficulté de pilotage à basse vitesse lors des appontages. Dernier chasseur à usage du canon comme arme principale.\n\n## Carrière opérationnelle\nRôle majeur au Vietnam (surnom : « *MiG Master* » pour ses 19 victoires contre les MiG-17 et MiG-21). La **Marine nationale française** reçoit 42 F-8E (FN) en 1964-1965, opérant depuis les porte-avions Clemenceau et Foch pendant 35 ans.\n\n## Héritage\nRetraité par la US Navy en 1976, mais prolongé par la Marine française jusqu''en 1999. Dernier chasseur français à catapultage classique avant l''ère Rafale M.',
   description_en = E'## Genesis\n1950s US Navy carrier interceptor, famous for its speed (Mach 1.8) but also for its tricky low-speed handling during carrier landings. The last fighter to rely on the gun as its primary weapon.\n\n## Operational career\nMajor role in Vietnam (nicknamed "*MiG Master*" for its 19 victories against MiG-17s and MiG-21s). The **French Navy** received 42 F-8E (FN) in 1964-1965, operating from the Clemenceau and Foch carriers for 35 years.\n\n## Legacy\nRetired by the US Navy in 1976, but extended by the French Navy until 1999. The last French fighter using conventional catapult launch before the Rafale M era.'
 WHERE name = 'F-8E (FN) Crusader';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-8E (FN) Crusader';

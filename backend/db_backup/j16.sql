@@ -1,8 +1,3 @@
--- Insertion des nouveaux armements spécifiques au J-16
-INSERT INTO armement (name, description) VALUES
-('YJ-91', 'Missile anti-radar/antinavire, portée 120 km'),
-('KD-88', 'Missile air-sol de précision, guidage TV/IR, portée 180 km');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -24,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Shenyang J-16',
     'Shenyang J-16',
@@ -45,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'SAC'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    17500.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -92,7 +85,6 @@ UPDATE airplanes SET
   thrust_dry = 74.5, thrust_wet = 140.0,
   production_start = 2011, production_end = NULL, units_built = 300,
   operators_count = 1,
-  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Shenyang J-11' LIMIT 1),
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Shenyang_J-16',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Shenyang_J-16'
 WHERE name = 'Shenyang J-16';
@@ -109,3 +101,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nÉquivalent chinois du **F-15E Strike Eagle** et du Su-30. Biplace multi-rôle lourd développé à partir du J-11B à la fin des années 2000. Premier vol en 2011.\n\n## Carrière opérationnelle\nPilier de l''aviation tactique chinoise moderne. Version J-16D de guerre électronique analogue à l''EA-18G Growler américain. Intégré dans les exercices de projection de puissance vers Taïwan et en mer de Chine méridionale.\n\n## Héritage\nPlus de **300 exemplaires** produits. Représente l''aboutissement de la famille Flanker chinoise, avant l''arrivée progressive des J-20 et J-35 furtifs.',
   description_en = E'## Genesis\nChinese equivalent of the **F-15E Strike Eagle** and the Su-30. Heavy two-seat multi-role aircraft developed from the J-11B in the late 2000s. First flew in 2011.\n\n## Operational career\nBackbone of modern Chinese tactical aviation. J-16D electronic-warfare variant analogous to the US EA-18G Growler. Integrated in power-projection exercises toward Taiwan and in the South China Sea.\n\n## Legacy\nMore than **300 built**. Represents the culmination of the Chinese Flanker family, before the progressive arrival of the stealth J-20 and J-35.'
 WHERE name = 'Shenyang J-16';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'reduite' WHERE name = 'Shenyang J-16';

@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.4.4-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.7.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
-  <img src="https://img.shields.io/badge/tests-521-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-539-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
   <img src="https://img.shields.io/badge/licence-All%20Rights%20Reserved-C0392B?style=for-the-badge&labelColor=0D0D0D" alt="Licence">
 </p>
 
@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>Encyclopedie interactive de l'aviation militaire depuis 1960</strong><br>
-  <em>107 appareils &middot; 12 nations &middot; 17 conflits &middot; 150+ systemes d'armes</em>
+  <em>383 appareils &middot; 33 nations &middot; 19 conflits &middot; 200+ systemes d'armes</em>
 </p>
 
 <p align="center">
@@ -81,11 +81,11 @@ vol_histoire/
 │   │   └── load.test.js           Tests de charge (autocannon)
 │   └── db_backup/
 │       ├── db.sql                 Schema complet (14 tables + triggers)
-│       └── *.sql                  107 fichiers avions (INSERT + enrichissement complet)
+│       └── *.sql                  383 fichiers avions (INSERT + enrichissement complet)
 │
 ├── frontend/                      Vanilla HTML / CSS / JS (pas de framework)
 │   ├── assets/
-│   │   └── airplanes/             107 appareils en tri-format (AVIF + WebP + JPG)
+│   │   └── airplanes/             383 appareils en tri-format (AVIF + WebP + JPG)
 │   ├── css/
 │   │   ├── tokens.css             Design tokens (source unique de verite)
 │   │   ├── base.css               Reset, container, typographie
@@ -172,7 +172,9 @@ users ─── favorites ───┐
   └── email_tokens (verification, reset, TTL)
 ```
 
-La table `airplanes` contient ~55 colonnes incluant les strates d'enrichissement :
+La table `airplanes` contient 61 colonnes incluant les strates d'enrichissement, et
+15 contraintes `CHECK` de coherence (ordre chronologique, plages de valeurs,
+`mtow >= empty_weight`, pas d'auto-reference predecesseur/successeur/rival) :
 
 | Strate | Champs |
 |---|---|
@@ -181,7 +183,7 @@ La table `airplanes` contient ~55 colonnes incluant les strates d'enrichissement
 | **3. Production** | `production_start/end`, `units_built`, `unit_cost_usd`, `unit_cost_year`, `operators_count`, `variants` (+ `_en`) |
 | **4. Qualitatif** | `stealth_level` (enum), `nickname`, `predecessor_id`, `successor_id`, `rival_id` (FK self-join) |
 | **5. Narratif** | `description` / `description_en` en Markdown (parse cote front) |
-| **6. Medias externes** | `wikipedia_fr`, `wikipedia_en`, `youtube_showcase`, `manufacturer_page` |
+| **6. Medias externes** | `wikipedia_fr`, `wikipedia_en`, `youtube_showcase`, `manufacturer_page`, `image_credit`, `image_licence` (attribution de la photo, affichee en legende) |
 
 ---
 
@@ -213,11 +215,21 @@ createdb vol_histoire
 # 1. Schema complet (14 tables, triggers, index, FTS)
 psql -U vol_user -d vol_histoire -f backend/db_backup/db.sql
 
-# 2. Importer les 107 avions (chaque fichier contient INSERT + enrichissement)
+# 2. Importer les 383 avions (chaque fichier contient INSERT + enrichissement)
+#    L'ordre alphabetique compte : zz_backfill_relations.sql passe en dernier et
+#    pose les liens predecesseur / successeur / rival, qui exigent que les 383
+#    fiches soient deja inserees.
 for f in backend/db_backup/*.sql; do
   [ "$f" != "backend/db_backup/db.sql" ] && psql -U vol_user -d vol_histoire -f "$f"
 done
 ```
+
+> Sous Windows, forcer `PGCLIENTENCODING=UTF8` avant les `psql` : sinon les noms
+> accentues (`Etendard IV`, `AMX A-1 Bresilien`) sont importes corrompus.
+
+Pour une base **deja installee**, voir `backend/migrations/README.md` :
+une migration unique et rejouable (`001_mise_a_niveau.sql`) couvre schema,
+referentiel, furtivite, credits photo et contraintes `CHECK`.
 
 ### 3. Configurer l'environnement
 
@@ -344,7 +356,7 @@ cd e2e && npx playwright test
 | **CI/CD** | GitHub Actions |
 | **Typographie** | DM Sans + Barlow Condensed (woff2 self-hosted) |
 | **Icones** | 159 icones Font Awesome self-hosted (script `build-icons.py`) |
-| **Images** | 107 appareils en tri-format AVIF + WebP + JPG, servis via `<picture>` (pas de CDN tiers) |
+| **Images** | 383 appareils en tri-format AVIF + WebP + JPG, servis via `<picture>` (pas de CDN tiers) |
 
 ---
 

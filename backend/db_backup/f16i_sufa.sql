@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-16I Sufa',
     'F-16I Sufa',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'LM'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    9207.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -108,3 +106,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nContrat **Peace Marble V** signé le **14 juillet 1999** : 102 F-16D Block 52+ commandés par Israël (4,5 milliards USD) en remplacement des F-4E Kurnass et complément des F-15I. Configuration uniquement biplace pour offrir une capacité air-sol profonde avec NFO (Naval Flight Officer). Livraison de février **2004** à décembre 2009. 1 appareil perdu en formation, **101 en service**.\n\n## Carrière opérationnelle\nColonne vertébrale de la frappe conventionnelle israélienne. Engagé lors de la **2e guerre du Liban (2006)** contre le Hezbollah (plus de 10 000 sorties en 34 jours). **Campagne Syrie** depuis 2013 — opération **Between the Wars** — avec des frappes quasi-hebdomadaires contre les dépôts Hezbollah, les convois iraniens et les sites de production de missiles de précision. Participation à l''**opération Orchard (2007)** contre le réacteur d''Al-Kibar avec les F-15I.\n\n## Héritage\nPlus grande flotte F-16 au monde après les USA, la Turquie et l''Égypte. Le Sufa reste en service jusqu''en **2035+**, après retrait progressif des F-16C/D Barak (Block 40/30), remplacé progressivement par le **F-35I Adir**.',
   description_en = E'## Genesis\n**Peace Marble V** contract signed on **14 July 1999**: 102 F-16D Block 52+ ordered by Israel (USD 4.5 billion) to replace the F-4E Kurnass and complement the F-15I. Exclusively two-seat configuration to offer deep air-to-ground capability with NFO (Naval Flight Officer). Delivery from February **2004** to December 2009. 1 aircraft lost in training, **101 in service**.\n\n## Operational career\nBackbone of Israeli conventional strike. Deployed during the **Second Lebanon War (2006)** against Hezbollah (over 10,000 sorties in 34 days). **Syria campaign** since 2013 — Operation **Between the Wars** — with near-weekly strikes against Hezbollah depots, Iranian convoys and precision-missile production sites. Participation in **Operation Orchard (2007)** against the Al-Kibar reactor with F-15I.\n\n## Legacy\nLargest F-16 fleet in the world after the USA, Turkey and Egypt. The Sufa remains in service until **2035+**, after gradual retirement of F-16C/D Barak (Block 40/30), progressively replaced by the **F-35I Adir**.'
 WHERE name = 'F-16I Sufa';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-16I Sufa';

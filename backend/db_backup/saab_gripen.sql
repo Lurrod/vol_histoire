@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Saab JAS 39 Gripen',
     'Saab JAS 39 Gripen',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'SAAB'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    6800.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -104,3 +102,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nDémarré en **1979** par le groupe industriel JAS (Saab, Volvo, Ericsson, FFV), le Gripen vise à remplacer Draken et Viggen par une plateforme omnirôle light (le Jakt/Attack/Spaning — chasse/attaque/reconnaissance) à coût d''exploitation très bas. Premier vol le **9 décembre 1988**. Mise en service en **1997**.\n\n## Carrière opérationnelle\n**271 appareils** livrés ou en cours de livraison fin 2024 (A/B/C/D + E). Exporté à 5 nations (Afrique du Sud, République tchèque, Hongrie, Thaïlande, Brésil). Le Gripen est régulièrement cité pour son ratio efficacité/coût — coût à l''heure de vol 3 à 10× inférieur aux autres chasseurs occidentaux. Engagé en opérations OTAN (police du ciel Baltique, Libye 2011 — reconnaissance).\n\n## Héritage\nPremier chasseur occidental conçu dès l''origine avec une **architecture ouverte** et **mise à jour logicielle incrémentale** (cycles Edition 18/19/20/21). Modèle de développement repris par le Tempest GCAP et le KF-21 coréen. La variante Gripen E est le premier chasseur de production avec un ordinateur de mission séparé de la couche de vol (decoupled safety-critical software).',
   description_en = E'## Genesis\nStarted in **1979** by the JAS industrial group (Saab, Volvo, Ericsson, FFV), the Gripen aims to replace the Draken and Viggen with a light omnirole platform (Jakt/Attack/Spaning — fighter/attack/reconnaissance) with very low operating cost. First flight on **9 December 1988**. Service entry in **1997**.\n\n## Operational career\n**271 aircraft** delivered or being delivered by end-2024 (A/B/C/D + E). Exported to 5 nations (South Africa, Czech Republic, Hungary, Thailand, Brazil). The Gripen is regularly cited for its cost/effectiveness ratio — hourly flight cost 3 to 10× lower than other Western fighters. Deployed in NATO operations (Baltic air policing, Libya 2011 — reconnaissance).\n\n## Legacy\nFirst Western fighter designed from the ground up with an **open architecture** and **incremental software update** (Edition 18/19/20/21 cycles). Development model adopted by the Tempest GCAP and the Korean KF-21. The Gripen E variant is the first production fighter with a mission computer decoupled from the flight layer (decoupled safety-critical software).'
 WHERE name = 'Saab JAS 39 Gripen';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'reduite' WHERE name = 'Saab JAS 39 Gripen';

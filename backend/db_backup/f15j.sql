@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Mitsubishi F-15J',
     'Mitsubishi F-15J',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'MHI'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Chasseur'),
-    'Actif',
-    'Active',
-    12700.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -101,3 +99,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nContrat de licence signé entre McDonnell Douglas et Mitsubishi en **1978**. 187 F-15J + 32 F-15DJ produits au Japon (213 total). Premier vol d''un F-15J assemblé à Komaki le **4 juin 1981**. Les premiers exemplaires livrés directement par St. Louis. L''F-15J intègre dès l''origine les **missiles japonais AAM-3** (dérivé national de l''AIM-9L) et ses variantes successives.\n\n## Carrière opérationnelle\n**Épine dorsale de la supériorité aérienne japonaise** depuis 40 ans. Basé dans l''ensemble de l''archipel face à la Russie (Chitose, Hyakuri), la Chine (Naha, Tsuiki) et la Corée du Nord (Misawa). Record mondial d''interceptions actives — 1 000+ sorties/an face aux intrusions chinoises et russes depuis 2010.\n\n## Héritage\nUpgrade **JSI (Japanese Super Interceptor)** en cours jusqu''en 2035 pour 98 appareils — radar APG-82(V)1, EPAWSS, AIM-260 JATM, intégration capacité de frappe stand-off AGM-158 JASSM-ER. Le F-15J restera l''arme principale de supériorité aérienne de la JASDF jusqu''aux années 2045, en complément du F-35A et du futur F-X (GCAP avec UK et Italie).',
   description_en = E'## Genesis\nLicence contract signed between McDonnell Douglas and Mitsubishi in **1978**. 187 F-15J + 32 F-15DJ produced in Japan (213 total). First flight of a Komaki-assembled F-15J on **4 June 1981**. The first examples delivered directly from St. Louis. The F-15J integrates from the outset **Japanese AAM-3 missiles** (national derivative of the AIM-9L) and its successive variants.\n\n## Operational career\n**Backbone of Japanese air superiority** for 40 years. Based across the archipelago facing Russia (Chitose, Hyakuri), China (Naha, Tsuiki) and North Korea (Misawa). World record of active interceptions — 1,000+ sorties/year against Chinese and Russian intrusions since 2010.\n\n## Legacy\n**JSI (Japanese Super Interceptor)** upgrade in progress until 2035 for 98 aircraft — APG-82(V)1 radar, EPAWSS, AIM-260 JATM, AGM-158 JASSM-ER stand-off strike integration. The F-15J will remain the main JASDF air superiority weapon until the 2045s, complementing the F-35A and the future F-X (GCAP with UK and Italy).'
 WHERE name = 'Mitsubishi F-15J';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Mitsubishi F-15J';

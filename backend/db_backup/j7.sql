@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Chengdu J-7',
     'Chengdu J-7',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Chasseur'),
     'Retiré',
-    NULL,
-    5843.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -78,7 +76,6 @@ UPDATE airplanes SET
   thrust_dry = 44.1, thrust_wet = 64.7,
   production_start = 1966, production_end = 2013, units_built = 2400,
   operators_count = 18,
-  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Shenyang J-6' LIMIT 1),
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Chengdu_J-7',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Chengdu_J-7'
 WHERE name = 'Chengdu J-7';
@@ -95,3 +92,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nCopie chinoise du **MiG-21 soviétique**, produite à partir de 1966. Évolution locale très poussée avec versions E (double delta) et G/MG (avionique occidentale). Plus produite que l''original russe en Chine.\n\n## Carrière opérationnelle\nExporté massivement dans **18 pays** : Pakistan (conflits avec l''Inde), Bangladesh, Sri Lanka, Myanmar, Zimbabwe, Nigeria, Soudan. Plus de 2 400 exemplaires construits. Version JF-17 dérivée avec le Pakistan.\n\n## Héritage\nDernier J-7 chinois retiré en 2023. Toujours en service dans plusieurs pays pauvres ou sous embargo. Base du JF-17 Thunder, chasseur de 4e génération pakistano-chinois actuel.',
   description_en = E'## Genesis\nChinese copy of the Soviet **MiG-21**, produced from 1966. Deep local evolution with E (double-delta) and G/MG (Western avionics) variants. More produced in China than the Russian original.\n\n## Operational career\nMassively exported to **18 countries**: Pakistan (conflicts with India), Bangladesh, Sri Lanka, Myanmar, Zimbabwe, Nigeria, Sudan. More than 2,400 built. Derivative JF-17 variant with Pakistan.\n\n## Legacy\nLast Chinese J-7 retired in 2023. Still in service in several poor or embargoed countries. Base of the JF-17 Thunder, the current Pakistani-Chinese 4th-generation fighter.'
 WHERE name = 'Chengdu J-7';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Chengdu J-7';

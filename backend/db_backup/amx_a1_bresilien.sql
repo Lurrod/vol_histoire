@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'AMX A-1 Brésilien',
     'AMX A-1 Brazilian',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'EMB'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
-    'Actif',
-    'Active',
-    6700.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -101,3 +99,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme tri-national **AMX International** lancé en **1980** entre Aeritalia (Italie, 46,5 %), Aermacchi (Italie, 23,8 %) et **Embraer (Brésil, 29,7 %)** pour remplacer les F-104G italiens et les AT-26 brésiliens. Premier vol le **15 mai 1984** à Turin, premier vol de la version brésilienne en **1985**. Mise en service FAB en **1989**.\n\n## Carrière opérationnelle\n**56 appareils brésiliens produits** à São José dos Campos entre 1989 et 1999. Intégré à la doctrine **SIVAM** (système de surveillance amazonienne) pour la défense stratégique du bassin amazonien. Engagé lors d''exercices internationaux **CRUZEX** tous les deux ans avec les forces aériennes sud-américaines et l''OTAN.\n\n## Héritage\nProgramme **A-1M** (2013-2023) a modernisé 43 A-1 survivants à standard 4e génération. Retrait progressif prévu à partir de **2030** avec l''arrivée en puissance du **Gripen E/F**. L''AMX reste le seul chasseur-bombardier léger conçu en partie au Brésil.',
   description_en = E'## Genesis\nTri-national **AMX International** programme launched in **1980** between Aeritalia (Italy, 46.5 %), Aermacchi (Italy, 23.8 %) and **Embraer (Brazil, 29.7 %)** to replace Italian F-104Gs and Brazilian AT-26s. First flight on **15 May 1984** in Turin, first flight of the Brazilian variant in **1985**. FAB service entry in **1989**.\n\n## Operational career\n**56 Brazilian aircraft produced** at São José dos Campos between 1989 and 1999. Integrated into the **SIVAM** doctrine (Amazon surveillance system) for strategic defence of the Amazon basin. Deployed during international **CRUZEX** exercises every two years with South American air forces and NATO.\n\n## Legacy\nThe **A-1M** programme (2013-2023) upgraded 43 surviving A-1s to 4th-generation standard. Progressive retirement planned from **2030** with the build-up of the **Gripen E/F**. The AMX remains the only light attack fighter partly designed in Brazil.'
 WHERE name = 'AMX A-1 Brésilien';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'AMX A-1 Brésilien';

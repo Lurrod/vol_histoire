@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Blackburn Buccaneer',
     'Blackburn Buccaneer',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Bombardier'),
     'Retiré',
-    NULL,
-    13608.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -106,3 +104,8 @@ WHERE name = 'Blackburn Buccaneer';
 UPDATE airplanes SET
   variants_en = E'- **Buccaneer S.1** : initial Royal Navy variant (Gyron Junior engines)\n- **Buccaneer S.2** : Spey re-engining, South African export\n- **Buccaneer S.2B** : RAF variant (transferred after carrier retirement)'
 WHERE name = 'Blackburn Buccaneer';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Blackburn Buccaneer';

@@ -1268,7 +1268,7 @@ describe('POST /api/airplanes', () => {
     id_generation: 4,
     type: 1,
     status: 'en service',
-    weight: 7500,
+    empty_weight: 7500,
   };
 
   const fkAllValid = { rows: [{ country_ok: true, manufacturer_ok: true, generation_ok: true, type_ok: true }] };
@@ -1382,7 +1382,7 @@ describe('PUT /api/airplanes/:id', () => {
     id_generation: null,
     type: null,
     status: null,
-    weight: null,
+    empty_weight: null,
   };
 
   const fkAllValid = { rows: [{ country_ok: true, manufacturer_ok: true, generation_ok: true, type_ok: true }] };
@@ -3387,7 +3387,7 @@ describe('PUT /api/airplanes/:id — auto-référence (ligne 507)', () => {
     id_generation: null,
     type: null,
     status: null,
-    weight: null,
+    empty_weight: null,
   };
 
   test('400 — predecessor_id === :id → ne peut pas se référencer lui-même', async () => {

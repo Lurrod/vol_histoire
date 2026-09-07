@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Su-57',
     'Su-57',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'SUK'),
     (SELECT id FROM generation WHERE generation = 5),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    18500.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -85,7 +83,6 @@ UPDATE airplanes SET
   operators_count = 1,
   stealth_level = 'moderee',
   nickname = 'Felon',
-  rival_id = (SELECT id FROM airplanes WHERE name = 'F-22 Raptor' LIMIT 1),
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Soukho%C3%AF_Su-57',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Sukhoi_Su-57'
 WHERE name = 'Su-57';

@@ -2,7 +2,7 @@
 
 ---
 
-## 1. Avions présents dans le catalogue (107)
+## 1. Avions présents dans le catalogue (155)
 
 ### France
 
@@ -147,7 +147,32 @@
 7. **General Dynamics F-16 Fighting Falcon**
 8. **Lockheed Martin F-35I Adir**
 
-**Total catalogue actuel : 107**
+### Lots ajoutés en v4.4.6 (48 appareils, 107 → 155)
+
+**Lot 1 — emblématiques (12)** : F-117 Nighthawk · F/A-18 Hornet · F/A-18E Super
+Hornet · A-4 Skyhawk · F-105 Thunderchief · U-2 Dragon Lady · MiG-19 · Yak-38
+Forger · Mirage 5 · BAE Hawk · BAC TSR-2 · Shenyang J-35.
+
+**Lot 2 — génération 1950-1975 (12)** : F-100 Super Sabre · F-102 Delta Dagger ·
+F-106 Delta Dart · A-1 Skyraider · A-7 Corsair II · A-6 Intruder · Su-7 · Tu-16
+Badger · Il-28 Beagle · Super Mystère B2 · Vautour II · Gloster Javelin.
+
+**Lot 3 — modernes, démonstrateurs, chaînons manquants (12)** : F-15EX Eagle II ·
+AV-8B Harrier II · EA-6B Prowler · B-58 Hustler · Yak-141 Freestyle · Tu-128
+Fiddler · Su-33 · MiG-27 · Sea Vixen · nEUROn · Fiat G.91 · Saab 32 Lansen.
+
+Deux types de référence créés à cette occasion : `Guerre électronique` (EA-6B) et
+`Drone de combat` (nEUROn). Neuf constructeurs historiques ajoutés.
+
+**Écartés faute d'image libre** : Xian JH-7 et Su-47 Berkut, dont la seule photo
+disponible sur Wikimedia Commons est sous GFDL 1.2 — hors de la politique
+« domaine public ou Creative Commons » des mentions légales.
+
+**Lot 4 — intercepteurs, entraîneurs, patrouille et drone (12)** : F-101 Voodoo ·
+T-38 Talon · MQ-9 Reaper · Su-9 · Yak-28 · Tu-142 Bear-F · Hawker Hunter ·
+Supermarine Scimitar · M-346 Master · Saab 105 · Kawasaki T-4 · Mitsubishi F-104J.
+
+**Total catalogue actuel : 155**
 
 ---
 
@@ -155,32 +180,32 @@
 
 ### France
 
-1. **Dassault Super Mystère B2** (intercepteur, encore en service au début des années 1960)
-2. **Dassault Mirage 5** (version export simplifiée du Mirage III)
+1. **Dassault Super Mystère B2** — ✅ **ajouté au catalogue** (intercepteur, encore en service au début des années 1960)
+2. **Dassault Mirage 5** — ✅ **ajouté au catalogue** (version export simplifiée du Mirage III)
 3. **Dassault Mirage 50** (Mirage 5 avec moteur Atar 9K-50)
-4. **Sud Aviation Vautour II** (bombardier/chasseur multi-rôle, années 60)
+4. **Sud Aviation Vautour II** — ✅ **ajouté au catalogue** (bombardier/chasseur multi-rôle, années 60)
 5. **Breguet Br.1150 Atlantique / ATL2** (patrouille maritime)
 6. **Transall C-160** (transport tactique franco-allemand)
 7. **Airbus A400M Atlas** (transport stratégique)
-8. **Dassault nEUROn** (démonstrateur UCAV furtif européen)
+8. **Dassault nEUROn** — ✅ **ajouté au catalogue** (démonstrateur UCAV furtif européen)
 
 ### États-Unis
 
-1. **North American F-100 Super Sabre** (Vietnam)
-2. **McDonnell F-101 Voodoo** (intercepteur / reco)
-3. **Convair F-102 Delta Dagger**
-4. **Republic F-105 Thunderchief** (Vietnam)
-5. **Convair F-106 Delta Dart**
-6. **Lockheed F-117 Nighthawk** (premier bombardier furtif)
-7. **Douglas A-1 Skyraider** (Vietnam)
-8. **Douglas A-4 Skyhawk**
-9. **Grumman A-6 Intruder**
-10. **LTV A-7 Corsair II**
-11. **McDonnell Douglas AV-8B Harrier II**
-12. **McDonnell Douglas F/A-18 Hornet**
-13. **Boeing F/A-18E/F Super Hornet**
+1. **North American F-100 Super Sabre** — ✅ **ajouté au catalogue** (Vietnam)
+2. **McDonnell F-101 Voodoo** — ✅ **ajouté au catalogue** (intercepteur / reco)
+3. **Convair F-102 Delta Dagger** — ✅ **ajouté au catalogue**
+4. **Republic F-105 Thunderchief** — ✅ **ajouté au catalogue** (Vietnam)
+5. **Convair F-106 Delta Dart** — ✅ **ajouté au catalogue**
+6. **Lockheed F-117 Nighthawk** — ✅ **ajouté au catalogue** (premier bombardier furtif)
+7. **Douglas A-1 Skyraider** — ✅ **ajouté au catalogue** (Vietnam)
+8. **Douglas A-4 Skyhawk** — ✅ **ajouté au catalogue**
+9. **Grumman A-6 Intruder** — ✅ **ajouté au catalogue**
+10. **LTV A-7 Corsair II** — ✅ **ajouté au catalogue**
+11. **McDonnell Douglas AV-8B Harrier II** — ✅ **ajouté au catalogue**
+12. **McDonnell Douglas F/A-18 Hornet** — ✅ **ajouté au catalogue**
+13. **Boeing F/A-18E/F Super Hornet** — ✅ **ajouté au catalogue**
 14. **Northrop Grumman EA-6B Prowler / Boeing EA-18G Growler**
-15. **Convair B-58 Hustler** (premier bombardier supersonique)
+15. **Convair B-58 Hustler** — ✅ **ajouté au catalogue** (premier bombardier supersonique)
 16. **Lockheed C-130 Hercules**
 17. **Boeing C-17 Globemaster III**
 18. **Lockheed C-5 Galaxy**
@@ -188,22 +213,22 @@
 20. **Boeing E-3 Sentry (AWACS)**
 21. **Northrop Grumman E-2 Hawkeye**
 22. **Lockheed P-3 Orion / Boeing P-8 Poseidon**
-23. **Lockheed U-2 Dragon Lady**
+23. **Lockheed U-2 Dragon Lady** — ✅ **ajouté au catalogue**
 24. **Northrop Grumman RQ-4 Global Hawk** (drone HALE)
-25. **General Atomics MQ-1 Predator / MQ-9 Reaper** (drones armés)
+25. **General Atomics MQ-1 Predator / MQ-9 Reaper** — ✅ **ajouté au catalogue** (drones armés)
 26. **Northrop B-21 Raider** (bombardier furtif de 6e génération)
-27. **Northrop T-38 Talon / Boeing T-7 Red Hawk** (entraînement)
-28. **Boeing F-15EX Eagle II**
+27. **Northrop T-38 Talon / Boeing T-7 Red Hawk** — ✅ **ajouté au catalogue** (entraînement)
+28. **Boeing F-15EX Eagle II** — ✅ **ajouté au catalogue**
 
 ### Russie / URSS
 
-1. **Mikoyan-Gourevitch MiG-19** (encore en service post-1960)
-2. **Soukhoï Su-7 / Su-9 / Su-11** (chasseurs des années 60)
-3. **Yakovlev Yak-28** (multi-rôle)
-4. **Yakovlev Yak-38 Forger** (VTOL embarqué)
-5. **Yakovlev Yak-141 Freestyle** (prototype VTOL supersonique)
-6. **Tupolev Tu-16 Badger** (bombardier moyen)
-7. **Tupolev Tu-128 Fiddler** (intercepteur lourd)
+1. **Mikoyan-Gourevitch MiG-19** — ✅ **ajouté au catalogue** (encore en service post-1960)
+2. **Soukhoï Su-7 / Su-9 / Su-11** — ✅ **ajouté au catalogue** (chasseurs des années 60)
+3. **Yakovlev Yak-28** — ✅ **ajouté au catalogue** (multi-rôle)
+4. **Yakovlev Yak-38 Forger** — ✅ **ajouté au catalogue** (VTOL embarqué)
+5. **Yakovlev Yak-141 Freestyle** — ✅ **ajouté au catalogue** (prototype VTOL supersonique)
+6. **Tupolev Tu-16 Badger** — ✅ **ajouté au catalogue** (bombardier moyen)
+7. **Tupolev Tu-128 Fiddler** — ✅ **ajouté au catalogue** (intercepteur lourd)
 8. **Iliouchine Il-38** (patrouille maritime)
 9. **Iliouchine Il-76** (transport stratégique)
 10. **Antonov An-12 / An-22 / An-124** (transports lourds)
@@ -214,7 +239,7 @@
 ### Chine
 
 1. **Xian JH-7 Flying Leopard** (chasseur-bombardier embarqué)
-2. **Shenyang FC-31 / J-35** (chasseur furtif de 5e génération)
+2. **Shenyang FC-31 / J-35** — ✅ **ajouté au catalogue** (chasseur furtif de 5e génération)
 3. **Xian Y-20 Kunpeng** (transport stratégique lourd)
 4. **KJ-2000 / KJ-500** (AWACS)
 5. **Hongdu L-15 Falcon** (entraînement avancé)
@@ -222,11 +247,11 @@
 
 ### Royaume-Uni
 
-1. **Gloster Javelin** (intercepteur tout-temps, années 60)
-2. **Supermarine Scimitar** (chasseur embarqué)
-3. **de Havilland Sea Vixen** (chasseur embarqué)
-4. **BAC TSR-2** (programme annulé, pièce historique majeure)
-5. **BAE Systems Hawk** (entraînement / attaque légère)
+1. **Gloster Javelin** — ✅ **ajouté au catalogue** (intercepteur tout-temps, années 60)
+2. **Supermarine Scimitar** — ✅ **ajouté au catalogue** (chasseur embarqué)
+3. **de Havilland Sea Vixen** — ✅ **ajouté au catalogue** (chasseur embarqué)
+4. **BAC TSR-2** — ✅ **ajouté au catalogue** (programme annulé, pièce historique majeure)
+5. **BAE Systems Hawk** — ✅ **ajouté au catalogue** (entraînement / attaque légère)
 6. **Hawker Siddeley Nimrod** (patrouille maritime)
 7. **Vickers VC10** (ravitailleur RAF)
 
@@ -239,13 +264,13 @@
 
 1. **Fiat G.91 / G.91Y**
 2. **Aermacchi MB-326**
-3. **Aermacchi M-346 Master** (entraînement avancé)
+3. **Aermacchi M-346 Master** — ✅ **ajouté au catalogue** (entraînement avancé)
 4. **Alenia C-27J Spartan** (transport tactique)
 
 ### Suède
 
-1. **Saab 32 Lansen** (attaque / reco, années 60)
-2. **Saab 105** (entraînement et attaque légère)
+1. **Saab 32 Lansen** — ✅ **ajouté au catalogue** (attaque / reco, années 60)
+2. **Saab 105** — ✅ **ajouté au catalogue** (entraînement et attaque légère)
 
 ### Inde
 

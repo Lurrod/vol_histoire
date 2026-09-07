@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'HAL HF-24 Marut',
     'HAL HF-24 Marut',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'Retiré',
-    'Retired',
-    6195.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -96,3 +94,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme lancé en **1956** sous la direction de l''ingénieur allemand **Kurt Tank** (ex-Focke-Wulf, créateur du Fw 190), recruté par HAL pour doter l''Inde de son premier chasseur national. Premier vol du prototype le **17 juin 1961**, mise en service en **1967**.\n\n## Carrière opérationnelle\n**147 exemplaires produits** en 13 ans. Engagé lors de la **Guerre indo-pakistanaise de 1971**, où il a remarquablement performé en appui au sol grâce à sa robustesse et sa stabilité à basse altitude. Les pilotes le surnomment "the flying tank" en référence à sa capacité d''encaisser les tirs de DCA.\n\n## Héritage\nPremier avion de combat à réaction **entièrement conçu hors des États-Unis, d''Europe ou d''URSS**. Limité dans ses performances supersoniques par l''absence d''un Orpheus à postcombustion (projet Mk2 annulé). A posé les fondations techniques de HAL qui produit aujourd''hui le Tejas et le Su-30MKI. Retiré en **1990**.',
   description_en = E'## Genesis\nProgramme launched in **1956** under the direction of German engineer **Kurt Tank** (formerly of Focke-Wulf, creator of the Fw 190), recruited by HAL to give India its first domestic fighter. First prototype flight on **17 June 1961**, service entry in **1967**.\n\n## Operational career\n**147 examples built** over 13 years. Deployed during the **1971 Indo-Pakistani War**, where it performed remarkably well in ground support thanks to its ruggedness and low-altitude stability. Pilots nicknamed it "the flying tank" for its ability to absorb anti-aircraft fire.\n\n## Legacy\nFirst jet combat aircraft **entirely designed outside the United States, Europe or the USSR**. Limited in its supersonic performance by the absence of an afterburning Orpheus (Mk2 project cancelled). Laid the technical foundations of HAL which now produces the Tejas and Su-30MKI. Retired in **1990**.'
 WHERE name = 'HAL HF-24 Marut';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'HAL HF-24 Marut';

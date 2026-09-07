@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'HAL Tejas Mk2',
     'HAL Tejas Mk2',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'En développement',
-    'In development',
-    7850.0
+    'In development'
 );
 
 -- Insertion des technologies
@@ -101,3 +99,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme approuvé par le Cabinet indien le **31 août 2022** avec un budget de **9 000 crore INR** (≈ 1,1 milliard USD) pour le développement. Évolution profonde du Tejas Mk1 — fuselage rallongé (+1,35 m), canards delta, réacteur F414 plus puissant (+48 % de poussée). Premier vol prévu en **2026**, service opérationnel en **2030**.\n\n## Carrière opérationnelle\nProduction attendue à partir de 2030. Cible : **108+ appareils** pour remplacer les Mirage 2000, MiG-29, Jaguar IS dans l''IAF. Plateforme naval LCA Navy Mk2 dérivée prévue pour INS Vikrant.\n\n## Héritage\nPasserelle technologique entre le LCA (Mk1/Mk1A) et l''AMCA de 5e génération. Première cellule indienne avec capacité de fuel dorsal (CFT) et soute partielle pour missiles semi-enfouis. Radar Uttam AESA indigène — étape clé vers la souveraineté aéronautique.',
   description_en = E'## Genesis\nProgramme approved by the Indian Cabinet on **31 August 2022** with a budget of **INR 9,000 crore** (≈ USD 1.1 billion) for development. Deep evolution of the Tejas Mk1 — stretched fuselage (+1.35 m), delta canards, more powerful F414 engine (+48 % thrust). First flight scheduled for **2026**, operational service in **2030**.\n\n## Operational career\nProduction expected from 2030. Target: **108+ aircraft** to replace Mirage 2000, MiG-29, Jaguar IS in the IAF. Derived naval LCA Navy Mk2 platform planned for INS Vikrant.\n\n## Legacy\nTechnological bridge between the LCA (Mk1/Mk1A) and the 5th-generation AMCA. First Indian airframe with dorsal fuel (CFT) capacity and partial semi-recessed missile bay. Indigenous Uttam AESA radar — a key step towards aerospace sovereignty.'
 WHERE name = 'HAL Tejas Mk2';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'reduite' WHERE name = 'HAL Tejas Mk2';

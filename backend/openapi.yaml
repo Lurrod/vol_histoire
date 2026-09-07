@@ -23,7 +23,7 @@ info:
     Toutes les pages HTML sont servies avec un query string `?v=<version>`
     sur les assets pour bust le cache navigateur à chaque déploiement.
     Les statiques (CSS/JS/fonts) ont un `Cache-Control` long.
-  version: 4.4.4
+  version: 4.7.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -137,8 +137,14 @@ components:
               format: date
             max_range:
               type: number
-            weight:
+            empty_weight:
               type: number
+            image_credit:
+              type: string
+              nullable: true
+            image_licence:
+              type: string
+              nullable: true
             status:
               type: string
 
@@ -186,8 +192,14 @@ components:
           type: number
         max_range:
           type: number
-        weight:
+        empty_weight:
           type: number
+        image_credit:
+          type: string
+          maxLength: 255
+        image_licence:
+          type: string
+          maxLength: 100
 
     Armament:
       type: object
@@ -1242,7 +1254,7 @@ paths:
                 properties:
                   version:
                     type: string
-                    example: "4.4.4"
+                    example: "4.6.0"
                   hcaptchaSitekey:
                     type: string
                     nullable: true
@@ -1344,7 +1356,7 @@ paths:
                 properties:
                   status: { type: string, example: ok }
                   service: { type: string, example: "Vol d'histoire" }
-                  version: { type: string, example: "4.4.4" }
+                  version: { type: string, example: "4.6.0" }
                   env: { type: string, example: production }
                   sentry: { type: boolean, example: true }
                   uptimeSec: { type: integer, example: 3600 }

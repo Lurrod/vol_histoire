@@ -1,12 +1,3 @@
--- Insertion du nouveau constructeur
-INSERT INTO manufacturer (name, country_id, code) VALUES
-('Xian Aircraft Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'XAC');
-
--- Insertion des nouveaux armements spécifiques au H-6
-INSERT INTO armement (name, description) VALUES
-('CJ-10', 'Missile de croisière à lancement aérien, portée 1500-2000 km'),
-('CJ-20', 'Missile de croisière furtif à lancement aérien, portée 2000+ km');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -28,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Xian H-6',
     'Xian H-6',
@@ -49,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'XAC'),
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Bombardier'),
-    'Actif',
-    'Active',
-    75800.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -107,3 +96,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nCopie chinoise sous licence du **Tu-16 Badger soviétique**, produite à partir de 1959. Seul bombardier stratégique chinois historique, modernisé en continu depuis 60 ans.\n\n## Carrière opérationnelle\nPilier de la dissuasion nucléaire chinoise pendant la guerre froide. Variantes modernisées **H-6K** (moteurs D-30, avionique numérique, missiles de croisière YJ-12/KD-20) et **H-6N** (porte-missile aéroballistique longue portée). Patrouilles régulières autour de Taïwan.\n\n## Héritage\nPlus de **230 exemplaires** construits. Seul bombardier stratégique chinois actuel. Successeur **H-20** furtif attendu pour 2026-2030 (équivalent du B-2 Spirit).',
   description_en = E'## Genesis\nChinese licence-built copy of the Soviet **Tu-16 Badger**, produced from 1959. China''s only historical strategic bomber, continuously upgraded for 60 years.\n\n## Operational career\nPillar of Chinese nuclear deterrence during the Cold War. Upgraded **H-6K** (D-30 engines, digital avionics, YJ-12/KD-20 cruise missiles) and **H-6N** (long-range air-launched ballistic missile carrier) variants. Regular patrols around Taiwan.\n\n## Legacy\nMore than **230 built**. China''s only current strategic bomber. Stealth successor **H-20** expected for 2026-2030 (equivalent to the B-2 Spirit).'
 WHERE name = 'Xian H-6';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Xian H-6';

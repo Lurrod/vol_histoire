@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Saab 35 Draken',
     'Saab 35 Draken',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Intercepteur'),
     'Retiré',
-    'Retired',
-    7425.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -96,3 +94,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nConçu par Erik Bratt chez Saab dès **1949** pour intercepter les bombardiers soviétiques de haute altitude, le Draken adopte une configuration révolutionnaire à **double delta** permettant à la fois des décollages courts, un vol transsonique efficace et des performances supersoniques. Premier vol le **25 octobre 1955**, mise en service en **1960**.\n\n## Carrière opérationnelle\nPremier avion occidental de série à dépasser Mach 2. La doctrine suédoise **Bas 90** imposait des décollages depuis des routes civiles pour survivre à une frappe nucléaire soviétique — le Draken y excellait. **651 exemplaires** produits (1955-1974), exportés au Danemark, à la Finlande et à l''Autriche. Retiré du service suédois en 1999, la Finlande en 2000, l''Autriche en 2005.\n\n## Héritage\nPremier symbole de l''industrie aéronautique suédoise indépendante de la Guerre froide. A ouvert la voie technologique au Viggen puis au Gripen — lignée Saab ininterrompue depuis 75 ans.',
   description_en = E'## Genesis\nDesigned by Erik Bratt at Saab from **1949** to intercept Soviet high-altitude bombers, the Draken adopts a revolutionary **double-delta** configuration allowing short take-offs, efficient transonic flight and supersonic performance. First flight on **25 October 1955**, service entry in **1960**.\n\n## Operational career\nFirst Western production aircraft to exceed Mach 2. The Swedish **Bas 90** doctrine mandated take-offs from civilian roads to survive a Soviet nuclear strike — the Draken excelled at this. **651 airframes** built (1955-1974), exported to Denmark, Finland and Austria. Retired from Swedish service in 1999, Finland in 2000, Austria in 2005.\n\n## Legacy\nFirst symbol of the independent Swedish Cold War aerospace industry. Paved the technological way for the Viggen then the Gripen — an unbroken Saab lineage spanning 75 years.'
 WHERE name = 'Saab 35 Draken';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Saab 35 Draken';

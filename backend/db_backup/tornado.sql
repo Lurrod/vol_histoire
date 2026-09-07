@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Panavia Tornado',
     'Panavia Tornado',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'En service',
-    NULL,
-    13890.0
+    'In service'
 );
 
 -- Insertion des technologies
@@ -105,3 +103,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nRésultat du programme **Panavia** trinational (Royaume-Uni, Allemagne, Italie) des années 1970 pour créer un avion multi-rôle à aile à géométrie variable. Trois variantes distinctes pour trois missions : **IDS** (strike), **ADV** (intercepteur), **ECR** (guerre électronique).\n\n## Carrière opérationnelle\nEngagé massivement durant la guerre du Golfe (1991), au Kosovo, en Irak (2003), en Libye (2011), en Syrie (2015). Grande précision en frappe de nuit tous temps.\n\n## Héritage\nRetiré par la RAF en 2019 (remplacé par le Typhoon et le F-35), encore en service en Allemagne et Italie. Base technologique du Typhoon et de l''Eurofighter.',
   description_en = E'## Genesis\nResult of the trinational **Panavia** programme (UK, Germany, Italy) of the 1970s to create a variable-sweep-wing multi-role aircraft. Three distinct variants for three missions: **IDS** (strike), **ADV** (interceptor), **ECR** (electronic warfare).\n\n## Operational career\nHeavily used during the Gulf War (1991), Kosovo, Iraq (2003), Libya (2011), Syria (2015). High precision in all-weather night strikes.\n\n## Legacy\nRetired by the RAF in 2019 (replaced by the Typhoon and F-35), still in service in Germany and Italy. Technology base for the Typhoon and Eurofighter.'
 WHERE name = 'Panavia Tornado';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Panavia Tornado';

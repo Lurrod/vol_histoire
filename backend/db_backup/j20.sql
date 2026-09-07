@@ -1,8 +1,3 @@
--- Insertion des nouveaux armements spécifiques au J-20
-INSERT INTO armement (name, description) VALUES
-('PL-10', 'Missile air-air courte portée, guidage infrarouge à imagerie, 20 km'),
-('PL-15', 'Missile air-air longue portée, guidage radar actif, 200+ km');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -24,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Chengdu J-20',
     'Chengdu J-20',
@@ -45,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'CAC'),
     (SELECT id FROM generation WHERE generation = 5),
     (SELECT id FROM type WHERE name = 'Chasseur'),
-    'Actif',
-    'Active',
-    19390.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -89,7 +82,6 @@ UPDATE airplanes SET
   production_start = 2011, production_end = NULL, units_built = 250,
   operators_count = 1,
   stealth_level = 'elevee',
-  rival_id = (SELECT id FROM airplanes WHERE name = 'F-22 Raptor' LIMIT 1),
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Chengdu_J-20',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Chengdu_J-20'
 WHERE name = 'Chengdu J-20';

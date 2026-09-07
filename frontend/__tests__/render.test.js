@@ -32,6 +32,7 @@ describe('render — module shape', () => {
     expect(typeof render.renderMissions).toBe('function');
     expect(typeof render.finalizeCapabilities).toBe('function');
     expect(typeof render.renderWars).toBe('function');
+    expect(typeof render.renderImageCredit).toBe('function');
   });
 });
 
@@ -189,5 +190,44 @@ describe('finalizeCapabilities()', () => {
     render.finalizeCapabilities();
     // cols.length === 0 → allHidden = false → pas de toggle vers hidden
     expect(document.getElementById('capabilities-section').classList.contains('hidden')).toBe(false);
+  });
+});
+
+
+describe('renderImageCredit()', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '<p id="image-credit" hidden></p>';
+  });
+
+  test('affiche auteur et licence separes par un tiret', () => {
+    render.renderImageCredit({ image_credit: 'Mike McBey', image_licence: 'CC BY 2.0' });
+    const el = document.getElementById('image-credit');
+    expect(el.hidden).toBe(false);
+    expect(el.textContent).toBe('details.photo : Mike McBey — CC BY 2.0');
+  });
+
+  test('traduit la licence « Public domain » via i18n', () => {
+    render.renderImageCredit({ image_credit: 'USAF', image_licence: 'Public domain' });
+    // le stub i18n renvoie la cle : on verifie qu'elle est bien sollicitee
+    expect(document.getElementById('image-credit').textContent)
+      .toBe('details.photo : USAF — details.licence_public_domain');
+  });
+
+  test('se contente de la licence quand aucun auteur nest fourni', () => {
+    render.renderImageCredit({ image_credit: null, image_licence: 'CC BY-SA 4.0' });
+    expect(document.getElementById('image-credit').textContent)
+      .toBe('details.photo : CC BY-SA 4.0');
+  });
+
+  test('reste masque quand les deux champs sont absents', () => {
+    render.renderImageCredit({ image_credit: null, image_licence: null });
+    const el = document.getElementById('image-credit');
+    expect(el.hidden).toBe(true);
+    expect(el.textContent).toBe('');
+  });
+
+  test('ne casse pas quand la legende est absente du DOM', () => {
+    document.body.innerHTML = '';
+    expect(() => render.renderImageCredit({ image_credit: 'X', image_licence: 'Y' })).not.toThrow();
   });
 });

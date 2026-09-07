@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-15I Ra''am',
     'F-15I Ra''am',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'BOE'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    14300.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -107,3 +105,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nContrat signé le **27 janvier 1994** : 25 F-15I Ra''am ("Tonnerre") commandés par Israël après les tirs **Scud irakiens** de 1991 sur Tel-Aviv, démontrant le besoin d''une capacité de frappe stratégique longue portée (1967 km combat radius + ravitaillement en vol). Livraison de janvier **1998** à juillet 1999. Coût unitaire : **94 millions USD**.\n\n## Carrière opérationnelle\n**Star de l''opération Orchard (6 septembre 2007)** — bombardement du réacteur nucléaire syrien d''**Al-Kibar** dans le désert de Deir ez-Zor par 4 F-15I et 4 F-16I (frappe totalement furtive, suite EW Elta ayant désactivé les radars S-300 syriens). Engagé régulièrement contre les dépôts iraniens en Syrie depuis 2013 (**Opération Between the Wars**). Frappes profondes hypothétiques contre les installations nucléaires iraniennes (Natanz, Fordow) — cœur de la dissuasion stratégique israélienne.\n\n## Héritage\nPremier F-15 avec suite EW **non-américaine** autorisée par Washington. Modèle pour les F-15EX, F-15SA (Arabie saoudite), F-15QA (Qatar), F-15SG (Singapour). Service prévu jusqu''en **2045+** avec modernisations successives.',
   description_en = E'## Genesis\nContract signed on **27 January 1994**: 25 F-15I Ra''am ("Thunder") ordered by Israel after the Iraqi **Scud strikes** of 1991 on Tel Aviv, demonstrating the need for long-range strategic strike capability (1,967 km combat radius + in-flight refuelling). Delivery from January **1998** to July 1999. Unit cost: **USD 94 million**.\n\n## Operational career\n**Star of Operation Orchard (6 September 2007)** — bombing of the Syrian nuclear reactor at **Al-Kibar** in the Deir ez-Zor desert by 4 F-15I and 4 F-16I (fully stealthy strike, Elta EW suite having deactivated Syrian S-300 radars). Regularly engaged against Iranian depots in Syria since 2013 (**Operation Between the Wars**). Hypothetical deep strikes against Iranian nuclear facilities (Natanz, Fordow) — core of Israeli strategic deterrence.\n\n## Legacy\nFirst F-15 with **non-American** EW suite authorised by Washington. Model for the F-15EX, F-15SA (Saudi Arabia), F-15QA (Qatar), F-15SG (Singapore). Service planned until **2045+** with successive upgrades.'
 WHERE name = 'F-15I Ra''am';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-15I Ra''am';

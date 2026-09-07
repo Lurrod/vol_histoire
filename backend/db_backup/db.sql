@@ -19,8 +19,8 @@ CREATE TABLE users (
     email_verified BOOLEAN NOT NULL DEFAULT false,
     failed_login_count INTEGER NOT NULL DEFAULT 0,
     locked_until TIMESTAMPTZ NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Index pour les recherches fréquentes par email (login, register, reset password)
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     jti         VARCHAR(36) UNIQUE NOT NULL,       -- UUID v4, identifiant unique du token
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     revoked     BOOLEAN NOT NULL DEFAULT FALSE,
-    expires_at  TIMESTAMP NOT NULL,
-    created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+    expires_at  TIMESTAMPTZ NOT NULL,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Index pour les requêtes fréquentes :
@@ -55,9 +55,9 @@ CREATE TABLE IF NOT EXISTS email_tokens (
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token       VARCHAR(64) NOT NULL UNIQUE,
     type        VARCHAR(10) NOT NULL CHECK (type IN ('verify', 'reset')),
-    expires_at  TIMESTAMP NOT NULL,
-    used_at     TIMESTAMP,
-    created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+    expires_at  TIMESTAMPTZ NOT NULL,
+    used_at     TIMESTAMPTZ,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_email_tokens_token ON email_tokens (token) WHERE used_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_email_tokens_user_type ON email_tokens (user_id, type) WHERE used_at IS NULL;
@@ -124,7 +124,6 @@ CREATE TABLE airplanes (
     type INTEGER REFERENCES type(id) ON DELETE SET NULL,
     status VARCHAR(50),
     status_en VARCHAR(50),
-    weight FLOAT,
     -- Strate 1 : fiche technique étendue
     length FLOAT,
     wingspan FLOAT,
@@ -165,9 +164,43 @@ CREATE TABLE airplanes (
     wikipedia_en VARCHAR(500),
     youtube_showcase VARCHAR(500),
     manufacturer_page VARCHAR(500),
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    -- Attribution de la photo. Les licences Creative Commons imposent de citer
+    -- l'auteur ; ces deux colonnes alimentent la légende affichée sous l'image.
+    image_credit VARCHAR(255),
+    image_licence VARCHAR(100),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Contraintes de cohérence : garde-fous sur les plages de valeurs et l'ordre
+-- chronologique. Toutes vérifiées sans violation sur le catalogue des 107 fiches.
+ALTER TABLE airplanes
+  ADD CONSTRAINT chk_airplanes_masses      CHECK (mtow IS NULL OR empty_weight IS NULL OR mtow >= empty_weight),
+  ADD CONSTRAINT chk_airplanes_masses_pos  CHECK ((empty_weight IS NULL OR empty_weight > 0) AND (mtow IS NULL OR mtow > 0)),
+  ADD CONSTRAINT chk_airplanes_chrono      CHECK (
+        (date_first_fly   IS NULL OR date_concept   IS NULL OR date_first_fly   >= date_concept)
+    AND (date_operationel IS NULL OR date_first_fly IS NULL OR date_operationel >= date_first_fly)),
+  ADD CONSTRAINT chk_airplanes_production  CHECK (production_end IS NULL OR production_start IS NULL OR production_end >= production_start),
+  ADD CONSTRAINT chk_airplanes_dimensions  CHECK (
+        (length IS NULL OR length > 0) AND (wingspan  IS NULL OR wingspan  > 0)
+    AND (height IS NULL OR height > 0) AND (wing_area IS NULL OR wing_area > 0)),
+  ADD CONSTRAINT chk_airplanes_perfs       CHECK (
+        (max_speed       IS NULL OR max_speed       > 0) AND (max_range  IS NULL OR max_range  > 0)
+    AND (service_ceiling IS NULL OR service_ceiling > 0) AND (climb_rate IS NULL OR climb_rate > 0)
+    AND (combat_radius   IS NULL OR combat_radius   > 0)),
+  ADD CONSTRAINT chk_airplanes_rayon       CHECK (combat_radius IS NULL OR max_range IS NULL OR combat_radius <= max_range),
+  ADD CONSTRAINT chk_airplanes_facteur_g   CHECK ((g_limit_pos IS NULL OR g_limit_pos > 0) AND (g_limit_neg IS NULL OR g_limit_neg < 0)),
+  ADD CONSTRAINT chk_airplanes_equipage    CHECK (crew IS NULL OR crew BETWEEN 1 AND 35),
+  ADD CONSTRAINT chk_airplanes_moteurs     CHECK (engine_count IS NULL OR engine_count BETWEEN 1 AND 10),
+  ADD CONSTRAINT chk_airplanes_poussee     CHECK (
+        (thrust_dry IS NULL OR thrust_dry > 0) AND (thrust_wet IS NULL OR thrust_wet > 0)
+    AND (thrust_wet IS NULL OR thrust_dry IS NULL OR thrust_wet >= thrust_dry)),
+  ADD CONSTRAINT chk_airplanes_qte_prod    CHECK (units_built IS NULL OR units_built >= 0),
+  ADD CONSTRAINT chk_airplanes_annee_cout  CHECK (unit_cost_year IS NULL OR unit_cost_year BETWEEN 1940 AND 2100),
+  ADD CONSTRAINT chk_airplanes_auto_ref    CHECK (
+        (predecessor_id IS NULL OR predecessor_id <> id)
+    AND (successor_id   IS NULL OR successor_id   <> id)
+    AND (rival_id       IS NULL OR rival_id       <> id));
 
 -- Index pour navigation prédécesseur/successeur/rival (strate 4)
 CREATE INDEX IF NOT EXISTS idx_airplanes_predecessor ON airplanes (predecessor_id) WHERE predecessor_id IS NOT NULL;
@@ -208,7 +241,7 @@ CREATE INDEX IF NOT EXISTS idx_airplanes_search_vector  ON airplanes USING GIN (
 CREATE TABLE favorites (
   user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   airplane_id INTEGER NOT NULL REFERENCES airplanes(id) ON DELETE CASCADE,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   PRIMARY KEY (user_id, airplane_id)
 );
 
@@ -302,7 +335,27 @@ INSERT INTO countries (name, name_en, code) VALUES
 ('Liban', 'Lebanon', 'LBN'),
 ('Algérie', 'Algeria', 'DZA'),
 ('Syrie', 'Syria', 'SYR'),
-('Iran', 'Iran', 'IRN');
+('Iran', 'Iran', 'IRN'),
+('Libye', 'Libya', 'LBY'),
+('Ukraine', 'Ukraine', 'UKR'),
+('Corée du Sud', 'South Korea', 'ROK'),
+('Turquie', 'Turkey', 'TUR'),
+('Tchécoslovaquie', 'Czechoslovakia', 'CSK'),
+('Taïwan', 'Taiwan', 'TWN'),
+('Pologne', 'Poland', 'POL'),
+('Espagne', 'Spain', 'ESP'),
+('Afrique du Sud', 'South Africa', 'ZAF'),
+('Argentine', 'Argentina', 'ARG'),
+('Suisse', 'Switzerland', 'CHE'),
+('Pays-Bas', 'Netherlands', 'NLD'),
+('Finlande', 'Finland', 'FIN'),
+('Chili', 'Chile', 'CHL'),
+('Pakistan', 'Pakistan', 'PAK'),
+('Indonésie', 'Indonesia', 'IDN'),
+('Canada', 'Canada', 'CAN'),
+('Roumanie', 'Romania', 'ROU'),
+('Australie', 'Australia', 'AUS'),
+('Égypte', 'Egypt', 'EGY');
 
 INSERT INTO wars (name, name_en, date_start, date_end, country_id, description, description_en) VALUES
 ('Guerre du Vietnam', 'Vietnam War', '1955-11-01', '1975-04-30', (SELECT id FROM countries WHERE code = 'VNM'), 'Conflit prolongé entre le Nord-Vietnam communiste et le Sud-Vietnam soutenu par les États-Unis.', 'Prolonged conflict between communist North Vietnam and US-backed South Vietnam.'),
@@ -319,9 +372,11 @@ INSERT INTO wars (name, name_en, date_start, date_end, country_id, description, 
 ('Guerre des Malouines', 'Falklands War', '1982-04-02', '1982-06-14', (SELECT id FROM countries WHERE code = 'FLK'), 'Conflit entre l''Argentine et le Royaume-Uni pour le contrôle des îles Malouines.', 'Conflict between Argentina and the United Kingdom for control of the Falkland Islands.'),
 ('Guerre civile syrienne', 'Syrian Civil War', '2011-03-15', NULL, (SELECT id FROM countries WHERE code = 'SYR'), 'Conflit complexe en Syrie impliquant le gouvernement syrien, des rebelles, et des forces internationales.', 'Complex conflict in Syria involving the Syrian government, rebels, and international forces.'),
 ('Guerre du Liban', 'Lebanon War', '1982-06-06', '1982-09-30', (SELECT id FROM countries WHERE code = 'LBN'), 'Conflit entre Israël et des factions libanaises et palestiniennes.', 'Conflict between Israel and Lebanese and Palestinian factions.'),
-('Guerre d''Indochine', 'First Indochina War', '1946-12-19', '1954-07-20', (SELECT id FROM countries WHERE code = 'VNM'), 'Conflit entre la France et le Viet Minh pour le contrôle de l''Indochine.', 'Conflict between France and the Viet Minh for control of Indochina.'),
 ('Guerre Indo-Pakistanaise de 1971', 'Indo-Pakistani War of 1971', '1971-12-03', '1971-12-16', (SELECT id FROM countries WHERE code = 'IND'), 'Conflit entre l''Inde et le Pakistan entraînant la création du Bangladesh.', 'Conflict between India and Pakistan leading to the creation of Bangladesh.'),
-('Guerre d''Algérie', 'Algerian War', '1954-11-01', '1962-03-19', (SELECT id FROM countries WHERE code = 'DZA'), 'Conflit entre la France et le Front de libération nationale (FLN) pour l''indépendance de l''Algérie.', 'Conflict between France and the National Liberation Front (FLN) for Algerian independence.');
+('Guerre d''Algérie', 'Algerian War', '1954-11-01', '1962-03-19', (SELECT id FROM countries WHERE code = 'DZA'), 'Conflit entre la France et le Front de libération nationale (FLN) pour l''indépendance de l''Algérie.', 'Conflict between France and the National Liberation Front (FLN) for Algerian independence.'),
+('Intervention en Libye', 'Libyan Intervention', '2011-03-19', '2011-10-31', (SELECT id FROM countries WHERE code = 'LBY'), 'Campagne aérienne d''une coalition OTAN contre les forces de Mouammar Kadhafi, sous mandat de la résolution 1973 du Conseil de sécurité.', 'NATO-led air campaign against Muammar Gaddafi''s forces, mandated by UN Security Council Resolution 1973.'),
+('Conflit indo-pakistanais de 2019', 'India-Pakistan Standoff of 2019', '2019-02-26', '2019-03-01', (SELECT id FROM countries WHERE code = 'IND'), 'Affrontement aérien entre l''Inde et le Pakistan après la frappe de Balakot, incluant le premier combat aérien entre puissances nucléaires.', 'Air confrontation between India and Pakistan following the Balakot strike, including the first air combat between nuclear powers.'),
+('Invasion russe de l''Ukraine', 'Russian Invasion of Ukraine', '2022-02-24', NULL, (SELECT id FROM countries WHERE code = 'UKR'), 'Conflit de haute intensité opposant la Russie à l''Ukraine, marqué par une guerre aérienne contestée et un usage massif de missiles de croisière et de drones.', 'High-intensity conflict between Russia and Ukraine, marked by contested air warfare and massive use of cruise missiles and drones.');
 
 -- Insertion des missions
 INSERT INTO missions (name, name_en, description, description_en) VALUES
@@ -339,7 +394,12 @@ INSERT INTO missions (name, name_en, description, description_en) VALUES
 ('Largage de secours', 'Supply Drop', 'Livraison de matériel ou de provisions dans des zones difficiles d’accès.', 'Delivery of equipment or supplies to hard-to-reach areas.'),
 ('Escorte', 'Escort', 'Protection d’autres aéronefs (bombardiers, transports) contre les menaces aériennes.', 'Protection of other aircraft (bombers, transports) against air threats.'),
 ('Entraînement au combat', 'Combat Training', 'Simulation de missions pour préparer les pilotes au combat réel.', 'Mission simulation to prepare pilots for real combat.'),
-('Dissuasion nucléaire', 'Nuclear Deterrence', 'Transport et éventuel largage d’armes nucléaires pour des missions stratégiques.', 'Carriage and potential release of nuclear weapons for strategic missions.');
+('Dissuasion nucléaire', 'Nuclear Deterrence', 'Transport et éventuel largage d’armes nucléaires pour des missions stratégiques.', 'Carriage and potential release of nuclear weapons for strategic missions.'),
+('Transport logistique', 'Logistic Transport', 'Acheminement de troupes, de fret et de matériel entre bases ou vers un théâtre d’opérations.', 'Movement of troops, freight and equipment between bases or into a theatre of operations.'),
+('Ravitaillement en vol', 'Aerial Refuelling', 'Transfert de carburant en vol vers d’autres aéronefs, prolongeant leur autonomie et leur temps sur zone.', 'In-flight fuel transfer to other aircraft, extending their range and time on station.'),
+('Largage de troupes', 'Paratroop Drop', 'Mise à terre de parachutistes et de charges par largage, y compris à très basse altitude.', 'Delivery of paratroops and loads by air drop, including at very low level.'),
+('Essais en vol', 'Flight testing', 'Évaluation en vol d''un appareil ou d''une technologie', 'In-flight evaluation of an aircraft or a technology'),
+('Reconnaissance tactique', 'Tactical reconnaissance', 'Observation du champ de bataille au profit des forces engagées', 'Battlefield observation in support of engaged forces');
 
 INSERT INTO manufacturer (name, name_en, country_id, code) VALUES
 ('Lockheed Martin', 'Lockheed Martin', (SELECT id FROM countries WHERE code = 'USA'), 'LM'),
@@ -357,7 +417,107 @@ INSERT INTO manufacturer (name, name_en, country_id, code) VALUES
 ('HAL (Hindustan Aeronautics Limited)', 'HAL (Hindustan Aeronautics Limited)', (SELECT id FROM countries WHERE code = 'IND'), 'HAL'),
 ('Mitsubishi Heavy Industries', 'Mitsubishi Heavy Industries', (SELECT id FROM countries WHERE code = 'JPN'), 'MHI'),
 ('Embraer', 'Embraer', (SELECT id FROM countries WHERE code = 'BRA'), 'EMB'),
-('IAI (Israel Aerospace Industries)', 'IAI (Israel Aerospace Industries)', (SELECT id FROM countries WHERE code = 'ISR'), 'IAI');
+('IAI (Israel Aerospace Industries)', 'IAI (Israel Aerospace Industries)', (SELECT id FROM countries WHERE code = 'ISR'), 'IAI'),
+-- Constructeurs partages par plusieurs fiches : déclarés ici et non dans une
+-- fiche, l'ordre de chargement alphabetique ne garantissant pas leur présence.
+('Convair', 'Convair', (SELECT id FROM countries WHERE code = 'USA'), 'CVR'),
+('Grumman', 'Grumman', (SELECT id FROM countries WHERE code = 'USA'), 'GRU'),
+('English Electric', 'English Electric', (SELECT id FROM countries WHERE code = 'GBR'), 'EE'),
+('Vought', 'Vought', (SELECT id FROM countries WHERE code = 'USA'), 'VOU'),
+('Korea Aerospace Industries', 'Korea Aerospace Industries', (SELECT id FROM countries WHERE code = 'ROK'), 'KAI');
+
+-- Constructeurs historiques déclarés jusqu'ici dans les fiches individuelles.
+-- Remontés ici sans exception : une fiche qui référence un constructeur déclaré
+-- par une fiche chargée après elle entre en base avec id_manufacturer = NULL,
+-- sans qu'aucune erreur ne soit levée (la clé étrangère est nullable).
+INSERT INTO manufacturer (name, name_en, country_id, code) VALUES
+('Aero Vodochody', 'Aero Vodochody', (SELECT id FROM countries WHERE code = 'CSK'), 'AERO'),
+('AIDC (Aerospace Industrial Development Corporation)', 'AIDC (Aerospace Industrial Development Corporation)', (SELECT id FROM countries WHERE code = 'TWN'), 'AIDC'),
+('British Aircraft Corporation', 'British Aircraft Corporation', (SELECT id FROM countries WHERE code = 'GBR'), 'BAC'),
+('Baykar', 'Baykar', (SELECT id FROM countries WHERE code = 'TUR'), 'BAY'),
+('CASA (Construcciones Aeronáuticas SA)', 'CASA (Construcciones Aeronáuticas SA)', (SELECT id FROM countries WHERE code = 'ESP'), 'CASA'),
+('de Havilland', 'de Havilland', (SELECT id FROM countries WHERE code = 'GBR'), 'DH'),
+('Douglas Aircraft Company', 'Douglas Aircraft Company', (SELECT id FROM countries WHERE code = 'USA'), 'DOU'),
+('Fiat Aviazione', 'Fiat Aviazione', (SELECT id FROM countries WHERE code = 'ITA'), 'FIAT'),
+('General Atomics', 'General Atomics', (SELECT id FROM countries WHERE code = 'USA'), 'GA'),
+('Gloster Aircraft Company', 'Gloster Aircraft Company', (SELECT id FROM countries WHERE code = 'GBR'), 'GLO'),
+('HESA (Iran Aircraft Manufacturing Industrial Company)', 'HESA (Iran Aircraft Manufacturing Industrial Company)', (SELECT id FROM countries WHERE code = 'IRN'), 'HESA'),
+('Hongdu Aviation Industry', 'Hongdu Aviation Industry', (SELECT id FROM countries WHERE code = 'CHN'), 'HONG'),
+('Handley Page', 'Handley Page', (SELECT id FROM countries WHERE code = 'GBR'), 'HP'),
+('Hawker Siddeley', 'Hawker Siddeley', (SELECT id FROM countries WHERE code = 'GBR'), 'HS'),
+('Iliouchine', 'Ilyushin', (SELECT id FROM countries WHERE code = 'RUS'), 'ILY'),
+('Kawasaki Heavy Industries', 'Kawasaki Heavy Industries', (SELECT id FROM countries WHERE code = 'JPN'), 'KHI'),
+('Ling-Temco-Vought', 'Ling-Temco-Vought', (SELECT id FROM countries WHERE code = 'USA'), 'LTV'),
+('McDonnell Douglas', 'McDonnell Douglas', (SELECT id FROM countries WHERE code = 'USA'), 'MDD'),
+('North American Aviation', 'North American Aviation', (SELECT id FROM countries WHERE code = 'USA'), 'NAA'),
+('Nanchang Aircraft Corporation', 'Nanchang Aircraft Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'NAMC'),
+('Northrop', 'Northrop', (SELECT id FROM countries WHERE code = 'USA'), 'NOR'),
+('PZL-Mielec', 'PZL-Mielec', (SELECT id FROM countries WHERE code = 'POL'), 'PZL'),
+('Republic Aviation', 'Republic Aviation', (SELECT id FROM countries WHERE code = 'USA'), 'REP'),
+('Soko', 'Soko', (SELECT id FROM countries WHERE code = 'YUG'), 'SOKO'),
+('Sud Aviation', 'Sud Aviation', (SELECT id FROM countries WHERE code = 'FRA'), 'SUD'),
+('Supermarine', 'Supermarine', (SELECT id FROM countries WHERE code = 'GBR'), 'SUP'),
+('Xian Aircraft Corporation', 'Xian Aircraft Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'XAC'),
+('Yakovlev', 'Yakovlev', (SELECT id FROM countries WHERE code = 'RUS'), 'YAK'),
+('Vickers-Armstrongs', 'Vickers-Armstrongs', (SELECT id FROM countries WHERE code = 'GBR'), 'VIC'),
+('Folland Aircraft', 'Folland Aircraft', (SELECT id FROM countries WHERE code = 'GBR'), 'FOL'),
+('Fouga', 'Fouga', (SELECT id FROM countries WHERE code = 'FRA'), 'FOU'),
+('Myasishchev', 'Myasishchev', (SELECT id FROM countries WHERE code = 'RUS'), 'MYA'),
+('North American Rockwell', 'North American Rockwell', (SELECT id FROM countries WHERE code = 'USA'), 'ROC'),
+('Cessna', 'Cessna', (SELECT id FROM countries WHERE code = 'USA'), 'CES'),
+('Atlas Aircraft Corporation', 'Atlas Aircraft Corporation', (SELECT id FROM countries WHERE code = 'ZAF'), 'ATL'),
+('FMA (Fábrica Militar de Aviones)', 'FMA (Fábrica Militar de Aviones)', (SELECT id FROM countries WHERE code = 'ARG'), 'FMA'),
+('Pilatus Aircraft', 'Pilatus Aircraft', (SELECT id FROM countries WHERE code = 'CHE'), 'PIL'),
+('TAI (Turkish Aerospace Industries)', 'TAI (Turkish Aerospace Industries)', (SELECT id FROM countries WHERE code = 'TUR'), 'TAI'),
+('Beriev', 'Beriev', (SELECT id FROM countries WHERE code = 'RUS'), 'BER'),
+('Breguet Aviation', 'Breguet Aviation', (SELECT id FROM countries WHERE code = 'FRA'), 'BRG'),
+('Avro Canada', 'Avro Canada', (SELECT id FROM countries WHERE code = 'CAN'), 'AVC'),
+('Fairey Aviation', 'Fairey Aviation', (SELECT id FROM countries WHERE code = 'GBR'), 'FAI'),
+('IAR (Industria Aeronautică Română)', 'IAR (Industria Aeronautică Română)', (SELECT id FROM countries WHERE code = 'ROU'), 'IAR'),
+('Avro (A.V. Roe)', 'Avro (A.V. Roe)', (SELECT id FROM countries WHERE code = 'GBR'), 'AVR'),
+('CAC (Commonwealth Aircraft Corporation)', 'CAC (Commonwealth Aircraft Corporation)', (SELECT id FROM countries WHERE code = 'AUS'), 'CWA'),
+('Helwan Aircraft Factory', 'Helwan Aircraft Factory', (SELECT id FROM countries WHERE code = 'EGY'), 'HEL'),
+('Antonov', 'Antonov', (SELECT id FROM countries WHERE code = 'UKR'), 'ANT'),
+('Transall', 'Transall', (SELECT id FROM countries WHERE code = 'FRA'), 'TRA'),
+('de Havilland Canada', 'de Havilland Canada', (SELECT id FROM countries WHERE code = 'CAN'), 'DHC'),
+('Fairchild Aircraft', 'Fairchild Aircraft', (SELECT id FROM countries WHERE code = 'USA'), 'FRC'),
+('Westland Aircraft', 'Westland Aircraft', (SELECT id FROM countries WHERE code = 'GBR'), 'WES'),
+('Nord Aviation', 'Nord Aviation', (SELECT id FROM countries WHERE code = 'FRA'), 'NRD'),
+('Lavochkine', 'Lavochkin', (SELECT id FROM countries WHERE code = 'RUS'), 'LAV'),
+('Saunders-Roe', 'Saunders-Roe', (SELECT id FROM countries WHERE code = 'GBR'), 'SRO'),
+('FFA (Flug- und Fahrzeugwerke Altenrhein)', 'FFA (Flug- und Fahrzeugwerke Altenrhein)', (SELECT id FROM countries WHERE code = 'CHE'), 'FFA'),
+('Hispano Aviación', 'Hispano Aviación', (SELECT id FROM countries WHERE code = 'ESP'), 'HSP'),
+('Dornier', 'Dornier', (SELECT id FROM countries WHERE code = 'DEU'), 'DOR'),
+('EWR (Entwicklungsring Süd)', 'EWR (Entwicklungsring Süd)', (SELECT id FROM countries WHERE code = 'DEU'), 'EWR'),
+('VFW (Vereinigte Flugtechnische Werke)', 'VFW (Vereinigte Flugtechnische Werke)', (SELECT id FROM countries WHERE code = 'DEU'), 'VFW'),
+('Ryan Aeronautical', 'Ryan Aeronautical', (SELECT id FROM countries WHERE code = 'USA'), 'RYA'),
+('Bell Aircraft', 'Bell Aircraft', (SELECT id FROM countries WHERE code = 'USA'), 'BEL'),
+('Short Brothers', 'Short Brothers', (SELECT id FROM countries WHERE code = 'GBR'), 'SHO'),
+('Hawker Aircraft', 'Hawker Aircraft', (SELECT id FROM countries WHERE code = 'GBR'), 'HAW'),
+('General Dynamics', 'General Dynamics', (SELECT id FROM countries WHERE code = 'USA'), 'GD'),
+('Fokker', 'Fokker', (SELECT id FROM countries WHERE code = 'NLD'), 'FOK'),
+('Valmet', 'Valmet', (SELECT id FROM countries WHERE code = 'FIN'), 'VAL'),
+('ENAER (Empresa Nacional de Aeronáutica de Chile)', 'ENAER (Empresa Nacional de Aeronáutica de Chile)', (SELECT id FROM countries WHERE code = 'CHL'), 'ENA'),
+('SIAI-Marchetti', 'SIAI-Marchetti', (SELECT id FROM countries WHERE code = 'ITA'), 'SIAI'),
+('Hunting Aircraft', 'Hunting Aircraft', (SELECT id FROM countries WHERE code = 'GBR'), 'HUN'),
+('Beechcraft', 'Beechcraft', (SELECT id FROM countries WHERE code = 'USA'), 'BEE'),
+('PZL Warszawa-Okęcie', 'PZL Warszawa-Okęcie', (SELECT id FROM countries WHERE code = 'POL'), 'PZLW'),
+('Kratos Defense', 'Kratos Defense', (SELECT id FROM countries WHERE code = 'USA'), 'KRA'),
+('Elbit Systems', 'Elbit Systems', (SELECT id FROM countries WHERE code = 'ISR'), 'ELB'),
+('ShinMaywa', 'ShinMaywa', (SELECT id FROM countries WHERE code = 'JPN'), 'SHM'),
+('Fuji Heavy Industries', 'Fuji Heavy Industries', (SELECT id FROM countries WHERE code = 'JPN'), 'FUJ'),
+('Shaanxi Aircraft Corporation', 'Shaanxi Aircraft Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'SHX'),
+('Guizhou Aircraft Industry', 'Guizhou Aircraft Industry', (SELECT id FROM countries WHERE code = 'CHN'), 'GAIC'),
+('IPTN (Industri Pesawat Terbang Nusantara)', 'IPTN (Industri Pesawat Terbang Nusantara)', (SELECT id FROM countries WHERE code = 'IDN'), 'IPTN'),
+('Canadair', 'Canadair', (SELECT id FROM countries WHERE code = 'CAN'), 'CDR'),
+('GAF (Government Aircraft Factories)', 'GAF (Government Aircraft Factories)', (SELECT id FROM countries WHERE code = 'AUS'), 'GAF'),
+('Aeritalia', 'Aeritalia', (SELECT id FROM countries WHERE code = 'ITA'), 'AIT'),
+('Let Kunovice', 'Let Kunovice', (SELECT id FROM countries WHERE code = 'CSK'), 'LET'),
+('HFB (Hamburger Flugzeugbau)', 'HFB (Hamburger Flugzeugbau)', (SELECT id FROM countries WHERE code = 'DEU'), 'HFB'),
+('PAC (Pakistan Aeronautical Complex)', 'PAC (Pakistan Aeronautical Complex)', (SELECT id FROM countries WHERE code = 'PAK'), 'PAC'),
+('SOCATA', 'SOCATA', (SELECT id FROM countries WHERE code = 'FRA'), 'SOC'),
+('Scottish Aviation', 'Scottish Aviation', (SELECT id FROM countries WHERE code = 'GBR'), 'SAL'),
+('Britten-Norman', 'Britten-Norman', (SELECT id FROM countries WHERE code = 'GBR'), 'BN');
 
 INSERT INTO generation (generation, description, description_en) VALUES
 (1, 'Première génération : Avions à réaction subsoniques des années 1940-1950', NULL),
@@ -372,7 +532,13 @@ INSERT INTO type (name, name_en, description, description_en) VALUES
 ('Reconnaissance', 'Reconnaissance', 'Avion utilisé pour la surveillance et la collecte d’informations', 'Aircraft used for surveillance and intelligence gathering'),
 ('Intercepteur', 'Interceptor', 'Avion rapide conçu pour intercepter et neutraliser les menaces aériennes', 'Fast aircraft designed to intercept and neutralize airborne threats'),
 ('Multirôle', 'Multirole', 'Avion capable d’effectuer plusieurs types de missions', 'Aircraft capable of performing multiple mission types'),
-('Appui aérien', 'Close Air Support', 'Avion conçu pour soutenir les troupes au sol avec des frappes ciblées', 'Aircraft designed to support ground troops with precision strikes');
+('Appui aérien', 'Close Air Support', 'Avion conçu pour soutenir les troupes au sol avec des frappes ciblées', 'Aircraft designed to support ground troops with precision strikes'),
+('Entraîneur', 'Trainer', 'Avion d''entraînement conçu pour la formation des pilotes militaires', 'Aircraft designed for the training of military pilots'),
+('Guerre électronique', 'Electronic Warfare', 'Avion dédié au brouillage et à la neutralisation des systèmes électroniques adverses', 'Aircraft dedicated to jamming and neutralising enemy electronic systems'),
+('Drone de combat', 'Combat Drone', 'Aéronef de combat sans équipage embarqué, piloté à distance ou autonome', 'Combat aircraft without an onboard crew, remotely piloted or autonomous'),
+('Transport', 'Transport', 'Aéronef dédié au transport de troupes, de fret ou de matériel lourd', 'Aircraft dedicated to carrying troops, freight or heavy equipment'),
+('Ravitailleur', 'Tanker', 'Aéronef dédié au ravitaillement en vol, prolongeant l’allonge des autres appareils', 'Aircraft dedicated to aerial refuelling, extending the reach of other aircraft'),
+('Recherche', 'Research', 'Aéronef expérimental dédié à l''étude d''un concept, sans vocation opérationnelle', 'Experimental aircraft dedicated to studying a concept, with no operational role');
 
 INSERT INTO armement (name, name_en, description, description_en) VALUES
 ('DEFA 552', NULL, 'Canon de 30 mm, 125 coups par canon', '30 mm cannon, 125 rounds per gun'),
@@ -569,6 +735,29 @@ INSERT INTO armement (name, name_en, description, description_en) VALUES
 ('ASM-3', NULL, 'Missile antinavire supersonique japonais, portée 200 km', 'Japanese supersonic anti-ship missile, 200 km range'),
 ('Popeye Turbo', NULL, 'Missile de croisière israélien à longue portée, 1500 km', 'Israeli long-range cruise missile, 1500 km range');
 
+-- Armements spécifiques aux appareils chinois. Ils étaient auparavant déclarés
+-- dans les fiches elles-mêmes (h6, j15, j16, j20, jf17), ce qui créait une
+-- dépendance à l'ordre de chargement alphabétique : une fiche pouvait référencer
+-- un armement déclaré par une fiche chargée après elle. Déclarés ici, ils sont
+-- disponibles pour toutes les fiches.
+INSERT INTO armement (name, name_en, description, description_en) VALUES
+('NR-23', NULL, 'Canon de 23 mm, 850 coups/min', '23 mm cannon, 850 rounds/min'),
+('PL-10', NULL, 'Missile air-air courte portée, guidage infrarouge à imagerie, 20 km', 'Short-range air-to-air missile, imaging infrared guidance, 20 km'),
+('PL-15', NULL, 'Missile air-air longue portée, guidage radar actif, 200+ km', 'Long-range air-to-air missile, active radar guidance, 200+ km'),
+('YJ-83', NULL, 'Missile antinavire subsonique, guidage radar actif, portée 180 km', 'Subsonic anti-ship missile, active radar guidance, 180 km range'),
+('YJ-91', NULL, 'Missile anti-radar/antinavire, portée 120 km', 'Anti-radiation / anti-ship missile, 120 km range'),
+('KD-88', NULL, 'Missile air-sol de précision, guidage TV/IR, portée 180 km', 'Precision air-to-surface missile, TV/IR guidance, 180 km range'),
+('C-802A', NULL, 'Missile antinavire subsonique, guidage radar actif, portée 180 km', 'Subsonic anti-ship missile, active radar guidance, 180 km range'),
+('CJ-10', NULL, 'Missile de croisière à lancement aérien, portée 1500-2000 km', 'Air-launched cruise missile, 1500-2000 km range'),
+('CJ-20', NULL, 'Missile de croisière furtif à lancement aérien, portée 2000+ km', 'Stealthy air-launched cruise missile, 2000+ km range'),
+('AIM-4 Falcon', NULL, 'Missile air-air à guidage infrarouge ou radar semi-actif, portée 11 km', 'Infrared or semi-active radar guided air-to-air missile, 11 km range'),
+('AIR-2 Genie', NULL, 'Roquette air-air à charge nucléaire de 1,5 kt, non guidée', 'Unguided air-to-air rocket with a 1.5 kt nuclear warhead'),
+('Hispano-Suiza HS.404', NULL, 'Canon de 20 mm à alimentation par bande, 600 coups/min', '20 mm belt-fed cannon, 600 rounds/min'),
+('M3 Browning 12,7 mm', NULL, 'Mitrailleuse lourde américaine de 12,7 mm, 1 200 coups/min, armement standard des premiers jets', 'American 12.7 mm heavy machine gun, 1,200 rounds/min, standard armament of the first jets'),
+('Mk 46', NULL, 'Torpille légère anti-sous-marine américaine, portée 11 km, immersion 365 m', 'American lightweight anti-submarine torpedo, 11 km range, 365 m depth'),
+('Sting Ray', NULL, 'Torpille légère anti-sous-marine britannique à guidage actif/passif', 'British lightweight anti-submarine torpedo with active/passive homing'),
+('FFAR Mighty Mouse', NULL, 'Roquette air-air non guidée de 70 mm, tirée en salve depuis un panier ventral', 'Unguided 70 mm air-to-air rocket, salvo-fired from a belly tray');
+
 -- Technologies génériques réutilisables
 INSERT INTO tech (name, name_en, description, description_en) VALUES
 ('Aile delta', 'Delta wing', 'Configuration aérodynamique sans empennage horizontal pour les hautes vitesses', 'Aerodynamic configuration without horizontal tail for high speeds'),
@@ -691,7 +880,14 @@ INSERT INTO tech (name, name_en, description, description_en) VALUES
 ('Poste de pilotage côte à côte', 'Side-by-side cockpit', 'Configuration côte à côte pour les missions longues durées', 'Side-by-side configuration for long-duration missions'),
 ('Configuration bi-moteurs superposés', 'Stacked twin-engine configuration', 'Moteurs empilés verticalement pour réduire la traînée', 'Engines stacked vertically to reduce drag'),
 ('Système de décollage et d''atterrissage sur porte-avions', 'Carrier take-off and landing system', 'Renforcement structurel et corrosion contrôlée pour porte-avions', 'Structural reinforcement and corrosion control for carriers'),
-('Conception aérodynamique pour haute altitude', 'High-altitude aerodynamic design', 'Forme optimisée pour le vol à haute altitude et haute vitesse', 'Optimized shape for high-altitude and high-speed flight');
+('Conception aérodynamique pour haute altitude', 'High-altitude aerodynamic design', 'Forme optimisée pour le vol à haute altitude et haute vitesse', 'Optimized shape for high-altitude and high-speed flight'),
+('Aile en flèche inversée', 'Forward-swept wing', 'Voilure dont les extrémités sont en avant de l''emplanture, gain de manoeuvrabilité au prix d''une divergence aéroélastique', 'Wing whose tips lie ahead of the root, improving manoeuvrability at the cost of aeroelastic divergence'),
+('Moteur-fusée', 'Rocket engine', 'Propulsion emportant son comburant, autorisant le vol au-delà de l''atmosphère respirable', 'Propulsion carrying its own oxidiser, allowing flight beyond the breathable atmosphere');
+
+-- Mêmes causes que pour l'armement ci-dessus : références mortes depuis les fiches.
+INSERT INTO tech (name, name_en, description, description_en) VALUES
+('Radar AN/APQ-94', 'AN/APQ-94 radar', 'Radar de conduite de tir monopulse pour l''interception tout temps', 'Monopulse fire-control radar for all-weather interception'),
+('Système de ravitaillement en vol', 'Aerial refuelling system', 'Perche ou réceptacle permettant l''extension du rayon d''action en vol', 'Probe or receptacle extending combat radius in flight');
 
 -- =============================================================================
 -- timeline_events — chronologie éditoriale du ciel militaire (1945 → aujourd'hui).
@@ -711,8 +907,8 @@ CREATE TABLE IF NOT EXISTS timeline_events (
     airplane_id     INTEGER REFERENCES airplanes(id) ON DELETE SET NULL,
     quote_author_fr VARCHAR(160),
     quote_author_en VARCHAR(160),
-    created_at      TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at      TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_timeline_events_decade   ON timeline_events (era_decade, event_date);

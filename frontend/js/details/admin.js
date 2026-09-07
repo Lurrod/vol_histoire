@@ -21,7 +21,7 @@
       ['edit-name', 'name'], ['edit-complete-name', 'complete_name'],
       ['edit-little-description', 'little_description'], ['edit-image-url', 'image_url'],
       ['edit-description', 'description'], ['edit-status', 'status'],
-      ['edit-max-speed', 'max_speed'], ['edit-max-range', 'max_range'], ['edit-weight', 'weight'],
+      ['edit-max-speed', 'max_speed'], ['edit-max-range', 'max_range'],
       // strate 1
       ['edit-length', 'length'], ['edit-wingspan', 'wingspan'], ['edit-height', 'height'],
       ['edit-wing-area', 'wing_area'], ['edit-empty-weight', 'empty_weight'], ['edit-mtow', 'mtow'],
@@ -38,6 +38,7 @@
       ['edit-variants', 'variants'],
       // strate 4
       ['edit-nickname', 'nickname'],
+      ['edit-image-credit', 'image_credit'], ['edit-image-licence', 'image_licence'],
       // strate 6
       ['edit-wikipedia-fr', 'wikipedia_fr'], ['edit-wikipedia-en', 'wikipedia_en'],
       ['edit-youtube-showcase', 'youtube_showcase'], ['edit-manufacturer-page', 'manufacturer_page'],
@@ -172,7 +173,6 @@
         date_operationel: str('edit-date-operationel'),
         max_speed: num('edit-max-speed'),
         max_range: num('edit-max-range'),
-        weight: num('edit-weight'),
         // strate 1
         length: num('edit-length'),
         wingspan: num('edit-wingspan'),
@@ -211,6 +211,8 @@
         wikipedia_en: str('edit-wikipedia-en'),
         youtube_showcase: str('edit-youtube-showcase'),
         manufacturer_page: str('edit-manufacturer-page'),
+        image_credit: str('edit-image-credit'),
+        image_licence: str('edit-image-licence'),
       };
 
       try {

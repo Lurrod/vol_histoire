@@ -478,7 +478,7 @@ describe('validateAirplaneData', () => {
     id_generation: 5,
     type: 1,
     status: 'en service',
-    weight: 19700,
+    empty_weight: 19700,
   };
 
   test('retourne un tableau vide pour des données valides', () => {
@@ -526,10 +526,10 @@ describe('validateAirplaneData', () => {
     expect(errors).toContain('La vitesse max doit être un nombre positif.');
   });
 
-  test('retourne une erreur si weight est négatif', () => {
-    const data = { ...validData, weight: -50 };
+  test('retourne une erreur si empty_weight est négatif', () => {
+    const data = { ...validData, empty_weight: -50 };
     const errors = validateAirplaneData(data);
-    expect(errors).toContain('Le poids doit être un nombre positif.');
+    expect(errors).toContain('Le poids à vide doit être un nombre positif.');
   });
 
   test('retourne plusieurs erreurs simultanément', () => {
@@ -555,7 +555,7 @@ describe('validateAirplaneData', () => {
       id_generation: null,
       type: null,
       status: null,
-      weight: null,
+      empty_weight: null,
     };
     expect(validateAirplaneData(minimalData)).toEqual([]);
   });

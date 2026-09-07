@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Mitsubishi T-2',
     'Mitsubishi T-2',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
     'Retiré',
-    'Retired',
-    6307.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -92,3 +90,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme lancé en **1967** pour doter la JASDF d''un entraîneur supersonique national remplaçant les Lockheed T-33. Configuration inspirée du SEPECAT Jaguar. Premier vol le **20 juillet 1971**, mise en service au **29 mars 1975** au 22° Hikōtai de Matsushima.\n\n## Carrière opérationnelle\n**96 exemplaires produits** (32 T-2A + 62 T-2B + 2 prototypes). Formation de tous les pilotes de chasse de la JASDF pendant 30 ans (F-104, F-4EJ, F-15J, F-2). Ambassadeur des acrobaties : **Blue Impulse** sur T-2 de 1982 à 1995 (vol en formation 6 avions).\n\n## Héritage\nLe **T-2CCV** (Control Configured Vehicle) a servi de banc d''essai au système fly-by-wire qui équipe le F-2. Fin d''époque pour l''aviation militaire supersonique japonaise de conception nationale — remplacé par le Kawasaki T-4 (subsonique) pour l''entraînement avancé. Retrait définitif en **2006**.',
   description_en = E'## Genesis\nProgramme launched in **1967** to give the JASDF a domestic supersonic trainer replacing Lockheed T-33s. Configuration inspired by the SEPECAT Jaguar. First flight on **20 July 1971**, service entry on **29 March 1975** with the 22° Hikōtai at Matsushima.\n\n## Operational career\n**96 examples built** (32 T-2A + 62 T-2B + 2 prototypes). Trained all JASDF fighter pilots for 30 years (F-104, F-4EJ, F-15J, F-2). Aerobatic ambassador: **Blue Impulse** on T-2 from 1982 to 1995 (six-aircraft formation flight).\n\n## Legacy\nThe **T-2CCV** (Control Configured Vehicle) served as a testbed for the fly-by-wire system fitted on the F-2. End of an era for Japanese-designed supersonic military aviation — replaced by the Kawasaki T-4 (subsonic) for advanced training. Final retirement in **2006**.'
 WHERE name = 'Mitsubishi T-2';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Mitsubishi T-2';

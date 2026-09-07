@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-35B Lightning II Anglais',
     'British F-35B Lightning II',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'LM'),
     (SELECT id FROM generation WHERE generation = 5),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    14651.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies

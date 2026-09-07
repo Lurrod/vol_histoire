@@ -1,7 +1,3 @@
--- Insertion du nouveau constructeur
-INSERT INTO manufacturer (name, country_id, code) VALUES
-('Nanchang Aircraft Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'NAMC');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -23,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Nanchang Q-5',
     'Nanchang Q-5',
@@ -45,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
     'Retiré',
-    NULL,
-    6375.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -57,7 +51,7 @@ INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
 
 -- Insertion des armements
 INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
-((SELECT id FROM airplanes WHERE name = 'Nanchang Q-5'), (SELECT id FROM armement WHERE name = 'Canon NR-23')),
+((SELECT id FROM airplanes WHERE name = 'Nanchang Q-5'), (SELECT id FROM armement WHERE name = 'NR-23')),
 ((SELECT id FROM airplanes WHERE name = 'Nanchang Q-5'), (SELECT id FROM armement WHERE name = 'FAB-250')),
 ((SELECT id FROM airplanes WHERE name = 'Nanchang Q-5'), (SELECT id FROM armement WHERE name = 'FAB-500')),
 ((SELECT id FROM airplanes WHERE name = 'Nanchang Q-5'), (SELECT id FROM armement WHERE name = 'Type 90-1')),
@@ -99,3 +93,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nDérivé d''attaque au sol du J-6 (MiG-19 chinois) développé dans les années 1960. Fuselage allongé, prise d''air latérale pour loger un radar bombardement, soute à bombes interne pour emport nucléaire tactique.\n\n## Carrière opérationnelle\nChasseur-bombardier principal de la PLA Air Force pendant 40 ans. Exporté en **7 pays** dont Pakistan, Bangladesh, Corée du Nord, Myanmar. Engagé dans les tensions avec l''Inde et les conflits birmans.\n\n## Héritage\nPlus de **1 300 exemplaires** produits. Retiré de Chine en 2017. Pakistan dernier opérateur actif. Témoin de la montée en puissance de l''industrie aéronautique chinoise.',
   description_en = E'## Genesis\nGround-attack derivative of the J-6 (Chinese MiG-19) developed in the 1960s. Lengthened fuselage, side air intakes to accommodate a bombing radar, internal weapons bay for tactical nuclear delivery.\n\n## Operational career\nMain fighter-bomber of the PLA Air Force for 40 years. Exported to **7 countries** including Pakistan, Bangladesh, North Korea, Myanmar. Used in tensions with India and Burmese conflicts.\n\n## Legacy\nMore than **1,300 built**. Retired from China in 2017. Pakistan last active operator. A witness to the rise of the Chinese aeronautical industry.'
 WHERE name = 'Nanchang Q-5';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Nanchang Q-5';

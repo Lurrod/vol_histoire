@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'HAL Tejas Mk1A',
     'HAL Tejas Mk1A',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'HAL'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    6560.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -103,3 +101,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme de modernisation incrémentale du Tejas Mk1 lancé en **2018** pour répondre aux critiques de l''IAF sur le manque de capacité BVR, de radar AESA et de maintenance conviviale. Premier vol du prototype Mk1A le **28 mars 2024**.\n\n## Carrière opérationnelle\n**180 appareils commandés** au total (83 en 2021 + 97 en 2023) pour environ **14 milliards USD**. Premières livraisons prévues mi-2024, cadence de 24/an à pleine charge. Le Mk1A comble l''écart capacitaire en attendant la génération Mk2 (MWF). Exporté potentiellement vers l''Argentine, l''Égypte et les Philippines.\n\n## Héritage\nIncarne la maturité de l''écosystème aéronautique indien — radar AESA Uttam indigène en intégration, EW Angad DRDO, missile Astra Mk1 BVR. La production Mk1A précède celle du Mk2 et contribue à la capacité de la chaîne HAL pour l''AMCA.',
   description_en = E'## Genesis\nIncremental upgrade programme of the Tejas Mk1 launched in **2018** to address IAF criticism of insufficient BVR capability, lack of AESA radar and maintenance-unfriendly design. First Mk1A prototype flight on **28 March 2024**.\n\n## Operational career\n**180 aircraft ordered** in total (83 in 2021 + 97 in 2023) for approximately **USD 14 billion**. First deliveries expected mid-2024, rate of 24/year at full capacity. The Mk1A fills the capability gap pending the Mk2 (MWF) generation. Potential exports to Argentina, Egypt and the Philippines.\n\n## Legacy\nEmbodies the maturity of the Indian aerospace ecosystem — indigenous Uttam AESA radar in integration, DRDO Angad EW, Astra Mk1 BVR missile. Mk1A production precedes the Mk2 and contributes to HAL chain capacity for the AMCA.'
 WHERE name = 'HAL Tejas Mk1A';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'reduite' WHERE name = 'HAL Tejas Mk1A';

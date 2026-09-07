@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Alpha Jet Allemand',
     'German Alpha Jet',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
     'Retiré',
-    NULL,
-    3515.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -98,3 +96,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme franco-allemand **Dassault/Dornier** des années 1970 pour créer un avion d''entraînement avancé et d''attaque tactique, concurrent de l''italien Aermacchi MB-339.\n\n## Carrière opérationnelle\nExporté dans **12 pays** (France, Belgique, Cameroun, Égypte, Qatar, Côte d''Ivoire, Nigeria, Maroc, Togo, Thaïlande, Portugal). Utilisé par l''Armée de l''air française pour l''école de chasse (Cazaux, Tours) et la Patrouille de France.\n\n## Héritage\nAvion officiel de la **Patrouille de France** depuis 1980. Retrait progressif prévu à partir de 2026-2028. Son élégance et sa fiabilité en ont fait un classique européen.',
   description_en = E'## Genesis\nFranco-German **Dassault/Dornier** programme of the 1970s to create an advanced trainer and tactical attack aircraft, competing with the Italian Aermacchi MB-339.\n\n## Operational career\nExported to **12 countries** (France, Belgium, Cameroon, Egypt, Qatar, Ivory Coast, Nigeria, Morocco, Togo, Thailand, Portugal). Used by the French Air Force at the fighter school (Cazaux, Tours) and by the Patrouille de France aerobatic team.\n\n## Legacy\nOfficial aircraft of the **Patrouille de France** since 1980. Progressive retirement planned from 2026-2028. Its elegance and reliability made it a European classic.'
 WHERE name = 'Alpha Jet Allemand';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Alpha Jet Allemand';

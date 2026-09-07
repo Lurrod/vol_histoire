@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'IAI Kfir',
     'IAI Kfir',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'Retiré',
-    'Retired',
-    7285.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -106,3 +104,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme **Black Curtain** lancé en **1969** par IAI pour remotoriser le Nesher/Mirage 5 avec un **General Electric J79** (35 % plus puissant que l''Atar 9C) fourni légalement par les USA dans le cadre du deal Kennedy-Eshkol. Contournement de l''embargo français par la souveraineté américaine. Premier vol du Kfir C1 en **octobre 1973** en pleine guerre du Kippour.\n\n## Carrière opérationnelle\n**212 exemplaires produits** en 14 ans. Engagé lors de l''**opération Paix en Galilée (1982, guerre du Liban)** où il a remporté plusieurs victoires contre MiG-21 et MiG-23 syriens — sans perte en combat aérien. Retrait IAF en **1996**. **F-21 Lion** loué à l''US Navy/Marines de 1985 à 1989 comme avion agresseur, formant les pilotes américains aux tactiques soviétiques.\n\n## Héritage\nAncêtre direct du **IAI Lavi** (1986) puis du **Chengdu J-10** chinois (transfert technologique IAI-Chine 1990-1998 — le J-10 hérite de l''aérodynamique canard-delta israélienne). Encore en service en 2024 en Colombie (20 appareils), Sri Lanka (5) et Équateur (12) — plus de 50 ans de carrière opérationnelle.',
   description_en = E'## Genesis\n**Black Curtain** programme launched in **1969** by IAI to re-engine the Nesher/Mirage 5 with a **General Electric J79** (35 % more powerful than the Atar 9C) legally supplied by the USA under the Kennedy-Eshkol deal. Circumvention of the French embargo via US sovereignty. First flight of the Kfir C1 in **October 1973** in the midst of the Yom Kippur War.\n\n## Operational career\n**212 examples built** over 14 years. Deployed during **Operation Peace for Galilee (1982, Lebanon War)** where it scored several victories against Syrian MiG-21s and MiG-23s — without loss in air combat. IAF retirement in **1996**. **F-21 Lion** leased to the US Navy/Marines from 1985 to 1989 as an aggressor aircraft, training US pilots in Soviet tactics.\n\n## Legacy\nDirect ancestor of the **IAI Lavi** (1986) then the Chinese **Chengdu J-10** (IAI-China technology transfer 1990-1998 — the J-10 inherits Israeli canard-delta aerodynamics). Still in service in 2024 in Colombia (20 aircraft), Sri Lanka (5) and Ecuador (12) — over 50 years of operational career.'
 WHERE name = 'IAI Kfir';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'IAI Kfir';

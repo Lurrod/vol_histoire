@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'IAI Lavi',
     'IAI Lavi',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'Annulé',
-    'Cancelled',
-    7031.0
+    'Cancelled'
 );
 
 -- Insertion des technologies
@@ -96,3 +94,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme lancé en **février 1980** pour doter Israël d''un chasseur multirôle de 4e génération 100 % indigène — successeur du Kfir et alternative nationale aux F-16 américains. Canard delta, commande de vol numérique quadruple redondance, radar Elta EL/M-2035 AESA (prototype), moteur Pratt & Whitney PW1120 (dérivé F100 adapté à la configuration Lavi). Premier vol du B-1 le **31 décembre 1986**, second prototype B-2 en février 1987.\n\n## Carrière opérationnelle\n**3 prototypes volés** uniquement. Aucun service opérationnel. Programme **annulé le 30 août 1987** par 12 voix contre 11 au Cabinet israélien sous pression américaine : Washington menaçait de réduire l''aide militaire à Israël (critique concurrence export du F-16). Deal final : USA paye **1,3 milliard USD sur 5 ans** en échange de l''annulation + 75 F-16C en livraison préférentielle.\n\n## Héritage\nBien que non-produit, le Lavi a profondément influencé la **filière aérospatiale israélienne et chinoise**. IAI a transféré les technologies Lavi (canard delta, commandes de vol numériques, avionique) à la Chine dans les années 1990 — le **Chengdu J-10** en est l''héritier direct reconnu. Les leçons du Lavi ont aussi influencé le programme F-35I Adir (suite EW israélienne autonome). Plus grande "victoire technologique" israélienne sans production.',
   description_en = E'## Genesis\nProgramme launched in **February 1980** to give Israel a 100 % indigenous 4th-generation multirole fighter — successor to the Kfir and national alternative to American F-16s. Canard delta, quadruplex digital flight controls, Elta EL/M-2035 AESA radar (prototype), Pratt & Whitney PW1120 engine (F100 derivative adapted to the Lavi configuration). First flight of the B-1 on **31 December 1986**, second prototype B-2 in February 1987.\n\n## Operational career\n**3 prototypes flown** only. No operational service. Programme **cancelled on 30 August 1987** by 12 votes to 11 in the Israeli Cabinet under US pressure: Washington threatened to cut military aid to Israel (criticism of F-16 export competition). Final deal: USA pays **USD 1.3 billion over 5 years** in exchange for cancellation + 75 F-16C in preferential delivery.\n\n## Legacy\nAlthough not produced, the Lavi deeply influenced both **Israeli and Chinese aerospace**. IAI transferred Lavi technologies (canard delta, digital flight controls, avionics) to China in the 1990s — the **Chengdu J-10** is recognised as its direct heir. Lavi lessons also influenced the F-35I Adir programme (autonomous Israeli EW suite). Israel''s greatest "technological victory" without production.'
 WHERE name = 'IAI Lavi';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'IAI Lavi';

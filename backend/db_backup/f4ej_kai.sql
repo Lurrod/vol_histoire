@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-4EJ Kai',
     'F-4EJ Kai',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'Retiré',
-    'Retired',
-    13757.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -102,3 +100,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nContrat de licence signé en **1968** entre McDonnell Douglas et Mitsubishi pour la production japonaise de 138 F-4EJ. Premier F-4EJ assemblé au Japon le **14 janvier 1971**. 14 autres cellules livrées directement par St. Louis comme appareils de pré-série. Programme de modernisation **F-4EJ Kai** lancé en **1984** pour doter l''avion d''un radar et d''une avionique modernes (APG-66J, HUD, système d''arme ASM-1/2).\n\n## Carrière opérationnelle\n**95 appareils modernisés Kai**, service jusqu''en **mars 2021** (retrait du dernier escadron RF-4EJ Kai du 501° Hikōtai à Hyakuri). Phantom japonais engagé en interceptions quasi-quotidiennes contre bombardiers russes Tu-95 Bear et chinois H-6 pendant 50 ans. Pilier de la défense aérienne japonaise jusqu''à la pleine capacité F-15J.\n\n## Héritage\nPlus long service opérationnel du F-4 Phantom dans le monde (50 ans). Remplacé par F-15J Pre-MSIP (défense aérienne), F-2 (antinavire) et F-35A (général). Un escadron Phantom (302° Hikōtai) a été réactivé en **2020 comme premier escadron F-35A japonais** — symbole de la transition générationnelle.',
   description_en = E'## Genesis\nLicence contract signed in **1968** between McDonnell Douglas and Mitsubishi for Japanese production of 138 F-4EJs. First F-4EJ assembled in Japan on **14 January 1971**. 14 more airframes delivered directly from St. Louis as pre-production aircraft. **F-4EJ Kai** upgrade programme launched in **1984** to equip the aircraft with a modern radar and avionics (APG-66J, HUD, ASM-1/2 weapon system).\n\n## Operational career\n**95 upgraded Kai aircraft**, service until **March 2021** (retirement of the last RF-4EJ Kai squadron of 501° Hikōtai at Hyakuri). Japanese Phantom deployed in near-daily interceptions against Russian Tu-95 Bear and Chinese H-6 bombers over 50 years. Pillar of Japanese air defence until full F-15J capability.\n\n## Legacy\nLongest operational service of the F-4 Phantom in the world (50 years). Replaced by F-15J Pre-MSIP (air defence), F-2 (anti-ship) and F-35A (general). A Phantom squadron (302° Hikōtai) was reactivated in **2020 as the first Japanese F-35A squadron** — symbol of the generational transition.'
 WHERE name = 'F-4EJ Kai';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-4EJ Kai';

@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Shenyang J-8',
     'Shenyang J-8',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Intercepteur'),
     'Retiré',
-    NULL,
-    9820.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -91,3 +89,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nPremier avion de combat entièrement conçu en **Chine** (et non plus une copie soviétique). Intercepteur lourd développé à partir des années 1960, mais dont la mise au point traîne jusqu''aux années 1980. Nez supersonique à cône central.\n\n## Carrière opérationnelle\nRôle d''intercepteur de la PLA Air Force, surveillance des côtes chinoises. Plusieurs versions successives : J-8A, J-8B, J-8D (ravitaillement en vol), J-8F (radar moderne).\n\n## Héritage\nRetiré progressivement face au J-10, J-11 et J-16. Premier pas crucial de l''industrie chinoise vers l''indépendance technologique aéronautique.',
   description_en = E'## Genesis\nFirst combat aircraft fully designed in **China** (no longer a Soviet copy). Heavy interceptor developed from the 1960s but whose development dragged on until the 1980s. Supersonic nose with central cone.\n\n## Operational career\nInterceptor role for the PLA Air Force, surveillance of Chinese coasts. Several successive variants: J-8A, J-8B, J-8D (in-flight refuelling), J-8F (modern radar).\n\n## Legacy\nGradually retired in favour of the J-10, J-11 and J-16. A crucial first step of the Chinese industry towards aeronautical technological independence.'
 WHERE name = 'Shenyang J-8';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Shenyang J-8';

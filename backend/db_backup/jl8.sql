@@ -1,20 +1,3 @@
--- Insertion du nouveau constructeur
-INSERT INTO manufacturer (name, country_id, code) VALUES
-('Hongdu Aviation Industry', (SELECT id FROM countries WHERE code = 'CHN'), 'HONG');
-
--- Insertion du nouveau type (idempotent : ne réinsère pas si déjà présent)
-INSERT INTO type (name, name_en, description, description_en)
-SELECT 'Entraîneur', 'Trainer',
-       'Avion d''entraînement conçu pour la formation des pilotes militaires',
-       'Aircraft designed for the training of military pilots'
-WHERE NOT EXISTS (SELECT 1 FROM type WHERE name = 'Entraîneur');
-
--- Renseigne la traduction si la ligne existe déjà mais sans name_en
-UPDATE type
-   SET name_en = COALESCE(name_en, 'Trainer'),
-       description_en = COALESCE(description_en, 'Aircraft designed for the training of military pilots')
- WHERE name = 'Entraîneur';
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -36,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Hongdu JL-8',
     'Hongdu JL-8',
@@ -57,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'HONG'),
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Entraîneur'),
-    'Actif',
-    'Active',
-    2687.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -109,3 +90,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nAvion d''entraînement avancé chinois développé à partir de 1987 par **Hongdu Aviation Industry Group**, en collaboration avec le Pakistan (désigné localement K-8 Karakorum).\n\n## Carrière opérationnelle\nExporté dans **6+ pays** : Pakistan, Égypte, Soudan, Myanmar, Namibie, Venezuela, Zambie. Utilisé comme entraîneur de chasse et pour l''acrobatie militaire. Produit également en Égypte sous licence.\n\n## Héritage\nPlus de **450 exemplaires** construits. Premier succès export significatif d''un avion d''entraînement chinois. Démontre la capacité chinoise à produire des avions légers compétitifs.',
   description_en = E'## Genesis\nChinese advanced trainer developed from 1987 by **Hongdu Aviation Industry Group**, in collaboration with Pakistan (locally designated K-8 Karakorum).\n\n## Operational career\nExported to **6+ countries**: Pakistan, Egypt, Sudan, Myanmar, Namibia, Venezuela, Zambia. Used as a fighter trainer and for military aerobatics. Also licence-built in Egypt.\n\n## Legacy\nMore than **450 built**. First significant export success of a Chinese training aircraft. Demonstrates the Chinese ability to produce competitive light aircraft.'
 WHERE name = 'Hongdu JL-8';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Hongdu JL-8';

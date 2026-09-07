@@ -18,8 +18,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-22 Raptor',
     'F-22 Raptor',
@@ -39,9 +38,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'LM'),
     (SELECT id FROM generation WHERE generation = 5),
     (SELECT id FROM type WHERE name = 'Chasseur'),
-    'Actif',
-    'Active',
-    19700.0
+    'En service',
+    'In service'
 );
 
 INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
@@ -80,7 +78,6 @@ UPDATE airplanes SET
   operators_count = 1,
   stealth_level = 'tres_elevee',
   nickname = 'Raptor',
-  rival_id = (SELECT id FROM airplanes WHERE name = 'Su-57' LIMIT 1),
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor'
 WHERE name = 'F-22 Raptor';

@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Mirage IIICJ Shahak',
     'Mirage IIICJ Shahak',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Intercepteur'),
     'Retiré',
-    'Retired',
-    7050.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -99,3 +97,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nContrat signé entre Israël et Dassault en **1960** pour 72 Mirage IIICJ — premier chasseur supersonique livré à l''Armée de l''air israélienne. Livraison de mai **1962** à juillet 1964. Nom hébreu **Shahak** ("Ciel"). Première victoire aérienne : un MiG-21 syrien abattu le 14 juillet 1966 par Yair Neumann (la première victoire d''un Mirage IIICJ et d''un Mach 2 israélien).\n\n## Carrière opérationnelle\n**Artisan principal de l''annihilation aérienne arabe** lors de la **Guerre des Six Jours (5-10 juin 1967)** — opération Moked. En 190 minutes, les Shahaks détruisent ~300 avions égyptiens au sol. Total conflit : plus de **450 appareils arabes abattus**. Participation active à la **Guerre d''usure (1967-1970)** et à la **Guerre du Kippour (1973)** où 52 Shahaks sont perdus face aux défenses SAM soviétiques. Engagé en Liban en 1982.\n\n## Héritage\nL''**embargo français du 3 juin 1967** (De Gaulle) bloque la livraison de 50 Mirage 5 payés et déclenche le programme indigène **Nesher** (copie non autorisée Mirage 5) puis **Kfir** (Mirage 5 + J79). Mère de l''industrie aéronautique israélienne moderne. 13 Shahak survivants vendus au Chili (Mirage 50 Chile), 5 à l''Argentine.',
   description_en = E'## Genesis\nContract signed between Israel and Dassault in **1960** for 72 Mirage IIICJ — first supersonic fighter delivered to the Israeli Air Force. Delivery from May **1962** to July 1964. Hebrew name **Shahak** ("Sky"). First air victory: a Syrian MiG-21 shot down on 14 July 1966 by Yair Neumann (the first Mirage IIICJ victory and the first Israeli Mach 2).\n\n## Operational career\n**Main architect of Arab air annihilation** during the **Six-Day War (5-10 June 1967)** — Operation Moked. In 190 minutes, Shahaks destroy ~300 Egyptian aircraft on the ground. Total conflict: over **450 Arab aircraft shot down**. Active participation in the **War of Attrition (1967-1970)** and the **Yom Kippur War (1973)** where 52 Shahaks are lost facing Soviet SAM defences. Deployed in Lebanon in 1982.\n\n## Legacy\nThe **French embargo of 3 June 1967** (de Gaulle) blocks the delivery of 50 paid-for Mirage 5 and triggers the indigenous **Nesher** (unlicensed Mirage 5 copy) then **Kfir** (Mirage 5 + J79) programme. Mother of the modern Israeli aerospace industry. 13 surviving Shahaks sold to Chile (Mirage 50 Chile), 5 to Argentina.'
 WHERE name = 'Mirage IIICJ Shahak';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Mirage IIICJ Shahak';

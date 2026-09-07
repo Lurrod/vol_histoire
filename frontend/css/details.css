@@ -270,6 +270,7 @@ body.page-details::after {
 .page-details .aircraft-image-container { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 16px 48px rgba(0,0,0,0.4); background: var(--night-soft); }
 .page-details .aircraft-image { width: 100%; height: auto; display: block; transition: var(--transition); }
 .page-details .aircraft-image-container:hover .aircraft-image { transform: scale(1.05); }
+.page-details .image-credit { margin: 0.6rem 0 0; text-align: right; font-size: 0.75rem; line-height: 1.4; color: rgba(255,255,255,0.42); letter-spacing: 0.01em; }
 .page-details .image-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,13,13,0.4) 0%, transparent 40%); pointer-events: none; }
 
 /* QUICK STATS */

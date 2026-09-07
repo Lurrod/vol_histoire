@@ -46,9 +46,11 @@
     heroImage.alt = [a.name, a.manufacturer_name, a.country_name].filter(Boolean).join(' — ');
     heroImage.loading = 'lazy';
 
+    renderImageCredit(a);
+
     document.getElementById('stat-speed').textContent = a.max_speed ? `${a.max_speed} km/h` : 'N/A';
     document.getElementById('stat-range').textContent = a.max_range ? `${a.max_range} km` : 'N/A';
-    document.getElementById('stat-weight').textContent = a.weight ? `${a.weight} kg` : 'N/A';
+    document.getElementById('stat-weight').textContent = a.empty_weight ? `${a.empty_weight} kg` : 'N/A';
     document.getElementById('stat-status').textContent = a.status || i18n.t('details.not_specified');
     document.getElementById('aircraft-description').textContent = a.description || i18n.t('details.no_description');
 
@@ -75,6 +77,20 @@
     renderProduction(a);
     renderRelatedAircraft(a);
     renderSources(a);
+  }
+
+  // Attribution de la photo. Les licences Creative Commons imposent de citer
+  // l'auteur : sans crédit renseigné, la légende reste masquée.
+  function renderImageCredit(a) {
+    const el = document.getElementById('image-credit');
+    if (!el) return;
+    const licence = a.image_licence === 'Public domain'
+      ? i18n.t('details.licence_public_domain')
+      : a.image_licence;
+    const parts = [a.image_credit, licence].filter(Boolean);
+    if (parts.length === 0) { el.hidden = true; el.textContent = ''; return; }
+    el.textContent = `${i18n.t('details.photo')} : ${parts.join(' — ')}`;
+    el.hidden = false;
   }
 
   // ── Strate 1 + 2 : Fiche technique étendue ──────────────────────
@@ -313,7 +329,7 @@
     }).join('');
   }
 
-  VH.details.render = { renderAircraftDetails, renderArmament, renderTechnologies, renderMissions, finalizeCapabilities, renderWars };
+  VH.details.render = { renderAircraftDetails, renderArmament, renderTechnologies, renderMissions, finalizeCapabilities, renderWars, renderImageCredit };
 
   // Export conditionnel pour les tests unitaires (Node.js / jsdom)
   if (typeof module !== 'undefined' && module.exports) {

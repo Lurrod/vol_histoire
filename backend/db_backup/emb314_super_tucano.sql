@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Embraer EMB-314 Super Tucano',
     'Embraer EMB-314 Super Tucano',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'EMB'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
-    'Actif',
-    'Active',
-    3200.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -99,3 +97,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nDéveloppement lancé en **1991** dans le cadre du programme **SIVAM** (Sistema de Vigilância da Amazônia) de surveillance amazonienne brésilienne nécessitant un avion de patrouille armé capable de décoller de pistes sommaires. Fuselage et aile héritées du Tucano mais agrandies, turbopropulseur PT6A-68C de 1 600 shp (x3 par rapport au Tucano). Premier vol le **2 juin 1999**, mise en service FAB le **18 décembre 2003**.\n\n## Carrière opérationnelle\n**270+ appareils produits** pour 16 pays sur 4 continents. Pilier moderne de la contre-insurrection (**COIN**) — pod désignateur laser, bombes guidées GBU-12, missile Mectron MAR-1 (anti-radar brésilien). Engagé en Afghanistan par les US Special Operations (26 appareils "Tucano Project" livrés à l''armée afghane), par la Colombie contre les FARC, par le Brésil contre les narcotrafiquants. Contracté par l''US Air Force pour le programme **Light Attack (OA-X)** en 2017.\n\n## Héritage\nRéférence mondiale du **light attack à hélice** pour les conflits asymétriques. Coût d''exploitation 10× inférieur aux chasseurs à réaction, ciblage précision équivalent. Base technique du **Super Tucano Armed Utility** (Panavia) et du programme **USAF Armed Overwatch**.',
   description_en = E'## Genesis\nDevelopment launched in **1991** within the Brazilian **SIVAM** (Sistema de Vigilância da Amazônia) Amazon surveillance programme requiring an armed patrol aircraft able to operate from rough strips. Fuselage and wing inherited from the Tucano but enlarged, PT6A-68C turboprop of 1,600 shp (×3 compared to the Tucano). First flight on **2 June 1999**, FAB service entry on **18 December 2003**.\n\n## Operational career\n**270+ aircraft built** for 16 countries across 4 continents. Modern pillar of counter-insurgency (**COIN**) — laser designator pod, GBU-12 guided bombs, Mectron MAR-1 missile (Brazilian anti-radar). Deployed in Afghanistan by US Special Operations (26 "Tucano Project" aircraft delivered to the Afghan army), by Colombia against FARC, by Brazil against drug traffickers. Contracted by the US Air Force for the **Light Attack (OA-X)** programme in 2017.\n\n## Legacy\nWorld reference for **propeller light attack** in asymmetric conflicts. Operating cost 10× lower than jet fighters, equivalent precision targeting. Technical basis for the **Super Tucano Armed Utility** (Panavia) and the **USAF Armed Overwatch** programme.'
 WHERE name = 'Embraer EMB-314 Super Tucano';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Embraer EMB-314 Super Tucano';

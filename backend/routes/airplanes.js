@@ -401,7 +401,7 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     const {
       name, complete_name, little_description, image_url, description,
       country_id, date_concept, date_first_fly, date_operationel,
-      max_speed, max_range, id_manufacturer, id_generation, type, status, weight,
+      max_speed, max_range, id_manufacturer, id_generation, type, status,
       // Strate 1 : fiche technique étendue
       length: len, wingspan, height, wing_area, empty_weight, mtow,
       service_ceiling, climb_rate, g_limit_pos, g_limit_neg, combat_radius, crew,
@@ -414,6 +414,7 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       stealth_level, nickname, predecessor_id, successor_id, rival_id,
       // Strate 6 : médias externes
       wikipedia_fr, wikipedia_en, youtube_showcase, manufacturer_page,
+      image_credit, image_licence,
     } = req.body;
 
     const clean = (v) => (v === '' || v === undefined) ? null : v;
@@ -427,26 +428,27 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       `INSERT INTO airplanes
         (name, complete_name, little_description, image_url, description, country_id,
          date_concept, date_first_fly, date_operationel, max_speed, max_range,
-         id_manufacturer, id_generation, type, status, weight,
+         id_manufacturer, id_generation, type, status,
          length, wingspan, height, wing_area, empty_weight, mtow,
          service_ceiling, climb_rate, g_limit_pos, g_limit_neg, combat_radius, crew,
          engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
          production_start, production_end, units_built, unit_cost_usd, unit_cost_year,
          operators_count, variants, variants_en,
          stealth_level, nickname, predecessor_id, successor_id, rival_id,
-         wikipedia_fr, wikipedia_en, youtube_showcase, manufacturer_page)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16,
-               $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28,
-               $29, $30, $31, $32, $33, $34,
-               $35, $36, $37, $38, $39, $40, $41, $42,
-               $43, $44, $45, $46, $47,
-               $48, $49, $50, $51)
+         wikipedia_fr, wikipedia_en, youtube_showcase, manufacturer_page,
+         image_credit, image_licence)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,
+               $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27,
+               $28, $29, $30, $31, $32, $33,
+               $34, $35, $36, $37, $38, $39, $40, $41,
+               $42, $43, $44, $45, $46,
+               $47, $48, $49, $50, $51, $52)
        RETURNING *`,
       [
         name.trim(), clean(complete_name), clean(little_description), clean(image_url),
         clean(description), clean(country_id), clean(date_concept), clean(date_first_fly),
         clean(date_operationel), clean(max_speed), clean(max_range), clean(id_manufacturer),
-        clean(id_generation), clean(type), clean(status), clean(weight),
+        clean(id_generation), clean(type), clean(status),
         clean(len), clean(wingspan), clean(height), clean(wing_area),
         clean(empty_weight), clean(mtow), clean(service_ceiling), clean(climb_rate),
         clean(g_limit_pos), clean(g_limit_neg), clean(combat_radius), clean(crew),
@@ -458,6 +460,7 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
         clean(stealth_level), clean(nickname),
         clean(predecessor_id), clean(successor_id), clean(rival_id),
         clean(wikipedia_fr), clean(wikipedia_en), clean(youtube_showcase), clean(manufacturer_page),
+        clean(image_credit), clean(image_licence),
       ]
     );
 
@@ -477,7 +480,7 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       // Champs existants
       name, complete_name, little_description, image_url, description,
       country_id, date_concept, date_first_fly, date_operationel,
-      max_speed, max_range, id_manufacturer, id_generation, type, status, weight,
+      max_speed, max_range, id_manufacturer, id_generation, type, status,
       // Strate 1 : fiche technique étendue
       length: len, wingspan, height, wing_area, empty_weight, mtow,
       service_ceiling, climb_rate, g_limit_pos, g_limit_neg, combat_radius, crew,
@@ -490,6 +493,7 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       stealth_level, nickname, predecessor_id, successor_id, rival_id,
       // Strate 6 : médias externes
       wikipedia_fr, wikipedia_en, youtube_showcase, manufacturer_page,
+      image_credit, image_licence,
     } = req.body;
 
     const clean = (v) => (v === '' || v === undefined) ? null : v;
@@ -512,24 +516,25 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
         name = $1, complete_name = $2, little_description = $3, image_url = $4,
         description = $5, country_id = $6, date_concept = $7, date_first_fly = $8,
         date_operationel = $9, max_speed = $10, max_range = $11,
-        id_manufacturer = $12, id_generation = $13, type = $14, status = $15, weight = $16,
-        length = $17, wingspan = $18, height = $19, wing_area = $20,
-        empty_weight = $21, mtow = $22, service_ceiling = $23, climb_rate = $24,
-        g_limit_pos = $25, g_limit_neg = $26, combat_radius = $27, crew = $28,
-        engine_name = $29, engine_count = $30, engine_type = $31, engine_type_en = $32,
-        thrust_dry = $33, thrust_wet = $34,
-        production_start = $35, production_end = $36, units_built = $37,
-        unit_cost_usd = $38, unit_cost_year = $39, operators_count = $40,
-        variants = $41, variants_en = $42,
-        stealth_level = $43, nickname = $44,
-        predecessor_id = $45, successor_id = $46, rival_id = $47,
-        wikipedia_fr = $48, wikipedia_en = $49, youtube_showcase = $50, manufacturer_page = $51
-       WHERE id = $52 RETURNING *`,
+        id_manufacturer = $12, id_generation = $13, type = $14, status = $15,
+        length = $16, wingspan = $17, height = $18, wing_area = $19,
+        empty_weight = $20, mtow = $21, service_ceiling = $22, climb_rate = $23,
+        g_limit_pos = $24, g_limit_neg = $25, combat_radius = $26, crew = $27,
+        engine_name = $28, engine_count = $29, engine_type = $30, engine_type_en = $31,
+        thrust_dry = $32, thrust_wet = $33,
+        production_start = $34, production_end = $35, units_built = $36,
+        unit_cost_usd = $37, unit_cost_year = $38, operators_count = $39,
+        variants = $40, variants_en = $41,
+        stealth_level = $42, nickname = $43,
+        predecessor_id = $44, successor_id = $45, rival_id = $46,
+        wikipedia_fr = $47, wikipedia_en = $48, youtube_showcase = $49, manufacturer_page = $50,
+        image_credit = $51, image_licence = $52
+       WHERE id = $53 RETURNING *`,
       [
         name.trim(), clean(complete_name), clean(little_description), clean(image_url),
         clean(description), clean(country_id), clean(date_concept), clean(date_first_fly),
         clean(date_operationel), clean(max_speed), clean(max_range), clean(id_manufacturer),
-        clean(id_generation), clean(type), clean(status), clean(weight),
+        clean(id_generation), clean(type), clean(status),
         clean(len), clean(wingspan), clean(height), clean(wing_area),
         clean(empty_weight), clean(mtow), clean(service_ceiling), clean(climb_rate),
         clean(g_limit_pos), clean(g_limit_neg), clean(combat_radius), clean(crew),
@@ -541,6 +546,7 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
         clean(stealth_level), clean(nickname),
         clean(predecessor_id), clean(successor_id), clean(rival_id),
         clean(wikipedia_fr), clean(wikipedia_en), clean(youtube_showcase), clean(manufacturer_page),
+        clean(image_credit), clean(image_licence),
         id,
       ]
     );

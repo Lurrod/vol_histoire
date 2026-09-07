@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-4E Kurnass',
     'F-4E Kurnass',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'Retiré',
-    'Retired',
-    13757.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -106,3 +104,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nAccord bilatéral **Kennedy-Eshkol** (décembre 1968) autorisant la vente de 50 F-4E et 6 RF-4E à Israël après l''embargo français. Premier F-4E Kurnass ("Masse d''armes") livré à Hatzor le **5 septembre 1969**. **204 appareils** livrés au total sur 7 ans — le plus grand client étranger du Phantom avec l''Allemagne.\n\n## Carrière opérationnelle\nPilier de la **Guerre d''usure (1969-1970)** avec des frappes stratégiques profondes contre l''Égypte — opération **Priha** (raids sur le Caire). Rôle majeur dans la **Guerre du Kippour (1973)** : frappes SEAD contre les SA-6 syriens et égyptiens au prix humain et matériel très lourd (~40 Kurnass perdus sur SAM en 18 jours). Modernisation **Kurnass 2000** (1989-1998) sur 39 appareils prolonge le service jusqu''en **2004**.\n\n## Héritage\nPlus longue carrière opérationnelle du F-4 israélien : **35 ans de service continu** (1969-2004). Référence mondiale du SEAD/DEAD moderne (leçons du Kippour reprises par l''USAF Wild Weasel). Remplacé par F-15I Ra''am (frappe stratégique) et F-16I Sufa (multirôle).',
   description_en = E'## Genesis\nBilateral **Kennedy-Eshkol** agreement (December 1968) authorising the sale of 50 F-4E and 6 RF-4E to Israel after the French embargo. First F-4E Kurnass ("Mace") delivered to Hatzor on **5 September 1969**. **204 aircraft** delivered in total over 7 years — the largest foreign customer for the Phantom alongside Germany.\n\n## Operational career\nPillar of the **War of Attrition (1969-1970)** with deep strategic strikes against Egypt — Operation **Priha** (raids on Cairo). Major role in the **Yom Kippur War (1973)**: SEAD strikes against Syrian and Egyptian SA-6 at very heavy human and material cost (~40 Kurnass lost to SAM in 18 days). **Kurnass 2000** upgrade (1989-1998) on 39 aircraft extends service until **2004**.\n\n## Legacy\nLongest operational career of the Israeli F-4: **35 years of continuous service** (1969-2004). World reference for modern SEAD/DEAD (Kippur lessons adopted by USAF Wild Weasel). Replaced by F-15I Ra''am (strategic strike) and F-16I Sufa (multirole).'
 WHERE name = 'F-4E Kurnass';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-4E Kurnass';

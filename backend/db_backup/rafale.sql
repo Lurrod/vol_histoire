@@ -18,8 +18,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Rafale',
     'Rafale',
@@ -39,9 +38,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'DAS'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    10000.0
+    'En service',
+    'In service'
 );
 
 INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
@@ -110,15 +108,6 @@ UPDATE airplanes SET
   -- ── Strate 4 : qualitatif + références croisées ────────────────
   stealth_level     = 'reduite',   -- signature réduite, pas furtivité classe 5e gen
   nickname          = 'Omnirôle',
-
-  -- Mirage 2000 comme prédécesseur — lookup par nom (INSERT ordonné)
-  predecessor_id    = (SELECT id FROM airplanes WHERE name = 'Mirage 2000' LIMIT 1),
-
-  -- Pas de successeur encore en service (FCAS/NGF prévu ~2040)
-  successor_id      = NULL,
-
-  -- Eurofighter Typhoon comme rival européen direct
-  rival_id          = (SELECT id FROM airplanes WHERE name LIKE 'Eurofighter%' ORDER BY id LIMIT 1),
 
   -- ── Strate 6 : médias externes ─────────────────────────────────
   wikipedia_fr      = 'https://fr.wikipedia.org/wiki/Dassault_Rafale',

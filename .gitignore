@@ -44,3 +44,8 @@ skills-lock.json
 
 # ─── Installeurs locaux ──────────────────────────────────────
 install.cmd
+
+# Fichiers de travail des lots (index des noms, credits photo, env psql)
+.names.json
+.credits-lot*.json
+.pgenv

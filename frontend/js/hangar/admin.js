@@ -127,7 +127,6 @@
         date_operationel: str('aircraft-date-operational'),
         max_speed: num('aircraft-max-speed'),
         max_range: num('aircraft-max-range'),
-        weight: num('aircraft-weight'),
         // strate 1
         length: num('aircraft-length'),
         wingspan: num('aircraft-wingspan'),
@@ -166,6 +165,8 @@
         wikipedia_en: str('aircraft-wikipedia-en'),
         youtube_showcase: str('aircraft-youtube-showcase'),
         manufacturer_page: str('aircraft-manufacturer-page'),
+        image_credit: str('aircraft-image-credit'),
+        image_licence: str('aircraft-image-licence'),
       };
 
       try {

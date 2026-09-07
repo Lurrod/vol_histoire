@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-104 Starfighter Allemand',
     'German F-104 Starfighter',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Intercepteur'),
     'Retiré',
-    NULL,
-    6350.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -103,3 +101,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nFourni massivement à la **Luftwaffe ouest-allemande** dans les années 1960 comme chasseur-bombardier tous temps. 915 exemplaires livrés — plus gros client export du F-104. Surnommé « **Witwenmacher** » (« faiseur de veuves ») après 292 accidents mortels.\n\n## Carrière opérationnelle\nPrincipal avion de la Luftwaffe pendant 25 ans. Capable de voler à Mach 2 avec un delta extrêmement fin, mais exigeant en pilotage, surtout en mission basse altitude. Porteur nucléaire tactique (bombes US B43/B61).\n\n## Héritage\nRetiré en 1987, remplacé par le F-4F et le Tornado. Symbole controversé de la remilitarisation allemande dans l''OTAN. Affecté la relation entre Lockheed et l''Allemagne.',
   description_en = E'## Genesis\nMassively supplied to the **West German Luftwaffe** in the 1960s as an all-weather fighter-bomber. 915 delivered — the F-104''s biggest export customer. Nicknamed "**Witwenmacher**" ("widow-maker") after 292 fatal accidents.\n\n## Operational career\nPrimary Luftwaffe aircraft for 25 years. Capable of Mach 2 with an extremely thin delta wing, but demanding to fly, especially on low-level missions. Tactical nuclear delivery (US B43/B61 bombs).\n\n## Legacy\nRetired in 1987, replaced by the F-4F and the Tornado. A controversial symbol of German rearmament within NATO. Strained the Lockheed-Germany relationship.'
 WHERE name = 'F-104 Starfighter Allemand';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-104 Starfighter Allemand';

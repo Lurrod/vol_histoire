@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-35 Lightning II',
     'F-35 Lightning II',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'LM'),
     (SELECT id FROM generation WHERE generation = 5),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    13200.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -87,7 +85,6 @@ UPDATE airplanes SET
   operators_count = 19,
   stealth_level = 'elevee',
   nickname = 'Lightning II',
-  rival_id = (SELECT id FROM airplanes WHERE name = 'Su-57' LIMIT 1),
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Lockheed_Martin_F-35_Lightning_II',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Lockheed_Martin_F-35_Lightning_II',
   variants    = E'- **F-35A** : CTOL conventionnel (Air Force)\n- **F-35B** : STOVL décollage court / atterrissage vertical (USMC, UK)\n- **F-35C** : CATOBAR navalisé (US Navy)',

@@ -131,11 +131,14 @@ function validateAirplaneData(body) {
   if (!isOptionalId(body.type)) {
     errors.push("L'ID du type doit être un entier positif.");
   }
+  if (!isOptionalString(body.image_credit, 255)) {
+    errors.push('Le crédit photo ne doit pas dépasser 255 caractères.');
+  }
+  if (!isOptionalString(body.image_licence, 100)) {
+    errors.push('La licence photo ne doit pas dépasser 100 caractères.');
+  }
   if (!isOptionalString(body.status, 50)) {
     errors.push('Le statut ne doit pas dépasser 50 caractères.');
-  }
-  if (!isOptionalPositiveNumber(body.weight)) {
-    errors.push('Le poids doit être un nombre positif.');
   }
 
   // ── Strate 1 : fiche technique étendue ─────────────────────────

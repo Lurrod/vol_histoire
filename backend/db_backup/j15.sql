@@ -1,7 +1,3 @@
--- Insertion des nouveaux armements spécifiques au J-15
-INSERT INTO armement (name, description) VALUES
-('YJ-83', 'Missile antinavire subsonique, guidage radar actif, portée 180 km');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -23,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Shenyang J-15',
     'Shenyang J-15',
@@ -44,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'SAC'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    17500.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -89,7 +83,6 @@ UPDATE airplanes SET
   thrust_dry = 74.5, thrust_wet = 140.0,
   production_start = 2009, production_end = NULL, units_built = 60,
   operators_count = 1,
-  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Shenyang J-11' LIMIT 1),
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Shenyang_J-15',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Shenyang_J-15'
 WHERE name = 'Shenyang J-15';
@@ -106,3 +99,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nVersion navalisée du J-11 (dérivé du Su-33 ukrainien), développée à partir d''un prototype ukrainien T-10K-3 vendu à la Chine en 2001. Premier vol en 2009.\n\n## Carrière opérationnelle\nOpère depuis les porte-avions chinois **Liaoning**, **Shandong** et **Fujian**. Rôle central dans la projection navale chinoise en mer de Chine méridionale. Nouvelles variantes J-15B et J-15D (guerre électronique).\n\n## Héritage\nSeul chasseur navalisé chinois actuel. Permet à la Chine de devenir la 2e puissance navale aéronautique au monde (après les États-Unis). Remplaçant possible à terme par un dérivé navalisé du J-35 furtif.',
   description_en = E'## Genesis\nCarrier-borne J-11 variant (derived from the Ukrainian Su-33), developed from a Ukrainian T-10K-3 prototype sold to China in 2001. First flew in 2009.\n\n## Operational career\nOperates from Chinese carriers **Liaoning**, **Shandong** and **Fujian**. Central role in Chinese naval projection in the South China Sea. New J-15B and J-15D (electronic warfare) variants.\n\n## Legacy\nChina''s only current carrier-borne fighter. Enables China to become the 2nd naval aviation power in the world (after the US). Possible eventual replacement by a navalised derivative of the stealth J-35.'
 WHERE name = 'Shenyang J-15';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Shenyang J-15';

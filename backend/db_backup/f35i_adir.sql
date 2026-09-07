@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-35I Adir',
     'F-35I Adir',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'LM'),
     (SELECT id FROM generation WHERE generation = 5),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    13290.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -107,3 +105,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nContrat **Peace Marble VI** signé en **octobre 2010** : 19 F-35A initialement commandés par Israël (2,75 milliards USD), 14 supplémentaires en 2015, 17 en 2016, 25 en 2023, 25 en 2024. Israël est le **premier client export** du F-35 et le **seul partenaire autorisé à intégrer des systèmes nationaux** sur la cellule — privilège unique négocié en 2008 contre l''annulation du programme national Lavi. Premier Adir livré en **décembre 2016**, premier escadron opérationnel (140 "Golden Eagle") au IOC le **6 décembre 2017**.\n\n## Carrière opérationnelle\n**Première utilisation au combat mondiale du F-35** confirmée par le chef d''état-major **Amikam Norkin** le **22 mai 2018** lors du symposium international à Herzliya : 2 frappes contre des cibles non précisées au Moyen-Orient (probablement Syrie). Engagé régulièrement depuis 2019 dans l''**opération Between the Wars** contre les convois iraniens et les dépôts Hezbollah en Syrie. L''Adir a démontré sa capacité à franchir les défenses S-300/S-400 russes déployées en Syrie sans détection.\n\n## Héritage\n**100 F-35I prévus d''ici 2030** — la plus grande flotte F-35 hors USA en Moyen-Orient. Pierre angulaire de la supériorité aérienne israélienne jusqu''en **2050+**, complétée par les F-15I et F-16I modernisés. A démontré la viabilité opérationnelle du concept furtif de 5e génération dans un environnement contesté (SAM modernes, guerre électronique, cyber).',
   description_en = E'## Genesis\n**Peace Marble VI** contract signed in **October 2010**: 19 F-35A initially ordered by Israel (USD 2.75 billion), 14 more in 2015, 17 in 2016, 25 in 2023, 25 in 2024. Israel is the **first F-35 export customer** and the **only partner authorised to integrate national systems** on the airframe — unique privilege negotiated in 2008 against cancellation of the national Lavi programme. First Adir delivered in **December 2016**, first operational squadron (140 "Golden Eagle") at IOC on **6 December 2017**.\n\n## Operational career\n**World''s first F-35 combat use** confirmed by Chief of Staff **Amikam Norkin** on **22 May 2018** at the international Herzliya symposium: 2 strikes against unspecified Middle East targets (probably Syria). Regularly engaged since 2019 in **Operation Between the Wars** against Iranian convoys and Hezbollah depots in Syria. The Adir has demonstrated capability to penetrate Russian S-300/S-400 defences deployed in Syria without detection.\n\n## Legacy\n**100 F-35I planned by 2030** — largest F-35 fleet outside the USA in the Middle East. Cornerstone of Israeli air superiority until **2050+**, complemented by upgraded F-15I and F-16I. Demonstrated the operational viability of the 5th-generation stealth concept in a contested environment (modern SAM, electronic warfare, cyber).'
 WHERE name = 'F-35I Adir';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'elevee' WHERE name = 'F-35I Adir';

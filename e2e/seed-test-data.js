@@ -95,7 +95,7 @@ async function seed() {
     INSERT INTO airplanes (
       id, name, complete_name, little_description, image_url, description,
       country_id, date_concept, date_first_fly, date_operationel,
-      max_speed, max_range, id_manufacturer, id_generation, type, status, weight
+      max_speed, max_range, id_manufacturer, id_generation, type, status, empty_weight
     ) VALUES
       (1, 'Rafale', 'Dassault Rafale', 'Multirôle français',
        'https://picsum.photos/seed/rafale/600/400', 'Chasseur multirôle français de 4ème génération.',

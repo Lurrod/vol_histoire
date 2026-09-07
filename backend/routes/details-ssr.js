@@ -344,7 +344,7 @@ module.exports = function createDetailsSsrRouter(getPool) {
   async function fetchAircraft(id) {
     const result = await getPool().query(
       `SELECT a.id, a.name, a.complete_name, a.little_description, a.description,
-              a.image_url, a.max_speed, a.max_range, a.weight, a.date_operationel,
+              a.image_url, a.max_speed, a.max_range, a.empty_weight, a.date_operationel,
               c.name AS country_name, c.code AS country_code,
               g.generation, t.name AS type_name,
               m.name AS manufacturer_name

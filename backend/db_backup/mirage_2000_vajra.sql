@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Mirage 2000H Vajra',
     'Mirage 2000H Vajra',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'DAS'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    7500.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -102,3 +100,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nContrat signé en **1982** après l''échec des négociations F-16 (Inde sanctionnée post-essais Pokhran-I 1974). 40 Mirage 2000H + 9 biplaces 2000TH livrés entre **juin 1985 et 1988**. Nom Vajra ("Foudre du ciel" en sanskrit) donné par la cérémonie d''adoption à Gwalior.\n\n## Carrière opérationnelle\n**Star de l''opération Safed Sagar** durant la **guerre de Kargil (mai-juillet 1999)** — frappes de précision à très haute altitude (>5 000 m) au-dessus de l''Himalaya contre les positions pakistanaises retranchées, grâce aux bombes guidées laser Matra BGL-1000 et au pod Atlis. Premier engagement opérationnel du Mirage 2000 en guerre. Engagé lors de l''**opération Bandar** (frappe de Balakot, 26 février 2019) contre un camp du Jaish-e-Mohammed. Upgrade Mirage 2000I/TI (2015-2021) prolonge la carrière jusqu''en 2040+.\n\n## Héritage\nPremier avion multirôle de 4e génération de l''IAF. Grande valeur symbolique — a démontré la validité de la chaîne franco-indienne avant Rafale (2020). Avec 59 appareils, Gwalior reste l''une des bases d''assaut nucléaires conventionnelles les plus redoutables d''Asie du Sud.',
   description_en = E'## Genesis\nContract signed in **1982** after the collapse of F-16 negotiations (India sanctioned after Pokhran-I 1974 tests). 40 Mirage 2000H + 9 two-seat 2000TH delivered between **June 1985 and 1988**. Vajra name ("Thunderbolt of the sky" in Sanskrit) given at the Gwalior adoption ceremony.\n\n## Operational career\n**Star of Operation Safed Sagar** during the **Kargil War (May-July 1999)** — precision strikes at very high altitude (>5,000 m) over the Himalayas against entrenched Pakistani positions, thanks to Matra BGL-1000 laser-guided bombs and the Atlis pod. First operational engagement of the Mirage 2000 in war. Deployed during **Operation Bandar** (Balakot strike, 26 February 2019) against a Jaish-e-Mohammed camp. Mirage 2000I/TI upgrade (2015-2021) extends career until 2040+.\n\n## Legacy\nFirst 4th-generation multirole aircraft of the IAF. Great symbolic value — demonstrated the validity of the Franco-Indian chain before Rafale (2020). With 59 aircraft, Gwalior remains one of the most formidable conventional/nuclear strike bases in South Asia.'
 WHERE name = 'Mirage 2000H Vajra';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Mirage 2000H Vajra';

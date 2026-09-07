@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-111 Aardvark',
     'F-111 Aardvark',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Bombardier'),
     'Retiré',
-    NULL,
-    20900.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -100,3 +98,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nPremier avion de combat à aile à géométrie variable en service, développé dans les années 1960 comme bombardier tactique capable de pénétration à basse altitude. Conçu à l''origine pour l''USAF et la Navy (F-111B abandonné).\n\n## Carrière opérationnelle\nEngagé au Vietnam (opérations **Combat Lancer**, **Linebacker II**), en Libye (opération **El Dorado Canyon**, 1986), dans la guerre du Golfe (1991). Redoutable par mauvais temps grâce à son radar **TFR** de suivi de terrain.\n\n## Héritage\nRetiré par l''USAF en 1998, par la RAAF australienne en 2010 — opérateur final. Sa technologie d''aile à géométrie variable et son système TFR ont inspiré le Tornado européen et le Su-24 soviétique.',
   description_en = E'## Genesis\nFirst operational variable-sweep-wing combat aircraft, developed in the 1960s as a tactical bomber capable of low-altitude penetration. Originally designed for both the USAF and the Navy (F-111B cancelled).\n\n## Operational career\nUsed in Vietnam (**Combat Lancer**, **Linebacker II** operations), Libya (Operation **El Dorado Canyon**, 1986), the Gulf War (1991). Feared in bad weather thanks to its **TFR** terrain-following radar.\n\n## Legacy\nRetired by the USAF in 1998, by Australia''s RAAF in 2010 — the final operator. Its variable-sweep-wing technology and TFR system inspired the European Tornado and the Soviet Su-24.'
 WHERE name = 'F-111 Aardvark';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-111 Aardvark';

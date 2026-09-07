@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Su-30MKI',
     'Su-30MKI',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'SUK'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    18400.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -107,3 +105,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nContrat signé le **30 novembre 1996** entre l''Inde et la Russie pour 50 appareils (8 milliards USD incluant transfert de technologie et production locale). Développé spécifiquement pour l''IAF avec contributions tri-nationales : **russe** (cellule, moteurs AL-31FP à poussée vectorielle, radar N011M Bars PESA), **française** (avionique Thales, HUD, MFD Sextant), **israélienne** (suite EW Elta, LITENING pod) et **indienne** (intégration HAL, cryptographie). Premier vol du MKI le **1 novembre 2000**, livraison premier escadron en **2002**.\n\n## Carrière opérationnelle\n**272 appareils** en service fin 2024, colonne vertébrale de l''IAF (15 escadrons). Premier vol opérationnel du missile supersonique BrahMos-A en **2019** (intégration air-sol unique au monde). Engagé en exercices OTAN (Cope India, Red Flag) où le MKI a démontré sa supériorité contre F-15, F-16 et Eurofighter.\n\n## Héritage\nPlateforme multirôle la plus polyvalente au monde — super-maniabilité (Cobra Pugachev, Kulbit) + BVR + frappe stratégique + antinavire. Mise à niveau **Super Sukhoi** en cours (2024-2030) pour prolonger la carrière jusqu''en 2050 avec radar AESA Virupaksha indigène.',
   description_en = E'## Genesis\nContract signed on **30 November 1996** between India and Russia for 50 aircraft (USD 8 billion including technology transfer and local production). Specifically developed for the IAF with tri-national contributions: **Russian** (airframe, AL-31FP thrust-vectoring engines, N011M Bars PESA radar), **French** (Thales avionics, HUD, Sextant MFD), **Israeli** (Elta EW suite, LITENING pod) and **Indian** (HAL integration, cryptography). First flight of MKI on **1 November 2000**, first squadron delivery in **2002**.\n\n## Operational career\n**272 aircraft** in service end-2024, backbone of the IAF (15 squadrons). First operational flight of the BrahMos-A supersonic missile in **2019** (unique air-to-surface integration worldwide). Deployed in NATO exercises (Cope India, Red Flag) where the MKI demonstrated superiority against F-15, F-16 and Eurofighter.\n\n## Legacy\nMost versatile multirole platform in the world — supermaneuverability (Pugachev Cobra, Kulbit) + BVR + strategic strike + anti-ship. **Super Sukhoi** upgrade in progress (2024-2030) to extend career until 2050 with indigenous Virupaksha AESA radar.'
 WHERE name = 'Su-30MKI';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Su-30MKI';

@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Mitsubishi X-2 Shinshin',
     'Mitsubishi X-2 Shinshin',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 5),
     (SELECT id FROM type WHERE name = 'Chasseur'),
     'Retiré',
-    'Retired',
-    9700.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -85,3 +83,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nLancé par le **Technical Research and Development Institute (TRDI)** japonais en **2004** comme démonstrateur technologique pour préparer le programme F-3 de 5e génération. Nom officiel : **ATD-X** (Advanced Technology Demonstrator-X), baptisé Shinshin ("Esprit") lors de la présentation publique en janvier 2016. Premier vol le **22 avril 2016** à l''usine Mitsubishi de Komaki (pilote : Hideki Watanabe).\n\n## Carrière opérationnelle\n**34 vols d''essai** sur 3 ans. Aucun service opérationnel — c''est un démonstrateur uniquement. Retiré en **2018** après la fin de sa campagne d''essais. Validation réussie : signature radar réduite (forme facettes, matériaux absorbants), poussée vectorielle 3D par 3 ailerons mobiles indigènes, intégration avionique sur architecture nippone autonome.\n\n## Héritage\nBanque de données technologique pour le **programme F-X japonais** (successeur F-2), fusionné en **2022 dans le programme GCAP (Global Combat Air Programme)** associant le **Japon (Mitsubishi), le Royaume-Uni (BAE Systems) et l''Italie (Leonardo)** pour un chasseur de 6e génération attendu en **2035**. Le Shinshin a prouvé que le Japon pouvait concevoir un chasseur furtif sans transfert américain — levée majeure d''autonomie stratégique.',
   description_en = E'## Genesis\nLaunched by the Japanese **Technical Research and Development Institute (TRDI)** in **2004** as a technology demonstrator to prepare the 5th-generation F-3 programme. Official name: **ATD-X** (Advanced Technology Demonstrator-X), christened Shinshin ("Spirit") at the public presentation in January 2016. First flight on **22 April 2016** at the Mitsubishi Komaki factory (pilot: Hideki Watanabe).\n\n## Operational career\n**34 test flights** over 3 years. No operational service — it is solely a demonstrator. Retired in **2018** after completion of the test campaign. Successful validation: reduced radar signature (faceted shape, absorbing materials), 3D thrust vectoring by 3 indigenous movable paddles, avionics integration on an autonomous Japanese architecture.\n\n## Legacy\nTechnological database for the **Japanese F-X programme** (F-2 successor), merged in **2022 into the GCAP (Global Combat Air Programme)** associating **Japan (Mitsubishi), the United Kingdom (BAE Systems) and Italy (Leonardo)** for a 6th-generation fighter expected in **2035**. The Shinshin proved that Japan could design a stealth fighter without US transfer — a major strategic autonomy step.'
 WHERE name = 'Mitsubishi X-2 Shinshin';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'moderee' WHERE name = 'Mitsubishi X-2 Shinshin';

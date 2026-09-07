@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'HAL AMCA',
     'HAL AMCA',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 5),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'En développement',
-    'In development',
-    12000.0
+    'In development'
 );
 
 -- Insertion des technologies
@@ -99,3 +97,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme **Advanced Medium Combat Aircraft (AMCA)** approuvé par le Cabinet de sécurité indien le **7 mars 2024** avec un budget de **15 000 crore INR** (≈ 1,8 milliard USD) pour le développement de 5 prototypes et 3 cellules statiques. Conduit par l''ADA et HAL en coopération avec DRDO. Premier prototype attendu en **2026**, premier vol en **2028**, service opérationnel vers **2035**.\n\n## Carrière opérationnelle\nPas encore en service. Cible : **125 appareils** (~7 escadrons) — Mk1 avec moteur F414-INS6 partagé avec Tejas Mk2 pour accélérer la chaîne industrielle, puis Mk2 avec moteur indigène de 110 kN (collaboration possible avec Safran ou Rolls-Royce).\n\n## Héritage\nPremier chasseur de 5e génération entièrement indien. Applique les leçons du Tejas (architecture ouverte, avionique modulaire) à une plateforme furtive bimoteur. Positionne l''Inde comme la 5e nation au monde capable de développer un chasseur de 5e génération (après USA, Russie, Chine, Turquie).',
   description_en = E'## Genesis\n**Advanced Medium Combat Aircraft (AMCA)** programme approved by the Indian Cabinet Committee on Security on **7 March 2024** with a budget of **INR 15,000 crore** (≈ USD 1.8 billion) for the development of 5 prototypes and 3 static airframes. Led by ADA and HAL in cooperation with DRDO. First prototype expected in **2026**, first flight in **2028**, operational service around **2035**.\n\n## Operational career\nNot yet in service. Target: **125 aircraft** (~7 squadrons) — Mk1 with F414-INS6 engine shared with Tejas Mk2 to accelerate the industrial chain, then Mk2 with indigenous 110 kN engine (possible collaboration with Safran or Rolls-Royce).\n\n## Legacy\nFirst fully Indian 5th-generation fighter. Applies lessons from the Tejas (open architecture, modular avionics) to a stealth twin-engine platform. Positions India as the 5th nation globally capable of developing a 5th-generation fighter (after USA, Russia, China, Turkey).'
 WHERE name = 'HAL AMCA';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'elevee' WHERE name = 'HAL AMCA';

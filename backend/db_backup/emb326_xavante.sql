@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Embraer EMB-326 Xavante',
     'Embraer EMB-326 Xavante',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
     'Retiré',
-    'Retired',
-    2685.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -93,3 +91,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nContrat de licence signé en **1970** entre Aermacchi (Italie) et Embraer (Brésil naissant, fondé en 1969) pour produire le MB-326GB. Premier EMB-326 assemblé à São José dos Campos le **3 août 1971**. Contrat stratégique pour l''industrie aéronautique brésilienne débutante — Embraer ne construisait jusque-là que des appareils civils légers.\n\n## Carrière opérationnelle\n**182 exemplaires produits** à São José dos Campos sur 11 ans. Entraînement avancé et appui-feu léger pour la FAB pendant plus de 30 ans. Déployé dans la défense de la frontière amazonienne contre les incursions de narcotrafiquants et de contrebandiers. Retrait final en **2010**, remplacé par le Super Tucano.\n\n## Héritage\nProgramme charnière qui a transformé Embraer en constructeur militaire. A posé les fondations industrielles du succès du **Tucano (1983)**, du **Super Tucano (2003)** et du **KC-390 (2019)**. Sans le Xavante, pas d''industrie aéronautique brésilienne moderne.',
   description_en = E'## Genesis\nLicence contract signed in **1970** between Aermacchi (Italy) and Embraer (nascent Brazil, founded 1969) to produce the MB-326GB. First EMB-326 assembled at São José dos Campos on **3 August 1971**. Strategic contract for the emerging Brazilian aerospace industry — Embraer had previously only built light civilian aircraft.\n\n## Operational career\n**182 examples built** at São José dos Campos over 11 years. Advanced training and light attack for the FAB for over 30 years. Deployed in defence of the Amazon border against drug traffickers and smugglers. Final retirement in **2010**, replaced by the Super Tucano.\n\n## Legacy\nPivotal programme that transformed Embraer into a military manufacturer. Laid the industrial foundations for the success of the **Tucano (1983)**, **Super Tucano (2003)** and **KC-390 (2019)**. Without the Xavante, no modern Brazilian aerospace industry.'
 WHERE name = 'Embraer EMB-326 Xavante';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Embraer EMB-326 Xavante';

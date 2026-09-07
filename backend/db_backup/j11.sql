@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Shenyang J-11',
     'Shenyang J-11',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'SAC'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Chasseur'),
-    'Actif',
-    'Active',
-    16380.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -99,3 +97,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nCopie chinoise sous licence du **Su-27 soviétique**, produite à partir de 1998 comme J-11A, puis développée en version entièrement chinoise **J-11B** avec moteur WS-10 et avionique locale. Litige russe sur la propriété intellectuelle.\n\n## Carrière opérationnelle\nPilier de l''aviation de chasse chinoise, assignation prioritaire aux unités de défense aérienne du pays. Plusieurs centaines d''exemplaires en service. Biplace J-11BS pour entraînement avancé.\n\n## Héritage\nBase de la famille **J-15** (navalisé) et **J-16** (multi-rôle biplace). Symbole de la capacité chinoise à **reverser l''ingénierie soviétique** pour construire une flotte moderne indépendante.',
   description_en = E'## Genesis\nChinese licence-built copy of the Soviet **Su-27**, produced from 1998 as J-11A, then developed into a fully Chinese **J-11B** with WS-10 engine and local avionics. Russian intellectual-property dispute.\n\n## Operational career\nBackbone of the Chinese fighter fleet, priority assignment to the country''s air-defence units. Several hundred in service. Two-seat J-11BS for advanced training.\n\n## Legacy\nBasis of the **J-15** (carrier-borne) and **J-16** (two-seat multi-role) families. Symbol of China''s ability to **reverse-engineer Soviet designs** into an independent modern fleet.'
 WHERE name = 'Shenyang J-11';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Shenyang J-11';

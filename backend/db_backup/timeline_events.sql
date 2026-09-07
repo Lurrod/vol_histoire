@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS timeline_events (
     airplane_id     INTEGER REFERENCES airplanes(id) ON DELETE SET NULL,
     quote_author_fr VARCHAR(160),
     quote_author_en VARCHAR(160),
-    created_at      TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at      TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_timeline_events_decade   ON timeline_events (era_decade, event_date);

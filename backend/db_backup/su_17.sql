@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Su-17',
     'Su-17',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
     'Retiré',
-    NULL,
-    12000.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -100,3 +98,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nDéveloppé dans les années 1960 par Soukhoï comme chasseur-bombardier à **aile à géométrie variable** (variante du Su-7). Plusieurs versions export : Su-20 (Pacte de Varsovie dégradé), Su-22 (export mondial avec moteur Atar).\n\n## Carrière opérationnelle\nEngagé en Afghanistan (guerre soviétique 1979-1989), en Iran-Irak, en Érythrée-Éthiopie, au Soudan, au Yémen. Un des rares avions à avoir servi dans plus de **15 armées différentes**.\n\n## Héritage\nRetiré de Russie en 1998, toujours en service en Syrie, Libye, Vietnam, Pérou, Angola. **Plus de 2 800 exemplaires** produits — un succès quantitatif majeur.',
   description_en = E'## Genesis\nDeveloped in the 1960s by Sukhoi as a fighter-bomber with **variable-sweep wings** (a Su-7 derivative). Several export variants: Su-20 (degraded Warsaw Pact), Su-22 (worldwide export with Atar engine).\n\n## Operational career\nUsed in Afghanistan (Soviet war 1979-1989), Iran-Iraq, Eritrea-Ethiopia, Sudan, Yemen. One of the few aircraft to have served in more than **15 different air forces**.\n\n## Legacy\nRetired by Russia in 1998, still in service in Syria, Libya, Vietnam, Peru, Angola. **More than 2,800 built** — a major quantitative success.'
 WHERE name = 'Su-17';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Su-17';

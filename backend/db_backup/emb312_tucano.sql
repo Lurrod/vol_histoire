@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Embraer EMB-312 Tucano',
     'Embraer EMB-312 Tucano',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'EMB'),
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
-    'Actif',
-    'Active',
-    1810.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -89,3 +87,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme YT-25B lancé par la FAB en **1978** pour remplacer le Cessna T-37 et le North American T-6 Texan. Embraer innove en proposant un **monomoteur turbopropulseur tandem biplace** avec cockpit inspiré des jets — siège éjectable, verrière type jet, avionique moderne. Premier vol le **16 août 1980**, mise en service le **29 septembre 1983**.\n\n## Carrière opérationnelle\n**664 exemplaires produits** en 16 ans. Premier grand succès commercial international d''Embraer — exporté à 14 pays. Contrat historique avec le Royaume-Uni : **130 Shorts Tucano T.Mk 1** produits sous licence à Belfast pour la RAF entre 1987 et 1993. Utilisé par l''Armée de l''air française comme entraîneur primaire pendant 13 ans (1993-2005).\n\n## Héritage\nA redéfini le **standard mondial de l''entraînement militaire à hélice** — cockpit jet-like, HOTAS partiel, passage direct aux jets d''entraînement. Base technique du **Super Tucano** (2003) qui a repris sa cellule aile et ses commandes. Le Tucano reste produit et modernisé (upgrade RAF prolongation jusqu''en 2016).',
   description_en = E'## Genesis\nYT-25B programme launched by the FAB in **1978** to replace the Cessna T-37 and the North American T-6 Texan. Embraer innovates by proposing a **single-engine turboprop tandem two-seater** with a jet-inspired cockpit — ejection seat, jet-style canopy, modern avionics. First flight on **16 August 1980**, service entry on **29 September 1983**.\n\n## Operational career\n**664 examples built** over 16 years. Embraer''s first major international commercial success — exported to 14 countries. Historic contract with the United Kingdom: **130 Shorts Tucano T.Mk 1** licence-built at Belfast for the RAF between 1987 and 1993. Used by the French Air Force as a primary trainer for 13 years (1993-2005).\n\n## Legacy\nRedefined the **world standard for propeller military training** — jet-like cockpit, partial HOTAS, direct transition to training jets. Technical basis for the **Super Tucano** (2003) which reused its wing airframe and controls. The Tucano remains produced and upgraded (RAF upgrade extending service until 2016).'
 WHERE name = 'Embraer EMB-312 Tucano';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Embraer EMB-312 Tucano';

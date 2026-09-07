@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Mitsubishi F-2',
     'Mitsubishi F-2',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'MHI'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    9527.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -106,3 +104,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme **FS-X** lancé en **1987** pour remplacer le Mitsubishi F-1. D''abord envisagé comme cellule nationale, le programme devient un développement conjoint **Mitsubishi + Lockheed Martin** en **1988** sous pression américaine (accord de partage de développement 60/40 japonais/américain). Dérivé du F-16 Agile Falcon avec une cellule élargie de 25 %, un nouveau nez, un radar AESA J/APG-1 indigène et une structure composite co-cured. Premier vol le **7 octobre 1995**, mise en service en **septembre 2000**.\n\n## Carrière opérationnelle\n**94 appareils produits** entre 2000 et 2011 (62 F-2A + 32 F-2B). **Premier chasseur de série avec radar AESA au monde**. Spécialisé dans l''attaque antinavire avec 4 missiles ASM-2 sur pylônes ventraux. Déployé à Misawa (3° Hikōtai), Tsuiki (6° Hikōtai) et Matsushima. 18 F-2 perdus lors du **tsunami de Tōhoku (11 mars 2011)**, 13 reconstruits par Mitsubishi.\n\n## Héritage\nVitrine technologique de l''industrie aéronautique japonaise — radar AESA, structure composite, système de tir antinavire tout-temps. Remplacement prévu dès **2035** par le **F-X (GCAP)**, programme trilatéral Japon + UK + Italie. Le F-2 restera en service jusqu''en 2040+.',
   description_en = E'## Genesis\n**FS-X** programme launched in **1987** to replace the Mitsubishi F-1. Initially considered a national airframe, the programme becomes a joint **Mitsubishi + Lockheed Martin** development in **1988** under US pressure (60/40 Japanese/American development share agreement). Derived from the F-16 Agile Falcon with a 25 % enlarged airframe, new nose, indigenous AESA J/APG-1 radar and co-cured composite structure. First flight on **7 October 1995**, service entry in **September 2000**.\n\n## Operational career\n**94 aircraft produced** between 2000 and 2011 (62 F-2A + 32 F-2B). **World''s first production fighter with AESA radar**. Specialised in anti-ship attack with 4 ASM-2 missiles on ventral pylons. Deployed at Misawa (3° Hikōtai), Tsuiki (6° Hikōtai) and Matsushima. 18 F-2 lost during the **Tōhoku tsunami (11 March 2011)**, 13 rebuilt by Mitsubishi.\n\n## Legacy\nTechnological showcase of the Japanese aerospace industry — AESA radar, composite structure, all-weather anti-ship fire-control system. Replacement planned from **2035** by the **F-X (GCAP)**, a trilateral Japan + UK + Italy programme. The F-2 will remain in service until 2040+.'
 WHERE name = 'Mitsubishi F-2';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Mitsubishi F-2';

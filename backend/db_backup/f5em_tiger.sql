@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'F-5EM Tiger II',
     'F-5EM Tiger II',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'EMB'),
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    4410.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -99,3 +97,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nLa FAB acquiert 42 F-5E/B en 1975 puis 22 F-5E/F ex-Jordanie en 1988 (total 64 appareils). Face au vieillissement de la flotte, programme de modernisation majeur lancé en **2001** par **Embraer + Elbit Systems + Mectron** (consortium F-5BR Modernization) pour 1,2 milliard USD. Premier vol du F-5EM modernisé le **22 juillet 2005**. Livraison achevée en **2013** sur 46 cellules.\n\n## Carrière opérationnelle\nPierre angulaire de la défense aérienne brésilienne depuis 2010. Déployé depuis **Santa Cruz (Rio de Janeiro)** face à l''Atlantique Sud et **Canoas (Rio Grande do Sul)** face aux frontières sud. Participation régulière aux exercices **CRUZEX** et **Salitre** avec les forces aériennes sud-américaines. Assure la police du ciel des Jeux Olympiques de Rio 2016 et de la Coupe du monde 2014.\n\n## Héritage\nDémontre la capacité d''Embraer à prolonger la vie d''une cellule des années 1970 avec une avionique de pointe. Service prévu jusqu''aux années **2030** en attendant la pleine montée en puissance de la flotte **Gripen E/F** brésilienne (36 appareils commandés, livraisons 2020-2026).',
   description_en = E'## Genesis\nThe FAB acquires 42 F-5E/B in 1975 then 22 ex-Jordan F-5E/F in 1988 (total 64 aircraft). Facing fleet ageing, major upgrade programme launched in **2001** by **Embraer + Elbit Systems + Mectron** (F-5BR Modernization consortium) for USD 1.2 billion. First flight of the upgraded F-5EM on **22 July 2005**. Delivery completed in **2013** on 46 airframes.\n\n## Operational career\nCornerstone of Brazilian air defence since 2010. Based at **Santa Cruz (Rio de Janeiro)** facing the South Atlantic and **Canoas (Rio Grande do Sul)** facing southern borders. Regular participation in **CRUZEX** and **Salitre** exercises with South American air forces. Provided air policing during the 2016 Rio Olympic Games and the 2014 World Cup.\n\n## Legacy\nDemonstrates Embraer''s capability to extend the life of a 1970s airframe with cutting-edge avionics. Service planned until the **2030s** pending full build-up of the Brazilian **Gripen E/F** fleet (36 aircraft ordered, deliveries 2020-2026).'
 WHERE name = 'F-5EM Tiger II';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-5EM Tiger II';

@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Su-15',
     'Su-15',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Intercepteur'),
     'Retiré',
-    NULL,
-    10675.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -99,3 +97,8 @@ WHERE name = 'Su-15';
 UPDATE airplanes SET
   variants_en = E'- **Su-15TM** : main production variant (Taifun-M radar)\n- **Su-15UM** : two-seat trainer'
 WHERE name = 'Su-15';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Su-15';

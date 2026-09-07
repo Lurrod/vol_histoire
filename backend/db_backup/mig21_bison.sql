@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'MiG-21 Bison',
     'MiG-21 Bison',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'MIG'),
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    5890.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -98,3 +96,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nProgramme de modernisation majeure lancé en **1996** par HAL Nashik en coopération avec les russes Phazotron (radar Kopyo), Sokol (cellule) et Ramenskoye (avionique). 125 MiG-21bis indiens transformés entre **1998 et 2008**. Cockpit entièrement revu (HOTAS, glass cockpit partiel), radar Kopyo multi-mode, capacité BVR R-77.\n\n## Carrière opérationnelle\nPièce maîtresse de la défense aérienne indienne au Cachemire depuis 20 ans — économique, agile, rodé au combat tournoyant. Engagé dans un combat aérien historique le **27 février 2019** au-dessus du Cachemire entre le Commandant Abhinandan Varthaman (MiG-21 Bison) et des F-16PAF pakistanais pendant l''**opération Balakot** : revendication indienne d''un F-16 abattu (non confirmée côté US), Bison perdu, pilote capturé puis rendu par le Pakistan, Py-Award.\n\n## Héritage\nSurnommé "Flying Coffin" dans la presse indienne après des décennies de crashes — 400+ pertes sur 872 MiG-21 indiens livrés. Retrait final prévu en 2025, remplacé par Tejas Mk1A. Symbole de l''époque de l''IAF dépendante de la Russie avant l''ère du Rafale et du Tejas.',
   description_en = E'## Genesis\nMajor upgrade programme launched in **1996** by HAL Nashik in cooperation with Russians Phazotron (Kopyo radar), Sokol (airframe) and Ramenskoye (avionics). 125 Indian MiG-21bis transformed between **1998 and 2008**. Fully revised cockpit (HOTAS, partial glass cockpit), Kopyo multi-mode radar, R-77 BVR capability.\n\n## Operational career\nMainstay of Indian air defence in Kashmir for 20 years — economical, agile, battle-tested in dogfighting. Engaged in a historic air combat on **27 February 2019** over Kashmir between Commander Abhinandan Varthaman (MiG-21 Bison) and Pakistani PAF F-16s during **Operation Balakot**: Indian claim of an F-16 shot down (unconfirmed by the US), Bison lost, pilot captured and then returned by Pakistan, Py-Award.\n\n## Legacy\nNicknamed "Flying Coffin" in the Indian press after decades of crashes — 400+ losses out of 872 Indian MiG-21s delivered. Final retirement planned for 2025, replaced by Tejas Mk1A. Symbol of the era of IAF dependence on Russia before the Rafale and Tejas era.'
 WHERE name = 'MiG-21 Bison';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'MiG-21 Bison';

@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Shenyang J-5',
     'Shenyang J-5',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Chasseur'),
     'Retiré',
-    NULL,
-    3930.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -53,7 +51,7 @@ INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
 
 -- Insertion des armements
 INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
-((SELECT id FROM airplanes WHERE name = 'Shenyang J-5'), (SELECT id FROM armement WHERE name = 'Canon NR-23')),
+((SELECT id FROM airplanes WHERE name = 'Shenyang J-5'), (SELECT id FROM armement WHERE name = 'NR-23')),
 ((SELECT id FROM airplanes WHERE name = 'Shenyang J-5'), (SELECT id FROM armement WHERE name = 'FAB-250'));
 
 -- Insertion des guerres
@@ -76,7 +74,6 @@ UPDATE airplanes SET
   engine_type = 'Turboréacteur', engine_type_en = 'Turbojet',
   thrust_dry = 26.48,
   production_start = 1956, production_end = 1959, units_built = 767,
-  successor_id = (SELECT id FROM airplanes WHERE name = 'Shenyang J-6' LIMIT 1),
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Shenyang_J-5',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Shenyang_J-5'
 WHERE name = 'Shenyang J-5';
@@ -92,3 +89,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nCopie chinoise sous licence du **MiG-17F soviétique** produite à partir de 1956. Premier chasseur à réaction produit en Chine, base de l''industrie aéronautique militaire chinoise.\n\n## Carrière opérationnelle\nEngagé dans les affrontements **Chine-Taïwan** des années 1950-60 (crise du détroit de Formose). Exporté en Corée du Nord, Vietnam, Albanie, Égypte, Pakistan. Premiers combats aériens de l''aviation chinoise.\n\n## Héritage\nRetiré depuis les années 1990. Pierre fondatrice de l''industrie aéronautique militaire chinoise, qui aboutira 70 ans plus tard au J-20 furtif.',
   description_en = E'## Genesis\nChinese licence-built copy of the Soviet **MiG-17F**, produced from 1956. First jet fighter produced in China, foundation stone of the Chinese military aviation industry.\n\n## Operational career\nUsed in the **China-Taiwan** clashes of the 1950s-60s (Taiwan Strait crises). Exported to North Korea, Vietnam, Albania, Egypt, Pakistan. First air combats of Chinese aviation.\n\n## Legacy\nRetired since the 1990s. Foundation stone of the Chinese military aviation industry, which would lead 70 years later to the stealth J-20.'
 WHERE name = 'Shenyang J-5';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Shenyang J-5';

@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Panavia Tornado Allemand',
     'German Panavia Tornado',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'ADS'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
-    'Actif',
-    'Active',
-    13890.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -107,3 +105,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nTornado allemand (Luftwaffe + Marineflieger) en versions **IDS** et **ECR** (suppression des défenses ennemies). Seul opérateur du Tornado ECR au monde avec l''Italie.\n\n## Carrière opérationnelle\nEngagé au Kosovo (1999) — premiers combats aériens de la Luftwaffe depuis 1945. En Afghanistan (reconnaissance), en Syrie (2015-2017 contre Daech). Couverture OTAN en Europe de l''Est.\n\n## Héritage\nRemplacement programmé par des F-35A et des Eurofighter à partir de 2025-2030. Marineflieger retiré en 2005. La Tornado reste en service Luftwaffe pour la mission nucléaire tactique (bombe B61 américaine).',
   description_en = E'## Genesis\nGerman Tornado (Luftwaffe + Marineflieger) in **IDS** and **ECR** (Suppression of Enemy Air Defences) variants. The only Tornado ECR operator alongside Italy.\n\n## Operational career\nUsed in Kosovo (1999) — Luftwaffe''s first air combat since 1945. In Afghanistan (reconnaissance), Syria (2015-2017 against ISIS). NATO coverage in Eastern Europe.\n\n## Legacy\nPlanned replacement by F-35As and Eurofighters from 2025-2030. Marineflieger retired in 2005. The Tornado remains in Luftwaffe service for the tactical nuclear role (US B61 bomb).'
 WHERE name = 'Panavia Tornado Allemand';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Panavia Tornado Allemand';

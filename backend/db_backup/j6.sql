@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Shenyang J-6',
     'Shenyang J-6',
@@ -41,8 +40,7 @@ INSERT INTO airplanes (
     (SELECT id FROM generation WHERE generation = 2),
     (SELECT id FROM type WHERE name = 'Chasseur'),
     'Retiré',
-    NULL,
-    5770.0
+    'Retired'
 );
 
 -- Insertion des technologies
@@ -77,8 +75,6 @@ UPDATE airplanes SET
   engine_type = 'Turboréacteur avec postcombustion', engine_type_en = 'Afterburning turbojet',
   thrust_dry = 25.5, thrust_wet = 31.87,
   production_start = 1958, production_end = 1981, units_built = 3000,
-  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Shenyang J-5' LIMIT 1),
-  successor_id = (SELECT id FROM airplanes WHERE name = 'Chengdu J-7' LIMIT 1),
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Shenyang_J-6',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Shenyang_J-6'
 WHERE name = 'Shenyang J-6';
@@ -94,3 +90,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nCopie chinoise du **MiG-19 soviétique** produite à partir de 1958. Premier chasseur supersonique de la Chine. Production massive : plus de 3 000 exemplaires.\n\n## Carrière opérationnelle\nChasseur principal de la **PLA Air Force** et **PLA Navy Aviation** pendant 30 ans. Engagé dans les crises avec Taïwan, au Vietnam (livré à Hanoï). Utilisé comme bombardier d''attaque au sol en fin de carrière.\n\n## Héritage\nRetiré de Chine en 2010 — dernier chasseur supersonique de 1re génération en service au monde à ce moment-là. Toujours en service en Corée du Nord. Base technologique du Q-5 d''attaque.',
   description_en = E'## Genesis\nChinese copy of the Soviet **MiG-19**, produced from 1958. China''s first supersonic fighter. Mass production: more than 3,000 built.\n\n## Operational career\nMain fighter of the **PLA Air Force** and **PLA Navy Aviation** for 30 years. Used in Taiwan crises, Vietnam (delivered to Hanoi). Used as ground-attack bomber at the end of its career.\n\n## Legacy\nRetired from China in 2010 — the last 1st-generation supersonic fighter in service worldwide at that time. Still operated by North Korea. Technological base for the Q-5 attack aircraft.'
 WHERE name = 'Shenyang J-6';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Shenyang J-6';

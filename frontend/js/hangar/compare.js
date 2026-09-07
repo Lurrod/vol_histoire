@@ -187,7 +187,7 @@
 
         var maxSpeed = findMax(items, 'max_speed') || 1;
         var maxRange = findMax(items, 'max_range') || 1;
-        var maxWeight = findMax(items, 'weight') || 1;
+        var maxWeight = findMax(items, 'empty_weight') || 1;
         var n = items.length;
 
         // ── Headers ──────────────────────────────────────────────
@@ -265,7 +265,7 @@
         var perfHtml = groupClass(i18n.t('hangar.compare_performance', 'Performances'), 'fa-gauge-high',
           perfRow(i18n.t('hangar.compare_speed', 'Vitesse max'), 'max_speed', 'km/h', maxSpeed, true) +
           perfRow(i18n.t('hangar.compare_range', 'Portée max'), 'max_range', 'km', maxRange, true) +
-          perfRow(i18n.t('hangar.compare_weight', 'Poids'), 'weight', 'kg', maxWeight, false)
+          perfRow(i18n.t('hangar.compare_weight', 'Poids à vide'), 'empty_weight', 'kg', maxWeight, false)
         );
 
         var armamentHtml = groupClass(i18n.t('hangar.compare_armament', 'Armement'), 'fa-burst',

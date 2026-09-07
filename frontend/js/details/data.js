@@ -135,8 +135,8 @@
       ld.additionalProperty = ld.additionalProperty || [];
       ld.additionalProperty.push({ '@type': 'PropertyValue', name: 'Range', value: Number(a.max_range), unitCode: 'KMT' });
     }
-    if (a.weight) {
-      ld.weight = { '@type': 'QuantitativeValue', value: Number(a.weight), unitCode: 'KGM' };
+    if (a.empty_weight) {
+      ld.weight = { '@type': 'QuantitativeValue', value: Number(a.empty_weight), unitCode: 'KGM' };
     }
     // Supprime les undefined (Schema.org valide sans)
     Object.keys(ld).forEach(k => ld[k] === undefined && delete ld[k]);

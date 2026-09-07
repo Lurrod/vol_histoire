@@ -19,22 +19,22 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title data-i18n="details.title">Détails de l'Avion | Vol d'Histoire</title>
-  <meta name="description" content="Découvrez les spécifications détaillées, l'armement, les technologies et l'historique de cet avion de chasse.">
+  <meta name="description" content="Découvrez les spécifications détaillées, l'armement, les technologies et l'historique de cet appareil militaire.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/details">
   <link rel="alternate" hreflang="fr" href="https://vol-histoire.titouan-borde.com/details?lang=fr">
   <link rel="alternate" hreflang="en" href="https://vol-histoire.titouan-borde.com/details?lang=en">
   <link rel="alternate" hreflang="x-default" href="https://vol-histoire.titouan-borde.com/details">
   <meta name="robots" content="index, follow">
-  <meta name="keywords" content="fiche technique avion, spécifications avion de chasse, armement avion militaire">
+  <meta name="keywords" content="fiche technique avion, spécifications appareil militaire, armement avion militaire">
   <meta property="og:title" content="Détails de l'Avion | Vol d'Histoire">
-  <meta property="og:description" content="Découvrez les spécifications détaillées, l'armement, les technologies et l'historique de cet avion de chasse.">
+  <meta property="og:description" content="Découvrez les spécifications détaillées, l'armement, les technologies et l'historique de cet appareil militaire.">
   <meta property="og:url" content="https://vol-histoire.titouan-borde.com/details">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Vol d'Histoire">
   <meta property="og:locale" content="fr_FR">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Détails de l'Avion | Vol d'Histoire">
-  <meta name="twitter:description" content="Découvrez les spécifications détaillées, l'armement, les technologies et l'historique de cet avion de chasse.">
+  <meta name="twitter:description" content="Découvrez les spécifications détaillées, l'armement, les technologies et l'historique de cet appareil militaire.">
   <meta property="og:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/a10-thunderbolt-2.jpg">
   <meta property="og:image:alt" content="Vol d'Histoire — encyclopédie aviation militaire">
   <meta property="og:image:type" content="image/jpeg">
@@ -46,7 +46,7 @@
     "@type": "Article",
     "name": "Fiche technique avion militaire",
     "url": "https://vol-histoire.titouan-borde.com/details",
-    "description": "Découvrez les spécifications détaillées, l'armement, les technologies et l'historique de cet avion de chasse.",
+    "description": "Découvrez les spécifications détaillées, l'armement, les technologies et l'historique de cet appareil militaire.",
     "inLanguage": "fr",
     "publisher": {
       "@type": "Organization",
@@ -161,6 +161,7 @@
           </div>
           <div class="hero-right">
             <div class="aircraft-image-container"><picture><source id="hero-image-avif" type="image/avif" srcset=""><source id="hero-image-webp" type="image/webp" srcset=""><img id="hero-image" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Chargement de l'appareil…" class="aircraft-image" width="800" height="500" fetchpriority="high" decoding="async"></picture><div class="image-overlay"></div></div>
+            <p class="image-credit" id="image-credit" hidden></p>
           </div>
         </div>
       </div>
@@ -173,7 +174,7 @@
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-icon"><i class="fas fa-gauge-high"></i></div><div class="stat-content"><div class="stat-label" data-i18n="details.speed">Vitesse Max</div><div class="stat-value" id="stat-speed">-</div></div></div>
         <div class="stat-card"><div class="stat-icon"><i class="fas fa-route"></i></div><div class="stat-content"><div class="stat-label" data-i18n="details.range">Portée Max</div><div class="stat-value" id="stat-range">-</div></div></div>
-        <div class="stat-card"><div class="stat-icon"><i class="fas fa-weight-hanging"></i></div><div class="stat-content"><div class="stat-label" data-i18n="details.weight">Poids</div><div class="stat-value" id="stat-weight">-</div></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-weight-hanging"></i></div><div class="stat-content"><div class="stat-label" data-i18n="details.empty_weight">Poids à vide</div><div class="stat-value" id="stat-weight">-</div></div></div>
         <div class="stat-card"><div class="stat-icon"><i class="fas fa-circle-check"></i></div><div class="stat-content"><div class="stat-label" data-i18n="details.status">Statut</div><div class="stat-value" id="stat-status">-</div></div></div>
       </div>
     </div>
@@ -304,7 +305,6 @@
           <div class="form-section"><h3><i class="fas fa-tachometer-alt"></i> <span data-i18n="details.admin_section_basic_specs">Spécifications de base</span></h3><div class="form-grid">
             <div class="form-group"><label for="edit-max-speed" data-i18n="details.max_speed">Vitesse max (km/h)</label><input type="number" id="edit-max-speed" step="any"></div>
             <div class="form-group"><label for="edit-max-range" data-i18n="details.max_range">Portée max (km)</label><input type="number" id="edit-max-range" step="any"></div>
-            <div class="form-group"><label for="edit-weight" data-i18n="details.weight_kg">Poids (kg)</label><input type="number" id="edit-weight" step="any"></div>
           </div></div>
 
           <div class="form-section"><h3><i class="fas fa-ruler-combined"></i> <span data-i18n="details.admin_section_extended_specs">Dimensions &amp; performances étendues</span></h3><div class="form-grid">
@@ -360,6 +360,8 @@
             <div class="form-group span-2"><label for="edit-wikipedia-en" data-i18n="details.admin_wikipedia_en">Wikipedia EN</label><input type="url" id="edit-wikipedia-en" placeholder="https://en.wikipedia.org/wiki/…"></div>
             <div class="form-group span-2"><label for="edit-youtube-showcase" data-i18n="details.admin_youtube">YouTube (présentation)</label><input type="url" id="edit-youtube-showcase" placeholder="https://youtube.com/watch?v=…"></div>
             <div class="form-group span-2"><label for="edit-manufacturer-page" data-i18n="details.admin_manufacturer_page">Page constructeur</label><input type="url" id="edit-manufacturer-page"></div>
+            <div class="form-group"><label for="edit-image-credit" data-i18n="details.admin_image_credit">Crédit photo (auteur)</label><input type="text" id="edit-image-credit" maxlength="255"></div>
+            <div class="form-group"><label for="edit-image-licence" data-i18n="details.admin_image_licence">Licence photo</label><input type="text" id="edit-image-licence" maxlength="100" placeholder="CC BY-SA 4.0"></div>
           </div></div>
         </div>
         <div class="modal-footer">
@@ -373,7 +375,7 @@
   <footer>
     <div class="container">
       <div class="footer-content">
-        <div class="footer-section"><div class="footer-logo"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="footer-lockup" width="190" height="50"></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'avions de chasse.</p></div>
+        <div class="footer-section"><div class="footer-logo"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="footer-lockup" width="190" height="50"></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'appareils, du chasseur au transporteur.</p></div>
         <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="/contact" data-i18n="footer.contact">Contact</a></li></ul></div>
         <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" class="cookie-settings-link" data-i18n="footer.cookies">Cookies</a></li></ul></div>

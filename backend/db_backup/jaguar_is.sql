@@ -19,8 +19,7 @@ INSERT INTO airplanes (
     id_generation,
     type,
     status,
-    status_en,
-    weight
+    status_en
 ) VALUES (
     'Jaguar IS',
     'Jaguar IS',
@@ -40,9 +39,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'HAL'),
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
-    'Actif',
-    'Active',
-    7000.0
+    'En service',
+    'In service'
 );
 
 -- Insertion des technologies
@@ -102,3 +100,8 @@ UPDATE airplanes SET
   description = E'## Genèse\nAccord de transfert de technologie signé entre HAL, SEPECAT (BAE/Dassault-Bréguet) et l''IAF en **1978**. Premier lot (40 appareils) importé directement de BAE Warton, puis production sous licence de **161 appareils** à HAL Bangalore entre **1981 et 2014** — l''un des plus longs programmes de production sous licence en Inde.\n\n## Carrière opérationnelle\nPierre angulaire de la frappe conventionnelle à basse altitude de l''IAF. Engagé durant la **guerre de Kargil (1999)** en appui au sol et reconnaissance. Engagé aussi dans des missions maritimes avec la variante IM (Jamnagar). Modernisations successives DARIN I (1993), DARIN II (2003) et **DARIN III (2013-2020)** : 59 appareils re-winger + radar EL/M-2052 AESA + avionique Elbit + compatibilité ASRAAM. Retrait progressif prévu à partir de **2030**, remplacement Tejas Mk2.\n\n## Héritage\nSeul Jaguar au monde encore en service en 2026 après le retrait britannique, français et omanais. Démontre la capacité indienne à prolonger une cellule des années 1970 avec de l''avionique de pointe pendant 50+ ans.',
   description_en = E'## Genesis\nTechnology transfer agreement signed between HAL, SEPECAT (BAE/Dassault-Bréguet) and the IAF in **1978**. First batch (40 aircraft) imported directly from BAE Warton, then licence production of **161 aircraft** at HAL Bangalore between **1981 and 2014** — one of India''s longest licence production programmes.\n\n## Operational career\nCornerstone of the IAF''s low-altitude conventional strike. Deployed during the **Kargil War (1999)** in ground support and reconnaissance. Also deployed in maritime missions with the IM variant (Jamnagar). Successive upgrades DARIN I (1993), DARIN II (2003) and **DARIN III (2013-2020)**: 59 aircraft re-winged + EL/M-2052 AESA radar + Elbit avionics + ASRAAM compatibility. Gradual retirement planned from **2030**, replaced by Tejas Mk2.\n\n## Legacy\nOnly Jaguar worldwide still in service in 2026 after British, French and Omani retirements. Demonstrates Indian capability to extend a 1970s airframe with cutting-edge avionics over 50+ years.'
 WHERE name = 'Jaguar IS';
+
+-- [auto:006] furtivité (strate 4).
+-- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
+-- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Jaguar IS';
