@@ -27,7 +27,6 @@ const BUNDLES = {
   'app.min.js': [
     'app-version.js',
     'i18n.js',
-    'icons.js',
     'auth.js',
     'utils.js',
     'nav.js',
@@ -37,8 +36,22 @@ const BUNDLES = {
     'shared/card.js',
   ],
 
+  // Sous-ensemble d'icones Font Awesome (genere par scripts/build-icons.py).
+  // Sorti du bundle commun : il pesait 87,8 Ko sur les 111,6 Ko d'app.min.js,
+  // soit 79 % d'un fichier charge sur toutes les pages, alors qu'il ne change
+  // qu'a l'ajout d'une icone. Separe, il se met en cache pour un an de son cote
+  // et ne repart plus a chaque modification du code applicatif.
+  //
+  // Pourquoi pas un sous-ensemble PAR PAGE (15 a 71 icones sur 164 selon les
+  // pages) : quatre appels construisent leur classe a l'execution
+  // (`fa-${icon}` dans cookies.js:417, utils.js:119, details/radar.js:94), donc
+  // aucune analyse statique ne peut garantir la liste. Une icone manquante ne
+  // produit aucune erreur, juste un bouton vide — le projet s'y est deja brule.
+  'icons.min.js': ['icons.js'],
+
   // Pages principales
   'home.min.js': [
+    'home/hero-daily.js',
     'script.js',
     'onboarding.js',
     'nations-map.js',

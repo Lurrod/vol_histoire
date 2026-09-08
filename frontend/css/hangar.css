@@ -9,41 +9,10 @@
 /* ======================================================================
    PAGE HERO
    ====================================================================== */
-/* Backdrop "1960 timeline" sur toute la page hangar */
+/* Fond photographique flouté : voir shared-base.css (source unique). */
 body.page-hangar {
   background: var(--night);
 }
-body.page-hangar::before,
-body.page-hangar::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-}
-body.page-hangar::before {
-  background-image: url('/assets/airplanes/f4-phantom-2.jpg');
-  background-image: image-set(
-    url('/assets/airplanes/f4-phantom-2.avif') type('image/avif'),
-    url('/assets/airplanes/f4-phantom-2.webp') type('image/webp'),
-    url('/assets/airplanes/f4-phantom-2.jpg') type('image/jpeg')
-  );
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: blur(30px) brightness(0.28) saturate(0.7);
-  transform: scale(1.15);
-  opacity: 0.55;
-  z-index: -2;
-}
-body.page-hangar::after {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    radial-gradient(ellipse at 20% 20%, rgba(255, 140, 0, 0.45) 0%, transparent 55%);
-  background-size: 60px 60px, 60px 60px, 100% 100%;
-}
-
 .page-hangar .page-hero {
   position: relative;
   background: transparent;
@@ -94,7 +63,7 @@ body.page-hangar::after {
   background: rgba(255,255,255,0.04); color: var(--white);
 }
 .page-hangar .search-box input::placeholder { color: rgba(255,255,255,0.25); }
-.page-hangar .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
+.page-hangar .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
 .page-hangar .search-box input::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
@@ -141,14 +110,14 @@ body.page-hangar::after {
   color: rgba(255,255,255,0.65); font-size: 0.85rem; white-space: nowrap;
 }
 .page-hangar .sort-select:hover { border-color: rgba(255,255,255,0.18); }
-.page-hangar .sort-select:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); }
+.page-hangar .sort-select:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); }
 .page-hangar .sort-select option { background: var(--night-mid); color: var(--white); }
 
 /* Active Filters */
 .page-hangar .active-filters { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
 .page-hangar .active-filters-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); font-weight: 500; display: flex; align-items: center; }
 .page-hangar .active-filter { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(200,169,110,0.08); color: var(--hud-cyan); padding: 0.4rem 0.875rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(200,169,110,0.2); }
-.page-hangar .remove-filter-btn { background: rgba(200,169,110,0.15); border: none; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: var(--hud-cyan); font-size: 0.6rem; }
+.page-hangar .remove-filter-btn { background: rgba(200,169,110,0.15); border: none; /* 28px : sous 24px la cible echoue au critere WCAG 2.5.8 */ width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: var(--hud-cyan); font-size: 0.6rem; }
 .page-hangar .remove-filter-btn:hover { background: rgba(200,169,110,0.3); }
 .page-hangar .clear-all-filters { padding: 0.4rem 1rem; background: transparent; border: 1px solid rgba(231,76,60,0.4); color: var(--accent); border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition-fast); }
 .page-hangar .clear-all-filters:hover { background: rgba(231,76,60,0.15); border-color: var(--accent); }
@@ -161,7 +130,7 @@ body.page-hangar::after {
   background: rgba(20,20,20,0.72); backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2);
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: 12px; box-shadow: 0 20px 56px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.02) inset;
-  max-height: 400px; overflow-y: auto; z-index: 999;
+  max-height: 400px; overflow-y: auto; z-index: var(--z-panel);
   opacity: 0; transform: translateY(-8px);
   transition: var(--transition); pointer-events: none;
 }
@@ -222,7 +191,7 @@ body.page-hangar::after {
 /* ======================================================================
    MODAL
    ====================================================================== */
-.page-hangar .modal { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 2rem; }
+.page-hangar .modal { position: fixed; inset: 0; z-index: var(--z-modal); display: none; align-items: center; justify-content: center; padding: 2rem; }
 .page-hangar .modal.show { display: flex; }
 .page-hangar .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); }
 .page-hangar .modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); max-width: 64em; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn 0.3s ease; }
@@ -246,7 +215,7 @@ body.page-hangar::after {
   transition: var(--transition-fast); background: rgba(255,255,255,0.03); color: var(--white);
 }
 .page-hangar .form-group input::placeholder, .page-hangar .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
-.page-hangar .form-group input:focus, .page-hangar .form-group select:focus, .page-hangar .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.22); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
+.page-hangar .form-group input:focus, .page-hangar .form-group select:focus, .page-hangar .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
 .page-hangar .form-group select option { background: var(--night-mid); color: var(--white); }
 .page-hangar .form-group textarea { resize: vertical; min-height: 100px; }
 
@@ -337,7 +306,7 @@ body.page-hangar::after {
   .page-hangar .empty-state h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
   .page-hangar .empty-state p { font-size: 0.9rem; }
   /* footer → shared.css */
-  .page-hangar #add-airplane-btn { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 900; border-radius: 50px; box-shadow: var(--shadow-xl); min-height: 48px; }
+  .page-hangar #add-airplane-btn { position: fixed; bottom: 1.5rem; right: 1rem; z-index: var(--z-raised); border-radius: 50px; box-shadow: var(--shadow-xl); min-height: 48px; }
   .page-hangar #add-airplane-btn span { display: none; }
   .page-hangar #add-airplane-btn i, .page-hangar #add-airplane-btn .icon { margin: 0; }
 }
@@ -454,7 +423,7 @@ body.page-hangar::after {
   letter-spacing: 0;
 }
 .page-hangar .aircraft-list .compare-check span { display: none; }
-.page-hangar .aircraft-list .compare-check input { width: 18px; height: 18px; margin: 0; }
+.page-hangar .aircraft-list .compare-check input { width: 24px; height: 24px; margin: 0; }
 .page-hangar .aircraft-list .compare-check:hover { background: rgba(200,169,110,0.06); border-left-color: rgba(200,169,110,0.35); }
 .page-hangar .aircraft-list .compare-check:has(input:checked) { background: rgba(200,169,110,0.1); border-left-color: rgba(200,169,110,0.4); }
 
@@ -464,7 +433,7 @@ body.page-hangar::after {
   .page-hangar .aircraft-list .aircraft-content { padding: 0.75rem 0.9rem; gap: 0.3rem; }
   .page-hangar .aircraft-list .aircraft-name-row h3 { font-size: 0.95rem; }
   .page-hangar .aircraft-list .aircraft-specs { display: none; }
-  .page-hangar .aircraft-list .compare-check input { width: 16px; height: 16px; }
+  .page-hangar .aircraft-list .compare-check input { width: 24px; height: 24px; }
 }
 
 /* Compare checkbox on cards */
@@ -488,7 +457,9 @@ body.page-hangar::after {
   letter-spacing: 0.05em;
   border: 1px solid rgba(255,255,255,0.08);
 }
-.page-hangar .compare-check input { cursor: pointer; accent-color: var(--hud-cyan); }
+/* 18px par defaut chez le navigateur : sous le minimum de 24x24 du critere
+   WCAG 2.5.8. La case du comparateur est une cible frequente sur mobile. */
+.page-hangar .compare-check input { cursor: pointer; accent-color: var(--hud-cyan); width: 24px; height: 24px; }
 .page-hangar .compare-check:hover { border-color: var(--hud-cyan); }
 
 /* Barre + modale du comparateur → compare.css (partagé avec la fiche) */

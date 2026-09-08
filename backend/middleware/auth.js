@@ -139,6 +139,14 @@ async function cleanupUnverifiedUsers() {
   return result.rowCount || 0;
 }
 
+// Témoin de session lisible par le JS. Le refresh token reste httpOnly — donc
+// invisible au script — ce qui obligeait le front à tenter un /api/refresh à
+// l'aveugle sur chaque page : pour un visiteur anonyme, cela produisait un 401
+// journalisé en console à chaque chargement. Ce cookie ne porte aucune donnée
+// exploitable : il dit seulement « une session existe », et permet au front de
+// ne demander le rafraîchissement que lorsqu'il a une chance d'aboutir.
+const SESSION_HINT_COOKIE = 'vh_session';
+
 function setRefreshCookie(res, token) {
   res.cookie(REFRESH_COOKIE_NAME, token, {
     httpOnly: true,
@@ -146,6 +154,13 @@ function setRefreshCookie(res, token) {
     sameSite: 'strict',
     maxAge: REFRESH_COOKIE_MAX_AGE,
     path: '/api',
+  });
+  res.cookie(SESSION_HINT_COOKIE, '1', {
+    httpOnly: false, // lu par frontend/js/auth.js — volontaire
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: REFRESH_COOKIE_MAX_AGE,
+    path: '/',
   });
 }
 
@@ -155,6 +170,11 @@ function clearRefreshCookie(res) {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     path: '/api',
+  });
+  res.clearCookie(SESSION_HINT_COOKIE, {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/',
   });
 }
 
@@ -216,6 +236,7 @@ module.exports = {
   cleanupUnverifiedUsers,
   setRefreshCookie,
   clearRefreshCookie,
+  SESSION_HINT_COOKIE,
   authorize,
   isOwnerOrAdmin,
 };

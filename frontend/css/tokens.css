@@ -18,7 +18,10 @@
   --hud-cyan:   #C8A96E;   /* or champagne — accent unique et retenu */
   --hud-green:  #5A8A6A;   /* vert militaire désaturé */
   --hud-amber:  #B8956A;   /* ambre secondaire */
-  --accent:     #C0392B;   /* rouge danger — clarté UX */
+  --accent:     #C0392B;   /* rouge danger — fonds, bordures, icônes */
+  /* Le même rouge en texte sur fond sombre ne passe qu'à 3,44:1, sous le seuil
+     AA de 4,5:1. Cette variante monte à 4,9:1 sur #121212. */
+  --accent-text: #E74C3C;
   --success:    #2E7D52;   /* vert succès désaturé */
   --warning:    #B8860B;   /* or foncé pour les avertissements */
   --purple:     #7C6FA0;   /* violet assourdi */
@@ -252,10 +255,17 @@
   /* ============================================================
      Z-INDEX
      ============================================================ */
-  --z-sticky:   100;
-  --z-header:   1000;
-  --z-dropdown: 2000;
-  --z-modal:    10000;
+  /* Echelle complete. Les valeurs reprennent exactement celles qui etaient
+     ecrites en dur un peu partout : rien ne bouge a l'ecran, mais l'ordre
+     d'empilement devient lisible en un endroit. */
+  --z-sticky:   100;    /* barres collantes (comparateur) */
+  --z-raised:   900;    /* elements decolles du flux (frise) */
+  --z-panel:    999;    /* panneaux deroulants sous l'en-tete */
+  --z-header:   1000;   /* en-tete de navigation */
+  --z-dropdown: 2000;   /* menus de l'en-tete */
+  --z-hud:      5000;   /* HUD plein ecran de la frise */
+  --z-overlay:  9999;   /* bandeau de consentement, toasts */
+  --z-modal:    10000;  /* modales — toujours au-dessus */
 
   /* ============================================================
      VARIABLES THÈME CLAIR — utilisées par login.css (panneau form)

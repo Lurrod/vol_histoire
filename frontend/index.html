@@ -12,12 +12,11 @@
   <link rel="icon" type="image/svg+xml" sizes="16x16" href="/assets/logo/favicon-16.svg">
   <link rel="apple-touch-icon" href="/assets/logo/icon-192.png">
   <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="preconnect" href="https://flagcdn.com">
   <meta name="theme-color" content="#080c14">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title data-i18n="home.title">Vol d'Histoire - Explorez l'Aviation Militaire</title>
+  <title data-i18n="home.title">Vol d'Histoire | Explorez l'Aviation Militaire</title>
   <meta name="description" content="Découvrez l'histoire de l'aviation militaire à travers notre collection d'appareils historiques et leur évolution technique.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/">
   <meta name="robots" content="index, follow">
@@ -38,7 +37,10 @@
   <link rel="alternate" hreflang="x-default" href="https://vol-histoire.titouan-borde.com/">
   <link rel="preload" href="fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" as="image" href="/assets/airplanes/rafale.avif" type="image/avif" imagesrcset="/assets/airplanes/rafale.avif" fetchpriority="high">
+  <!-- Pas de preload d'image ici : l'element LCP mesure est l'illustration du
+       widget « Devine l'avion », choisie par /api/hero/discoveries — donc inconnue
+       du HTML. Precharger rafale.avif (carte « en vedette », sous la ligne de
+       flottaison) ne faisait que disputer la bande passante au vrai LCP. -->
   <link rel="stylesheet" href="css/core.min.css">
   <link rel="stylesheet" href="css/home.min.css">
   <!-- VH-P2 : critical CSS inliné — anti-FOUC + layout above-the-fold AVANT que les bundles ne soient parsés.
@@ -110,9 +112,6 @@
           <span data-i18n="home.hero_split_title_l2">militaire,</span><br>
           <span class="gradient-text" data-i18n="home.hero_split_title_l3">une fiche à la fois.</span>
         </h1>
-        <p class="hero-split-baseline" data-i18n="home.hero_split_baseline">
-          Catalogue offline. Recherche full-text. Fiches enrichies.
-        </p>
         <div class="hero-split-meta">
           <span><strong id="hero-split-stat-airplanes">107</strong> <span data-i18n="home.hero_split_meta_aircraft">appareils</span></span>
           <span class="hero-split-dot" aria-hidden="true">·</span>
@@ -127,18 +126,18 @@
         </a>
       </div>
 
-      <!-- Colonne droite — 2 widgets stackés (Saviez-vous ? + Devine l'avion) -->
+      <!-- Colonne droite — 2 widgets stackés (Ce jour-là + Devine l'avion du jour) -->
       <div class="hero-split-right">
         <aside class="hero-aside-stack" aria-label="Découvertes" data-i18n-aria="home.hero_aside_label">
 
-          <!-- Widget 1 : Saviez-vous ? -->
+          <!-- Widget 1 : Ce jour-là (éphéméride, repli sur un fait éditorial) -->
           <article class="hero-aside-card hero-fact-card" id="hero-fact-card">
             <header class="hero-aside-header">
               <span class="hero-aside-label">
-                <i class="fas fa-bolt" aria-hidden="true"></i>
-                <span data-i18n="home.hero_fact_label">Saviez-vous&nbsp;?</span>
+                <i class="fas fa-calendar-days" aria-hidden="true"></i>
+                <span id="hero-fact-label" data-i18n="home.hero_today_label">Ce jour-là</span>
               </span>
-              <button type="button" class="hero-aside-reroll" id="hero-fact-reroll" aria-label="Tirer un autre fait" data-i18n-aria="home.hero_fact_reroll_aria">
+              <button type="button" class="hero-aside-reroll" id="hero-fact-reroll" aria-label="Voir l'événement suivant" data-i18n-aria="home.hero_today_next_aria">
                 <i class="fas fa-sync-alt" aria-hidden="true"></i>
               </button>
             </header>
@@ -158,6 +157,7 @@
                 <i class="fas fa-question-circle" aria-hidden="true"></i>
                 <span data-i18n="home.hero_quiz_label">Devine l'avion</span>
               </span>
+              <span class="hero-aside-tag" id="hero-quiz-daily-tag" data-i18n="home.hero_quiz_daily_tag" hidden>Du jour</span>
               <button type="button" class="hero-aside-reroll" id="hero-quiz-reroll" aria-label="Changer d'avion" data-i18n-aria="home.hero_quiz_reroll_aria">
                 <i class="fas fa-sync-alt" aria-hidden="true"></i>
               </button>
@@ -202,15 +202,15 @@
       <div class="featured-grid">
         <article class="aircraft-card" data-aos="zoom-in" data-aos-delay="0">
           <div class="aircraft-image"><picture><source type="image/avif" srcset="/assets/airplanes/rafale.avif"><source type="image/webp" srcset="/assets/airplanes/rafale.webp"><img src="/assets/airplanes/rafale.jpg" alt="Rafale" width="400" height="300" fetchpriority="high"></picture><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_4_5">4.5e Génération</span><span class="tag" data-i18n="home.type_multirole">Multirôle</span></div></div></div>
-          <div class="aircraft-content"><div class="aircraft-header"><h3>Dassault Rafale</h3><div class="aircraft-flag"><img src="https://flagcdn.com/fr.svg" alt="France" width="24" height="18" loading="lazy"></div></div><p class="aircraft-description" data-i18n="home.rafale_desc">Chasseur polyvalent français omnirôle, incarnation de l'excellence aéronautique tricolore alliant performance, autonomie stratégique et innovation.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 1.8</span></div><div class="spec"><i class="fas fa-calendar"></i><span>2001</span></div></div><a href="/details?id=30" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
+          <div class="aircraft-content"><div class="aircraft-header"><h3>Dassault Rafale</h3><div class="aircraft-flag"><img src="/assets/flags/fr.png" alt="France" width="24" height="18" loading="lazy"></div></div><p class="aircraft-description" data-i18n="home.rafale_desc">Chasseur polyvalent français omnirôle, incarnation de l'excellence aéronautique tricolore alliant performance, autonomie stratégique et innovation.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 1.8</span></div><div class="spec"><i class="fas fa-calendar"></i><span>2001</span></div></div><a href="/details?id=30" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
         </article>
         <article class="aircraft-card" data-aos="zoom-in" data-aos-delay="100">
           <div class="aircraft-image"><picture><source type="image/avif" srcset="/assets/airplanes/f22-raptor.avif"><source type="image/webp" srcset="/assets/airplanes/f22-raptor.webp"><img src="/assets/airplanes/f22-raptor.jpg" alt="F-22 Raptor" width="400" height="300" loading="lazy"></picture><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_5">5e Génération</span><span class="tag" data-i18n="home.type_superiority">Supériorité aérienne</span></div></div></div>
-          <div class="aircraft-content"><div class="aircraft-header"><h3>F-22 Raptor</h3><div class="aircraft-flag"><img src="https://flagcdn.com/us.svg" alt="USA" width="24" height="18" loading="lazy"></div></div><p class="aircraft-description" data-i18n="home.f22_desc">Premier chasseur de 5e génération opérationnel, référence absolue de la supériorité aérienne grâce à sa furtivité, sa super-croisière et son avionique avancée.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 2.25</span></div><div class="spec"><i class="fas fa-calendar"></i><span>2005</span></div></div><a href="/details?id=12" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
+          <div class="aircraft-content"><div class="aircraft-header"><h3>F-22 Raptor</h3><div class="aircraft-flag"><img src="/assets/flags/us.png" alt="USA" width="24" height="18" loading="lazy"></div></div><p class="aircraft-description" data-i18n="home.f22_desc">Premier chasseur de 5e génération opérationnel, référence absolue de la supériorité aérienne grâce à sa furtivité, sa super-croisière et son avionique avancée.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 2.25</span></div><div class="spec"><i class="fas fa-calendar"></i><span>2005</span></div></div><a href="/details?id=12" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
         </article>
         <article class="aircraft-card" data-aos="zoom-in" data-aos-delay="200">
           <div class="aircraft-image"><picture><source type="image/avif" srcset="/assets/airplanes/mig29.avif"><source type="image/webp" srcset="/assets/airplanes/mig29.webp"><img src="/assets/airplanes/mig29.jpg" alt="MiG-29" width="400" height="300" loading="lazy"></picture><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_4">4e Génération</span><span class="tag" data-i18n="home.type_multirole">Multirôle</span></div></div></div>
-          <div class="aircraft-content"><div class="aircraft-header"><h3>MiG-29</h3><div class="aircraft-flag"><img src="https://flagcdn.com/ru.svg" alt="Russie" width="24" height="18" loading="lazy"></div></div><p class="aircraft-description" data-i18n="home.mig29_desc">Chasseur multirôle soviétique redoutable en combat rapproché, exporté dans le monde entier et éprouvé dans de nombreux conflits.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 2.25</span></div><div class="spec"><i class="fas fa-calendar"></i><span>1983</span></div></div><a href="/details?id=24" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
+          <div class="aircraft-content"><div class="aircraft-header"><h3>MiG-29</h3><div class="aircraft-flag"><img src="/assets/flags/ru.png" alt="Russie" width="24" height="18" loading="lazy"></div></div><p class="aircraft-description" data-i18n="home.mig29_desc">Chasseur multirôle soviétique redoutable en combat rapproché, exporté dans le monde entier et éprouvé dans de nombreux conflits.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 2.25</span></div><div class="spec"><i class="fas fa-calendar"></i><span>1983</span></div></div><a href="/details?id=24" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
         </article>
       </div>
       <div class="section-cta"><a href="/hangar" class="btn btn-primary btn-large"><i class="fas fa-plane"></i><span data-i18n="home.btn_see_hangar">Voir tout le Hangar</span></a></div>
@@ -390,28 +390,28 @@
               <div class="mockup-card-img"><i class="fas fa-jet-fighter"></i></div>
               <div class="mockup-card-body">
                 <div class="mockup-card-name">Dassault Rafale</div>
-                <div class="mockup-card-meta"><img src="https://flagcdn.com/fr.svg" alt="FR" width="14" height="11" loading="lazy"> France · 5e Gén.</div>
+                <div class="mockup-card-meta"><img src="/assets/flags/fr.png" alt="FR" width="14" height="11" loading="lazy"> France · 5e Gén.</div>
               </div>
             </div>
             <div class="mockup-card">
               <div class="mockup-card-img"><i class="fas fa-plane"></i></div>
               <div class="mockup-card-body">
                 <div class="mockup-card-name">Mirage 2000</div>
-                <div class="mockup-card-meta"><img src="https://flagcdn.com/fr.svg" alt="FR" width="14" height="11" loading="lazy"> France · 4e Gén.</div>
+                <div class="mockup-card-meta"><img src="/assets/flags/fr.png" alt="FR" width="14" height="11" loading="lazy"> France · 4e Gén.</div>
               </div>
             </div>
             <div class="mockup-card">
               <div class="mockup-card-img"><i class="fas fa-plane-departure"></i></div>
               <div class="mockup-card-body">
                 <div class="mockup-card-name">Mirage F1</div>
-                <div class="mockup-card-meta"><img src="https://flagcdn.com/fr.svg" alt="FR" width="14" height="11" loading="lazy"> France · 3e Gén.</div>
+                <div class="mockup-card-meta"><img src="/assets/flags/fr.png" alt="FR" width="14" height="11" loading="lazy"> France · 3e Gén.</div>
               </div>
             </div>
             <div class="mockup-card">
               <div class="mockup-card-img"><i class="fas fa-fighter-jet"></i></div>
               <div class="mockup-card-body">
                 <div class="mockup-card-name">Mirage III</div>
-                <div class="mockup-card-meta"><img src="https://flagcdn.com/fr.svg" alt="FR" width="14" height="11" loading="lazy"> France · 2e Gén.</div>
+                <div class="mockup-card-meta"><img src="/assets/flags/fr.png" alt="FR" width="14" height="11" loading="lazy"> France · 2e Gén.</div>
               </div>
             </div>
           </div>
@@ -453,6 +453,7 @@
   <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
+  <script defer src="js/dist/icons.min.js"></script>
   <script defer src="js/sentry-init.js"></script>
   <script defer src="js/dist/home.min.js"></script>
 </body>

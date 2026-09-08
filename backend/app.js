@@ -77,7 +77,7 @@ app.use((req, res, next) => {
     // donc 'unsafe-inline' n'est plus nécessaire — CSP strictement nonce-based.
     `style-src 'self' 'nonce-${nonce}' ${styleHosts}`,
     "font-src 'self'",
-    "img-src 'self' https://flagcdn.com https://www.googletagmanager.com https://picsum.photos https://fastly.picsum.photos data:",
+    "img-src 'self' https://www.googletagmanager.com data:",
     "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.ingest.sentry.io https://*.sentry.io https://hcaptcha.com https://*.hcaptcha.com",
     "frame-src https://hcaptcha.com https://*.hcaptcha.com",
     "media-src 'self'",
@@ -277,10 +277,11 @@ app.use('/api', createMonitoringRouter(() => pool));
 // -----------------------------------------------------------------------------
 // Fichiers statiques
 // -----------------------------------------------------------------------------
-// Cache headers : 30 jours sur fonts (immutable), 1 jour sur CSS/JS/images,
-// pas de cache sur HTML (rendu dynamique potentiel + invalidation rapide).
+// Cache headers : 30 jours sur fonts (immutable), 1 an sur les fichiers dont
+// l'URL porte un ?v= (le bump de version suffit à invalider), 1 jour sur le
+// reste, pas de cache sur HTML (rendu dynamique potentiel + invalidation rapide).
 const STATIC_OPTS = {
-  setHeaders: (res, filePath) => {
+  setHeaders: (res, filePath, _stat) => {
     const ext = path.extname(filePath).toLowerCase();
     const base = path.basename(filePath).toLowerCase();
     if (base === 'sw.js') {
@@ -299,8 +300,13 @@ const STATIC_OPTS = {
       // Fonts : long cache + immutable (le contenu ne change jamais)
       res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
     } else if (['.css', '.js', '.svg', '.png', '.jpg', '.jpeg', '.webp', '.avif', '.ico'].includes(ext)) {
-      // Statiques fingerprintables : 1 jour navigateur, 7 jours CDN
-      res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=604800');
+      // Les CSS et JS sont servis avec ?v=<version> : le contenu d'une URL
+      // donnée ne change jamais, donc un an de cache immuable. Les images n'ont
+      // pas ce paramètre et gardent une journée.
+      const versionne = ext === '.css' || ext === '.js';
+      res.setHeader('Cache-Control', versionne
+        ? 'public, max-age=31536000, immutable'
+        : 'public, max-age=86400, s-maxage=604800');
     }
   },
 };

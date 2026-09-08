@@ -24,14 +24,20 @@
   }
 })();
 
-try {
-  require('dotenv').config({ path: require('path').join(__dirname, '../backend/.env') });
-} catch { /* dotenv optionnel — env vars peuvent venir directement du shell */ }
-
 const path = require('path');
 const Module = require('module');
 const backendNodeModules = path.join(__dirname, '../backend/node_modules');
 Module.globalPaths.push(backendNodeModules);
+
+// dotenv optionnel : en CI les variables sont injectées via l'env du job.
+// Résolution explicite depuis backend/node_modules — un require('dotenv') nu
+// échoue depuis e2e/ (aucun dotenv local), le catch avalait l'échec et le seed
+// partait sans mot de passe : « client password must be a string ».
+try {
+  require(path.join(backendNodeModules, 'dotenv')).config({ path: path.join(__dirname, '../backend/.env') });
+} catch {
+  // dotenv non disponible — on suppose que les env vars sont déjà définies
+}
 const { Pool } = require(path.join(backendNodeModules, 'pg'));
 
 const pool = new Pool({

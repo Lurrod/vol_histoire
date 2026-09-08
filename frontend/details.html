@@ -13,7 +13,6 @@
   <link rel="icon" type="image/svg+xml" sizes="16x16" href="/assets/logo/favicon-16.svg">
   <link rel="apple-touch-icon" href="/assets/logo/icon-192.png">
   <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="preconnect" href="https://flagcdn.com">
   <meta name="theme-color" content="#080c14">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -202,9 +201,9 @@
     <div class="content-layout">
       <section class="content-section description-section"><div class="section-header"><h2><i class="fas fa-file-lines"></i> <span data-i18n="details.description">Description</span></h2></div><div class="section-content"><p id="aircraft-description" data-i18n="details.loading_desc">Chargement de la description...</p></div></section>
       <section class="content-section timeline-section"><div class="section-header"><h2><i class="fas fa-timeline"></i> <span data-i18n="details.key_dates">Dates Clés</span></h2></div><div class="section-content"><div class="timeline">
-        <div class="timeline-item" id="date-concept"><div class="timeline-marker"><i class="fas fa-lightbulb"></i></div><div class="timeline-content"><h4 data-i18n="details.concept">Conception</h4><p class="timeline-date">-</p></div></div>
-        <div class="timeline-item" id="date-first-fly"><div class="timeline-marker"><i class="fas fa-plane-departure"></i></div><div class="timeline-content"><h4 data-i18n="details.first_flight">Premier Vol</h4><p class="timeline-date">-</p></div></div>
-        <div class="timeline-item" id="date-operational"><div class="timeline-marker"><i class="fas fa-shield"></i></div><div class="timeline-content"><h4 data-i18n="details.in_service">Mise en Service</h4><p class="timeline-date">-</p></div></div>
+        <div class="timeline-item" id="date-concept"><div class="timeline-marker"><i class="fas fa-lightbulb"></i></div><div class="timeline-content"><h3 data-i18n="details.concept">Conception</h3><p class="timeline-date">-</p></div></div>
+        <div class="timeline-item" id="date-first-fly"><div class="timeline-marker"><i class="fas fa-plane-departure"></i></div><div class="timeline-content"><h3 data-i18n="details.first_flight">Premier Vol</h3><p class="timeline-date">-</p></div></div>
+        <div class="timeline-item" id="date-operational"><div class="timeline-marker"><i class="fas fa-shield"></i></div><div class="timeline-content"><h3 data-i18n="details.in_service">Mise en Service</h3><p class="timeline-date">-</p></div></div>
       </div></div></section>
       <!-- Strate 1+2 : Fiche technique étendue — placée avant les engagements historiques -->
       <section class="content-section specs-section hidden" id="specs-section">
@@ -396,6 +395,7 @@
   <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
+  <script defer src="js/dist/icons.min.js"></script>
   <script defer src="js/sentry-init.js"></script>
   <script defer src="js/dist/details.min.js"></script>
 </body>

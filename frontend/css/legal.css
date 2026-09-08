@@ -4,29 +4,6 @@
 
 /* Backdrop unifié — même pattern que hangar/details */
 body.page-legal { background: var(--night); }
-body.page-legal::before,
-body.page-legal::after {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
-}
-body.page-legal::before {
-  background-image: url('/assets/airplanes/f4-phantom-2.jpg');
-  background-image: image-set(
-    url('/assets/airplanes/f4-phantom-2.avif') type('image/avif'),
-    url('/assets/airplanes/f4-phantom-2.webp') type('image/webp'),
-    url('/assets/airplanes/f4-phantom-2.jpg') type('image/jpeg')
-  );
-  background-size: cover; background-position: center; background-repeat: no-repeat;
-  filter: blur(30px) brightness(0.28) saturate(0.7);
-  transform: scale(1.15); opacity: 0.55; z-index: -2;
-}
-body.page-legal::after {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
-    radial-gradient(ellipse at 20% 20%, rgba(255,140,0,0.45) 0%, transparent 55%);
-  background-size: 60px 60px, 60px 60px, 100% 100%;
-}
-
 /* Page Hero */
 .page-legal .page-hero { position: relative; background: transparent; padding: 7rem 0; margin-top: 70px; overflow: hidden; }
 .page-legal .hero-background { position: absolute; inset: 0; background: transparent; z-index: 0; }

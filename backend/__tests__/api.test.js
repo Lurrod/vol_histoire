@@ -3157,11 +3157,28 @@ describe('GET /api/hero/discoveries', () => {
       ],
     });
 
+    mockPool.query.mockResolvedValueOnce({
+      rows: [
+        {
+          airplane_id: 3, airplane_name: 'Jaguar', airplane_name_en: 'Jaguar',
+          kind: 'first_flight', day_gap: 0, event_date: '1968-09-08', year: 1968,
+        },
+      ],
+    });
+
     const res = await request(app).get('/api/hero/discoveries');
     expect(res.status).toBe(200);
     expect(res.headers['x-cache']).toBe('MISS');
     expect(Array.isArray(res.body.facts)).toBe(true);
     expect(Array.isArray(res.body.aircraft)).toBe(true);
+    expect(Array.isArray(res.body.ephemeris)).toBe(true);
+    // La date de reference vient du serveur : c'est elle qui aligne tous les
+    // visiteurs sur le meme appareil du jour, quel que soit leur fuseau.
+    expect(res.body.day).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(res.body.ephemeris[0]).toMatchObject({
+      kind: 'first_flight', day_gap: 0, event_date: '1968-09-08',
+      year: 1968, airplane_id: 3, airplane_name: 'Jaguar',
+    });
     expect(res.body.facts[0]).toMatchObject({
       year: 1961, title_fr: 'Mach 2', airplane_id: 7, airplane_name: 'Mirage III',
     });
@@ -3171,22 +3188,38 @@ describe('GET /api/hero/discoveries', () => {
   });
 
   test('X-Cache HIT au second appel sans ?force=1', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [] });
-    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValue({ rows: [] });
     await request(app).get('/api/hero/discoveries');
     const res = await request(app).get('/api/hero/discoveries');
     expect(res.headers['x-cache']).toBe('HIT');
   });
 
   test('app.invalidateHeroCache vide le cache', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [] });
-    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValue({ rows: [] });
     await request(app).get('/api/hero/discoveries');
     await app.invalidateHeroCache?.();
-    mockPool.query.mockResolvedValueOnce({ rows: [] });
-    mockPool.query.mockResolvedValueOnce({ rows: [] });
     const res = await request(app).get('/api/hero/discoveries');
     expect(res.headers['x-cache']).toBe('MISS');
+  });
+
+  test("l'ephemeride est interrogee sur le jour courant, fenetre +/- 3 jours", async () => {
+    mockPool.query.mockResolvedValue({ rows: [] });
+    const res = await request(app).get('/api/hero/discoveries?force=1');
+
+    const appel = mockPool.query.mock.calls.find(([sql]) => /WITH ref AS/.test(sql));
+    expect(appel).toBeDefined();
+    expect(appel[1]).toEqual([res.body.day, 3, 12]);
+    // Les dates au 1er du mois sont des mois sans jour connu (223 des 330 mises
+    // en service) : les publier inventerait un anniversaire precis.
+    expect(appel[0]).toContain("to_char(a.date_first_fly, 'DD') <> '01'");
+    expect(appel[0]).toContain("to_char(a.date_operationel, 'DD') <> '01'");
+  });
+
+  test('ephemeris vide quand aucun anniversaire ne tombe dans la fenetre', async () => {
+    mockPool.query.mockResolvedValue({ rows: [] });
+    const res = await request(app).get('/api/hero/discoveries?force=1');
+    expect(res.status).toBe(200);
+    expect(res.body.ephemeris).toEqual([]);
   });
 
   test('500 — erreur DB propage en 500', async () => {
@@ -4103,20 +4136,32 @@ describe('app.js — Static Cache-Control (lignes 295-302)', () => {
     }
   });
 
-  test('.css → public, max-age=86400, s-maxage=604800 (ligne 301-302)', async () => {
+  // Les CSS/JS sont servis avec ?v=<version> : une URL donnée ne change jamais
+  // de contenu, d'où le cache immuable d'un an. Les images n'ont pas ce
+  // paramètre et gardent la journée + s-maxage CDN.
+  test('.css → public, max-age=31536000, immutable', async () => {
     const res = await request(app).get('/css/core.min.css');
     if (res.status === 200) {
-      expect(res.headers['cache-control']).toMatch(/max-age=86400/);
-      expect(res.headers['cache-control']).toMatch(/s-maxage=604800/);
+      expect(res.headers['cache-control']).toMatch(/max-age=31536000/);
+      expect(res.headers['cache-control']).toMatch(/immutable/);
     } else {
       expect([200, 404]).toContain(res.status);
     }
   });
 
-  test('.js → public, max-age=86400 (ligne 301-302)', async () => {
+  test('.js → public, max-age=31536000, immutable', async () => {
     const res = await request(app).get('/js/dist/home.min.js');
     if (res.status === 200) {
+      expect(res.headers['cache-control']).toMatch(/max-age=31536000/);
+      expect(res.headers['cache-control']).toMatch(/immutable/);
+    }
+  });
+
+  test('.svg → cache d\'un jour, pas immuable (pas de ?v=)', async () => {
+    const res = await request(app).get('/favicon.svg');
+    if (res.status === 200) {
       expect(res.headers['cache-control']).toMatch(/max-age=86400/);
+      expect(res.headers['cache-control']).not.toMatch(/immutable/);
     }
   });
 
@@ -4489,19 +4534,60 @@ describe('VH-T1 — details-ssr renderHtml branches supplémentaires', () => {
     expect(res.text).toContain('NoCountry');
   });
 
-  test('200 — aircraft avec date_operationel + complete_name → JSON-LD Article datePublished', async () => {
+  test('200 — datePublished/dateModified viennent de la fiche, pas de l\'appareil', async () => {
     mockPool.query.mockResolvedValueOnce({
       rows: [{
         id: 204,
         name: 'WithDate',
         complete_name: 'WithDate Mk-2',
         date_operationel: '2010-06-15',
+        created_at: '2026-02-11T09:30:00.000Z',
+        updated_at: '2026-07-04T18:00:00.000Z',
         country_name: 'Suède',
         generation: 4,
       }],
     });
     const res = await request(app).get('/details/withdate-204');
     expect(res.status).toBe(200);
-    expect(res.text).toMatch(/"datePublished":"2010-01-01"/);
+    // La date de publication décrit la fiche éditoriale. Annoncer 2010 parce que
+    // l'avion est entré en service cette année-là trompait les moteurs.
+    expect(res.text).toMatch(/"datePublished":"2026-02-11"/);
+    expect(res.text).toMatch(/"dateModified":"2026-07-04"/);
+    expect(res.text).not.toMatch(/"datePublished":"2010-01-01"/);
+  });
+
+  test('200 — fiche sans created_at → aucun datePublished inventé', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{ id: 205, name: 'SansDate', date_operationel: '1998-03-02' }],
+    });
+    const res = await request(app).get('/details/sansdate-205');
+    expect(res.status).toBe(200);
+    expect(res.text).not.toMatch(/"datePublished":/);
+  });
+
+  test('200 — hreflang fr/en distincts sur une fiche (SEO-01)', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{ id: 206, name: 'Hreflang', country_name: 'France' }],
+    });
+    const res = await request(app).get('/details/hreflang-206');
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/hreflang="fr" href="[^"]*\/details\/hreflang-206\?lang=fr"/);
+    expect(res.text).toMatch(/hreflang="en" href="[^"]*\/details\/hreflang-206\?lang=en"/);
+    // x-default reste sur l'URL nue
+    expect(res.text).toMatch(/hreflang="x-default" href="[^"]*\/details\/hreflang-206"/);
+  });
+
+  test('200 — un nom contenant </script> ne rompt pas le bloc JSON-LD (SEC-02)', async () => {
+    // Le nom se slugifie en autre chose que 'evil' : la première requête part en
+    // 301 vers l'URL canonique, d'où les deux mocks et le suivi de redirection.
+    const fiche = { id: 207, name: 'Evil</script><script>alert(1)</script>', country_name: 'France' };
+    mockPool.query.mockResolvedValueOnce({ rows: [fiche] });
+    mockPool.query.mockResolvedValueOnce({ rows: [fiche] });
+    const res = await request(app).get('/details/evil-207').redirects(1);
+    expect(res.status).toBe(200);
+    // Le '<' est encodé en \u003c : aucun </script> littéral ne peut refermer
+    // le bloc application/ld+json.
+    expect(res.text).toContain('\\u003c/script');
+    expect(res.text).not.toContain('<script>alert(1)');
   });
 });

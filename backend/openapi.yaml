@@ -23,7 +23,7 @@ info:
     Toutes les pages HTML sont servies avec un query string `?v=<version>`
     sur les assets pour bust le cache navigateur à chaque déploiement.
     Les statiques (CSS/JS/fonts) ont un `Cache-Control` long.
-  version: 4.8.0
+  version: 4.9.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -1252,10 +1252,22 @@ paths:
       tags: [Hero]
       summary: Données dynamiques des widgets de la home
       description: |
-        Renvoie en un seul payload les facts éditoriaux (timeline_events liés à
-        un appareil) et la liste des appareils avec image, utilisés par les
-        widgets "Saviez-vous ?" et "Devine l'avion" sur la landing page.
-        Cache 10 min (Redis ou mémoire), invalidé à chaque CRUD avion.
+        Renvoie en un seul payload les anniversaires du jour (éphéméride), les
+        facts éditoriaux (timeline_events liés à un appareil) et la liste des
+        appareils avec image, utilisés par les widgets "Ce jour-là" et
+        "Devine l'avion" sur la landing page.
+
+        `day` est la date de référence en Europe/Paris : le client s'en sert
+        comme graine pour l'appareil du jour, afin que tous les visiteurs voient
+        le même quel que soit leur fuseau.
+
+        `ephemeris` liste les premiers vols et mises en service tombant à ± 3
+        jours de cette date, triés par écart croissant. Les dates au 1er du mois
+        sont exclues : elles encodent un mois sans jour connu (223 des 330 mises
+        en service), pas un vrai anniversaire.
+
+        Cache 10 min (Redis ou mémoire), **clé par jour**, invalidé à chaque
+        CRUD avion.
       responses:
         '200':
           content:
@@ -1266,6 +1278,24 @@ paths:
                   generated_at:
                     type: string
                     format: date-time
+                  day:
+                    type: string
+                    format: date
+                    description: Date de référence (Europe/Paris), graine du tirage du jour
+                    example: '2026-09-08'
+                  ephemeris:
+                    type: array
+                    description: Anniversaires à ± 3 jours de `day`, du plus proche au plus lointain
+                    items:
+                      type: object
+                      properties:
+                        kind: { type: string, enum: [first_flight, service] }
+                        day_gap: { type: integer, description: Écart en jours avec `day` (0 = anniversaire du jour) }
+                        event_date: { type: string, format: date, example: '1968-09-08' }
+                        year: { type: integer }
+                        airplane_id: { type: integer }
+                        airplane_name: { type: string }
+                        airplane_name_en: { type: string, nullable: true }
                   facts:
                     type: array
                     items:

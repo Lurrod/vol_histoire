@@ -25,7 +25,7 @@
   backdrop-filter: blur(10px);
   padding: 1.5rem;
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
+  z-index: var(--z-overlay);
   transform: translateY(100%);
   transition: transform 0.4s var(--ease);
   border-top: 3px solid var(--secondary);
@@ -102,7 +102,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 10000;
+  z-index: var(--z-modal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -562,4 +562,20 @@
 
 .cookie-banner.show {
   animation: slideUp 0.4s var(--ease);
+}
+
+/* ============================================================
+   Mouvement reduit
+   ------------------------------------------------------------
+   L'icone du bandeau rebondit sans fin, sur toutes les pages tant que le
+   visiteur n'a pas repondu : c'est exactement le cas vise par le critere
+   WCAG 2.2.2 (niveau A).
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .cookie-icon,
+  .cookie-banner,
+  .cookie-modal {
+    animation: none !important;
+    transition: none !important;
+  }
 }

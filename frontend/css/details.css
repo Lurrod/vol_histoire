@@ -200,31 +200,8 @@ body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
 }
 
 /* AIRCRAFT HERO */
-/* Backdrop "1960 timeline" sur toute la page details */
+/* Fond photographique flouté : voir shared-base.css (source unique). */
 body.page-details { background: var(--night); }
-body.page-details::before,
-body.page-details::after {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
-}
-body.page-details::before {
-  background-image: url('/assets/airplanes/f4-phantom-2.jpg');
-  background-image: image-set(
-    url('/assets/airplanes/f4-phantom-2.avif') type('image/avif'),
-    url('/assets/airplanes/f4-phantom-2.webp') type('image/webp'),
-    url('/assets/airplanes/f4-phantom-2.jpg') type('image/jpeg')
-  );
-  background-size: cover; background-position: center; background-repeat: no-repeat;
-  filter: blur(30px) brightness(0.28) saturate(0.7);
-  transform: scale(1.15); opacity: 0.55; z-index: -2;
-}
-body.page-details::after {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
-    radial-gradient(ellipse at 20% 20%, rgba(255,140,0,0.45) 0%, transparent 55%);
-  background-size: 60px 60px, 60px 60px, 100% 100%;
-}
-
 .page-details .aircraft-hero { position: relative; background: transparent; padding: 7rem 0 6rem; margin-top: 70px; overflow: hidden; }
 .page-details .hero-background { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .page-details .hero-content { position: relative; z-index: 1; }
@@ -351,7 +328,7 @@ body.page-details::after {
 .page-details .war-card p { color: rgba(255,255,255,0.55); line-height: 1.65; font-size: 0.92rem; margin: 0; }
 
 /* MODAL */
-.page-details .modal { position: fixed; inset: 0; z-index: 10000; display: none; align-items: center; justify-content: center; padding: 2rem; }
+.page-details .modal { position: fixed; inset: 0; z-index: var(--z-modal); display: none; align-items: center; justify-content: center; padding: 2rem; }
 .page-details .modal.show { display: flex; }
 .page-details .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); }
 .page-details .modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); max-width: 64em; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn 0.3s ease; }
@@ -370,7 +347,7 @@ body.page-details::after {
 .page-details .form-group label { font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
 .page-details .form-group input, .page-details .form-group select, .page-details .form-group textarea { padding: 0.875rem 1rem; border: 1px solid rgba(255,255,255,0.09); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; transition: var(--transition-fast); background: rgba(255,255,255,0.03); color: var(--white); }
 .page-details .form-group input::placeholder, .page-details .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
-.page-details .form-group input:focus, .page-details .form-group select:focus, .page-details .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.22); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
+.page-details .form-group input:focus, .page-details .form-group select:focus, .page-details .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
 .page-details .form-group select option { background: var(--night-mid); color: var(--white); }
 .page-details .form-group textarea { resize: vertical; min-height: 100px; }
 .page-details .modal-footer { display: flex; justify-content: flex-end; gap: 1rem; padding: 1.75rem 2rem; border-top: 1px solid rgba(255,255,255,0.07); }

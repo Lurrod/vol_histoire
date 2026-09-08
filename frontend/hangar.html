@@ -12,7 +12,6 @@
   <link rel="icon" type="image/svg+xml" sizes="16x16" href="/assets/logo/favicon-16.svg">
   <link rel="apple-touch-icon" href="/assets/logo/icon-192.png">
   <link rel="manifest" href="/manifest.webmanifest">
-  <link rel="preconnect" href="https://flagcdn.com">
   <meta name="theme-color" content="#080c14">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -134,7 +133,7 @@
   </section>
 
   <!-- Main Content -->
-  <section class="hangar-content">
+  <main id="main-content" class="hangar-content">
     <div class="container">
       <!-- Toolbar : recherche + filtres + tri (une ligne) -->
       <section class="hangar-toolbar" aria-label="Filtres" data-i18n-aria="hangar.filters_landmark">
@@ -142,15 +141,15 @@
         <div class="toolbar-right">
           <div class="filter-group">
             <button type="button" class="filter-btn" id="country-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="country-dropdown" aria-label="Pays" data-i18n-aria="hangar.filter_country"><i class="fas fa-globe"></i><span data-i18n="hangar.filter_country">Pays</span><i class="fas fa-chevron-down"></i></button>
-            <div id="country-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_country">Filtrer par pays</h3><button type="button" class="close-dropdown" data-dropdown="country" aria-label="Fermer le filtre pays" data-i18n-aria="hangar.close_filter_country"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="country-options"></div></div>
+            <div id="country-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h2 data-i18n="hangar.filter_by_country">Filtrer par pays</h2><button type="button" class="close-dropdown" data-dropdown="country" aria-label="Fermer le filtre pays" data-i18n-aria="hangar.close_filter_country"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="country-options"></div></div>
           </div>
           <div class="filter-group">
             <button type="button" class="filter-btn" id="generation-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="generation-dropdown" aria-label="Génération" data-i18n-aria="hangar.gen_label"><i class="fas fa-layer-group"></i><span data-i18n="hangar.gen_label">Génération</span><i class="fas fa-chevron-down"></i></button>
-            <div id="generation-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_gen">Filtrer par génération</h3><button type="button" class="close-dropdown" data-dropdown="generation" aria-label="Fermer le filtre génération" data-i18n-aria="hangar.close_filter_gen"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="generation-options"></div></div>
+            <div id="generation-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h2 data-i18n="hangar.filter_by_gen">Filtrer par génération</h2><button type="button" class="close-dropdown" data-dropdown="generation" aria-label="Fermer le filtre génération" data-i18n-aria="hangar.close_filter_gen"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="generation-options"></div></div>
           </div>
           <div class="filter-group">
             <button type="button" class="filter-btn" id="type-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="type-dropdown" aria-label="Type" data-i18n-aria="hangar.filter_type"><i class="fas fa-tags"></i><span data-i18n="hangar.filter_type">Type</span><i class="fas fa-chevron-down"></i></button>
-            <div id="type-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_type">Filtrer par type</h3><button type="button" class="close-dropdown" data-dropdown="type" aria-label="Fermer le filtre type" data-i18n-aria="hangar.close_filter_type"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="type-options"></div></div>
+            <div id="type-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h2 data-i18n="hangar.filter_by_type">Filtrer par type</h2><button type="button" class="close-dropdown" data-dropdown="type" aria-label="Fermer le filtre type" data-i18n-aria="hangar.close_filter_type"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="type-options"></div></div>
           </div>
           <button type="button" class="filter-btn" id="map-filter-btn" aria-expanded="false" aria-controls="nations-map-panel" aria-label="Carte des nations" data-i18n-aria="hangar.map_toggle"><i class="fas fa-map"></i><span data-i18n="hangar.map_toggle">Carte</span></button>
           <label for="sort-select" class="sr-only" data-i18n="hangar.sort_label">Trier les résultats</label>
@@ -192,7 +191,7 @@
       <section id="airplanes-container" class="aircraft-grid" aria-label="Résultats" data-i18n-aria="hangar.results_landmark"></section>
       <div id="pagination-container" class="pagination"></div>
     </div>
-  </section>
+  </main>
 
   <!-- Add/Edit Modal -->
   <div id="aircraft-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
@@ -308,6 +307,7 @@
   <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
+  <script defer src="js/dist/icons.min.js"></script>
   <script defer src="js/sentry-init.js"></script>
   <script defer src="js/dist/hangar.min.js"></script>
 </body>

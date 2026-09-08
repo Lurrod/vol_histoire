@@ -1,11 +1,11 @@
-/* Code pays ISO 3166-1 alpha-3 → alpha-2 (pour flagcdn.com)
+/* Code pays ISO 3166-1 alpha-3 → alpha-2 (nom des drapeaux dans /assets/flags)
  *
  * Doit couvrir tous les codes de la table `countries` : une entrée manquante
  * ne casse rien, elle fait juste disparaître le drapeau de la carte sans le
  * moindre signal. Les vingt nations ouvertes depuis la v4.4.6 étaient dans ce
  * cas. Après tout ajout de pays dans db.sql, compléter cette table.
  *
- * Deux entités disparues n'ont pas de drapeau chez flagcdn : la Tchécoslovaquie
+ * Deux entités disparues n'ont pas de drapeau propre : la Tchécoslovaquie
  * prend celui de la Tchéquie (identique), la Yougoslavie celui de la Serbie.
  */
 window.VH = window.VH || {};

@@ -193,6 +193,20 @@ const auth = (() => {
    * un access token en mémoire. Idempotent et sans erreur visible.
    * @returns {Promise<object|null>} Le payload utilisateur ou null
    */
+  /**
+   * Le serveur pose un cookie témoin `vh_session` (non httpOnly) en même temps
+   * que le refresh token. Sans lui, inutile de demander un rafraîchissement :
+   * la réponse serait un 401 que le navigateur journalise en console à chaque
+   * page vue par un visiteur anonyme.
+   */
+  function aUneSessionProbable() {
+    try {
+      return document.cookie.split('; ').some(c => c.startsWith('vh_session='));
+    } catch {
+      return true; // dans le doute, on tente : mieux vaut un 401 qu'une session perdue
+    }
+  }
+
   function init() {
     if (_initialized) {
       return Promise.resolve(getPayload());
@@ -200,6 +214,11 @@ const auth = (() => {
 
     if (_initPromise) {
       return _initPromise;
+    }
+
+    if (!aUneSessionProbable()) {
+      _initialized = true;
+      return Promise.resolve(null);
     }
 
     _initPromise = queuedRefresh()

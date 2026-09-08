@@ -5,30 +5,7 @@
 /* header/nav/footer/toast/lang → shared.css */
 body.page-settings { min-height: 100vh; display: flex; flex-direction: column; background: var(--night); }
 
-/* Backdrop "1960 timeline" sur toute la page settings */
-body.page-settings::before,
-body.page-settings::after {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
-}
-body.page-settings::before {
-  background-image: url('/assets/airplanes/f4-phantom-2.jpg');
-  background-image: image-set(
-    url('/assets/airplanes/f4-phantom-2.avif') type('image/avif'),
-    url('/assets/airplanes/f4-phantom-2.webp') type('image/webp'),
-    url('/assets/airplanes/f4-phantom-2.jpg') type('image/jpeg')
-  );
-  background-size: cover; background-position: center; background-repeat: no-repeat;
-  filter: blur(30px) brightness(0.28) saturate(0.7);
-  transform: scale(1.15); opacity: 0.55; z-index: -2;
-}
-body.page-settings::after {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
-    radial-gradient(ellipse at 20% 20%, rgba(255,140,0,0.45) 0%, transparent 55%);
-  background-size: 60px 60px, 60px 60px, 100% 100%;
-}
-
+/* Fond photographique flouté : voir shared-base.css (source unique). */
 /* PAGE HERO — centré comme les pages légales */
 .page-settings .page-hero { position: relative; background: transparent; padding: 7rem 0; overflow: hidden; margin-top: 70px; }
 .page-settings .hero-background { position: absolute; inset: 0; background: transparent; z-index: 0; pointer-events: none; }
@@ -51,14 +28,14 @@ body.page-settings::after {
 .page-settings .sidebar-link { display: grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items: center; padding: 1rem; border-radius: 12px; text-decoration: none; color: rgba(255,255,255,0.7); transition: var(--transition); border: 1px solid transparent; }
 .page-settings .sidebar-link:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.07); color: var(--white); }
 .page-settings .sidebar-link.active { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); color: var(--white); }
-.page-settings .sidebar-link.danger-link { color: var(--accent); }
+.page-settings .sidebar-link.danger-link { color: var(--accent-text); }
 .page-settings .sidebar-link.danger-link:hover { background: rgba(231,76,60,0.06); border-color: rgba(231,76,60,0.15); }
 .page-settings .link-icon { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; font-size: 1.1rem; color: rgba(255,255,255,0.5); }
 .page-settings .sidebar-link.active .link-icon { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.25); color: var(--hud-cyan); }
 .page-settings .sidebar-link.danger-link .link-icon { background: rgba(231,76,60,0.08); border-color: rgba(231,76,60,0.15); color: var(--accent); }
 .page-settings .link-content { display: flex; flex-direction: column; gap: 0.25rem; }
 .page-settings .link-title { font-weight: 600; font-size: 0.95rem; }
-.page-settings .link-description { font-size: 0.8rem; color: rgba(255,255,255,0.35); }
+.page-settings .link-description { font-size: 0.8rem; color: rgba(255,255,255,0.55); }
 .page-settings .link-arrow { font-size: 0.875rem; color: rgba(255,255,255,0.25); transition: var(--transition-fast); }
 .page-settings .sidebar-link:hover .link-arrow { transform: translateX(3px); color: rgba(255,255,255,0.5); }
 
@@ -82,7 +59,7 @@ body.page-settings::after {
 .page-settings .form-group label i, .page-settings .form-group label .icon { color: var(--hud-cyan); width: 20px; }
 .page-settings .form-group input, .page-settings .form-group select, .page-settings .form-group textarea { width: 100%; padding: 0.875rem 1rem; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--white); background: rgba(255,255,255,0.03); transition: var(--transition); }
 .page-settings .form-group input::placeholder, .page-settings .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
-.page-settings .form-group input:focus, .page-settings .form-group select:focus, .page-settings .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.22); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
+.page-settings .form-group input:focus, .page-settings .form-group select:focus, .page-settings .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
 .page-settings .form-group select option { background: var(--night-mid); color: var(--white); }
 .page-settings .field-hint { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: rgba(255,255,255,0.35); }
 .page-settings .field-hint i, .page-settings .field-hint .icon { font-size: 0.8rem; color: rgba(200,169,110,0.4); }
@@ -126,7 +103,7 @@ body.page-settings::after {
 .page-settings .search-box i, .page-settings .search-box .icon, .page-settings .search-box .icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
 .page-settings .search-box input { width: 100%; padding: 0.9rem 1rem 0.9rem 3rem; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; background: rgba(255,255,255,0.03); color: var(--white); transition: var(--transition); }
 .page-settings .search-box input::placeholder { color: rgba(255,255,255,0.3); }
-.page-settings .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); }
+.page-settings .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); }
 .page-settings .search-box input::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
@@ -254,7 +231,7 @@ body.page-settings::after {
 /* @keyframes spin → shared.css (dédupliqué) */
 
 /* LOGOUT MODAL */
-.page-settings .logout-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+.page-settings .logout-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: var(--z-modal); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
 .page-settings .logout-modal.show { opacity: 1; visibility: visible; }
 .page-settings .logout-modal.hidden { display: none; }
 .page-settings .logout-modal-backdrop { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); }

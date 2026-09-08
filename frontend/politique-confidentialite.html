@@ -116,7 +116,7 @@
           <div class="intro-box">
             <i class="fas fa-info-circle"></i>
             <div>
-              <h3 data-i18n="legal.pc_intro_title">Engagement RGPD</h3>
+              <h2 data-i18n="legal.pc_intro_title">Engagement RGPD</h2>
               <p data-i18n="legal.pc_intro_body">Vol d'Histoire s'engage à protéger votre vie privée et vos données personnelles conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés.</p>
             </div>
           </div>
@@ -174,42 +174,42 @@
             <div class="purpose-grid">
               <div class="purpose-card">
                 <i class="fas fa-user-check"></i>
-                <h4>Gestion des comptes</h4>
+                <h3>Gestion des comptes</h3>
                 <p>Création, gestion et sécurisation de votre compte utilisateur</p>
                 <span class="legal-basis">Base légale : Exécution du contrat</span>
               </div>
 
               <div class="purpose-card">
                 <i class="fas fa-heart"></i>
-                <h4>Fonctionnalités</h4>
+                <h3>Fonctionnalités</h3>
                 <p>Gestion des favoris et personnalisation de l'expérience</p>
                 <span class="legal-basis">Base légale : Intérêt légitime</span>
               </div>
 
               <div class="purpose-card">
                 <i class="fas fa-chart-line"></i>
-                <h4>Analyses statistiques</h4>
-                <p>Amélioration du site et compréhension de l'utilisation</p>
-                <span class="legal-basis">Base légale : Intérêt légitime</span>
+                <h3>Analyses statistiques</h3>
+                <p>Mesure d'audience (Google Analytics), déclenchée uniquement après acceptation</p>
+                <span class="legal-basis">Base légale : Consentement</span>
               </div>
 
               <div class="purpose-card">
                 <i class="fas fa-envelope"></i>
-                <h4>Communication</h4>
+                <h3>Communication</h3>
                 <p>Envoi d'informations importantes et notifications</p>
                 <span class="legal-basis">Base légale : Consentement</span>
               </div>
 
               <div class="purpose-card">
                 <i class="fas fa-shield"></i>
-                <h4>Sécurité</h4>
+                <h3>Sécurité</h3>
                 <p>Prévention des fraudes et protection du site</p>
                 <span class="legal-basis">Base légale : Intérêt légitime</span>
               </div>
 
               <div class="purpose-card">
                 <i class="fas fa-balance-scale"></i>
-                <h4>Obligations légales</h4>
+                <h3>Obligations légales</h3>
                 <p>Respect des obligations légales et réglementaires</p>
                 <span class="legal-basis">Base légale : Obligation légale</span>
               </div>
@@ -236,20 +236,30 @@
               <div class="retention-row">
                 <div class="retention-type">
                   <i class="fas fa-key"></i>
-                  <strong>Session d'authentification (token JWT)</strong>
+                  <strong>Jeton d'accès (JWT)</strong>
                 </div>
                 <div class="retention-duration">
-                  2 heures (expiration automatique à chaque connexion)
+                  15 minutes (expiration automatique)
+                </div>
+              </div>
+
+              <div class="retention-row">
+                <div class="retention-type">
+                  <i class="fas fa-rotate"></i>
+                  <strong>Jeton de rafraîchissement</strong>
+                </div>
+                <div class="retention-duration">
+                  7 jours, révocation immédiate à la déconnexion
                 </div>
               </div>
 
               <div class="retention-row">
                 <div class="retention-type">
                   <i class="fas fa-chart-bar"></i>
-                  <strong>Données analytiques</strong>
+                  <strong>Données analytiques (Google Analytics)</strong>
                 </div>
                 <div class="retention-duration">
-                  26 mois maximum
+                  14 mois maximum
                 </div>
               </div>
 
@@ -260,6 +270,16 @@
                 </div>
                 <div class="retention-duration">
                   13 mois maximum
+                </div>
+              </div>
+
+              <div class="retention-row">
+                <div class="retention-type">
+                  <i class="fas fa-bug"></i>
+                  <strong>Logs techniques et Sentry</strong>
+                </div>
+                <div class="retention-duration">
+                  30 jours
                 </div>
               </div>
 
@@ -315,21 +335,21 @@
             <div class="cookie-types">
               <div class="cookie-card essential">
                 <i class="fas fa-check-circle"></i>
-                <h4>Cookies essentiels</h4>
+                <h3>Cookies essentiels</h3>
                 <p>Nécessaires au fonctionnement du site (authentification, sécurité, préférences de base)</p>
                 <span class="cookie-consent">Pas de consentement requis</span>
               </div>
 
               <div class="cookie-card analytics">
                 <i class="fas fa-chart-pie"></i>
-                <h4>Cookies analytiques</h4>
+                <h3>Cookies analytiques</h3>
                 <p>Mesure d'audience et amélioration du site</p>
                 <span class="cookie-consent">Consentement requis</span>
               </div>
 
               <div class="cookie-card preference">
                 <i class="fas fa-sliders-h"></i>
-                <h4>Cookies de préférence</h4>
+                <h3>Cookies de préférence</h3>
                 <p>Mémorisation de vos choix (filtres, affichage, langue)</p>
                 <span class="cookie-consent">Consentement requis</span>
               </div>
@@ -454,37 +474,37 @@
             <div class="security-grid">
               <div class="security-item">
                 <i class="fas fa-shield"></i>
-                <h4>Chiffrement</h4>
+                <h3>Chiffrement</h3>
                 <p>HTTPS et chiffrement des données sensibles</p>
               </div>
 
               <div class="security-item">
                 <i class="fas fa-key"></i>
-                <h4>Mots de passe</h4>
+                <h3>Mots de passe</h3>
                 <p>Stockage sécurisé avec hachage (bcrypt)</p>
               </div>
 
               <div class="security-item">
                 <i class="fas fa-user-lock"></i>
-                <h4>Accès restreints</h4>
+                <h3>Accès restreints</h3>
                 <p>Principe du moindre privilège</p>
               </div>
 
               <div class="security-item">
                 <i class="fas fa-server"></i>
-                <h4>Sauvegardes</h4>
+                <h3>Sauvegardes</h3>
                 <p>Sauvegardes régulières et sécurisées</p>
               </div>
 
               <div class="security-item">
                 <i class="fas fa-eye"></i>
-                <h4>Surveillance</h4>
+                <h3>Surveillance</h3>
                 <p>Monitoring et détection des intrusions</p>
               </div>
 
               <div class="security-item">
                 <i class="fas fa-sync"></i>
-                <h4>Mises à jour</h4>
+                <h3>Mises à jour</h3>
                 <p>Correctifs de sécurité réguliers</p>
               </div>
             </div>
@@ -501,37 +521,37 @@
             <div class="rights-grid">
               <div class="right-card">
                 <i class="fas fa-eye"></i>
-                <h4>Droit d'accès</h4>
+                <h3>Droit d'accès</h3>
                 <p>Consulter les données que nous détenons sur vous</p>
               </div>
 
               <div class="right-card">
                 <i class="fas fa-pen"></i>
-                <h4>Droit de rectification</h4>
+                <h3>Droit de rectification</h3>
                 <p>Corriger des données inexactes ou incomplètes</p>
               </div>
 
               <div class="right-card">
                 <i class="fas fa-trash"></i>
-                <h4>Droit à l'effacement</h4>
+                <h3>Droit à l'effacement</h3>
                 <p>Supprimer vos données ("droit à l'oubli")</p>
               </div>
 
               <div class="right-card">
                 <i class="fas fa-hand"></i>
-                <h4>Droit d'opposition</h4>
+                <h3>Droit d'opposition</h3>
                 <p>Vous opposer à certains traitements</p>
               </div>
 
               <div class="right-card">
                 <i class="fas fa-pause"></i>
-                <h4>Droit à la limitation</h4>
+                <h3>Droit à la limitation</h3>
                 <p>Limiter temporairement le traitement</p>
               </div>
 
               <div class="right-card">
                 <i class="fas fa-download"></i>
-                <h4>Droit à la portabilité</h4>
+                <h3>Droit à la portabilité</h3>
                 <p>Récupérer vos données dans un format lisible</p>
               </div>
             </div>
@@ -560,7 +580,7 @@
             <h3>Réclamation</h3>
             <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la CNIL :</p>
             <p><strong>CNIL</strong> - 3 Place de Fontenoy, 75007 Paris</p>
-            <p>Site web : <a href="https://www.cnil.fr" target="_blank">www.cnil.fr</a></p>
+            <p>Site web : <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">www.cnil.fr<span class="sr-only" data-i18n="legal.new_tab"> (nouvel onglet)</span></a></p>
           </div>
         </div>
 
@@ -624,6 +644,7 @@
   <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
+  <script defer src="js/dist/icons.min.js"></script>
   <script defer src="js/sentry-init.js"></script>
   <script defer src="js/dist/home.min.js"></script>
 </body>

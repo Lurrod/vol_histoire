@@ -1,4 +1,5 @@
 'use strict';
+const crypto = require('crypto');
 const express = require('express');
 const { register } = require('../middleware/observability');
 const logger = require('../logger');
@@ -11,6 +12,19 @@ const pkg = require('../package.json');
 //   GET /api/metrics → Métriques Prometheus (texte)
 //   GET /api/status  → Statut applicatif (version, uptime, sentry, env)
 // -----------------------------------------------------------------------------
+/**
+ * Comparaison de jetons à temps constant. `!==` s'arrête au premier octet qui
+ * diffère : le temps de réponse fuit alors la longueur du préfixe correct.
+ * timingSafeEqual exige des tailles identiques, d'où le hachage préalable —
+ * qui égalise à 32 octets sans révéler la longueur du secret.
+ */
+function tokenEgal(fourni, attendu) {
+  if (typeof fourni !== 'string' || typeof attendu !== 'string' || !attendu) return false;
+  const a = crypto.createHash('sha256').update(fourni).digest();
+  const b = crypto.createHash('sha256').update(attendu).digest();
+  return crypto.timingSafeEqual(a, b);
+}
+
 module.exports = function createMonitoringRouter(getPool) {
   const router = express.Router();
   const startedAt = new Date();
@@ -62,7 +76,7 @@ module.exports = function createMonitoringRouter(getPool) {
     if (token) {
       const auth = req.headers.authorization || '';
       const provided = auth.startsWith('Bearer ') ? auth.slice(7) : '';
-      if (provided !== token) {
+      if (!tokenEgal(provided, token)) {
         return res.status(401).end();
       }
     }
@@ -80,7 +94,7 @@ module.exports = function createMonitoringRouter(getPool) {
     if (token) {
       const auth = req.headers.authorization || '';
       const provided = auth.startsWith('Bearer ') ? auth.slice(7) : '';
-      if (provided !== token) {
+      if (!tokenEgal(provided, token)) {
         return res.status(401).end();
       }
     }

@@ -12,6 +12,9 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { rewrite: rewriteAssets } = require('../middleware/serveHtml');
+// Source unique des slugs : une copie locale a divergé en silence pendant
+// des mois, et c'est elle qui fabrique les URL canoniques des 383 fiches.
+const { slugify, idFromSlug } = require('../utils/url');
 
 const SITE_URL = 'https://vol-histoire.titouan-borde.com';
 const DEFAULT_OG = `${SITE_URL}/og-default.jpg`;
@@ -22,26 +25,14 @@ function escapeHtml(str) {
   }[c]));
 }
 
+// Échappe ce qui pourrait rompre un <script type="application/ld+json"> :
+// caractères de contrôle, séparateurs de ligne Unicode, et surtout '<' — sans
+// lui, un nom d'appareil contenant </script> refermerait le bloc et le reste
+// serait interprété comme du HTML.
 function escapeJson(str) {
-  return String(str || '').replace(/[\u0000-\u001f\u2028\u2029]/g, c => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`);
-}
-
-function slugify(text) {
-  return String(text || '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-/**
- * Extrait l'id depuis un slug "f-16-fighting-falcon-12" → 12
- */
-function idFromSlug(slug) {
-  if (!slug) return null;
-  const m = String(slug).match(/-?(\d+)$/);
-  return m ? Number(m[1]) : null;
+  return String(str || '')
+    .replace(/[\u0000-\u001f\u2028\u2029]/g, c => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`)
+    .replace(/</g, '\\u003c');
 }
 
 module.exports = function createDetailsSsrRouter(getPool) {
@@ -167,7 +158,14 @@ module.exports = function createDetailsSsrRouter(getPool) {
         description: description,
       },
     };
-    if (year) articleLd.datePublished = `${year}-01-01`;
+    // datePublished décrit la fiche, pas l'appareil : y mettre l'année de mise
+    // en service faisait annoncer « publié en 1955 » pour un texte écrit en 2026.
+    if (aircraft.created_at) {
+      articleLd.datePublished = new Date(aircraft.created_at).toISOString().slice(0, 10);
+    }
+    if (aircraft.updated_at) {
+      articleLd.dateModified = new Date(aircraft.updated_at).toISOString().slice(0, 10);
+    }
 
     const breadcrumbLd = {
       '@context': 'https://schema.org',
@@ -219,15 +217,16 @@ module.exports = function createDetailsSsrRouter(getPool) {
       `<link rel="canonical" href="${escapeHtml(url)}">`
     );
 
-    // hreflang fr / en / x-default — toutes pointent vers la même URL
-    // (le site sert le même HTML, l'i18n est résolue côté client via cookie/lang)
+    // hreflang : trois URL distinctes, comme sur les pages statiques. Pointer
+    // les trois vers la même adresse ne disait rien à personne — un moteur ne
+    // peut pas distinguer deux versions linguistiques qui partagent une URL.
     html = html.replace(
       /<link rel="alternate" hreflang="fr" href="[^"]*">/,
-      `<link rel="alternate" hreflang="fr" href="${escapeHtml(url)}">`
+      `<link rel="alternate" hreflang="fr" href="${escapeHtml(url)}?lang=fr">`
     );
     html = html.replace(
       /<link rel="alternate" hreflang="en" href="[^"]*">/,
-      `<link rel="alternate" hreflang="en" href="${escapeHtml(url)}">`
+      `<link rel="alternate" hreflang="en" href="${escapeHtml(url)}?lang=en">`
     );
     html = html.replace(
       /<link rel="alternate" hreflang="x-default" href="[^"]*">/,
@@ -345,6 +344,7 @@ module.exports = function createDetailsSsrRouter(getPool) {
     const result = await getPool().query(
       `SELECT a.id, a.name, a.complete_name, a.little_description, a.description,
               a.image_url, a.max_speed, a.max_range, a.empty_weight, a.date_operationel,
+              a.created_at, a.updated_at,
               c.name AS country_name, c.code AS country_code,
               g.generation, t.name AS type_name,
               m.name AS manufacturer_name

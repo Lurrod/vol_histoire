@@ -1,9 +1,10 @@
 /**
  * Tests unitaires — frontend/js/utils.js
- * escapeHtml, showToast, animateNumber, setupPasswordToggle
+ * escapeHtml, showToast, animateNumber, setupPasswordToggle, safeSetHTML,
+ * trapFocus, setNumberPopIn
  */
 
-const { escapeHtml, showToast, animateNumber, setupPasswordToggle, setFieldError, clearFieldError, isValidEmail, calculatePasswordStrength } = require('../js/utils');
+const { escapeHtml, safeSetHTML, trapFocus, setNumberPopIn, showToast, animateNumber, setupPasswordToggle, setFieldError, clearFieldError, isValidEmail, calculatePasswordStrength } = require('../js/utils');
 
 beforeEach(() => {
   document.body.innerHTML = '';
@@ -145,7 +146,7 @@ describe('animateNumber', () => {
     animateNumber(el, 100, 1000);
 
     // Simuler la fin de l'animation
-    if (rafCallback) rafCallback(performance.now() + 1000);
+    if (rafCallback) rafCallback(window.performance.now() + 1000);
 
     expect(Number(el.textContent)).toBe(100);
 
@@ -287,5 +288,150 @@ describe('clearFieldError', () => {
     expect(input.hasAttribute('aria-invalid')).toBe(false);
     const errEl = document.getElementById('clear-input-error');
     expect(errEl.textContent).toBe('');
+  });
+});
+
+/* ──────────────────────────────────────────────────────────────────────────
+   QUAL-01 — trois fonctions de utils.js n'avaient aucun test : safeSetHTML,
+   trapFocus et setNumberPopIn. Ce sont précisément les lignes que la couverture
+   signalait comme non couvertes, et trapFocus est un composant d'accessibilité :
+   une régression dessus enferme ou libère silencieusement le clavier.
+   ────────────────────────────────────────────────────────────────────────── */
+
+describe('safeSetHTML', () => {
+  afterEach(() => {
+    delete global.DOMPurify;
+    delete window.DOMPurify;
+  });
+
+  test('sans DOMPurify, le repli DOMParser desarme sans tout detruire', () => {
+    const el = document.createElement('div');
+    safeSetHTML(el, '<b>gras</b><img src="x" onerror="alert(1)"><script>alert(2)<\/script>');
+    // Le balisage sain survit...
+    expect(el.querySelector('b')).not.toBeNull();
+    expect(el.querySelector('b').textContent).toBe('gras');
+    // ...mais le script est retire et le gestionnaire inline desarme.
+    expect(el.querySelector('script')).toBeNull();
+    expect(el.querySelector('img').hasAttribute('onerror')).toBe(false);
+  });
+
+  test('sans DOMPurify, un lien javascript: perd son href', () => {
+    const el = document.createElement('div');
+    safeSetHTML(el, '<a href="javascript:alert(1)">clic</a>');
+    expect(el.querySelector('a').hasAttribute('href')).toBe(false);
+  });
+
+  test('avec DOMPurify, la sanitisation est déléguée', () => {
+    const sanitize = jest.fn(() => '<b>propre</b>');
+    global.DOMPurify = { sanitize };
+    window.DOMPurify = global.DOMPurify;
+    const el = document.createElement('div');
+    safeSetHTML(el, '<b onclick="x">propre</b>');
+    expect(sanitize).toHaveBeenCalled();
+    expect(el.innerHTML).toBe('<b>propre</b>');
+  });
+
+  test('un élément absent ne provoque pas d\'erreur', () => {
+    expect(() => safeSetHTML(null, '<p>x</p>')).not.toThrow();
+  });
+});
+
+describe('trapFocus', () => {
+  let conteneur;
+
+  beforeEach(() => {
+    conteneur = document.createElement('div');
+    conteneur.innerHTML = '<button id="a">A</button><button id="b">B</button><button id="c">C</button>';
+    document.body.appendChild(conteneur);
+    // jsdom ne calcule pas offsetParent : le filtre de visibilité de trapFocus
+    // s'appuie dessus, on le rend donc non nul pour les boutons du test.
+    conteneur.querySelectorAll('button').forEach((b) => {
+      Object.defineProperty(b, 'offsetParent', { get: () => conteneur, configurable: true });
+    });
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  const tab = (opts = {}) => new window.KeyboardEvent('keydown', { key: 'Tab', bubbles: true, ...opts });
+
+  test('Tab depuis le dernier élément revient au premier', () => {
+    const piege = trapFocus(conteneur);
+    document.getElementById('c').focus();
+    conteneur.dispatchEvent(tab());
+    expect(document.activeElement.id).toBe('a');
+    piege.destroy();
+  });
+
+  test('Shift+Tab depuis le premier élément va au dernier', () => {
+    const piege = trapFocus(conteneur);
+    document.getElementById('a').focus();
+    conteneur.dispatchEvent(tab({ shiftKey: true }));
+    expect(document.activeElement.id).toBe('c');
+    piege.destroy();
+  });
+
+  test('Tab au milieu ne détourne pas le focus', () => {
+    const piege = trapFocus(conteneur);
+    document.getElementById('b').focus();
+    conteneur.dispatchEvent(tab());
+    expect(document.activeElement.id).toBe('b'); // le navigateur fait le reste
+    piege.destroy();
+  });
+
+  test('Échap déclenche le rappel fourni', () => {
+    const onEscape = jest.fn();
+    const piege = trapFocus(conteneur, { onEscape });
+    conteneur.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    expect(onEscape).toHaveBeenCalledTimes(1);
+    piege.destroy();
+  });
+
+  test('destroy() retire l\'écouteur : le piège ne retient plus rien', () => {
+    const piege = trapFocus(conteneur);
+    piege.destroy();
+    document.getElementById('c').focus();
+    conteneur.dispatchEvent(tab());
+    expect(document.activeElement.id).toBe('c');
+  });
+
+  test('un conteneur absent rend un objet inerte mais utilisable', () => {
+    const piege = trapFocus(null);
+    expect(() => piege.destroy()).not.toThrow();
+  });
+
+  test('un conteneur sans élément focusable ne casse pas', () => {
+    const vide = document.createElement('div');
+    document.body.appendChild(vide);
+    const piege = trapFocus(vide);
+    expect(() => vide.dispatchEvent(tab())).not.toThrow();
+    piege.destroy();
+  });
+});
+
+describe('setNumberPopIn', () => {
+  test('un span par caractère, avec décalage sur les deux derniers', () => {
+    const el = document.createElement('strong');
+    setNumberPopIn(el, 383);
+    const spans = el.querySelectorAll('span.t-digit');
+    expect(spans).toHaveLength(3);
+    expect([...spans].map((s) => s.textContent).join('')).toBe('383');
+    expect(spans[1].dataset.stagger).toBe('1');
+    expect(spans[2].dataset.stagger).toBe('2');
+    expect(el.classList.contains('t-digit-group')).toBe(true);
+    expect(el.classList.contains('is-animating')).toBe(true);
+  });
+
+  test('un second appel remplace le contenu au lieu de l\'empiler', () => {
+    const el = document.createElement('strong');
+    setNumberPopIn(el, 12);
+    setNumberPopIn(el, 3456);
+    expect(el.querySelectorAll('span.t-digit')).toHaveLength(4);
+    expect(el.textContent).toBe('3456');
+  });
+
+  test('un élément absent ne provoque pas d\'erreur', () => {
+    expect(() => setNumberPopIn(null, 5)).not.toThrow();
   });
 });

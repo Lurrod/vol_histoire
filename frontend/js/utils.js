@@ -191,7 +191,6 @@ function isValidEmail(email) {
  * @param {HTMLElement} container — élément contenant les éléments focusables
  * @returns {{ destroy: () => void }} — appeler destroy() quand la modal se ferme
  */
-// eslint-disable-next-line no-unused-vars -- exposé via concaténation de bundle aux autres scripts
 function trapFocus(container, options = {}) {
   if (!container) return { destroy() {} };
 
@@ -316,5 +315,5 @@ function setNumberPopIn(el, value) {
 
 // Export conditionnel pour les tests unitaires (Node.js)
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setNumberPopIn, setupPasswordToggle, isValidEmail, calculatePasswordStrength, setFieldError, clearFieldError };
+  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setNumberPopIn, setupPasswordToggle, isValidEmail, calculatePasswordStrength, trapFocus, setFieldError, clearFieldError };
 }

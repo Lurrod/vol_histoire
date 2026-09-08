@@ -478,6 +478,44 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('cookieConsent', () => {
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Source unique du consentement, pour tout code hors de cette classe.
+//
+// sentry-init.js lisait sa propre clé ('cookie-consent') et sa propre forme
+// ({ analytics }) : les deux étaient fausses, la garde ne se déclenchait donc
+// jamais et Sentry se chargeait malgré un refus. Exposer un accesseur unique
+// empêche la forme de diverger à nouveau — un seul endroit connaît le nom de la
+// clé et la structure stockée.
+// ─────────────────────────────────────────────────────────────────────────────
+window.VH = window.VH || {};
+window.VH.consent = {
+  STORAGE_KEY: 'voldhistoire_cookie_consent',
+
+  /** @returns {object|null} les préférences, ou null si aucun choix enregistré */
+  get() {
+    try {
+      const brut = window.localStorage.getItem(this.STORAGE_KEY);
+      if (!brut) return null;
+      const parsed = JSON.parse(brut);
+      return (parsed && parsed.preferences) || null;
+    } catch {
+      return null; // données corrompues : traitées comme une absence de choix
+    }
+  },
+
+  /** true seulement si la finalité a été explicitement accordée. */
+  allows(finalite) {
+    const prefs = this.get();
+    return Boolean(prefs && prefs[finalite] === true);
+  },
+
+  /** true si la finalité a été explicitement refusée (≠ pas encore répondu). */
+  denies(finalite) {
+    const prefs = this.get();
+    return Boolean(prefs && prefs[finalite] === false);
+  },
+};
+
 // Export conditionnel pour les tests unitaires (Node.js / jsdom)
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { CookieConsent };

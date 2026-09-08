@@ -1,3 +1,14 @@
+/* Accueil — reliquat de la structure de hero d'avant hero-split.
+ *
+ * La v4.4.5 a remplace le hero d'origine par hero-split, qui a sa propre
+ * feuille. Les regles de l'ancienne structure (.hero-title, .hero-overlay,
+ * .hero-stats, .scroll-approach, .stat-*...) restaient empaquetees dans
+ * home.min.css sans plus rien cibler : elles ont ete retirees.
+ *
+ * Attention en relisant : tout est scope `.page-home`. Une classe presente
+ * sur details.html ou login.html ne rend PAS la regle vivante ici — c'est
+ * ce qui rendait la purge illisible a l'oeil.
+ */
 /* ======================================================================
    VOL D'HISTOIRE — STYLE PRINCIPAL (ACCUEIL)
    ====================================================================== */
@@ -73,48 +84,6 @@ body.page-home::after {
   justify-content: center;
 }
 
-.page-home .hero-overlay { display: none; }
-
-/* Hero Content */
-.page-home .hero-content {
-  position: relative;
-  z-index: 3;
-  text-align: center;
-  color: var(--white);
-  max-width: 64em;
-  padding: 3rem;
-}
-
-.page-home .hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: rgba(200, 169, 110, 0.08);
-  backdrop-filter: blur(12px);
-  padding: 0.75rem 1.75rem 0.75rem 2.5rem;
-  border-radius: 50px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: 2.5rem;
-  border: 1px solid rgba(200, 169, 110, 0.2);
-  color: var(--hud-cyan);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  animation: fadeInUp 1s ease 0.2s both;
-  position: relative;
-  overflow: hidden;
-}
-
-.page-home .badge-pulse {
-  position: absolute;
-  left: 12px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--hud-cyan);
-  opacity: 0.9;
-}
-
 /* @keyframes fadeInUp → shared.css (dédupliqué) */
 
 .page-home .hero-title {
@@ -131,25 +100,6 @@ body.page-home::after {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.page-home .hero-description {
-  font-size: clamp(1rem, 2vw, 1.2rem);
-  line-height: 1.8;
-  margin-bottom: 3.5rem;
-  color: rgba(255, 255, 255, 0.75);
-  animation: fadeInUp 1s ease 0.6s both;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.page-home .hero-actions {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  animation: fadeInUp 1s ease 0.8s both;
 }
 
 /* ======================================================================
@@ -200,114 +150,7 @@ body.page-home::after {
   color: var(--white);
 }
 
-.page-home .btn-secondary {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(10px);
-  color: var(--white);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.page-home .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-.page-home .btn-outline {
-  background: transparent;
-  color: var(--white);
-  border: 2px solid var(--white);
-}
-
-.page-home .btn-outline:hover {
-  background: var(--white);
-  color: var(--night);
-}
-
 .page-home .btn-large { padding: 1.1rem 2.5rem; font-size: 1rem; }
-.page-home .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
-
-/* ======================================================================
-   HERO STATS
-   ====================================================================== */
-.page-home .hero-stats {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5rem;
-  margin-top: 7rem;
-  flex-wrap: wrap;
-  animation: fadeInUp 1s ease 1s both;
-}
-
-.page-home .stat-item { text-align: center; min-width: 120px; }
-
-.page-home .stat-number {
-  font-family: 'Barlow Condensed', sans-serif;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--hud-cyan);
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.page-home .stat-label {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-weight: 600;
-}
-
-.page-home .stat-divider {
-  width: 1px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* Scroll Indicator — Approach Lights (feux d'approche) */
-.page-home .scroll-indicator {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0.25rem 0.75rem;
-  cursor: pointer;
-  transition: var(--transition);
-  background: transparent;
-  border: none;
-  appearance: none;
-  -webkit-appearance: none;
-  color: inherit;
-  font: inherit;
-}
-
-.page-home .scroll-approach {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-
-.page-home .scroll-approach span {
-  display: block;
-  height: 1.5px;
-  background: var(--hud-cyan);
-  border-radius: 1px;
-  opacity: 0.22;
-  transform-origin: center;
-  animation: approachSweep 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.page-home .scroll-approach span:nth-child(1) { width: 28px; animation-delay: 0s; }
-.page-home .scroll-approach span:nth-child(2) { width: 22px; animation-delay: 0.18s; }
-.page-home .scroll-approach span:nth-child(3) { width: 17px; animation-delay: 0.36s; }
-.page-home .scroll-approach span:nth-child(4) { width: 12px; animation-delay: 0.54s; }
-.page-home .scroll-approach span:nth-child(5) { width: 7px; animation-delay: 0.72s; }
 
 @keyframes approachSweep {
   0%, 80%, 100% {
@@ -321,24 +164,3 @@ body.page-home::after {
     box-shadow: 0 0 8px rgba(200, 169, 110, 0.55);
   }
 }
-
-.page-home .scroll-label {
-  font-family: 'JetBrains Mono', ui-monospace, 'DM Sans', sans-serif;
-  font-size: 0.62rem;
-  text-transform: uppercase;
-  letter-spacing: 3.5px;
-  color: rgba(255, 255, 255, 0.38);
-  transition: color 0.3s ease;
-}
-
-.page-home .scroll-indicator:hover .scroll-label,
-.page-home .scroll-indicator:focus-visible .scroll-label {
-  color: var(--hud-cyan);
-}
-
-.page-home .scroll-indicator:focus-visible {
-  outline: 1px solid rgba(200, 169, 110, 0.4);
-  outline-offset: 6px;
-  border-radius: 4px;
-}
-

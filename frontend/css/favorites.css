@@ -6,31 +6,8 @@
 /* header/nav/footer/toast/lang → shared.css */
 
 /* PAGE HERO */
-/* Backdrop "1960 timeline" sur toute la page favoris */
+/* Fond photographique flouté : voir shared-base.css (source unique). */
 body.page-favorites { background: var(--night); }
-body.page-favorites::before,
-body.page-favorites::after {
-  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
-}
-body.page-favorites::before {
-  background-image: url('/assets/airplanes/f4-phantom-2.jpg');
-  background-image: image-set(
-    url('/assets/airplanes/f4-phantom-2.avif') type('image/avif'),
-    url('/assets/airplanes/f4-phantom-2.webp') type('image/webp'),
-    url('/assets/airplanes/f4-phantom-2.jpg') type('image/jpeg')
-  );
-  background-size: cover; background-position: center; background-repeat: no-repeat;
-  filter: blur(30px) brightness(0.28) saturate(0.7);
-  transform: scale(1.15); opacity: 0.55; z-index: -2;
-}
-body.page-favorites::after {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
-    radial-gradient(ellipse at 20% 20%, rgba(255,140,0,0.45) 0%, transparent 55%);
-  background-size: 60px 60px, 60px 60px, 100% 100%;
-}
-
 .page-favorites .page-hero { position: relative; background: transparent; padding: 7rem 0 6rem; margin-top: 70px; overflow: hidden; }
 .page-favorites .hero-background { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .page-favorites .page-hero-inner { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: flex-end; gap: 4rem; }
@@ -207,7 +184,7 @@ body.page-favorites::after {
 .page-favorites .search-box { position: relative; flex: 1; min-width: 250px; max-width: 500px; }
 .page-favorites .search-box i, .page-favorites .search-box .icon, .page-favorites .search-box .icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
 .page-favorites .search-box input { width: 100%; padding: 0.875rem 1rem 0.875rem 3rem; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; font-family: inherit; font-size: 1rem; color: var(--white); background: rgba(255,255,255,0.03); transition: var(--transition); }
-.page-favorites .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); background: rgba(255,255,255,0.05); }
+.page-favorites .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
 .page-favorites .search-box input::placeholder { color: rgba(255,255,255,0.3); }
 .page-favorites .search-box input::-webkit-search-cancel-button {
   -webkit-appearance: none;
@@ -251,7 +228,7 @@ body.page-favorites::after {
   background: rgba(20,20,20,0.72); backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2);
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: 12px; box-shadow: 0 20px 56px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.02) inset;
-  max-height: 400px; overflow-y: auto; z-index: 999;
+  max-height: 400px; overflow-y: auto; z-index: var(--z-panel);
   opacity: 0; transform: translateY(-8px);
   transition: var(--transition); pointer-events: none;
 }
@@ -269,12 +246,12 @@ body.page-favorites::after {
 .page-favorites .active-filters { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
 .page-favorites .active-filters-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); font-weight: 500; display: flex; align-items: center; }
 .page-favorites .active-filter { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(200,169,110,0.08); color: var(--hud-cyan); padding: 0.4rem 0.875rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(200,169,110,0.2); }
-.page-favorites .remove-filter-btn { background: rgba(200,169,110,0.15); border: none; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: var(--hud-cyan); font-size: 0.6rem; }
+.page-favorites .remove-filter-btn { background: rgba(200,169,110,0.15); border: none; /* 28px : sous 24px la cible echoue au critere WCAG 2.5.8 */ width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: var(--hud-cyan); font-size: 0.6rem; }
 .page-favorites .remove-filter-btn:hover { background: rgba(200,169,110,0.3); }
 .page-favorites .clear-all-filters { padding: 0.4rem 1rem; background: transparent; border: 1px solid rgba(231,76,60,0.4); color: var(--accent); border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition-fast); }
 .page-favorites .clear-all-filters:hover { background: rgba(231,76,60,0.15); border-color: var(--accent); }
 .page-favorites .sort-select { padding: 0.875rem 2.5rem 0.875rem 1.25rem; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; font-family: inherit; font-size: 0.95rem; color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.03) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat right 1rem center; appearance: none; cursor: pointer; transition: var(--transition); }
-.page-favorites .sort-select:focus { outline: none; border-color: rgba(255,255,255,0.2); box-shadow: 0 0 0 3px rgba(255,255,255,0.04); }
+.page-favorites .sort-select:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); }
 .page-favorites .sort-select option { background: var(--night-mid); color: var(--white); }
 .page-favorites .results-bar { margin-bottom: 2rem; font-size: 0.95rem; color: rgba(255,255,255,0.4); font-weight: 500; }
 

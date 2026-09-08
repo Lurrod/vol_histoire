@@ -104,49 +104,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   /* =========================================================================
-     SCROLL INDICATOR
-     ========================================================================= */
-
-  const scrollIndicator = document.querySelector('.scroll-indicator');
-
-  if (scrollIndicator) {
-    scrollIndicator.addEventListener('click', () => {
-      const featuresSection = document.querySelector('.features');
-      if (featuresSection) {
-        featuresSection.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 100) {
-        scrollIndicator.style.opacity = '0';
-        scrollIndicator.style.pointerEvents = 'none';
-      } else {
-        scrollIndicator.style.opacity = '1';
-        scrollIndicator.style.pointerEvents = 'all';
-      }
-    });
-  }
-
-  /* =========================================================================
-     PRELOAD CRITICAL RESOURCES
-     ========================================================================= */
-
-  const preloadImages = [
-    '/assets/airplanes/f16-fighting-falcon.jpg',
-    '/assets/airplanes/mig21.jpg',
-    '/assets/airplanes/su27.jpg'
-  ];
-
-  preloadImages.forEach(src => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.as = 'image';
-    link.href = src;
-    document.head.appendChild(link);
-  });
-
-  /* =========================================================================
      FEATURE CARDS STAGGER ANIMATION
      ========================================================================= */
 
@@ -208,20 +165,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     scrollTimeout = window.requestAnimationFrame(() => {});
   }, { passive: true });
 
-  // Add CSS animation keyframes dynamically
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes slideInRight {
-      from { transform: translateX(400px); opacity: 0; }
-      to   { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOutRight {
-      from { transform: translateX(0); opacity: 1; }
-      to   { transform: translateX(400px); opacity: 0; }
-    }
-  `;
-  document.head.appendChild(style);
-
   /* =========================================================================
      HERO STATS — Trigger animation on visibility
      ========================================================================= */
@@ -248,7 +191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
      ========================================================================= */
 
   /* =========================================================================
-     HERO SPLIT — Widgets aside (Saviez-vous ? + Devine l'avion)
+     HERO SPLIT — Widgets aside (Ce jour-là + Devine l'avion du jour)
      ========================================================================= */
 
   function getHeroLang() {
@@ -293,85 +236,205 @@ document.addEventListener("DOMContentLoaded", async () => {
   ];
 
   /* ----- Fetch unique des données dynamiques ----- */
+  const daily = (window.VH && VH.home && VH.home.heroDaily) || null;
+
   async function fetchHeroDiscoveries() {
+    const fallbackDay = daily ? daily.localDayKey() : '';
     try {
       const res = await auth.fetchWithTimeout('/api/hero/discoveries');
       if (!res.ok) throw new Error('hero API error');
       const data = await res.json();
       const facts    = Array.isArray(data.facts)    && data.facts.length    ? data.facts    : FALLBACK_FACTS;
       const aircraft = Array.isArray(data.aircraft) && data.aircraft.length ? data.aircraft : FALLBACK_AIRCRAFT;
-      return { facts, aircraft };
+      const ephemeris = Array.isArray(data.ephemeris) ? data.ephemeris : [];
+      // La date vient du serveur (Europe/Paris) : c'est elle qui garantit que
+      // tout le monde voit le même appareil du jour, quel que soit son fuseau.
+      const day = typeof data.day === 'string' && data.day ? data.day : fallbackDay;
+      return { facts, aircraft, ephemeris, day };
     } catch {
-      return { facts: FALLBACK_FACTS, aircraft: FALLBACK_AIRCRAFT };
+      return { facts: FALLBACK_FACTS, aircraft: FALLBACK_AIRCRAFT, ephemeris: [], day: fallbackDay };
     }
   }
 
-  /* ----- Widget 1 : Saviez-vous ? ----- */
-  function initHeroFact(facts) {
-    const body = document.getElementById('hero-fact-body');
-    const link = document.getElementById('hero-fact-link');
-    const reroll = document.getElementById('hero-fact-reroll');
-    if (!body || !facts.length) return;
+  /* Traduction avec repli littéral : les widgets se rendent avant que les
+   * locales ne soient forcément chargées (et hors ligne elles peuvent manquer).
+   * i18n.t() renvoie la clé quand elle est introuvable — on détecte ce cas
+   * pour retomber sur le texte en dur. */
+  function tHero(key, params, fallbackFr, fallbackEn) {
+    if (typeof i18n !== 'undefined' && i18n.t) {
+      const translated = i18n.t(key, params || {});
+      if (translated !== key) return translated;
+    }
+    let out = getHeroLang() === 'en' ? fallbackEn : fallbackFr;
+    Object.entries(params || {}).forEach(([k, v]) => {
+      out = out.split('{' + k + '}').join(v);
+    });
+    return out;
+  }
 
-    function renderFact(f) {
+  /* ----- Widget 1 : Ce jour-là ----- */
+  /* L'ancien widget « Saviez-vous ? » tirait un fait au hasard : jamais deux
+   * fois le même, mais aucune raison de revenir demain. Il devient une
+   * éphéméride — les anniversaires de la date du jour — et ne retombe sur le
+   * fait éditorial que les rares jours sans anniversaire (ou hors ligne). */
+  function initHeroToday(ephemeris, facts, dayKey) {
+    const body   = document.getElementById('hero-fact-body');
+    const link   = document.getElementById('hero-fact-link');
+    const label  = document.getElementById('hero-fact-label');
+    const reroll = document.getElementById('hero-fact-reroll');
+    if (!body) return;
+
+    const selection = daily ? daily.selectEphemeris(ephemeris) : { list: [], exact: false };
+    const entries = selection.list;
+    let index = 0;
+    let fact = null;
+
+    function setLabel(key, fr, en) {
+      if (!label) return;
+      label.setAttribute('data-i18n', key);
+      label.textContent = tHero(key, {}, fr, en);
+    }
+
+    function setBody(dateBadge, sentenceHtml) {
+      // Le corps porte data-i18n="hero_fact_loading" tant qu'il affiche son
+      // texte d'attente. Sans ce retrait, applyToDOM() le remettrait à
+      // « Tirage en cours… » au prochain changement de langue.
+      body.removeAttribute('data-i18n');
+      // Animation rejouée à chaque rendu (reflow forcé). Par classe et non par
+      // style inline : la CSP interdit style-src-attr, donc écrire dans
+      // body.style est bloqué par le navigateur — silencieusement côté rendu,
+      // bruyamment dans la console.
+      body.classList.remove('is-fading-in');
+      void body.offsetWidth;
+      body.classList.add('is-fading-in');
+      const badge = dateBadge
+        ? `<span class="hero-fact-year hero-fact-date">${escapeHtml(dateBadge)}</span>`
+        : '';
+      // innerHTML est sûr : le seul markup vient des balises construites ici,
+      // les données passent toutes par escapeHtml().
+      body.innerHTML = badge + sentenceHtml;
+    }
+
+    function renderEntry() {
+      const entry = entries[index % entries.length];
       const lang = getHeroLang();
-      const title = (lang === 'en' ? f.title_en : f.title_fr) || f.title_fr || '';
-      const name  = (lang === 'en' ? f.airplane_name_en : f.airplane_name) || f.airplane_name || '';
-      // On échappe puis on remet l'éventuel nom d'avion en <strong> pour
-      // garder le ton "highlight" du widget. innerHTML est sûr car le seul
-      // markup vient de nos balises <strong>/<span> construites ici.
-      const safeTitle = escapeHtml(title);
-      const safeName = escapeHtml(name);
-      const boldedTitle = safeName
-        ? safeTitle.replace(safeName, `<strong>${safeName}</strong>`)
-        : safeTitle;
-      body.style.animation = 'none';
-      void body.offsetWidth; // force reflow pour rejouer l'animation
-      body.style.animation = '';
-      body.innerHTML = `<span class="hero-fact-year">${escapeHtml(String(f.year || ''))}</span>${boldedTitle}`;
+      const name = (lang === 'en' ? entry.airplane_name_en : entry.airplane_name) || entry.airplane_name || '';
+      const strong = `<strong>${escapeHtml(name)}</strong>`;
+
+      if (selection.exact) setLabel('home.hero_today_label', 'Ce jour-là', 'On this day');
+      else                 setLabel('home.hero_today_label_week', 'Cette semaine-là', 'That week');
+
+      const sentence = entry.kind === 'service'
+        ? tHero('home.hero_today_service', { name: strong }, 'Mise en service : {name}', 'Entered service: {name}')
+        : tHero('home.hero_today_first_flight', { name: strong }, 'Premier vol : {name}', 'First flight: {name}');
+
+      setBody(daily.formatEventDate(entry.event_date, lang), sentence);
+
       if (link) {
-        // Lien direct sur la fiche si l'API expose l'airplane_id ; fallback
-        // sur la recherche /hangar pour les facts servis depuis FALLBACK_FACTS
-        // (PWA offline / API down) où l'ID DB est inconnu.
-        const href = f.airplane_id
-          ? '/details?id=' + encodeURIComponent(f.airplane_id)
-          : (name ? '/hangar?search=' + encodeURIComponent(nameToSearchSlug(name)) : '#');
-        link.setAttribute('href', href);
+        link.setAttribute('href', entry.airplane_id
+          ? '/details?id=' + encodeURIComponent(entry.airplane_id)
+          : '/hangar?search=' + encodeURIComponent(nameToSearchSlug(name)));
       }
     }
 
-    function pick() {
-      renderFact(facts[Math.floor(Math.random() * facts.length)]);
+    function renderFact() {
+      const lang = getHeroLang();
+      const title = (lang === 'en' ? fact.title_en : fact.title_fr) || fact.title_fr || '';
+      const name  = (lang === 'en' ? fact.airplane_name_en : fact.airplane_name) || fact.airplane_name || '';
+      const safeTitle = escapeHtml(title);
+      const safeName = escapeHtml(name);
+      // On échappe puis on remet l'éventuel nom d'avion en <strong> pour
+      // garder le ton "highlight" du widget.
+      const bolded = safeName
+        ? safeTitle.replace(safeName, `<strong>${safeName}</strong>`)
+        : safeTitle;
+
+      setLabel('home.hero_fact_label', 'Saviez-vous ?', 'Did you know?');
+      setBody(fact.year ? String(fact.year) : '', bolded);
+
+      if (link) {
+        link.setAttribute('href', fact.airplane_id
+          ? '/details?id=' + encodeURIComponent(fact.airplane_id)
+          : (name ? '/hangar?search=' + encodeURIComponent(nameToSearchSlug(name)) : '#'));
+      }
     }
-    if (reroll) reroll.addEventListener('click', pick);
-    pick();
+
+    function render() {
+      if (entries.length) renderEntry();
+      else if (fact)      renderFact();
+    }
+
+    if (!entries.length) {
+      if (!facts.length) return;
+      // Même logique que l'éphéméride : le fait de repli est celui du jour,
+      // identique pour tout le monde, et non un tirage par rechargement.
+      fact = daily ? daily.pickDaily(facts, dayKey) : facts[0];
+    }
+
+    if (reroll) {
+      // Un seul anniversaire ce jour-là : le bouton n'aurait rien à montrer.
+      if (entries.length === 1) reroll.setAttribute('hidden', '');
+      else reroll.addEventListener('click', () => {
+        if (entries.length) index++;
+        else fact = facts[Math.floor(Math.random() * facts.length)];
+        render();
+      });
+    }
+
+    // Le contenu est construit en JS : applyToDOM() ne le retraduit pas.
+    window.addEventListener('langChanged', render);
+    render();
   }
 
   /* ----- Widget 2 : Devine l'avion ----- */
-  function initHeroQuiz(aircraft) {
+  function initHeroQuiz(aircraft, dayKey) {
     const card    = document.getElementById('hero-quiz-card');
     const image   = document.getElementById('hero-quiz-image');
     const options = document.getElementById('hero-quiz-options');
     const link    = document.getElementById('hero-quiz-link');
     const lblLabel = document.getElementById('hero-quiz-link-label');
     const reroll  = document.getElementById('hero-quiz-reroll');
+    const dailyTag = document.getElementById('hero-quiz-daily-tag');
     if (!card || !image || !options || aircraft.length < 3) return;
 
     let current = null;
 
-    function pickDecoys(target) {
+    function shuffleWith(list, random) {
+      return daily ? daily.shuffleWith(list, random) : shuffleArr(list);
+    }
+
+    function pickDecoys(target, random) {
       // Priorité aux mêmes génération pour des leurres crédibles.
       const sameGen = aircraft.filter(a => a.generation === target.generation && a.name !== target.name);
       const pool = sameGen.length >= 2 ? sameGen : aircraft.filter(a => a.name !== target.name);
-      return shuffleArr(pool).slice(0, 2).map(a => a.name);
+      return shuffleWith(pool, random).slice(0, 2).map(a => a.name);
     }
 
-    function load() {
-      current = aircraft[Math.floor(Math.random() * aircraft.length)];
-      image.src = current.image_url;
-      card.classList.remove('is-revealed');
+    /* Premier chargement : l'appareil du jour, tiré d'une graine sur la date —
+     * mêmes propositions dans le même ordre pour tout le monde, ce qui rend la
+     * question commentable. Le bouton reroll repasse en tirage aléatoire. */
+    function load(useDaily) {
+      const isDaily = Boolean(useDaily && daily);
+      const random = isDaily
+        ? daily.seededRandom(daily.hashSeed(dayKey + ':quiz'))
+        : Math.random;
 
-      const opts = shuffleArr([current.name, ...pickDecoys(current)]);
+      current = isDaily
+        ? daily.pickDaily(aircraft, dayKey)
+        : aircraft[Math.floor(Math.random() * aircraft.length)];
+
+      // L'image du quiz est l'élément LCP de l'accueil : elle passe par le même
+      // helper <picture> que le reste du site pour être servie en AVIF/WebP
+      // plutôt qu'en JPEG (≈124 Ko contre ≈19 Ko sur une fiche typique).
+      if (VH.shared && VH.shared.picture) {
+        VH.shared.picture.applySourcesTo(image, current.image_url);
+      } else {
+        image.src = current.image_url;
+      }
+      card.classList.remove('is-revealed');
+      if (dailyTag) dailyTag.toggleAttribute('hidden', !isDaily);
+
+      const opts = shuffleWith([current.name, ...pickDecoys(current, random)], random);
       const btns = options.querySelectorAll('.hero-quiz-option');
       btns.forEach((b, i) => {
         b.textContent = opts[i];
@@ -397,16 +460,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       card.classList.add('is-revealed');
       if (link && lblLabel) {
-        const lang = getHeroLang();
-        if (correct) {
-          lblLabel.textContent = lang === 'en'
-            ? 'Well done — see the record'
-            : 'Bien joué — voir la fiche';
-        } else {
-          lblLabel.textContent = lang === 'en'
-            ? 'It was the ' + current.name + ' — see the record'
-            : 'C\'était le ' + current.name + ' — voir la fiche';
-        }
+        lblLabel.textContent = correct
+          ? tHero('home.hero_quiz_link_correct', {}, 'Bien joué — voir la fiche', 'Well done — see the record')
+          : tHero('home.hero_quiz_link_wrong', { name: current.name },
+            'C’était le {name} — voir la fiche', 'It was the {name} — see the record');
         // Lien direct sur la fiche si l'API expose l'id ; fallback sur la
         // recherche /hangar pour les appareils issus de FALLBACK_AIRCRAFT.
         const href = current.id
@@ -421,15 +478,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       const btn = e.target.closest('.hero-quiz-option');
       if (btn) answer(btn);
     });
-    if (reroll) reroll.addEventListener('click', load);
-    load();
+    if (reroll) reroll.addEventListener('click', () => load(false));
+    load(true);
   }
 
   // Fetch unique + init des deux widgets sur le même pool de données.
   (async () => {
-    const { facts, aircraft } = await fetchHeroDiscoveries();
-    initHeroFact(facts);
-    initHeroQuiz(aircraft);
+    const { facts, aircraft, ephemeris, day } = await fetchHeroDiscoveries();
+    initHeroToday(ephemeris, facts, day);
+    initHeroQuiz(aircraft, day);
   })();
 
   // Garde-fou défensif : si le HTML servi depuis un cache SW est dans le

@@ -9,7 +9,7 @@
   position: absolute;
   top: -100%;
   left: 16px;
-  z-index: 10000;
+  z-index: var(--z-modal);
   padding: 12px 24px;
   background: var(--accent, #f0c040);
   color: #000;
@@ -91,6 +91,106 @@
     padding-block: var(--sp-3);
     background: rgba(13, 13, 13, 0.98);
     border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+
+
+  /* ============================================================
+     FOND PHOTOGRAPHIQUE FLOUTÉ — pages de contenu
+     ------------------------------------------------------------
+     Ce bloc existait à l'identique dans details.css, favorites.css, legal.css,
+     settings.css et hangar.css. La divergence avait déjà commencé : deux copies
+     sur cinq avaient reçu une retouche que les trois autres n'ont jamais eue.
+     Une seule source, donc, et cinq feuilles allégées.
+
+     Les pages gardent la main : leurs feuilles se chargent après core.min.css.
+     ============================================================ */
+  body.page-details,
+  body.page-favorites,
+  body.page-legal,
+  body.page-settings,
+  body.page-hangar {
+    background: var(--night);
+  }
+
+  body.page-details::before,
+  body.page-details::after,
+  body.page-favorites::before,
+  body.page-favorites::after,
+  body.page-legal::before,
+  body.page-legal::after,
+  body.page-settings::before,
+  body.page-settings::after,
+  body.page-hangar::before,
+  body.page-hangar::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  body.page-details::before,
+  body.page-favorites::before,
+  body.page-legal::before,
+  body.page-settings::before,
+  body.page-hangar::before {
+    background-image: url('/assets/airplanes/f4-phantom-2.jpg');
+    background-image: image-set(
+      url('/assets/airplanes/f4-phantom-2.avif') type('image/avif'),
+      url('/assets/airplanes/f4-phantom-2.webp') type('image/webp'),
+      url('/assets/airplanes/f4-phantom-2.jpg') type('image/jpeg')
+    );
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(30px) brightness(0.28) saturate(0.7);
+    transform: scale(1.15);
+    opacity: 0.55;
+    z-index: -2;
+  }
+
+  body.page-details::after,
+  body.page-favorites::after,
+  body.page-legal::after,
+  body.page-settings::after,
+  body.page-hangar::after {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+      radial-gradient(ellipse at 20% 20%, rgba(255, 140, 0, 0.45) 0%, transparent 55%);
+    background-size: 60px 60px, 60px 60px, 100% 100%;
+  }
+
+  /* ============================================================
+     HAUTEUR DE CIBLE — liens d'action (WCAG 2.2, critere 2.5.8)
+     ------------------------------------------------------------
+     Ces liens sont larges mais hauts de 20 a 23 px seulement. On les amene a
+     24 px sans toucher a leur apparence : le padding vertical suffit, la
+     hauteur de ligne fait le reste.
+     ============================================================ */
+  .feature-link,
+  .aircraft-btn,
+  .hero-aside-link,
+  .forgot-password,
+  .breadcrumb a {
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* ============================================================
+     FOCUS CLAVIER — champs de saisie
+     ------------------------------------------------------------
+     Les feuilles de page posent `outline: none` sur :focus et le remplacent
+     par une bordure + une ombre. Au clavier, ça ne suffit pas : l'indicateur
+     doit atteindre 3:1 (WCAG 1.4.11). On rétablit donc un anneau franc pour
+     :focus-visible, qui ne se déclenche pas au clic souris.
+     ============================================================ */
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--hud-cyan);
+    outline-offset: 2px;
   }
 
   /* ============================================================
@@ -360,7 +460,7 @@
     border-radius: 10px;
     padding: var(--sp-1);
     min-width: 140px;
-    z-index: 9999;
+    z-index: var(--z-overlay);
     box-shadow: var(--shadow-lg), 0 0 0 1px rgba(200, 169, 110, 0.05);
   }
 

@@ -63,7 +63,7 @@
     "more_info_desc": "To learn more about our use of cookies and your rights, see our <a href=\"politique-confidentialite.html\">Privacy Policy</a>."
   },
   "home": {
-    "title": "Vol d'Histoire - Explore Military Aviation",
+    "title": "Vol d'Histoire | Explore Military Aviation",
     "hero_badge": "Aviation Database",
     "hero_title_1": "The History of",
     "hero_title_2": "Military Aviation",
@@ -73,16 +73,22 @@
     "hero_split_title_l1": "Military",
     "hero_split_title_l2": "aviation,",
     "hero_split_title_l3": "one record at a time.",
-    "hero_split_baseline": "Offline catalog. Full-text search. Enriched records.",
     "hero_split_meta_aircraft": "aircraft",
     "hero_split_meta_nations": "nations",
     "hero_split_meta_generations": "generations",
     "hero_split_cta": "Browse the hangar",
     "hero_aside_label": "Discoveries",
+    "hero_today_label": "On this day",
+    "hero_today_label_week": "That week",
+    "hero_today_first_flight": "First flight: {name}",
+    "hero_today_service": "Entered service: {name}",
+    "hero_today_next_aria": "See the next event",
+    "hero_quiz_daily_tag": "Today’s",
+    "hero_quiz_link_correct": "Well done — see the record",
+    "hero_quiz_link_wrong": "It was the {name} — see the record",
     "hero_fact_label": "Did you know?",
     "hero_fact_link": "See the record",
     "hero_fact_loading": "Drawing…",
-    "hero_fact_reroll_aria": "Draw another fact",
     "hero_quiz_label": "Guess the aircraft",
     "hero_quiz_image_alt": "Silhouette to guess",
     "hero_quiz_link_default": "See the record",
@@ -474,7 +480,7 @@
     "map_hint": "Click a country to filter the collection. Former states are shown with present-day borders."
   },
   "favorites": {
-    "title": "My Favorites - Vol d'Histoire",
+    "title": "My Favorites | Vol d'Histoire",
     "badge": "Personal Collection",
     "hero_title": "My Favorites",
     "hero_desc": "Find all the aircraft you've added to your favorites",
@@ -710,7 +716,8 @@
     "password_requirements": "Minimum 8 characters with 1 uppercase, 1 lowercase and 1 digit.",
     "accept_terms_error": "You must accept the terms of service.",
     "account_creation_failed": "Unable to create account.",
-    "years_label": "To present day"
+    "years_label": "To present day",
+    "register_rgpd_notice": "Your data (name, email address) is processed to create and manage your account, and kept until you delete it. You have the right to access, correct and erase it — see the <a href=\"/politique-confidentialite\">privacy policy</a>."
   },
   "forgot_password": {
     "title": "Forgot password | Vol d'Histoire",
@@ -946,7 +953,8 @@
     "btn_home": "Return to base",
     "btn_hangar": "Explore the hangar",
     "search_desc": "The search squadron could not locate the requested page.",
-    "beacon_callsign": "Callsign"
+    "beacon_callsign": "Callsign",
+    "telemetry_heading": "Systems status"
   },
   "about": {
     "title": "About | Vol d'Histoire",
@@ -1194,7 +1202,7 @@
     "pc_sec5_title": "5. Data sharing and subprocessors",
     "pc_sec5_body": "<p>Your personal data is <strong>never sold</strong> to third parties.</p><p>The following technical subprocessors may process certain data on our behalf, in compliance with GDPR and under confidentiality contract:</p><ul><li><strong>OVHcloud</strong> (France, EU) — server and database hosting</li><li><strong>Google LLC</strong> (United States) — Google Analytics and Google Tag Manager. Transfers governed by the Standard Contractual Clauses of the European Commission</li><li><strong>Functional Software, Inc. (Sentry)</strong> (United States) — technical error tracking, same SCC guarantees</li><li><strong>Intuition Machines, Inc. (hCaptcha)</strong> (United States) — bot protection on sensitive forms</li></ul><p>No transfer outside the EU is made without appropriate safeguards. Data is shared with authorities only upon judicial request.</p>",
     "pc_sec6_title": "6. Cookies and trackers",
-    "pc_sec6_body": "<h3>6.1 Types of cookies used</h3><div class=\"cookie-types\"><div class=\"cookie-card essential\"><i class=\"fas fa-check-circle\"></i><h4>Essential cookies</h4><p>Required for the site to work (authentication, security, basic preferences)</p><span class=\"cookie-consent\">No consent required</span></div><div class=\"cookie-card analytics\"><i class=\"fas fa-chart-pie\"></i><h4>Analytics cookies</h4><p>Audience measurement and site improvement</p><span class=\"cookie-consent\">Consent required</span></div><div class=\"cookie-card preference\"><i class=\"fas fa-sliders-h\"></i><h4>Preference cookies</h4><p>Remembering your choices (filters, display, language)</p><span class=\"cookie-consent\">Consent required</span></div></div><h3>6.2 Detailed inventory</h3><p>Exhaustive list of cookies and trackers stored or that may be stored, in compliance with French CNIL deliberation no. 2020-091 :</p><div class=\"cookies-inventory-wrap\"><table class=\"cookies-inventory\"><caption class=\"sr-only\">Detailed inventory of cookies and trackers: name, type, duration, purpose, storage and consent requirement.</caption><thead><tr><th scope=\"col\">Name</th><th scope=\"col\">Type</th><th scope=\"col\">Duration</th><th scope=\"col\">Purpose</th><th scope=\"col\">Storage</th><th scope=\"col\">Consent</th></tr></thead><tbody><tr><td><code>refreshToken</code></td><td>Essential</td><td>7 days</td><td>Authenticated session renewal (jti rotation)</td><td>HttpOnly cookie · SameSite=Strict · Path=/api</td><td>Exempt (CNIL)</td></tr><tr><td><code>voldhistoire_cookie_consent</code></td><td>Essential</td><td>365 days</td><td>Memory of your GDPR preferences</td><td>Cookie + localStorage</td><td>Exempt (CNIL)</td></tr><tr><td><code>vol-histoire-lang</code></td><td>Essential</td><td>Persistent</td><td>Display language (FR / EN)</td><td>localStorage</td><td>Exempt (basic UX)</td></tr><tr><td><code>vh_hangar_view</code></td><td>Preference</td><td>Persistent</td><td>Grid or list view on the hangar</td><td>localStorage</td><td>Required</td></tr><tr><td><code>vh_compare_ids</code></td><td>Preference</td><td>Persistent</td><td>List of aircraft selected for comparison</td><td>localStorage</td><td>Required</td></tr><tr><td><code>vh-onboarding-done</code></td><td>Preference</td><td>Persistent</td><td>« Onboarding seen » flag (avoids re-display)</td><td>localStorage</td><td>Required</td></tr><tr><td><code>_ga</code></td><td>Analytics</td><td>13 months</td><td>Google Analytics 4 audience measurement — unique user</td><td>Third-party cookie (Google)</td><td>Required</td></tr><tr><td><code>_ga_&lt;ID&gt;</code></td><td>Analytics</td><td>13 months</td><td>GA4 session identifier per container</td><td>Third-party cookie (Google)</td><td>Required</td></tr><tr><td><code>_gid</code></td><td>Analytics</td><td>24 hours</td><td>Distinguishes users over 24 h</td><td>Third-party cookie (Google)</td><td>Required</td></tr></tbody></table></div><p class=\"cookies-marketing-note\"><strong>Marketing cookies:</strong> no advertising or retargeting cookies are currently stored on this site.</p><h3>6.3 Managing cookies</h3><p>You can at any time:</p><ul><li>Accept or refuse cookies via our consent banner</li><li>Update your preferences in your account settings</li><li>Configure your browser to block cookies</li><li>Delete already stored cookies</li></ul><div class=\"info-box\"><i class=\"fas fa-exclamation-triangle\"></i><p>Refusing essential cookies may prevent access to some site features.</p></div>",
+    "pc_sec6_body": "<h3>6.1 Types of cookies used</h3><div class=\"cookie-types\"><div class=\"cookie-card essential\"><i class=\"fas fa-check-circle\"></i><h4>Essential cookies</h4><p>Required for the site to work (authentication, security, basic preferences)</p><span class=\"cookie-consent\">No consent required</span></div><div class=\"cookie-card analytics\"><i class=\"fas fa-chart-pie\"></i><h4>Analytics cookies</h4><p>Audience measurement and site improvement</p><span class=\"cookie-consent\">Consent required</span></div><div class=\"cookie-card preference\"><i class=\"fas fa-sliders-h\"></i><h4>Preference cookies</h4><p>Remembering your choices (filters, display, language)</p><span class=\"cookie-consent\">Consent required</span></div></div><h3>6.2 Detailed inventory</h3><p>Exhaustive list of cookies and trackers stored or that may be stored, in compliance with French CNIL deliberation no. 2020-091 :</p><div class=\"cookies-inventory-wrap\"><table class=\"cookies-inventory\"><caption class=\"sr-only\">Detailed inventory of cookies and trackers: name, type, duration, purpose, storage and consent requirement.</caption><thead><tr><th scope=\"col\">Name</th><th scope=\"col\">Type</th><th scope=\"col\">Duration</th><th scope=\"col\">Purpose</th><th scope=\"col\">Storage</th><th scope=\"col\">Consent</th></tr></thead><tbody><tr><td><code>refreshToken</code></td><td>Essential</td><td>7 days</td><td>Authenticated session renewal (jti rotation)</td><td>HttpOnly cookie · SameSite=Strict · Path=/api</td><td>Exempt (CNIL)</td></tr><tr><td><code>voldhistoire_cookie_consent</code></td><td>Essential</td><td>365 days</td><td>Memory of your GDPR preferences</td><td>Cookie + localStorage</td><td>Exempt (CNIL)</td></tr><tr><td><code>vol-histoire-lang</code></td><td>Essential</td><td>Persistent</td><td>Display language (FR / EN)</td><td>localStorage</td><td>Exempt (basic UX)</td></tr><tr><td><code>vh_hangar_view</code></td><td>Preference</td><td>Persistent</td><td>Grid or list view on the hangar</td><td>localStorage</td><td>Required</td></tr><tr><td><code>vh_compare_ids</code></td><td>Preference</td><td>Persistent</td><td>List of aircraft selected for comparison</td><td>localStorage</td><td>Required</td></tr><tr><td><code>vh-onboarding-done</code></td><td>Preference</td><td>Persistent</td><td>« Onboarding seen » flag (avoids re-display)</td><td>localStorage</td><td>Required</td></tr><tr><td><code>_ga</code></td><td>Analytics</td><td>13 months</td><td>Google Analytics 4 audience measurement — unique user</td><td>Third-party cookie (Google)</td><td>Required</td></tr><tr><td><code>_ga_&lt;ID&gt;</code></td><td>Analytics</td><td>13 months</td><td>GA4 session identifier per container</td><td>Third-party cookie (Google)</td><td>Required</td></tr><tr><td><code>_gid</code></td><td>Analytics</td><td>24 hours</td><td>Distinguishes users over 24 h</td><td>Third-party cookie (Google)</td><td>Required</td></tr></tbody><tr><td>hCaptcha</td><td>Intuition Machines, Inc.</td><td>Anti-bot protection on the sign-up, contact and password-reset forms</td><td>Session</td></tr></table></div><p class=\"cookies-marketing-note\"><strong>Marketing cookies:</strong> no advertising or retargeting cookies are currently stored on this site.</p><h3>6.3 Managing cookies</h3><p>You can at any time:</p><ul><li>Accept or refuse cookies via our consent banner</li><li>Update your preferences in your account settings</li><li>Configure your browser to block cookies</li><li>Delete already stored cookies</li></ul><div class=\"info-box\"><i class=\"fas fa-exclamation-triangle\"></i><p>Refusing essential cookies may prevent access to some site features.</p></div>",
     "pc_sec7_title": "7. Data security",
     "pc_sec7_body": "<p>We implement technical and organizational measures to protect your data:</p><ul><li><strong>Encryption in transit:</strong> HTTPS / TLS 1.3 on all connections, HSTS enabled with preload</li><li><strong>Security headers:</strong> Content-Security-Policy (CSP), X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy</li><li><strong>Passwords:</strong> bcrypt hashing with unique salt, never stored in plain text. Policy: 8 to 128 characters, at least 1 uppercase, 1 lowercase and 1 digit</li><li><strong>Sessions:</strong> HS256-signed JWT, refresh tokens stored in database with immediate revocation possible</li><li><strong>Rate limiting:</strong> protection of sensitive routes (registration, login, password reset) against brute-force attacks</li><li><strong>hCaptcha:</strong> bot protection on public forms</li><li><strong>Parameterized SQL queries:</strong> protection against SQL injection</li><li><strong>Automatic database backups</strong></li><li><strong>Regular updates</strong> of dependencies and security patches</li></ul><p>Despite these measures, no system is infallible. In case of a personal data breach, we will inform you within 72 hours in accordance with Article 33 of the GDPR.</p>",
     "pc_sec8_title": "8. Your rights",
@@ -1238,7 +1246,8 @@
     "cgu_sec13_title": "13. Contact",
     "cgu_sec13_body": "<p>For any questions regarding these Terms of Use:</p><div class=\"contact-info\"><p><strong>Email:</strong> <a href=\"mailto:vdh@titouan-borde.com\">vdh@titouan-borde.com</a></p></div>",
     "cgu_acceptance_title": "Acceptance of terms",
-    "cgu_acceptance_body": "By using the Vol d'Histoire site, you acknowledge that you have read, understood and accepted in full these Terms of Use and our Privacy Policy."
+    "cgu_acceptance_body": "By using the Vol d'Histoire site, you acknowledge that you have read, understood and accepted in full these Terms of Use and our Privacy Policy.",
+    "new_tab": " (opens in a new tab)"
   },
   "onboarding": {
     "aria_label": "Welcome briefing",

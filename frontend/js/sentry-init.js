@@ -15,11 +15,12 @@
   if (!dsn) dsn = window.SENTRY_DSN;
   if (!dsn) return; // Pas de DSN configuré → ne rien charger
 
-  // Consentement RGPD : si analytics explicitement refusé, on n'init pas
-  try {
-    var consent = JSON.parse(localStorage.getItem('cookie-consent') || 'null');
-    if (consent && consent.analytics === false) return;
-  } catch { /* ignore */ }
+  // Consentement RGPD : si analytics est explicitement refusé, on n'init pas.
+  // La lecture passe par VH.consent (cookies.js, chargé avant dans app.min.js),
+  // seul détenteur du nom de la clé et de la forme stockée. Version précédente :
+  // localStorage.getItem('cookie-consent') puis consent.analytics — mauvaise clé
+  // ET mauvaise forme, donc une garde qui ne se déclenchait jamais.
+  if (window.VH && window.VH.consent && window.VH.consent.denies('analytics')) return;
 
   // Queue les erreurs survenant AVANT que Sentry soit chargé
   var preloadQueue = [];

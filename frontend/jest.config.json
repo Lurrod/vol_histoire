@@ -9,7 +9,8 @@
     "js/nav.js",
     "js/i18n.js",
     "js/cookies.js",
-    "js/details/render.js"
+    "js/details/render.js",
+    "js/home/hero-daily.js"
   ],
   "coverageReporters": ["text", "lcov"],
   "coverageThreshold": {

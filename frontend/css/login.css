@@ -786,3 +786,15 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   margin: 0 0 1.5rem;
 }
 
+
+/* ============================================================
+   Mouvement reduit — les points du radar clignotent en boucle
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .radar-dot,
+  .radar-sweep,
+  .visual-panel [class*="radar"] {
+    animation: none !important;
+    transition: none !important;
+  }
+}

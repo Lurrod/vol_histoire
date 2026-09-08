@@ -71,7 +71,7 @@
     }).join('');
 
     chartEl.innerHTML = `
-      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" class="radar-svg">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" class="radar-svg" aria-hidden="true" focusable="false">
         <defs>
           <radialGradient id="radarFill_${state.aircraftId}" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="rgba(200,169,110,0.3)" />

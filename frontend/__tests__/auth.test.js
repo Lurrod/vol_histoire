@@ -26,8 +26,8 @@ beforeEach(() => {
 
 // Helper : créer un faux JWT avec payload
 function fakeJwt(payload, expInSeconds = 3600) {
-  const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-  const body = btoa(JSON.stringify({ ...payload, exp: Math.floor(Date.now() / 1000) + expInSeconds }));
+  const header = window.btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
+  const body = window.btoa(JSON.stringify({ ...payload, exp: Math.floor(Date.now() / 1000) + expInSeconds }));
   return `${header}.${body}.fakesignature`;
 }
 
@@ -77,7 +77,7 @@ describe('getPayload', () => {
   });
 
   test('retourne null si le payload n\'est pas du JSON', () => {
-    const header = btoa('{}');
+    const header = window.btoa('{}');
     auth.setToken(`${header}.notbase64json.sig`);
     expect(auth.getPayload()).toBeNull();
   });

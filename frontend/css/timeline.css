@@ -52,7 +52,7 @@ body.page-timeline.tl-has-cinematic::before {
   align-items: center;
   justify-content: center;
   background: var(--night);
-  z-index: 5000;
+  z-index: var(--z-hud);
   transition: opacity 0.5s var(--ease);
 }
 .page-timeline .tl-loading.gone {
@@ -802,7 +802,7 @@ body.page-timeline.tl-has-cinematic::before {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-cyan-md);
   border-radius: var(--r-md);
-  z-index: 900;
+  z-index: var(--z-raised);
   opacity: 0;
   transform: translateY(-8px);
   transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
@@ -836,7 +836,7 @@ body.page-timeline.tl-has-cinematic::before {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  z-index: 900;
+  z-index: var(--z-raised);
   opacity: 0;
   transition: opacity 0.4s var(--ease);
 }

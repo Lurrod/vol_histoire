@@ -77,13 +77,16 @@ function log(level, message, meta) {
     Sentry.withScope((scope) => {
       scope.setLevel(level === 'error' ? 'error' : 'warning');
       if (entry.errorId) scope.setTag('errorId', entry.errorId);
-      if (meta) {
-        Object.entries(meta).forEach(([k, v]) => {
+      // safeMeta, pas meta : le scrubbing ci-dessus ne sert à rien si on
+      // renvoie les valeurs brutes à Sentry juste après. scrub() préserve les
+      // objets Error (name/message/stack), donc rien n'est perdu au passage.
+      if (safeMeta) {
+        Object.entries(safeMeta).forEach(([k, v]) => {
           if (k !== 'error') scope.setExtra(k, v);
         });
       }
-      if (meta && meta.error instanceof Error) {
-        Sentry.captureException(meta.error);
+      if (safeMeta && safeMeta.error instanceof Error) {
+        Sentry.captureException(safeMeta.error);
       } else {
         Sentry.captureMessage(message);
       }
