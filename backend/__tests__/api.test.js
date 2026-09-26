@@ -4617,3 +4617,32 @@ describe('VH-T1 — details-ssr renderHtml branches supplémentaires', () => {
     expect(res.text).not.toContain('<script>alert(1)');
   });
 });
+
+// =============================================================================
+// app.js — Fichiers de dev de frontend/ jamais servis (utils/static-guard.js)
+// =============================================================================
+describe('app.js — fichiers privés de frontend/', () => {
+  test.each([
+    '/package.json',
+    '/jest.config.json',
+    '/__tests__/auth.test.js',
+    '/css/README.md',
+    '/node%5Fmodules/.package-lock.json',
+  ])('404 — GET %s', async (p) => {
+    const res = await request(app).get(p);
+    expect(res.status).toBe(404);
+  });
+
+  test('200 — GET /.well-known/security.txt (RFC 9116)', async () => {
+    const res = await request(app).get('/.well-known/security.txt');
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/Contact:/i);
+  });
+
+  test('200 — les assets publics restent servis', async () => {
+    for (const p of ['/sw.js', '/robots.txt', '/locales/fr.json', '/manifest.webmanifest']) {
+      const res = await request(app).get(p);
+      expect(res.status).toBe(200);
+    }
+  });
+});

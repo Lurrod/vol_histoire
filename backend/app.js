@@ -18,6 +18,7 @@ const { langMiddleware } = require('./i18n');
 const observability = require('./middleware/observability');
 const createMonitoringRouter = require('./routes/monitoring');
 const { buildHtmlCache } = require('./middleware/serveHtml');
+const { blockPrivateStatic } = require('./utils/static-guard');
 
 const app = express();
 
@@ -317,6 +318,11 @@ const STATIC_OPTS = {
 // (sans ça, le auto-index court-circuiterait app.get('/') et donc injectCspNonce(),
 // laissant tout inline <style> sans nonce — CSP bloquerait). Notre route explicite
 // app.get('/') passe par sendCachedHtml() qui nonce les <style> à l'exécution.
+// frontend/ contient aussi les outils de dev (node_modules, tests, package.json) :
+// on les filtre avant express.static.
+app.use(blockPrivateStatic);
+// .well-known/ commence par un point : express.static l'ignore par défaut (dotfiles).
+app.use('/.well-known', express.static(path.join(__dirname, '../frontend/.well-known'), STATIC_OPTS));
 app.use(express.static(path.join(__dirname, '../frontend/'), { ...STATIC_OPTS, index: false }));
 app.use('/css', express.static(path.join(__dirname, '../frontend/css'), STATIC_OPTS));
 app.use('/js', express.static(path.join(__dirname, '../frontend/js'), STATIC_OPTS));
