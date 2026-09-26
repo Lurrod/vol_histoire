@@ -12,6 +12,10 @@ function setPool(p) { pool = p; }
 // Auth: helpers JWT
 // -----------------------------------------------------------------------------
 const ACCESS_TOKEN_EXPIRY = '15m';
+// Algorithme imposé à la vérification : un jeton signé autrement (HS512, none,
+// RS256 si une clé asymétrique apparaissait un jour) est refusé d'office.
+const JWT_ALGORITHM = 'HS256';
+const JWT_VERIFY_OPTIONS = Object.freeze({ algorithms: [JWT_ALGORITHM] });
 const REFRESH_TOKEN_EXPIRY = '7d';
 const REFRESH_COOKIE_NAME = 'refreshToken';
 const REFRESH_COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 jours en ms
@@ -20,7 +24,7 @@ function generateAccessToken(user) {
   return jwt.sign(
     { id: user.id, name: user.name, role: user.role_id ?? user.role, email: user.email },
     process.env.JWT_SECRET,
-    { expiresIn: ACCESS_TOKEN_EXPIRY }
+    { algorithm: JWT_ALGORITHM, expiresIn: ACCESS_TOKEN_EXPIRY }
   );
 }
 
@@ -33,7 +37,7 @@ function generateRefreshToken(user) {
   const token = jwt.sign(
     { id: user.id, role: user.role_id ?? user.role, jti },
     process.env.REFRESH_SECRET,
-    { expiresIn: REFRESH_TOKEN_EXPIRY }
+    { algorithm: JWT_ALGORITHM, expiresIn: REFRESH_TOKEN_EXPIRY }
   );
   return { token, jti };
 }
@@ -187,7 +191,7 @@ const authorize = (roles) => {
     if (!token) return res.status(403).json({ message: 'Accès interdit' });
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET, JWT_VERIFY_OPTIONS);
       const coercedRole = Number(decoded.role);
       if (!roles.includes(coercedRole)) {
         return res.status(403).json({ message: 'Accès non autorisé' });
@@ -225,6 +229,7 @@ const isOwnerOrAdmin = (paramName = 'id') => (req, res, next) => {
 module.exports = {
   setPool,
   REFRESH_COOKIE_NAME,
+  JWT_VERIFY_OPTIONS,
   generateAccessToken,
   generateRefreshToken,
   storeRefreshToken,

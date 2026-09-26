@@ -18,6 +18,7 @@ const {
   setRefreshCookie,
   clearRefreshCookie,
   REFRESH_COOKIE_NAME,
+  JWT_VERIFY_OPTIONS,
 } = require('../middleware/auth');
 
 module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, resetPasswordLimiter, mailer }) {
@@ -189,7 +190,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     }
 
     try {
-      const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+      const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET, JWT_VERIFY_OPTIONS);
 
       // S2 FIX : Vérifier que le token existe en base et n'est pas révoqué
       if (!decoded.jti || !(await isRefreshTokenValid(decoded.jti))) {
@@ -246,7 +247,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     const refreshToken = req.cookies[REFRESH_COOKIE_NAME];
     if (refreshToken) {
       try {
-        const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET, JWT_VERIFY_OPTIONS);
         if (decoded.jti) {
           await revokeRefreshToken(decoded.jti);
         }

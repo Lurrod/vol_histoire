@@ -23,7 +23,10 @@ const app = express();
 
 // Nécessaire derrière un reverse proxy (Apache, Nginx) pour que
 // req.ip retourne l'IP réelle du client (rate limiting, logs).
-app.set('trust proxy', 1);
+// 'loopback' et non 1 : seul Apache, qui se connecte depuis 127.0.0.1, peut
+// dicter l'IP. Un client joignant Node en direct ne peut pas la forger via
+// X-Forwarded-For pour contourner le rate limiting ou hCaptcha.
+app.set('trust proxy', 'loopback');
 
 // Compression gzip/brotli sur toutes les réponses text/html, css, js, json, svg.
 // Niveau 6 = compromis taille/CPU. Skip si client demande déjà compressed
