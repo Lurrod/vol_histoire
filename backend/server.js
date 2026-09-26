@@ -18,6 +18,7 @@ if (process.env.REFRESH_SECRET.length < 32) {
 }
 
 const app = require('./app');
+const { resolveListenHost } = require('./utils/network');
 const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
@@ -58,8 +59,9 @@ app.setPool(pool);
 // Init Redis rate-limiter (si REDIS_URL défini et Redis joignable)
 app.initRedis().then(() => {
   const port = process.env.PORT || 3000;
-  const server = app.listen(port, () => {
-    logger.info('Serveur démarré', { port, url: `http://localhost:${port}` });
+  const host = resolveListenHost();
+  const server = app.listen(port, host, () => {
+    logger.info('Serveur démarré', { host, port, url: `http://${host}:${port}` });
   });
 
   // Garder la ref pour le shutdown

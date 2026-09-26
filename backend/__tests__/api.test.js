@@ -289,6 +289,19 @@ describe('Middleware authorize', () => {
     expect(res.body.code).toBe('TOKEN_EXPIRED');
   });
 
+  test('401 — token signé avec un autre algorithme que HS256 → TOKEN_INVALID', async () => {
+    const tokenHS512 = jwt.sign(
+      { id: 1, name: 'Admin', role: 1, email: 'admin@test.com' },
+      process.env.JWT_SECRET,
+      { algorithm: 'HS512', expiresIn: '1h' }
+    );
+    const res = await request(app)
+      .get('/api/users')
+      .set('Authorization', `Bearer ${tokenHS512}`);
+    expect(res.status).toBe(401);
+    expect(res.body.code).toBe('TOKEN_INVALID');
+  });
+
   test('403 — rôle insuffisant (membre accède à /api/users)', async () => {
     const res = await request(app)
       .get('/api/users')
@@ -396,6 +409,19 @@ describe('POST /api/refresh', () => {
     const res = await request(app)
       .post('/api/refresh')
       .set('Cookie', `refreshToken=${refreshTokenExpired}`);
+    expect(res.status).toBe(401);
+    expect(res.body.code).toBe('REFRESH_INVALID');
+  });
+
+  test('401 — refresh token signé avec un autre algorithme que HS256', async () => {
+    const tokenHS512 = jwt.sign(
+      { id: 1, role: 1, jti: 'test-jti-1' },
+      process.env.REFRESH_SECRET,
+      { algorithm: 'HS512', expiresIn: '7d' }
+    );
+    const res = await request(app)
+      .post('/api/refresh')
+      .set('Cookie', `refreshToken=${tokenHS512}`);
     expect(res.status).toBe(401);
     expect(res.body.code).toBe('REFRESH_INVALID');
   });
