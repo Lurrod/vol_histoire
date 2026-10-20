@@ -46,6 +46,7 @@ const BUNDLES = {
     'style-extras.css',
     'style-hero-split.css',
     'nations-map.css',
+    'home-landing.css',
   ],
   'hangar.min.css': ['hangar.css', 'compare.css', 'nations-map.css'],
   'details.min.css': ['details.css', 'details-lineage.css', 'compare.css'],

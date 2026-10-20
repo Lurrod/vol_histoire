@@ -52,6 +52,9 @@ const BUNDLES = {
   // Pages principales
   'home.min.js': [
     'home/hero-daily.js',
+    'home/text.js',
+    'home/search-suggest.js',
+    'home/landing.js',
     'script.js',
     'onboarding.js',
     'nations-map.js',

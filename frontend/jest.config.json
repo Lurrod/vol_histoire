@@ -11,7 +11,10 @@
     "js/cookies.js",
     "js/details/render.js",
     "js/home/hero-daily.js",
-    "js/shared/picture.js"
+    "js/shared/picture.js",
+    "js/home/text.js",
+    "js/home/search-suggest.js",
+    "js/home/landing.js"
   ],
   "coverageReporters": ["text", "lcov"],
   "coverageThreshold": {

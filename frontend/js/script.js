@@ -34,33 +34,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   /* Provided by utils.js — setNumberPopIn (number pop-in) / animateNumber */
 
   /* =========================================================================
-     SCROLL ANIMATIONS (AOS-like)
-     ========================================================================= */
-
-  const animateOnScroll = () => {
-    const elements = document.querySelectorAll('[data-aos]');
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const delay = entry.target.dataset.aosDelay || 0;
-          setTimeout(() => {
-            entry.target.classList.add('aos-animate');
-          }, delay);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    });
-
-    elements.forEach(el => observer.observe(el));
-  };
-
-  animateOnScroll();
-
-  /* =========================================================================
      SMOOTH SCROLL FOR ANCHOR LINKS
      ========================================================================= */
 
@@ -81,16 +54,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   /* Provided by utils.js — escapeHtml, showToast */
 
   /* =========================================================================
-     FEATURED CARDS HOVER EFFECT
-     ========================================================================= */
-
-  const aircraftCards = document.querySelectorAll('.aircraft-card');
-  aircraftCards.forEach(card => {
-    card.addEventListener('mouseenter', function() { this.style.zIndex = '10'; });
-    card.addEventListener('mouseleave', function() { this.style.zIndex = '1'; });
-  });
-
-  /* =========================================================================
      LOADING ANIMATION FOR IMAGES
      ========================================================================= */
 
@@ -101,56 +64,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       this.style.transition = 'opacity 0.5s ease';
       setTimeout(() => { this.style.opacity = '1'; }, 10);
     });
-  });
-
-  /* =========================================================================
-     FEATURE CARDS STAGGER ANIMATION
-     ========================================================================= */
-
-  const featureCards = document.querySelectorAll('.feature-card');
-
-  const featureObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry, index) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }, index * 100);
-        featureObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  featureCards.forEach(card => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(40px)';
-    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-    featureObserver.observe(card);
-  });
-
-  /* =========================================================================
-     TIMELINE CARDS ANIMATION
-     ========================================================================= */
-
-  const timelineCards = document.querySelectorAll('.timeline-card');
-
-  const timelineObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry, index) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateX(0)';
-        }, index * 150);
-        timelineObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.2 });
-
-  timelineCards.forEach(card => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateX(-40px)';
-    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-    timelineObserver.observe(card);
   });
 
   /* Provided by nav.js — ESC keyboard handler */
@@ -185,10 +98,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     statsObserver.observe(heroStats);
   }
-
-  /* =========================================================================
-     FEATURED AIRCRAFT — Load 3 real aircraft from the API
-     ========================================================================= */
 
   /* =========================================================================
      HERO SPLIT — Widgets aside (Ce jour-là + Devine l'avion du jour)
