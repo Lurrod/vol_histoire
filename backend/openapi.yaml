@@ -23,7 +23,7 @@ info:
     Toutes les pages HTML sont servies avec un query string `?v=<version>`
     sur les assets pour bust le cache navigateur à chaque déploiement.
     Les statiques (CSS/JS/fonts) ont un `Cache-Control` long.
-  version: 4.9.0
+  version: 4.10.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
