@@ -3241,6 +3241,21 @@ describe('GET /api/hero/discoveries', () => {
     expect(appel[0]).toContain("to_char(a.date_operationel, 'DD') <> '01'");
   });
 
+  test("l'ephemeride compare les dates sur une annee bissextile (29 fevrier)", async () => {
+    mockPool.query.mockResolvedValue({ rows: [] });
+    await request(app).get('/api/hero/discoveries?force=1');
+
+    const [sql] = mockPool.query.mock.calls.find(([q]) => /WITH ref AS/.test(q));
+    // Ramener les dates sur 2001 fait lever to_date('02-29-2001') : une seule
+    // fiche datee du 29 fevrier (MiG 1.44, premier vol le 29/02/2000) suffisait
+    // a faire tomber toute la route en 500, chaque jour de l'annee.
+    expect(sql).not.toMatch(/2001/);
+    expect(sql).toMatch(/make_date\(2000,/);
+    // 2000 compte 366 jours : l'ecart circulaire doit boucler sur 366, sinon le
+    // 31 decembre et le 1er janvier seraient a 0 jour l'un de l'autre.
+    expect(sql).toContain('366 - ABS(');
+  });
+
   test('ephemeris vide quand aucun anniversaire ne tombe dans la fenetre', async () => {
     mockPool.query.mockResolvedValue({ rows: [] });
     const res = await request(app).get('/api/hero/discoveries?force=1');

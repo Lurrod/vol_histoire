@@ -36,6 +36,10 @@
    * L'attribut `class` est posé sur l'élément <img> final (pas sur <picture>),
    * pour conserver le styling existant qui cible `.aircraft-image img`. */
   function pictureHtml(url, attrs) {
+    return renderPicture(url, getSources(url), attrs);
+  }
+
+  function renderPicture(url, sources, attrs) {
     attrs = attrs || {};
     var alt = attrs.alt != null ? attrs.alt : '';
     var attrStr = Object.keys(attrs)
@@ -43,7 +47,6 @@
       .map(function (k) { return k + '="' + esc(attrs[k]) + '"'; })
       .join(' ');
 
-    var sources = getSources(url);
     if (!sources) {
       return '<img src="' + esc(url || '') + '" alt="' + esc(alt) + '"' +
              (attrStr ? ' ' + attrStr : '') + '>';
@@ -78,5 +81,28 @@
     }
   }
 
-  window.VH.shared.picture = { pictureHtml: pictureHtml, getSources: getSources, applySourcesTo: applySourcesTo };
+  /* Vignette 320 px (scripts/convert-images.js → assets/airplanes/thumbs/) :
+   * ~4 Ko au lieu de ~60 Ko, pour les listes à petite image. Seules les
+   * sources AVIF / WebP pointent sur la vignette ; l'<img> garde la photo
+   * pleine pour les navigateurs qui ne lisent aucun des deux formats.
+   * Retourne null si l'URL n'est pas un asset local convertible. */
+  function getThumbSources(url) {
+    var sources = getSources(url);
+    if (!sources) return null;
+    var name = url.replace(/^\/assets\/airplanes\//, '').replace(EXT_RE, '');
+    var base = '/assets/airplanes/thumbs/' + name;
+    return { avif: base + '.avif', webp: base + '.webp', fallback: sources.fallback };
+  }
+
+  function thumbHtml(url, attrs) {
+    return renderPicture(url, getThumbSources(url), attrs);
+  }
+
+  window.VH.shared.picture = {
+    pictureHtml: pictureHtml,
+    thumbHtml: thumbHtml,
+    getSources: getSources,
+    getThumbSources: getThumbSources,
+    applySourcesTo: applySourcesTo
+  };
 })();

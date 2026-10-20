@@ -61,7 +61,7 @@
     "inLanguage": "fr",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://vol-histoire.titouan-borde.com/hangar?search={search_term_string}",
+      "target": "https://vol-histoire.titouan-borde.com/hangar?q={search_term_string}",
       "query-input": "required name=search_term_string"
     }
   }
@@ -113,16 +113,30 @@
           <span class="gradient-text" data-i18n="home.hero_split_title_l3">une fiche à la fois.</span>
         </h1>
         <div class="hero-split-meta">
-          <span><strong id="hero-split-stat-airplanes">107</strong> <span data-i18n="home.hero_split_meta_aircraft">appareils</span></span>
+          <span><strong id="hero-split-stat-airplanes">383</strong> <span data-i18n="home.hero_split_meta_aircraft">appareils</span></span>
           <span class="hero-split-dot" aria-hidden="true">·</span>
-          <span><strong id="hero-split-stat-countries">18</strong> <span data-i18n="home.hero_split_meta_nations">nations</span></span>
+          <span><strong id="hero-split-stat-countries">33</strong> <span data-i18n="home.hero_split_meta_nations">nations</span></span>
           <span class="hero-split-dot" aria-hidden="true">·</span>
           <span><strong id="hero-split-stat-generations">5</strong> <span data-i18n="home.hero_split_meta_generations">générations</span></span>
         </div>
-        <a href="/hangar" class="btn btn-primary hero-split-cta">
-          <i class="fas fa-plane-departure" aria-hidden="true"></i>
-          <span data-i18n="home.hero_split_cta">Tout le hangar</span>
-          <i class="fas fa-arrow-right hero-split-cta-arrow" aria-hidden="true"></i>
+        <form class="hero-search" id="hero-search" action="/hangar" method="get" role="search">
+          <label for="hero-search-input" class="sr-only" data-i18n="home.landing.search_label">Rechercher un appareil</label>
+          <i class="fas fa-search hero-search-icon" aria-hidden="true"></i>
+          <input id="hero-search-input" class="hero-search-input" type="search" name="q" placeholder="Rafale, Tu-95, C-130…" autocomplete="off"
+                 role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="hero-suggest">
+          <button type="submit" class="btn btn-primary hero-search-btn" data-i18n="home.landing.search_submit">Chercher</button>
+          <!-- Le pied (« Rechercher … dans le hangar » / aucun résultat) est hors
+               du listbox : un role="listbox" ne doit contenir que des options. -->
+          <div class="hero-suggest" id="hero-suggest-panel" hidden>
+            <!-- [html-validate-disable-next prefer-native-element -- liste de suggestions d'une combobox à saisie libre : un <select> n'accepte pas la frappe] -->
+            <ul class="hero-suggest-list" id="hero-suggest" role="listbox" aria-label="Suggestions d'appareils" data-i18n-aria="home.landing.search_listbox"></ul>
+            <div class="hero-suggest-footer" id="hero-suggest-footer"></div>
+          </div>
+          <p class="sr-only" id="hero-suggest-status" role="status" aria-live="polite"></p>
+        </form>
+        <a href="/hangar" class="hero-browse-link">
+          <span data-i18n="home.landing.search_browse">ou parcourir tout le hangar</span>
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </a>
       </div>
 
@@ -182,38 +196,74 @@
     </div>
   </section>
 
-  <!-- FEATURES -->
-  <section class="features">
+  <!-- PAR GÉNÉRATION -->
+  <section class="home-section" aria-labelledby="gen-title">
     <div class="container">
-      <div class="section-header"><span class="section-badge"><i class="fas fa-crosshairs"></i> <span data-i18n="home.features_badge">Fonctionnalités</span></span><h2 data-i18n="home.features_title_full">Une Expérience Complète</h2><p data-i18n="home.features_desc_full">Découvrez toutes les fonctionnalités qui rendent notre plateforme unique</p></div>
-      <div class="features-grid">
-        <div class="feature-card" data-aos="fade-up" data-aos-delay="0"><div class="feature-icon"><i class="fas fa-database"></i></div><h3 data-i18n="home.feat_catalog_title">Catalogue Exhaustif</h3><p data-i18n="home.feat_catalog_desc">Parcourez une collection complète d'appareils militaires avec des fiches détaillées et spécifications techniques précises.</p><a href="/hangar" class="feature-link"><span data-i18n="home.feat_link_discover">Découvrir</span> <i class="fas fa-arrow-right"></i></a></div>
-        <div class="feature-card" data-aos="fade-up" data-aos-delay="100"><div class="feature-icon"><i class="fas fa-timeline"></i></div><h3 data-i18n="home.feat_timeline_title">Frise Interactive</h3><p data-i18n="home.feat_timeline_desc">Voyagez à travers le temps avec notre frise chronologique interactive retraçant l'évolution de l'aviation militaire.</p><a href="/timeline" class="feature-link"><span data-i18n="home.feat_link_explore">Explorer</span> <i class="fas fa-arrow-right"></i></a></div>
-        <div class="feature-card" data-aos="fade-up" data-aos-delay="200"><div class="feature-icon"><i class="fas fa-search"></i></div><h3 data-i18n="home.feat_search_title">Recherche &amp; Filtres</h3><p data-i18n="home.feat_search_desc">Trouvez instantanément n'importe quel appareil grâce à la recherche en temps réel et aux filtres avancés (pays, génération, type).</p><a href="/hangar" class="feature-link"><span data-i18n="home.feat_link_search">Rechercher</span> <i class="fas fa-arrow-right"></i></a></div>
-        <div class="feature-card" data-aos="fade-up" data-aos-delay="300"><div class="feature-icon"><i class="fas fa-heart"></i></div><h3 data-i18n="home.feat_favorites_title">Favoris Personnels</h3><p data-i18n="home.feat_favorites_desc">Sauvegardez vos appareils préférés et retrouvez votre collection personnelle à tout moment depuis votre compte.</p><a href="/favorites" class="feature-link"><span data-i18n="home.feat_link_favorites">Mes favoris</span> <i class="fas fa-arrow-right"></i></a></div>
+      <div class="section-header">
+        <span class="section-badge"><i class="fas fa-layer-group"></i> <span data-i18n="home.landing.gen_badge">Par génération</span></span>
+        <h2 id="gen-title" data-i18n="home.landing.gen_title">Quatre-vingts ans en cinq étapes</h2>
+        <p data-i18n="home.landing.gen_desc">Du premier chasseur à réaction à la furtivité. Choisissez une époque pour ouvrir le hangar filtré.</p>
+      </div>
+      <div class="gen-grid">
+        <a class="gen-tile" href="/hangar?gen=1">
+          <picture><source type="image/avif" srcset="/assets/airplanes/mig17.avif"><source type="image/webp" srcset="/assets/airplanes/mig17.webp"><img src="/assets/airplanes/mig17.jpg" alt="MiG-17" width="400" height="500" loading="lazy"></picture>
+          <span class="gen-tile-body">
+            <span class="gen-tile-name" data-i18n="home.landing.gen_n1">1re génération</span>
+            <span class="gen-tile-period" data-i18n="home.landing.gen_p1">Années 1940-1950</span>
+            <span class="gen-tile-examples">MiG-17 · F-86 Sabre · Meteor</span>
+            <span class="gen-tile-count" data-gen-count="1">&nbsp;</span>
+          </span>
+        </a>
+        <a class="gen-tile" href="/hangar?gen=2">
+          <picture><source type="image/avif" srcset="/assets/airplanes/mirage-3cj-shahak.avif"><source type="image/webp" srcset="/assets/airplanes/mirage-3cj-shahak.webp"><img src="/assets/airplanes/mirage-3cj-shahak.jpg" alt="Mirage IIICJ Shahak" width="400" height="500" loading="lazy"></picture>
+          <span class="gen-tile-body">
+            <span class="gen-tile-name" data-i18n="home.landing.gen_n2">2e génération</span>
+            <span class="gen-tile-period" data-i18n="home.landing.gen_p2">Années 1950-1960</span>
+            <span class="gen-tile-examples">Mirage IIICJ · F-104 · MiG-19</span>
+            <span class="gen-tile-count" data-gen-count="2">&nbsp;</span>
+          </span>
+        </a>
+        <a class="gen-tile" href="/hangar?gen=3">
+          <picture><source type="image/avif" srcset="/assets/airplanes/f4-phantom-2.avif"><source type="image/webp" srcset="/assets/airplanes/f4-phantom-2.webp"><img src="/assets/airplanes/f4-phantom-2.jpg" alt="F-4 Phantom II" width="400" height="500" loading="lazy"></picture>
+          <span class="gen-tile-body">
+            <span class="gen-tile-name" data-i18n="home.landing.gen_n3">3e génération</span>
+            <span class="gen-tile-period" data-i18n="home.landing.gen_p3">Années 1960-1970</span>
+            <span class="gen-tile-examples">F-4 Phantom II · MiG-21 · MiG-25</span>
+            <span class="gen-tile-count" data-gen-count="3">&nbsp;</span>
+          </span>
+        </a>
+        <a class="gen-tile" href="/hangar?gen=4">
+          <picture><source type="image/avif" srcset="/assets/airplanes/rafale.avif"><source type="image/webp" srcset="/assets/airplanes/rafale.webp"><img src="/assets/airplanes/rafale.jpg" alt="Rafale" width="400" height="500" loading="lazy"></picture>
+          <span class="gen-tile-body">
+            <span class="gen-tile-name" data-i18n="home.landing.gen_n4">4e génération</span>
+            <span class="gen-tile-period" data-i18n="home.landing.gen_p4">Années 1970-1990</span>
+            <span class="gen-tile-examples">Rafale · F-16 · Su-27</span>
+            <span class="gen-tile-count" data-gen-count="4">&nbsp;</span>
+          </span>
+        </a>
+        <a class="gen-tile" href="/hangar?gen=5">
+          <picture><source type="image/avif" srcset="/assets/airplanes/f22-raptor.avif"><source type="image/webp" srcset="/assets/airplanes/f22-raptor.webp"><img src="/assets/airplanes/f22-raptor.jpg" alt="F-22 Raptor" width="400" height="500" loading="lazy"></picture>
+          <span class="gen-tile-body">
+            <span class="gen-tile-name" data-i18n="home.landing.gen_n5">5e génération</span>
+            <span class="gen-tile-period" data-i18n="home.landing.gen_p5">Depuis les années 2000</span>
+            <span class="gen-tile-examples">F-22 · F-35 · Su-57</span>
+            <span class="gen-tile-count" data-gen-count="5">&nbsp;</span>
+          </span>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- FEATURED AIRCRAFT -->
-  <section class="featured">
+  <!-- PAR TYPE DE MISSION -->
+  <section class="home-section home-section-missions" aria-labelledby="missions-title">
     <div class="container">
-      <div class="section-header light"><span class="section-badge"><i class="fas fa-star"></i> <span data-i18n="home.featured_badge">Sélection</span></span><h2 data-i18n="home.featured_title">Avions en Vedette</h2><p data-i18n="home.showcase_desc">Découvrez quelques-uns des appareils les plus emblématiques de notre collection</p></div>
-      <div class="featured-grid">
-        <article class="aircraft-card" data-aos="zoom-in" data-aos-delay="0">
-          <div class="aircraft-image"><picture><source type="image/avif" srcset="/assets/airplanes/rafale.avif"><source type="image/webp" srcset="/assets/airplanes/rafale.webp"><img src="/assets/airplanes/rafale.jpg" alt="Rafale" width="400" height="300" fetchpriority="high"></picture><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_4_5">4.5e Génération</span><span class="tag" data-i18n="home.type_multirole">Multirôle</span></div></div></div>
-          <div class="aircraft-content"><div class="aircraft-header"><h3>Dassault Rafale</h3><div class="aircraft-flag"><img src="/assets/flags/fr.png" alt="France" width="24" height="18" loading="lazy"></div></div><p class="aircraft-description" data-i18n="home.rafale_desc">Chasseur polyvalent français omnirôle, incarnation de l'excellence aéronautique tricolore alliant performance, autonomie stratégique et innovation.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 1.8</span></div><div class="spec"><i class="fas fa-calendar"></i><span>2001</span></div></div><a href="/details?id=30" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
-        </article>
-        <article class="aircraft-card" data-aos="zoom-in" data-aos-delay="100">
-          <div class="aircraft-image"><picture><source type="image/avif" srcset="/assets/airplanes/f22-raptor.avif"><source type="image/webp" srcset="/assets/airplanes/f22-raptor.webp"><img src="/assets/airplanes/f22-raptor.jpg" alt="F-22 Raptor" width="400" height="300" loading="lazy"></picture><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_5">5e Génération</span><span class="tag" data-i18n="home.type_superiority">Supériorité aérienne</span></div></div></div>
-          <div class="aircraft-content"><div class="aircraft-header"><h3>F-22 Raptor</h3><div class="aircraft-flag"><img src="/assets/flags/us.png" alt="USA" width="24" height="18" loading="lazy"></div></div><p class="aircraft-description" data-i18n="home.f22_desc">Premier chasseur de 5e génération opérationnel, référence absolue de la supériorité aérienne grâce à sa furtivité, sa super-croisière et son avionique avancée.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 2.25</span></div><div class="spec"><i class="fas fa-calendar"></i><span>2005</span></div></div><a href="/details?id=12" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
-        </article>
-        <article class="aircraft-card" data-aos="zoom-in" data-aos-delay="200">
-          <div class="aircraft-image"><picture><source type="image/avif" srcset="/assets/airplanes/mig29.avif"><source type="image/webp" srcset="/assets/airplanes/mig29.webp"><img src="/assets/airplanes/mig29.jpg" alt="MiG-29" width="400" height="300" loading="lazy"></picture><div class="aircraft-overlay"><div class="aircraft-tags"><span class="tag" data-i18n="home.gen_4">4e Génération</span><span class="tag" data-i18n="home.type_multirole">Multirôle</span></div></div></div>
-          <div class="aircraft-content"><div class="aircraft-header"><h3>MiG-29</h3><div class="aircraft-flag"><img src="/assets/flags/ru.png" alt="Russie" width="24" height="18" loading="lazy"></div></div><p class="aircraft-description" data-i18n="home.mig29_desc">Chasseur multirôle soviétique redoutable en combat rapproché, exporté dans le monde entier et éprouvé dans de nombreux conflits.</p><div class="aircraft-specs"><div class="spec"><i class="fas fa-gauge-high"></i><span>Mach 2.25</span></div><div class="spec"><i class="fas fa-calendar"></i><span>1983</span></div></div><a href="/details?id=24" class="aircraft-btn"><span data-i18n="home.aircraft_details_btn">Voir les détails</span> <i class="fas fa-arrow-right"></i></a></div>
-        </article>
+      <div class="section-header">
+        <span class="section-badge"><i class="fas fa-tags"></i> <span data-i18n="home.landing.types_badge">Par mission</span></span>
+        <h2 id="missions-title" data-i18n="home.landing.types_title">Pas seulement des chasseurs</h2>
+        <p data-i18n="home.landing.types_desc">Transport, ravitaillement, patrouille maritime, écoles de pilotage, drones et prototypes : tout ce qui a volé sous un uniforme.</p>
       </div>
-      <div class="section-cta"><a href="/hangar" class="btn btn-primary btn-large"><i class="fas fa-plane"></i><span data-i18n="home.btn_see_hangar">Voir tout le Hangar</span></a></div>
+      <div class="mission-families" id="mission-families"></div>
+      <p class="missions-status" id="missions-status" role="status"></p>
     </div>
   </section>
 
@@ -242,197 +292,16 @@
     </div>
   </section>
 
-  <!-- ESPACE PERSONNEL -->
-  <section class="personal-space">
-    <div class="container">
-      <div class="section-header"><span class="section-badge"><i class="fas fa-user-astronaut"></i> <span data-i18n="home.personal_badge">Espace Personnel</span></span><h2 data-i18n="home.personal_title">Votre Compte, Vos Droits</h2><p data-i18n="home.account_desc">Créez votre compte et profitez de fonctionnalités exclusives selon votre rôle</p></div>
-      <div class="personal-space-grid">
-
-        <!-- Favoris -->
-        <div class="personal-card" data-aos="fade-up" data-aos-delay="0">
-          <div class="personal-card-icon"><i class="fas fa-heart"></i></div>
-          <h3 data-i18n="home.favs_card_title">Mes Favoris</h3>
-          <p data-i18n="home.account_favs_desc">Constituez votre propre collection d'avions et retrouvez vos appareils préférés en un clic depuis n'importe quel appareil.</p>
-          <ul class="personal-features-list">
-            <li><i class="fas fa-check-circle"></i><span data-i18n="home.account_save">Sauvegarde instantanée sur votre compte</span></li>
-            <li><i class="fas fa-check-circle"></i><span data-i18n="home.account_access">Accès depuis votre espace personnel dédié</span></li>
-            <li><i class="fas fa-check-circle"></i><span data-i18n="home.favs_add_remove">Ajout / retrait depuis la fiche de chaque avion</span></li>
-            <li><i class="fas fa-check-circle"></i><span data-i18n="home.favs_offline">Consultation de vos favoris hors connexion</span></li>
-          </ul>
-          <a href="/favorites" class="btn btn-primary"><i class="fas fa-heart"></i><span data-i18n="home.btn_see_favorites">Voir mes favoris</span></a>
-        </div>
-
-        <!-- Rôles & Compte -->
-        <div class="personal-card" data-aos="fade-up" data-aos-delay="150">
-          <div class="personal-card-icon"><i class="fas fa-id-badge"></i></div>
-          <h3 data-i18n="home.roles_title">Système de Rôles</h3>
-          <p data-i18n="home.roles_desc">Trois niveaux d'accès pour une gestion fine des permissions. Chaque rôle dispose de capacités spécifiques.</p>
-          <div class="roles-grid">
-            <div class="role-badge admin" data-aos="zoom-in" data-aos-delay="0">
-              <span class="role-icon"><i class="fas fa-crown"></i></span>
-              <span class="role-name" data-i18n="common.role_admin">Administrateur</span>
-              <span class="role-desc" data-i18n="home.role_admin_desc">Gestion complète des avions &amp; utilisateurs</span>
-            </div>
-            <div class="role-badge editor" data-aos="zoom-in" data-aos-delay="120">
-              <span class="role-icon"><i class="fas fa-pen-to-square"></i></span>
-              <span class="role-name" data-i18n="home.role_editor">Éditeur</span>
-              <span class="role-desc" data-i18n="home.role_editor_desc">Ajout &amp; modification des fiches avions</span>
-            </div>
-            <div class="role-badge member" data-aos="zoom-in" data-aos-delay="240">
-              <span class="role-icon"><i class="fas fa-user"></i></span>
-              <span class="role-name" data-i18n="nav.user_role">Membre</span>
-              <span class="role-desc" data-i18n="home.role_member_desc">Accès catalogue, frise &amp; favoris</span>
-            </div>
-          </div>
-          <a href="/login" class="btn btn-ghost"><i class="fas fa-user-plus"></i><span data-i18n="home.btn_create_account">Créer un compte</span></a>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- TIMELINE PREVIEW -->
-  <section class="timeline-preview">
-    <div class="timeline-bg"></div>
-    <div class="container">
-      <div class="timeline-content">
-        <div class="timeline-text" data-aos="fade-right">
-          <span class="section-badge dark"><i class="fas fa-clock-rotate-left"></i> <span data-i18n="home.timeline_badge">Voyage Temporel</span></span>
-          <h2 data-i18n="home.timeline_title">L'Évolution de l'Aviation Militaire</h2>
-          <p data-i18n="home.timeline_desc">Voyagez à travers plus de 75 ans d'innovation aéronautique. Notre frise chronologique interactive vous permet d'explorer l'évolution de l'aviation militaire, de la 1re jusqu'à la 5e génération.</p>
-          <ul class="timeline-features"><li><i class="fas fa-check-circle"></i><span data-i18n="home.timeline_feat_1">Navigation intuitive par décennie</span></li><li><i class="fas fa-check-circle"></i><span data-i18n="home.timeline_feat_2">Contexte historique détaillé</span></li><li><i class="fas fa-check-circle"></i><span data-i18n="home.timeline_feat_3">Visualisation des évolutions techniques de génération en génération</span></li></ul>
-          <a href="/timeline" class="btn btn-primary"><i class="fas fa-clock"></i><span data-i18n="home.btn_explore_timeline">Explorer la Chronologie</span></a>
-        </div>
-        <div class="timeline-visual" data-aos="fade-left">
-          <div class="timeline-card"><div class="timeline-year">1945-1955</div><div class="timeline-gen" data-i18n="home.gen_1_label">1ère Génération</div><div class="timeline-example">MiG-15, F-86 Sabre</div></div>
-          <div class="timeline-card"><div class="timeline-year">1955-1970</div><div class="timeline-gen" data-i18n="home.gen_2_label">2e Génération</div><div class="timeline-example">F-4 Phantom, Mirage III</div></div>
-          <div class="timeline-card"><div class="timeline-year">1970-1990</div><div class="timeline-gen" data-i18n="home.gen_3_label">3e Génération</div><div class="timeline-example">F-15, Su-27</div></div>
-          <div class="timeline-card"><div class="timeline-year">1990-2005</div><div class="timeline-gen" data-i18n="home.gen_4_label">4e Génération</div><div class="timeline-example">Rafale, F-16, Mirage 2000</div></div>
-          <div class="timeline-card active"><div class="timeline-year" data-i18n="home.gen_5_period">2005-Présent</div><div class="timeline-gen" data-i18n="home.gen_5_label">5e Génération</div><div class="timeline-example">F-22 Raptor, F-35, Su-57</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- RECHERCHE AVANCÉE -->
-  <section class="search-showcase">
-    <div class="container">
-      <div class="search-showcase-content">
-
-        <!-- Texte -->
-        <div class="search-showcase-text" data-aos="fade-right">
-          <span class="section-badge"><i class="fas fa-search"></i> <span data-i18n="home.search_badge">Recherche Avancée</span></span>
-          <h2><span data-i18n="home.search_title_1">Trouvez l'Appareil</span><br><span class="gradient-text" data-i18n="home.search_title_2">que Vous Cherchez</span></h2>
-          <p data-i18n="home.hangar_search_desc">Le Hangar est doté d'outils de recherche et de tri puissants pour parcourir la collection en quelques secondes.</p>
-          <ul class="search-features-list">
-            <li>
-              <div class="sf-icon"><i class="fas fa-magnifying-glass"></i></div>
-              <div class="sf-text">
-                <strong data-i18n="home.search_realtime">Recherche en temps réel</strong>
-                <span data-i18n="home.search_realtime_desc">Tapez le nom d'un avion pour filtrer la liste instantanément</span>
-              </div>
-            </li>
-            <li>
-              <div class="sf-icon"><i class="fas fa-globe"></i></div>
-              <div class="sf-text">
-                <strong data-i18n="home.sf_country">Filtre par nation</strong>
-                <span data-i18n="home.sf_country_desc">France, USA, Russie, Chine et bien d'autres pays représentés</span>
-              </div>
-            </li>
-            <li>
-              <div class="sf-icon"><i class="fas fa-layer-group"></i></div>
-              <div class="sf-text">
-                <strong data-i18n="home.sf_gen">Filtre par génération</strong>
-                <span data-i18n="home.sf_gen_desc">De la 1re à la 5e génération d'appareils militaires</span>
-              </div>
-            </li>
-            <li>
-              <div class="sf-icon"><i class="fas fa-tags"></i></div>
-              <div class="sf-text">
-                <strong data-i18n="home.sf_type">Filtre par type de mission</strong>
-                <span data-i18n="home.sf_type_desc">Chasseur, bombardier, intercepteur, multirôle, reconnaissance…</span>
-              </div>
-            </li>
-            <li>
-              <div class="sf-icon"><i class="fas fa-th"></i></div>
-              <div class="sf-text">
-                <strong data-i18n="home.sf_view">Vue grille ou liste</strong>
-                <span data-i18n="home.sf_view_desc">Basculez entre deux modes d'affichage selon votre préférence</span>
-              </div>
-            </li>
-          </ul>
-          <a href="/hangar" class="btn btn-primary"><i class="fas fa-plane-departure"></i><span data-i18n="home.hero_btn_explore">Explorer le Hangar</span></a>
-        </div>
-
-        <!-- Mockup UI -->
-        <div class="hangar-mockup" data-aos="fade-left">
-          <div class="mockup-header">
-            <span class="mockup-dot"></span><span class="mockup-dot"></span><span class="mockup-dot"></span>
-            <span class="mockup-title" data-i18n="home.mockup_title">HANGAR — Vol d'Histoire</span>
-          </div>
-          <div class="mockup-search">
-            <i class="fas fa-search"></i>
-            <span data-i18n="home.mockup_search">Rechercher un avion...</span>
-          </div>
-          <div class="mockup-filters-row">
-            <div class="mockup-filters">
-              <div class="mockup-filter-chip active"><i class="fas fa-globe"></i> France</div>
-              <div class="mockup-filter-chip inactive"><i class="fas fa-layer-group"></i> Génération</div>
-              <div class="mockup-filter-chip inactive"><i class="fas fa-tags"></i> Type</div>
-            </div>
-            <div class="mockup-view-toggle">
-              <div class="mockup-view-btn active-view"><i class="fas fa-th"></i></div>
-              <div class="mockup-view-btn inactive-view"><i class="fas fa-list"></i></div>
-            </div>
-          </div>
-          <div class="mockup-grid">
-            <div class="mockup-card">
-              <div class="mockup-card-img"><i class="fas fa-jet-fighter"></i></div>
-              <div class="mockup-card-body">
-                <div class="mockup-card-name">Dassault Rafale</div>
-                <div class="mockup-card-meta"><img src="/assets/flags/fr.png" alt="FR" width="14" height="11" loading="lazy"> France · 5e Gén.</div>
-              </div>
-            </div>
-            <div class="mockup-card">
-              <div class="mockup-card-img"><i class="fas fa-plane"></i></div>
-              <div class="mockup-card-body">
-                <div class="mockup-card-name">Mirage 2000</div>
-                <div class="mockup-card-meta"><img src="/assets/flags/fr.png" alt="FR" width="14" height="11" loading="lazy"> France · 4e Gén.</div>
-              </div>
-            </div>
-            <div class="mockup-card">
-              <div class="mockup-card-img"><i class="fas fa-plane-departure"></i></div>
-              <div class="mockup-card-body">
-                <div class="mockup-card-name">Mirage F1</div>
-                <div class="mockup-card-meta"><img src="/assets/flags/fr.png" alt="FR" width="14" height="11" loading="lazy"> France · 3e Gén.</div>
-              </div>
-            </div>
-            <div class="mockup-card">
-              <div class="mockup-card-img"><i class="fas fa-fighter-jet"></i></div>
-              <div class="mockup-card-body">
-                <div class="mockup-card-name">Mirage III</div>
-                <div class="mockup-card-meta"><img src="/assets/flags/fr.png" alt="FR" width="14" height="11" loading="lazy"> France · 2e Gén.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta-section">
-    <div class="cta-grid-bg"></div>
-    <div class="container">
-      <div class="cta-content" data-aos="fade-up">
-        <div class="cta-icon"><i class="fas fa-jet-fighter"></i></div>
-        <h2 data-i18n="home.cta_title">Prêt à Explorer l'Histoire ?</h2>
-        <p data-i18n="home.cta_desc_full">Rejoignez notre communauté de passionnés d'aviation et découvrez des centaines d'appareils historiques</p>
-        <div class="cta-actions">
-          <a href="/hangar" class="btn btn-primary btn-large"><i class="fas fa-plane-departure"></i><span data-i18n="home.cta_explore">Commencer l'Exploration</span></a>
-          <a href="/login" class="btn btn-ghost btn-large"><i class="fas fa-user-plus"></i><span data-i18n="home.cta_register">Créer un Compte</span></a>
-        </div>
+  <!-- FIN -->
+  <section class="home-end" aria-labelledby="home-end-title">
+    <div class="container home-end-inner">
+      <span class="section-badge"><i class="fas fa-heart" aria-hidden="true"></i> <span data-i18n="home.landing.end_badge">Votre collection</span></span>
+      <h2 id="home-end-title" data-i18n-html="home.landing.end_title">Gardez vos appareils<br>sous la main</h2>
+      <p id="home-end-text" data-i18n="home.landing.end_text">Un compte gratuit suffit pour mettre des fiches en favoris et les retrouver sur tous vos écrans.</p>
+      <div class="home-end-favs" id="home-end-favs" hidden></div>
+      <div class="home-end-actions" id="home-end-actions">
+        <a href="/login" class="btn btn-primary btn-large"><i class="fas fa-user-plus" aria-hidden="true"></i><span data-i18n="home.landing.end_create">Créer un compte</span></a>
+        <a href="/hangar" class="btn btn-ghost btn-large"><i class="fas fa-plane-departure" aria-hidden="true"></i><span data-i18n="home.landing.end_hangar">Explorer le hangar</span></a>
       </div>
     </div>
   </section>

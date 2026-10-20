@@ -40,9 +40,14 @@ const cacheKeyFor = (day) => `${CACHE_PREFIX}:${day}`;
 /**
  * Anniversaires proches de la date du jour.
  *
- * Les deux dates sont ramenées à une année commune (2001, non bissextile) pour
- * comparer des jours et non des années, et l'écart est circulaire : le 30
- * décembre est à 3 jours du 2 janvier.
+ * Les deux dates sont ramenées à une année commune pour comparer des jours et
+ * non des années, et l'écart est circulaire : le 30 décembre est à 3 jours du
+ * 2 janvier. Cette année est **bissextile** (2000) : sur une année commune, le
+ * 29 février n'existe pas et la conversion lève une erreur. C'était le cas avec
+ * 2001 — le premier vol du MiG 1.44 (29/02/2000) faisait tomber la route en 500
+ * tous les jours. Contrepartie assumée : entre le 28 février et le 1er mars,
+ * l'écart compte un jour de trop les années communes, ce que la fenêtre de
+ * ±3 jours absorbe.
  *
  * Les dates tombant le 1er du mois sont écartées, et ce n'est pas un détail :
  * 223 des 330 mises en service sont saisies au 1er du mois parce que la source
@@ -55,7 +60,7 @@ const cacheKeyFor = (day) => `${CACHE_PREFIX}:${day}`;
  */
 const EPHEMERIS_SQL = `
   WITH ref AS (
-    SELECT to_date(to_char($1::date, 'MM-DD') || '-2001', 'MM-DD-YYYY') AS ref_day
+    SELECT make_date(2000, EXTRACT(MONTH FROM $1::date)::int, EXTRACT(DAY FROM $1::date)::int) AS ref_day
   ),
   events AS (
     SELECT a.id, a.name, a.name_en, a.date_first_fly AS event_date, 'first_flight' AS kind
@@ -73,13 +78,16 @@ const EPHEMERIS_SQL = `
       FROM events
      ORDER BY id, event_date, kind
   ),
-  scored AS (
+  gaps AS (
     SELECT d.id, d.name, d.name_en, d.event_date, d.kind,
-           LEAST(
-             ABS(to_date(to_char(d.event_date, 'MM-DD') || '-2001', 'MM-DD-YYYY') - r.ref_day),
-             365 - ABS(to_date(to_char(d.event_date, 'MM-DD') || '-2001', 'MM-DD-YYYY') - r.ref_day)
-           ) AS day_gap
+           make_date(2000, EXTRACT(MONTH FROM d.event_date)::int, EXTRACT(DAY FROM d.event_date)::int)
+             - r.ref_day AS raw_gap
       FROM dedup d CROSS JOIN ref r
+  ),
+  scored AS (
+    SELECT id, name, name_en, event_date, kind,
+           LEAST(ABS(raw_gap), 366 - ABS(raw_gap)) AS day_gap
+      FROM gaps
   )
   SELECT id AS airplane_id,
          name AS airplane_name,
