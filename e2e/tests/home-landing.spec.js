@@ -33,9 +33,20 @@ test.describe('Accueil — recherche du hero', () => {
   test('Échap ferme la liste de suggestions', async ({ page }) => {
     await page.goto('/');
     const input = page.locator('#hero-search-input');
-    await input.fill('mig');
-    await expect(page.locator('#hero-suggest')).toBeVisible({ timeout: 10000 });
+    const panel = page.locator('#hero-suggest-panel');
+    // « mir » : Mirage 2000 est semé en CI. Une saisie sans correspondance
+    // masquerait le listbox (seul le message du panneau resterait visible).
+    await input.fill('mir');
+    await expect(panel).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('#hero-suggest [role="option"]').first()).toContainText('Mirage');
     await input.press('Escape');
+    await expect(panel).toBeHidden();
+  });
+
+  test('sans correspondance, le panneau annonce qu\'aucun appareil ne correspond', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('#hero-search-input').fill('zzzz');
+    await expect(page.locator('#hero-suggest-panel .hero-suggest-empty')).toBeVisible({ timeout: 10000 });
     await expect(page.locator('#hero-suggest')).toBeHidden();
   });
 });
