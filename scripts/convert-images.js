@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-/* Convertit frontend/assets/airplanes/*.{jpg,jpeg,png} en .webp + .avif.
+/* Convertit frontend/assets/airplanes/*.{jpg,jpeg,png} en .webp + .avif,
+ * plus une vignette 320 px de chaque (thumbs/<nom>.webp + .avif) pour les
+ * listes à petite image : ~4 Ko au lieu de ~60 Ko pour la photo pleine.
  * Skip si le fichier cible est plus récent que la source.
  * Usage : node scripts/convert-images.js [--force] [--only <glob>]
  */
@@ -14,6 +16,14 @@ const SOURCE_EXT = /\.(jpe?g|png)$/i;
 
 const WEBP_OPTS = { quality: 82, effort: 5 };
 const AVIF_OPTS = { quality: 55, effort: 4, chromaSubsampling: '4:2:0' };
+
+// Vignettes : 320 px couvrent un affichage jusqu'à 160 px de large en écran 2x.
+// Elles doivent exister pour CHAQUE photo : un <source> de <picture> qui 404 ne
+// retombe pas sur l'<img>, la vignette manquante laisserait un cadre vide.
+const THUMB_DIR = path.join(SOURCE_DIR, 'thumbs');
+const THUMB_WIDTH = 320;
+const THUMB_WEBP_OPTS = { quality: 72, effort: 5 };
+const THUMB_AVIF_OPTS = { quality: 50, effort: 4, chromaSubsampling: '4:2:0' };
 
 const args = process.argv.slice(2);
 const force = args.includes('--force');
@@ -58,6 +68,23 @@ async function convertOne(filename) {
     results.avif = fs.statSync(avifPath).size;
   }
 
+  results.thumb = 0;
+  const thumbs = [
+    [path.join(THUMB_DIR, base + '.webp'), (img) => img.webp(THUMB_WEBP_OPTS)],
+    [path.join(THUMB_DIR, base + '.avif'), (img) => img.avif(THUMB_AVIF_OPTS)],
+  ];
+  for (const [thumbPath, encode] of thumbs) {
+    if (isStale(srcPath, thumbPath)) {
+      const img = sharp(srcPath).resize({ width: THUMB_WIDTH, withoutEnlargement: true });
+      tasks.push(encode(img).toFile(thumbPath).then(info => {
+        results.thumb += info.size;
+      }));
+    } else {
+      results.skipped.push('thumb');
+      results.thumb += fs.statSync(thumbPath).size;
+    }
+  }
+
   await Promise.all(tasks);
   return results;
 }
@@ -86,12 +113,17 @@ async function main() {
     return;
   }
 
+  fs.mkdirSync(THUMB_DIR, { recursive: true });
+
   console.log(`Conversion de ${files.length} image(s)${force ? ' (force)' : ''}...`);
   const start = Date.now();
 
+  // webp + avif + 2 vignettes : un fichier est « à jour » quand les 4 sont sautés.
+  const OUTPUTS_PER_FILE = 4;
   let totalSrc = 0;
   let totalWebp = 0;
   let totalAvif = 0;
+  let totalThumb = 0;
   let converted = 0;
 
   // Sériel (sharp utilise libvips en natif, pas besoin de paralléliser).
@@ -101,14 +133,16 @@ async function main() {
       totalSrc += r.srcSize;
       totalWebp += r.webp || 0;
       totalAvif += r.avif || 0;
-      const tag = r.skipped.length === 2 ? '·' : '✓';
+      totalThumb += r.thumb || 0;
+      const tag = r.skipped.length === OUTPUTS_PER_FILE ? '·' : '✓';
       console.log(
         `  ${tag} ${file.padEnd(40)} ${fmtKo(r.srcSize).padStart(9)}` +
         `  → webp ${fmtKo(r.webp).padStart(9)} (${fmtPct(r.srcSize, r.webp)})` +
         `  avif ${fmtKo(r.avif).padStart(9)} (${fmtPct(r.srcSize, r.avif)})` +
+        `  vignettes ${fmtKo(r.thumb).padStart(8)}` +
         (r.skipped.length ? `  [skip: ${r.skipped.join(',')}]` : '')
       );
-      if (r.skipped.length < 2) converted++;
+      if (r.skipped.length < OUTPUTS_PER_FILE) converted++;
     } catch (err) {
       console.error(`  ✗ ${file} — ${err.message}`);
       process.exitCode = 1;
@@ -121,6 +155,7 @@ async function main() {
   console.log(`Total source : ${fmtKo(totalSrc)}`);
   console.log(`Total WebP   : ${fmtKo(totalWebp)} (${fmtPct(totalSrc, totalWebp)})`);
   console.log(`Total AVIF   : ${fmtKo(totalAvif)} (${fmtPct(totalSrc, totalAvif)})`);
+  console.log(`Vignettes    : ${fmtKo(totalThumb)} (webp + avif, ${THUMB_WIDTH} px)`);
 }
 
 main().catch(err => {
