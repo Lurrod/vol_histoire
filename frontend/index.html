@@ -80,14 +80,16 @@
         <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
         <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
         <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-        <li class="lang-switch">
+      </ul>
+      <div class="nav-actions">
+        <div class="lang-switch">
           <button type="button" id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i><span class="lang-btn-label" data-i18n="nav.language">Langue</span></button>
           <ul class="lang-dropdown" id="lang-dropdown" role="menu">
             <li><button type="button" class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
             <li><button type="button" class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
           </ul>
-        </li>
-        <li class="user-menu"><div class="user-toggle">
+        </div>
+        <div class="user-menu"><div class="user-toggle">
           <a href="/login" id="login-icon" class="login-icon" aria-label="Connexion" data-i18n-aria="nav.login"><i class="fas fa-user-circle" aria-hidden="true"></i></a>
           <div id="user-info-container" class="user-dropdown hidden" role="menu">
             <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
@@ -96,8 +98,8 @@
             <div class="dropdown-divider"></div>
             <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
           </div>
-        </div></li>
-      </ul>
+        </div></div>
+      </div>
     </nav>
   </header>
 

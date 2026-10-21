@@ -669,7 +669,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   .page-login .auth-form-panel {
     padding: 1.5rem 1.25rem;
     border-radius: 16px;
-    margin: 0.5rem;
+    margin: 1rem;
   }
   .page-login .form-header h1,
   .page-login .form-header h2 { font-size: 1.35rem; }

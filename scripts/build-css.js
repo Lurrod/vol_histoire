@@ -99,14 +99,39 @@ function detectDuplicateKeyframes(fileContents) {
 
 // ── Minification ──────────────────────────────────────────────────────
 
+// Dans calc(), clamp(), min() et max(), l'opérateur « + » DOIT être entouré
+// d'espaces : « calc(100%+1rem) » est invalide et le navigateur ignore la
+// déclaration sans rien signaler. Le compactage des combinateurs (> + ~)
+// les retirait. On met donc de côté les « + » espacés situés entre
+// parenthèses avant de compacter, puis on les restitue. Un « + » de
+// sélecteur entre parenthèses (:has(+ p)) garde ses espaces : sans effet.
+const PLUS_TOKEN = '\u0000PLUS\u0000';
+
+function protectParenPlus(css) {
+  let depth = 0;
+  let out = '';
+  for (let i = 0; i < css.length; i++) {
+    const c = css[i];
+    if (c === '(') depth++;
+    else if (c === ')') depth = Math.max(0, depth - 1);
+    if (depth > 0 && c === '+' && /\s/.test(css[i - 1] || '') && /\s/.test(css[i + 1] || '')) {
+      out = out.replace(/\s+$/, '') + PLUS_TOKEN;
+      while (/\s/.test(css[i + 1] || '')) i++;
+      continue;
+    }
+    out += c;
+  }
+  return out;
+}
+
 function minify(css) {
-  return css
-    .replace(/\/\*[\s\S]*?\*\//g, '')
+  return protectParenPlus(css.replace(/\/\*[\s\S]*?\*\//g, ''))
     .replace(/\s+/g, ' ')
     .replace(/\s*([{}:;,>+~])\s*/g, '$1')
     .replace(/^\s+|\s+$/g, '')
     .replace(/;}/g, '}')
-    .replace(/}@/g, '}\n@');
+    .replace(/}@/g, '}\n@')
+    .split(PLUS_TOKEN).join(' + ');
 }
 
 // ── Build ─────────────────────────────────────────────────────────────

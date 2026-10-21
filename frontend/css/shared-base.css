@@ -238,6 +238,19 @@
     display: flex;
     gap: var(--sp-2);
     align-items: center;
+    margin-inline-start: auto;
+  }
+
+  /* Voile du menu mobile : n'existe qu'au palier burger (shared-responsive). */
+  .nav-scrim { display: none; }
+
+  /* Langue + compte : hors de la liste des liens pour rester dans la barre
+     en mobile. Espacements identiques à l'ancienne liste unique. */
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-inline-start: var(--sp-2);
   }
 
   .nav-links li a {
@@ -1209,6 +1222,8 @@
   }
 
   .footer-section ul li a {
+    display: inline-block;
+    min-height: 24px;
     color: rgba(255, 255, 255, 0.45);
     font-size: var(--text-base);
     transition: var(--transition-fast);

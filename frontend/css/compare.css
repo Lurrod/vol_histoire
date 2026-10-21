@@ -424,3 +424,15 @@
   .cmp-tag { font-size: 0.6rem; padding: 0.15rem 0.35rem; }
   .cmp-verdict-item { font-size: 0.8rem; }
 }
+
+/* Téléphone : la colonne d'intitulés (110 px) ne laissait qu'environ 60 px
+   par appareil et coupait les en-têtes. L'intitulé passe sur sa propre
+   ligne, au-dessus des valeurs, qui prennent toute la largeur. */
+@media (max-width: 40em) {
+  .cmp-cols, .cmp-row { grid-template-columns: repeat(var(--cmp-cols), minmax(0, 1fr)); }
+  .cmp-cols::before { display: none; }
+  .cmp-row { gap: 0.35rem 0.5rem; padding: 0.75rem 0.5rem; }
+  .cmp-row-label { grid-column: 1 / -1; }
+  .cmp-col-head { min-width: 0; }
+  .cmp-col-title h3 { overflow-wrap: anywhere; }
+}

@@ -845,7 +845,7 @@ body.page-timeline.tl-has-cinematic::before {
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 0.35rem 0.5rem 0.35rem 0;
+  padding: 0.45rem 0.5rem 0.45rem 0;
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -905,6 +905,19 @@ body.page-timeline.tl-has-cinematic::before {
   .page-timeline .tl-aircraft-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
   .page-timeline .tl-intro-stats { gap: 2rem; margin-bottom: 3rem; }
   .page-timeline .tl-intro { padding: calc(var(--header-h) + 1rem) 1.25rem 3rem; }
+  /* L'étiquette d'époque passe sous l'année : en ligne avec elle, elle
+     en recouvrait le pied dès que la largeur se resserrait. */
+  .page-timeline .tl-title-label { display: table; margin-inline: auto; }
+}
+
+/* Entre 768 et 1200 px, la mini-carte des décennies (fixe, à droite)
+   recouvrait le bord droit des cartes d'événements. */
+@media (min-width: 48.01em) and (max-width: 75em) {
+  .page-timeline .tl-events,
+  .page-timeline .tl-aircraft-section { padding-inline: 6.5rem; }
+  /* Le repère d'année (fixe, en haut à droite) recouvrait la première
+     carte visible ; la mini-carte indique déjà la décennie. */
+  .page-timeline .tl-year-hud { display: none; }
 }
 
 @media (max-width: 48em) {
@@ -912,7 +925,8 @@ body.page-timeline.tl-has-cinematic::before {
   .page-timeline .tl-year-hud { display: none; }
   .page-timeline .tl-intro-stamp { display: none; }
   .page-timeline .tl-intro-stats { gap: 1.25rem; }
-  .page-timeline .tl-stat-lbl { font-size: 0.62rem; }
+  .page-timeline .tl-stat-lbl { font-size: 0.7rem; }
+  .page-timeline .tl-title-decade-suffix { font-size: 0.85rem; }
   .page-timeline .tl-title-decade-num { font-size: clamp(5rem, 28vw, 9rem); }
   .page-timeline .tl-title-card { min-height: 60vh; }
   .page-timeline .tl-chapter { padding-bottom: 4rem; }
@@ -944,7 +958,7 @@ body.page-timeline.tl-has-cinematic::before {
 @media (max-width: 30em) {
   .page-timeline .tl-intro-stats { gap: 0.75rem; flex-direction: column; align-items: center; }
   .page-timeline .tl-stat-num { font-size: 2rem; }
-  .page-timeline .tl-stat-lbl { font-size: 0.58rem; }
+  .page-timeline .tl-stat-lbl { font-size: 0.7rem; }
   .page-timeline .tl-title-decade-num { font-size: clamp(4rem, 24vw, 7rem); }
   .page-timeline .tl-title-era { font-size: 1.3rem; }
   .page-timeline .tl-title-label { font-size: 0.75rem; }
@@ -952,8 +966,8 @@ body.page-timeline.tl-has-cinematic::before {
   .page-timeline .tl-event-title { font-size: 1rem; }
   .page-timeline .tl-event-text { font-size: 0.92rem; }
   .page-timeline .tl-plane-card .tl-plane-name { font-size: 0.95rem; }
-  .page-timeline .tl-intro { padding: calc(var(--header-h) + 0.5rem) 0.75rem 1.5rem; }
-  .page-timeline .tl-outro-inner { padding: 2.5rem 0.75rem; }
+  .page-timeline .tl-intro { padding: calc(var(--header-h) + 0.5rem) 1rem 1.5rem; }
+  .page-timeline .tl-outro-inner { padding: 2.5rem 1rem; }
   .page-timeline .tl-outro h2 { font-size: 1.3rem; }
   .page-timeline .tl-cta { font-size: 0.85rem; padding: 0.7rem 1.25rem; }
 }

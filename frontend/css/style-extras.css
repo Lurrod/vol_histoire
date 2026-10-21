@@ -26,7 +26,7 @@
 
 /* ── phone (≤ 30em) ───────────────────────────────────────────────── */
 @media (max-width: 30em) {
-  .page-home main .container { padding: 0 0.875rem; }
+  .page-home main .container { padding: 0 1rem; }
   .page-home .hero { min-height: 100vh; min-height: 100svh; padding-bottom: 5rem; }
 
   .page-home main .btn { padding: 0.75rem 1.5rem; font-size: 0.875rem; }

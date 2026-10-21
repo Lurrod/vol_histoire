@@ -3,8 +3,10 @@
    (hors @layer pour que build-css préserve les @media)
    ============================================================ */
 
-/* ── laptop (≤ 64em) ─── */
-@media (max-width: 64em) {
+/* ── sous le palier laptop (< 64em) ─── */
+/* 63.99em et non 64em : à 1024 px (tablette paysage), la navigation
+   complète tient sur une ligne ; le burger n'y apporte rien. */
+@media (max-width: 63.99em) {
 
     .hamburger {
       display: flex;
@@ -19,8 +21,9 @@
       position: fixed;
       top: var(--header-h);
       inset-inline: 0;
-      background: rgba(13, 13, 13, 0.98);
-      backdrop-filter: blur(20px);
+      /* Opaque : à 0.98, le texte de la page restait lisible en filigrane
+         derrière les liens. */
+      background: rgb(13, 13, 13);
       flex-direction: column;
       padding: var(--sp-8);
       border-bottom: 1px solid rgba(200, 169, 110, 0.10);
@@ -59,58 +62,46 @@
 
     .nav-links li a {
       width: 100%;
-      justify-content: flex-start;
+      justify-content: center;
       padding: var(--sp-4) var(--sp-6);
       min-height: 44px;
     }
 
-    /* Lang switch */
-    .lang-switch {
-      margin-left: 0;
-      margin-top: var(--sp-2);
-      padding: var(--sp-4) var(--sp-6) 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    /* Langue et compte restent dans la barre, comme sur ordinateur, avec
+       les mêmes listes déroulantes : le panneau ne porte que les liens.
+       Ordre visuel : logo · globe · profil · burger. */
+    .nav-actions {
+      order: 2;
+      margin-inline-start: auto;
     }
 
-    .lang-btn {
-      width: auto;
-      height: auto;
-      padding: var(--sp-3) var(--sp-6);
-      border-radius: var(--r-xl);
-      gap: var(--sp-3);
-      font-size: var(--text-base);
-      justify-content: flex-start;
+    .hamburger {
+      order: 3;
+      margin-inline-start: var(--sp-2);
     }
 
-    .lang-btn-label { display: none; }
-
-    .lang-dropdown {
-      position: absolute;
-      top: 100%;
-      left: var(--sp-6);
-      right: auto;
-      margin: 6px 0 0 0;
-      width: auto;
-      min-width: 140px;
-      box-shadow: var(--shadow-lg);
+    /* Voile sous le panneau : la page reste visible mais clairement hors
+       d'atteinte (le défilement est bloqué) ; un toucher referme le menu.
+       Créé par nav.js. */
+    .nav-scrim {
+      display: block;
+      position: fixed;
+      inset: var(--header-h) 0 0 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: calc(var(--z-header) - 1);
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity    var(--panel-close-dur) var(--panel-ease),
+        visibility 0s linear var(--panel-close-dur);
     }
 
-    /* User menu */
-    .user-menu {
-      width: 100%;
-      margin-top: var(--sp-2);
-      padding: var(--sp-4) var(--sp-6) 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .user-dropdown {
-      position: static;
-      width: 100%;
-      max-width: none;
-      margin-top: var(--sp-4);
-      min-width: auto;
-      box-shadow: none;
-      border: 1px solid rgba(200, 169, 110, 0.10);
+    .nav-scrim.show {
+      opacity: 1;
+      visibility: visible;
+      transition:
+        opacity    var(--panel-open-dur) var(--panel-ease),
+        visibility 0s linear 0s;
     }
   }
 
@@ -146,8 +137,9 @@
     }
 
     .hero-data {
-      flex-direction: row;
-      justify-content: center;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
       padding-inline-start: 0;
       border-inline-start: none;
       border-top: 1px solid rgba(255, 255, 255, 0.07);
@@ -156,18 +148,19 @@
       min-width: 0;
     }
 
+    /* Chaque chiffre centré dans sa colonne : le padding nul du premier
+       et la double déclaration d'align-items collaient « 109 » au bord. */
     .data-row {
       flex-direction: column;
       gap: 0.2rem;
       align-items: center;
-      border-bottom: none;
-      padding: 0 var(--sp-6);
-      border-right: 1px solid rgba(255, 255, 255, 0.06);
       justify-content: flex-start;
-      align-items: flex-start;
+      border-bottom: none;
+      padding: 0 var(--sp-2);
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      text-align: center;
     }
 
-    .data-row:first-child { padding-inline-start: 0; }
     .data-row:last-child  { border-right: none; }
 
     .data-number { font-size: 1.75rem; }
@@ -206,11 +199,23 @@
   }
 
   /* ── tablet (≤ 48em) ─── */
+  /* Pied de page : la présentation sur toute la largeur, puis les trois
+     listes côte à côte. En une seule colonne centrée, il occupait près
+     d'un écran entier sur mobile. */
   @media (max-width: 48em) {
-    .footer-content { grid-template-columns: 1fr; }
-    .footer-section { text-align: center; }
-    .footer-social { justify-content: center; }
-    .footer-logo   { justify-content: center; }
+    .footer-content {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--sp-8) var(--sp-6);
+      margin-bottom: var(--sp-12);
+    }
+    .footer-content > .footer-section:first-child { grid-column: 1 / -1; }
+    .footer-section h3 { margin-bottom: var(--sp-4); }
+    .footer-section ul li a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+    }
+    .footer-bottom { text-align: center; }
   }
 
   /* ── phone (≤ 30em) ──── */
@@ -234,11 +239,21 @@
       width: 100%;
     }
 
-    .footer-content { gap: var(--sp-8); }
+    /* Deux colonnes : « Politique de confidentialité » ne tient pas en trois. */
+    .footer-content { grid-template-columns: 1fr 1fr; gap: var(--sp-8) var(--sp-4); }
     .footer-logo    { font-size: var(--text-xl); }
     .footer-lockup  { height: 2.5rem; }
     .auth-lockup    { height: 3rem; }
   }
+
+/* Champs de saisie à 16 px minimum sous 768 px : en dessous, Safari iOS
+   zoome la page à chaque focus et ne la dézoome pas. Les règles de page
+   (.page-login .form-group input…) descendaient à 14 px, d'où !important. */
+@media (max-width: 48em) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea { font-size: 1rem !important; }
+}
 
 /* Facet counts (hangar + favorites) */
 .filter-option .fc { color: var(--text-muted); font-size: 0.75rem; margin-left: 6px; }

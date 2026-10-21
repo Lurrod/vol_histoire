@@ -67,7 +67,7 @@
     const axisLabels = angles.map((ang, i) => {
       const lx = +(cx + labelR * Math.cos(ang)).toFixed(2);
       const ly = +(cy + labelR * Math.sin(ang) + dyOffsets[i]).toFixed(2);
-      return `<text x="${lx}" y="${ly}" text-anchor="${textAnchors[i]}" dominant-baseline="middle" fill="rgba(255,255,255,0.6)" font-size="9" font-family="DM Sans, sans-serif" font-weight="600" letter-spacing="0.05em">${axes[i].label.toUpperCase()}</text>`;
+      return `<text x="${lx}" y="${ly}" text-anchor="${textAnchors[i]}" dominant-baseline="middle" fill="rgba(255,255,255,0.6)" font-size="11" font-family="DM Sans, sans-serif" font-weight="600" letter-spacing="0.05em">${axes[i].label.toUpperCase()}</text>`;
     }).join('');
 
     chartEl.innerHTML = `

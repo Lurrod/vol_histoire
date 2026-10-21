@@ -157,6 +157,7 @@
 .page-home .hero-browse-link {
   display: inline-flex;
   align-items: center;
+  min-height: 44px;
   gap: 0.5rem;
   font-size: 0.9rem;
   color: var(--text-secondary);
@@ -391,24 +392,39 @@
 }
 
 /* ---------- Responsive ---------- */
+/* Générations : carrousel horizontal sous 1024 px, environ trois tuiles
+   visibles en tablette (70 % de 768 px donnait une tuile de 500 px). */
 @media (max-width: 64em) {
   .page-home .gen-grid {
     grid-template-columns: none;
     grid-auto-flow: column;
-    grid-auto-columns: minmax(200px, 42%);
+    grid-auto-columns: minmax(220px, 31%);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     padding-bottom: 0.5rem;
   }
   .page-home .gen-tile { scroll-snap-align: start; }
-}
-@media (max-width: 64em) {
-  .page-home .mission-families { grid-template-columns: 1fr; max-width: 560px; }
+  /* Missions : deux colonnes, la famille Combat (la plus longue) en
+     occupe une à elle seule ; les autres s'empilent à côté. */
+  .page-home .mission-families {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 820px;
+  }
+  .page-home .mission-family:first-child { grid-row: span 2; }
 }
 @media (max-width: 48em) {
-  .page-home .home-section { padding: 5rem 0; }
-  .page-home .gen-grid { grid-auto-columns: 70%; }
-  .page-home .home-end { padding: 7rem 0; }
+  .page-home .home-section { padding: 4.5rem 0; }
+  .page-home .gen-grid { grid-auto-columns: minmax(200px, 44%); }
+  .page-home .home-end { padding: 6rem 0; }
+}
+@media (max-width: 40em) {
+  .page-home .mission-families { grid-template-columns: 1fr; max-width: 560px; }
+  .page-home .mission-family:first-child { grid-row: auto; }
+}
+@media (max-width: 30em) {
+  .page-home .home-section { padding: 3.5rem 0; }
+  .page-home .gen-grid { grid-auto-columns: 72%; }
+  .page-home .home-end { padding: 4.5rem 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .page-home .gen-tile,

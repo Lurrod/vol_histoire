@@ -245,10 +245,20 @@ body.page-hangar {
   .page-hangar .search-box { max-width: 100%; }
   .page-hangar .toolbar-right { flex-wrap: wrap; }
   .page-hangar .filter-dropdown { max-height: 70vh; }
+  /* Barre en colonne : les boutons de filtre partent du bord gauche, et une
+     liste ancrée à droite de son bouton (right: 0, 380 px) sortait de
+     l'écran. Elle s'ancre désormais au bord gauche de la barre. */
+  .page-hangar .filter-group { position: static; }
+  .page-hangar .filter-dropdown { left: 0; right: auto; max-width: 100%; }
   .page-hangar .form-grid { grid-template-columns: 1fr; }
   .page-hangar .form-group.span-2 { grid-column: span 1; }
   .page-hangar .filter-btn { min-height: 44px; }
   .page-hangar .sort-select { min-height: 44px; }
+  /* Le tri occupe la place restante au lieu de passer seul à la ligne. */
+  .page-hangar .filter-btn { padding: 0.7rem 1rem; }
+  .page-hangar .sort-select { flex: 1 1 150px; min-width: 0; text-overflow: ellipsis; }
+  .page-hangar .view-toggle { margin-right: 0; }
+  .page-hangar .view-btn { min-width: 44px; min-height: 44px; }
 }
 
 @media (max-width: 48em) {
@@ -258,9 +268,9 @@ body.page-hangar {
   .page-hangar .hero-eyebrow { justify-content: center; }
   .page-hangar .hero-text > p { margin-inline: auto; }
   .page-hangar .hero-text h1 { font-size: clamp(2.5rem, 8vw, 4rem); }
-  .page-hangar .hero-data { flex-direction: row; justify-content: center; padding-left: 0; border-left: none; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 2rem; width: 100%; min-width: 0; }
-  .page-hangar .data-row { flex-direction: column; gap: 0.2rem; border-bottom: none; padding: 0 1.5rem; border-right: 1px solid rgba(255,255,255,0.06); justify-content: center; align-items: center; }
-  .page-hangar .data-row:first-child { padding-left: 0; }
+  /* Trois colonnes égales, chiffre centré : voir shared-responsive.css. */
+  .page-hangar .hero-data { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding-left: 0; border-left: none; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 2rem; width: 100%; min-width: 0; }
+  .page-hangar .data-row { flex-direction: column; gap: 0.2rem; border-bottom: none; padding: 0 0.5rem; border-right: 1px solid rgba(255,255,255,0.06); justify-content: center; align-items: center; text-align: center; }
   .page-hangar .data-row:last-child { border-right: none; }
   .page-hangar .data-number { font-size: 1.75rem; }
   .page-hangar .aircraft-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
@@ -275,17 +285,25 @@ body.page-hangar {
 }
 
 @media (max-width: 30em) {
-  .page-hangar .container { padding: 0 0.875rem; }
-  .page-hangar .page-hero { padding: 4rem 0 3rem; }
+  .page-hangar .container { padding: 0 1rem; }
+  .page-hangar .page-hero { padding: 3rem 0 2.5rem; }
   .page-hangar .hero-text h1 { font-size: clamp(1.75rem, 10vw, 2.5rem); }
   .page-hangar .aircraft-grid { grid-template-columns: 1fr; gap: 1rem; }
-  .page-hangar .filter-btn span { display: none; }
+  /* Trois filtres sur une ligne, libellés visibles : l'icône de tête
+     cède sa place au mot, plus parlant qu'un pictogramme seul. */
+  .page-hangar .toolbar-right { gap: 0.5rem; }
+  .page-hangar .filter-group { flex: 1 1 28%; min-width: 0; }
+  .page-hangar .filter-group .filter-btn { width: 100%; justify-content: center; padding: 0.7rem 0.4rem; gap: 0.3rem; font-size: 0.82rem; }
+  .page-hangar .filter-btn > i:first-child, .page-hangar .filter-btn > .icon:first-child { display: none; }
+  .page-hangar .filter-btn span { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   .page-hangar .aircraft-image { height: 180px; }
   .page-hangar .search-box input { font-size: 0.85rem; padding: 0.7rem 0.75rem 0.7rem 2.5rem; }
   .page-hangar .hangar-toolbar { gap: 0.75rem; }
   .page-hangar .aircraft-content { padding: 1rem; }
-  .page-hangar .pagination { margin: 2rem 0; flex-wrap: wrap; }
-  .page-hangar .pagination button { flex: 1; min-width: 100px; }
+  /* Une seule ligne : précédent · page · suivant. */
+  .page-hangar .pagination { margin: 2.5rem 0 3rem; gap: 0.35rem; }
+  .page-hangar .pagination button { padding: 0.65rem 0.75rem; font-size: 0.85rem; white-space: nowrap; }
+  .page-hangar .pagination .page-info { padding: 0.5rem 0.25rem; font-size: 0.85rem; white-space: nowrap; flex: 1; text-align: center; }
   .page-hangar .modal { padding: 0; align-items: flex-end; }
   .page-hangar .modal-container { max-height: 90vh; border-radius: 16px 16px 0 0; margin: 0; width: 100%; }
   .page-hangar .modal-header { padding: 1.25rem 1rem; }

@@ -268,3 +268,10 @@
   align-items: center;
   gap: 0.75rem;
 }
+
+/* Téléphone : les cartes sont déjà dans le cadre de la page, inutile
+   d'empiler un troisième niveau de marge intérieure. */
+@media (max-width: 30em) {
+  .contact-card { padding: 1.25rem 1rem; }
+  .btn-send { width: 100%; justify-content: center; min-height: 48px; }
+}
