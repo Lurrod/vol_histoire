@@ -113,16 +113,13 @@
     .container { padding-inline: var(--sp-8); }
   }
 
-  @media (max-width: 48em) {    /* < 768px */
+  @media (max-width: 48em) {    /* ≤ 768px */
     .container { padding-inline: var(--sp-6); }
   }
 
-  @media (max-width: 48em) {    /* < 640px */
+  /* 16 px sur téléphone : en dessous, le texte touche presque le bord. */
+  @media (max-width: 30em) {    /* ≤ 480px */
     .container { padding-inline: var(--sp-4); }
-  }
-
-  @media (max-width: 30em) {    /* < 480px */
-    .container { padding-inline: var(--sp-3); }
   }
 
   /* ============================================================

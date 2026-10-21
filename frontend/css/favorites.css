@@ -307,6 +307,11 @@ body.page-favorites { background: var(--night); }
   .page-favorites .favorites-toolbar { flex-direction: column; align-items: stretch; }
   .page-favorites .search-box { max-width: 100%; min-width: 0; }
   .page-favorites .toolbar-right { flex-wrap: wrap; }
+  /* Barre en colonne : les boutons de filtre partent du bord gauche, et une
+     liste ancrée à droite de son bouton (right: 0, 380 px) sortait de
+     l'écran. Elle s'ancre désormais au bord gauche de la barre. */
+  .page-favorites .filter-group { position: static; }
+  .page-favorites .filter-dropdown { left: 0; right: auto; max-width: 100%; }
   .page-favorites .auth-gate-content { grid-template-columns: 1fr; }
   .page-favorites .auth-gate-visual { min-height: 240px; padding: 2.5rem; }
   .page-favorites .gate-radar { width: 160px; height: 160px; }

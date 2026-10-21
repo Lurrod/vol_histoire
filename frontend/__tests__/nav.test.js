@@ -28,7 +28,13 @@ beforeEach(() => {
         <ul class="nav-links" id="nav-links">
           <li><a href="/">Accueil</a></li>
           <li><a href="/hangar">Hangar</a></li>
-          <li class="user-menu">
+        </ul>
+        <div class="nav-actions">
+          <div class="lang-switch">
+            <button type="button" id="lang-toggle" class="lang-btn"></button>
+            <ul class="lang-dropdown" id="lang-dropdown"></ul>
+          </div>
+          <div class="user-menu">
             <div class="user-toggle">
               <a href="/login" id="login-icon"><i class="fas fa-user-circle"></i></a>
               <div class="user-dropdown hidden">
@@ -42,8 +48,8 @@ beforeEach(() => {
                 <a href="#" id="logout-icon">Déconnexion</a>
               </div>
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
       </nav>
     </header>
   `;
@@ -54,10 +60,23 @@ beforeEach(() => {
 function loadNav() {
   // Reset module cache
   jest.resetModules();
-  // Le module s'enregistre sur DOMContentLoaded
-  require('../js/nav');
+  // Le module s'enregistre sur DOMContentLoaded. On retire l'écouteur après
+  // usage : sinon les initialisations des tests précédents se rejouent au
+  // dispatch suivant, et plusieurs instances réagissent au même clic.
+  const inits = [];
+  const add = document.addEventListener;
+  document.addEventListener = function (type, fn, opts) {
+    if (type === 'DOMContentLoaded') inits.push(fn);
+    return add.call(this, type, fn, opts);
+  };
+  try {
+    require('../js/nav');
+  } finally {
+    document.addEventListener = add;
+  }
   // Déclencher DOMContentLoaded
   document.dispatchEvent(new Event('DOMContentLoaded'));
+  inits.forEach((fn) => document.removeEventListener('DOMContentLoaded', fn));
   return window.nav;
 }
 
@@ -189,5 +208,65 @@ describe('ESC key', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
 
     expect(navLinks.classList.contains('show')).toBe(false);
+  });
+});
+
+// =============================================================================
+// Menu mobile : voile et un seul élément ouvert à la fois
+// =============================================================================
+describe('menu mobile', () => {
+  test('le voile suit l’ouverture du menu', () => {
+    const nav = loadNav();
+    const scrim = document.querySelector('.nav-scrim');
+    expect(scrim).not.toBeNull();
+
+    document.querySelector('.hamburger').click();
+    expect(scrim.classList.contains('show')).toBe(true);
+
+    nav.closeMenu();
+    expect(scrim.classList.contains('show')).toBe(false);
+  });
+
+  test('un toucher sur le voile referme le menu', () => {
+    loadNav();
+    document.querySelector('.hamburger').click();
+
+    document.querySelector('.nav-scrim').click();
+
+    expect(document.querySelector('.nav-links').classList.contains('show')).toBe(false);
+    expect(document.querySelector('.hamburger').getAttribute('aria-expanded')).toBe('false');
+  });
+
+  test('ouvrir le menu referme la liste des langues', () => {
+    loadNav();
+    const langSwitch = document.querySelector('.lang-switch');
+    const toggle = document.getElementById('lang-toggle');
+    langSwitch.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+
+    document.querySelector('.hamburger').click();
+
+    expect(langSwitch.classList.contains('open')).toBe(false);
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  test('ouvrir la liste des langues referme le menu', () => {
+    loadNav();
+    document.querySelector('.hamburger').click();
+
+    document.getElementById('lang-toggle').click();
+
+    expect(document.querySelector('.nav-links').classList.contains('show')).toBe(false);
+  });
+
+  test('ouvrir le compte (connecté) referme le menu', () => {
+    auth.getToken.mockReturnValue('jeton');
+    loadNav();
+    document.querySelector('.hamburger').click();
+
+    document.querySelector('.user-toggle').click();
+
+    expect(document.querySelector('.nav-links').classList.contains('show')).toBe(false);
+    auth.getToken.mockReturnValue(null);
   });
 });

@@ -343,7 +343,8 @@
   .page-home .hero-split-grid {
     grid-template-columns: 1fr;
     gap: 3rem;
-    padding: 5rem 2rem 3rem;
+    /* L'en-tête est fixe : sans le décompter, le titre s'y collait. */
+    padding: calc(var(--header-h) + 3rem) 2rem 3rem;
   }
   .page-home .hero-split-left {
     text-align: center;
@@ -360,7 +361,7 @@
   .page-home .hero-quiz-stage { aspect-ratio: 16 / 8; }
 }
 @media (max-width: 30em) {
-  .page-home .hero-split-grid { padding: 4rem 1rem 2rem; gap: 2rem; }
+  .page-home .hero-split-grid { padding: calc(var(--header-h) + 2rem) 1rem 2rem; gap: 2rem; }
   .page-home .hero-aside-card { padding: 1rem 1.1rem; }
   .page-home .hero-quiz-options { grid-template-columns: 1fr; }
   .page-home .hero-fact-body { font-size: 0.9rem; }

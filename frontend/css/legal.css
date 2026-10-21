@@ -177,19 +177,23 @@ body.page-legal { background: var(--night); }
   .page-legal .hero-text h1 { font-size: clamp(2.5rem, 8vw, 4rem); }
   .page-legal .legal-container { padding: 1.5rem; border-radius: 12px; }
   .page-legal .legal-content { padding: 2rem 0 3rem; }
-  .page-legal .intro-box, .page-legal .acceptance-box { flex-direction: column; text-align: center; }
+  /* Empilés, mais le texte reste aligné à gauche : centré sur cinq
+     lignes, il se lisait mal. */
+  .page-legal .intro-box, .page-legal .acceptance-box { flex-direction: column; gap: 1rem; }
   .page-legal .retention-row { grid-template-columns: 1fr; gap: 1rem; }
   .page-legal .contact-methods { grid-template-columns: 1fr; }
   .page-legal .purpose-grid, .page-legal .security-grid, .page-legal .rights-grid, .page-legal .cookie-types, .page-legal .liability-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 30em) {
-  .page-legal .container { padding: 0 0.875rem; }
-  .page-legal .page-hero { padding: 4rem 0 3rem; }
+  .page-legal .container { padding: 0 1rem; }
+  .page-legal .page-hero { padding: 3rem 0 2.5rem; }
   .page-legal .hero-text h1 { font-size: clamp(1.75rem, 10vw, 2.5rem); margin-bottom: 0.75rem; }
   .page-legal .legal-container { padding: 1rem; }
   .page-legal .legal-content { padding: 1.5rem 0 2rem; }
   .page-legal .legal-section { padding: 1.25rem 0; }
   .page-legal .legal-section h2 { font-size: 1.15rem; flex-direction: column; align-items: start; }
-  .page-legal .legal-section p, .page-legal .legal-section li { font-size: 0.85rem; }
+  .page-legal .legal-section p, .page-legal .legal-section li { font-size: 0.9rem; }
+  .page-legal .legal-text ul, .page-legal .legal-text ol { margin-left: 0; padding-left: 1rem; }
+  .page-legal .intro-box, .page-legal .acceptance-box { padding: 1.25rem; }
   .page-legal .legal-footer { flex-direction: column; gap: 1rem; }
 }

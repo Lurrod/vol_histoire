@@ -14,6 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const userDropdown = document.querySelector('.user-dropdown')
     || document.getElementById('user-info-container');
 
+  // Voile sous le panneau mobile (masqué par CSS au-delà du palier burger).
+  const scrim = hamburger ? document.createElement('div') : null;
+  if (scrim) {
+    scrim.className = 'nav-scrim';
+    scrim.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(scrim);
+  }
+
   // -------------------------------------------------------------------
   // Fonctions exposées (utilisables par les scripts de page)
   // -------------------------------------------------------------------
@@ -21,7 +29,17 @@ document.addEventListener('DOMContentLoaded', () => {
     navLinks?.classList.remove('show');
     hamburger?.classList.remove('active');
     hamburger?.setAttribute('aria-expanded', 'false');
+    scrim?.classList.remove('show');
     document.body.style.overflow = '';
+  }
+
+  function closeLang() {
+    const langSwitch = document.querySelector('.lang-switch');
+    if (!langSwitch?.classList.contains('open')) return;
+    langSwitch.classList.remove('open');
+    const toggle = document.getElementById('lang-toggle');
+    toggle?.classList.remove('open');
+    toggle?.setAttribute('aria-expanded', 'false');
   }
 
   function closeDropdown() {
@@ -71,13 +89,19 @@ document.addEventListener('DOMContentLoaded', () => {
     navLinks?.classList.toggle('show');
     hamburger.classList.toggle('active');
     hamburger.setAttribute('aria-expanded', String(nowOpen));
+    scrim?.classList.toggle('show', nowOpen);
     document.body.style.overflow = navLinks?.classList.contains('show') ? 'hidden' : '';
+    // Un seul élément ouvert à la fois : menu, langue ou compte.
+    if (nowOpen) { closeDropdown(); closeLang(); }
   });
 
-  // Fermer le menu mobile au clic sur un lien (sauf login icon)
+  scrim?.addEventListener('click', closeMenu);
+  // Ouvrir la liste des langues referme le panneau de navigation.
+  document.getElementById('lang-toggle')?.addEventListener('click', closeMenu);
+
+  // Fermer le menu mobile au clic sur un lien
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => {
-      if (link.id === 'login-icon') return;
       closeMenu();
     });
   });
@@ -87,7 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      if (window.innerWidth > 992) {
+      // Même seuil que le CSS (shared-responsive.css) : au-delà, plus de burger.
+      if (window.matchMedia('(min-width: 64em)').matches) {
         closeMenu();
         closeDropdown();
       }
@@ -112,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userDropdown?.classList.contains('show')) {
       closeDropdown();
     } else {
+      closeMenu();
       userDropdown?.classList.remove('hidden');
       setTimeout(() => userDropdown?.classList.add('show'), 10);
     }
