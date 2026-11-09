@@ -1,5 +1,12 @@
 const express = require('express');
 
+// Compteurs par valeur de filtre pour le hangar. Chaque groupe est compté en
+// appliquant tous les AUTRES filtres actifs (jamais le sien) : choisir
+// « Vietnam » ne réduit pas la liste des conflits à « Vietnam » seul.
+//
+// Les conflits et les missions sont des relations n-n : un appareil compte
+// une fois par conflit auquel il est rattaché, d'où les jointures dédiées des
+// deux dernières requêtes et les sous-requêtes EXISTS pour les filtres.
 module.exports = function createFacetsRouter(getPool) {
   const router = express.Router();
 
@@ -18,6 +25,16 @@ module.exports = function createFacetsRouter(getPool) {
       params.push(filters.type);
       conds.push(`t.name = $${params.length}`);
     }
+    if (filters.war && exclude !== 'war') {
+      params.push(filters.war);
+      conds.push(`EXISTS (SELECT 1 FROM airplane_wars fw JOIN wars fwn ON fwn.id = fw.id_wars
+        WHERE fw.id_airplane = a.id AND fwn.name = $${params.length})`);
+    }
+    if (filters.mission && exclude !== 'mission') {
+      params.push(filters.mission);
+      conds.push(`EXISTS (SELECT 1 FROM airplane_missions fm JOIN missions fmn ON fmn.id = fm.id_mission
+        WHERE fm.id_airplane = a.id AND fmn.name = $${params.length})`);
+    }
     return { params, where: conds.length ? ' WHERE ' + conds.join(' AND ') : '' };
   }
 
@@ -27,6 +44,8 @@ module.exports = function createFacetsRouter(getPool) {
         country: req.query.country || '',
         generation: req.query.generation || '',
         type: req.query.type || '',
+        war: req.query.war || '',
+        mission: req.query.mission || '',
       };
       const base = `
         FROM airplanes a
@@ -37,9 +56,11 @@ module.exports = function createFacetsRouter(getPool) {
       const ctryQ = buildConditions(filters, 'country');
       const genQ = buildConditions(filters, 'generation');
       const typQ = buildConditions(filters, 'type');
+      const warQ = buildConditions(filters, 'war');
+      const misQ = buildConditions(filters, 'mission');
 
       const pool = getPool();
-      const [ctryRes, genRes, typRes] = await Promise.all([
+      const [ctryRes, genRes, typRes, warRes, misRes] = await Promise.all([
         pool.query(
           `SELECT c.name AS k, COUNT(*)::int AS n ${base}${ctryQ.where}
            GROUP BY c.name ORDER BY c.name`,
@@ -55,6 +76,20 @@ module.exports = function createFacetsRouter(getPool) {
            GROUP BY t.name ORDER BY t.name`,
           typQ.params
         ),
+        pool.query(
+          `SELECT w.name AS k, COUNT(*)::int AS n ${base}
+           JOIN airplane_wars aw ON aw.id_airplane = a.id
+           JOIN wars w ON w.id = aw.id_wars${warQ.where}
+           GROUP BY w.name ORDER BY w.name`,
+          warQ.params
+        ),
+        pool.query(
+          `SELECT m.name AS k, COUNT(*)::int AS n ${base}
+           JOIN airplane_missions am ON am.id_airplane = a.id
+           JOIN missions m ON m.id = am.id_mission${misQ.where}
+           GROUP BY m.name ORDER BY m.name`,
+          misQ.params
+        ),
       ]);
 
       const toMap = rows =>
@@ -67,6 +102,8 @@ module.exports = function createFacetsRouter(getPool) {
         countries: toMap(ctryRes.rows),
         generations: toMap(genRes.rows),
         types: toMap(typRes.rows),
+        wars: toMap(warRes.rows),
+        missions: toMap(misRes.rows),
       });
     } catch (err) {
       next(err);

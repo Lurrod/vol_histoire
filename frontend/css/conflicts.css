@@ -1,0 +1,109 @@
+/* ======================================================================
+   CONFLITS — /conflits et /conflits/<slug>
+   Bandeau, grille de cartes d'appareils et état vide : favorites.css
+   (la page porte aussi la classe page-favorites). Ici, la grille des
+   conflits et la barre d'actions de la vue « conflit ».
+   ====================================================================== */
+
+.page-conflicts .conflicts-section { padding-top: 3rem; }
+
+/* Liste : cartes de conflit, ordre chronologique */
+.page-conflicts .conflicts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 1.25rem;
+}
+
+.page-conflicts .conflict-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.5rem 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01));
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.3s var(--ease), border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+.page-conflicts .conflict-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(200, 169, 110, 0.28);
+  background: linear-gradient(135deg, rgba(200, 169, 110, 0.05), rgba(200, 169, 110, 0.015));
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
+}
+.page-conflicts .conflict-card:focus-visible {
+  outline: none;
+  border-color: var(--hud-cyan);
+  box-shadow: var(--focus-ring);
+}
+
+.page-conflicts .conflict-period {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hud-cyan);
+  font-variant-numeric: tabular-nums;
+}
+.page-conflicts .conflict-name {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--white);
+}
+.page-conflicts .conflict-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.page-conflicts .conflict-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: auto;
+  padding-top: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+.page-conflicts .conflict-count .icon { color: var(--hud-cyan); font-size: 0.75rem; }
+
+/* Vue « conflit » */
+.page-conflicts .conflict-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+.page-conflicts .conflict-aircraft-heading {
+  margin: 0 0 1.25rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+/* La description d'un conflit est plus longue que l'accroche de la liste */
+.page-conflicts .hero-text > p { max-width: 36rem; }
+
+@media (max-width: 30em) {
+  .page-conflicts .conflicts-grid { grid-template-columns: 1fr; }
+  .page-conflicts .conflict-actions .btn { flex: 1 1 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-conflicts .conflict-card { transition: none; }
+  .page-conflicts .conflict-card:hover { transform: none; }
+}

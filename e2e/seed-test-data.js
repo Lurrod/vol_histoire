@@ -155,7 +155,15 @@ async function seed() {
     SELECT 1, id FROM missions WHERE name IN ('Supériorité aérienne', 'Interception', 'Frappe stratégique')
     ON CONFLICT DO NOTHING
   `);
-  console.log(`Relations id=1 : armement=${armRes.rowCount} tech=${techRes.rowCount} missions=${missRes.rowCount}`);
+  // Conflits : de quoi peupler /conflits et le filtre « Conflit » du hangar
+  // (conflicts.spec.js). Rafale en Libye, Mirage 2000 au Golfe, comme au catalogue.
+  const warRes = await pool.query(`
+    INSERT INTO airplane_wars (id_airplane, id_wars)
+    SELECT a.id, w.id FROM (VALUES (1, 'Intervention en Libye'), (4, 'Guerre du Golfe'), (4, 'Intervention en Libye')) AS v(id, war)
+    JOIN airplanes a ON a.id = v.id JOIN wars w ON w.name = v.war
+    ON CONFLICT DO NOTHING
+  `);
+  console.log(`Relations id=1 : armement=${armRes.rowCount} tech=${techRes.rowCount} missions=${missRes.rowCount} conflits=${warRes.rowCount}`);
 
   // ── Compteurs ──────────────────────────────────────────────
   const counts = await pool.query(`

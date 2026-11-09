@@ -23,7 +23,7 @@ info:
     Toutes les pages HTML sont servies avec un query string `?v=<version>`
     sur les assets pour bust le cache navigateur à chaque déploiement.
     Les statiques (CSS/JS/fonts) ont un `Cache-Control` long.
-  version: 4.12.2
+  version: 4.13.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -68,6 +68,18 @@ components:
         errorId:
           type: string
           example: a3f1b2c4
+
+    WarSummary:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string, example: Guerre du Vietnam }
+        name_fr: { type: string, example: Guerre du Vietnam }
+        slug: { type: string, example: guerre-du-vietnam }
+        date_start: { type: string, format: date, nullable: true }
+        date_end: { type: string, format: date, nullable: true, description: NULL si le conflit est en cours }
+        description: { type: string, nullable: true }
+        count: { type: integer, description: Nombre d'appareils rattachés }
 
     AirplaneSummary:
       type: object
@@ -230,6 +242,12 @@ components:
       properties:
         name:
           type: string
+        name_fr:
+          type: string
+          description: Nom canonique français (valeur du filtre `war`)
+        slug:
+          type: string
+          description: Identifiant de la page /conflits/{slug}
         date_start:
           type: string
           format: date
@@ -757,6 +775,20 @@ paths:
           schema:
             type: string
           description: Filtrer par nom de type
+        - name: war
+          in: query
+          schema:
+            type: string
+          description: >
+            Filtrer par conflit (nom canonique français, ex. `Guerre du Vietnam`).
+            Combinable avec les autres filtres. 400 si le conflit est inconnu.
+        - name: mission
+          in: query
+          schema:
+            type: string
+          description: >
+            Filtrer par mission (nom canonique français, ex. `Interception`).
+            400 si la mission est inconnue.
         - name: search
           in: query
           schema:
@@ -765,9 +797,11 @@ paths:
           description: |
             Recherche full-text (PostgreSQL `websearch_to_tsquery`) sur nom,
             nom complet, résumé et description (FR+EN). Syntaxe : mots libres,
-            `"phrase exacte"`, `-exclusion`, `OR`. Quand `search` est présent,
-            les résultats sont triés par pertinence (`ts_rank`), le paramètre
-            `sort` est ignoré.
+            `"phrase exacte"`, `-exclusion`, `OR`. Sans syntaxe avancée, le
+            dernier mot est aussi cherché comme **préfixe** (`mira` trouve
+            « Mirage ») : les deux requêtes sont combinées par OU. Quand
+            `search` est présent, les résultats sont triés par pertinence
+            (`ts_rank`), le paramètre `sort` est ignoré.
         - name: page
           in: query
           schema:
@@ -820,8 +854,8 @@ paths:
       tags: [Airplanes]
       summary: Compteurs de facettes pour les filtres du hangar
       description: |
-        Retourne les compteurs `{ key: count }` pour les trois groupes
-        de filtres : `countries`, `generations`, `types`.
+        Retourne les compteurs `{ key: count }` pour les cinq groupes
+        de filtres : `countries`, `generations`, `types`, `wars`, `missions`.
 
         **Pattern faceted search** : chaque groupe est calculé en
         appliquant tous les filtres courants **sauf le sien**, ce qui
@@ -843,6 +877,14 @@ paths:
           name: type
           schema: { type: string }
           description: Filtre type canonique FR (ex `Multirôle`)
+        - in: query
+          name: war
+          schema: { type: string }
+          description: Filtre conflit canonique FR (ex `Guerre du Golfe`)
+        - in: query
+          name: mission
+          schema: { type: string }
+          description: Filtre mission canonique FR (ex `Interception`)
       responses:
         '200':
           description: Compteurs de facettes
@@ -1084,6 +1126,59 @@ paths:
                     name_fr: { type: string, example: "France" }
                     count: { type: integer, example: 42 }
 
+  /wars:
+    get:
+      tags: [Referentials]
+      summary: Conflits rattachés à au moins un appareil
+      description: >
+        Ordre chronologique. `name` et `description` suivent la langue
+        demandée (`?lang=en`) ; `name_fr` est la valeur acceptée par le filtre
+        `war` de `/airplanes`, `slug` celle de `/wars/{slug}` et de la page
+        `/conflits/{slug}`. Cacheable (Cache-Control public).
+      parameters:
+        - name: lang
+          in: query
+          schema: { type: string, enum: [fr, en] }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WarSummary'
+
+  /wars/{slug}:
+    get:
+      tags: [Referentials]
+      summary: Un conflit et les appareils qui y ont été engagés
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[a-z0-9-]{1,120}$', example: guerre-du-vietnam }
+        - name: lang
+          in: query
+          schema: { type: string, enum: [fr, en] }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/WarSummary'
+                  - type: object
+                    properties:
+                      airplanes:
+                        type: array
+                        description: Triés par date de premier vol
+                        items:
+                          $ref: '#/components/schemas/AirplaneSummary'
+        '400':
+          description: Slug au format invalide
+        '404':
+          description: Conflit inconnu ou sans appareil rattaché
+
   /generations:
     get:
       tags: [Referentials]
@@ -1142,7 +1237,7 @@ paths:
   /referentials:
     get:
       tags: [Referentials]
-      summary: Tous les référentiels en 1 requête (countries + generations + types + manufacturers)
+      summary: Tous les référentiels en 1 requête (countries, generations, types, manufacturers, wars, missions)
       description: |
         Endpoint combiné : exécute les 4 requêtes SQL en parallèle et retourne
         un seul payload. Permet au frontend d'éviter 4 round-trips HTTP successifs.
@@ -1188,6 +1283,24 @@ paths:
                         code: { type: string }
                         country_id: { type: integer }
                         country_name: { type: string }
+                  wars:
+                    type: array
+                    description: Conflits rattachés à au moins un appareil, ordre chronologique
+                    items:
+                      type: object
+                      properties:
+                        name: { type: string }
+                        name_fr: { type: string }
+                        slug: { type: string }
+                        date_start: { type: string, format: date, nullable: true }
+                        date_end: { type: string, format: date, nullable: true }
+                  missions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name: { type: string }
+                        name_fr: { type: string }
         '500':
           description: Erreur base de données
 

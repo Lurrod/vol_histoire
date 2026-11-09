@@ -2653,6 +2653,606 @@ WHERE w.name = 'Guerre civile syrienne' AND a.name IN (
 )
 ON CONFLICT DO NOTHING;
 
+-- Conflits ajoutés au référentiel (déclarés dans db.sql) : chaque appareil
+-- n'y figure que si sa propre fiche en raconte l'engagement.
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre d''Indochine' AND a.name IN (
+  'F8F Bearcat',
+  'A-26 Invader',
+  'C-119 Flying Boxcar',
+  'F4U Corsair',
+  'Dassault MD 315 Flamant'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Insurrection malaise' AND a.name IN (
+  'de Havilland Venom',
+  'CAC CA-27 Sabre',
+  'English Electric Canberra',
+  'de Havilland Vampire'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Crise de Suez' AND a.name IN (
+  'Westland Wyvern',
+  'Hawker Sea Hawk',
+  'Vickers Valiant',
+  'de Havilland Venom',
+  'F-84F Thunderstreak',
+  'F4U Corsair',
+  'Nord Noratlas',
+  'Mystère IV',
+  'Ouragan',
+  'English Electric Canberra',
+  'MiG-15'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Crise congolaise' AND a.name IN (
+  'Saab 29 Tunnan',
+  'T-28 Trojan',
+  'A-26 Invader',
+  'DHC-4 Caribou',
+  'Fouga CM.170 Magister',
+  'English Electric Canberra'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre coloniale portugaise' AND a.name IN (
+  'Fiat G.91',
+  'Nord Noratlas'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Invasion de la baie des Cochons' AND a.name IN (
+  'Hawker Sea Fury',
+  'A-26 Invader',
+  'T-33 Shooting Star'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Annexion de Goa' AND a.name IN (
+  'English Electric Canberra',
+  'Hawker Hunter'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Confrontation indonésio-malaisienne' AND a.name IN (
+  'Gloster Javelin',
+  'Sea Vixen',
+  'Hawker Hunter'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Urgence d''Aden' AND a.name IN (
+  'Hawker Hunter',
+  'Avro Shackleton',
+  'Sea Vixen'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Conflit armé colombien' AND a.name IN (
+  'Embraer EMB-314 Super Tucano',
+  'AC-47 Spooky',
+  'OV-10 Bronco'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Bush rhodésien' AND a.name IN (
+  'Hawker Hunter',
+  'SF.260',
+  'de Havilland Vampire',
+  'English Electric Canberra'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre indo-pakistanaise de 1965' AND a.name IN (
+  'Folland Gnat',
+  'Hawker Hunter',
+  'English Electric Canberra',
+  'Martin B-57 Canberra',
+  'Mystère IV',
+  'Ouragan',
+  'Breguet Alizé',
+  'F-86 Sabre',
+  'F-104 Starfighter',
+  'de Havilland Vampire'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre de la frontière sud-africaine' AND a.name IN (
+  'Atlas Impala',
+  'Mirage F1',
+  'MiG-23',
+  'Blackburn Buccaneer',
+  'English Electric Canberra',
+  'C-130 Hercules',
+  'Transall C-160'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre d''usure' AND a.name IN (
+  'F-4E Kurnass',
+  'Mirage IIICJ Shahak',
+  'MiG-21',
+  'A-4 Skyhawk',
+  'Su-7'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Biafra' AND a.name IN (
+  'Aero L-29 Delfín',
+  'MiG-17',
+  'Il-28'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Invasion turque de Chypre' AND a.name IN (
+  'F-100 Super Sabre',
+  'F-104 Starfighter',
+  'Nord Noratlas'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Sahara occidental' AND a.name IN (
+  'Hispano HA-200 Saeta',
+  'Mirage F1',
+  'F-5 Freedom Fighter'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre de l''Ogaden' AND a.name IN (
+  'F-5 Freedom Fighter',
+  'MiG-21'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Conflit tchado-libyen' AND a.name IN (
+  'Jaguar',
+  'Mirage F1',
+  'Transall C-160',
+  'Pilatus PC-7',
+  'SF.260',
+  'Tu-22'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre civile salvadorienne' AND a.name IN (
+  'A-37 Dragonfly',
+  'AC-47 Spooky'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre soviéto-afghane' AND a.name IN (
+  'Su-17',
+  'Su-24',
+  'Su-25',
+  'Tu-22M',
+  'Tu-16',
+  'Tu-22',
+  'MiG-27',
+  'Yak-28',
+  'Yak-38',
+  'Antonov An-12',
+  'Antonov An-22 Antei',
+  'Iliouchine Il-76',
+  'MiG-23',
+  'MiG-21',
+  'Antonov An-26',
+  'F-16 Fighting Falcon'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre civile du Sri Lanka' AND a.name IN (
+  'SF.260',
+  'IAI Kfir',
+  'MiG-27',
+  'Chengdu J-7',
+  'FMA IA 58 Pucará'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Invasion de la Grenade' AND a.name IN (
+  'C-141 Starlifter',
+  'AC-130 Spectre',
+  'A-7 Corsair II',
+  'C-130 Hercules'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Conflit turco-kurde (PKK)' AND a.name IN (
+  'TAI Anka',
+  'Bayraktar Akıncı',
+  'Bayraktar TB2'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Invasion du Panama' AND a.name IN (
+  'F-117 Nighthawk',
+  'C-141 Starlifter',
+  'AC-130 Spectre',
+  'C-130 Hercules'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Intervention en Somalie' AND a.name IN (
+  'C-141 Starlifter',
+  'Aeritalia G.222',
+  'Transall C-160',
+  'AC-130 Spectre'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerres de Tchétchénie' AND a.name IN (
+  'Su-24',
+  'Su-25',
+  'Tu-22M'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Cenepa' AND a.name IN (
+  'Mirage F1',
+  'Su-17',
+  'IAI Kfir',
+  'A-37 Dragonfly'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre Érythrée-Éthiopie' AND a.name IN (
+  'Aermacchi MB-339',
+  'MiG-29',
+  'Su-27',
+  'MiG-23'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre de Kargil' AND a.name IN (
+  'Mirage 2000H Vajra',
+  'Jaguar IS',
+  'MiG-27',
+  'MiG-21',
+  'English Electric Canberra'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Liban de 2006' AND a.name IN (
+  'F-16I Sufa',
+  'Elbit Hermes 450',
+  'IAI Heron'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre russo-géorgienne' AND a.name IN (
+  'Su-24',
+  'Su-25',
+  'Su-27',
+  'Su-34',
+  'Tu-22M'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Sahel' AND a.name IN (
+  'Rafale',
+  'Mirage 2000',
+  'Breguet Atlantique',
+  'MQ-9 Reaper',
+  'IAI Heron',
+  'Airbus A400M Atlas',
+  'Airbus A330 MRTT',
+  'Transall C-160',
+  'TAI Hürkuş',
+  'Bayraktar Akıncı'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Donbass' AND a.name IN (
+  'Antonov An-26',
+  'Iliouchine Il-76',
+  'Su-25',
+  'MiG-29',
+  'Su-24'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre civile libyenne (2014-2020)' AND a.name IN (
+  'Wing Loong II',
+  'Bayraktar TB2',
+  'TAI Anka',
+  'MQ-9 Reaper'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre contre l''État islamique' AND a.name IN (
+  'Boeing E-7 Wedgetail',
+  'EA-18G Growler',
+  'EA-6B Prowler',
+  'Rafale',
+  'Super Étendard',
+  'Panavia Tornado Allemand',
+  'Panavia Tornado Italien',
+  'Eurofighter Typhoon Italien',
+  'Aero L-159 ALCA',
+  'Panavia Tornado',
+  'Eurofighter Typhoon Anglais',
+  'F-22 Raptor',
+  'Breguet Atlantique',
+  'Airbus A330 MRTT',
+  'Mirage 2000',
+  'B-1 Lancer',
+  'F-16 Fighting Falcon',
+  'F/A-18E Super Hornet',
+  'MQ-9 Reaper'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre civile yéménite' AND a.name IN (
+  'MQ-9 Reaper',
+  'B-2 Spirit',
+  'Eurofighter Typhoon Anglais',
+  'F/A-18E Super Hornet',
+  'F-16 Fighting Falcon'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Siège de Marawi' AND a.name IN (
+  'KAI FA-50',
+  'OV-10 Bronco'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Haut-Karabagh (2020)' AND a.name IN (
+  'Bayraktar TB2',
+  'IAI Harop',
+  'Antonov An-2'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre Israël-Hamas' AND a.name IN (
+  'Elbit Hermes 450',
+  'F-16I Sufa',
+  'F-15I Ra''am',
+  'F-35I Adir'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Conflit indo-pakistanais de 2025' AND a.name IN (
+  'Rafale EH',
+  'Chengdu J-10'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre Iran-Israël' AND a.name IN (
+  'F-35I Adir',
+  'F-15I Ra''am',
+  'F-16I Sufa',
+  'B-2 Spirit'
+)
+ON CONFLICT DO NOTHING;
+
+-- Conflits déjà présents : engagements racontés par les fiches mais jamais
+-- rattachés.
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre d''Algérie' AND a.name IN (
+  'Dassault MD 315 Flamant',
+  'Nord Noratlas',
+  'T-28 Trojan'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre Indo-Pakistanaise de 1971' AND a.name IN (
+  'Breguet Alizé',
+  'Mirage III',
+  'MiG-21'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Kippour' AND a.name IN (
+  'MiG-23',
+  'C-141 Starlifter'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre Iran-Irak' AND a.name IN (
+  'Tu-143 Reys',
+  'Super Étendard'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre des Malouines' AND a.name IN (
+  'Aermacchi MB-339',
+  'IAI Nesher',
+  'Mirage III'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Liban' AND a.name IN (
+  'Mirage IIICJ Shahak',
+  'Tu-143 Reys',
+  'F-16 Fighting Falcon'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre du Golfe' AND a.name IN (
+  'A-3 Skywarrior',
+  'MiG-25',
+  'MiG-21',
+  'MiG-23',
+  'Su-25'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre de Yougoslavie' AND a.name IN (
+  'B-1 Lancer',
+  'B-52 Stratofortress',
+  'Mirage 2000',
+  'Super Étendard',
+  'S-3 Viking',
+  'Vickers VC10',
+  'MQ-1 Predator',
+  'Soko G-2 Galeb',
+  'C-17 Globemaster III',
+  'Britten-Norman Defender'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre d''Afghanistan' AND a.name IN (
+  'MQ-1 Predator',
+  'F-14 Tomcat',
+  'Super Étendard',
+  'RQ-4 Global Hawk',
+  'Britten-Norman Defender',
+  'C-2 Greyhound'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre d''Irak' AND a.name IN (
+  'F-14 Tomcat',
+  'MQ-1 Predator',
+  'RQ-4 Global Hawk',
+  'Britten-Norman Defender',
+  'C-2 Greyhound'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Guerre civile syrienne' AND a.name IN (
+  'A-10 Thunderbolt II',
+  'B-52 Stratofortress',
+  'F-15E Strike Eagle',
+  'F-16 Fighting Falcon',
+  'EA-18G Growler',
+  'EA-6B Prowler',
+  'Breguet Atlantique',
+  'Panavia Tornado',
+  'Iliouchine Il-20',
+  'Antonov An-26'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Intervention en Libye' AND a.name IN (
+  'AMX International AMX',
+  'EA-18G Growler',
+  'Saab JAS 39 Gripen',
+  'B-1 Lancer',
+  'RQ-4 Global Hawk',
+  'MQ-1 Predator'
+)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO airplane_wars (id_airplane, id_wars)
+SELECT a.id, w.id FROM airplanes a, wars w
+WHERE w.name = 'Conflit israélo-arabe' AND a.name IN (
+  'Aero L-29 Delfín'
+)
+ON CONFLICT DO NOTHING;
+
 -- ── Frise chronologique : rattachement des événements à leur appareil ──────
 --
 -- `airplane_id` alimente une vignette illustrée sur la page Chronologie.

@@ -322,6 +322,21 @@ body.page-details { background: var(--night); }
 }
 .page-details .war-period i, .page-details .war-period .icon { color: var(--hud-cyan); font-size: 0.78rem; }
 .page-details .war-card p { color: rgba(255,255,255,0.55); line-height: 1.65; font-size: 0.92rem; margin: 0; }
+/* Carte de conflit cliquable : le lien du titre s'étire sur toute la carte. */
+.page-details .war-link { color: inherit; text-decoration: none; }
+.page-details .war-link::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+.page-details .war-link:focus-visible { outline: none; }
+.page-details .war-card-linked:focus-within { border-color: var(--hud-cyan); box-shadow: var(--focus-ring); }
+.page-details .war-more {
+  display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.85rem;
+  font-size: 0.8rem; font-weight: 600; color: var(--hud-cyan);
+}
+.page-details .war-card-linked:hover .war-more .icon { transform: translateX(3px); }
+.page-details .war-more .icon { transition: transform 0.2s ease; font-size: 0.75rem; }
+/* Missions : le nom mène au hangar filtré. */
+.page-details .capability-link { text-decoration: none; }
+.page-details .capability-link:hover,
+.page-details .capability-link:focus-visible { color: var(--hud-cyan); text-decoration: underline; text-underline-offset: 3px; }
 
 /* MODAL */
 .page-details .modal { position: fixed; inset: 0; z-index: var(--z-modal); display: none; align-items: center; justify-content: center; padding: 2rem; }

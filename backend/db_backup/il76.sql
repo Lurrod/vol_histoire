@@ -68,7 +68,6 @@ INSERT INTO airplane_missions (id_airplane, id_mission) VALUES
 -- Conflits
 INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
 ((SELECT id FROM airplanes WHERE name = 'Iliouchine Il-76'), (SELECT id FROM wars WHERE name = 'Guerre froide')),
-((SELECT id FROM airplanes WHERE name = 'Iliouchine Il-76'), (SELECT id FROM wars WHERE name = 'Guerre d''Afghanistan')),
 ((SELECT id FROM airplanes WHERE name = 'Iliouchine Il-76'), (SELECT id FROM wars WHERE name = 'Guerre civile syrienne')),
 ((SELECT id FROM airplanes WHERE name = 'Iliouchine Il-76'), (SELECT id FROM wars WHERE name = 'Invasion russe de l''Ukraine'));
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const asyncHandler = require('../middleware/asyncHandler');
-const { buildDetailsPath } = require('../utils/url');
+const { buildDetailsPath, slugify } = require('../utils/url');
 const cache = require('../utils/cache');
 const logger = require('../logger');
 
@@ -14,6 +14,7 @@ const STATIC_PAGES = [
   { loc: '/',                          changefreq: 'weekly',  priority: '1.0' },
   { loc: '/hangar',                    changefreq: 'weekly',  priority: '0.9' },
   { loc: '/timeline',                  changefreq: 'monthly', priority: '0.8' },
+  { loc: '/conflits',                  changefreq: 'monthly', priority: '0.8' },
   { loc: '/contact',                   changefreq: 'yearly',  priority: '0.5' },
   { loc: '/mentions-legales',          changefreq: 'yearly',  priority: '0.2' },
   { loc: '/politique-confidentialite', changefreq: 'yearly',  priority: '0.2' },
@@ -52,7 +53,14 @@ function buildStaticSitemapXml() {
 
 async function buildSitemapXml(getPool) {
   const today = new Date().toISOString().split('T')[0];
-  const result = await getPool().query('SELECT id, name FROM airplanes ORDER BY id ASC');
+  const pool = getPool();
+  const [result, wars] = await Promise.all([
+    pool.query('SELECT id, name FROM airplanes ORDER BY id ASC'),
+    // Une page par conflit rattaché à au moins un appareil (routes/wars.js).
+    pool.query(`SELECT w.name FROM wars w
+                WHERE EXISTS (SELECT 1 FROM airplane_wars aw WHERE aw.id_wars = w.id)
+                ORDER BY w.date_start ASC NULLS LAST, w.name ASC`),
+  ]);
 
   const staticUrls = STATIC_PAGES
     .map(p => renderUrlEntry(p.loc, today, p.changefreq, p.priority))
@@ -61,7 +69,11 @@ async function buildSitemapXml(getPool) {
     .map(row => renderUrlEntry(buildDetailsPath(row.id, row.name), today, 'monthly', '0.8'))
     .join('');
 
-  return wrapSitemap(staticUrls + airplaneUrls);
+  const warUrls = ((wars && wars.rows) || [])
+    .map(row => renderUrlEntry(`/conflits/${slugify(row.name)}`, today, 'monthly', '0.7'))
+    .join('');
+
+  return wrapSitemap(staticUrls + warUrls + airplaneUrls);
 }
 
 module.exports = function createSitemapRouter(getPool) {

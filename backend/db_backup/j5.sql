@@ -56,7 +56,6 @@ INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 
 -- Insertion des guerres
 INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'Shenyang J-5'), (SELECT id FROM wars WHERE name = 'Guerre de Corée')),
 ((SELECT id FROM airplanes WHERE name = 'Shenyang J-5'), (SELECT id FROM wars WHERE name = 'Guerre du Vietnam'));
 
 -- Insertion des missions

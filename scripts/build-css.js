@@ -52,6 +52,8 @@ const BUNDLES = {
   'details.min.css': ['details.css', 'details-lineage.css', 'compare.css'],
   'timeline.min.css': ['timeline.css'],
   'favorites.min.css': ['favorites.css'],
+  // La page des conflits reprend le bandeau et les cartes de favorites.css.
+  'conflicts.min.css': ['favorites.css', 'conflicts.css'],
   'login.min.css': ['login.css'],
   'settings.min.css': ['settings.css'],
   'legal.min.css': ['legal.css'],

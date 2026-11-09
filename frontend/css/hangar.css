@@ -124,8 +124,11 @@ body.page-hangar {
 
 /* Filter Dropdowns */
 .page-hangar .filter-group { position: relative; display: inline-flex; }
+/* Ancrée au bord gauche de son bouton : avec sept contrôles, la rangée de
+   filtres passe sous la recherche et part du bord gauche ; une liste ancrée
+   à droite (380 px) sortait alors de l'écran pour « Pays ». */
 .page-hangar .filter-dropdown {
-  position: absolute; top: calc(100% + 0.5rem); right: 0;
+  position: absolute; top: calc(100% + 0.5rem); left: 0;
   width: 380px; max-width: 90vw;
   background: rgba(20,20,20,0.72); backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2);
   border: 1px solid rgba(255,255,255,0.09);
@@ -143,6 +146,10 @@ body.page-hangar {
 .page-hangar .filter-option { padding: 0.7rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; cursor: pointer; transition: var(--transition-fast); text-align: center; font-weight: 500; font-size: 0.85rem; color: rgba(255,255,255,0.65); }
 .page-hangar .filter-option:hover { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.07); color: var(--white); }
 .page-hangar .filter-option.selected { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
+/* Conflits et missions : libellés longs, une option par ligne, période à droite. */
+.page-hangar #war-options, .page-hangar #mission-options { grid-template-columns: 1fr; }
+.page-hangar #war-options .filter-option, .page-hangar #mission-options .filter-option { display: flex; align-items: baseline; gap: 0.5rem; text-align: left; }
+.page-hangar .filter-option-meta { margin-left: auto; font-size: 0.72rem; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* Results count */
 .page-hangar .results-info { font-size: 0.9rem; color: rgba(255,255,255,0.66); font-weight: 500; margin-bottom: 1.5rem; }
@@ -513,7 +520,7 @@ body.page-hangar {
   background: transparent; border: none; color: var(--text-muted);
   cursor: pointer; font-size: 1.2rem;
 }
-.page-hangar .filter-sheet-tabs { display: flex; border-bottom: 1px solid var(--border-subtle); }
+.page-hangar .filter-sheet-tabs { display: flex; border-bottom: 1px solid var(--border-subtle); overflow-x: auto; scrollbar-width: none; }
 .page-hangar .fs-tab {
   flex: 1; background: transparent; border: none; color: var(--text-muted);
   padding: 0.75rem; cursor: pointer; font-size: 0.85rem;

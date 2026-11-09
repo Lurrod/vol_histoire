@@ -11,6 +11,8 @@
     const countryOptions = document.getElementById('country-options');
     const generationOptions = document.getElementById('generation-options');
     const typeOptions = document.getElementById('type-options');
+    const warOptions = document.getElementById('war-options');
+    const missionOptions = document.getElementById('mission-options');
 
     if (countryOptions) {
       countryOptions.innerHTML = state.countries.map(c => `
@@ -30,6 +32,19 @@
           ${escapeHtml(t.name)}
         </div>`).join('');
     }
+    // Conflits : ordre chronologique (celui de l'API), période en complément.
+    if (warOptions) {
+      warOptions.innerHTML = (state.wars || []).map(w => `
+        <div class="filter-option" data-value="${escapeHtml(w.name_fr || w.name)}">
+          ${escapeHtml(w.name)} <span class="filter-option-meta">${escapeHtml(warPeriod(w))}</span>
+        </div>`).join('');
+    }
+    if (missionOptions) {
+      missionOptions.innerHTML = (state.missions || []).map(m => `
+        <div class="filter-option" data-value="${escapeHtml(m.name_fr || m.name)}">
+          ${escapeHtml(m.name)}
+        </div>`).join('');
+    }
 
     document.querySelectorAll('.filter-option').forEach(option => {
       option.addEventListener('click', function () {
@@ -43,6 +58,12 @@
         VH.hangar.data.loadAircraft(state);
       });
     });
+  }
+
+  // « 1955–1975 », « 2022– » pour un conflit en cours.
+  function warPeriod(w) {
+    const y = (d) => (d ? new Date(d).getFullYear() : '');
+    return `${y(w.date_start)}–${y(w.date_end)}`;
   }
 
   // Depuis la pagination serveur, tout filtre / recherche / tri déclenche
@@ -66,6 +87,14 @@
     if (state.filters.type) {
       const t = state.types.find(x => (x.name_fr || x.name) === state.filters.type);
       filters.push({ type: 'type', label: t ? t.name : state.filters.type });
+    }
+    if (state.filters.war) {
+      const w = (state.wars || []).find(x => (x.name_fr || x.name) === state.filters.war);
+      filters.push({ type: 'war', label: w ? w.name : state.filters.war });
+    }
+    if (state.filters.mission) {
+      const m = (state.missions || []).find(x => (x.name_fr || x.name) === state.filters.mission);
+      filters.push({ type: 'mission', label: m ? m.name : state.filters.mission });
     }
     if (filters.length === 0) {
       container.classList.add('hidden');
@@ -100,6 +129,8 @@
     state.filters.country = null;
     state.filters.generation = null;
     state.filters.type = null;
+    state.filters.war = null;
+    state.filters.mission = null;
     state.filters.search = '';
     state.currentPage = 1;
     saveFiltersToSession(state);
@@ -122,6 +153,8 @@
     if (state.filters.country)    p.set('country', state.filters.country);
     if (state.filters.generation) p.set('gen', String(state.filters.generation));
     if (state.filters.type)       p.set('type', state.filters.type);
+    if (state.filters.war)        p.set('war', state.filters.war);
+    if (state.filters.mission)    p.set('mission', state.filters.mission);
     if (state.filters.search)     p.set('q', state.filters.search);
     if (state.sort && state.sort !== 'default') p.set('sort', state.sort);
     if (state.view === 'list')    p.set('view', 'list');
@@ -140,6 +173,8 @@
     if (p.has('country')) state.filters.country = p.get('country');
     if (p.has('gen'))     state.filters.generation = Number(p.get('gen'));
     if (p.has('type'))    state.filters.type = p.get('type');
+    if (p.has('war'))     state.filters.war = p.get('war');
+    if (p.has('mission')) state.filters.mission = p.get('mission');
     if (p.has('q'))       state.filters.search = p.get('q');
     if (p.has('sort'))    state.sort = p.get('sort');
     if (p.has('view'))    state.view = p.get('view') === 'list' ? 'list' : 'grid';
@@ -163,7 +198,9 @@
     const filterButtons = {
       'country-filter-btn': 'country-dropdown',
       'generation-filter-btn': 'generation-dropdown',
-      'type-filter-btn': 'type-dropdown'
+      'type-filter-btn': 'type-dropdown',
+      'war-filter-btn': 'war-dropdown',
+      'mission-filter-btn': 'mission-dropdown',
     };
     Object.entries(filterButtons).forEach(([btnId, dropdownId]) => {
       document.getElementById(btnId)?.addEventListener('click', (e) => {

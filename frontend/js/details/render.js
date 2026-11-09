@@ -264,7 +264,8 @@
     list.innerHTML = items.join('');
   }
 
-  function renderCapabilityList(items, listId, countId, columnId) {
+  // hrefFor(item) : lien optionnel sur le nom (missions → hangar filtré).
+  function renderCapabilityList(items, listId, countId, columnId, hrefFor) {
     const list = document.getElementById(listId);
     const column = document.getElementById(columnId);
     const count = document.getElementById(countId);
@@ -280,8 +281,12 @@
     list.innerHTML = items.map(item => {
       const name = escapeHtml(item.name || '');
       const desc = escapeHtml(item.description || '');
+      const href = hrefFor ? hrefFor(item) : null;
+      const label = href
+        ? `<a class="capability-name capability-link" href="${escapeHtml(href)}">${name}</a>`
+        : `<span class="capability-name">${name}</span>`;
       return `<li class="capability-item">
-        <span class="capability-name">${name}</span>
+        ${label}
         ${desc ? `<span class="capability-desc">${desc}</span>` : ''}
       </li>`;
     }).join('');
@@ -296,8 +301,10 @@
     return renderCapabilityList(tech, 'tech-list', 'tech-count', 'col-tech');
   }
 
+  // Chaque mission ouvre le hangar filtré sur elle (clé : nom FR canonique).
   function renderMissions(missions) {
-    return renderCapabilityList(missions, 'missions-list', 'missions-count', 'col-missions');
+    return renderCapabilityList(missions, 'missions-list', 'missions-count', 'col-missions',
+      (m) => (m.name_fr ? `/hangar?mission=${encodeURIComponent(m.name_fr)}` : null));
   }
 
   function finalizeCapabilities() {
@@ -318,12 +325,20 @@
     }
     container.innerHTML = wars.map(war => {
       const startYear = war.date_start ? new Date(war.date_start).getFullYear() : '?';
-      const endYear = war.date_end ? new Date(war.date_end).getFullYear() : '?';
+      // Sans date de fin mais avec un début : conflit en cours.
+      const endYear = war.date_end
+        ? new Date(war.date_end).getFullYear()
+        : (war.date_start ? i18n.t('details.war_ongoing') : '?');
+      // La carte entière mène à la page du conflit (lien étiré, voir details.css).
+      const title = war.slug
+        ? `<a class="war-link" href="/conflits/${encodeURIComponent(war.slug)}">${escapeHtml(war.name)}</a>`
+        : escapeHtml(war.name);
       return `
-        <div class="war-card">
-          <h4>${escapeHtml(war.name)}</h4>
+        <div class="war-card${war.slug ? ' war-card-linked' : ''}">
+          <h4>${title}</h4>
           <div class="war-period"><i class="fas fa-calendar-days"></i><span>${startYear} - ${endYear}</span></div>
           <p>${escapeHtml(war.description) || i18n.t('details.no_desc_available')}</p>
+          ${war.slug ? `<span class="war-more" aria-hidden="true">${i18n.t('details.war_see_aircraft')} <i class="fas fa-arrow-right"></i></span>` : ''}
         </div>
       `;
     }).join('');
