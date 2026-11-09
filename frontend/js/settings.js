@@ -287,21 +287,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const passwordInput = document.getElementById('password');
   const togglePasswordBtn = document.getElementById('toggle-password');
 
-  // Password visibility toggle
-  if (togglePasswordBtn && passwordInput) {
-    togglePasswordBtn.addEventListener('click', () => {
-      const icon = togglePasswordBtn.querySelector('i');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-      } else {
-        passwordInput.type = 'password';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-      }
-    });
-  }
+  // Password visibility toggle (utils.js)
+  setupPasswordToggle(togglePasswordBtn, passwordInput);
 
   // Password strength indicator
   if (passwordInput) {

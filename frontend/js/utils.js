@@ -143,19 +143,28 @@ function animateNumber(el, target, duration = 1400) {
 }
 
 /**
- * Configure le toggle de visibilité d'un champ mot de passe.
+ * Configure le toggle de visibilité d'un ou plusieurs champs mot de passe
+ * (le second sert aux champs de confirmation qui suivent le premier).
+ *
+ * L'icône est remplacée, jamais modifiée : icons.js convertit chaque
+ * `<i class="fas fa-…">` en `<svg class="icon icon-…">` au chargement, et un
+ * changement de classe sur ce SVG ne redessine rien. Le nouveau `<i>` inséré
+ * est converti à son tour par le MutationObserver d'icons.js.
  */
-function setupPasswordToggle(buttonEl, inputEl) {
+function setupPasswordToggle(buttonEl, inputEl, ...linkedInputs) {
   if (!buttonEl || !inputEl) return;
+  buttonEl.setAttribute('aria-pressed', 'false');
   buttonEl.addEventListener('click', () => {
-    const icon = buttonEl.querySelector('i');
-    if (inputEl.type === 'password') {
-      inputEl.type = 'text';
-      icon.classList.replace('fa-eye-slash', 'fa-eye');
-    } else {
-      inputEl.type = 'password';
-      icon.classList.replace('fa-eye', 'fa-eye-slash');
-    }
+    const visible = inputEl.type === 'password';
+    [inputEl, ...linkedInputs].forEach((el) => { if (el) el.type = visible ? 'text' : 'password'; });
+    buttonEl.setAttribute('aria-pressed', String(visible));
+
+    const icon = document.createElement('i');
+    icon.className = `fas ${visible ? 'fa-eye' : 'fa-eye-slash'}`;
+    icon.setAttribute('aria-hidden', 'true');
+    const current = buttonEl.querySelector('svg.icon, i');
+    if (current) current.replaceWith(icon);
+    else buttonEl.appendChild(icon);
   });
 }
 

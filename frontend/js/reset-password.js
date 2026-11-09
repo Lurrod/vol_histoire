@@ -17,21 +17,9 @@
   const strengthFill = document.getElementById('strength-fill');
   const strengthHint = document.getElementById('strength-hint');
 
-  // Afficher/masquer les mots de passe
-  function setupToggle(btnId, inputEl) {
-    document.getElementById(btnId).addEventListener('click', () => {
-      const icon = document.querySelector('#' + btnId + ' i');
-      if (inputEl.type === 'password') {
-        inputEl.type = 'text';
-        icon.classList.replace('fa-eye-slash', 'fa-eye');
-      } else {
-        inputEl.type = 'password';
-        icon.classList.replace('fa-eye', 'fa-eye-slash');
-      }
-    });
-  }
-  setupToggle('toggle-rp-pw', pwInput);
-  setupToggle('toggle-rp-pw-confirm', pwConfirmInput);
+  // Afficher/masquer les mots de passe (utils.js)
+  setupPasswordToggle(document.getElementById('toggle-rp-pw'), pwInput);
+  setupPasswordToggle(document.getElementById('toggle-rp-pw-confirm'), pwConfirmInput);
 
   // Indicateur de force
   pwInput.addEventListener('input', () => {
