@@ -100,31 +100,96 @@ function _safeReport(level, message, error) {
   else console.warn(message);
 }
 
+// Durées d'affichage par défaut : une erreur se lit plus longuement.
+const TOAST_DURATION_DEFAULT = 3000;
+const TOAST_DURATION_ERROR = 6000;
+// Durée de l'animation de sortie (keyframes toastOut, shared-base.css).
+const TOAST_EXIT_MS = 300;
+
+/** Libellé traduit si i18n est chargé, sinon repli français. */
+function _toastLabel(key, fallback) {
+  const t = (typeof window !== 'undefined' && window.i18n && typeof window.i18n.t === 'function')
+    ? window.i18n.t(key) : null;
+  return t && t !== key ? t : fallback;
+}
+
 /**
  * Affiche un toast de notification.
  * Fonctionne avec un #toast-container si présent, sinon s'ajoute au body.
+ * Bouton de fermeture, minuterie suspendue au survol et au focus, erreurs
+ * affichées plus longtemps (6 s contre 3 s) sauf durée explicite.
  */
-function showToast(message, type = 'info', duration = 3000) {
+function showToast(message, type = 'info', duration) {
   const container = document.getElementById('toast-container') || document.body;
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  toast.setAttribute('role', 'status');
+  // Une erreur interrompt la lecture d'écran ; le reste est annoncé poliment.
+  toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
 
   const icon = type === 'success' ? 'check-circle' :
                type === 'error' ? 'exclamation-circle' :
                'info-circle';
 
   const span = document.createElement('span');
+  span.className = 'toast-message';
   span.textContent = message;
   toast.innerHTML = `<i class="fas fa-${icon}" aria-hidden="true"></i>`;
   toast.appendChild(span);
 
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'toast-close';
+  closeBtn.setAttribute('aria-label', _toastLabel('common.close', 'Fermer'));
+  closeBtn.innerHTML = '<i class="fas fa-times" aria-hidden="true"></i>';
+  toast.appendChild(closeBtn);
+
   container.appendChild(toast);
 
-  setTimeout(() => {
+  const total = Number.isFinite(duration) && duration > 0 ? duration
+    : (type === 'error' ? TOAST_DURATION_ERROR : TOAST_DURATION_DEFAULT);
+  let remaining = total;
+  let startedAt = 0;
+  let timer = null;
+  let dismissed = false;
+
+  function dismiss() {
+    if (dismissed) return;
+    dismissed = true;
+    clearTimeout(timer);
     toast.classList.add('fade-out');
-    setTimeout(() => toast.remove(), 300);
-  }, duration);
+    setTimeout(() => toast.remove(), TOAST_EXIT_MS);
+  }
+
+  function start() {
+    if (dismissed) return;
+    startedAt = Date.now();
+    timer = setTimeout(dismiss, remaining);
+  }
+
+  function pause() {
+    if (dismissed || timer === null) return;
+    clearTimeout(timer);
+    timer = null;
+    remaining = Math.max(remaining - (Date.now() - startedAt), 0);
+  }
+
+  function resume() {
+    // Reste en pause tant que le pointeur survole ou que le focus est dedans.
+    if (dismissed || timer !== null) return;
+    if (toast.matches(':hover') || toast.contains(document.activeElement)) return;
+    // Un minimum d'une seconde pour laisser le temps de relire.
+    remaining = Math.max(remaining, 1000);
+    start();
+  }
+
+  closeBtn.addEventListener('click', dismiss);
+  toast.addEventListener('mouseenter', pause);
+  toast.addEventListener('mouseleave', resume);
+  toast.addEventListener('focusin', pause);
+  toast.addEventListener('focusout', () => setTimeout(resume, 0));
+
+  start();
+  return { dismiss };
 }
 
 /**

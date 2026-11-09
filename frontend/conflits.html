@@ -107,6 +107,16 @@
 
   <section class="favorites-section conflicts-section">
     <div class="container">
+      <!-- Chargement : silhouettes de cartes, retirées au premier rendu -->
+      <div id="conflicts-loading" class="conflicts-grid" aria-hidden="true">
+        <div class="conflict-card skeleton-conflict"><span class="skeleton-line short"></span><span class="skeleton-line"></span><span class="skeleton-line medium"></span></div>
+        <div class="conflict-card skeleton-conflict"><span class="skeleton-line short"></span><span class="skeleton-line"></span><span class="skeleton-line medium"></span></div>
+        <div class="conflict-card skeleton-conflict"><span class="skeleton-line short"></span><span class="skeleton-line"></span><span class="skeleton-line medium"></span></div>
+        <div class="conflict-card skeleton-conflict"><span class="skeleton-line short"></span><span class="skeleton-line"></span><span class="skeleton-line medium"></span></div>
+        <div class="conflict-card skeleton-conflict"><span class="skeleton-line short"></span><span class="skeleton-line"></span><span class="skeleton-line medium"></span></div>
+        <div class="conflict-card skeleton-conflict"><span class="skeleton-line short"></span><span class="skeleton-line"></span><span class="skeleton-line medium"></span></div>
+      </div>
+
       <!-- Vue « liste » : un conflit par carte, ordre chronologique -->
       <div id="conflicts-list" class="conflicts-grid hidden"></div>
 

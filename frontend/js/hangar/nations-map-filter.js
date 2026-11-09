@@ -19,7 +19,14 @@
     const panel = document.getElementById('nations-map-panel');
     if (!btn || !panel || !VH.nationsMap) return;
 
-    function isOpen() { return !panel.classList.contains('hidden'); }
+    /* Dépliage animé (fondu + glissement, voir hangar.css) : `.hidden` n'est
+     * posée qu'après la transition de fermeture, comme pour les listes de
+     * filtres. L'état logique est donc suivi à part de la classe. */
+    const CLOSE_MS = 250;
+    let opened = false;
+    let hideTimer = null;
+
+    function isOpen() { return opened; }
 
     /* Reflète le filtre courant sur la carte : le pays sélectionné garde une
      * teinte pleine, quel que soit le chemin par lequel il a été choisi. */
@@ -43,7 +50,14 @@
 
     function open() {
       VH.hangar.filters.closeAllDropdowns();
+      clearTimeout(hideTimer);
+      hideTimer = null;
+      opened = true;
       panel.classList.remove('hidden');
+      // Lecture de mise en page : le navigateur prend acte de l'état replié
+      // avant qu'on pose l'état ouvert, sinon la transition ne joue pas.
+      void panel.offsetWidth;
+      panel.classList.add('is-open');
       btn.setAttribute('aria-expanded', 'true');
       btn.classList.add('active');
       // Premier dépliage : c'est seulement là qu'on télécharge les 76 Ko.
@@ -53,9 +67,15 @@
     }
 
     function close() {
-      panel.classList.add('hidden');
+      opened = false;
+      panel.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
       btn.classList.remove('active');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        hideTimer = null;
+        if (!opened) panel.classList.add('hidden');
+      }, CLOSE_MS);
     }
 
     btn.addEventListener('click', (e) => {

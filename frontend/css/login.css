@@ -297,7 +297,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   cursor: pointer;
   transition: color 0.2s, background-color 0.2s, border-color 0.2s;
 }
-.page-login .form-tab i {
+.page-login .form-tab i, .page-login .form-tab .icon {
   font-size: 0.9rem;
 }
 .page-login .form-tab:hover {
@@ -320,6 +320,12 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 }
 .page-login .form-slide.active {
   display: block;
+}
+/* Panneau sortant : glisse vers la gauche avant d'être masqué par login.js
+   (250 ms, cf. SLIDE_OUT_MS). */
+.page-login .form-slide.active.is-leaving {
+  animation: slideOut 0.25s var(--ease) forwards;
+  pointer-events: none;
 }
 .page-login .form-slide:focus:not(:focus-visible) {
   outline: none;
@@ -602,14 +608,26 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   color: var(--white);
   margin-top: 0.5rem;
 }
-.page-login .btn-submit:hover {
+.page-login .btn-submit:hover:not(:disabled) {
   background: var(--primary);
 }
 .page-login .btn-submit i, .page-login .btn-submit .icon {
   transition: transform 0.3s ease;
 }
-.page-login .btn-submit:hover i, .page-login .btn-submit:hover .icon {
+.page-login .btn-submit:hover:not(:disabled) i,
+.page-login .btn-submit:hover:not(:disabled) .icon {
   transform: translateX(4px);
+}
+/* Désactivé ou en cours d'envoi (aria-busy posé par setButtonLoading) :
+   aucun retour de survol, curseur explicite. */
+.page-login .btn-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.page-login .btn-submit.is-loading,
+.page-login .btn-submit[aria-busy="true"] {
+  cursor: progress;
+  opacity: 0.85;
 }
 
 /* Form Footer */
@@ -788,9 +806,25 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   font-family: inherit;
   transition: all 0.2s;
 }
+.ev-resend-btn:hover:not(:disabled),
+.ev-resend-btn:focus-visible {
+  background: rgba(243, 156, 18, 0.2);
+  border-color: rgba(243, 156, 18, 0.55);
+}
+.ev-resend-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+.ev-resend-btn[aria-busy="true"] {
+  cursor: progress;
+}
 .ev-resend-btn.ev-resend-success {
   color: #34d964;
   border-color: rgba(52, 217, 100, 0.3);
+}
+.ev-resend-btn.ev-resend-success:disabled {
+  background: rgba(52, 217, 100, 0.08);
+  opacity: 1;
 }
 .ev-btn-icon { margin-right: 0.3rem; }
 
@@ -821,6 +855,20 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
    Mouvement reduit — les points du radar clignotent en boucle
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
+  /* Bascule connexion/inscription sans glissement */
+  .page-login .form-slide,
+  .page-login .form-slide.active.is-leaving {
+    animation: none;
+  }
+  .page-login .btn-submit i,
+  .page-login .btn-submit .icon,
+  .ev-resend-btn {
+    transition: none;
+  }
+  .page-login .btn-submit:hover:not(:disabled) i,
+  .page-login .btn-submit:hover:not(:disabled) .icon {
+    transform: none;
+  }
   .radar-dot,
   .radar-sweep,
   .visual-panel [class*="radar"] {

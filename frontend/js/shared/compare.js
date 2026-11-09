@@ -126,8 +126,8 @@
 
     const bar = document.createElement('div');
     bar.id = 'compare-bar';
+    // `.hidden` suffit (display: none) : plus de style en ligne.
     bar.className = 'compare-bar hidden';
-    bar.style.display = 'none';
     bar.innerHTML =
       '<span id="compare-count"></span>' +
       '<button type="button" id="compare-share" class="btn btn-secondary btn-sm">' + escapeHtml(t('hangar.compare_share', 'Copier le lien')) + '</button>' +
@@ -176,22 +176,79 @@
       .observe(banner, { attributes: true, attributeFilter: ['class'] });
   }
 
+  function prefersReducedMotion() {
+    try {
+      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    } catch { return false; }
+  }
+
+  /* La barre entre en glissant (compareBarUp) ; elle sortait d'un coup.
+   * .is-leaving joue la sortie, puis .hidden la retire du rendu. */
+  const BAR_LEAVE_MS = 200;
+  let barLeaveTimer = null;
+  let lastCount = 0;
+
+  function showBar(bar) {
+    clearTimeout(barLeaveTimer);
+    barLeaveTimer = null;
+    bar.classList.remove('is-leaving', 'hidden');
+  }
+
+  function hideBar(bar) {
+    if (bar.classList.contains('hidden') || bar.classList.contains('is-leaving')) return;
+    if (prefersReducedMotion()) { bar.classList.add('hidden'); return; }
+    bar.classList.add('is-leaving');
+    barLeaveTimer = setTimeout(() => {
+      barLeaveTimer = null;
+      bar.classList.remove('is-leaving');
+      bar.classList.add('hidden');
+    }, BAR_LEAVE_MS);
+  }
+
+  // Petite pulsation du compteur quand la sélection change, barre déjà visible.
+  function bumpCount(cnt) {
+    cnt.classList.remove('is-bumped');
+    void cnt.offsetWidth; // relance l'animation si elle tournait encore
+    cnt.classList.add('is-bumped');
+  }
+
   function renderBar() {
     const bar = document.getElementById('compare-bar');
     if (!bar) return;
     clearOfConsentBanner(bar);
     const n = ids.length;
-    bar.classList.toggle('hidden', n === 0);
-    bar.style.display = n === 0 ? 'none' : 'flex';
+    if (n === 0) hideBar(bar); else showBar(bar);
     const cnt = document.getElementById('compare-count');
     if (cnt) {
       const key = n > 1 ? 'hangar.compare_selected_many' : 'hangar.compare_selected_one';
       cnt.textContent = t(key, String(n) + ' ✓', { n });
+      if (n > 0 && lastCount > 0 && n !== lastCount) bumpCount(cnt);
     }
+    lastCount = n;
     if (n === 0) {
       const dlg = document.getElementById('compare-modal');
       if (dlg && dlg.open) dlg.close();
     }
+  }
+
+  /* Confirmation sur le bouton lui-même, en plus du toast : coche + « Lien
+   * copié » pendant un instant, puis retour au libellé. Le nouvel <i> est
+   * converti en SVG par icons.js (il ne réagit qu'aux insertions). */
+  const COPIED_MS = 1800;
+  let copiedTimer = null;
+
+  function flashCopied() {
+    const btn = document.getElementById('compare-share');
+    if (!btn) return;
+    clearTimeout(copiedTimer);
+    btn.classList.add('is-copied');
+    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> ' +
+      escapeHtml(t('hangar.compare_link_copied', 'Lien copié'));
+    copiedTimer = setTimeout(() => {
+      copiedTimer = null;
+      btn.classList.remove('is-copied');
+      btn.textContent = t('hangar.compare_share', 'Copier le lien');
+    }, COPIED_MS);
   }
 
   /* Le lien pointe toujours vers le hangar : c'est la page qui sait ouvrir une
@@ -199,7 +256,10 @@
   function shareLink() {
     if (ids.length === 0) return;
     const url = `${location.origin}/hangar?${URL_PARAM}=${ids.join(',')}`;
-    const done = () => { if (typeof showToast === 'function') showToast(t('hangar.compare_link_copied', 'Lien copié'), 'success'); };
+    const done = () => {
+      flashCopied();
+      if (typeof showToast === 'function') showToast(t('hangar.compare_link_copied', 'Lien copié'), 'success');
+    };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(url).then(done).catch(() => {
         if (typeof showToast === 'function') showToast(url, 'info');
@@ -212,7 +272,7 @@
   VH.shared.compare = {
     MAX,
     getIds, has, isFull, toggle, remove, clear, onChange,
-    renderBar, ensureUi, shareLink,
+    renderBar, ensureUi, shareLink, renderModal,
     /* init({ urlSync, autoOpen }) — appelé une fois par page.
      * Les ids de l'URL priment sur ceux du stockage : un lien partagé doit
      * afficher la comparaison qu'il transporte, pas celle du visiteur. */
@@ -321,7 +381,7 @@
     const maxWeight = extreme(items, 'empty_weight', true) || 1;
 
     const headers = items.map((a) =>
-      '<div class="cmp-col-head">' +
+      '<div class="cmp-col-head" data-cmp-id="' + a.id + '">' +
         '<button type="button" class="cmp-remove" data-remove="' + a.id + '" aria-label="' + escapeHtml(t('common.remove', 'Retirer')) + '"><i class="fas fa-times"></i></button>' +
         '<div class="cmp-img-wrap">' +
           (a.image_url
@@ -346,22 +406,22 @@
         const cls = bestClass(items, a, key, higherIsBetter);
         const valStr = isNaN(v) ? '<span class="cmp-dash">—</span>' : fmt(a[key], unit);
         const barStr = isNaN(v) ? '' : barHtml(v, max, cls ? 'var(--hud-cyan)' : 'rgba(255,255,255,0.12)');
-        return '<div class="cmp-cell cmp-cell-perf' + cls + '">' + valStr + barStr + '</div>';
+        return '<div class="cmp-cell cmp-cell-perf' + cls + '" data-cmp-id="' + a.id + '">' + valStr + barStr + '</div>';
       }).join('');
       return '<div class="cmp-row" data-cmp-cols="' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
     }
 
     function textRow(label, fn) {
-      const cells = items.map((a) => '<div class="cmp-cell">' + fn(a) + '</div>').join('');
+      const cells = items.map((a) => '<div class="cmp-cell" data-cmp-id="' + a.id + '">' + fn(a) + '</div>').join('');
       return '<div class="cmp-row" data-cmp-cols="' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
     }
 
     function tagRow(label, key) {
       const cells = items.map((a) => {
         const list = a[key] || [];
-        if (list.length === 0) return '<div class="cmp-cell"><span class="cmp-dash">—</span></div>';
+        if (list.length === 0) return '<div class="cmp-cell" data-cmp-id="' + a.id + '"><span class="cmp-dash">—</span></div>';
         const tags = list.map((x) => '<span class="cmp-tag">' + escapeHtml(x.name || '') + '</span>').join('');
-        return '<div class="cmp-cell cmp-cell-tags">' + tags + '</div>';
+        return '<div class="cmp-cell cmp-cell-tags" data-cmp-id="' + a.id + '">' + tags + '</div>';
       }).join('');
       return '<div class="cmp-row cmp-row-tags" data-cmp-cols="' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
     }
@@ -408,11 +468,36 @@
     applyCssVars(body);
 
     body.querySelectorAll('.cmp-remove').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        remove(Number(btn.dataset.remove));
-        if (ids.length > 0) open();
-      });
+      btn.addEventListener('click', () => removeColumn(body, items, Number(btn.dataset.remove)));
     });
+  }
+
+  /* Retirer une colonne ne recharge rien : les fiches restantes sont déjà en
+   * mémoire. Avant, open() remettait le spinner et refaisait 3 × 3 requêtes.
+   * La colonne s'efface (en-tête + cellules, .is-removing), puis la grille se
+   * recompose sur n − 1 à partir des données chargées. */
+  const COLUMN_EXIT_MS = 220;
+
+  function removeColumn(body, items, id) {
+    if (body.dataset.removing === 'true') return; // un retrait à la fois
+    body.dataset.removing = 'true';
+    body.querySelectorAll('.cmp-remove').forEach((b) => { b.disabled = true; });
+    body.querySelectorAll('[data-cmp-id="' + id + '"]').forEach((el) => el.classList.add('is-removing'));
+
+    const finish = () => {
+      delete body.dataset.removing;
+      remove(id);
+      // Une sélection vidée ailleurs pendant l'animation (barre « Effacer »)
+      // a déjà refermé la modale : on ne garde que ce qui est encore retenu.
+      const rest = items.filter((a) => a.id !== id && ids.includes(a.id));
+      if (rest.length === 0) return;
+      renderModal(body, rest);
+      body.classList.remove('cmp-enter');
+      void body.offsetWidth; // relance le fondu de recomposition
+      body.classList.add('cmp-enter');
+    };
+    if (prefersReducedMotion()) finish();
+    else setTimeout(finish, COLUMN_EXIT_MS);
   }
 
   // Export conditionnel pour les tests unitaires (Node.js / jsdom)

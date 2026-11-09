@@ -25,12 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // -------------------------------------------------------------------
   // Fonctions exposées (utilisables par les scripts de page)
   // -------------------------------------------------------------------
+  // Le blocage du défilement passe par une classe : la CSP interdit
+  // d'écrire dans element.style (style-src-attr 'none').
+  function setScrollLock(locked) {
+    document.body.classList.toggle('nav-open', locked);
+  }
+
   function closeMenu() {
     navLinks?.classList.remove('show');
     hamburger?.classList.remove('active');
     hamburger?.setAttribute('aria-expanded', 'false');
     scrim?.classList.remove('show');
-    document.body.style.overflow = '';
+    setScrollLock(false);
   }
 
   function closeLang() {
@@ -42,15 +48,47 @@ document.addEventListener('DOMContentLoaded', () => {
     toggle?.setAttribute('aria-expanded', 'false');
   }
 
+  // Déclencheur focusable du menu compte (le conteneur .user-toggle est une div).
+  function setUserExpanded(open) {
+    if (!loginIcon) return;
+    loginIcon.classList.toggle('is-open', open);
+    if (open || loginIcon.hasAttribute('aria-expanded')) {
+      loginIcon.setAttribute('aria-expanded', String(open));
+    }
+  }
+
+  // .hidden est posé après l'animation de fermeture ; une réouverture dans
+  // l'intervalle doit annuler ce masquage différé.
+  // Inversement, une fermeture juste après l'ouverture annule le .show différé.
+  let hideDropdownTimer = null;
+  let showDropdownTimer = null;
+
+  function openDropdown() {
+    if (!userDropdown) return;
+    clearTimeout(hideDropdownTimer);
+    userDropdown.classList.remove('hidden');
+    showDropdownTimer = setTimeout(() => userDropdown.classList.add('show'), 10);
+    setUserExpanded(true);
+  }
+
   function closeDropdown() {
     if (!userDropdown) return;
+    clearTimeout(showDropdownTimer);
     userDropdown.classList.remove('show');
-    setTimeout(() => userDropdown.classList.add('hidden'), 300);
+    setUserExpanded(false);
+    clearTimeout(hideDropdownTimer);
+    hideDropdownTimer = setTimeout(() => userDropdown.classList.add('hidden'), 300);
   }
 
   function updateAuthUI() {
     const payload = auth.getPayload();
     if (!payload) return;
+
+    // Connecté : l'icône ouvre un menu au lieu de mener à /login.
+    if (loginIcon && !loginIcon.hasAttribute('aria-expanded')) {
+      loginIcon.setAttribute('aria-haspopup', 'true');
+      loginIcon.setAttribute('aria-expanded', String(!!userDropdown?.classList.contains('show')));
+    }
 
     const userNameEl = document.getElementById('user-name');
     const userRoleEl = document.querySelector('.user-role');
@@ -90,14 +128,18 @@ document.addEventListener('DOMContentLoaded', () => {
     hamburger.classList.toggle('active');
     hamburger.setAttribute('aria-expanded', String(nowOpen));
     scrim?.classList.toggle('show', nowOpen);
-    document.body.style.overflow = navLinks?.classList.contains('show') ? 'hidden' : '';
+    setScrollLock(!!navLinks?.classList.contains('show'));
     // Un seul élément ouvert à la fois : menu, langue ou compte.
     if (nowOpen) { closeDropdown(); closeLang(); }
   });
 
   scrim?.addEventListener('click', closeMenu);
-  // Ouvrir la liste des langues referme le panneau de navigation.
-  document.getElementById('lang-toggle')?.addEventListener('click', closeMenu);
+  // Ouvrir la liste des langues referme le panneau de navigation et le menu
+  // compte (l'ouverture elle-même est gérée par i18n.js).
+  document.getElementById('lang-toggle')?.addEventListener('click', () => {
+    closeMenu();
+    closeDropdown();
+  });
 
   // Fermer le menu mobile au clic sur un lien
   document.querySelectorAll('.nav-links a').forEach(link => {
@@ -137,9 +179,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userDropdown?.classList.contains('show')) {
       closeDropdown();
     } else {
+      // stopPropagation empêche i18n.js de voir ce clic : on referme
+      // nous-mêmes la liste des langues.
       closeMenu();
-      userDropdown?.classList.remove('hidden');
-      setTimeout(() => userDropdown?.classList.add('show'), 10);
+      closeLang();
+      openDropdown();
     }
   });
 
@@ -208,10 +252,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // ESC pour tout fermer
   // -------------------------------------------------------------------
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeMenu();
-      closeDropdown();
+    if (e.key !== 'Escape') return;
+    // Le focus revient au déclencheur du menu qu'on referme.
+    const active = document.activeElement;
+    const langSwitch = document.querySelector('.lang-switch');
+    if (langSwitch?.classList.contains('open') && langSwitch.contains(active)) {
+      document.getElementById('lang-toggle')?.focus();
+    } else if (userDropdown?.classList.contains('show') && userDropdown.contains(active)) {
+      loginIcon?.focus();
     }
+    closeMenu();
+    closeDropdown();
+    closeLang();
   });
 
   // -------------------------------------------------------------------

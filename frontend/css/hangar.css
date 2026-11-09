@@ -96,9 +96,13 @@ body.page-hangar {
   color: rgba(255,255,255,0.65); white-space: nowrap;
 }
 .page-hangar .filter-btn:hover { border-color: rgba(255,255,255,0.18); color: var(--white); background: rgba(255,255,255,0.07); }
-.page-hangar .filter-btn.active { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
-.page-hangar .filter-btn .fa-chevron-down { font-size: 0.65rem; transition: var(--transition-fast); }
-.page-hangar .filter-btn.active .fa-chevron-down { transform: rotate(180deg); }
+/* .active : panneau ouvert (bouton « Carte ») ; .has-value : un filtre est
+   appliqué (posée par VH.hangar.filters.syncFilterUi). Même teinte dorée. */
+.page-hangar .filter-btn.active, .page-hangar .filter-btn.has-value { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
+.page-hangar .filter-btn:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
+.page-hangar .filter-btn .fa-chevron-down, .page-hangar .filter-btn .icon-chevron-down { font-size: 0.65rem; transition: transform 0.2s var(--ease); }
+/* Le JS bascule aria-expanded, pas .active : c'est lui qui pilote le chevron. */
+.page-hangar .filter-btn[aria-expanded="true"] .fa-chevron-down, .page-hangar .filter-btn[aria-expanded="true"] .icon-chevron-down { transform: rotate(180deg); }
 
 .page-hangar .sort-select {
   padding: 0.7rem 2.25rem 0.7rem 1rem;
@@ -145,6 +149,10 @@ body.page-hangar {
 .page-hangar .filter-options { padding: 0.75rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.5rem; }
 .page-hangar .filter-option { padding: 0.7rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; cursor: pointer; transition: var(--transition-fast); text-align: center; font-weight: 500; font-size: 0.85rem; color: rgba(255,255,255,0.65); }
 .page-hangar .filter-option:hover { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.07); color: var(--white); }
+/* Options en <button> : atteignables au clavier, réinitialisées au style des cases. */
+.page-hangar button.filter-option { font-family: inherit; line-height: inherit; width: 100%; }
+.page-hangar .filter-option:focus-visible { outline: none; border-color: var(--hud-cyan); box-shadow: var(--focus-ring); color: var(--white); }
+.page-hangar .filter-option:active { transform: scale(0.98); }
 .page-hangar .filter-option.selected { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
 /* Conflits et missions : libellés longs, une option par ligne, période à droite. */
 .page-hangar #war-options, .page-hangar #mission-options { grid-template-columns: 1fr; }
@@ -193,7 +201,10 @@ body.page-hangar {
 .page-hangar .pagination button { padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.7); }
 .page-hangar .pagination button:hover:not(:disabled) { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); color: var(--white); }
 .page-hangar .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
-.page-hangar .pagination .page-info { padding: 0.75rem 1.25rem; font-weight: 600; color: rgba(255,255,255,0.5); }
+.page-hangar .pagination .page-info { padding: 0.75rem 1.25rem; font-weight: 600; color: rgba(255,255,255,0.5); transition: opacity 0.2s var(--ease); }
+/* Chargement en cours (lockPagination) : boutons désactivés, page estompée. */
+.page-hangar .pagination[aria-busy="true"] .page-info { opacity: 0.45; }
+.page-hangar .pagination[aria-busy="true"] button { cursor: progress; }
 
 /* ======================================================================
    MODAL
@@ -203,6 +214,24 @@ body.page-hangar {
 .page-hangar .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); }
 .page-hangar .modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); max-width: 64em; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn 0.3s ease; }
 /* @keyframes modalSlideIn → shared.css (dédupliqué) */
+/* Fermeture animée : .is-closing garde la modale affichée le temps de la
+   sortie (admin.js retire la classe après --modal-close-dur). */
+.page-hangar .modal.is-closing { display: flex; pointer-events: none; }
+.page-hangar .modal.show .modal-backdrop { animation: hangarFadeIn var(--modal-open-dur) var(--modal-ease); }
+.page-hangar .modal.is-closing .modal-backdrop { animation: hangarFadeOut var(--modal-close-dur) var(--modal-ease) forwards; }
+.page-hangar .modal.is-closing .modal-container { animation: hangarModalOut var(--modal-close-dur) var(--modal-ease) forwards; }
+@keyframes hangarModalOut {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(var(--modal-scale-close)); }
+}
+@keyframes hangarFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes hangarFadeOut { from { opacity: 1; } to { opacity: 0; } }
+/* Défilement de la page bloqué sous la modale (classe : la CSP interdit
+   d'écrire dans element.style). */
+body.page-hangar.modal-open { overflow: hidden; }
+/* Envoi en cours */
+.page-hangar .btn:disabled { cursor: not-allowed; }
+.page-hangar .btn.is-loading { cursor: progress; opacity: 0.75; }
 .page-hangar .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.75rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
 .page-hangar .modal-header h2 { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 0.75rem; }
 .page-hangar .modal-close { background: transparent; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.5); font-size: 1.5rem; }
@@ -524,21 +553,104 @@ body.page-hangar {
 .page-hangar .fs-tab {
   flex: 1; background: transparent; border: none; color: var(--text-muted);
   padding: 0.75rem; cursor: pointer; font-size: 0.85rem;
+  position: relative; transition: color 0.15s var(--ease);
 }
-.page-hangar .fs-tab.active { color: var(--hud-cyan); border-bottom: 2px solid var(--hud-cyan); }
+/* Soulignement animé : il se déploie depuis le centre sous l'onglet actif. */
+.page-hangar .fs-tab::after {
+  content: ''; position: absolute; left: 0.5rem; right: 0.5rem; bottom: 0;
+  height: 2px; border-radius: 2px; background: var(--hud-cyan);
+  transform: scaleX(0); transition: transform 0.25s var(--ease);
+}
+.page-hangar .fs-tab:hover { color: var(--text-primary); }
+.page-hangar .fs-tab:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: -2px; border-radius: var(--r-sm); }
+.page-hangar .fs-tab.active { color: var(--hud-cyan); }
+.page-hangar .fs-tab.active::after { transform: scaleX(1); }
 .page-hangar .filter-sheet-body { flex: 1; overflow-y: auto; padding: 1rem; }
 .page-hangar .fs-item {
   display: block; width: 100%; text-align: left;
   background: transparent; border: 1px solid var(--border-subtle);
   color: var(--text-primary); padding: 0.75rem; margin-bottom: 0.5rem;
   border-radius: var(--r-md); cursor: pointer; font-size: 0.9rem;
+  transition: border-color 0.15s var(--ease), background-color 0.15s var(--ease), color 0.15s var(--ease);
+  animation: hangarFadeIn 0.2s var(--ease) backwards;
 }
-.page-hangar .fs-item.active { border-color: var(--hud-cyan); color: var(--hud-cyan); }
+.page-hangar .fs-item:hover { border-color: rgba(200,169,110,0.35); background-color: rgba(255,255,255,0.03); }
+.page-hangar .fs-item:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
+.page-hangar .fs-item:active { background-color: rgba(200,169,110,0.06); }
+.page-hangar .fs-item.active { border-color: var(--hud-cyan); color: var(--hud-cyan); background-color: rgba(200,169,110,0.08); }
+
+/* Ouverture : la feuille monte, le voile se pose. Fermeture : .is-closing
+   (mobile-sheet.js) joue l'inverse avant de fermer le <dialog>. */
+.page-hangar .filter-sheet[open] { animation: hangarSheetUp var(--panel-open-dur) var(--panel-ease); }
+/* Durées littérales pour ::backdrop : il n'hérite des variables CSS que dans
+   les navigateurs récents. */
+.page-hangar .filter-sheet[open]::backdrop { animation: hangarFadeIn 0.38s ease-out; }
+.page-hangar .filter-sheet.is-closing { animation: hangarSheetDown 0.22s var(--panel-ease) forwards; }
+.page-hangar .filter-sheet.is-closing::backdrop { animation: hangarFadeOut 0.22s ease-in forwards; }
+@keyframes hangarSheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes hangarSheetDown { from { transform: translateY(0); } to { transform: translateY(100%); } }
 .page-hangar .filter-sheet-footer { padding: 1rem; border-top: 1px solid var(--border-subtle); }
 .page-hangar .filter-sheet-footer .btn { width: 100%; }
 
 @media (min-width: 48em) {
   .page-hangar .filter-sheet { display: none !important; }
+}
+
+/* ======================================================================
+   MICRO-INTERACTIONS
+   ====================================================================== */
+
+/* Entrée des cartes : chaque carte insérée s'anime — au chargement, mais
+   aussi à chaque changement de page, de filtre ou de tri. `backwards` et non
+   `both` : une fois l'animation finie, elle ne retient pas `transform`, et le
+   survol (translateY(-4px)) reste instantané. Décalage par :nth-child, la CSP
+   interdisant les styles en ligne. */
+.page-hangar #airplanes-container > .aircraft-card { animation: hangarCardIn 0.4s var(--ease) backwards; }
+.page-hangar #airplanes-container > .aircraft-card:nth-child(2) { animation-delay: 40ms; }
+.page-hangar #airplanes-container > .aircraft-card:nth-child(3) { animation-delay: 80ms; }
+.page-hangar #airplanes-container > .aircraft-card:nth-child(4) { animation-delay: 120ms; }
+.page-hangar #airplanes-container > .aircraft-card:nth-child(5) { animation-delay: 160ms; }
+.page-hangar #airplanes-container > .aircraft-card:nth-child(n+6) { animation-delay: 200ms; }
+@keyframes hangarCardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Vue grille : une carte cochée pour la comparaison se distingue (la vue
+   liste a déjà son équivalent sur l'encoche de droite). */
+.page-hangar .aircraft-grid .compare-check { transition: background-color 0.15s var(--ease), border-color 0.15s var(--ease), color 0.15s var(--ease); }
+.page-hangar .aircraft-grid .compare-check:has(input:checked) { background: rgba(200,169,110,0.18); border-color: rgba(200,169,110,0.55); color: var(--hud-cyan); }
+.page-hangar .aircraft-grid .aircraft-card:has(.compare-check input:checked) { border-color: rgba(200,169,110,0.45); box-shadow: 0 0 0 1px rgba(200,169,110,0.25), 0 12px 32px rgba(0,0,0,0.25); }
+.page-hangar .compare-check:has(input:focus-visible) { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
+
+/* Panneau de la carte des nations : fondu + glissement. `.hidden`
+   (display: none, nations-map.css) n'est posée qu'après la transition de
+   fermeture par nations-map-filter.js. */
+.page-hangar .nations-map-panel {
+  opacity: 0; transform: translateY(-8px);
+  transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.page-hangar .nations-map-panel.is-open { opacity: 1; transform: none; }
+
+/* Mouvement réduit : aucune des animations ci-dessus. Le bloc global plus
+   haut raccourcit les durées, mais pas les délais du décalage des cartes ni
+   le ::backdrop, d'où ces règles explicites. */
+@media (prefers-reduced-motion: reduce) {
+  .page-hangar #airplanes-container > .aircraft-card,
+  .page-hangar .fs-item,
+  .page-hangar .filter-sheet[open],
+  .page-hangar .filter-sheet[open]::backdrop,
+  .page-hangar .filter-sheet.is-closing,
+  .page-hangar .filter-sheet.is-closing::backdrop,
+  .page-hangar .modal.show .modal-backdrop,
+  .page-hangar .modal.is-closing .modal-backdrop,
+  .page-hangar .modal.is-closing .modal-container { animation: none; }
+  .page-hangar .nations-map-panel,
+  .page-hangar .fs-tab, .page-hangar .fs-tab::after,
+  .page-hangar .fs-item,
+  .page-hangar .aircraft-grid .compare-check,
+  .page-hangar .filter-btn .icon-chevron-down,
+  .page-hangar .pagination .page-info { transition: none; }
 }
 
 /* lang-switch → shared.css */

@@ -22,8 +22,14 @@
     }
   }
 
+  // Numéro de la dernière requête lancée : une réponse plus ancienne, arrivée
+  // après une nouvelle demande (filtres enchaînés), ne doit pas l'écraser.
+  let requestSeq = 0;
+
   async function loadAircraft(state) {
+    const seq = ++requestSeq;
     VH.hangar.render.renderSkeletons();
+    VH.hangar.render.lockPagination();
     try {
       const params = new URLSearchParams({
         sort: state.sort,
@@ -40,6 +46,7 @@
       const response = await auth.fetchWithTimeout(`/api/airplanes?${params}`);
       if (!response.ok) throw new Error('Erreur serveur');
       const data = await response.json();
+      if (seq !== requestSeq) return;
       state.aircraft = Array.isArray(data.data) ? data.data : [];
       state.total = Number.isFinite(data.total) ? data.total : state.aircraft.length;
 
@@ -56,6 +63,10 @@
       VH.hangar.render.updateResultsCount(state);
       VH.hangar.render.updateStats(state);
     } catch {
+      if (seq !== requestSeq) return;
+      // Les boutons ont été désactivés au départ : on les rend de nouveau
+      // utilisables pour permettre de réessayer.
+      VH.hangar.render.renderPagination(state);
       showToast(i18n.t('common.loading_error'), 'error');
     }
   }

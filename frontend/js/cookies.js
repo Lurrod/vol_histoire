@@ -134,6 +134,8 @@ class CookieConsent {
       });
     }
 
+    this.bindCategoryHeaders();
+
     // Settings link in footer (if exists)
     const cookieSettingsLinks = document.querySelectorAll('.cookie-settings-link');
     cookieSettingsLinks.forEach(link => {
@@ -153,6 +155,31 @@ class CookieConsent {
       if (modal && !modal.classList.contains('hidden')) {
         this.closeModal();
       }
+    });
+  }
+
+  /** Libellé traduit, ou repli français tant que la clé manque. */
+  t(key, fallback) {
+    const value = (typeof i18n !== 'undefined' && typeof i18n.t === 'function') ? i18n.t(key) : null;
+    return value && value !== key ? value : fallback;
+  }
+
+  /**
+   * Un clic sur l'en-tête d'une catégorie réglable bascule son interrupteur,
+   * comme le laisse attendre le curseur. Les catégories verrouillées
+   * (essentiels, marketing) ne reçoivent ni la classe ni l'écouteur.
+   */
+  bindCategoryHeaders() {
+    document.querySelectorAll('.cookie-category-header').forEach((header) => {
+      const input = header.querySelector('.cookie-toggle input[type="checkbox"]');
+      // .is-toggleable sert aussi de marqueur : jamais deux écouteurs.
+      if (!input || input.disabled || header.classList.contains('is-toggleable')) return;
+      header.classList.add('is-toggleable');
+      header.addEventListener('click', (e) => {
+        // La case et son label basculent déjà nativement ; les liens gardent leur rôle.
+        if (e.target.closest('.cookie-toggle, a, button')) return;
+        input.click();
+      });
     });
   }
 
@@ -214,7 +241,8 @@ class CookieConsent {
       // Trigger reflow for animation
       modal.offsetHeight;
       modal.classList.add('show');
-      document.body.style.overflow = 'hidden';
+      // Classe plutôt qu'element.style : la CSP interdit les styles en ligne.
+      document.body.classList.add('cookie-modal-open');
 
       // Focus trap + ESC fournis par trapFocus (utils.js, concaténé en amont
       // dans app.min.js). Bind la fermeture pour préserver le contexte this.
@@ -232,7 +260,7 @@ class CookieConsent {
         this._focusTrap = null;
       }
       modal.classList.remove('show');
-      document.body.style.overflow = '';
+      document.body.classList.remove('cookie-modal-open');
       setTimeout(() => {
         modal.classList.add('hidden');
       }, 300);
@@ -256,7 +284,7 @@ class CookieConsent {
     this.saveConsent();
     this.applyConsent();
     this.hideBanner();
-    this.showToast('Tous les cookies ont été acceptés', 'success');
+    this.showToast(this.t('cookie.toast_accepted', 'Tous les cookies ont été acceptés'), 'success');
   }
 
   rejectAll() {
@@ -270,7 +298,7 @@ class CookieConsent {
     this.saveConsent();
     this.applyConsent();
     this.hideBanner();
-    this.showToast('Seuls les cookies essentiels sont activés', 'info');
+    this.showToast(this.t('cookie.toast_rejected', 'Seuls les cookies essentiels sont activés'), 'info');
   }
 
   savePreferences() {
@@ -289,7 +317,7 @@ class CookieConsent {
     this.applyConsent();
     this.closeModal();
     this.hideBanner();
-    this.showToast('Vos préférences ont été enregistrées', 'success');
+    this.showToast(this.t('cookie.toast_saved', 'Vos préférences ont été enregistrées'), 'success');
   }
 
   saveConsent() {
@@ -402,7 +430,15 @@ class CookieConsent {
   }
 
   showToast(message, type = 'info') {
-    // Show toast notification
+    // Toast partagé (utils.js, concaténé avant ce fichier dans app.min.js) :
+    // bouton de fermeture, pause au survol, animations d'entrée et de sortie.
+    if (typeof showToast === 'function') {
+      showToast(message, type);
+      return;
+    }
+
+    // Repli si utils.js est absent : mêmes classes, animations portées par
+    // le CSS (toastIn / .fade-out) — aucune écriture dans element.style.
     const toastContainer = document.getElementById('toast-container') || this.createToastContainer();
 
     const toast = document.createElement('div');
@@ -423,32 +459,17 @@ class CookieConsent {
 
     toastContainer.appendChild(toast);
 
-    // Show animation
+    // Sortie animée par .fade-out (keyframes toastOut), puis retrait.
     setTimeout(() => {
-      toast.style.opacity = '1';
-      toast.style.transform = 'translateX(0)';
-    }, 100);
-
-    // Remove after delay
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateX(100%)';
+      toast.classList.add('fade-out');
       setTimeout(() => toast.remove(), 300);
     }, 3000);
   }
 
   createToastContainer() {
+    // Positionnement porté par #toast-container (shared-base.css).
     const container = document.createElement('div');
     container.id = 'toast-container';
-    container.style.cssText = `
-      position: fixed;
-      top: 100px;
-      right: 20px;
-      z-index: 10001;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    `;
     document.body.appendChild(container);
     return container;
   }

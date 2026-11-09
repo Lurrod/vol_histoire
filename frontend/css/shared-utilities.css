@@ -56,7 +56,7 @@
     background: rgba(200, 169, 110, 0.08);
     border-color: rgba(200, 169, 110, 0.2);
   }
-  .edit-modal-icon-champagne i { color: var(--hud-cyan); }
+  .edit-modal-icon-champagne i, .edit-modal-icon-champagne .icon { color: var(--hud-cyan); }
   .edit-modal-body { width: 100%; margin: 1.25rem 0 1.5rem; text-align: left; }
   .edit-modal-form-group { margin-bottom: 1rem; }
 
@@ -73,12 +73,16 @@
     border: 0;
   }
 
-  /* Reduced motion */
+  /* Reduced motion — `!important` obligatoire : une déclaration en couche
+     (@layer) perd contre toute feuille de page hors couche ; en !important,
+     c'est l'inverse, la couche l'emporte. Sans lui, la règle n'agissait que
+     sur les pages qui avaient leur propre garde. */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
-      animation-duration: 0.01ms;
-      animation-iteration-count: 1;
-      transition-duration: 0.01ms;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
   }
 

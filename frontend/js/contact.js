@@ -13,6 +13,29 @@ document.addEventListener('DOMContentLoaded', function () {
   emailEl?.addEventListener('input', () => clearFieldError(emailEl));
   messageEl?.addEventListener('input', () => clearFieldError(messageEl));
 
+  // Le message de succès concerne l'envoi précédent : il s'efface en fondu
+  // dès que l'utilisateur reprend la saisie (durée alignée sur contact.css).
+  const SUCCESS_FADE_MS = 200;
+  let successHideTimer = null;
+
+  function showSuccess() {
+    clearTimeout(successHideTimer);
+    successMsg.classList.remove('is-hiding');
+    successMsg.classList.add('visible');
+  }
+
+  function hideSuccess() {
+    if (!successMsg?.classList.contains('visible') || successMsg.classList.contains('is-hiding')) return;
+    successMsg.classList.add('is-hiding');
+    successHideTimer = setTimeout(() => {
+      successMsg.classList.remove('visible', 'is-hiding');
+      successMsg.querySelector('.t-success-check')?.setAttribute('data-state', 'out');
+    }, SUCCESS_FADE_MS);
+  }
+
+  form.addEventListener('input', hideSuccess);
+  form.addEventListener('change', hideSuccess);
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -44,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Loading state
     const originalHTML = submitBtn.innerHTML;
     submitBtn.disabled = true;
+    submitBtn.setAttribute('aria-busy', 'true');
     submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>' + i18n.t('contact.form_sending') + '</span>';
 
     try {
@@ -59,22 +83,19 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       if (response.ok) {
-        successMsg.classList.add('visible');
-        // transitions-dev (success check) : l'élément est désormais visible,
-        // on mesure le tracé puis on rejoue le stroke-draw via data-state.
+        // form.reset() ne déclenche ni input ni change : le message reste
+        // affiché jusqu'à la prochaine saisie.
+        form.reset();
+        showSuccess();
+        // transitions-dev (success check) : rejoue le stroke-draw via
+        // data-state. La longueur du tracé (≈ 31) tient dans le repli CSS
+        // de 32 : plus d'écriture dans element.style, interdite par la CSP.
         const successCheck = successMsg.querySelector('.t-success-check');
         if (successCheck) {
-          const checkPath = successCheck.querySelector('svg path');
-          if (checkPath && typeof checkPath.getTotalLength === 'function') {
-            const len = Math.ceil(checkPath.getTotalLength()) || 32;
-            checkPath.style.strokeDasharray = String(len);
-            checkPath.style.strokeDashoffset = String(len);
-          }
           successCheck.setAttribute('data-state', 'out');
           void successCheck.offsetWidth; // reflow → rejoue le tracé
           successCheck.setAttribute('data-state', 'in');
         }
-        form.reset();
         showToast(i18n.t('contact.form_success'), 'success');
       } else if (response.status === 429) {
         const data = await response.json().catch(() => ({}));
@@ -86,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
       showToast(i18n.t('contact.form_error_send'), 'error');
     } finally {
       submitBtn.disabled = false;
+      submitBtn.removeAttribute('aria-busy');
       submitBtn.innerHTML = originalHTML;
     }
   });

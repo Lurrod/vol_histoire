@@ -73,7 +73,7 @@
       '<div class="ob-content">' +
         '<div class="ob-counter"></div>' +
         '<div class="ob-badge"></div>' +
-        '<div class="ob-icon-ring"><i class="fas"></i></div>' +
+        '<div class="ob-icon-ring" aria-hidden="true"></div>' +
         '<h2 class="ob-title"></h2>' +
         '<p class="ob-desc"></p>' +
         '<div class="ob-progress"></div>' +
@@ -83,7 +83,7 @@
     var content = overlay.querySelector('.ob-content');
     var counterEl = overlay.querySelector('.ob-counter');
     var badgeEl = overlay.querySelector('.ob-badge');
-    var iconEl = overlay.querySelector('.ob-icon-ring i');
+    var iconRing = overlay.querySelector('.ob-icon-ring');
     var titleEl = overlay.querySelector('.ob-title');
     var descEl = overlay.querySelector('.ob-desc');
     var progressEl = overlay.querySelector('.ob-progress');
@@ -91,6 +91,41 @@
 
     var current = 0;
     var transitioning = false;
+    var trap = null;
+    // Élément qui avait le focus avant l'ouverture : il le récupère à la fermeture.
+    var previousFocus = document.activeElement;
+
+    // Délai sans animation si l'utilisateur demande moins de mouvement.
+    function reducedMotion() {
+      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }
+
+    // icons.js remplace chaque <i class="fas fa-…"> par un <svg class="icon">
+    // et ignore les changements de classe : on insère donc un nouvel <i> à
+    // chaque étape (converti par son MutationObserver).
+    function setIcon(name) {
+      var icon = document.createElement('i');
+      icon.className = 'fas ' + name;
+      icon.setAttribute('aria-hidden', 'true');
+      iconRing.replaceChildren(icon);
+    }
+
+    // Classe du bouton focalisé (ob-next, ob-prev…) avant reconstruction.
+    function focusedAction() {
+      var active = document.activeElement;
+      if (!active || !actionsEl.contains(active)) return null;
+      var match = ['ob-next', 'ob-prev', 'ob-skip', 'ob-finish'].filter(function (c) {
+        return active.classList.contains(c);
+      });
+      return match[0] || null;
+    }
+
+    function go(delta) {
+      var target = current + delta;
+      if (transitioning || target < 0 || target >= steps.length) return;
+      current = target;
+      render(delta > 0 ? 'next' : 'prev');
+    }
 
     function render(direction) {
       if (transitioning) return;
@@ -99,14 +134,18 @@
       var step = steps[current];
       var isLast = current === steps.length - 1;
       var isFirst = current === 0;
+      var fast = reducedMotion();
 
       // Transition out
       content.classList.add('ob-fade-out');
 
       setTimeout(function () {
+        // Lu au dernier moment : le bouton cliqué a encore le focus ici.
+        var hadFocus = focusedAction();
+
         counterEl.textContent = (current + 1) + ' / ' + steps.length;
         badgeEl.innerHTML = '<span class="ob-badge-pulse"></span><i class="fas fa-tower-broadcast"></i> ' + escapeHtml(step.badge);
-        iconEl.className = 'fas ' + step.icon;
+        setIcon(step.icon);
         titleEl.textContent = step.title;
         descEl.textContent = step.desc;
 
@@ -135,30 +174,48 @@
         var next = actionsEl.querySelector('.ob-next');
         var finish = actionsEl.querySelector('.ob-finish');
         if (skip) skip.addEventListener('click', close);
-        if (prev) prev.addEventListener('click', function () { current--; render('prev'); });
-        if (next) next.addEventListener('click', function () { current++; render('next'); });
+        if (prev) prev.addEventListener('click', function () { go(-1); });
+        if (next) next.addEventListener('click', function () { go(1); });
         if (finish) finish.addEventListener('click', close);
+
+        // Les boutons viennent d'être recréés : le focus serait retombé sur
+        // <body>. On le rend au bouton équivalent, à défaut au bouton principal.
+        var primary = next || finish;
+        var sameRole = hadFocus ? actionsEl.querySelector('.' + hadFocus) : null;
+        if (!trap && typeof trapFocus === 'function') {
+          trap = trapFocus(overlay);
+          // Enregistré après celui de trapFocus : s'exécute juste après lui
+          // et place le focus initial sur « Suivant » plutôt que « Passer ».
+          requestAnimationFrame(function () { if (primary) primary.focus(); });
+        } else if (hadFocus) {
+          (sameRole || primary).focus();
+        }
 
         content.classList.remove('ob-fade-out');
         content.classList.add('ob-fade-in');
         setTimeout(function () {
           content.classList.remove('ob-fade-in');
           transitioning = false;
-        }, 400);
-      }, direction ? 250 : 0);
+        }, fast ? 0 : 400);
+      }, direction && !fast ? 250 : 0);
     }
 
     function close() {
       localStorage.setItem(STORAGE_KEY, '1');
+      document.removeEventListener('keydown', onKey);
+      if (trap) { trap.destroy(); trap = null; }
       overlay.classList.add('ob-exit');
-      setTimeout(function () { overlay.remove(); }, 600);
+      if (previousFocus && typeof previousFocus.focus === 'function' && document.contains(previousFocus)) {
+        previousFocus.focus();
+      }
+      setTimeout(function () { overlay.remove(); }, reducedMotion() ? 0 : 600);
     }
 
     // Keyboard
     function onKey(e) {
-      if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onKey); }
-      if (e.key === 'ArrowRight' && current < steps.length - 1) { current++; render('next'); }
-      if (e.key === 'ArrowLeft' && current > 0) { current--; render('prev'); }
+      if (e.key === 'Escape') { close(); return; }
+      if (e.key === 'ArrowRight') go(1);
+      if (e.key === 'ArrowLeft') go(-1);
     }
     document.addEventListener('keydown', onKey);
 
@@ -169,6 +226,8 @@
     requestAnimationFrame(function () {
       requestAnimationFrame(function () { overlay.classList.add('ob-active'); });
     });
+
+    return { overlay: overlay, close: close };
   }
 
   // Launch after auth + i18n are ready
@@ -177,4 +236,9 @@
       if (shouldShow()) createTour();
     }, 2000);
   });
+
+  // Export conditionnel pour les tests unitaires (Node.js / jsdom)
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { createTour: createTour, shouldShow: shouldShow };
+  }
 })();

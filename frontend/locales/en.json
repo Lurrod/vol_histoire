@@ -80,7 +80,10 @@
     "marketing_note_label": "Note:",
     "marketing_note": "We do not currently use marketing or advertising cookies on this site.",
     "more_info": "More information",
-    "more_info_desc": "To learn more about our use of cookies and your rights, see our <a href=\"politique-confidentialite.html\">Privacy Policy</a>."
+    "more_info_desc": "To learn more about our use of cookies and your rights, see our <a href=\"politique-confidentialite.html\">Privacy Policy</a>.",
+    "toast_accepted": "All cookies have been accepted",
+    "toast_rejected": "Only essential cookies are enabled",
+    "toast_saved": "Your preferences have been saved"
   },
   "home": {
     "title": "Vol d'Histoire | Explore Military Aviation",
@@ -323,7 +326,8 @@
     "photo": "Photo",
     "licence_public_domain": "Public domain",
     "admin_image_credit": "Photo credit (author)",
-    "admin_image_licence": "Photo licence"
+    "admin_image_licence": "Photo licence",
+    "compare_in": "In comparison"
   },
   "hangar": {
     "title": "Hangar - Military Aviation Collection | Vol d'Histoire",
@@ -901,7 +905,11 @@
     "hint_current_password_email": "Required to change your email address. A confirmation link will be sent to the new address.",
     "toast_current_password_required": "Enter your current password",
     "toast_current_password_invalid": "Current password is incorrect",
-    "toast_email_change_pending": "A confirmation link has been sent to the new address. It will replace the current one once confirmed."
+    "toast_email_change_pending": "A confirmation link has been sent to the new address. It will replace the current one once confirmed.",
+    "delete_confirm_word": "DELETE",
+    "delete_confirm_prompt": "This action cannot be undone. All your data will be permanently deleted.\n\nTo confirm, type \"{word}\" (in capitals):",
+    "toast_delete_error": "Error while deleting the account",
+    "toast_delete_confirm_mismatch": "Incorrect confirmation"
   },
   "error404": {
     "title": "404 — Contact Lost | Vol d'Histoire",

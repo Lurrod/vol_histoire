@@ -42,6 +42,7 @@
     if (!container) return;
     const total = Number.isFinite(state.total) ? state.total : 0;
     const totalPages = Math.max(1, Math.ceil(total / state.itemsPerPage));
+    container.removeAttribute('aria-busy');
     if (total === 0) { container.innerHTML = ''; return; }
 
     container.innerHTML = `
@@ -58,6 +59,8 @@
   }
 
   function changePage(state, page) {
+    // Un chargement est déjà en cours : on ignore le clic.
+    if (document.getElementById('pagination-container')?.getAttribute('aria-busy') === 'true') return;
     const total = Number.isFinite(state.total) ? state.total : 0;
     const totalPages = Math.max(1, Math.ceil(total / state.itemsPerPage));
     state.currentPage = Math.min(Math.max(1, page), totalPages);
@@ -94,27 +97,27 @@
     if (el) el.textContent = text;
   }
 
-  function observeCards() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.aircraft-card').forEach(card => {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(20px)';
-      card.style.transition = 'all 0.5s ease';
-      observer.observe(card);
-    });
+  /* Pendant un chargement, la pagination ne doit plus rien déclencher : un
+   * second clic partirait sur une page calculée avant la réponse. Les boutons
+   * sont recréés par renderPagination() à l'arrivée des résultats (ou en cas
+   * d'erreur), ce qui les réactive.
+   * L'entrée des cartes, elle, est purement CSS (#airplanes-container >
+   * .aircraft-card, hangar.css) : chaque carte insérée s'anime, à chaque
+   * rendu — plus seulement au premier chargement. */
+  function lockPagination() {
+    const container = document.getElementById('pagination-container');
+    if (!container) return;
+    container.setAttribute('aria-busy', 'true');
+    container.querySelectorAll('button').forEach((btn) => { btn.disabled = true; });
   }
 
   VH.hangar.render = {
     renderSkeletons, renderAircraft, renderPagination, changePage,
-    updateStats, updateResultsCount, observeCards,
+    updateStats, updateResultsCount, lockPagination,
   };
+
+  // Export conditionnel pour les tests unitaires (Node.js / jsdom)
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = VH.hangar.render;
+  }
 })();

@@ -80,7 +80,10 @@
     "marketing_note_label": "Note :",
     "marketing_note": "Nous n'utilisons actuellement pas de cookies marketing ou publicitaires sur ce site.",
     "more_info": "Plus d'informations",
-    "more_info_desc": "Pour en savoir plus sur notre utilisation des cookies et vos droits, consultez notre <a href=\"politique-confidentialite.html\">Politique de confidentialité</a>."
+    "more_info_desc": "Pour en savoir plus sur notre utilisation des cookies et vos droits, consultez notre <a href=\"politique-confidentialite.html\">Politique de confidentialité</a>.",
+    "toast_accepted": "Tous les cookies ont été acceptés",
+    "toast_rejected": "Seuls les cookies essentiels sont activés",
+    "toast_saved": "Vos préférences ont été enregistrées"
   },
   "home": {
     "title": "Vol d'Histoire | Explorez l'Aviation Militaire",
@@ -323,7 +326,8 @@
     "photo": "Photo",
     "licence_public_domain": "Domaine public",
     "admin_image_credit": "Crédit photo (auteur)",
-    "admin_image_licence": "Licence photo"
+    "admin_image_licence": "Licence photo",
+    "compare_in": "Dans le comparateur"
   },
   "hangar": {
     "title": "Hangar - Collection d'Aviation Militaire | Vol d'Histoire",
@@ -901,7 +905,11 @@
     "hint_current_password_email": "Requis pour changer d'adresse email. Un lien de confirmation sera envoyé à la nouvelle adresse.",
     "toast_current_password_required": "Saisissez votre mot de passe actuel",
     "toast_current_password_invalid": "Mot de passe actuel incorrect",
-    "toast_email_change_pending": "Un lien de confirmation a été envoyé à la nouvelle adresse. Elle remplacera l'actuelle après validation."
+    "toast_email_change_pending": "Un lien de confirmation a été envoyé à la nouvelle adresse. Elle remplacera l'actuelle après validation.",
+    "delete_confirm_word": "SUPPRIMER",
+    "delete_confirm_prompt": "Cette action est irréversible. Toutes vos données seront définitivement supprimées.\n\nPour confirmer, tapez « {word} » (en majuscules) :",
+    "toast_delete_error": "Erreur lors de la suppression",
+    "toast_delete_confirm_mismatch": "Confirmation incorrecte"
   },
   "error404": {
     "title": "404 — Contact Perdu | Vol d'Histoire",

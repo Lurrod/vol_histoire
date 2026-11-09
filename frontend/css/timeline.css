@@ -574,9 +574,14 @@ body.page-timeline.tl-has-cinematic::before {
   color: inherit;
   transition: var(--transition-fast);
 }
-.page-timeline .tl-event-plane:hover {
+.page-timeline .tl-event-plane:hover,
+.page-timeline .tl-event-plane:focus-visible {
   border-color: var(--era-color, var(--hud-cyan));
   background: rgba(0, 0, 0, 0.55);
+}
+.page-timeline .tl-event-plane:focus-visible {
+  outline: 2px solid var(--era-color, var(--hud-cyan));
+  outline-offset: 2px;
 }
 .page-timeline .tl-event-plane-img {
   aspect-ratio: 16/9;
@@ -637,7 +642,10 @@ body.page-timeline.tl-has-cinematic::before {
   cursor: pointer;
   transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
   opacity: 0;
-  transform: translateY(30px);
+  /* L'entrée anime la propriété indépendante `translate` : une animation
+     `forwards` sur `transform` figeait la valeur finale et écrasait le
+     soulèvement au survol, qui reste porté par `transform`. */
+  translate: 0 30px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   text-decoration: none;
@@ -646,13 +654,19 @@ body.page-timeline.tl-has-cinematic::before {
   animation: tl-card-in 0.8s var(--ease) forwards;
 }
 @keyframes tl-card-in {
-  to { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; translate: 0 0; }
 }
-.page-timeline .tl-plane-card:hover {
+.page-timeline .tl-plane-card:hover,
+.page-timeline .tl-plane-card:focus-visible {
   border-color: var(--era-color, var(--hud-cyan));
   transform: translateY(-4px);
 }
-.page-timeline .tl-plane-card:hover .tl-plane-img img {
+.page-timeline .tl-plane-card:focus-visible {
+  outline: 2px solid var(--era-color, var(--hud-cyan));
+  outline-offset: 3px;
+}
+.page-timeline .tl-plane-card:hover .tl-plane-img img,
+.page-timeline .tl-plane-card:focus-visible .tl-plane-img img {
   transform: scale(1.06);
 }
 .page-timeline .tl-plane-img {
@@ -868,15 +882,24 @@ body.page-timeline.tl-has-cinematic::before {
   transition: var(--transition-fast);
   flex-shrink: 0;
 }
+/* Au clavier, le libellé de la décennie apparaît comme au survol. */
 .page-timeline .tl-mm-btn:hover .tl-mm-label,
+.page-timeline .tl-mm-btn:focus-visible .tl-mm-label,
 .page-timeline .tl-mm-btn.active .tl-mm-label {
   opacity: 1;
   transform: translateX(0);
 }
-.page-timeline .tl-mm-btn:hover .tl-mm-tick {
+.page-timeline .tl-mm-btn:hover .tl-mm-tick,
+.page-timeline .tl-mm-btn:focus-visible .tl-mm-tick {
   width: 36px;
   background: var(--text-secondary);
 }
+.page-timeline .tl-mm-btn:focus-visible {
+  outline: 2px solid var(--hud-cyan);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+.page-timeline .tl-mm-btn:focus-visible .tl-mm-label { color: var(--white); }
 .page-timeline .tl-mm-btn.active .tl-mm-tick {
   width: 44px;
   background: var(--hud-cyan);
@@ -994,7 +1017,13 @@ body.page-timeline.tl-has-cinematic::before {
   .page-timeline .tl-plane-card,
   .page-timeline .tl-event-body,
   .page-timeline .tl-event-plane { transition: none; }
-  .page-timeline .tl-plane-card:hover { transform: none; }
+  .page-timeline .tl-plane-card:hover,
+  .page-timeline .tl-plane-card:focus-visible { transform: none; }
+  .page-timeline .tl-plane-card { translate: none !important; }
+  .page-timeline .tl-plane-card:hover .tl-plane-img img,
+  .page-timeline .tl-plane-card:focus-visible .tl-plane-img img { transform: none; }
+  .page-timeline .tl-mm-label,
+  .page-timeline .tl-mm-tick { transition: none; }
   .page-timeline .tl-plane-img img { transition: none; }
   .page-timeline .tl-progress { transition: none; }
 }

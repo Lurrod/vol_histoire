@@ -178,7 +178,7 @@
 @keyframes ob-rotate {
   to { transform: rotate(360deg); }
 }
-.ob-icon-ring i {
+.ob-icon-ring i, .ob-icon-ring .icon {
   font-size: 2rem;
   color: var(--hud-cyan, #C8A96E);
 }
@@ -282,7 +282,7 @@
 @media (max-width: 30em) {
   .ob-content { padding: 1.5rem 1rem; }
   .ob-icon-ring { width: 70px; height: 70px; }
-  .ob-icon-ring i { font-size: 1.5rem; }
+  .ob-icon-ring i, .ob-icon-ring .icon { font-size: 1.5rem; }
   .ob-actions { flex-direction: column; gap: 0.75rem; }
   .ob-btn { width: 100%; justify-content: center; }
   .ob-bar { width: 36px; }
@@ -295,5 +295,17 @@
   .ob-badge-pulse { animation: none; }
   .ob-bar.active::after { animation: none; transform: scaleX(1); }
   .ob, .ob-content { transition: none; }
+  /* Changement d'étape sans glissement ni fondu */
+  .ob-content.ob-fade-in { animation: none; }
+  .ob-content.ob-fade-out { transform: none; transition: none; }
+  .ob-btn { transition: none; }
 }
+
+/* Focus clavier visible sur les boutons du briefing */
+.ob-btn:focus-visible {
+  outline: 2px solid var(--hud-cyan, #C8A96E);
+  outline-offset: 3px;
+  color: rgba(255, 255, 255, 0.8);
+}
+.ob-btn.ob-primary:focus-visible { color: var(--hud-cyan, #C8A96E); }
 

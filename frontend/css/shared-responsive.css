@@ -103,6 +103,10 @@
         opacity    var(--panel-open-dur) var(--panel-ease),
         visibility 0s linear 0s;
     }
+
+    /* Défilement bloqué tant que le panneau est ouvert (classe posée par
+       nav.js : la CSP interdit d'écrire dans element.style). */
+    body.nav-open { overflow: hidden; }
   }
 
   /* Hero page secondaire : empilement */

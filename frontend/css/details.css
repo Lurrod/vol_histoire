@@ -129,7 +129,7 @@ body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
   gap: 0.75rem;
   margin-bottom: 1.25rem;
 }
-.page-details .capability-head i {
+.page-details .capability-head i, .page-details .capability-head .icon {
   color: var(--capability-accent);
   font-size: 1.1rem;
   flex-shrink: 0;
@@ -231,6 +231,15 @@ body.page-details { background: var(--night); }
 .page-details .btn-favorite.favorited i, .page-details .btn-favorite.favorited .icon { color: var(--hud-amber); }
 .page-details .btn-secondary { background: rgba(255,255,255,0.04); backdrop-filter: blur(10px); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); }
 .page-details .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); }
+/* « Comparer » enfoncé : l'appareil est dans le comparateur. */
+.page-details #compare-btn[aria-pressed="true"] { background: rgba(200,169,110,0.12); border-color: rgba(200,169,110,0.45); color: var(--hud-cyan); }
+.page-details #compare-btn[aria-pressed="true"]:hover { background: rgba(200,169,110,0.18); }
+/* Requête en cours : le bouton ne réagit plus et le dit. */
+.page-details .btn[aria-busy="true"], .page-details .btn:disabled { opacity: 0.6; cursor: progress; pointer-events: none; }
+.page-details .btn:active:not(:disabled) { transform: translateY(1px); }
+/* Ajout aux favoris : le cœur gonfle brièvement. */
+.page-details .btn-favorite.is-popping .t-icon-swap { animation: fav-pop 0.42s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes fav-pop { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
 .page-details .btn-danger { background: rgba(231,76,60,0.1); color: var(--accent); border: 1px solid rgba(231,76,60,0.25); }
 .page-details .btn-danger:hover { background: rgba(231,76,60,0.2); border-color: var(--accent); }
 .page-details .btn-primary { background: var(--hud-cyan); color: var(--night); border: 1px solid transparent; font-weight: 700; }
@@ -342,6 +351,11 @@ body.page-details { background: var(--night); }
 .page-details .modal { position: fixed; inset: 0; z-index: var(--z-modal); display: none; align-items: center; justify-content: center; padding: 2rem; }
 .page-details .modal.show { display: flex; }
 .page-details .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); }
+/* Fermeture : la modale repart comme elle est venue au lieu de disparaître. */
+.page-details .modal.is-closing .modal-container { animation: modalSlideOutDetails 0.22s ease forwards; }
+.page-details .modal.is-closing .modal-backdrop { animation: modalFadeOutDetails 0.22s ease forwards; }
+@keyframes modalSlideOutDetails { to { opacity: 0; transform: translateY(16px) scale(0.98); } }
+@keyframes modalFadeOutDetails { to { opacity: 0; } }
 .page-details .modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); max-width: 64em; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn 0.3s ease; }
 /* @keyframes modalSlideIn → shared.css (dédupliqué) */
 .page-details .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.75rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
@@ -697,7 +711,7 @@ body.page-details { background: var(--night); }
   .page-details .capabilities-grid { grid-template-columns: repeat(3, 1fr); gap: 0.4cm; }
   .page-details .capability-column { border-left-color: #666 !important; padding-left: 0.3cm !important; }
   .page-details .capability-head h3 { color: #000 !important; }
-  .page-details .capability-head i { color: #555 !important; }
+  .page-details .capability-head i, .page-details .capability-head .icon { color: #555 !important; }
   .page-details .capability-count { color: #777 !important; }
   .page-details .capability-name { color: #000 !important; }
   .page-details .capability-desc { color: #444 !important; }
@@ -737,7 +751,7 @@ body.page-details { background: var(--night); }
     padding: 0.25cm !important;
     page-break-inside: avoid;
   }
-  .page-details .spec-tile > i { color: #444 !important; font-size: 10pt; margin-bottom: 0.1cm; }
+  .page-details .spec-tile > i, .page-details .spec-tile > .icon { color: #444 !important; font-size: 10pt; margin-bottom: 0.1cm; }
   .page-details .spec-label { color: #666 !important; font-size: 7pt; }
   .page-details .spec-value { color: #000 !important; font-size: 10pt; }
 
@@ -818,7 +832,7 @@ body.page-details { background: var(--night); }
   border-color: rgba(200, 169, 110, 0.2);
   background: rgba(200, 169, 110, 0.03);
 }
-.page-details .spec-tile > i {
+.page-details .spec-tile > i, .page-details .spec-tile > .icon {
   color: var(--hud-cyan);
   font-size: 1.1rem;
   margin-bottom: 0.5rem;

@@ -186,8 +186,9 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 .page-settings .cookie-preference-item:hover { border-color: rgba(255,255,255,0.13); }
 .page-settings .cookie-preference-item.disabled-category { opacity: 0.5; }
 .page-settings .cookie-preference-item.disabled-category:hover { border-color: rgba(255,255,255,0.07); }
-.page-settings .preference-header { display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem; background: rgba(255,255,255,0.01); cursor: pointer; transition: var(--transition); }
-.page-settings .preference-header:hover { background: rgba(255,255,255,0.03); }
+/* L'en-tête n'est pas un contrôle (l'interrupteur l'est) : pas de curseur main
+   ni d'effet de survol, qui promettaient un clic sans effet. */
+.page-settings .preference-header { display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem; background: rgba(255,255,255,0.01); }
 .page-settings .preference-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
 .page-settings .preference-icon.essential { background: rgba(0,230,118,0.08); border: 1px solid rgba(0,230,118,0.15); color: var(--hud-green); }
 .page-settings .preference-icon.analytics { background: rgba(200,169,110,0.08); border: 1px solid rgba(200,169,110,0.15); color: var(--hud-cyan); }
@@ -198,7 +199,11 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 .page-settings .preference-info p { color: rgba(255,255,255,0.4); font-size: 0.85rem; line-height: 1.5; margin: 0; }
 .page-settings .preference-toggle { display: flex; align-items: center; gap: 1rem; flex-shrink: 0; }
 .page-settings .toggle-switch { position: relative; }
-.page-settings .toggle-switch input[type="checkbox"] { display: none; }
+/* Case masquée visuellement mais focalisable (display: none la retirait du
+   parcours clavier) ; elle recouvre la piste pour garder le clic. */
+.page-settings .toggle-switch input[type="checkbox"] { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; z-index: 1; }
+.page-settings .toggle-switch input[type="checkbox"]:disabled { cursor: not-allowed; }
+.page-settings .toggle-switch input[type="checkbox"]:focus-visible + label { outline: 2px solid var(--hud-cyan); outline-offset: 3px; }
 .page-settings .toggle-switch label { display: block; width: 54px; height: 28px; background: rgba(255,255,255,0.1); border-radius: 50px; position: relative; cursor: pointer; transition: var(--transition); }
 .page-settings .toggle-switch.disabled label { cursor: not-allowed; opacity: 0.6; }
 .page-settings .toggle-slider { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; background: var(--white); border-radius: 50%; transition: var(--transition); box-shadow: 0 2px 4px rgba(0,0,0,0.3); }

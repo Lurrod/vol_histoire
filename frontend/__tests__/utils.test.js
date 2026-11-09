@@ -121,6 +121,76 @@ describe('showToast', () => {
 
     jest.useRealTimers();
   });
+
+  test('le toast porte un bouton de fermeture accessible', () => {
+    jest.useFakeTimers();
+    showToast('Fermable');
+
+    const btn = document.querySelector('.toast .toast-close');
+    expect(btn).not.toBeNull();
+    expect(btn.getAttribute('type')).toBe('button');
+    expect(btn.getAttribute('aria-label')).toBeTruthy();
+
+    btn.click();
+    expect(document.querySelector('.toast').classList.contains('fade-out')).toBe(true);
+    jest.advanceTimersByTime(300);
+    expect(document.querySelector('.toast')).toBeNull();
+    jest.useRealTimers();
+  });
+
+  test('une erreur reste affichée 6 s par défaut, une info 3 s', () => {
+    jest.useFakeTimers();
+    showToast('Info', 'info');
+    showToast('Erreur', 'error');
+    const [info, err] = document.querySelectorAll('.toast');
+
+    jest.advanceTimersByTime(3000);
+    expect(info.classList.contains('fade-out')).toBe(true);
+    expect(err.classList.contains('fade-out')).toBe(false);
+
+    jest.advanceTimersByTime(3000);
+    expect(err.classList.contains('fade-out')).toBe(true);
+    jest.useRealTimers();
+  });
+
+  test('une erreur est annoncée en role="alert"', () => {
+    showToast('Erreur', 'error');
+    expect(document.querySelector('.toast').getAttribute('role')).toBe('alert');
+  });
+
+  test('le survol suspend la fermeture automatique, la sortie la relance', () => {
+    jest.useFakeTimers();
+    showToast('Pause', 'info', 1000);
+    const toast = document.querySelector('.toast');
+
+    jest.advanceTimersByTime(500);
+    toast.dispatchEvent(new Event('mouseenter'));
+    jest.advanceTimersByTime(5000);
+    expect(toast.classList.contains('fade-out')).toBe(false);
+
+    toast.dispatchEvent(new Event('mouseleave'));
+    jest.advanceTimersByTime(999);
+    expect(toast.classList.contains('fade-out')).toBe(false);
+    jest.advanceTimersByTime(1);
+    expect(toast.classList.contains('fade-out')).toBe(true);
+    jest.useRealTimers();
+  });
+
+  test('le focus dans le toast suspend la fermeture automatique', () => {
+    jest.useFakeTimers();
+    showToast('Focus', 'info', 1000);
+    const toast = document.querySelector('.toast');
+    const btn = toast.querySelector('.toast-close');
+
+    btn.focus();
+    jest.advanceTimersByTime(5000);
+    expect(toast.classList.contains('fade-out')).toBe(false);
+
+    btn.blur();
+    jest.advanceTimersByTime(1000);
+    expect(toast.classList.contains('fade-out')).toBe(true);
+    jest.useRealTimers();
+  });
 });
 
 // =============================================================================

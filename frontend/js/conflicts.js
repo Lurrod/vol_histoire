@@ -97,7 +97,14 @@
     $('conflict-detail')?.classList.remove('hidden');
   }
 
+  // Retire les silhouettes de chargement dès qu'une vue s'affiche.
+  function hideLoading() {
+    $('conflicts-loading')?.remove();
+    document.querySelector('.conflicts-section')?.removeAttribute('aria-busy');
+  }
+
   async function init() {
+    document.querySelector('.conflicts-section')?.setAttribute('aria-busy', 'true');
     await auth.init();
     await whenI18nReady();
     if (window.nav && typeof nav.updateAuthUI === 'function') nav.updateAuthUI();
@@ -105,11 +112,13 @@
     const slug = slugFromPath();
     try {
       const res = await auth.fetchWithTimeout(slug ? `/api/wars/${encodeURIComponent(slug)}` : '/api/wars');
-      if (!res.ok) return showError();
+      if (!res.ok) { hideLoading(); return showError(); }
       const data = await res.json();
+      hideLoading();
       if (slug) renderWar(data);
       else renderList(Array.isArray(data) ? data : []);
     } catch {
+      hideLoading();
       showError();
       showToast(i18n.t('common.loading_error'), 'error');
     }
