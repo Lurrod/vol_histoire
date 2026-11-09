@@ -670,7 +670,17 @@
     "error_default": "Ce lien de vérification est invalide ou a expiré.",
     "error_missing_token": "Aucun token de vérification trouvé dans l'URL.",
     "error_expired": "Ce lien est invalide ou a expiré. Reconnectez-vous pour renvoyer un email.",
-    "error_network": "Impossible de contacter le serveur. Réessayez plus tard."
+    "error_network": "Impossible de contacter le serveur. Réessayez plus tard.",
+    "form_heading": "Activez votre compte",
+    "form_desc": "Choisissez le mot de passe de votre compte pour terminer l'activation.",
+    "password_label": "Mot de passe",
+    "password_hint": "8 caractères min, 1 majuscule, 1 minuscule, 1 chiffre",
+    "confirm_label": "Confirmer le mot de passe",
+    "submit": "Activer mon compte",
+    "error_password_weak": "Le mot de passe doit contenir 8 à 128 caractères, dont une majuscule, une minuscule et un chiffre.",
+    "error_password_mismatch": "Les deux mots de passe ne correspondent pas.",
+    "error_email_taken": "Cette adresse est déjà utilisée par un autre compte.",
+    "email_changed_desc": "Votre adresse email a été modifiée. Reconnectez-vous avec la nouvelle adresse."
   },
   "reset_password": {
     "title": "Réinitialiser le mot de passe | Vol d'Histoire",
@@ -858,7 +868,12 @@
     "edit_label_email": "Email",
     "edit_label_role": "Rôle",
     "edit_cancel": "Annuler",
-    "edit_save": "Enregistrer"
+    "edit_save": "Enregistrer",
+    "label_current_password": "Mot de passe actuel",
+    "hint_current_password_email": "Requis pour changer d'adresse email. Un lien de confirmation sera envoyé à la nouvelle adresse.",
+    "toast_current_password_required": "Saisissez votre mot de passe actuel",
+    "toast_current_password_invalid": "Mot de passe actuel incorrect",
+    "toast_email_change_pending": "Un lien de confirmation a été envoyé à la nouvelle adresse. Elle remplacera l'actuelle après validation."
   },
   "error404": {
     "title": "404 — Contact Perdu | Vol d'Histoire",

@@ -670,7 +670,17 @@
     "error_default": "This verification link is invalid or has expired.",
     "error_missing_token": "No verification token found in the URL.",
     "error_expired": "This link is invalid or has expired. Log in again to resend an email.",
-    "error_network": "Unable to reach the server. Try again later."
+    "error_network": "Unable to reach the server. Try again later.",
+    "form_heading": "Activate your account",
+    "form_desc": "Choose your account password to finish activation.",
+    "password_label": "Password",
+    "password_hint": "At least 8 characters, 1 uppercase, 1 lowercase, 1 digit",
+    "confirm_label": "Confirm password",
+    "submit": "Activate my account",
+    "error_password_weak": "The password must be 8 to 128 characters long and include an uppercase letter, a lowercase letter and a digit.",
+    "error_password_mismatch": "The two passwords do not match.",
+    "error_email_taken": "This address is already used by another account.",
+    "email_changed_desc": "Your email address has been changed. Sign in again with the new address."
   },
   "reset_password": {
     "title": "Reset password | Vol d'Histoire",
@@ -858,7 +868,12 @@
     "edit_label_email": "Email",
     "edit_label_role": "Role",
     "edit_cancel": "Cancel",
-    "edit_save": "Save"
+    "edit_save": "Save",
+    "label_current_password": "Current password",
+    "hint_current_password_email": "Required to change your email address. A confirmation link will be sent to the new address.",
+    "toast_current_password_required": "Enter your current password",
+    "toast_current_password_invalid": "Current password is incorrect",
+    "toast_email_change_pending": "A confirmation link has been sent to the new address. It will replace the current one once confirmed."
   },
   "error404": {
     "title": "404 — Contact Lost | Vol d'Histoire",

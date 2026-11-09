@@ -55,6 +55,8 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 .page-settings .modern-form { display: flex; flex-direction: column; gap: 2rem; }
 .page-settings .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
 .page-settings .form-group { display: flex; flex-direction: column; gap: 0.75rem; }
+/* display: flex ci-dessus l'emporte sur la règle [hidden] du navigateur */
+.page-settings .form-group[hidden] { display: none; }
 .page-settings .form-group label { display: flex; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.7); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
 .page-settings .form-group label i, .page-settings .form-group label .icon { color: var(--hud-cyan); width: 20px; }
 .page-settings .form-group input, .page-settings .form-group select, .page-settings .form-group textarea { width: 100%; padding: 0.875rem 1rem; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--white); background: rgba(255,255,255,0.03); transition: var(--transition); }

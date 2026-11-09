@@ -19,6 +19,9 @@ CREATE TABLE users (
     email_verified BOOLEAN NOT NULL DEFAULT false,
     failed_login_count INTEGER NOT NULL DEFAULT 0,
     locked_until TIMESTAMPTZ NULL,
+    -- Incrémenté à chaque changement de rôle, d'email ou de mot de passe :
+    -- les access tokens émis avant sont refusés (claim `tv`).
+    token_version INTEGER NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -32,6 +35,7 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     jti         VARCHAR(36) UNIQUE NOT NULL,       -- UUID v4, identifiant unique du token
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     revoked     BOOLEAN NOT NULL DEFAULT FALSE,
+    rotated_at  TIMESTAMPTZ NULL,                  -- renseigné quand le token est remplacé par rotation (détection de rejeu)
     expires_at  TIMESTAMPTZ NOT NULL,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -54,7 +58,8 @@ CREATE TABLE IF NOT EXISTS email_tokens (
     id          SERIAL PRIMARY KEY,
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token       VARCHAR(64) NOT NULL UNIQUE,
-    type        VARCHAR(10) NOT NULL CHECK (type IN ('verify', 'reset')),
+    type        VARCHAR(10) NOT NULL CHECK (type IN ('verify', 'reset', 'email')),
+    new_email   VARCHAR(255) NULL,                 -- type 'email' : adresse à appliquer après confirmation
     expires_at  TIMESTAMPTZ NOT NULL,
     used_at     TIMESTAMPTZ,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()

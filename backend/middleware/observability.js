@@ -71,6 +71,14 @@ function requestId(req, res, next) {
 // -----------------------------------------------------------------------------
 // Middleware : Access log + métriques HTTP
 // -----------------------------------------------------------------------------
+// Libellé de route borné : le motif Express quand une route a répondu, sinon une
+// valeur fixe. Ne jamais reprendre le chemin brut — chaque chemin inconnu
+// créerait une série Prometheus permanente (mémoire non bornée côté serveur).
+function routeLabel(req) {
+  if (req.route) return req.baseUrl + req.route.path;
+  return (req.originalUrl || req.url || '').startsWith('/api/') ? 'api_unmatched' : 'unmatched';
+}
+
 function accessLog(req, res, next) {
   const start = process.hrtime.bigint();
 
@@ -78,9 +86,7 @@ function accessLog(req, res, next) {
     const durationNs = Number(process.hrtime.bigint() - start);
     const durationSec = durationNs / 1e9;
 
-    // Route normalisée (évite l'explosion de cardinalité avec les params)
-    const route = (req.route && req.baseUrl + req.route.path)
-      || req.path.replace(/\/\d+/g, '/:id').replace(/\/[a-f0-9-]{16,}/gi, '/:hash');
+    const route = routeLabel(req);
 
     const labels = { method: req.method, route, status: String(res.statusCode) };
     httpRequestsTotal.inc(labels);
@@ -130,6 +136,7 @@ module.exports = {
   register,
   requestId,
   accessLog,
+  routeLabel,
   startDbPoolMetrics,
   errorsTotal,
 };
