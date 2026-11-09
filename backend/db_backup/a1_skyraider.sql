@@ -4,11 +4,6 @@
 --   licence CC BY 2.0 — Clemens Vasters from Viersen, Germany
 --   https://commons.wikimedia.org/wiki/File%3ADouglas_A-1_Skyraider_%28AD-4NA%2C_126965%29_%287911148090%29.jpg
 
--- Entrée de référentiel propre à cette fiche.
-INSERT INTO tech (name, name_en, description, description_en)
-SELECT 'Moteur à pistons en étoile', 'Radial piston engine', 'Motorisation à cylindres disposés en étoile, longue endurance à basse altitude', 'Engine with radially arranged cylinders, long endurance at low altitude'
-WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Moteur à pistons en étoile');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,

@@ -4,11 +4,6 @@
 --   licence Public domain — MSgt Christopher Boitz
 --   https://commons.wikimedia.org/wiki/File%3AAC-130_%285872%29.jpg
 
--- Entrée de référentiel propre à cette fiche.
-INSERT INTO armement (name, name_en, description, description_en)
-SELECT 'Canon M102 105 mm', NULL, 'Obusier de 105 mm tirant en dérive depuis le flanc gauche de l''appareil', 'Side-firing 105 mm howitzer mounted on the left side of the aircraft'
-WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'Canon M102 105 mm');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,

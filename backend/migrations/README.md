@@ -6,14 +6,15 @@ pas besoin : `db_backup/db.sql` puis les fiches contiennent déjà le résultat.
 ## Mise à niveau
 
 Trois étapes, dans cet ordre. Séquence vérifiée sur une base reconstruite à
-l'état de production : **107 → 383 fiches, aucun écart** avec une installation
-neuve sur les 57 colonnes métier et les 14 tables.
+l'état de production : **107 → 383 fiches** au passage v4.7.0, puis
+**383 → 434** aux lots 25 à 28, **aucun écart** avec une installation neuve sur
+les 57 colonnes métier et les 14 tables.
 
 ```bash
 # 1. Schéma, référentiel, furtivité, crédits photo et contraintes
 psql -U vol_user -d vol_histoire -f backend/migrations/001_mise_a_niveau.sql
 
-# 2. Fiches absentes de la base (276 au passage v4.7.0)
+# 2. Fiches absentes de la base (276 au passage v4.7.0, 51 aux lots 25-28)
 #    --dry-run liste sans rien écrire
 node backend/migrations/charger-fiches.js --dry-run
 node backend/migrations/charger-fiches.js
@@ -39,7 +40,7 @@ fiches arrivent sans motorisation ni dimensions. Le fichier apporte aussi les
 constructeurs, types et armements que ces fiches référencent.
 
 `zz_backfill_relations.sql` en dernier : il résout `predecessor_id`,
-`successor_id` et `rival_id`, ce qui exige que les 383 appareils soient
+`successor_id` et `rival_id`, ce qui exige que les 434 appareils soient
 présents. C'est aussi pour cela qu'il porte un préfixe `zz` — il passe en
 dernier dans la boucle d'installation à neuf, qui charge `db_backup/*.sql` par
 ordre alphabétique.

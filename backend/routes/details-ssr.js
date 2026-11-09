@@ -13,7 +13,7 @@ const path = require('path');
 const express = require('express');
 const { rewrite: rewriteAssets } = require('../middleware/serveHtml');
 // Source unique des slugs : une copie locale a divergé en silence pendant
-// des mois, et c'est elle qui fabrique les URL canoniques des 383 fiches.
+// des mois, et c'est elle qui fabrique les URL canoniques des 434 fiches.
 const { slugify, idFromSlug } = require('../utils/url');
 
 const SITE_URL = 'https://vol-histoire.titouan-borde.com';
