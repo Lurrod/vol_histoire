@@ -4487,6 +4487,40 @@ UPDATE airplanes SET production_start = 1982, production_end = 1991
 DELETE FROM wars w WHERE w.name = 'Guerre d''Indochine'
   AND NOT EXISTS (SELECT 1 FROM airplane_wars x WHERE x.id_wars = w.id);
 
+-- Écarts de référentiel constatés en production (v4.12.0). Une base installée
+-- avant db.sql avait reçu ces huit armements par les fiches, sans traduction ;
+-- la section 2, gardée par NOT EXISTS, ne complète pas une ligne existante.
+UPDATE armement SET description_en = 'Short-range air-to-air missile, imaging infrared guidance, 20 km'
+ WHERE name = 'PL-10' AND description_en IS NULL;
+UPDATE armement SET description_en = 'Long-range air-to-air missile, active radar guidance, 200+ km'
+ WHERE name = 'PL-15' AND description_en IS NULL;
+UPDATE armement SET description_en = 'Subsonic anti-ship missile, active radar guidance, 180 km range'
+ WHERE name = 'YJ-83' AND description_en IS NULL;
+UPDATE armement SET description_en = 'Anti-radiation / anti-ship missile, 120 km range'
+ WHERE name = 'YJ-91' AND description_en IS NULL;
+UPDATE armement SET description_en = 'Precision air-to-surface missile, TV/IR guidance, 180 km range'
+ WHERE name = 'KD-88' AND description_en IS NULL;
+UPDATE armement SET description_en = 'Subsonic anti-ship missile, active radar guidance, 180 km range'
+ WHERE name = 'C-802A' AND description_en IS NULL;
+UPDATE armement SET description_en = 'Air-launched cruise missile, 1500-2000 km range'
+ WHERE name = 'CJ-10' AND description_en IS NULL;
+UPDATE armement SET description_en = 'Stealthy air-launched cruise missile, 2000+ km range'
+ WHERE name = 'CJ-20' AND description_en IS NULL;
+
+-- « Canon NR-23 » : doublon de l'armement NR-23, présent seulement sur les bases
+-- anciennes et rattaché au Q-5, qui porte déjà NR-23. (L'entrée homonyme de la
+-- table tech est distincte et n'est pas touchée.)
+DELETE FROM airplane_armement l USING armement x
+ WHERE l.id_armement = x.id AND x.name = 'Canon NR-23'
+   AND EXISTS (SELECT 1 FROM airplane_armement k JOIN armement n ON n.id = k.id_armement
+                WHERE k.id_airplane = l.id_airplane AND n.name = 'NR-23');
+DELETE FROM armement x WHERE x.name = 'Canon NR-23'
+   AND NOT EXISTS (SELECT 1 FROM airplane_armement l WHERE l.id_armement = x.id);
+
+-- Génération 1 : libellé anglais aligné sur celui des générations 2 à 5.
+UPDATE generation SET description_en = 'First generation: Subsonic jet aircraft from the 1940s–1950s'
+ WHERE generation = 1 AND description_en IS DISTINCT FROM 'First generation: Subsonic jet aircraft from the 1940s–1950s';
+
 -- ═══ 7. Contraintes de cohérence ═════════════════════════════════════════
 --
 -- Jusqu'ici la seule contrainte de la table portait sur `stealth_level` :
