@@ -7,7 +7,7 @@
 -- chargées dans l'ordre alphabétique. Une référence croisée posée depuis la fiche
 -- d'un appareil ne peut donc résoudre que les appareils déjà insérés — un
 -- successeur, par définition plus récent, est le plus souvent chargé APRÈS.
--- Le préfixe « zz » garantit que ce fichier passe en dernier, une fois les 383
+-- Le préfixe « zz » garantit que ce fichier passe en dernier, une fois les 434
 -- fiches présentes. Il est de ce fait la source unique de vérité pour ces trois
 -- colonnes : ne pas les réintroduire dans les fiches individuelles.
 --
@@ -40,6 +40,12 @@ WHERE name = 'A-10 Thunderbolt II';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Martin B-57 Canberra'),
+  rival_id       = NULL
+WHERE name = 'A-26 Invader';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'A-5 Vigilante'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Tu-16')
 WHERE name = 'A-3 Skywarrior';
@@ -69,6 +75,24 @@ UPDATE airplanes SET
 WHERE name = 'A-7 Corsair II';
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'AC-47 Spooky'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'AC-130 Spectre';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'AC-130 Spectre'),
+  rival_id       = NULL
+WHERE name = 'AC-47 Spooky';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Aero L-39 Albatros'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Aero L-39NG Skyfox';
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'AIDC F-CK-1 Ching-kuo'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'BAE Hawk')
@@ -87,6 +111,12 @@ UPDATE airplanes SET
 WHERE name = 'AIDC T-5 Brave Eagle';
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'CASA/IPTN CN-235'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Alenia C-27J Spartan')
+WHERE name = 'Airbus C295';
+
+UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Embraer EMB-326 Xavante'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Saab JAS 39 Gripen'),
   rival_id       = NULL
@@ -97,6 +127,18 @@ UPDATE airplanes SET
   successor_id   = (SELECT id FROM airplanes WHERE name = 'F-35 Lightning II Italien'),
   rival_id       = NULL
 WHERE name = 'AMX International AMX';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'DHC-2 Beaver')
+WHERE name = 'Antonov An-2';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Antonov An-225 Mriya';
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Hawker Siddeley Harrier'),
@@ -136,7 +178,7 @@ WHERE name = 'Aero L-29 Delfín';
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Aero L-29 Delfín'),
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Aero L-39NG Skyfox'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'BAE Hawk')
 WHERE name = 'Aero L-39 Albatros';
 
@@ -227,7 +269,7 @@ WHERE name = 'Avro Canada CF-105 Arrow';
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Hawker Siddeley Nimrod'),
-  rival_id       = NULL
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Canadair CP-107 Argus')
 WHERE name = 'Avro Shackleton';
 
 UPDATE airplanes SET
@@ -285,6 +327,12 @@ UPDATE airplanes SET
 WHERE name = 'B-58 Hustler';
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'A-26 Invader'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Yak-28')
+WHERE name = 'B-66 Destroyer';
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Panavia Tornado'),
   rival_id       = NULL
@@ -303,10 +351,28 @@ UPDATE airplanes SET
 WHERE name = 'BAE Sea Harrier';
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Bayraktar TB2'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'MQ-9 Reaper')
+WHERE name = 'Bayraktar Akıncı';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'MQ-28 Ghost Bat')
+WHERE name = 'Bayraktar Kızılelma';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Bayraktar Akıncı'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'MQ-9 Reaper')
 WHERE name = 'Bayraktar TB2';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Bayraktar TB2'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Bayraktar TB3';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -319,6 +385,12 @@ UPDATE airplanes SET
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Short SC.1')
 WHERE name = 'Bell X-14';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'V-22 Osprey'),
+  rival_id       = NULL
+WHERE name = 'Bell XV-15';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -345,10 +417,28 @@ UPDATE airplanes SET
 WHERE name = 'Blackburn Buccaneer';
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'E-3 Sentry'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Saab GlobalEye')
+WHERE name = 'Boeing E-7 Wedgetail';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'T-38 Talon'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'M-346 Master')
+WHERE name = 'Boeing T-7 Red Hawk';
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'F-35 Lightning II')
 WHERE name = 'Boeing X-32';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'X-47B')
+WHERE name = 'Boeing X-45';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -375,6 +465,12 @@ UPDATE airplanes SET
 WHERE name = 'C-119 Flying Boxcar';
 
 UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'C-130 Hercules'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'DHC-4 Caribou')
+WHERE name = 'C-123 Provider';
+
+UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'C-119 Flying Boxcar'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Airbus A400M Atlas'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Antonov An-12')
@@ -394,7 +490,7 @@ WHERE name = 'C-17 Globemaster III';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'V-22 Osprey'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Alenia C-27J Spartan')
 WHERE name = 'C-2 Greyhound';
 
@@ -411,6 +507,18 @@ UPDATE airplanes SET
 WHERE name = 'CAC CA-27 Sabre';
 
 UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'LTV XC-142')
+WHERE name = 'Canadair CL-84 Dynavert';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'P-2 Neptune'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'P-3 Orion'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Avro Shackleton')
+WHERE name = 'Canadair CP-107 Argus';
+
+UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Hispano HA-200 Saeta'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Aermacchi MB-339')
@@ -424,15 +532,21 @@ WHERE name = 'CASA C-212 Aviocar';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Airbus C295'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Alenia C-27J Spartan')
 WHERE name = 'CASA/IPTN CN-235';
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'T-33 Shooting Star'),
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-21'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'T-37 Tweet')
 WHERE name = 'Canadair CT-114 Tutor';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Wing Loong II')
+WHERE name = 'CASC CH-5 Rainbow';
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Chengdu J-7'),
@@ -465,8 +579,20 @@ UPDATE airplanes SET
 WHERE name = 'D-558-2 Skyrocket';
 
 UPDATE airplanes SET
-  predecessor_id = (SELECT id FROM airplanes WHERE name = 'DHC-4 Caribou'),
+  predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Antonov An-2')
+WHERE name = 'DHC-2 Beaver';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'C-123 Provider')
+WHERE name = 'DHC-4 Caribou';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'DHC-4 Caribou'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Airbus C295'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Antonov An-12')
 WHERE name = 'DHC-5 Buffalo';
 
@@ -489,8 +615,20 @@ UPDATE airplanes SET
 WHERE name = 'Dornier Do 31';
 
 UPDATE airplanes SET
-  predecessor_id = (SELECT id FROM airplanes WHERE name = 'EC-121 Warning Star'),
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'A-1 Skyraider'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'E-2 Hawkeye'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Fairey Gannet')
+WHERE name = 'E-1 Tracer';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'E-1 Tracer'),
   successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Shaanxi KJ-500')
+WHERE name = 'E-2 Hawkeye';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'EC-121 Warning Star'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Boeing E-7 Wedgetail'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Beriev A-50')
 WHERE name = 'E-3 Sentry';
 
@@ -514,6 +652,12 @@ WHERE name = 'EC-121 Warning Star';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Elbit Hermes 900'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'IAI Heron')
+WHERE name = 'Elbit Hermes 450';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Valmet L-70 Vinka')
 WHERE name = 'ENAER T-35 Pillán';
@@ -525,7 +669,7 @@ UPDATE airplanes SET
 WHERE name = 'EWR VJ 101';
 
 UPDATE airplanes SET
-  predecessor_id = (SELECT id FROM airplanes WHERE name = 'IAI Heron'),
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Elbit Hermes 450'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'MQ-1 Predator')
 WHERE name = 'Elbit Hermes 900';
@@ -741,7 +885,7 @@ UPDATE airplanes SET
 WHERE name = 'F-35I Adir';
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'F3H Demon'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'F-14 Tomcat'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'MiG-21')
 WHERE name = 'F-4 Phantom II';
@@ -843,10 +987,22 @@ UPDATE airplanes SET
 WHERE name = 'F11F Tiger';
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'FH-1 Phantom'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'F3H Demon'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'F9F Panther')
+WHERE name = 'F2H Banshee';
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'MiG-15')
 WHERE name = 'F3D Skyknight';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'F2H Banshee'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'F-4 Phantom II'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'F4D Skyray')
+WHERE name = 'F3H Demon';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -856,9 +1012,21 @@ WHERE name = 'F4D Skyray';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Étendard IV'),
+  rival_id       = NULL
+WHERE name = 'F4U Corsair';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'F-8 Crusader'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'MiG-17')
 WHERE name = 'F7U Cutlass';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'F9F Panther'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Hawker Sea Fury')
+WHERE name = 'F8F Bearcat';
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'F9F Panther'),
@@ -867,7 +1035,7 @@ UPDATE airplanes SET
 WHERE name = 'F9F Cougar';
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'F8F Bearcat'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'F9F Cougar'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'MiG-15')
 WHERE name = 'F9F Panther';
@@ -877,6 +1045,12 @@ UPDATE airplanes SET
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Hawker Hunter'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Fiat G.91')
 WHERE name = 'FFA P-16';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'F2H Banshee'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'de Havilland Vampire')
+WHERE name = 'FH-1 Phantom';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -905,7 +1079,7 @@ WHERE name = 'Fairey Firefly';
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Fairey Firefly'),
   successor_id   = NULL,
-  rival_id       = NULL
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'S-2 Tracker')
 WHERE name = 'Fairey Gannet';
 
 UPDATE airplanes SET
@@ -955,6 +1129,12 @@ UPDATE airplanes SET
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'CASA/IPTN CN-235')
 WHERE name = 'GAF Nomad';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'XQ-58 Valkyrie')
+WHERE name = 'General Atomics YFQ-42A Dark Merlin';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -1015,6 +1195,12 @@ UPDATE airplanes SET
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Chengdu J-10')
 WHERE name = 'HAL Tejas Mk2';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Hawker Sea Hawk'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'F8F Bearcat')
+WHERE name = 'Hawker Sea Fury';
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'F-5 Freedom Fighter'),
@@ -1079,6 +1265,12 @@ WHERE name = 'Hispano HA-200 Saeta';
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Sukhoi S-70 Okhotnik')
+WHERE name = 'Hongdu GJ-11 Sharp Sword';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Aermacchi MB-339')
 WHERE name = 'Hongdu JL-8';
 
@@ -1093,6 +1285,18 @@ UPDATE airplanes SET
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Yak-130')
 WHERE name = 'Hongdu L-15';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Beriev Be-12 Chaïka')
+WHERE name = 'HU-16 Albatross';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'F-86 Sabre')
+WHERE name = 'IAe 33 Pulqui II';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -1193,7 +1397,7 @@ WHERE name = 'Jet Provost';
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'KAI T-50 Golden Eagle'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'KAI KF-21 Boramae'),
-  rival_id       = (SELECT id FROM airplanes WHERE name = 'JF-17 Thunder')
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Chengdu FC-1/JF-17')
 WHERE name = 'KAI FA-50';
 
 UPDATE airplanes SET
@@ -1265,6 +1469,24 @@ WHERE name = 'Kawasaki T-4';
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'E-3 Sentry')
+WHERE name = 'KJ-2000';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Leduc 010';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Lockheed Martin X-59 QueSST';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Dornier Do 31')
 WHERE name = 'LTV XC-142';
 
@@ -1305,10 +1527,22 @@ UPDATE airplanes SET
 WHERE name = 'M-346 Master';
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'A-26 Invader'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Il-28')
+WHERE name = 'Martin B-57 Canberra';
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'MQ-9 Reaper'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'IAI Heron')
 WHERE name = 'MQ-1 Predator';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'MQ-1C Gray Eagle';
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'X-47B'),
@@ -1409,7 +1643,7 @@ WHERE name = 'MiG-35';
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'MiG-15'),
-  rival_id       = NULL
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Yak-17')
 WHERE name = 'MiG-9';
 
 UPDATE airplanes SET
@@ -1510,6 +1744,18 @@ WHERE name = 'Mitsubishi X-2 Shinshin';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'XQ-58 Valkyrie')
+WHERE name = 'MQ-28 Ghost Bat';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'RQ-4 Global Hawk'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'MQ-4C Triton';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Myasishchev M-50'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'B-47 Stratojet')
 WHERE name = 'Myasishchev M-4';
@@ -1546,9 +1792,27 @@ WHERE name = 'Nanchang Q-5';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'SNCASO Trident')
+WHERE name = 'Nord 1500 Griffon';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Transall C-160'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'C-119 Flying Boxcar')
 WHERE name = 'Nord Noratlas';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Northrop Tacit Blue';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'B-36 Peacemaker')
+WHERE name = 'Northrop YB-49';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -1591,6 +1855,12 @@ UPDATE airplanes SET
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-7')
 WHERE name = 'PAC Super Mushshak';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-9'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'T-6 Texan II')
+WHERE name = 'Pilatus PC-21';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -1636,7 +1906,7 @@ WHERE name = 'Pilatus PC-7';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-21'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Embraer EMB-312 Tucano')
 WHERE name = 'Pilatus PC-9';
 
@@ -1672,9 +1942,51 @@ WHERE name = 'Ryan Firebee';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'S-3 Viking'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Breguet Alizé')
+WHERE name = 'S-2 Tracker';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'S-2 Tracker'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'S-3 Viking';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Saab 29 Tunnan'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'de Havilland Vampire')
+WHERE name = 'Saab 21R';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Saab GlobalEye'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Embraer E-99')
+WHERE name = 'Saab 340 AEW&C';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-7')
 WHERE name = 'SF.260';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'E-2 Hawkeye')
+WHERE name = 'Shaanxi KJ-500';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Shaanxi Y-8'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'C-130 Hercules')
+WHERE name = 'Shaanxi Y-9';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Mirage III')
+WHERE name = 'SNCASO Trident';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -1695,7 +2007,7 @@ UPDATE airplanes SET
 WHERE name = 'Saab 105';
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Saab 21R'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Saab 32 Lansen'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'MiG-15')
 WHERE name = 'Saab 29 Tunnan';
@@ -1719,7 +2031,7 @@ UPDATE airplanes SET
 WHERE name = 'Saab 37 Viggen';
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Saab 340 AEW&C'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'E-2 Hawkeye')
 WHERE name = 'Saab GlobalEye';
@@ -1750,7 +2062,7 @@ WHERE name = 'Sea Vixen';
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Antonov An-12'),
-  successor_id   = (SELECT id FROM airplanes WHERE name = 'Xian Y-20 Kunpeng'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Shaanxi Y-9'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'C-130 Hercules')
 WHERE name = 'Shaanxi Y-8';
 
@@ -1925,6 +2237,12 @@ WHERE name = 'Su-9';
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Hongdu GJ-11 Sharp Sword')
+WHERE name = 'Sukhoi S-70 Okhotnik';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'XB-70 Valkyrie')
 WHERE name = 'Sukhoi T-4';
 
@@ -1984,7 +2302,7 @@ WHERE name = 'T-37 Tweet';
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'T-33 Shooting Star'),
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Boeing T-7 Red Hawk'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'BAE Hawk')
 WHERE name = 'T-38 Talon';
 
@@ -1993,6 +2311,18 @@ UPDATE airplanes SET
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-9')
 WHERE name = 'T-6 Texan II';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'IAI Heron'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Bayraktar TB2')
+WHERE name = 'TAI Anka';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'T-38 Talon'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'M-346 Master')
+WHERE name = 'TAI Hürjet';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -2077,6 +2407,12 @@ UPDATE airplanes SET
   successor_id   = (SELECT id FROM airplanes WHERE name = 'SR-71 Blackbird'),
   rival_id       = NULL
 WHERE name = 'U-2 Dragon Lady';
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'C-2 Greyhound'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'V-22 Osprey';
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'EWR VJ 101'),
@@ -2182,6 +2518,12 @@ WHERE name = 'Xian Y-20 Kunpeng';
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'MiG-15'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'MiG-9')
+WHERE name = 'Yak-17';
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'F/A-18 Hornet'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'F-16 Fighting Falcon')
 WHERE name = 'YF-17 Cobra';
@@ -2211,7 +2553,7 @@ UPDATE airplanes SET
 WHERE name = 'Yak-141';
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Yak-17'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Yak-25'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'La-15')
 WHERE name = 'Yak-23';
@@ -2253,7 +2595,7 @@ UPDATE airplanes SET
 WHERE name = 'de Havilland Venom';
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'F4U Corsair'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Super Étendard'),
   rival_id       = NULL
 WHERE name = 'Étendard IV';

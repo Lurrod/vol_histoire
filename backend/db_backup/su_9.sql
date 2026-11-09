@@ -4,11 +4,6 @@
 --   licence Public domain — Alf van Beem
 --   https://commons.wikimedia.org/wiki/File%3ASu-9_at_Central_Air_Force_Museum_Monino_pic1.JPG
 
--- Entrée de référentiel propre à cette fiche.
-INSERT INTO armement (name, name_en, description, description_en)
-SELECT 'RS-2US', NULL, 'Missile air-air à guidage radar par faisceau directeur, portée 6 km', 'Beam-riding radar-guided air-to-air missile, 6 km range'
-WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'RS-2US');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,

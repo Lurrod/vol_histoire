@@ -522,7 +522,10 @@ INSERT INTO manufacturer (name, name_en, country_id, code) VALUES
 ('PAC (Pakistan Aeronautical Complex)', 'PAC (Pakistan Aeronautical Complex)', (SELECT id FROM countries WHERE code = 'PAK'), 'PAC'),
 ('SOCATA', 'SOCATA', (SELECT id FROM countries WHERE code = 'FRA'), 'SOC'),
 ('Scottish Aviation', 'Scottish Aviation', (SELECT id FROM countries WHERE code = 'GBR'), 'SAL'),
-('Britten-Norman', 'Britten-Norman', (SELECT id FROM countries WHERE code = 'GBR'), 'BN');
+('Britten-Norman', 'Britten-Norman', (SELECT id FROM countries WHERE code = 'GBR'), 'BN'),
+('Martin (Glenn L. Martin Company)', 'Martin (Glenn L. Martin Company)', (SELECT id FROM countries WHERE code = 'USA'), 'MAR'),
+('CASC (China Aerospace Science and Technology Corporation)', 'CASC (China Aerospace Science and Technology Corporation)', (SELECT id FROM countries WHERE code = 'CHN'), 'CASC'),
+('René Leduc', 'René Leduc', (SELECT id FROM countries WHERE code = 'FRA'), 'LED');
 
 INSERT INTO generation (generation, description, description_en) VALUES
 (1, 'Première génération : Avions à réaction subsoniques des années 1940-1950', NULL),
@@ -761,7 +764,18 @@ INSERT INTO armement (name, name_en, description, description_en) VALUES
 ('M3 Browning 12,7 mm', NULL, 'Mitrailleuse lourde américaine de 12,7 mm, 1 200 coups/min, armement standard des premiers jets', 'American 12.7 mm heavy machine gun, 1,200 rounds/min, standard armament of the first jets'),
 ('Mk 46', NULL, 'Torpille légère anti-sous-marine américaine, portée 11 km, immersion 365 m', 'American lightweight anti-submarine torpedo, 11 km range, 365 m depth'),
 ('Sting Ray', NULL, 'Torpille légère anti-sous-marine britannique à guidage actif/passif', 'British lightweight anti-submarine torpedo with active/passive homing'),
-('FFAR Mighty Mouse', NULL, 'Roquette air-air non guidée de 70 mm, tirée en salve depuis un panier ventral', 'Unguided 70 mm air-to-air rocket, salvo-fired from a belly tray');
+('FFAR Mighty Mouse', NULL, 'Roquette air-air non guidée de 70 mm, tirée en salve depuis un panier ventral', 'Unguided 70 mm air-to-air rocket, salvo-fired from a belly tray'),
+-- Remontés des fiches (ac130_spectre, bayraktar_tb2, fck1_ching_kuo, su_9, tu_128) puis lots 25-28
+('Canon M102 105 mm', NULL, 'Obusier de 105 mm tirant en dérive depuis le flanc gauche de l''appareil', 'Side-firing 105 mm howitzer mounted on the left side of the aircraft'),
+('MAM-L', NULL, 'Munition guidée laser de 22 kg conçue pour les drones tactiques légers', 'Laser-guided 22 kg munition designed for light tactical drones'),
+('TC-1 Tien Chien I', NULL, 'Missile air-air courte portée à guidage infrarouge, portée 8 km', 'Short-range infrared-guided air-to-air missile, 8 km range'),
+('TC-2 Tien Chien II', NULL, 'Missile air-air moyenne portée à guidage radar actif, portée 60 km', 'Medium-range active radar-guided air-to-air missile, 60 km range'),
+('RS-2US', NULL, 'Missile air-air à guidage radar par faisceau directeur, portée 6 km', 'Beam-riding radar-guided air-to-air missile, 6 km range'),
+('R-4', NULL, 'Missile air-air lourd, versions à guidage radar semi-actif et infrarouge, portée 25 km', 'Heavy air-to-air missile in semi-active radar and infrared versions, 25 km range'),
+('NS-23', NULL, 'Canon soviétique de 23 mm Noudelman-Souranov, mis au point en 1944, armement des premiers chasseurs à réaction Yakovlev', 'Soviet Nudelman-Suranov 23 mm cannon, developed in 1944, fitted to the first Yakovlev jet fighters'),
+('Gökdoğan', NULL, 'Missile air-air turc à guidage radar actif, au-delà de la portée visuelle (TÜBİTAK SAGE)', 'Turkish beyond-visual-range air-to-air missile, active radar guidance (TÜBİTAK SAGE)'),
+('AR-1', NULL, 'Missile air-sol léger chinois à guidage laser semi-actif, conçu pour les drones', 'Light Chinese semi-active laser-guided air-to-surface missile designed for drones'),
+('M134 Minigun', 'M134 Minigun', 'Mitrailleuse rotative à six canons de 7,62 mm entraînée électriquement, jusqu''à 6 000 coups/min (désignation USAF : GAU-2/A)', 'Electrically driven six-barrel 7.62 mm rotary machine gun, up to 6,000 rounds/min (USAF designation: GAU-2/A)');
 
 -- Technologies génériques réutilisables
 INSERT INTO tech (name, name_en, description, description_en) VALUES
@@ -892,7 +906,11 @@ INSERT INTO tech (name, name_en, description, description_en) VALUES
 -- Mêmes causes que pour l'armement ci-dessus : références mortes depuis les fiches.
 INSERT INTO tech (name, name_en, description, description_en) VALUES
 ('Radar AN/APQ-94', 'AN/APQ-94 radar', 'Radar de conduite de tir monopulse pour l''interception tout temps', 'Monopulse fire-control radar for all-weather interception'),
-('Système de ravitaillement en vol', 'Aerial refuelling system', 'Perche ou réceptacle permettant l''extension du rayon d''action en vol', 'Probe or receptacle extending combat radius in flight');
+('Système de ravitaillement en vol', 'Aerial refuelling system', 'Perche ou réceptacle permettant l''extension du rayon d''action en vol', 'Probe or receptacle extending combat radius in flight'),
+-- Remonté de a1_skyraider puis lots 25-28
+('Moteur à pistons en étoile', 'Radial piston engine', 'Motorisation à cylindres disposés en étoile, longue endurance à basse altitude', 'Engine with radially arranged cylinders, long endurance at low altitude'),
+('Rotors basculants', 'Tiltrotors', 'Rotors montés en bout d''aile dans des nacelles qui pivotent de la verticale à l''horizontale : décollage vertical comme un hélicoptère, croisière comme un avion à hélices', 'Wingtip rotors in nacelles that pivot from vertical to horizontal: vertical take-off like a helicopter, cruise like a propeller aircraft'),
+('Aile volante', 'Flying wing', 'Voilure sans fuselage ni empennage horizontal, qui porte à elle seule l''équipage, les moteurs et la charge', 'Wing with no fuselage or horizontal tail, carrying crew, engines and payload on its own');
 
 -- =============================================================================
 -- timeline_events — chronologie éditoriale du ciel militaire (1945 → aujourd'hui).

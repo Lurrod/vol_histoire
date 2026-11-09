@@ -27,8 +27,8 @@ const CACHE_PREFIX = 'vdh:hero:v2';
 const CACHE_TTL_S = 10 * 60; // 10 minutes
 
 // Fenêtre de repli quand la date du jour ne porte aucun anniversaire.
-// Sur les 383 fiches : 359 premiers vols au jour près (220 jours distincts) et
-// 107 mises en service exploitables, soit 253 jours de l'année couverts. La plus
+// Sur les 434 fiches : 400 premiers vols au jour près (229 jours distincts) et
+// 115 mises en service exploitables, soit 260 jours de l'année couverts. La plus
 // longue série de jours vides étant de 4, une fenêtre de ±3 garantit toujours au
 // moins un résultat. Le widget affiche alors « Cette semaine-là » plutôt que
 // « Ce jour-là » — la date exacte étant de toute façon écrite dans la carte.

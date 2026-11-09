@@ -4,11 +4,6 @@
 --   licence CC BY-SA 4.0 — Bayhaluk
 --   https://commons.wikimedia.org/wiki/File%3ABayraktar_TB2_Runway.jpg
 
--- Entrée de référentiel propre à cette fiche.
-INSERT INTO armement (name, name_en, description, description_en)
-SELECT 'MAM-L', NULL, 'Munition guidée laser de 22 kg conçue pour les drones tactiques légers', 'Laser-guided 22 kg munition designed for light tactical drones'
-WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'MAM-L');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,

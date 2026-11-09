@@ -4,16 +4,6 @@
 --   licence CC BY-SA 4.0 — RudolphChen
 --   https://commons.wikimedia.org/wiki/File%3AF-CK-1A.jpg
 
--- Entrée de référentiel propre à cette fiche.
-INSERT INTO armement (name, name_en, description, description_en)
-SELECT 'TC-1 Tien Chien I', NULL, 'Missile air-air courte portée à guidage infrarouge, portée 8 km', 'Short-range infrared-guided air-to-air missile, 8 km range'
-WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'TC-1 Tien Chien I');
-
--- Entrée de référentiel propre à cette fiche.
-INSERT INTO armement (name, name_en, description, description_en)
-SELECT 'TC-2 Tien Chien II', NULL, 'Missile air-air moyenne portée à guidage radar actif, portée 60 km', 'Medium-range active radar-guided air-to-air missile, 60 km range'
-WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'TC-2 Tien Chien II');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,

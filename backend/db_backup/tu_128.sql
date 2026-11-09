@@ -4,11 +4,6 @@
 --   licence CC BY-SA 3.0 — Mike1979 Russia
 --   https://commons.wikimedia.org/wiki/File%3ATu-128.jpg
 
--- Entrée de référentiel propre à cette fiche.
-INSERT INTO armement (name, name_en, description, description_en)
-SELECT 'R-4', NULL, 'Missile air-air lourd, versions à guidage radar semi-actif et infrarouge, portée 25 km', 'Heavy air-to-air missile in semi-active radar and infrared versions, 25 km range'
-WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'R-4');
-
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
