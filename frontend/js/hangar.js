@@ -54,13 +54,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   VH.hangar.filters.updateActiveFilters(state);
 
-  // Observer pour animations d'entrée
-  const cardObserver = setInterval(() => {
-    if (document.querySelectorAll('.aircraft-card').length > 0) {
-      VH.hangar.render.observeCards();
-      clearInterval(cardObserver);
-    }
-  }, 100);
+  // L'entrée des cartes est animée en CSS à chaque rendu (voir hangar.css,
+  // « Entrée des cartes ») : plus d'observateur à poser au démarrage.
 
   // Re-render sur changement de langue
   window.addEventListener('langChanged', () => {

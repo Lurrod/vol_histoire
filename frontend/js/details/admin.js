@@ -84,10 +84,21 @@
     }
 
     function closeEditModal() {
+      if (!editModal.classList.contains('show') || editModal.classList.contains('is-closing')) return;
       _focusTrap?.destroy();
       _focusTrap = null;
-      editModal.classList.remove('show');
-      document.body.style.overflow = '';
+      // Animation de sortie, puis masquage (repli par minuterie si
+      // animationend ne se déclenche pas).
+      editModal.classList.add('is-closing');
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        editModal.classList.remove('show', 'is-closing');
+        document.body.style.overflow = '';
+      };
+      editModal.addEventListener('animationend', finish, { once: true });
+      setTimeout(finish, 320);
       _previousFocus?.focus();
     }
     VH.details.admin.closeEditModal = closeEditModal;
@@ -215,6 +226,11 @@
         image_licence: str('edit-image-licence'),
       };
 
+      // Enregistrement en cours : bouton bloqué, pas de double envoi.
+      const submitBtn = editForm.querySelector('[type="submit"]') || document.querySelector('button[form="edit-form"]');
+      if (submitBtn?.getAttribute('aria-busy') === 'true') return;
+      submitBtn?.setAttribute('aria-busy', 'true');
+      if (submitBtn) submitBtn.disabled = true;
       try {
         const response = await auth.authFetch(`/api/airplanes/${state.aircraftId}`, {
           method: 'PUT',
@@ -227,11 +243,16 @@
         await VH.details.data.loadAircraftDetails(state);
       } catch (error) {
         showToast(error.message || i18n.t('common.update_error'), 'error');
+      } finally {
+        submitBtn?.removeAttribute('aria-busy');
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
 
     deleteBtn?.addEventListener('click', async () => {
       if (!confirm(i18n.t('common.confirm_delete') + ` "${state.aircraftData.name}" ?`)) return;
+      deleteBtn.disabled = true;
+      deleteBtn.setAttribute('aria-busy', 'true');
       try {
         const response = await auth.authFetch(`/api/airplanes/${state.aircraftId}`, { method: 'DELETE' });
         if (!response.ok) throw new Error(i18n.t('common.delete_error'));
@@ -239,6 +260,8 @@
         setTimeout(() => window.location.href = '/hangar', 1500);
       } catch (error) {
         showToast(error.message || i18n.t('common.delete_error'), 'error');
+        deleteBtn.disabled = false;
+        deleteBtn.removeAttribute('aria-busy');
       }
     });
   }

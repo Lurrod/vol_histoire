@@ -46,7 +46,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.preventDefault();
       const target = document.querySelector(href);
       if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Défilement doux, sauf si l'utilisateur demande moins d'animations.
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
       }
     });
   });

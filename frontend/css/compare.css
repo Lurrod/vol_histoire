@@ -24,10 +24,25 @@
   animation: compareBarUp 0.25s var(--ease);
 }
 .compare-bar.hidden { display: none; }
-.compare-bar #compare-count { color: var(--hud-cyan); font-weight: 600; font-size: 0.85rem; }
+/* Sortie : jouée avant que .hidden ne retire la barre (js/shared/compare.js). */
+.compare-bar.is-leaving { animation: compareBarDown 0.2s var(--ease) forwards; pointer-events: none; }
+/* inline-block : un <span> en ligne ne se met pas à l'échelle. */
+.compare-bar #compare-count { color: var(--hud-cyan); font-weight: 600; font-size: 0.85rem; display: inline-block; }
+.compare-bar #compare-count.is-bumped { animation: compareCountPulse 0.35s var(--ease); }
+/* Lien copié : confirmation sur le bouton, en plus du toast. */
+.compare-bar #compare-share.is-copied { background: rgba(200,169,110,0.14); border-color: var(--hud-cyan); color: var(--hud-cyan); }
 @keyframes compareBarUp {
   from { transform: translate(-50%, 20px); opacity: 0; }
   to   { transform: translate(-50%, 0);    opacity: 1; }
+}
+@keyframes compareBarDown {
+  from { transform: translate(-50%, 0);    opacity: 1; }
+  to   { transform: translate(-50%, 20px); opacity: 0; }
+}
+@keyframes compareCountPulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
 }
 
 /* Compare modal — forcer le display par défaut (certains resets cassent <dialog>) */
@@ -76,7 +91,7 @@
   gap: 0.75rem;
   margin: 0;
 }
-.compare-modal-header h2 i { color: var(--hud-cyan); font-size: 1.15rem; }
+.compare-modal-header h2 i, .compare-modal-header h2 .icon { color: var(--hud-cyan); font-size: 1.15rem; }
 
 .compare-modal-header .compare-modal-close {
   background: transparent;
@@ -274,7 +289,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.cmp-group-header i { color: var(--hud-cyan); }
+.cmp-group-header i, .cmp-group-header .icon { color: var(--hud-cyan); }
 .cmp-group-header i, .cmp-group-header .icon { font-size: 0.75rem; }
 .cmp-row {
   display: grid;
@@ -389,7 +404,7 @@
   color: var(--text-secondary);
   line-height: 1.5;
 }
-.cmp-verdict-item i { color: var(--hud-cyan); font-size: 0.75rem; width: 18px; text-align: center; }
+.cmp-verdict-item i, .cmp-verdict-item .icon { color: var(--hud-cyan); font-size: 0.75rem; width: 18px; text-align: center; }
 .cmp-verdict-item strong { color: var(--text-primary); }
 
 /* Loading */
@@ -403,6 +418,36 @@
   font-size: 0.95rem;
 }
 .cmp-loading.cmp-error { color: var(--accent); }
+
+/* Retrait d'une colonne : en-tête et cellules s'effacent, puis la grille se
+   recompose sur les données déjà chargées (removeColumn, compare.js). */
+.cmp-col-head.is-removing,
+.cmp-cell.is-removing {
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  pointer-events: none;
+}
+.cmp-remove:disabled { cursor: default; opacity: 0.5; }
+.cmp-remove:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
+#compare-modal-body.cmp-enter > * { animation: cmpFadeIn 0.2s var(--ease) backwards; }
+@keyframes cmpFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Mouvement réduit : la barre, le compteur, la modale et le retrait de
+   colonne passent sans animation (le JS saute aussi ses délais). */
+@media (prefers-reduced-motion: reduce) {
+  .compare-bar,
+  .compare-bar.is-leaving,
+  .compare-bar #compare-count.is-bumped,
+  .compare-modal,
+  #compare-modal-body.cmp-enter > * { animation: none; }
+  .cmp-col-head,
+  .cmp-col-head.is-removing,
+  .cmp-cell.is-removing,
+  .cmp-row,
+  .cmp-remove,
+  .compare-bar .btn { transition: none; }
+}
 
 /* Mobile compare */
 @media (max-width: 48em) {

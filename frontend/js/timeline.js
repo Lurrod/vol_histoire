@@ -15,6 +15,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     1980: '#C8A96E', 1990: '#7b5cf0', 2000: '#2979ff', 2010: '#e040fb', 2020: '#ff3d6e'
   };
 
+  // Défilement doux, sauf si l'utilisateur demande moins d'animations.
+  function scrollBehavior() {
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return reduce ? 'auto' : 'smooth';
+  }
+
   function currentLang() {
     return (window.i18n && window.i18n.currentLang) || 'fr';
   }
@@ -232,7 +238,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (yearLbl) yearLbl.textContent = era.label || '';
         document.body.style.setProperty('--tl-active-era', era.color);
         const y = target.getBoundingClientRect().top + window.pageYOffset - 80;
-        window.scrollTo({ top: y, behavior: 'smooth' });
+        window.scrollTo({ top: y, behavior: scrollBehavior() });
       });
     });
   }
@@ -423,7 +429,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const el = document.getElementById('ch-' + ids[i]);
       if (!el) return;
       const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      window.scrollTo({ top: y, behavior: scrollBehavior() });
     }
     window.addEventListener('keydown', e => {
       if (e.target.matches('input, textarea, [contenteditable]')) return;
@@ -435,7 +441,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         jumpTo(currentIdx() - 1);
       } else if (e.key === 'Home') {
         e.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: scrollBehavior() });
       } else if (e.key === 'End') {
         e.preventDefault();
         jumpTo(ids.length - 1);

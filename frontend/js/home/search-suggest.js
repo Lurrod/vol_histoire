@@ -16,6 +16,8 @@
   root.VH.home = root.VH.home || {};
 
   const MAX_SUGGESTIONS = 6;
+  // Durée du fondu de fermeture du panneau (home-landing.css, .is-closing).
+  const CLOSE_FADE_MS = 150;
   const PAGE_SIZE = 100; // plafond serveur de ?limit
 
   /* ---------- Logique pure ---------- */
@@ -129,15 +131,37 @@
     let targets = [];
     let active = -1;
     let timer = null;
+    let closeTimer = null;
 
-    function close() {
+    function reducedMotion() {
+      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    }
+
+    function isClosed() {
+      return panel.hidden || panel.classList.contains('is-closing');
+    }
+
+    // Masquage effectif, une fois le fondu de fermeture terminé.
+    function finishClose() {
+      clearTimeout(closeTimer);
+      closeTimer = null;
+      panel.classList.remove('is-closing');
       panel.hidden = true;
       list.innerHTML = '';
       footer.innerHTML = '';
+    }
+
+    // L'état ARIA est fermé tout de suite ; le panneau, lui, s'efface en
+    // fondu (.is-closing, home-landing.css) avant de recevoir [hidden].
+    function close() {
       input.setAttribute('aria-expanded', 'false');
       input.removeAttribute('aria-activedescendant');
       targets = [];
       active = -1;
+      if (panel.hidden || reducedMotion()) { finishClose(); return; }
+      if (panel.classList.contains('is-closing')) return;
+      panel.classList.add('is-closing');
+      closeTimer = setTimeout(finishClose, CLOSE_FADE_MS);
     }
 
     function setActive(i) {
@@ -157,6 +181,10 @@
     function render(query, results) {
       const shown = results.slice(0, MAX_SUGGESTIONS);
       targets = shown.map((a) => VH.shared.buildDetailsPath(a.id, a.name));
+      // Une frappe pendant le fondu de fermeture rouvre le panneau.
+      clearTimeout(closeTimer);
+      closeTimer = null;
+      panel.classList.remove('is-closing');
       list.innerHTML = shown.map(optionHtml).join('');
       // Un listbox vide est masqué : seul le message « aucun appareil » reste.
       list.hidden = !shown.length;
@@ -195,7 +223,7 @@
     });
 
     input.addEventListener('keydown', (e) => {
-      if (panel.hidden) {
+      if (isClosed()) {
         if (e.key === 'ArrowDown' && input.value.trim()) { e.preventDefault(); update(); }
         return;
       }

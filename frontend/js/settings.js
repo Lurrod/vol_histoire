@@ -37,11 +37,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (focusTab) link.focus();
     if (scroll) {
+      // Défilement doux, sauf si l'utilisateur demande moins d'animations.
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const behavior = reduce ? 'auto' : 'smooth';
       const anchor = document.querySelector('.settings-section');
       if (anchor && typeof anchor.scrollIntoView === 'function') {
-        anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        anchor.scrollIntoView({ behavior, block: 'start' });
       } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior });
       }
     }
   }
@@ -427,13 +430,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (deleteAccountBtn) {
     deleteAccountBtn.addEventListener('click', async () => {
-      const confirmText = 'SUPPRIMER';
+      // Mot de confirmation et consigne traduits (repli français).
+      const confirmText = tr('settings.delete_confirm_word', 'SUPPRIMER');
       const userInput = prompt(
-        `Cette action est irréversible. Toutes vos données seront définitivement supprimées.\n\n` +
-        `Pour confirmer, tapez "${confirmText}" (en majuscules) :`
+        tr('settings.delete_confirm_prompt',
+          'Cette action est irréversible. Toutes vos données seront définitivement supprimées.\n\nPour confirmer, tapez « {word} » (en majuscules) :'
+        ).replace('{word}', confirmText)
       );
 
-      if (userInput === confirmText) {
+      if (userInput !== null && userInput.trim() === confirmText) {
         setButtonLoading(deleteAccountBtn, true);
 
         try {
@@ -450,7 +455,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }, 2000);
           } else {
             const data = await response.json();
-            showToast(data.message || 'Erreur lors de la suppression', 'error');
+            showToast(data.message || tr('settings.toast_delete_error', 'Erreur lors de la suppression'), 'error');
             setButtonLoading(deleteAccountBtn, false);
           }
         } catch {
@@ -459,7 +464,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           setButtonLoading(deleteAccountBtn, false);
         }
       } else if (userInput !== null) {
-        showToast('Confirmation incorrecte', 'error');
+        showToast(tr('settings.toast_delete_confirm_mismatch', 'Confirmation incorrecte'), 'error');
       }
     });
   }
@@ -470,15 +475,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // validateEmail → isValidEmail() dans utils.js (même regex que le backend)
 
+  /** Libellé traduit, ou repli français tant que la clé n'existe pas. */
+  function tr(key, fallback) {
+    const value = (typeof i18n !== 'undefined' && typeof i18n.t === 'function') ? i18n.t(key) : null;
+    return value && value !== key ? value : fallback;
+  }
+
+  // Le libellé reste lu par les lecteurs d'écran pendant le chargement
+  // (texte masqué visuellement) et aria-busy signale l'action en cours.
   function setButtonLoading(button, loading) {
     if (!button) return;
 
     if (loading) {
+      const label = button.textContent.trim();
       button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
       button.dataset.originalHtml = button.innerHTML;
-      button.innerHTML = '<span class="spinner"></span>';
+      button.innerHTML = `<span class="spinner" aria-hidden="true"></span><span class="sr-only">${escapeHtml(label)}</span>`;
     } else {
       button.disabled = false;
+      button.removeAttribute('aria-busy');
       button.innerHTML = button.dataset.originalHtml;
     }
   }

@@ -121,3 +121,72 @@ describe('CookieConsent — acceptAll / rejectAll', () => {
     expect(consent.analytics).toBe(false);
   });
 });
+
+describe('CookieConsent — en-têtes de catégorie', () => {
+  let cc;
+  beforeEach(() => {
+    localStorage.clear();
+    document.body.innerHTML = `
+      <div id="cookie-banner" class="hidden"></div>
+      <div class="cookie-category-header" id="h-essential">
+        <h3>Essentiels</h3>
+        <div class="cookie-toggle"><input type="checkbox" id="cookie-essential" checked disabled><label for="cookie-essential"></label></div>
+      </div>
+      <div class="cookie-category-header" id="h-analytics">
+        <h3>Analytiques</h3>
+        <div class="cookie-toggle"><input type="checkbox" id="cookie-analytics"><label for="cookie-analytics"></label></div>
+      </div>
+    `;
+    cc = new CookieConsent();
+    cc.bindCategoryHeaders();
+  });
+
+  test('un clic sur l’en-tête bascule l’interrupteur de la catégorie', () => {
+    const input = document.getElementById('cookie-analytics');
+    document.querySelector('#h-analytics h3').click();
+    expect(input.checked).toBe(true);
+    document.querySelector('#h-analytics h3').click();
+    expect(input.checked).toBe(false);
+  });
+
+  test('un clic sur la case elle-même ne la bascule qu’une fois', () => {
+    const input = document.getElementById('cookie-analytics');
+    input.click();
+    expect(input.checked).toBe(true);
+  });
+
+  test('une catégorie verrouillée ne reçoit pas l’affordance de clic', () => {
+    expect(document.getElementById('h-essential').classList.contains('is-toggleable')).toBe(false);
+    expect(document.getElementById('h-analytics').classList.contains('is-toggleable')).toBe(true);
+    document.querySelector('#h-essential h3').click();
+    expect(document.getElementById('cookie-essential').checked).toBe(true);
+  });
+});
+
+describe('CookieConsent — toast', () => {
+  afterEach(() => { delete global.showToast; });
+
+  test('délègue au showToast partagé quand il existe', () => {
+    localStorage.clear();
+    document.body.innerHTML = '<div id="cookie-banner" class="hidden"></div>';
+    global.showToast = jest.fn();
+    const cc = new CookieConsent();
+    cc.acceptAll();
+    expect(global.showToast).toHaveBeenCalledWith(expect.any(String), 'success');
+  });
+
+  test('le repli n’écrit aucun style en ligne', () => {
+    jest.useFakeTimers();
+    localStorage.clear();
+    document.body.innerHTML = '<div id="cookie-banner" class="hidden"></div>';
+    const cc = new CookieConsent();
+    cc.showToast('Message', 'info');
+    const toast = document.querySelector('#toast-container .toast');
+    expect(toast).not.toBeNull();
+    expect(document.getElementById('toast-container').getAttribute('style')).toBeNull();
+    jest.advanceTimersByTime(3000);
+    expect(toast.classList.contains('fade-out')).toBe(true);
+    expect(toast.getAttribute('style')).toBeNull();
+    jest.useRealTimers();
+  });
+});

@@ -6,6 +6,7 @@
 
   const SESSION_KEY = 'hangar_filters';
   const dropdownTimeouts = new Map();
+  const FILTER_KEYS = ['country', 'generation', 'type', 'war', 'mission'];
 
   function populateFilterOptions(state) {
     const countryOptions = document.getElementById('country-options');
@@ -16,46 +17,71 @@
 
     if (countryOptions) {
       countryOptions.innerHTML = state.countries.map(c => `
-        <div class="filter-option" data-value="${escapeHtml(c.name_fr || c.name)}">
+        <button type="button" class="filter-option" aria-pressed="false" data-value="${escapeHtml(c.name_fr || c.name)}">
           ${escapeHtml(c.name)}
-        </div>`).join('');
+        </button>`).join('');
     }
     if (generationOptions) {
       generationOptions.innerHTML = state.generations.map(gen => `
-        <div class="filter-option" data-value="${gen}">
+        <button type="button" class="filter-option" aria-pressed="false" data-value="${gen}">
           ${gen}e Génération
-        </div>`).join('');
+        </button>`).join('');
     }
     if (typeOptions) {
       typeOptions.innerHTML = state.types.map(t => `
-        <div class="filter-option" data-value="${escapeHtml(t.name_fr || t.name)}">
+        <button type="button" class="filter-option" aria-pressed="false" data-value="${escapeHtml(t.name_fr || t.name)}">
           ${escapeHtml(t.name)}
-        </div>`).join('');
+        </button>`).join('');
     }
     // Conflits : ordre chronologique (celui de l'API), période en complément.
     if (warOptions) {
       warOptions.innerHTML = (state.wars || []).map(w => `
-        <div class="filter-option" data-value="${escapeHtml(w.name_fr || w.name)}">
+        <button type="button" class="filter-option" aria-pressed="false" data-value="${escapeHtml(w.name_fr || w.name)}">
           ${escapeHtml(w.name)} <span class="filter-option-meta">${escapeHtml(warPeriod(w))}</span>
-        </div>`).join('');
+        </button>`).join('');
     }
     if (missionOptions) {
       missionOptions.innerHTML = (state.missions || []).map(m => `
-        <div class="filter-option" data-value="${escapeHtml(m.name_fr || m.name)}">
+        <button type="button" class="filter-option" aria-pressed="false" data-value="${escapeHtml(m.name_fr || m.name)}">
           ${escapeHtml(m.name)}
-        </div>`).join('');
+        </button>`).join('');
     }
 
     document.querySelectorAll('.filter-option').forEach(option => {
       option.addEventListener('click', function () {
         const filterType = this.closest('.filter-dropdown').id.replace('-dropdown', '');
         const value = this.dataset.value;
-        state.filters[filterType] = state.filters[filterType] === value ? null : value;
+        // String() : la génération arrive en nombre depuis l'URL, en chaîne
+        // depuis data-value — sans cela, recliquer l'option ne la retirait pas.
+        const same = String(state.filters[filterType]) === value;
+        state.filters[filterType] = same ? null : (filterType === 'generation' ? Number(value) : value);
         state.currentPage = 1;
         saveFiltersToSession(state);
         closeAllDropdowns();
         updateActiveFilters(state);
         VH.hangar.data.loadAircraft(state);
+      });
+    });
+
+    syncFilterUi(state);
+  }
+
+  /* Reflète l'état des filtres dans la barre d'outils : l'option retenue est
+   * surlignée dans sa liste, et le bouton dont le filtre porte une valeur
+   * prend la teinte dorée. Appelée à chaque changement, d'où qu'il vienne
+   * (clic, URL, session, « Effacer tout », feuille mobile, carte).
+   * `.has-value` est distincte de `.active`, que le bouton « Carte » utilise
+   * pour signaler son panneau ouvert. Les options ne sont pas un listbox
+   * (simples <div>) : pas d'aria-selected ici. */
+  function syncFilterUi(state) {
+    FILTER_KEYS.forEach((key) => {
+      const value = state.filters[key];
+      const hasValue = value != null && value !== '';
+      document.getElementById(`${key}-filter-btn`)?.classList.toggle('has-value', hasValue);
+      document.querySelectorAll(`#${key}-options .filter-option`).forEach((opt) => {
+        const on = hasValue && opt.dataset.value === String(value);
+        opt.classList.toggle('selected', on);
+        opt.setAttribute('aria-pressed', on ? 'true' : 'false');
       });
     });
   }
@@ -74,6 +100,7 @@
   }
 
   function updateActiveFilters(state) {
+    syncFilterUi(state);
     const container = document.getElementById('active-filters');
     if (!container) return;
     const filters = [];
@@ -284,6 +311,11 @@
     saveFiltersToSession, readStateFromUrl, restoreFiltersFromSession,
     writeStateToUrl,
     setupDropdowns, setupSearchAndSort, closeAllDropdowns,
-    removeFilter, clearAllFilters,
+    removeFilter, clearAllFilters, syncFilterUi,
   };
+
+  // Export conditionnel pour les tests unitaires (Node.js / jsdom)
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = VH.hangar.filters;
+  }
 })();

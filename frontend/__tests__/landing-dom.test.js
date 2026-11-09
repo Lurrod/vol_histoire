@@ -96,9 +96,38 @@ describe('search-suggest — combobox', () => {
     const { input, panel } = mountSearch();
     await type(input, 'mig');
     key(input, 'Escape');
-    expect(panel.hidden).toBe(true);
+    // État ARIA fermé tout de suite, panneau masqué après le fondu.
     expect(input.getAttribute('aria-expanded')).toBe('false');
     expect(input.hasAttribute('aria-activedescendant')).toBe(false);
+    expect(panel.classList.contains('is-closing')).toBe(true);
+    jest.advanceTimersByTime(150);
+    expect(panel.hidden).toBe(true);
+    expect(panel.classList.contains('is-closing')).toBe(false);
+  });
+
+  test('une frappe pendant le fondu de fermeture rouvre la liste', async () => {
+    const { input, panel } = mountSearch();
+    await type(input, 'raf');
+    key(input, 'Escape');
+    expect(panel.classList.contains('is-closing')).toBe(true);
+    await type(input, 'rafa');
+    jest.advanceTimersByTime(300);
+    expect(panel.hidden).toBe(false);
+    expect(panel.classList.contains('is-closing')).toBe(false);
+    expect(input.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  test('mouvement réduit : fermeture immédiate', async () => {
+    const original = window.matchMedia;
+    window.matchMedia = jest.fn(() => ({ matches: true }));
+    try {
+      const { input, panel } = mountSearch();
+      await type(input, 'mig');
+      key(input, 'Escape');
+      expect(panel.hidden).toBe(true);
+    } finally {
+      window.matchMedia = original;
+    }
   });
 
   test('aucune correspondance : message hors du listbox, listbox masqué', async () => {
@@ -112,7 +141,12 @@ describe('search-suggest — combobox', () => {
   test('champ vidé : la liste se ferme', async () => {
     const { input, panel } = mountSearch();
     await type(input, 'raf');
-    await type(input, '');
+    // Champ vide : pas d'index à attendre, anti-rebond (120 ms) puis fondu (150 ms).
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
+    jest.advanceTimersByTime(120);
+    expect(input.getAttribute('aria-expanded')).toBe('false');
+    jest.advanceTimersByTime(150);
     expect(panel.hidden).toBe(true);
   });
 

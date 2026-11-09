@@ -103,11 +103,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     activateTab(tabs[next], { focusInput: false });
   }
 
+  // Durée de slideOut (login.css) : le panneau sortant glisse avant d'être masqué.
+  const SLIDE_OUT_MS = 250;
+  let pendingSwap = null;
+
+  function prefersReducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
   function activateTab(tab, { focusInput } = { focusInput: false }) {
     if (!tab) return;
     const panelId = tab.getAttribute('aria-controls');
     const panel = document.getElementById(panelId);
     if (!panel) return;
+
+    // Une bascule encore en cours se termine immédiatement.
+    if (pendingSwap) pendingSwap();
 
     // Désactive toutes les tabs du même tablist
     const tabs = tab.parentElement.querySelectorAll('[role="tab"]');
@@ -124,23 +135,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     // `inert` remplace le couple aria-hidden + tabindex : une seule propriété
     // exclut le sous-arbre du tab order ET des AT, évitant l'antipattern
     // « aria-hidden sur conteneur focusable » (WCAG 4.1.2).
-    [loginSlide, registerSlide].forEach(p => {
-      if (!p) return;
-      if (p === panel) {
-        p.classList.add('active');
-        p.inert = false;
-      } else {
-        p.classList.remove('active');
-        p.inert = true;
+    const outgoing = [loginSlide, registerSlide].find(p => p && p !== panel && p.classList.contains('active'));
+
+    function swap() {
+      pendingSwap = null;
+      [loginSlide, registerSlide].forEach(p => {
+        if (!p) return;
+        p.classList.remove('is-leaving');
+        if (p === panel) {
+          p.classList.add('active');
+          p.inert = false;
+        } else {
+          p.classList.remove('active');
+          p.inert = true;
+        }
+      });
+
+      resetForms();
+
+      if (focusInput) {
+        const firstInput = panel.querySelector('input:not([type="hidden"])');
+        firstInput?.focus({ preventScroll: true });
       }
-    });
-
-    resetForms();
-
-    if (focusInput) {
-      const firstInput = panel.querySelector('input:not([type="hidden"])');
-      firstInput?.focus({ preventScroll: true });
     }
+
+    if (!outgoing || prefersReducedMotion()) {
+      swap();
+      return;
+    }
+
+    // Sortie animée (slideOut) puis entrée du nouveau panneau (slideIn).
+    outgoing.inert = true;
+    outgoing.classList.add('is-leaving');
+    const timer = setTimeout(swap, SLIDE_OUT_MS);
+    pendingSwap = () => { clearTimeout(timer); swap(); };
   }
 
   function resetForms() {
@@ -232,32 +260,42 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.getElementById('resend-verify-btn').addEventListener('click', async function() {
       this.disabled = true;
-      this.innerHTML = `<i class="fas fa-circle-notch fa-spin ev-btn-icon"></i>${escapeHtml(i18n.t('login.resending'))}`;
+      this.setAttribute('aria-busy', 'true');
+      this.innerHTML = `<i class="fas fa-circle-notch fa-spin ev-btn-icon" aria-hidden="true"></i>${escapeHtml(i18n.t('login.resending'))}`;
       try {
         await auth.fetchWithTimeout('/api/auth/resend-verification', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: escapedEmail }),
         });
-        this.innerHTML = `<i class="fas fa-check ev-btn-icon"></i>${escapeHtml(i18n.t('login.resent'))}`;
+        this.removeAttribute('aria-busy');
+        this.innerHTML = `<i class="fas fa-check ev-btn-icon" aria-hidden="true"></i>${escapeHtml(i18n.t('login.resent'))}`;
         this.classList.add('ev-resend-success');
         showToast(i18n.t('login.resent'), 'success');
       } catch {
         this.disabled = false;
-        this.innerHTML = `<i class="fas fa-redo ev-btn-icon"></i>${escapeHtml(i18n.t('login.resend_email'))}`;
+        this.removeAttribute('aria-busy');
+        this.innerHTML = `<i class="fas fa-redo ev-btn-icon" aria-hidden="true"></i>${escapeHtml(i18n.t('login.resend_email'))}`;
         showToast(i18n.t('login.server_error'), 'error');
       }
     });
   }
 
   // ========== Loading State ==========
+  // Le libellé reste lu par les lecteurs d'écran pendant le chargement
+  // (texte masqué visuellement) et aria-busy signale l'action en cours.
   function setButtonLoading(button, loading) {
     if (loading) {
+      const label = button.textContent.trim();
       button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
+      button.classList.add('is-loading');
       button.dataset.originalText = button.innerHTML;
-      button.innerHTML = '<span class="loading"></span>';
+      button.innerHTML = `<span class="loading" aria-hidden="true"></span><span class="sr-only">${escapeHtml(label)}</span>`;
     } else {
       button.disabled = false;
+      button.removeAttribute('aria-busy');
+      button.classList.remove('is-loading');
       button.innerHTML = button.dataset.originalText;
     }
   }

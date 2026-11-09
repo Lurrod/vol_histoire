@@ -216,13 +216,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const typeOptions = document.getElementById('type-options');
 
     if (countryOptions) {
-      countryOptions.innerHTML = countries.map(c => `<div class="filter-option" data-value="${escapeHtml(c)}">${escapeHtml(c)}</div>`).join('');
+      countryOptions.innerHTML = countries.map(c => `<button type="button" class="filter-option" aria-pressed="false" data-value="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join('');
     }
     if (generationOptions) {
-      generationOptions.innerHTML = generations.map(g => `<div class="filter-option" data-value="${g}">${g}e Génération</div>`).join('');
+      generationOptions.innerHTML = generations.map(g => `<button type="button" class="filter-option" aria-pressed="false" data-value="${g}">${g}e Génération</button>`).join('');
     }
     if (typeOptions) {
-      typeOptions.innerHTML = types.map(t => `<div class="filter-option" data-value="${escapeHtml(t)}">${escapeHtml(t)}</div>`).join('');
+      typeOptions.innerHTML = types.map(t => `<button type="button" class="filter-option" aria-pressed="false" data-value="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join('');
     }
 
     // Click handlers pour les options
@@ -234,7 +234,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const filterType = dropdown.id.replace('-dropdown', '');
         const value = this.dataset.value;
 
-        const newVal = state.filters[filterType] === value ? null : value;
+        // String() : la génération est un nombre dans l'état, une chaîne ici.
+        const newVal = String(state.filters[filterType]) === value ? null : value;
         // Normaliser la génération en nombre pour cohérence URL/état
         state.filters[filterType] = (filterType === 'generation' && newVal != null) ? Number(newVal) : newVal;
         writeStateToUrl();
@@ -246,6 +247,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     decorateFacetCounts();
+    syncFilterUi();
+  }
+
+  /* Reflète l'état des filtres dans la barre : option retenue surlignée
+   * (.selected), bouton doré quand son filtre porte une valeur (.has-value).
+   * Les options sont de simples <div>, pas un listbox : pas d'aria-selected. */
+  function syncFilterUi() {
+    ['country', 'generation', 'type'].forEach((key) => {
+      const value = state.filters[key];
+      const hasValue = value != null && value !== '';
+      document.getElementById(`${key}-filter-btn`)?.classList.toggle('has-value', hasValue);
+      document.querySelectorAll(`#${key}-options .filter-option`).forEach((opt) => {
+        const on = hasValue && opt.dataset.value === String(value);
+        opt.classList.toggle('selected', on);
+        opt.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    });
   }
 
   /* =========================================================================
@@ -363,6 +381,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Active filters display
   function updateActiveFilters() {
+    syncFilterUi();
     const container = document.getElementById('active-filters');
     const filters = [];
 
@@ -511,28 +530,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Remove from favorites (undo toast)
     container.querySelectorAll('.favorite-remove').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
+      btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const airplaneId = btn.dataset.airplaneId;
+        // Retrait déjà en attente : pas de second toast ni de second DELETE.
+        if (btn.disabled) return;
+        const airplaneId = parseInt(btn.dataset.airplaneId, 10);
+        const removed = state.favorites.find(a => a.id === airplaneId);
+        if (!removed) return;
+        btn.disabled = true;
 
-        // Snapshot pour undo
-        const snapshot = [...state.favorites];
+        // Retrait optimiste de l'état, du compteur et de la carte
+        state.favorites = state.favorites.filter(a => a.id !== airplaneId);
+        state.filtered = state.filtered.filter(a => a.id !== airplaneId);
+        updateResultsCount();
+        decorateFacetCounts();
+        collapseCard(btn.closest('.aircraft-card'));
 
-        // Retrait optimiste de l'état et de la carte
-        state.favorites = state.favorites.filter(a => a.id !== parseInt(airplaneId));
-        const card = btn.closest('.aircraft-card');
-        if (card) {
-          card.style.transition = 'all 0.3s ease';
-          card.style.transform = 'scale(0.85)';
-          card.style.opacity = '0';
-        }
+        // On ne réinsère que CET appareil : restaurer un instantané complet
+        // ressusciterait aussi un autre favori retiré entre-temps, dont le
+        // DELETE partirait quand même.
+        const restore = () => {
+          if (!state.favorites.some(a => a.id === airplaneId)) {
+            state.favorites = state.favorites.concat(removed);
+          }
+          applyFiltersAndRender();
+          decorateFacetCounts();
+          updateStats();
+        };
 
         let undone = false;
         showUndoToast(i18n.t('favorites.removed'), () => {
           undone = true;
-          state.favorites = snapshot;
-          applyFiltersAndRender();
-          updateStats();
+          restore();
         });
 
         // API call après le délai undo
@@ -541,17 +570,35 @@ document.addEventListener("DOMContentLoaded", async () => {
           try {
             const response = await auth.authFetch(`/api/favorites/${airplaneId}`, { method: 'DELETE' });
             if (!response.ok) throw new Error();
-            applyFiltersAndRender();
             updateStats();
           } catch {
-            state.favorites = snapshot;
-            applyFiltersAndRender();
-            updateStats();
+            restore();
             showToast(i18n.t('common.error'), 'error');
           }
         }, 5000);
       });
     });
+  }
+
+  /* La carte retirée s'efface (classe .is-removing : plus de clic possible),
+   * puis sort du flux (.is-removed) une fois la transition jouée. Si c'était
+   * la dernière carte affichée, un nouveau rendu affiche l'état vide. */
+  const CARD_EXIT_MS = 300;
+  function collapseCard(card) {
+    if (!card) return;
+    const hadFocus = card.contains(document.activeElement);
+    const neighbour = card.nextElementSibling || card.previousElementSibling;
+    card.classList.add('is-removing');
+    card.setAttribute('aria-hidden', 'true');
+    card.setAttribute('tabindex', '-1');
+    setTimeout(() => {
+      if (!card.isConnected) return; // déjà remplacée par un nouveau rendu
+      if (state.filtered.length === 0) { renderFavorites(); return; }
+      card.classList.add('is-removed');
+      // Au clavier, le focus ne doit pas rester sur un élément disparu.
+      if (hadFocus && neighbour?.classList.contains('aircraft-card') &&
+          !neighbour.classList.contains('is-removing')) neighbour.focus();
+    }, CARD_EXIT_MS);
   }
 
 

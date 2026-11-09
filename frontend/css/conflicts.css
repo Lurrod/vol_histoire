@@ -33,6 +33,10 @@
   background: linear-gradient(135deg, rgba(200, 169, 110, 0.05), rgba(200, 169, 110, 0.015));
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
 }
+.page-conflicts .conflict-card:active { transform: translateY(-1px); transition-duration: 0.08s; }
+/* Silhouettes de chargement (shimmer de shared-base.css) */
+.page-conflicts .skeleton-conflict { min-height: 9.5rem; pointer-events: none; }
+.page-conflicts .skeleton-conflict .skeleton-line { display: block; }
 .page-conflicts .conflict-card:focus-visible {
   outline: none;
   border-color: var(--hud-cyan);
@@ -105,5 +109,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .page-conflicts .conflict-card { transition: none; }
-  .page-conflicts .conflict-card:hover { transform: none; }
+  .page-conflicts .conflict-card:hover,
+  .page-conflicts .conflict-card:active { transform: none; }
+  .page-conflicts .skeleton-conflict .skeleton-line { animation: none; }
 }

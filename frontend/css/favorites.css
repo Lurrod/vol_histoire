@@ -216,9 +216,12 @@ body.page-favorites { background: var(--night); }
   color: rgba(255,255,255,0.65); white-space: nowrap;
 }
 .page-favorites .filter-btn:hover { border-color: rgba(255,255,255,0.18); color: var(--white); background: rgba(255,255,255,0.07); }
-.page-favorites .filter-btn.active { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
-.page-favorites .filter-btn .fa-chevron-down { font-size: 0.65rem; transition: var(--transition-fast); }
-.page-favorites .filter-btn.active .fa-chevron-down { transform: rotate(180deg); }
+/* .has-value : un filtre est appliqué (posée par syncFilterUi, favorites.js). */
+.page-favorites .filter-btn.active, .page-favorites .filter-btn.has-value { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
+.page-favorites .filter-btn:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
+.page-favorites .filter-btn .fa-chevron-down, .page-favorites .filter-btn .icon-chevron-down { font-size: 0.65rem; transition: transform 0.2s var(--ease); }
+/* Le JS bascule aria-expanded, pas .active : c'est lui qui pilote le chevron. */
+.page-favorites .filter-btn[aria-expanded="true"] .fa-chevron-down, .page-favorites .filter-btn[aria-expanded="true"] .icon-chevron-down { transform: rotate(180deg); }
 
 /* Filter Dropdowns */
 .page-favorites .filter-group { position: relative; display: inline-flex; }
@@ -240,6 +243,10 @@ body.page-favorites { background: var(--night); }
 .page-favorites .filter-options { padding: 0.75rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.5rem; }
 .page-favorites .filter-option { padding: 0.7rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; cursor: pointer; transition: var(--transition-fast); text-align: center; font-weight: 500; font-size: 0.85rem; color: rgba(255,255,255,0.65); }
 .page-favorites .filter-option:hover { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.07); color: var(--white); }
+/* Options en <button> : atteignables au clavier, réinitialisées au style des cases. */
+.page-favorites button.filter-option { font-family: inherit; line-height: inherit; width: 100%; }
+.page-favorites .filter-option:focus-visible { outline: none; border-color: var(--hud-cyan); box-shadow: var(--focus-ring); color: var(--white); }
+.page-favorites .filter-option:active { transform: scale(0.98); }
 .page-favorites .filter-option.selected { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
 
 /* Active Filters */
@@ -251,6 +258,7 @@ body.page-favorites { background: var(--night); }
 .page-favorites .clear-all-filters { padding: 0.4rem 1rem; background: transparent; border: 1px solid rgba(231,76,60,0.4); color: var(--accent); border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition-fast); }
 .page-favorites .clear-all-filters:hover { background: rgba(231,76,60,0.15); border-color: var(--accent); }
 .page-favorites .sort-select { padding: 0.875rem 2.5rem 0.875rem 1.25rem; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; font-family: inherit; font-size: 0.95rem; color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.03) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat right 1rem center; appearance: none; cursor: pointer; transition: var(--transition); }
+.page-favorites .sort-select:hover { border-color: rgba(255,255,255,0.18); background-color: rgba(255,255,255,0.06); color: var(--white); }
 .page-favorites .sort-select:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); }
 .page-favorites .sort-select option { background: var(--night-mid); color: var(--white); }
 .page-favorites .results-bar { margin-bottom: 2rem; font-size: 0.95rem; color: rgba(255,255,255,0.4); font-weight: 500; }
@@ -282,8 +290,26 @@ body.page-favorites { background: var(--night); }
 
 /* Favorite remove button */
 .page-favorites .favorite-remove { position: absolute; top: 1rem; right: 1rem; z-index: 10; width: 40px; height: 40px; border-radius: 50%; background: rgba(231,76,60,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(231,76,60,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 0.9rem; transition: var(--transition); opacity: 0; }
-.page-favorites .aircraft-card:hover .favorite-remove { opacity: 1; }
+/* Visible au survol, mais aussi au clavier : sans cela, un bouton atteint à
+   la tabulation restait invisible. */
+.page-favorites .aircraft-card:hover .favorite-remove,
+.page-favorites .aircraft-card:focus-within .favorite-remove,
+.page-favorites .favorite-remove:focus-visible { opacity: 1; }
 .page-favorites .favorite-remove:hover { background: var(--accent); transform: scale(1.15); box-shadow: 0 0 20px rgba(231,76,60,0.4); }
+.page-favorites .favorite-remove:focus-visible { outline: 2px solid var(--white); outline-offset: 2px; }
+.page-favorites .favorite-remove:disabled { cursor: default; transform: none; }
+
+/* Retrait d'un favori : la carte s'efface (et ne capte plus aucun clic),
+   puis sort du flux — la grille se resserre. Elle revient par un nouveau
+   rendu si l'on annule. */
+.page-favorites .aircraft-card.is-removing { opacity: 0; transform: scale(0.92); pointer-events: none; }
+.page-favorites .aircraft-card.is-removed { display: none; }
+
+/* Résultats : léger fondu à chaque rendu (filtre, tri, recherche). Opacité
+   seule, et `backwards` : le survol garde la main sur transform. */
+.page-favorites #favorites-container > .aircraft-card,
+.page-favorites #favorites-container > .empty-state { animation: favFadeIn 0.25s var(--ease) backwards; }
+@keyframes favFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* Favorited date */
 .page-favorites .favorited-date { font-size: 0.8rem; color: rgba(255,255,255,0.35); margin-top: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
@@ -373,6 +399,11 @@ body.page-favorites { background: var(--night); }
 }
 
 @media (prefers-reduced-motion: reduce) { .page-favorites *, .page-favorites *::before, .page-favorites *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+@media (prefers-reduced-motion: reduce) {
+  .page-favorites #favorites-container > .aircraft-card,
+  .page-favorites #favorites-container > .empty-state { animation: none; }
+  .page-favorites .aircraft-card.is-removing { transform: none; }
+}
 @media print { .page-favorites header, .page-favorites footer, .page-favorites .hero-hud-grid, .page-favorites #toast-container, .page-favorites .auth-gate-visual { display: none !important; } .page-favorites * { background: white !important; color: black !important; } }
 /* Skeleton loader (@keyframes shimmer + .skeleton-* → shared.css, dédupliqués) */
 

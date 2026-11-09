@@ -295,9 +295,17 @@
     transition: var(--transition-fast);
   }
 
-  .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(8px, 8px); }
+  /* Survol : les barres passent à l'or de la charte. */
+  .hamburger:hover span,
+  .hamburger:focus-visible span { background: var(--hud-cyan); }
+
+  /* Morphose en X : chaque barre extérieure rejoint d'abord le centre de la
+     barre du milieu (hauteur 3px + gap 5px = 8px), puis pivote. La
+     translation précède la rotation pour rester sur l'axe vertical — l'ancien
+     rotate() puis translate(8px, 8px) déplaçait la barre de 11,3px. */
+  .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
   .hamburger.active span:nth-child(2) { opacity: 0; }
-  .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+  .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 
   /* ============================================================
      USER MENU
@@ -321,6 +329,18 @@
   .login-icon:hover {
     background: rgba(200, 169, 110, 0.12);
     transform: scale(1.05);
+  }
+
+  /* Menu compte ouvert (classe posée par nav.js avec aria-expanded) :
+     même traitement que le bouton de langue ouvert. */
+  .login-icon.is-open {
+    background: rgba(200, 169, 110, 0.12);
+    color: var(--hud-cyan);
+    box-shadow: inset 0 0 0 1px rgba(200, 169, 110, 0.35);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .login-icon:hover { transform: none; }
   }
 
   .user-dropdown {
@@ -460,8 +480,21 @@
 
   .lang-btn-label { display: none; }
 
+  /* transitions-dev (menu dropdown) : même mécanique que .user-dropdown —
+     ouverture et fermeture animées, fermeture plus brève. visibility (et non
+     display) retire les options du parcours clavier une fois la fermeture
+     terminée, sans couper l'animation de sortie. */
   .lang-dropdown {
-    display: none;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(var(--dropdown-pre-scale));
+    transform-origin: top right;
+    pointer-events: none;
+    transition:
+      transform  var(--dropdown-close-dur) var(--dropdown-ease),
+      opacity    var(--dropdown-close-dur) var(--dropdown-ease),
+      visibility 0s linear var(--dropdown-close-dur);
     position: absolute;
     top: 100%;
     right: 0;
@@ -478,15 +511,22 @@
   }
 
   .lang-switch.open .lang-dropdown {
-    display: block;
-    transform-origin: top right;
-    animation: langDropIn var(--dropdown-open-dur) var(--dropdown-ease);
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+    transition:
+      transform  var(--dropdown-open-dur) var(--dropdown-ease),
+      opacity    var(--dropdown-open-dur) var(--dropdown-ease),
+      visibility 0s linear 0s;
   }
 
-  /* transitions-dev (menu dropdown) : grandit depuis le trigger (scale). */
-  @keyframes langDropIn {
-    from { opacity: 0; transform: scale(var(--dropdown-pre-scale)); }
-    to   { opacity: 1; transform: scale(1); }
+  /* L'attribut hidden doit toujours l'emporter sur display: block. */
+  .lang-dropdown[hidden] { display: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lang-dropdown,
+    .lang-switch.open .lang-dropdown { transition: none; }
   }
 
   .lang-option {
@@ -1039,6 +1079,43 @@
   }
 
   .toast i, .toast .icon { font-size: var(--text-2xl); }
+
+  /* Message + bouton de fermeture (showToast, utils.js) */
+  .toast .toast-message { flex: 1; }
+  .toast .toast-close {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-inline-end: calc(var(--sp-2) * -1);
+    background: none;
+    border: none;
+    border-radius: var(--r-full);
+    color: inherit;
+    opacity: 0.7;
+    cursor: pointer;
+    transition: opacity 0.15s, background-color 0.15s;
+  }
+  .toast .toast-close i,
+  .toast .toast-close .icon { font-size: var(--text-base); }
+  .toast .toast-close:hover,
+  .toast .toast-close:focus-visible {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .toast .toast-close:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toast,
+    .toast.fade-out { animation: none; }
+    .toast.fade-out { opacity: 0; }
+    .toast .toast-close { transition: none; }
+  }
 
   /* Toast avec bouton d'annulation (favorites) — remplace les styles inline */
   .toast .toast-msg { flex: 1; }

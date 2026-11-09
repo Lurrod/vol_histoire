@@ -117,13 +117,15 @@ describe('closeMenu', () => {
     expect(hamburger.classList.contains('active')).toBe(false);
   });
 
-  test('remet body overflow à vide', () => {
+  test('débloque le défilement (classe nav-open retirée)', () => {
     const nav = loadNav();
-    document.body.style.overflow = 'hidden';
+    document.querySelector('.hamburger').click();
+    expect(document.body.classList.contains('nav-open')).toBe(true);
 
     nav.closeMenu();
 
-    expect(document.body.style.overflow).toBe('');
+    expect(document.body.classList.contains('nav-open')).toBe(false);
+    expect(document.body.getAttribute('style')).toBeNull();
   });
 });
 
@@ -208,6 +210,107 @@ describe('ESC key', () => {
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
 
     expect(navLinks.classList.contains('show')).toBe(false);
+  });
+
+  test('ferme la liste des langues et rend le focus au bouton', () => {
+    loadNav();
+    const langSwitch = document.querySelector('.lang-switch');
+    const toggle = document.getElementById('lang-toggle');
+    const dropdown = document.getElementById('lang-dropdown');
+    dropdown.innerHTML = '<li><button type="button" class="lang-option">FR</button></li>';
+    langSwitch.classList.add('open');
+    toggle.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+    dropdown.querySelector('button').focus();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+    expect(langSwitch.classList.contains('open')).toBe(false);
+    expect(toggle.classList.contains('open')).toBe(false);
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(toggle);
+  });
+
+  test('ferme le menu compte et remet aria-expanded à false', () => {
+    auth.getToken.mockReturnValue('jeton');
+    loadNav();
+    const icon = document.getElementById('login-icon');
+    icon.click();
+    expect(icon.getAttribute('aria-expanded')).toBe('true');
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+    expect(icon.getAttribute('aria-expanded')).toBe('false');
+    expect(icon.classList.contains('is-open')).toBe(false);
+    auth.getToken.mockReturnValue(null);
+  });
+});
+
+// =============================================================================
+// Menu compte et langue : un seul ouvert à la fois
+// =============================================================================
+describe('menu compte et langue', () => {
+  test('ouvrir le compte referme la liste des langues', () => {
+    auth.getToken.mockReturnValue('jeton');
+    loadNav();
+    const langSwitch = document.querySelector('.lang-switch');
+    const toggle = document.getElementById('lang-toggle');
+    langSwitch.classList.add('open');
+    toggle.setAttribute('aria-expanded', 'true');
+
+    document.getElementById('login-icon').click();
+
+    expect(langSwitch.classList.contains('open')).toBe(false);
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    auth.getToken.mockReturnValue(null);
+  });
+
+  test('ouvrir la liste des langues referme le compte', () => {
+    jest.useFakeTimers();
+    auth.getToken.mockReturnValue('jeton');
+    loadNav();
+    const icon = document.getElementById('login-icon');
+    const dropdown = document.querySelector('.user-dropdown');
+    icon.click();
+    jest.advanceTimersByTime(20);
+    expect(dropdown.classList.contains('show')).toBe(true);
+
+    document.getElementById('lang-toggle').click();
+
+    expect(dropdown.classList.contains('show')).toBe(false);
+    expect(icon.getAttribute('aria-expanded')).toBe('false');
+    jest.advanceTimersByTime(300);
+    expect(dropdown.classList.contains('hidden')).toBe(true);
+    auth.getToken.mockReturnValue(null);
+    jest.useRealTimers();
+  });
+
+  test('une réouverture rapide n’est pas masquée par la fermeture précédente', () => {
+    jest.useFakeTimers();
+    auth.getToken.mockReturnValue('jeton');
+    loadNav();
+    const icon = document.getElementById('login-icon');
+    const dropdown = document.querySelector('.user-dropdown');
+    icon.click();
+    jest.advanceTimersByTime(20);
+    icon.click(); // fermeture
+    jest.advanceTimersByTime(100);
+    icon.click(); // réouverture avant la fin du délai de masquage
+    jest.advanceTimersByTime(400);
+
+    expect(dropdown.classList.contains('hidden')).toBe(false);
+    expect(dropdown.classList.contains('show')).toBe(true);
+    auth.getToken.mockReturnValue(null);
+    jest.useRealTimers();
+  });
+
+  test('connecté, l’icône compte annonce un menu fermé', () => {
+    auth.getPayload.mockReturnValue({ name: 'Jean', role: 3 });
+    loadNav();
+    const icon = document.getElementById('login-icon');
+    expect(icon.getAttribute('aria-haspopup')).toBe('true');
+    expect(icon.getAttribute('aria-expanded')).toBe('false');
+    auth.getPayload.mockReturnValue(null);
   });
 });
 

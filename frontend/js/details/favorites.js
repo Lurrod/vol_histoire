@@ -48,18 +48,33 @@
         setTimeout(() => window.location.href = '/login', 1500);
         return;
       }
+      // Bouton bloqué pendant la requête : un double clic enverrait deux
+      // requêtes contradictoires (ajout puis retrait).
+      if (btn.getAttribute('aria-busy') === 'true') return;
+      btn.setAttribute('aria-busy', 'true');
+      btn.disabled = true;
       try {
         const method = state.isFavorite ? 'DELETE' : 'POST';
         const response = await auth.authFetch(`/api/favorites/${state.aircraftId}`, { method });
         if (!response.ok) throw new Error(i18n.t('common.favorite_error'));
         state.isFavorite = !state.isFavorite;
         updateFavoriteButton(state);
+        if (state.isFavorite) {
+          // Petit « pop » du cœur à l'ajout (classe retirée en fin d'animation)
+          btn.classList.remove('is-popping');
+          void btn.offsetWidth;
+          btn.classList.add('is-popping');
+          btn.addEventListener('animationend', () => btn.classList.remove('is-popping'), { once: true });
+        }
         showToast(
           state.isFavorite ? i18n.t('common.favorite_added') : i18n.t('common.favorite_removed'),
           'success'
         );
       } catch (error) {
         showToast(error.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.removeAttribute('aria-busy');
       }
     });
   }

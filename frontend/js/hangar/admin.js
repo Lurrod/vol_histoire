@@ -56,22 +56,64 @@
     const cancelBtn = document.getElementById('cancel-btn');
     const modalClose = document.querySelector('.modal-close');
 
+    const submitBtn = document.getElementById('submit-btn');
+    // Doit couvrir la durée de l'animation de sortie (--modal-close-dur, 150 ms).
+    const CLOSE_MS = 180;
+
     let _focusTrap = null;
     let _previousFocus = null;
+    let _closeTimer = null;
+    let _submitting = false;
+
+    /* Bouton d'envoi : désactivé pendant la requête (pas de double création),
+     * icône remplacée par un indicateur. icons.js ne convertit que les <i>
+     * nouvellement insérés : on remplace l'icône, on ne touche pas ses classes. */
+    function setSubmitting(on) {
+      if (_submitting === on) return;
+      _submitting = on;
+      if (!submitBtn) return;
+      submitBtn.disabled = on;
+      submitBtn.classList.toggle('is-loading', on);
+      submitBtn.setAttribute('aria-busy', on ? 'true' : 'false');
+      const icon = document.createElement('i');
+      icon.className = on ? 'fas fa-circle-notch fa-spin' : 'fas fa-save';
+      icon.setAttribute('aria-hidden', 'true');
+      const current = submitBtn.querySelector('.icon, i');
+      if (current) current.replaceWith(icon); else submitBtn.prepend(icon);
+    }
+
+    function isOpen() { return !!modal && modal.classList.contains('show'); }
+
+    // Fin de fermeture : retrait du DOM visuel, puis remise à zéro du formulaire
+    // (après l'animation, pour ne pas voir les champs se vider en sortant).
+    function finishClose() {
+      clearTimeout(_closeTimer);
+      _closeTimer = null;
+      modal?.classList.remove('is-closing');
+      modalForm?.reset();
+    }
+
     function openModal() {
+      if (!modal) return;
+      if (_closeTimer) finishClose();
       _previousFocus = document.activeElement;
-      modal?.classList.add('show');
-      document.body.style.overflow = 'hidden';
+      modal.classList.add('show');
+      document.body.classList.add('modal-open');
       _focusTrap = trapFocus(modal, { onEscape: closeModal });
       populateRelationSelects();
     }
     function closeModal() {
+      // Échap est relayé par hangar.js même modale fermée : ne rien animer.
+      if (!isOpen()) return;
       _focusTrap?.destroy();
       _focusTrap = null;
-      modal?.classList.remove('show');
-      document.body.style.overflow = '';
-      modalForm?.reset();
+      modal.classList.remove('show');
+      document.body.classList.remove('modal-open');
       _previousFocus?.focus();
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) { finishClose(); return; }
+      modal.classList.add('is-closing');
+      _closeTimer = setTimeout(finishClose, CLOSE_MS);
     }
 
     addBtn?.addEventListener('click', openModal);
@@ -82,6 +124,8 @@
 
     modalForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      // Requête déjà partie (double clic, Entrée répétée) : on ignore.
+      if (_submitting) return;
       const payload = auth.getPayload();
       if (!payload) { showToast(i18n.t('common.unauthorized'), 'error'); return; }
       const userRole = Number(payload.role);
@@ -169,6 +213,7 @@
         image_licence: str('aircraft-image-licence'),
       };
 
+      setSubmitting(true);
       try {
         const response = await auth.authFetch('/api/airplanes', {
           method: 'POST',
@@ -181,6 +226,8 @@
         VH.hangar.data.loadAircraft(state);
       } catch (error) {
         showToast(error.message || i18n.t('common.create_error'), 'error');
+      } finally {
+        setSubmitting(false);
       }
     });
 

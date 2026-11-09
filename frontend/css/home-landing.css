@@ -89,6 +89,26 @@
 }
 .page-home .hero-suggest[hidden],
 .page-home .hero-suggest-list[hidden] { display: none; }
+/* Ouverture : fondu court en sortant de [hidden]. Fermeture : search-suggest.js
+   pose .is-closing, puis [hidden] après 150 ms (CLOSE_FADE_MS). */
+.page-home .hero-suggest:not([hidden]) {
+  animation: hero-suggest-in 160ms var(--ease, ease-out);
+  transform-origin: top center;
+}
+.page-home .hero-suggest.is-closing {
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 150ms ease-in, transform 150ms ease-in;
+}
+@keyframes hero-suggest-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-home .hero-suggest:not([hidden]) { animation: none; }
+  .page-home .hero-suggest.is-closing { transition: none; }
+}
 .page-home .hero-suggest-list {
   margin: 0;
   padding: 0;
@@ -165,8 +185,8 @@
 }
 .page-home .hero-browse-link:hover,
 .page-home .hero-browse-link:focus-visible { color: var(--hud-cyan); }
-.page-home .hero-browse-link i { transition: transform 0.3s ease; }
-.page-home .hero-browse-link:hover i { transform: translateX(4px); }
+.page-home .hero-browse-link i, .page-home .hero-browse-link .icon { transition: transform 0.3s ease; }
+.page-home .hero-browse-link:hover i, .page-home .hero-browse-link:hover .icon { transform: translateX(4px); }
 
 /* ---------- Sections ---------- */
 .page-home .home-section {
@@ -429,7 +449,8 @@
 @media (prefers-reduced-motion: reduce) {
   .page-home .gen-tile,
   .page-home .gen-tile img,
-  .page-home .hero-browse-link i { transition: none; }
+  .page-home .hero-browse-link i,
+  .page-home .hero-browse-link .icon { transition: none; }
   .page-home .gen-tile:hover,
   .page-home .gen-tile:hover img { transform: none; }
 }

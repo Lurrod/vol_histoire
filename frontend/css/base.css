@@ -24,6 +24,11 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /* Défilement instantané si l'utilisateur demande moins d'animations. */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
   img, video {
     max-width: 100%;
     display: block;

@@ -13,7 +13,7 @@
   transition: var(--transition);
 }
 .cookie-settings-link:hover { color: var(--secondary); }
-.cookie-settings-link i { font-size: 1rem; }
+.cookie-settings-link i, .cookie-settings-link .icon { font-size: 1rem; }
 
 /* Cookie Banner */
 .cookie-banner {
@@ -235,11 +235,17 @@
   justify-content: space-between;
   padding: 1.5rem;
   background: rgba(255, 255, 255, 0.02);
-  cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
 }
 
-.cookie-category-header:hover {
+/* Seules les catégories réglables invitent au clic : l'en-tête bascule alors
+   l'interrupteur (cookies.js pose .is-toggleable). Essentiels et marketing,
+   verrouillés, ne réagissent plus au survol. */
+.cookie-category-header.is-toggleable {
+  cursor: pointer;
+}
+
+.cookie-category-header.is-toggleable:hover {
   background: rgba(200, 169, 110, 0.04);
 }
 
@@ -295,13 +301,38 @@
   margin: 0;
 }
 
+/* Défilement de la page bloqué sous la modale (classe posée par cookies.js) */
+body.cookie-modal-open {
+  overflow: hidden;
+}
+
 /* Toggle Switch */
 .cookie-toggle {
   flex-shrink: 0;
+  position: relative;
 }
 
+/* Case masquée visuellement mais toujours focalisable au clavier (Tab +
+   Espace) : display: none la retirait de l'ordre de tabulation. */
 .cookie-toggle input[type="checkbox"] {
-  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.cookie-toggle input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+}
+
+/* Anneau de focus clavier sur la piste de l'interrupteur */
+.cookie-toggle input[type="checkbox"]:focus-visible + label {
+  outline: 2px solid var(--hud-cyan, #C8A96E);
+  outline-offset: 3px;
 }
 
 .cookie-toggle label {
@@ -577,5 +608,10 @@
   .cookie-modal {
     animation: none !important;
     transition: none !important;
+  }
+  .cookie-category-header,
+  .cookie-toggle label,
+  .cookie-toggle .toggle-slider {
+    transition: none;
   }
 }

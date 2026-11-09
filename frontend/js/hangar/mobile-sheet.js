@@ -43,17 +43,57 @@
       if (currentTab === 'mission')    items = (state.missions || []).map(m => ({ k: m.name_fr || m.name, l: m.name }));
       body.innerHTML = items.map(it => {
         const active = String(state.filters[currentTab]) === String(it.k);
-        return '<button class="fs-item' + (active ? ' active' : '') +
-               '" data-key="' + escapeHtml(String(it.k)) + '">' + escapeHtml(it.l) + '</button>';
+        return '<button type="button" class="fs-item' + (active ? ' active' : '') +
+               '" aria-pressed="' + active + '" data-key="' + escapeHtml(String(it.k)) + '">' + escapeHtml(it.l) + '</button>';
       }).join('');
       body.querySelectorAll('.fs-item').forEach(btn => {
         btn.addEventListener('click', () => {
           const k = btn.dataset.key;
-          state.filters[currentTab] = String(state.filters[currentTab]) === k ? null : (currentTab === 'generation' ? Number(k) : k);
-          renderTab();
+          const same = String(state.filters[currentTab]) === k;
+          state.filters[currentTab] = same ? null : (currentTab === 'generation' ? Number(k) : k);
+          // Mise à jour en place plutôt qu'un nouveau rendu : le focus reste
+          // sur le bouton touché et la transition de l'état actif est visible.
+          body.querySelectorAll('.fs-item').forEach(b => {
+            const on = !same && b === btn;
+            b.classList.toggle('active', on);
+            b.setAttribute('aria-pressed', String(on));
+          });
         });
       });
     }
+
+    /* Ouverture et fermeture animées. La fermeture pose d'abord .is-closing
+     * (glissement vers le bas, voile qui s'efface) puis ferme réellement le
+     * <dialog> une fois l'animation jouée — même principe que les listes
+     * déroulantes, masquées après leur transition. */
+    const CLOSE_MS = 220;
+    let closeTimer = null;
+    const reduceMotion = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    function finishClose() {
+      clearTimeout(closeTimer);
+      closeTimer = null;
+      dlg.classList.remove('is-closing');
+      if (dlg.open) dlg.close();
+    }
+
+    function openSheet() {
+      if (closeTimer) finishClose();
+      if (dlg.open) return;
+      try { dlg.showModal(); } catch { dlg.setAttribute('open', ''); }
+    }
+
+    function closeSheet() {
+      if (!dlg.open || closeTimer) return;
+      if (reduceMotion()) { finishClose(); return; }
+      dlg.classList.add('is-closing');
+      closeTimer = setTimeout(finishClose, CLOSE_MS);
+    }
+
+    // Échap : le navigateur fermerait le <dialog> sans animation.
+    dlg.addEventListener('cancel', (e) => { e.preventDefault(); closeSheet(); });
+    // Toucher le voile (hors du panneau) referme la feuille.
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) closeSheet(); });
 
     const tabs = Array.from(dlg.querySelectorAll('.fs-tab'));
     tabs.forEach((t, idx) => {
@@ -73,9 +113,9 @@
         target.focus();
       });
     });
-    dlg.querySelector('.filter-sheet-close').addEventListener('click', () => dlg.close());
+    dlg.querySelector('.filter-sheet-close').addEventListener('click', closeSheet);
     dlg.querySelector('#fs-apply').addEventListener('click', () => {
-      dlg.close();
+      closeSheet();
       state.currentPage = 1;
       VH.hangar.filters.saveFiltersToSession(state);
       VH.hangar.filters.applyFiltersAndRender(state);
@@ -91,7 +131,7 @@
           e.preventDefault();
           currentTab = id.split('-')[0];
           renderTab();
-          try { dlg.showModal(); } catch { dlg.setAttribute('open', ''); }
+          openSheet();
         }
       }, true);
     });
