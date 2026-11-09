@@ -193,10 +193,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const name = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
+      const currentPwInput = document.getElementById('profile-current-password');
+      const emailChanged = email.toLowerCase() !== (currentUser?.email || '').toLowerCase();
 
       // Validation
       clearFieldError(document.getElementById('name'));
       clearFieldError(document.getElementById('email'));
+      if (currentPwInput) clearFieldError(currentPwInput);
 
       if (name.length < 2) {
         setFieldError(document.getElementById('name'), i18n.t('settings.toast_name_min'));
@@ -208,23 +211,43 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
+      // Changer d'adresse exige le mot de passe actuel (vérifié côté serveur)
+      if (emailChanged && !currentPwInput?.value) {
+        setFieldError(currentPwInput, i18n.t('settings.toast_current_password_required'));
+        return;
+      }
+
       const submitBtn = profileForm.querySelector('button[type="submit"]');
       setButtonLoading(submitBtn, true);
 
       try {
+        const payload = emailChanged
+          ? { name, email, currentPassword: currentPwInput.value }
+          : { name };
         const response = await auth.authFetch(`${API_BASE}/users/${currentUser.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email })
+          body: JSON.stringify(payload)
         });
 
         const data = await response.json();
 
         if (response.ok) {
-          currentUser = { ...currentUser, name, email };
+          // Le nouvel email n'est appliqué qu'après le clic sur le lien envoyé
+          // à cette adresse : on conserve l'actuel en attendant.
+          currentUser = { ...currentUser, name };
           auth.setUserInfo(currentUser);
           updateUserDisplay();
-          showToast(i18n.t('settings.toast_profile_updated'), 'success');
+          if (currentPwInput) currentPwInput.value = '';
+          if (data.emailChangePending) {
+            document.getElementById('email').value = currentUser.email || '';
+            toggleProfileCurrentPassword();
+            showToast(i18n.t('settings.toast_email_change_pending'), 'info');
+          } else {
+            showToast(i18n.t('settings.toast_profile_updated'), 'success');
+          }
+        } else if (data.code === 'CURRENT_PASSWORD_INVALID' || data.code === 'CURRENT_PASSWORD_REQUIRED') {
+          setFieldError(currentPwInput, i18n.t('settings.toast_current_password_invalid'));
         } else {
           showToast(data.message || i18n.t('settings.toast_profile_error'), 'error');
         }
@@ -237,10 +260,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // Le champ « mot de passe actuel » n'apparaît que si l'adresse change
+  function toggleProfileCurrentPassword() {
+    const group = document.getElementById('profile-current-password-group');
+    const emailInput = document.getElementById('email');
+    if (!group || !emailInput) return;
+    const changed = emailInput.value.trim().toLowerCase() !== (currentUser?.email || '').toLowerCase();
+    group.hidden = !changed;
+  }
+  document.getElementById('email')?.addEventListener('input', toggleProfileCurrentPassword);
+
   if (resetProfileBtn) {
     resetProfileBtn.addEventListener('click', () => {
       document.getElementById('name').value = currentUser?.name || '';
       document.getElementById('email').value = currentUser?.email || '';
+      toggleProfileCurrentPassword();
       showToast(i18n.t('settings.toast_form_reset'), 'info');
     });
   }
@@ -342,8 +376,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.preventDefault();
 
       const password = passwordInput.value;
+      const currentInput = document.getElementById('current-password');
 
       clearFieldError(passwordInput);
+      if (currentInput) clearFieldError(currentInput);
+
+      if (currentInput && !currentInput.value) {
+        setFieldError(currentInput, i18n.t('settings.toast_current_password_required'));
+        return;
+      }
 
       if (!password) {
         setFieldError(passwordInput, 'Veuillez entrer un nouveau mot de passe');
@@ -362,16 +403,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         const response = await auth.authFetch(`${API_BASE}/users/${currentUser.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ password })
+          body: JSON.stringify({ password, currentPassword: currentInput?.value })
         });
 
         const data = await response.json();
 
         if (response.ok) {
+          // Toutes les sessions viennent d'être coupées côté serveur ; il renvoie
+          // un jeton neuf pour cet onglet (le cookie de refresh est déjà posé).
+          if (data.token) auth.setToken(data.token);
           showToast(i18n.t('settings.toast_password_updated'), 'success');
           securityForm.reset();
           updatePasswordStrength('');
           updatePasswordRequirements('');
+        } else if (data.code === 'CURRENT_PASSWORD_INVALID' || data.code === 'CURRENT_PASSWORD_REQUIRED') {
+          setFieldError(currentInput, i18n.t('settings.toast_current_password_invalid'));
         } else {
           showToast(data.message || i18n.t('settings.toast_profile_error'), 'error');
         }

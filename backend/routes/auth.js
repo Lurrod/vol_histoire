@@ -11,7 +11,7 @@ const {
   generateAccessToken,
   generateRefreshToken,
   storeRefreshToken,
-  isRefreshTokenValid,
+  getRefreshTokenState,
   revokeRefreshToken,
   rotateRefreshToken,
   revokeAllUserRefreshTokens,
@@ -23,6 +23,46 @@ const {
 
 module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, resetPasswordLimiter, mailer }) {
   const router = express.Router();
+
+  const VERIFY_TOKEN_TTL_MS = 30 * 60 * 1000;
+  const RESET_TOKEN_TTL_MS = 15 * 60 * 1000;
+
+  /**
+   * Invalide les jetons email ouverts du même type pour l'utilisateur, puis en
+   * crée un nouveau. `newEmail` ne sert qu'au type 'email' (changement d'adresse).
+   * @returns {Promise<string>} le jeton (64 hex)
+   */
+  async function issueEmailToken(userId, type, ttlMs, newEmail = null) {
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + ttlMs);
+    await withTransaction(getPool(), async (client) => {
+      await client.query(
+        'UPDATE email_tokens SET used_at = NOW() WHERE user_id = $1 AND type = $2 AND used_at IS NULL',
+        [userId, type]
+      );
+      await client.query(
+        'INSERT INTO email_tokens (user_id, token, type, expires_at, new_email) VALUES ($1, $2, $3, $4, $5)',
+        [userId, token, type, expiresAt, newEmail]
+      );
+    });
+    return token;
+  }
+
+  /**
+   * Consomme un jeton email à usage unique dans la transaction donnée.
+   * Le UPDATE gardé par `used_at IS NULL` rend la consommation atomique : deux
+   * requêtes concurrentes avec le même jeton ne peuvent pas réussir toutes les deux.
+   * @returns {Promise<{ user_id: number, new_email: string|null }|null>}
+   */
+  async function consumeEmailToken(client, token, type) {
+    const result = await client.query(
+      `UPDATE email_tokens SET used_at = NOW()
+       WHERE token = $1 AND type = $2 AND used_at IS NULL AND expires_at > NOW()
+       RETURNING user_id, new_email`,
+      [token, type]
+    );
+    return result.rows[0] || null;
+  }
 
   // -----------------------------------------------------------------------------
   // Auth: inscription & connexion
@@ -41,54 +81,42 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)' });
     }
 
-    const userExists = await getPool().query('SELECT id FROM users WHERE email = $1', [email]);
-
-    // Anti-énumération : même réponse et même délai que l'email n'existe ou non.
-    // Le bcrypt.hash ci-dessous garantit un temps de réponse constant.
+    const userExists = await getPool().query('SELECT id, email_verified FROM users WHERE email = $1', [email]);
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    if (userExists.rows.length > 0) {
-      return res.status(201).json({ message: 'Compte créé. Vérifiez votre boîte email pour activer votre compte.' });
-    }
-    const defaultRole = 3;
-    const verifyToken = crypto.randomBytes(32).toString('hex');
-    const tokenExpiry = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+    // Anti-énumération : réponse identique, envoyée AVANT tout travail qui
+    // dépend de l'existence du compte (transaction, envoi SMTP). Sinon le délai
+    // de l'envoi trahirait les adresses non inscrites.
+    res.status(201).json({ message: 'Compte créé. Vérifiez votre boîte email pour activer votre compte.' });
 
-    // Transaction : créer user + token de vérification atomiquement
-    const newUser = await withTransaction(getPool(), async (client) => {
-      const insertResult = await client.query(
-        'INSERT INTO users (name, email, password, role_id) VALUES ($1, $2, $3, $4) RETURNING id, name',
-        [name, email, hashedPassword, defaultRole]
-      );
-      const user = insertResult.rows[0];
-      await client.query(
-        'INSERT INTO email_tokens (user_id, token, type, expires_at) VALUES ($1, $2, $3, $4)',
-        [user.id, verifyToken, 'verify', tokenExpiry]
-      );
-      return user;
-    });
-
-    // Envoi de l'email de vérification (1 retry en cas d'échec)
-    let emailSent = true;
     try {
-      await mailer.sendVerificationEmail(email, newUser.name, verifyToken);
-    } catch (mailErr) {
-      logger.warn('Premier envoi email échoué, retry...', { error: mailErr.message });
-      try {
-        await mailer.sendVerificationEmail(email, newUser.name, verifyToken);
-      } catch (retryErr) {
-        emailSent = false;
-        logger.error('Erreur envoi email de vérification après retry', { error: retryErr.message });
-      }
-    }
+      const existing = userExists.rows[0];
+      if (existing && existing.email_verified) return;
 
-    if (emailSent) {
-      res.status(201).json({ message: 'Compte créé. Vérifiez votre boîte email pour activer votre compte.' });
-    } else {
-      res.status(201).json({
-        message: 'Compte créé, mais l\'email de vérification n\'a pas pu être envoyé. Utilisez « Renvoyer l\'email » pour réessayer.',
-        warning: 'EMAIL_NOT_SENT'
-      });
+      let userId;
+      if (existing) {
+        // Compte non vérifié déjà présent : le mot de passe actif sera choisi
+        // au moment de la vérification par le titulaire de la boîte (voir
+        // POST /auth/verify-email) ; on envoie simplement un nouveau lien.
+        userId = existing.id;
+        await getPool().query('UPDATE users SET name = $1 WHERE id = $2 AND email_verified = FALSE', [name, userId]);
+      } else {
+        const insertResult = await getPool().query(
+          'INSERT INTO users (name, email, password, role_id) VALUES ($1, $2, $3, $4) RETURNING id',
+          [name, email, hashedPassword, 3]
+        );
+        userId = insertResult.rows[0].id;
+      }
+
+      const verifyToken = await issueEmailToken(userId, 'verify', VERIFY_TOKEN_TTL_MS);
+      try {
+        await mailer.sendVerificationEmail(email, name, verifyToken);
+      } catch (mailErr) {
+        logger.warn('Premier envoi email échoué, retry...', { error: mailErr.message });
+        await mailer.sendVerificationEmail(email, name, verifyToken);
+      }
+    } catch (err) {
+      logger.error('Erreur inscription (après réponse)', { error: err.message, route: 'POST /register' });
     }
   }));
 
@@ -110,7 +138,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     }
 
     const user = await getPool().query(
-      'SELECT id, name, email, password, role_id, email_verified, failed_login_count, locked_until FROM users WHERE email = $1',
+      'SELECT id, name, email, password, role_id, token_version, email_verified, failed_login_count, locked_until FROM users WHERE email = $1',
       [email]
     );
 
@@ -133,22 +161,20 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       // Incrément du compteur d'échecs si le compte existe.
       // Si seuil atteint : verrouillage du compte pour LOCKOUT_DURATION_MIN minutes.
       // On ne révèle pas au client qu'un compte existe : 400 générique dans tous les cas.
+      // Incrément atomique côté SQL : la valeur lue plus haut est périmée dès
+      // que des tentatives arrivent en parallèle (bcrypt.compare rend la main),
+      // et un `SET failed_login_count = $1` calculé en JS perdrait des échecs.
       if (userData) {
-        const newCount = userData.failed_login_count + 1;
-        if (newCount >= LOCKOUT_MAX_ATTEMPTS) {
-          await getPool().query(
-            `UPDATE users
-             SET failed_login_count = $1,
-                 locked_until = NOW() + ($2 || ' minutes')::interval
-             WHERE id = $3`,
-            [newCount, String(LOCKOUT_DURATION_MIN), userData.id]
-          );
-        } else {
-          await getPool().query(
-            'UPDATE users SET failed_login_count = $1 WHERE id = $2',
-            [newCount, userData.id]
-          );
-        }
+        await getPool().query(
+          `UPDATE users
+           SET failed_login_count = failed_login_count + 1,
+               locked_until = CASE
+                 WHEN failed_login_count + 1 >= $1 THEN NOW() + ($2 || ' minutes')::interval
+                 ELSE locked_until
+               END
+           WHERE id = $3`,
+          [LOCKOUT_MAX_ATTEMPTS, String(LOCKOUT_DURATION_MIN), userData.id]
+        );
       }
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
     }
@@ -192,15 +218,27 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     try {
       const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET, JWT_VERIFY_OPTIONS);
 
-      // S2 FIX : Vérifier que le token existe en base et n'est pas révoqué
-      if (!decoded.jti || !(await isRefreshTokenValid(decoded.jti))) {
+      const tokenState = decoded.jti ? await getRefreshTokenState(decoded.jti) : { state: 'unknown' };
+
+      // Un jeton déjà remplacé par rotation qui revient : quelqu'un d'autre a
+      // rafraîchi avec, ou rafraîchit encore. On ne peut pas savoir lequel des
+      // deux est légitime : on coupe toute la session de l'utilisateur.
+      if (tokenState.state === 'reused') {
+        logger.warn('Replay refresh token détecté — révocation totale', {
+          userId: tokenState.userId, jti: decoded.jti, route: 'POST /refresh',
+        });
+        await revokeAllUserRefreshTokens(tokenState.userId).catch(() => {});
+        clearRefreshCookie(res);
+        return res.status(401).json({ message: 'Session compromise', code: 'REFRESH_REPLAY' });
+      }
+      if (tokenState.state !== 'valid') {
         clearRefreshCookie(res);
         return res.status(401).json({ message: 'Refresh token révoqué ou invalide', code: 'REFRESH_REVOKED' });
       }
 
       // Récupérer les données fraîches de l'utilisateur en DB
       const result = await getPool().query(
-        'SELECT id, name, email, role_id FROM users WHERE id = $1',
+        'SELECT id, name, email, role_id, token_version FROM users WHERE id = $1',
         [decoded.id]
       );
       if (result.rows.length === 0) {
@@ -263,29 +301,43 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
   // Auth : vérification email + mot de passe oublié
   // -----------------------------------------------------------------------------
 
-  // GET /api/auth/verify-email?token= — Activer le compte
-  router.get('/auth/verify-email', asyncHandler(async (req, res) => {
-    const { token } = req.query;
+  // POST /api/auth/verify-email { token, password } — Activer le compte.
+  // Le titulaire de la boîte choisit ici le mot de passe actif : un mot de passe
+  // saisi à l'inscription par quelqu'un d'autre (pré-inscription de l'adresse
+  // d'autrui) n'est donc jamais activé par la vérification.
+  router.post('/auth/verify-email', resetPasswordLimiter, asyncHandler(async (req, res) => {
+    const { token, password } = req.body;
     if (!token || typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) {
       return res.status(400).json({ message: 'Token invalide' });
     }
-
-    const result = await getPool().query(
-      `SELECT id, user_id FROM email_tokens
-       WHERE token = $1 AND type = 'verify' AND used_at IS NULL AND expires_at > NOW()`,
-      [token]
-    );
-    if (result.rows.length === 0) {
-      return res.status(400).json({ message: 'Token invalide ou expiré', code: 'TOKEN_INVALID' });
+    if (!password || !isValidPassword(password)) {
+      return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)' });
     }
 
-    const { id: tokenId, user_id: userId } = result.rows[0];
-
-    // Transaction : activer le compte + marquer le token comme utilisé
-    await withTransaction(getPool(), async (client) => {
-      await client.query('UPDATE users SET email_verified = true WHERE id = $1', [userId]);
-      await client.query('UPDATE email_tokens SET used_at = NOW() WHERE id = $1', [tokenId]);
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const userId = await withTransaction(getPool(), async (client) => {
+      const consumed = await consumeEmailToken(client, token, 'verify');
+      if (!consumed) return null;
+      await client.query(
+        `UPDATE users
+         SET password = $1, email_verified = TRUE, failed_login_count = 0, locked_until = NULL,
+             token_version = token_version + 1
+         WHERE id = $2`,
+        [hashedPassword, consumed.user_id]
+      );
+      await client.query(
+        "UPDATE email_tokens SET used_at = NOW() WHERE user_id = $1 AND type = 'verify' AND used_at IS NULL",
+        [consumed.user_id]
+      );
+      await client.query(
+        'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
+        [consumed.user_id]
+      );
+      return consumed.user_id;
     });
+    if (!userId) {
+      return res.status(400).json({ message: 'Token invalide ou expiré', code: 'TOKEN_INVALID' });
+    }
 
     // Envoi de l'email de bienvenue (non bloquant)
     try {
@@ -300,6 +352,43 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
     res.json({ message: 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.' });
   }));
+
+  // POST /api/auth/confirm-email-change { token } — Appliquer un changement
+  // d'adresse demandé depuis les paramètres. Le lien n'est envoyé qu'à la
+  // nouvelle adresse : l'appliquer prouve qu'on la contrôle.
+  router.post('/auth/confirm-email-change', resetPasswordLimiter, async (req, res) => {
+    const { token } = req.body;
+    if (!token || typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) {
+      return res.status(400).json({ message: 'Token invalide' });
+    }
+    try {
+      const changed = await withTransaction(getPool(), async (client) => {
+        const consumed = await consumeEmailToken(client, token, 'email');
+        if (!consumed || !consumed.new_email) return false;
+        await client.query(
+          'UPDATE users SET email = $1, email_verified = TRUE, token_version = token_version + 1 WHERE id = $2',
+          [consumed.new_email, consumed.user_id]
+        );
+        await client.query(
+          'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
+          [consumed.user_id]
+        );
+        return true;
+      });
+      if (!changed) {
+        return res.status(400).json({ message: 'Token invalide ou expiré', code: 'TOKEN_INVALID' });
+      }
+      res.json({ message: 'Adresse email modifiée. Reconnectez-vous avec votre nouvelle adresse.' });
+    } catch (error) {
+      // Adresse prise entre la demande et la confirmation : seul le titulaire de
+      // la nouvelle boîte voit ce message.
+      if (error.code === '23505') {
+        return res.status(409).json({ message: 'Cette adresse est déjà utilisée par un autre compte', code: 'EMAIL_TAKEN' });
+      }
+      const entry = logger.error('Erreur confirmation changement email', { error: error.message, route: 'POST /auth/confirm-email-change' });
+      res.status(500).json({ message: 'Erreur interne du serveur', errorId: entry.errorId });
+    }
+  });
 
   // POST /api/auth/resend-verification — Renvoyer l'email de vérification
   // try/catch manuel : la réponse est envoyée avant le traitement async (sécurité)
@@ -321,22 +410,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
       const user = userResult.rows[0];
 
-      // Transaction : invalider anciens tokens + créer le nouveau
-      const verifyToken = crypto.randomBytes(32).toString('hex');
-      const tokenExpiry = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
-
-      await withTransaction(getPool(), async (client) => {
-        await client.query(
-          `UPDATE email_tokens SET used_at = NOW()
-           WHERE user_id = $1 AND type = 'verify' AND used_at IS NULL`,
-          [user.id]
-        );
-        await client.query(
-          'INSERT INTO email_tokens (user_id, token, type, expires_at) VALUES ($1, $2, $3, $4)',
-          [user.id, verifyToken, 'verify', tokenExpiry]
-        );
-      });
-
+      const verifyToken = await issueEmailToken(user.id, 'verify', VERIFY_TOKEN_TTL_MS);
       await mailer.sendVerificationEmail(email, user.name, verifyToken);
     } catch (err) {
       logger.error('Erreur resend-verification', { error: err.message, route: 'POST /resend-verification' });
@@ -363,22 +437,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
       const user = userResult.rows[0];
 
-      // Transaction : invalider anciens tokens + créer le nouveau
-      const resetToken = crypto.randomBytes(32).toString('hex');
-      const tokenExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
-
-      await withTransaction(getPool(), async (client) => {
-        await client.query(
-          `UPDATE email_tokens SET used_at = NOW()
-           WHERE user_id = $1 AND type = 'reset' AND used_at IS NULL`,
-          [user.id]
-        );
-        await client.query(
-          'INSERT INTO email_tokens (user_id, token, type, expires_at) VALUES ($1, $2, $3, $4)',
-          [user.id, resetToken, 'reset', tokenExpiry]
-        );
-      });
-
+      const resetToken = await issueEmailToken(user.id, 'reset', RESET_TOKEN_TTL_MS);
       await mailer.sendPasswordResetEmail(email, user.name, resetToken);
     } catch (err) {
       logger.error('Erreur forgot-password', { error: err.message, route: 'POST /forgot-password' });
@@ -408,15 +467,27 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     const { id: tokenId, user_id: userId } = result.rows[0];
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Transaction : changer le mot de passe + invalider le token + révoquer les sessions
-    await withTransaction(getPool(), async (client) => {
-      await client.query('UPDATE users SET password = $1 WHERE id = $2', [hashedPassword, userId]);
-      await client.query('UPDATE email_tokens SET used_at = NOW() WHERE id = $1', [tokenId]);
+    // Transaction : consommer le token (une seule fois), changer le mot de passe,
+    // révoquer les sessions et invalider les access tokens déjà émis.
+    const applied = await withTransaction(getPool(), async (client) => {
+      const used = await client.query(
+        'UPDATE email_tokens SET used_at = NOW() WHERE id = $1 AND used_at IS NULL',
+        [tokenId]
+      );
+      if (used.rowCount === 0) return false;
+      await client.query(
+        'UPDATE users SET password = $1, failed_login_count = 0, locked_until = NULL, token_version = token_version + 1 WHERE id = $2',
+        [hashedPassword, userId]
+      );
       await client.query(
         'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
         [userId]
       );
+      return true;
     });
+    if (!applied) {
+      return res.status(400).json({ message: 'Token invalide ou expiré', code: 'TOKEN_INVALID' });
+    }
 
     res.json({ message: 'Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter.' });
   }));

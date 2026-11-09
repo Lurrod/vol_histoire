@@ -116,6 +116,82 @@
       margin: 0 auto 1.5rem;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    /* Formulaire de choix du mot de passe (repris de reset-password.html) */
+    #verify-form { text-align: left; margin-top: 1.5rem; }
+    .rp-field { margin-bottom: 1.25rem; position: relative; }
+    .rp-field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+    .rp-field .input-wrap { position: relative; }
+    .rp-field input {
+      width: 100%;
+      padding: 0.75rem 2.75rem 0.75rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s ease;
+      box-sizing: border-box;
+    }
+    .rp-field input:focus { border-color: rgba(200,169,110,0.4); }
+    .rp-hint { font-size: 0.75rem; color: rgba(255,255,255,0.3); margin-top: 0.3rem; }
+    .toggle-pw {
+      position: absolute;
+      right: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.35);
+      cursor: pointer;
+      padding: 0;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .toggle-pw:hover { color: rgba(255,255,255,0.7); }
+    .rp-submit {
+      width: 100%;
+      padding: 0.875rem;
+      background: linear-gradient(135deg, rgba(200,169,110,0.15), rgba(200,169,110,0.08));
+      border: 1px solid rgba(200,169,110,0.3);
+      border-radius: 10px;
+      color: #C8A96E;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .rp-submit:hover:not(:disabled) {
+      background: rgba(200,169,110,0.2);
+      border-color: rgba(200,169,110,0.5);
+      transform: translateY(-1px);
+    }
+    .rp-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .rp-error {
+      display: none;
+      background: rgba(231,76,60,0.1);
+      border: 1px solid rgba(231,76,60,0.2);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: #e74c3c;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    .rp-error.is-visible { display: block; }
   </style>
   <script defer src="js/sentry-init.js?v=1775742573525"></script>
 </head>
@@ -131,12 +207,39 @@
       <p data-i18n="verify_email.loading_desc">Validation de votre adresse email, veuillez patienter.</p>
     </div>
 
+    <div id="state-form" class="hidden">
+      <h1 data-i18n="verify_email.form_heading">Activez votre compte</h1>
+      <p data-i18n="verify_email.form_desc">Choisissez le mot de passe de votre compte pour terminer l'activation.</p>
+      <form id="verify-form" novalidate>
+        <div class="rp-error" id="verify-error" role="alert"></div>
+        <div class="rp-field">
+          <label for="verify-password" data-i18n="verify_email.password_label">Mot de passe</label>
+          <div class="input-wrap">
+            <input type="password" id="verify-password" placeholder="••••••••" required autocomplete="new-password" aria-describedby="verify-hint verify-error">
+            <button type="button" class="toggle-pw" id="toggle-verify-pw" data-i18n-aria="login.show_password" aria-label="Afficher le mot de passe">
+              <i class="fas fa-eye-slash" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="rp-hint" id="verify-hint" data-i18n="verify_email.password_hint">8 caractères min, 1 majuscule, 1 minuscule, 1 chiffre</div>
+        </div>
+        <div class="rp-field">
+          <label for="verify-password-confirm" data-i18n="verify_email.confirm_label">Confirmer le mot de passe</label>
+          <div class="input-wrap">
+            <input type="password" id="verify-password-confirm" placeholder="••••••••" required autocomplete="new-password" aria-describedby="verify-error">
+          </div>
+        </div>
+        <button type="submit" class="rp-submit" id="verify-submit-btn">
+          <i class="fas fa-check" aria-hidden="true"></i> <span data-i18n="verify_email.submit">Activer mon compte</span>
+        </button>
+      </form>
+    </div>
+
     <div id="state-success" class="hidden">
       <div class="verify-result-icon success-bg">
         <i class="fas fa-check"></i>
       </div>
       <h1 data-i18n="verify_email.success_heading">Email vérifié !</h1>
-      <p data-i18n-html="verify_email.success_desc">Votre compte est maintenant actif.<br>Vous pouvez vous connecter et explorer la base.</p>
+      <p id="success-message" data-i18n-html="verify_email.success_desc">Votre compte est maintenant actif.<br>Vous pouvez vous connecter et explorer la base.</p>
       <a href="/login" class="verify-btn"><i class="fas fa-sign-in-alt"></i> <span data-i18n="verify_email.success_btn">Se connecter</span></a>
     </div>
 

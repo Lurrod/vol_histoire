@@ -23,7 +23,7 @@ info:
     Toutes les pages HTML sont servies avec un query string `?v=<version>`
     sur les assets pour bust le cache navigateur à chaque déploiement.
     Les statiques (CSS/JS/fonts) ont un `Cache-Control` long.
-  version: 4.11.0
+  version: 4.11.1
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -428,7 +428,10 @@ paths:
                   token:
                     type: string
         '401':
-          description: Refresh token absent, expiré ou révoqué
+          description: |
+            Refresh token absent, expiré ou révoqué (REFRESH_REVOKED). Un jeton déjà
+            remplacé par rotation et présenté à nouveau (REFRESH_REPLAY) révoque
+            toutes les sessions du compte.
 
   /logout:
     post:
@@ -440,21 +443,59 @@ paths:
           description: Déconnexion réussie
 
   /auth/verify-email:
-    get:
+    post:
       tags: [Auth]
-      summary: Vérifier l'email
-      parameters:
-        - name: token
-          in: query
-          required: true
-          schema:
-            type: string
-            pattern: '^[a-f0-9]{64}$'
+      summary: Vérifier l'email et choisir le mot de passe
+      description: |
+        Le titulaire de la boîte choisit ici le mot de passe actif du compte :
+        celui saisi à l'inscription n'est jamais activé, ce qui neutralise la
+        pré-inscription d'une adresse par un tiers. Lien à usage unique.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, password]
+              properties:
+                token:
+                  type: string
+                  pattern: '^[a-f0-9]{64}$'
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 128
       responses:
         '200':
-          description: Email vérifié avec succès
+          description: Email vérifié, compte activé
         '400':
-          description: Token invalide ou expiré
+          description: Token invalide ou expiré (code TOKEN_INVALID), ou mot de passe invalide
+
+  /auth/confirm-email-change:
+    post:
+      tags: [Auth]
+      summary: Confirmer un changement d'adresse email
+      description: |
+        Applique la nouvelle adresse demandée via `PUT /users/{id}`. Lien à usage
+        unique envoyé à la nouvelle adresse ; toutes les sessions sont révoquées.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token:
+                  type: string
+                  pattern: '^[a-f0-9]{64}$'
+      responses:
+        '200':
+          description: Adresse modifiée
+        '400':
+          description: Token invalide ou expiré (code TOKEN_INVALID)
+        '409':
+          description: Adresse prise entre-temps (code EMAIL_TAKEN)
 
   /auth/resend-verification:
     post:
@@ -622,13 +663,21 @@ paths:
                 password:
                   type: string
                   minLength: 8
+                currentPassword:
+                  type: string
+                  description: Exigé pour modifier son propre email ou mot de passe
       responses:
         '200':
-          description: Mise à jour réussie
+          description: |
+            Mise à jour réussie. Un changement d'email n'est pas appliqué tout de
+            suite : un lien de confirmation part vers la nouvelle adresse
+            (`emailChangePending`), avec une réponse identique que l'adresse soit
+            libre ou déjà prise. Après un changement de mot de passe, un nouvel
+            access token est renvoyé (`token`).
         '400':
-          description: Données invalides
+          description: Données invalides, ou mot de passe actuel manquant (code CURRENT_PASSWORD_REQUIRED)
         '403':
-          description: Accès non autorisé
+          description: Accès non autorisé, ou mot de passe actuel incorrect (code CURRENT_PASSWORD_INVALID)
 
     delete:
       tags: [Users]

@@ -383,4 +383,114 @@ function buildWelcomeTemplate(name) {
 </html>`;
 }
 
-module.exports = { sendVerificationEmail, sendPasswordResetEmail, sendContactEmail, sendWelcomeEmail, verifyConnection };
+// -----------------------------------------------------------------------------
+// Changement d'adresse email (demandé depuis les paramètres)
+// -----------------------------------------------------------------------------
+// Lien envoyé à la NOUVELLE adresse : le changement n'est appliqué qu'au clic.
+async function sendEmailChangeConfirmation(to, name, token) {
+  const link = `${BASE_URL}/verify-email?type=email&token=${encodeURIComponent(token)}`;
+  await transporter.sendMail({
+    from: FROM,
+    to,
+    subject: "Confirmez votre nouvelle adresse — Vol d'Histoire",
+    html: buildNoticeTemplate({
+      heading: 'Confirmez votre nouvelle adresse',
+      name,
+      paragraph: "Une demande de changement d'adresse email a été faite pour votre compte. Cliquez sur le bouton ci-dessous pour que cette adresse remplace l'ancienne.",
+      cta: { label: 'Confirmer cette adresse', link },
+      note: "Ce lien expire dans 30 minutes. Si vous n'êtes pas à l'origine de cette demande, ignorez cet email : rien ne sera modifié.",
+    }),
+  });
+}
+
+// Avertissement envoyé à l'ANCIENNE adresse : le titulaire doit savoir qu'un
+// changement a été demandé, même s'il n'en est pas l'auteur.
+async function sendEmailChangeNotice(to, name) {
+  await transporter.sendMail({
+    from: FROM,
+    to,
+    subject: "Changement d'adresse demandé — Vol d'Histoire",
+    html: buildNoticeTemplate({
+      heading: "Changement d'adresse demandé",
+      name,
+      paragraph: "Une demande de changement de l'adresse email associée à votre compte vient d'être faite. Elle ne prendra effet que si le lien envoyé à la nouvelle adresse est confirmé.",
+      cta: null,
+      note: "Si vous n'êtes pas à l'origine de cette demande, changez votre mot de passe dès maintenant depuis la page « Mot de passe oublié ».",
+    }),
+  });
+}
+
+function buildNoticeTemplate({ heading, name, paragraph, cta, note }) {
+  const esc = escapeHtmlEmail;
+  const button = cta
+    ? `<table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                  <td align="center" style="padding:0 0 32px;">
+                    <a href="${cta.link}"
+                       style="display:inline-block;background:#141414;color:#C8A96E;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:0.5px;padding:15px 40px;border-radius:8px;border:2px solid rgba(200,169,110,0.4);">
+                      ${esc(cta.label)}
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 20px;font-size:12px;color:rgba(255,255,255,0.25);text-align:center;line-height:1.6;">
+                Si le bouton ne fonctionne pas, copiez ce lien :<br>
+                <a href="${cta.link}" style="color:#C8A96E;word-break:break-all;">${cta.link}</a>
+              </p>`
+    : '';
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${esc(heading)}</title>
+</head>
+<body style="margin:0;padding:0;background:#0D0D0D;font-family:'Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#0D0D0D;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+          <tr>
+            <td style="background:#141414;border-radius:12px 12px 0 0;padding:32px 40px;text-align:center;border-bottom:2px solid rgba(200,169,110,0.25);">
+              <p style="margin:0;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(200,169,110,0.5);">AVIATION MILITAIRE</p>
+              <h1 style="margin:10px 0 0;font-size:26px;font-weight:700;color:#ffffff;letter-spacing:-0.5px;">Vol d'Histoire</h1>
+              <div style="width:32px;height:2px;background:#C8A96E;margin:14px auto 0;border-radius:1px;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#1A1A1A;padding:40px 40px 32px;">
+              <h2 style="margin:0 0 16px;font-size:20px;font-weight:700;color:#ffffff;">${esc(heading)}</h2>
+              <p style="margin:0 0 28px;font-size:15px;color:rgba(255,255,255,0.55);line-height:1.75;">
+                Bonjour <strong style="color:#ffffff;">${esc(name)}</strong>,<br><br>
+                ${esc(paragraph)}
+              </p>
+              ${button}
+              <p style="margin:0;font-size:13px;color:#e74c3c;text-align:center;padding:12px;background:rgba(231,76,60,0.08);border-radius:6px;border:1px solid rgba(231,76,60,0.2);">
+                ${esc(note)}
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#141414;border-top:1px solid rgba(200,169,110,0.1);border-radius:0 0 12px 12px;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.25);line-height:1.6;">
+                &copy; ${new Date().getFullYear()} Vol d'Histoire &mdash; Message de sécurité envoyé automatiquement.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+module.exports = {
+  sendVerificationEmail,
+  sendPasswordResetEmail,
+  sendEmailChangeConfirmation,
+  sendEmailChangeNotice,
+  sendContactEmail,
+  sendWelcomeEmail,
+  verifyConnection,
+};

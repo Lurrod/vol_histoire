@@ -15,6 +15,8 @@ jest.mock('../mailer', () => ({
   sendVerificationEmail: jest.fn().mockResolvedValue(undefined),
   sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
   sendContactEmail: jest.fn().mockResolvedValue(undefined),
+  sendEmailChangeConfirmation: jest.fn().mockResolvedValue(undefined),
+  sendEmailChangeNotice: jest.fn().mockResolvedValue(undefined),
   verifyConnection: jest.fn().mockResolvedValue(undefined),
 }));
 const mailer = require('../mailer');
@@ -65,11 +67,21 @@ const mockPool = {
   }),
 };
 
+// État des comptes lu par authorize() (rôle + token_version). Les jetons de
+// test 1/2/3 correspondent à des comptes admin/éditeur/membre en version 0 ;
+// un test peut modifier cette table pour simuler une rétrogradation, une
+// suppression (null) ou un changement de mot de passe (version incrémentée).
+const authMiddleware = require('../middleware/auth');
+const DEFAULT_AUTH_STATE = { 1: { role_id: 1, token_version: 0 }, 2: { role_id: 2, token_version: 0 }, 3: { role_id: 3, token_version: 0 } };
+let authState = { ...DEFAULT_AUTH_STATE };
+
 beforeAll(() => {
   app.setPool(mockPool);
+  authMiddleware.setAuthStateLoader(async (id) => authState[id] ?? null);
 });
 
 beforeEach(() => {
+  authState = { ...DEFAULT_AUTH_STATE };
   mockPool.query.mockReset();
   app.invalidateStatsCache?.();
   app.invalidateAirplanesReferentialCache?.();
@@ -370,9 +382,12 @@ describe('Middleware authorize', () => {
 // AUTH — POST /api/refresh
 // =============================================================================
 describe('POST /api/refresh', () => {
+  // Ligne refresh_tokens d'un jeton valide (getRefreshTokenState)
+  const TOKEN_ROW_VALID = { rows: [{ user_id: 1, revoked: false, rotated_at: null, live: true }] };
+
   test('200 — nouveau access token avec refresh cookie valide + rotation du token', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ '?column?': 1 }] })  // isRefreshTokenValid → trouvé
+      .mockResolvedValueOnce(TOKEN_ROW_VALID)  // isRefreshTokenValid → trouvé
       .mockResolvedValueOnce({                                 // SELECT user
         rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1 }],
       })
@@ -448,7 +463,7 @@ describe('POST /api/refresh', () => {
 
   test('401 — utilisateur supprimé entre-temps', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ '?column?': 1 }] })  // isRefreshTokenValid → ok
+      .mockResolvedValueOnce(TOKEN_ROW_VALID)  // isRefreshTokenValid → ok
       .mockResolvedValueOnce({ rows: [] })                     // SELECT user → not found
       .mockResolvedValueOnce({ rows: [] });                    // revokeRefreshToken
 
@@ -462,7 +477,7 @@ describe('POST /api/refresh', () => {
   test('refresh recharge les données fraîches depuis la DB', async () => {
     // Simuler un changement de rôle en DB
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ '?column?': 1 }] })  // isRefreshTokenValid
+      .mockResolvedValueOnce(TOKEN_ROW_VALID)  // isRefreshTokenValid
       .mockResolvedValueOnce({                                 // SELECT user (données modifiées)
         rows: [{ id: 1, name: 'Admin Renamed', email: 'new@test.com', role_id: 2 }],
       })
@@ -480,14 +495,10 @@ describe('POST /api/refresh', () => {
     expect(payload.role).toBe(2);
   });
 
-  test('401 REFRESH_REPLAY — token déjà rotaté → toutes les sessions révoquées', async () => {
+  test('401 REFRESH_REPLAY — jeton déjà rotaté rejoué → toutes les sessions révoquées', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ '?column?': 1 }] })  // isRefreshTokenValid (passe — race avec rotate)
-      .mockResolvedValueOnce({                                 // SELECT user
-        rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1 }],
-      })
-      .mockResolvedValueOnce({ rows: [], rowCount: 0 })         // rotateRefreshToken: UPDATE ne révoque rien → REPLAY
-      .mockResolvedValueOnce({ rows: [] });                    // revokeAllUserRefreshTokens (UPDATE)
+      .mockResolvedValueOnce({ rows: [{ user_id: 1, revoked: true, rotated_at: new Date(), live: true }] }) // état : rotaté
+      .mockResolvedValueOnce({ rows: [], rowCount: 2 });       // revokeAllUserRefreshTokens
 
     const res = await request(app)
       .post('/api/refresh')
@@ -496,15 +507,61 @@ describe('POST /api/refresh', () => {
     expect(res.status).toBe(401);
     expect(res.body.code).toBe('REFRESH_REPLAY');
     expect(res.body.message).toMatch(/compromise/i);
-    // Cookie effacé
+    const revokeAll = mockPool.query.mock.calls.find(c => /UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = \$1/.test(c[0]));
+    expect(revokeAll).toBeDefined();
+    expect(revokeAll[1]).toEqual([1]);
     const cookies = res.headers['set-cookie'];
-    expect(cookies).toBeDefined();
     expect(cookies.find(c => c.startsWith('refreshToken=;'))).toBeDefined();
+  });
+
+  test('401 REFRESH_REVOKED — jeton révoqué hors rotation (logout, mot de passe) → pas de révocation en cascade', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ user_id: 1, revoked: true, rotated_at: null, live: true }] });
+
+    const res = await request(app)
+      .post('/api/refresh')
+      .set('Cookie', `refreshToken=${refreshTokenValid}`);
+
+    expect(res.status).toBe(401);
+    expect(res.body.code).toBe('REFRESH_REVOKED');
+    expect(mockPool.query.mock.calls.some(c => /WHERE user_id = \$1/.test(c[0]))).toBe(false);
+  });
+
+  test('401 REFRESH_REPLAY — course entre deux rotations concurrentes (UPDATE ne touche aucune ligne)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(TOKEN_ROW_VALID)                  // état : valide (l'autre requête n'a pas encore commité)
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1, token_version: 0 }] })
+      .mockResolvedValueOnce({ rows: [], rowCount: 0 })         // rotateRefreshToken: UPDATE ne révoque rien
+      .mockResolvedValueOnce({ rows: [] });                    // revokeAllUserRefreshTokens
+
+    const res = await request(app)
+      .post('/api/refresh')
+      .set('Cookie', `refreshToken=${refreshTokenValid}`);
+
+    expect(res.status).toBe(401);
+    expect(res.body.code).toBe('REFRESH_REPLAY');
+  });
+
+  test('rotation : marque l\'ancien jeton rotated_at pour reconnaître un rejeu ultérieur', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(TOKEN_ROW_VALID)
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1, token_version: 4 }] })
+      .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app)
+      .post('/api/refresh')
+      .set('Cookie', `refreshToken=${refreshTokenValid}`);
+
+    expect(res.status).toBe(200);
+    expect(mockPool.query.mock.calls.find(c => /SET revoked = TRUE, rotated_at = NOW\(\)/.test(c[0]))).toBeDefined();
+    // Le nouvel access token porte la version courante du compte
+    expect(jwt.decode(res.body.token).tv).toBe(4);
   });
 
   test('rotation : UPDATE et INSERT dans la même transaction (atomicité)', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ '?column?': 1 }] })
+      .mockResolvedValueOnce(TOKEN_ROW_VALID)
       .mockResolvedValueOnce({
         rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1 }],
       })
@@ -618,10 +675,15 @@ describe('GET /api/users/:id', () => {
 // UTILISATEURS — PUT /api/users/:id
 // =============================================================================
 describe('PUT /api/users/:id', () => {
-  test('200 — mise à jour réussie du nom', async () => {
-    mockPool.query.mockResolvedValueOnce({
-      rows: [{ id: 3, name: 'Nouveau Nom', email: 'member@test.com', role_id: 3 }],
-    });
+  // Ligne users lue avant toute modification (mot de passe actuel : 'CurrentPass1')
+  const bcryptjs = require('bcryptjs');
+  const CURRENT_HASH = bcryptjs.hashSync('CurrentPass1', 4);
+  const memberRow = () => ({ rows: [{ id: 3, name: 'Member', email: 'member@test.com', password: CURRENT_HASH }] });
+
+  test('200 — mise à jour réussie du nom (sans mot de passe actuel)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(memberRow())
+      .mockResolvedValueOnce({ rows: [{ id: 3, name: 'Nouveau Nom', email: 'member@test.com', role_id: 3, token_version: 0 }] });
 
     const res = await request(app)
       .put('/api/users/3')
@@ -630,15 +692,26 @@ describe('PUT /api/users/:id', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.message).toBe('Mise à jour réussie');
+    expect(res.body.token).toBeUndefined();
   });
 
   test('400 — aucune donnée à mettre à jour', async () => {
+    mockPool.query.mockResolvedValueOnce(memberRow());
     const res = await request(app)
       .put('/api/users/3')
       .set('Authorization', `Bearer ${tokenMember}`)
       .send({});
     expect(res.status).toBe(400);
     expect(res.body.message).toBe('Aucune donnée à mettre à jour');
+  });
+
+  test('400 — email identique à l\'actuel et pas de nom : rien à mettre à jour, aucun mot de passe exigé', async () => {
+    mockPool.query.mockResolvedValueOnce(memberRow());
+    const res = await request(app)
+      .put('/api/users/3')
+      .set('Authorization', `Bearer ${tokenMember}`)
+      .send({ email: 'MEMBER@test.com' });
+    expect(res.status).toBe(400);
   });
 
   test('400 — email invalide', async () => {
@@ -667,21 +740,111 @@ describe('PUT /api/users/:id', () => {
     expect(res.status).toBe(404);
   });
 
-  test('200 — changement de mot de passe révoque les refresh tokens', async () => {
-    mockPool.query
-      .mockResolvedValueOnce({ rows: [{ id: 3, name: 'Member', email: 'member@test.com', role_id: 3 }] }) // UPDATE users
-      .mockResolvedValueOnce({ rows: [] }); // revokeAllUserRefreshTokens
-
+  test('400 CURRENT_PASSWORD_REQUIRED — changement de mot de passe sans le mot de passe actuel', async () => {
+    mockPool.query.mockResolvedValueOnce(memberRow());
     const res = await request(app)
       .put('/api/users/3')
       .set('Authorization', `Bearer ${tokenMember}`)
       .send({ password: 'NewPassword1' });
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('CURRENT_PASSWORD_REQUIRED');
+    expect(mockPool.query).toHaveBeenCalledTimes(1); // aucune écriture
+  });
+
+  test('403 CURRENT_PASSWORD_INVALID — mot de passe actuel incorrect', async () => {
+    mockPool.query.mockResolvedValueOnce(memberRow());
+    const res = await request(app)
+      .put('/api/users/3')
+      .set('Authorization', `Bearer ${tokenMember}`)
+      .send({ password: 'NewPassword1', currentPassword: 'WrongPass1' });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('CURRENT_PASSWORD_INVALID');
+    expect(mockPool.query).toHaveBeenCalledTimes(1);
+  });
+
+  test('200 — changement de mot de passe : sessions révoquées, token_version incrémenté, nouvelle session émise', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(memberRow())
+      .mockResolvedValueOnce({ rows: [{ id: 3, name: 'Member', email: 'member@test.com', role_id: 3, token_version: 0 }] }) // UPDATE users
+      .mockResolvedValueOnce({ rows: [] })                          // révocation des refresh tokens
+      .mockResolvedValueOnce({ rows: [{ token_version: 1 }] })      // bumpTokenVersion
+      .mockResolvedValueOnce({ rows: [] });                         // storeRefreshToken (nouvelle session)
+
+    const res = await request(app)
+      .put('/api/users/3')
+      .set('Authorization', `Bearer ${tokenMember}`)
+      .send({ password: 'NewPassword1', currentPassword: 'CurrentPass1' });
 
     expect(res.status).toBe(200);
-    // Vérifier que revokeAllUserRefreshTokens a bien été appelé (2 queries au total)
-    expect(mockPool.query).toHaveBeenCalledTimes(2);
-    const revokeCall = mockPool.query.mock.calls[1];
-    expect(revokeCall[0]).toMatch(/UPDATE refresh_tokens SET revoked = TRUE/);
+    const sqls = mockPool.query.mock.calls.map(c => c[0]);
+    expect(sqls.some(q => /UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = \$1/.test(q))).toBe(true);
+    expect(sqls.some(q => /SET token_version = token_version \+ 1/.test(q))).toBe(true);
+    // Le nouvel access token porte la nouvelle version : l'ancien est refusé
+    expect(jwt.decode(res.body.token).tv).toBe(1);
+    expect(res.headers['set-cookie'].find(c => c.startsWith('refreshToken='))).toBeDefined();
+  });
+
+  test('200 — changement d\'email : aucune écriture directe, lien envoyé à la nouvelle adresse, ancienne prévenue', async () => {
+    mailer.sendEmailChangeConfirmation.mockClear();
+    mailer.sendEmailChangeNotice.mockClear();
+    mockPool.query
+      .mockResolvedValueOnce(memberRow())
+      .mockResolvedValueOnce({ rows: [{ id: 3, name: 'Member', email: 'member@test.com', role_id: 3, token_version: 0 }] }) // UPDATE name
+      .mockResolvedValueOnce({ rows: [] })   // invalidation des anciens jetons 'email'
+      .mockResolvedValueOnce({ rows: [] });  // INSERT jeton 'email'
+
+    const res = await request(app)
+      .put('/api/users/3')
+      .set('Authorization', `Bearer ${tokenMember}`)
+      .send({ name: 'Member', email: 'nouvelle@test.com', currentPassword: 'CurrentPass1' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.emailChangePending).toBe(true);
+    expect(res.body.user.email).toBe('member@test.com');
+    const sqls = mockPool.query.mock.calls.map(c => c[0]);
+    expect(sqls.some(q => /UPDATE users SET .*email = /.test(q))).toBe(false);
+    const insert = mockPool.query.mock.calls.find(c => /INSERT INTO email_tokens/.test(c[0]));
+    expect(insert[1][2]).toBe('email');
+    expect(insert[1][4]).toBe('nouvelle@test.com');
+    expect(mailer.sendEmailChangeConfirmation).toHaveBeenCalledWith('nouvelle@test.com', 'Member', expect.stringMatching(/^[a-f0-9]{64}$/));
+    expect(mailer.sendEmailChangeNotice).toHaveBeenCalledWith('member@test.com', 'Member');
+  });
+
+  test('changement d\'email : réponse identique que l\'adresse soit prise ou libre (pas d\'oracle)', async () => {
+    // Aucune requête ne touche la contrainte UNIQUE à ce stade : même status, même corps.
+    const send = async (target) => {
+      mockPool.query.mockReset();
+      mockPool.query
+        .mockResolvedValueOnce(memberRow())
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [] });
+      return request(app)
+        .put('/api/users/3')
+        .set('Authorization', `Bearer ${tokenMember}`)
+        .send({ email: target, currentPassword: 'CurrentPass1' });
+    };
+    const taken = await send('admin@test.com');
+    const free = await send('libre@test.com');
+    expect(taken.status).toBe(free.status);
+    expect(taken.body.message).toBe(free.body.message);
+  });
+
+  test('admin sur le compte d\'un autre : email appliqué directement, sessions coupées, sans mot de passe actuel', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(memberRow())
+      .mockResolvedValueOnce({ rows: [{ id: 3, name: 'Member', email: 'autre@test.com', role_id: 3, token_version: 0 }] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [{ token_version: 1 }] });
+
+    const res = await request(app)
+      .put('/api/users/3')
+      .set('Authorization', `Bearer ${tokenAdmin}`)
+      .send({ email: 'autre@test.com' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.emailChangePending).toBe(false);
+    expect(res.body.token).toBeUndefined(); // pas de session pour l'admin à la place de l'utilisateur
+    expect(mockPool.query.mock.calls.some(c => /SET token_version = token_version \+ 1/.test(c[0]))).toBe(true);
   });
 });
 
@@ -1896,10 +2059,11 @@ describe('Validation des IDs dans les paramètres', () => {
 // ADMIN — PUT /api/admin/users/:id
 // =============================================================================
 describe('PUT /api/admin/users/:id', () => {
-  test('200 — admin peut changer le rôle d\'un utilisateur', async () => {
-    mockPool.query.mockResolvedValueOnce({
-      rows: [{ id: 3, name: 'Jean', email: 'jean@test.com', role_id: 2 }],
-    });
+  test('200 — admin peut changer le rôle d\'un utilisateur (sessions et access tokens invalidés)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 3, name: 'Jean', email: 'jean@test.com', role_id: 2 }] })
+      .mockResolvedValueOnce({ rows: [] })                       // révocation des refresh tokens
+      .mockResolvedValueOnce({ rows: [{ token_version: 1 }] });  // bumpTokenVersion
 
     const res = await request(app)
       .put('/api/admin/users/3')
@@ -1908,6 +2072,8 @@ describe('PUT /api/admin/users/:id', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.role_id).toBe(2);
+    const bump = mockPool.query.mock.calls.find(c => /SET token_version = token_version \+ 1/.test(c[0]));
+    expect(bump[1]).toEqual(['3']);
   });
 
   test('403 — éditeur ne peut pas accéder à la route admin', async () => {
@@ -1977,45 +2143,112 @@ describe('PUT /api/admin/users/:id', () => {
 // =============================================================================
 // AUTH — GET /api/auth/verify-email
 // =============================================================================
-describe('GET /api/auth/verify-email', () => {
+describe('POST /api/auth/verify-email', () => {
   const validToken = 'a'.repeat(64); // 64 chars hex valide
 
-  test('200 — token valide → compte vérifié', async () => {
+  test('200 — token valide : le mot de passe choisi au clic devient actif, sessions coupées', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ id: 5, user_id: 1 }] }) // SELECT email_tokens
-      .mockResolvedValueOnce({ rows: [] })                       // UPDATE users email_verified
-      .mockResolvedValueOnce({ rows: [] });                      // UPDATE email_tokens used_at
+      .mockResolvedValueOnce({ rows: [{ user_id: 1, new_email: null }] }) // consommation atomique du token
+      .mockResolvedValueOnce({ rows: [] })   // UPDATE users (mot de passe + vérifié + token_version)
+      .mockResolvedValueOnce({ rows: [] })   // invalidation des autres liens de vérification
+      .mockResolvedValueOnce({ rows: [] })   // révocation des refresh tokens
+      .mockResolvedValueOnce({ rows: [] });  // SELECT (email de bienvenue)
 
-    const res = await request(app).get(`/api/auth/verify-email?token=${validToken}`);
+    const res = await request(app).post('/api/auth/verify-email').send({ token: validToken, password: 'OwnerPass1' });
     expect(res.status).toBe(200);
     expect(res.body.message).toMatch(/vérifié/);
+
+    const consume = mockPool.query.mock.calls[0];
+    expect(consume[0]).toMatch(/UPDATE email_tokens SET used_at = NOW\(\)[\s\S]*used_at IS NULL[\s\S]*RETURNING/);
+    const upd = mockPool.query.mock.calls.find(c => /UPDATE users[\s\S]*SET password = \$1, email_verified = TRUE/.test(c[0]));
+    expect(upd).toBeDefined();
+    const bcryptjs = require('bcryptjs');
+    expect(bcryptjs.compareSync('OwnerPass1', upd[1][0])).toBe(true);
+    expect(upd[0]).toMatch(/token_version = token_version \+ 1/);
+    expect(mockPool.query.mock.calls.some(c => /UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = \$1/.test(c[0]))).toBe(true);
+  });
+
+  test('400 — mot de passe absent ou trop faible', async () => {
+    const res = await request(app).post('/api/auth/verify-email').send({ token: validToken, password: 'weak' });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/Mot de passe invalide/);
+    expect(mockPool.query).not.toHaveBeenCalled();
   });
 
   test('400 — token absent', async () => {
-    const res = await request(app).get('/api/auth/verify-email');
+    const res = await request(app).post('/api/auth/verify-email').send({ password: 'OwnerPass1' });
     expect(res.status).toBe(400);
     expect(res.body.message).toBe('Token invalide');
   });
 
   test('400 — token format invalide (pas hex)', async () => {
-    const res = await request(app).get('/api/auth/verify-email?token=notahextoken');
+    const res = await request(app).post('/api/auth/verify-email').send({ token: 'notahextoken', password: 'OwnerPass1' });
     expect(res.status).toBe(400);
     expect(res.body.message).toBe('Token invalide');
   });
 
-  test('400 — token valide mais non trouvé / expiré → TOKEN_INVALID', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [] }); // token non trouvé
+  test('400 — token déjà utilisé, expiré ou inconnu → TOKEN_INVALID, rien n\'est modifié', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] }); // UPDATE ... RETURNING : aucune ligne
 
-    const res = await request(app).get(`/api/auth/verify-email?token=${validToken}`);
+    const res = await request(app).post('/api/auth/verify-email').send({ token: validToken, password: 'OwnerPass1' });
     expect(res.status).toBe(400);
     expect(res.body.code).toBe('TOKEN_INVALID');
+    expect(mockPool.query.mock.calls.some(c => /UPDATE users/.test(c[0]))).toBe(false);
+  });
+
+  test('l\'ancienne route GET n\'active plus rien', async () => {
+    const res = await request(app).get(`/api/auth/verify-email?token=${validToken}`);
+    expect(res.status).toBe(404);
+    expect(mockPool.query).not.toHaveBeenCalled();
   });
 
   test('500 — erreur base de données', async () => {
     mockPool.query.mockRejectedValueOnce(new Error('DB error'));
 
-    const res = await request(app).get(`/api/auth/verify-email?token=${validToken}`);
+    const res = await request(app).post('/api/auth/verify-email').send({ token: validToken, password: 'OwnerPass1' });
     expect(res.status).toBe(500);
+  });
+});
+
+// =============================================================================
+// AUTH — POST /api/auth/confirm-email-change
+// =============================================================================
+describe('POST /api/auth/confirm-email-change', () => {
+  const validToken = 'b'.repeat(64);
+
+  test('200 — applique la nouvelle adresse, coupe sessions et access tokens', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ user_id: 3, new_email: 'nouvelle@test.com' }] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).post('/api/auth/confirm-email-change').send({ token: validToken });
+    expect(res.status).toBe(200);
+    const upd = mockPool.query.mock.calls.find(c => /UPDATE users SET email = \$1/.test(c[0]));
+    expect(upd[1]).toEqual(['nouvelle@test.com', 3]);
+    expect(upd[0]).toMatch(/token_version = token_version \+ 1/);
+    expect(mockPool.query.mock.calls.some(c => /UPDATE refresh_tokens SET revoked = TRUE/.test(c[0]))).toBe(true);
+  });
+
+  test('400 — token inconnu, expiré ou déjà utilisé', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).post('/api/auth/confirm-email-change').send({ token: validToken });
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('TOKEN_INVALID');
+  });
+
+  test('409 — adresse prise entre la demande et la confirmation', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ user_id: 3, new_email: 'admin@test.com' }] })
+      .mockRejectedValueOnce(Object.assign(new Error('duplicate key'), { code: '23505' }));
+    const res = await request(app).post('/api/auth/confirm-email-change').send({ token: validToken });
+    expect(res.status).toBe(409);
+    expect(res.body.code).toBe('EMAIL_TAKEN');
+  });
+
+  test('400 — format de token invalide', async () => {
+    const res = await request(app).post('/api/auth/confirm-email-change').send({ token: 'zz' });
+    expect(res.status).toBe(400);
   });
 });
 
@@ -2522,22 +2755,51 @@ describe('GET /sitemap.xml', () => {
 // =============================================================================
 // REGISTER — Mailer failure handling (S3)
 // =============================================================================
-describe('POST /api/register — gestion échec mailer', () => {
+describe('POST /api/register — réponse avant le travail, gestion échec mailer', () => {
   const validPayload = {
     name: 'Marie Curie',
     email: 'marie@example.com',
     password: 'Password123',
   };
+  const flush = () => new Promise(resolve => setTimeout(resolve, 30));
 
   beforeEach(() => {
     mailer.sendVerificationEmail.mockReset();
   });
 
-  // IPs uniques pour contourner le rate limiter register (10/15min par IP)
-  test('201 — premier envoi échoue, retry réussit → pas de warning', async () => {
+  // Anti-énumération : la réponse part avant la transaction et l'envoi SMTP,
+  // donc elle ne dépend ni de l'existence du compte ni de la latence du mail.
+  test('201 — réponse identique et immédiate, que l\'email existe ou non', async () => {
+    mailer.sendVerificationEmail.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 300)));
+
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 7, email_verified: true }] }); // compte existant vérifié
+    let t = Date.now();
+    const existing = await request(app).post('/api/register').set('X-Forwarded-For', '10.0.0.4').send(validPayload);
+    const tExisting = Date.now() - t;
+
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })                // email libre
+      .mockResolvedValueOnce({ rows: [{ id: 8 }] })      // INSERT users
+      .mockResolvedValueOnce({ rows: [] })                // invalidation anciens jetons
+      .mockResolvedValueOnce({ rows: [] });               // INSERT jeton
+    t = Date.now();
+    const fresh = await request(app).post('/api/register').set('X-Forwarded-For', '10.0.0.5').send(validPayload);
+    const tNew = Date.now() - t;
+
+    expect(existing.status).toBe(201);
+    expect(fresh.status).toBe(201);
+    expect(fresh.body).toEqual(existing.body);
+    expect(fresh.body.warning).toBeUndefined();
+    // Le délai simulé de 300 ms d'envoi n'apparaît pas dans la réponse
+    expect(tNew - tExisting).toBeLessThan(200);
+    await new Promise(resolve => setTimeout(resolve, 350));
+  });
+
+  test('201 — premier envoi échoue, retry après la réponse', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [] })
-      .mockResolvedValueOnce({ rows: [{ id: 10, name: 'Marie Curie' }] })
+      .mockResolvedValueOnce({ rows: [{ id: 10 }] })
+      .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] });
 
     mailer.sendVerificationEmail
@@ -2549,34 +2811,15 @@ describe('POST /api/register — gestion échec mailer', () => {
       .set('X-Forwarded-For', '10.0.0.1')
       .send(validPayload);
     expect(res.status).toBe(201);
-    expect(res.body.warning).toBeUndefined();
+    await flush();
     expect(mailer.sendVerificationEmail).toHaveBeenCalledTimes(2);
   });
 
-  test('201 — premier ET second envois échouent → warning EMAIL_NOT_SENT', async () => {
+  test('201 — compte créé en BD même si le mailer échoue (pas de rollback)', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [] })
-      .mockResolvedValueOnce({ rows: [{ id: 11, name: 'Marie Curie' }] })
-      .mockResolvedValueOnce({ rows: [] });
-
-    mailer.sendVerificationEmail
-      .mockRejectedValueOnce(new Error('SMTP down'))
-      .mockRejectedValueOnce(new Error('SMTP still down'));
-
-    const res = await request(app)
-      .post('/api/register')
-      .set('X-Forwarded-For', '10.0.0.2')
-      .send(validPayload);
-    expect(res.status).toBe(201);
-    expect(res.body.warning).toBe('EMAIL_NOT_SENT');
-    expect(res.body.message).toMatch(/Renvoyer/);
-    expect(mailer.sendVerificationEmail).toHaveBeenCalledTimes(2);
-  });
-
-  test('201 — compte créé en BD même si mailer échoue (pas de rollback)', async () => {
-    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 12 }] })
       .mockResolvedValueOnce({ rows: [] })
-      .mockResolvedValueOnce({ rows: [{ id: 12, name: 'Marie Curie' }] })
       .mockResolvedValueOnce({ rows: [] });
 
     mailer.sendVerificationEmail.mockRejectedValue(new Error('SMTP unreachable'));
@@ -2586,11 +2829,31 @@ describe('POST /api/register — gestion échec mailer', () => {
       .set('X-Forwarded-For', '10.0.0.3')
       .send(validPayload);
     expect(res.status).toBe(201);
-    // INSERT users a bien été appelé (compte persisté)
+    await flush();
     const insertUsersCall = mockPool.query.mock.calls.find(
       (c) => typeof c[0] === 'string' && c[0].includes('INSERT INTO users')
     );
     expect(insertUsersCall).toBeDefined();
+  });
+
+  test('201 — compte non vérifié existant : pas de nouveau compte, nouveau lien envoyé', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 42, email_verified: false }] })
+      .mockResolvedValueOnce({ rows: [] })   // UPDATE name
+      .mockResolvedValueOnce({ rows: [] })   // invalidation anciens jetons
+      .mockResolvedValueOnce({ rows: [] });  // INSERT jeton
+    mailer.sendVerificationEmail.mockResolvedValue(undefined);
+
+    const res = await request(app)
+      .post('/api/register')
+      .set('X-Forwarded-For', '10.0.0.6')
+      .send(validPayload);
+    expect(res.status).toBe(201);
+    await flush();
+    expect(mockPool.query.mock.calls.some(c => /INSERT INTO users/.test(c[0]))).toBe(false);
+    const token = mockPool.query.mock.calls.find(c => /INSERT INTO email_tokens/.test(c[0]));
+    expect(token[1][0]).toBe(42);
+    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('marie@example.com', 'Marie Curie', expect.stringMatching(/^[a-f0-9]{64}$/));
   });
 });
 
@@ -3577,6 +3840,7 @@ describe('PUT /api/users/:id — validation fields (lignes 69, 75)', () => {
   });
 
   test('400 — aucun champ fourni → Aucune donnée à mettre à jour (ligne 147)', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 3, name: 'Member', email: 'member@test.com', password: 'x' }] });
     const res = await request(app)
       .put('/api/users/3')
       .set('Authorization', `Bearer ${tokenMember}`)
@@ -3947,23 +4211,23 @@ describe('POST /api/login — lockout au seuil (ligne 138)', () => {
 // =============================================================================
 // AUTH verify-email — envoi email bienvenue si user trouvé (lignes 293-295)
 // =============================================================================
-describe('GET /api/auth/verify-email — email bienvenue envoyé (lignes 293-295)', () => {
-  test('200 — 4e query retourne l\'user → sendWelcomeEmail appelé', async () => {
+describe('POST /api/auth/verify-email — email de bienvenue', () => {
+  test('200 — sendWelcomeEmail appelé après activation', async () => {
     const validToken = 'c'.repeat(64);
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ id: 5, user_id: 1 }] }) // SELECT email_tokens
-      .mockResolvedValueOnce({ rows: [] })                       // UPDATE users
-      .mockResolvedValueOnce({ rows: [] })                       // UPDATE email_tokens
-      .mockResolvedValueOnce({ rows: [{ name: 'Jean', email: 'jean@test.com' }] }); // SELECT users (welcome)
+      .mockResolvedValueOnce({ rows: [{ user_id: 1, new_email: null }] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [{ name: 'Jean', email: 'jean@test.com' }] });
 
     const mailerMod = require('../mailer');
     mailerMod.sendWelcomeEmail = jest.fn().mockResolvedValue(undefined);
 
-    const res = await request(app).get(`/api/auth/verify-email?token=${validToken}`);
+    const res = await request(app).post('/api/auth/verify-email').send({ token: validToken, password: 'OwnerPass1' });
     expect(res.status).toBe(200);
-    // Petit délai pour que le send non-bloquant ait le temps de s'exécuter
     await new Promise(resolve => setTimeout(resolve, 20));
-    expect(mailerMod.sendWelcomeEmail).toHaveBeenCalled();
+    expect(mailerMod.sendWelcomeEmail).toHaveBeenCalledWith('jean@test.com', 'Jean');
   });
 });
 
@@ -4659,5 +4923,136 @@ describe('app.js — fichiers privés de frontend/', () => {
       const res = await request(app).get(p);
       expect(res.status).toBe(200);
     }
+  });
+});
+
+// =============================================================================
+// Non-régression — correctifs de l'audit de sécurité (sessions et comptes)
+// =============================================================================
+describe('Audit sécurité — jetons d\'accès liés à l\'état du compte', () => {
+  test('401 TOKEN_REVOKED — jeton émis avant un changement de mot de passe (token_version incrémenté)', async () => {
+    authState[3] = { role_id: 3, token_version: 1 }; // le jeton de test porte tv absent → 0
+    const res = await request(app).get('/api/favorites').set('Authorization', `Bearer ${tokenMember}`);
+    expect(res.status).toBe(401);
+    expect(res.body.code).toBe('TOKEN_REVOKED');
+  });
+
+  test('401 TOKEN_REVOKED — compte supprimé : son jeton ne sert plus à rien', async () => {
+    authState[2] = null;
+    const res = await request(app).delete('/api/airplanes/1').set('Authorization', `Bearer ${tokenEditor}`);
+    expect(res.status).toBe(401);
+    expect(res.body.code).toBe('TOKEN_REVOKED');
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+
+  test('403 — admin rétrogradé : le rôle lu en base l\'emporte sur celui du jeton', async () => {
+    authState[1] = { role_id: 3, token_version: 0 };
+    const res = await request(app)
+      .put('/api/admin/users/1')
+      .set('Authorization', `Bearer ${tokenAdmin}`)
+      .send({ name: 'Admin', role_id: 1 });
+    expect(res.status).toBe(403);
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+
+  test('jeton à jour (tv égal à token_version) : accepté', async () => {
+    authState[3] = { role_id: 3, token_version: 5 };
+    const fresh = makeToken({ id: 3, name: 'Member', role: 3, email: 'member@test.com', tv: 5 });
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).get('/api/favorites').set('Authorization', `Bearer ${fresh}`);
+    expect(res.status).toBe(200);
+  });
+
+  test('lecteur par défaut : relit role_id et token_version en base', async () => {
+    authMiddleware.setAuthStateLoader(null);
+    try {
+      mockPool.query
+        .mockResolvedValueOnce({ rows: [{ role_id: 3, token_version: 0 }] })
+        .mockResolvedValueOnce({ rows: [] });
+      const res = await request(app).get('/api/favorites').set('Authorization', `Bearer ${tokenMember}`);
+      expect(res.status).toBe(200);
+      expect(mockPool.query.mock.calls[0][0]).toBe('SELECT role_id, token_version FROM users WHERE id = $1');
+      expect(mockPool.query.mock.calls[0][1]).toEqual([3]);
+    } finally {
+      authMiddleware.setAuthStateLoader(async (id) => authState[id] ?? null);
+    }
+  });
+});
+
+describe('Audit sécurité — verrouillage du login', () => {
+  test('échec de connexion : incrément atomique en SQL, verrou décidé par la base', async () => {
+    const bcryptjs = require('bcryptjs');
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 9, name: 'U', email: 'u@test.com', password: bcryptjs.hashSync('Right1pass', 4), role_id: 3, token_version: 0, email_verified: true, failed_login_count: 9, locked_until: null }] })
+      .mockResolvedValueOnce({ rows: [], rowCount: 1 });
+
+    const res = await request(app).post('/api/login').set('X-Forwarded-For', '10.9.0.1').send({ email: 'u@test.com', password: 'Wrong1pass' });
+    expect(res.status).toBe(400);
+    const upd = mockPool.query.mock.calls[1];
+    expect(upd[0]).toMatch(/failed_login_count = failed_login_count \+ 1/);
+    expect(upd[0]).toMatch(/WHEN failed_login_count \+ 1 >= \$1/);
+    // Aucune valeur de compteur calculée en JS n'est envoyée
+    expect(upd[1]).toEqual([10, '15', 9]);
+  });
+
+  test('connexion réussie : le jeton porte la version courante du compte', async () => {
+    const bcryptjs = require('bcryptjs');
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 9, name: 'U', email: 'u@test.com', password: bcryptjs.hashSync('Right1pass', 4), role_id: 3, token_version: 7, email_verified: true, failed_login_count: 0, locked_until: null }] })
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).post('/api/login').set('X-Forwarded-For', '10.9.0.2').send({ email: 'u@test.com', password: 'Right1pass' });
+    expect(res.status).toBe(200);
+    expect(jwt.decode(res.body.token).tv).toBe(7);
+  });
+});
+
+describe('Audit sécurité — réinitialisation et nettoyage', () => {
+  test('reset-password : token consommé une seule fois, access tokens invalidés, verrou levé', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 5, user_id: 1 }] })
+      .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).post('/api/auth/reset-password').send({ token: 'd'.repeat(64), password: 'NewPass123' });
+    expect(res.status).toBe(200);
+    expect(mockPool.query.mock.calls[1][0]).toMatch(/WHERE id = \$1 AND used_at IS NULL/);
+    expect(mockPool.query.mock.calls[2][0]).toMatch(/token_version = token_version \+ 1/);
+    expect(mockPool.query.mock.calls[2][0]).toMatch(/locked_until = NULL/);
+  });
+
+  test('reset-password : token déjà consommé entre-temps → 400, mot de passe inchangé', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 5, user_id: 1 }] })
+      .mockResolvedValueOnce({ rows: [], rowCount: 0 });
+    const res = await request(app).post('/api/auth/reset-password').send({ token: 'd'.repeat(64), password: 'NewPass123' });
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('TOKEN_INVALID');
+    expect(mockPool.query.mock.calls.some(c => /UPDATE users SET password/.test(c[0]))).toBe(false);
+  });
+
+  test('nettoyage : les refresh tokens révoqués non expirés sont conservés (détection de rejeu)', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [], rowCount: 0 });
+    await authMiddleware.cleanupExpiredTokens();
+    expect(mockPool.query.mock.calls[0][0]).toBe('DELETE FROM refresh_tokens WHERE expires_at < NOW()');
+  });
+});
+
+describe('Audit sécurité — cardinalité des métriques', () => {
+  const { register, routeLabel } = require('../middleware/observability');
+
+  test('routeLabel : jamais le chemin brut', () => {
+    expect(routeLabel({ route: { path: '/airplanes/:id' }, baseUrl: '/api' })).toBe('/api/airplanes/:id');
+    expect(routeLabel({ originalUrl: '/api/zzxxyy' })).toBe('api_unmatched');
+    expect(routeLabel({ originalUrl: '/n-importe-quoi/xyz' })).toBe('unmatched');
+  });
+
+  test('chemins inconnus : aucune nouvelle série Prometheus par chemin', async () => {
+    for (let i = 0; i < 25; i++) {
+      await request(app).get(`/api/zz-inconnu-${'x'.repeat(50)}${String.fromCharCode(103 + i)}`);
+    }
+    const metric = await register.getSingleMetric('voh_http_requests_total').get();
+    const raw = metric.values.filter(v => String(v.labels.route).includes('zz-inconnu'));
+    expect(raw).toHaveLength(0);
+    expect(metric.values.some(v => v.labels.route === 'api_unmatched')).toBe(true);
   });
 });
