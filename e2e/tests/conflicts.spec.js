@@ -25,7 +25,8 @@ test.describe('Conflits', () => {
     const { war } = await firstWar(request);
     await page.goto('/conflits');
     await page.locator(`.conflict-card[href="/conflits/${war.slug}"]`).click();
-    await expect(page).toHaveURL(new RegExp(`/conflits/${war.slug}$`));
+    // i18n peut ajouter ?lang=… à l'URL : on n'exige que la fin du chemin.
+    await expect(page).toHaveURL((url) => url.pathname === `/conflits/${war.slug}`);
     await expect(page.locator('h1')).toHaveText(war.name);
     await expect(page.locator('#conflict-aircraft .aircraft-card')).toHaveCount(war.count, { timeout: 10000 });
   });
