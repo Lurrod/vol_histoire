@@ -639,7 +639,7 @@
     "accept_terms_error": "You must accept the terms of service.",
     "account_creation_failed": "Unable to create account.",
     "years_label": "To present day",
-    "register_rgpd_notice": "Your data (name, email address) is processed to create and manage your account, and kept until you delete it. You have the right to access, correct and erase it — see the <a href=\"/politique-confidentialite\">privacy policy</a>."
+    "register_rgpd_notice": "See the <a href=\"/politique-confidentialite\">privacy policy</a>."
   },
   "forgot_password": {
     "title": "Forgot password | Vol d'Histoire",

@@ -7,7 +7,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 /* ==================== AUTH SECTION — SPLIT SCREEN ==================== */
 .page-login .auth-section {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   padding-top: 70px;
 }
 
@@ -230,11 +230,16 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   min-width: 420px;
   background: var(--night-soft);
   display: flex;
-  align-items: center;
+  /* Pas de centrage vertical par align-items : quand le formulaire
+     d'inscription dépasse la hauteur de l'écran, il serait rogné aux deux
+     bouts (onglets sous l'en-tête, lien « Se connecter » hors d'atteinte).
+     Les marges automatiques de .form-panel-inner centrent tant qu'il y a la
+     place, puis laissent le panneau grandir et la page défiler. */
+  align-items: flex-start;
   justify-content: center;
   padding: 2rem;
   position: relative;
-  overflow: hidden;
+  overflow-x: clip;
   border-left: 1px solid rgba(200, 169, 110, 0.10);
 }
 
@@ -258,6 +263,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 .page-login .form-panel-inner {
   width: 100%;
   max-width: 400px;
+  margin-block: auto;
 }
 
 /* Form Container — slide transition */
@@ -394,43 +400,46 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 
 .page-login .form-group input {
   width: 100%;
-  padding: 0.85rem 1rem;
-  border: none;
-  border-bottom: 2px solid var(--border);
-  border-radius: 0;
+  min-height: 48px;
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(200, 169, 110, 0.16);
+  border-radius: 10px;
   font-family: 'DM Sans', sans-serif;
   font-size: 0.95rem;
   color: var(--text-primary);
-  background: transparent;
-  transition: var(--transition);
+  caret-color: var(--secondary);
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
-.page-login .form-group input:focus:not(:focus-visible) {
+.page-login .form-group input:hover {
+  border-color: rgba(200, 169, 110, 0.32);
+}
+.page-login .form-group input:focus {
   outline: none;
-  border-bottom-color: var(--secondary);
+  border-color: var(--secondary);
+  background: rgba(200, 169, 110, 0.05);
+  box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.14);
 }
 .page-login .form-group input:focus-visible {
-  outline: none;
-  border-bottom-color: var(--secondary);
-  box-shadow: var(--focus-ring);
+  box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.14), var(--focus-ring);
 }
 .page-login .form-group input::placeholder {
   color: var(--text-secondary);
-  opacity: 0.5;
+  opacity: 0.45;
+}
+.page-login .form-group input[aria-invalid="true"] {
+  border-color: var(--accent);
 }
 
-/* Animated underline */
-.page-login .input-line {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  width: 0;
-  background: linear-gradient(90deg, var(--hud-cyan), var(--secondary));
-  transition: width 0.4s var(--ease);
-  z-index: 1;
-}
-.page-login .form-group:focus-within .input-line, .page-login .password-wrapper:focus-within + .input-line {
-  width: 100%;
+/* Autoremplissage du navigateur : sans cela, Chrome peint le champ en blanc
+   ou bleu clair et casse la palette. L'ombre interne recouvre ce fond. */
+.page-login .form-group input:-webkit-autofill,
+.page-login .form-group input:-webkit-autofill:hover,
+.page-login .form-group input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text-primary);
+  -webkit-box-shadow: 0 0 0 1000px var(--night-mid) inset;
+  caret-color: var(--secondary);
+  transition: background-color 9999s ease-out 0s;
 }
 
 /* Password wrapper */
@@ -552,6 +561,27 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   transition: var(--transition-fast);
 }
 .page-login .forgot-password:hover { color: var(--secondary-dark); }
+
+/* Mention RGPD sous le formulaire d'inscription */
+.page-login .form-rgpd-notice {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  text-align: center;
+}
+.page-login .form-rgpd-notice a {
+  color: var(--secondary);
+  text-decoration: underline;
+  text-decoration-color: rgba(200, 169, 110, 0.35);
+  text-underline-offset: 2px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+.page-login .form-rgpd-notice a:hover,
+.page-login .form-rgpd-notice a:focus-visible {
+  color: var(--text-primary);
+  text-decoration-color: var(--secondary);
+}
 
 /* Submit Button */
 .page-login .btn-submit {

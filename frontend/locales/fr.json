@@ -639,7 +639,7 @@
     "accept_terms_error": "Vous devez accepter les conditions d'utilisation.",
     "account_creation_failed": "Impossible de créer le compte.",
     "years_label": "À nos jours",
-    "register_rgpd_notice": "Vos données (nom, adresse email) sont traitées pour créer et gérer votre compte, et conservées jusqu'à sa suppression. Vous disposez d'un droit d'accès, de rectification et d'effacement — voir la <a href=\"/politique-confidentialite\">politique de confidentialité</a>."
+    "register_rgpd_notice": "Voir la <a href=\"/politique-confidentialite\">politique de confidentialité</a>."
   },
   "forgot_password": {
     "title": "Mot de passe oublié | Vol d'Histoire",
