@@ -167,25 +167,60 @@ describe('setupPasswordToggle', () => {
   test('toggle le type du champ password → text → password', () => {
     const button = document.createElement('button');
     const icon = document.createElement('i');
-    icon.classList.add('fa-eye-slash');
+    icon.classList.add('fas', 'fa-eye-slash');
     button.appendChild(icon);
 
     const input = document.createElement('input');
     input.type = 'password';
 
     setupPasswordToggle(button, input);
+    expect(button.getAttribute('aria-pressed')).toBe('false');
 
-    // Premier clic → text
+    // Premier clic → text, icône œil ouvert
     button.click();
     expect(input.type).toBe('text');
-    expect(icon.classList.contains('fa-eye')).toBe(true);
-    expect(icon.classList.contains('fa-eye-slash')).toBe(false);
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    expect(button.querySelectorAll('i')).toHaveLength(1);
+    expect(button.querySelector('i').classList.contains('fa-eye')).toBe(true);
+    expect(button.querySelector('i').classList.contains('fa-eye-slash')).toBe(false);
 
-    // Deuxième clic → password
+    // Deuxième clic → password, icône œil barré
     button.click();
     expect(input.type).toBe('password');
-    expect(icon.classList.contains('fa-eye-slash')).toBe(true);
-    expect(icon.classList.contains('fa-eye')).toBe(false);
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+    expect(button.querySelectorAll('i')).toHaveLength(1);
+    expect(button.querySelector('i').classList.contains('fa-eye-slash')).toBe(true);
+  });
+
+  // Régression : icons.js remplace le <i> par un <svg class="icon …"> au
+  // chargement. L'ancien code cherchait un <i>, obtenait null et levait une
+  // TypeError : le champ basculait, l'icône jamais.
+  test('remplace une icône déjà convertie en SVG par icons.js', () => {
+    const button = document.createElement('button');
+    button.innerHTML = '<svg class="icon icon-eye-slash" aria-hidden="true"></svg>';
+    const input = document.createElement('input');
+    input.type = 'password';
+
+    setupPasswordToggle(button, input);
+    expect(() => button.click()).not.toThrow();
+
+    expect(input.type).toBe('text');
+    expect(button.querySelector('svg')).toBeNull();
+    expect(button.querySelector('i.fa-eye')).not.toBeNull();
+  });
+
+  test('bascule aussi les champs liés (confirmation)', () => {
+    const button = document.createElement('button');
+    const input = document.createElement('input');
+    const confirm = document.createElement('input');
+    input.type = 'password';
+    confirm.type = 'password';
+
+    setupPasswordToggle(button, input, confirm);
+    button.click();
+    expect(confirm.type).toBe('text');
+    button.click();
+    expect(confirm.type).toBe('password');
   });
 });
 

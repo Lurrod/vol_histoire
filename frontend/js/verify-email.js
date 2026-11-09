@@ -61,13 +61,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const errorEl = document.getElementById('verify-error');
   const submitBtn = document.getElementById('verify-submit-btn');
 
-  document.getElementById('toggle-verify-pw').addEventListener('click', () => {
-    const icon = document.querySelector('#toggle-verify-pw i');
-    const visible = pwInput.type === 'password';
-    pwInput.type = visible ? 'text' : 'password';
-    confirmInput.type = pwInput.type;
-    icon.classList.replace(visible ? 'fa-eye-slash' : 'fa-eye', visible ? 'fa-eye' : 'fa-eye-slash');
-  });
+  // Le bouton affiche aussi le champ de confirmation (utils.js)
+  setupPasswordToggle(document.getElementById('toggle-verify-pw'), pwInput, confirmInput);
 
   const setFormError = (message) => {
     errorEl.textContent = message;
