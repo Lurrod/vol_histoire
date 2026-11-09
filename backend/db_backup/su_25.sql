@@ -61,7 +61,6 @@ INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 
 -- Insertion des guerres
 INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'Su-25'), (SELECT id FROM wars WHERE name = 'Guerre d''Afghanistan')),
 ((SELECT id FROM airplanes WHERE name = 'Su-25'), (SELECT id FROM wars WHERE name = 'Guerre civile syrienne')),
 ((SELECT id FROM airplanes WHERE name = 'Su-25'), (SELECT id FROM wars WHERE name = 'Guerre Iran-Irak'));
 

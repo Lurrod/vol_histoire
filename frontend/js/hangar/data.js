@@ -8,11 +8,13 @@
     try {
       const response = await auth.fetchWithTimeout('/api/referentials');
       if (!response.ok) throw new Error('Erreur chargement référentiels');
-      const { countries, generations, types, manufacturers } = await response.json();
+      const { countries, generations, types, manufacturers, wars, missions } = await response.json();
       state.countries = Array.isArray(countries) ? countries : [];
       state.generations = Array.isArray(generations) ? generations : [];
       state.types = Array.isArray(types) ? types : [];
       state.manufacturers = Array.isArray(manufacturers) ? manufacturers : [];
+      state.wars = Array.isArray(wars) ? wars : [];
+      state.missions = Array.isArray(missions) ? missions : [];
       VH.hangar.filters.populateFilterOptions(state);
       VH.hangar.admin.populateFormSelects(state);
     } catch {
@@ -31,6 +33,8 @@
       if (state.filters.country)    params.set('country', state.filters.country);
       if (state.filters.generation) params.set('generation', state.filters.generation);
       if (state.filters.type)       params.set('type', state.filters.type);
+      if (state.filters.war)        params.set('war', state.filters.war);
+      if (state.filters.mission)    params.set('mission', state.filters.mission);
       if (state.filters.search)     params.set('search', state.filters.search);
 
       const response = await auth.fetchWithTimeout(`/api/airplanes?${params}`);
@@ -61,6 +65,8 @@
     if (state.filters.country)    p.set('country', state.filters.country);
     if (state.filters.generation) p.set('generation', String(state.filters.generation));
     if (state.filters.type)       p.set('type', state.filters.type);
+    if (state.filters.war)        p.set('war', state.filters.war);
+    if (state.filters.mission)    p.set('mission', state.filters.mission);
     try {
       const res = await fetch('/api/airplanes/facets?' + p.toString());
       if (!res.ok) return;
@@ -83,6 +89,8 @@
     applyTag('#country-options .filter-option', el => state.facets.countries[el.dataset.value]);
     applyTag('#generation-options .filter-option', el => state.facets.generations[Number(el.dataset.value)]);
     applyTag('#type-options .filter-option', el => state.facets.types[el.dataset.value]);
+    applyTag('#war-options .filter-option', el => (state.facets.wars || {})[el.dataset.value]);
+    applyTag('#mission-options .filter-option', el => (state.facets.missions || {})[el.dataset.value]);
   }
 
   VH.hangar.data = { loadReferentialData, loadAircraft, fetchFacets };

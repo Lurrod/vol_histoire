@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- Les pages /conflits/<slug> sont servies un niveau plus bas : i18n.js et
+     cookies.js chargent locales/ et cookie-consent.html en chemin relatif. -->
+<base href="/">
+
+<!-- Google Tag Manager -->
+<script defer src="/js/gtm.js"></script>
+<script defer src="/js/sw-register.js"></script>
+<!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/svg+xml" sizes="16x16" href="/assets/logo/favicon-16.svg">
+  <link rel="apple-touch-icon" href="/assets/logo/icon-192.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#080c14">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Balises réécrites côté serveur pour chaque conflit (routes/conflicts-ssr.js) -->
+  <title>Conflits | Vol d'Histoire</title>
+  <meta name="description" content="Les conflits armés depuis 1945 et les appareils militaires qui y ont été engagés, de la guerre d'Indochine à l'Ukraine.">
+  <link rel="canonical" href="https://vol-histoire.titouan-borde.com/conflits">
+  <meta property="og:title" content="Conflits - Vol d'Histoire">
+  <meta property="og:description" content="Les conflits armés depuis 1945 et les appareils militaires qui y ont été engagés, de la guerre d'Indochine à l'Ukraine.">
+  <meta property="og:url" content="https://vol-histoire.titouan-borde.com/conflits">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Vol d'Histoire">
+  <meta property="og:locale" content="fr_FR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Conflits - Vol d'Histoire">
+  <meta name="twitter:description" content="Les conflits armés depuis 1945 et les appareils militaires qui y ont été engagés, de la guerre d'Indochine à l'Ukraine.">
+  <link rel="preload" href="/fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/core.min.css">
+  <link rel="stylesheet" href="/css/conflicts.min.css">
+  </head>
+<!-- page-favorites : la page réutilise le bandeau et la grille de cartes de
+     favorites.css (bundle conflicts.min.css), page-conflicts porte le reste. -->
+<body class="page-favorites page-conflicts">
+<a href="#main-content" class="skip-link">Aller au contenu</a>
+
+  <!-- Header -->
+  <header>
+    <nav class="container" aria-label="Navigation principale" data-i18n-aria="nav.primary_label">
+      <div class="logo"><picture><source srcset="/assets/logo/vh-mark-primary-gold.svg" media="(max-width: 480px)"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="logo-lockup" width="152" height="40"></picture></div>
+      <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a></li>
+        <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
+        <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
+        <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
+      </ul>
+      <div class="nav-actions">
+        <div class="lang-switch">
+          <button type="button" id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i><span class="lang-btn-label" data-i18n="nav.language">Langue</span></button>
+          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
+            <li><button type="button" class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
+            <li><button type="button" class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
+          </ul>
+        </div>
+        <div class="user-menu"><div class="user-toggle">
+          <a href="#" id="login-icon" class="login-icon" aria-label="Connexion" data-i18n-aria="nav.login"><i class="fas fa-user-circle" aria-hidden="true"></i></a>
+          <div id="user-info-container" class="user-dropdown hidden" role="menu">
+            <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
+            <div class="dropdown-divider"></div>
+            <a href="/settings" id="settings-icon" class="dropdown-item" role="menuitem"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
+            <div class="dropdown-divider"></div>
+            <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
+          </div>
+        </div></div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+  <section class="page-hero" aria-labelledby="page-hero-heading">
+    <div class="hero-background"></div>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Fil d'Ariane">
+        <a href="/"><i class="fas fa-home" aria-hidden="true"></i> <span data-i18n="nav.home">Accueil</span></a>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        <a href="/conflits" id="crumb-conflicts" data-i18n="conflicts.breadcrumb">Conflits</a>
+        <span id="crumb-current" class="hidden"><i class="fas fa-chevron-right" aria-hidden="true"></i> <span aria-current="page" id="crumb-current-name"></span></span>
+      </nav>
+      <div class="page-hero-inner">
+        <div class="hero-text">
+          <div class="hero-eyebrow"><span id="hero-eyebrow" data-i18n="conflicts.eyebrow">Depuis 1945</span></div>
+          <h1 id="page-hero-heading" data-i18n-html="conflicts.hero_title">Les<span class="hero-muted">Conflits</span></h1>
+          <p id="hero-desc" data-i18n="conflicts.hero_desc">Les guerres et les crises armées depuis 1945, et les appareils du catalogue qui y ont été engagés.</p>
+        </div>
+        <div class="hero-data">
+          <div class="data-row">
+            <span class="data-number" id="stat-a">–</span>
+            <span class="data-label" id="stat-a-label" data-i18n="conflicts.stat_conflicts">Conflits</span>
+          </div>
+          <div class="data-row">
+            <span class="data-number" id="stat-b">–</span>
+            <span class="data-label" id="stat-b-label" data-i18n="conflicts.stat_aircraft">Engagements</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="favorites-section conflicts-section">
+    <div class="container">
+      <!-- Vue « liste » : un conflit par carte, ordre chronologique -->
+      <div id="conflicts-list" class="conflicts-grid hidden"></div>
+
+      <!-- Vue « conflit » : appareils engagés -->
+      <div id="conflict-detail" class="hidden">
+        <div class="conflict-actions">
+          <a id="conflict-hangar-link" class="btn btn-primary" href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="conflicts.explore_hangar">Filtrer dans le hangar</span></a>
+          <a class="btn btn-ghost" href="/conflits"><i class="fas fa-arrow-left"></i> <span data-i18n="conflicts.all_conflicts">Tous les conflits</span></a>
+        </div>
+        <h2 class="conflict-aircraft-heading" data-i18n="conflicts.aircraft_heading">Appareils engagés</h2>
+        <section id="conflict-aircraft" class="aircraft-grid" aria-label="Appareils engagés" data-i18n-aria="conflicts.aircraft_heading"></section>
+      </div>
+
+      <div id="conflicts-error" class="empty-state hidden">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3 data-i18n="conflicts.not_found">Conflit introuvable</h3>
+        <p><a href="/conflits" data-i18n="conflicts.all_conflicts">Tous les conflits</a></p>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section"><div class="footer-logo"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="footer-lockup" width="190" height="50"></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'appareils, du chasseur au transporteur.</p></div>
+        <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/conflits" data-i18n="nav.conflicts">Conflits</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="/contact" data-i18n="footer.contact">Contact</a></li></ul></div>
+        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" class="cookie-settings-link" data-i18n="footer.cookies">Cookies</a></li></ul></div>
+      </div>
+      <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2026 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
+    </div>
+  </footer>
+  <div id="toast-container" aria-live="polite"></div>
+  <script defer src="/js/vendor/purify.min.js"></script>
+  <script defer src="/js/dist/app.min.js"></script>
+  <script defer src="/js/dist/icons.min.js"></script>
+  <script defer src="/js/sentry-init.js"></script>
+  <script defer src="/js/dist/conflicts.min.js"></script>
+</body>
+</html>

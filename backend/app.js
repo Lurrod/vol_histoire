@@ -331,6 +331,9 @@ app.use('/js', express.static(path.join(__dirname, '../frontend/js'), STATIC_OPT
 // AVANT la liste statique htmlPages (sinon /details serait servi en HTML brut).
 const createDetailsSsrRouter = require('./routes/details-ssr');
 app.use('/', createDetailsSsrRouter(() => pool));
+// Idem pour /conflits et /conflits/:slug (titre et description par conflit).
+const createConflictsSsrRouter = require('./routes/conflicts-ssr');
+app.use('/', createConflictsSsrRouter(() => pool));
 
 // Cache HTML : au boot, on lit tous les *.html et on injecte ?v=<version>
 // sur les références asset (css/js/fonts) pour bust le cache navigateur à
@@ -407,6 +410,9 @@ app.use('/api', createUsersRouter(() => pool, { mailer }));
 // interprète "facets" comme un id et renvoie 400 "ID invalide".
 const createFacetsRouter = require('./routes/facets');
 app.use('/api', createFacetsRouter(() => pool));
+
+const createWarsRouter = require('./routes/wars');
+app.use('/api', createWarsRouter(() => pool));
 
 const createAirplanesRouter = require('./routes/airplanes');
 const { invalidateSitemap } = require('./routes/sitemap');

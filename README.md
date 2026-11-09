@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.12.2-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.13.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/tests-539-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>Encyclopedie interactive de l'aviation militaire depuis 1960</strong><br>
-  <em>434 appareils &middot; 33 nations &middot; 19 conflits &middot; 200+ systemes d'armes</em>
+  <em>434 appareils &middot; 33 nations &middot; 61 conflits &middot; 200+ systemes d'armes</em>
 </p>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 ## Fonctionnalites
 
-**Visiteurs** — Hangar avec filtres (nation, generation, type, tri), recherche full-text PostgreSQL, fiches detaillees enrichies (specs dimensionnelles, motorisation, production, appareils lies, chaine de filiation complete, liens externes Wikipedia / YouTube), éphéméride « Ce jour-là » et appareil du jour sur l'accueil, carte des nations de conception sur l'accueil et comme filtre du hangar, comparateur de trois appareils partageable par lien, frise chronologique interactive, statistiques globales, export PDF.
+**Visiteurs** — Hangar avec filtres (nation, generation, type, conflit, mission, tri), recherche full-text PostgreSQL avec saisie partielle (« mira » trouve les Mirage), page par conflit (`/conflits/<slug>`) listant les appareils engages, fiches detaillees enrichies (specs dimensionnelles, motorisation, production, appareils lies, chaine de filiation complete, liens externes Wikipedia / YouTube), éphéméride « Ce jour-là » et appareil du jour sur l'accueil, carte des nations de conception sur l'accueil et comme filtre du hangar, comparateur de trois appareils partageable par lien, frise chronologique interactive, statistiques globales, export PDF.
 
 **Membres** — Favoris personnels, preferences cookies, parametres de compte (nom, email, mot de passe, suppression).
 
@@ -334,7 +334,7 @@ cd e2e && npx playwright test
 | Users | list (admin), get, update (revocation sessions), delete, admin update |
 | Airplanes | list (filtres + tri + recherche FTS), get (+ predecessor/successor/rival), create, update, delete |
 | Airplanes related | armament, tech, missions, wars |
-| Referentials | countries, generations, types, manufacturers |
+| Referentials | countries, generations, types, manufacturers, nations, wars (liste + detail par slug) |
 | Facets | comptes par facette pour filtres dynamiques |
 | Favorites | list, add, remove, check |
 | Stats | stats globales (cache 5 min) |

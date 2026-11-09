@@ -1,4 +1,4 @@
-/* Filtres version mobile : bottom sheet avec onglets pays/génération/type. */
+/* Filtres version mobile : bottom sheet avec onglets pays/génération/type/conflit/mission. */
 (function () {
   window.VH = window.VH || {};
   window.VH.hangar = window.VH.hangar || {};
@@ -16,6 +16,8 @@
         '<button class="fs-tab active" data-tab="country" role="tab" aria-selected="true" aria-controls="fs-panel-country" id="fs-tab-country" tabindex="0">Pays</button>' +
         '<button class="fs-tab" data-tab="generation" role="tab" aria-selected="false" aria-controls="fs-panel-generation" id="fs-tab-generation" tabindex="-1">Génération</button>' +
         '<button class="fs-tab" data-tab="type" role="tab" aria-selected="false" aria-controls="fs-panel-type" id="fs-tab-type" tabindex="-1">Type</button>' +
+        '<button class="fs-tab" data-tab="war" role="tab" aria-selected="false" aria-controls="fs-panel-war" id="fs-tab-war" tabindex="-1">Conflit</button>' +
+        '<button class="fs-tab" data-tab="mission" role="tab" aria-selected="false" aria-controls="fs-panel-mission" id="fs-tab-mission" tabindex="-1">Mission</button>' +
       '</div>' +
       '<div class="filter-sheet-body" role="tabpanel" id="fs-panel-country" aria-labelledby="fs-tab-country" tabindex="0"></div>' +
       '<div class="filter-sheet-footer"><button class="btn btn-primary" id="fs-apply">Appliquer</button></div>';
@@ -37,6 +39,8 @@
       if (currentTab === 'country')    items = state.countries.map(c => ({ k: c.name_fr || c.name, l: c.name }));
       if (currentTab === 'generation') items = state.generations.map(g => ({ k: g, l: g + 'e Génération' }));
       if (currentTab === 'type')       items = state.types.map(t => ({ k: t.name_fr || t.name, l: t.name }));
+      if (currentTab === 'war')        items = (state.wars || []).map(w => ({ k: w.name_fr || w.name, l: w.name }));
+      if (currentTab === 'mission')    items = (state.missions || []).map(m => ({ k: m.name_fr || m.name, l: m.name }));
       body.innerHTML = items.map(it => {
         const active = String(state.filters[currentTab]) === String(it.k);
         return '<button class="fs-item' + (active ? ' active' : '') +
@@ -78,7 +82,7 @@
       VH.hangar.filters.updateActiveFilters(state);
     });
 
-    ['country-filter-btn', 'generation-filter-btn', 'type-filter-btn'].forEach(id => {
+    ['country-filter-btn', 'generation-filter-btn', 'type-filter-btn', 'war-filter-btn', 'mission-filter-btn'].forEach(id => {
       const btn = document.getElementById(id);
       if (!btn) return;
       btn.addEventListener('click', e => {

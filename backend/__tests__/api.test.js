@@ -927,6 +927,8 @@ describe('GET /api/airplanes', () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ generation: 4 }, { generation: 5 }] }) // whitelist gens
       .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] })                  // whitelist types
+      .mockResolvedValueOnce({ rows: [] })                                       // whitelist wars
+      .mockResolvedValueOnce({ rows: [] })                                       // whitelist missions
       .mockResolvedValueOnce({ rows: [{ count: '1' }] })
       .mockResolvedValueOnce({ rows: [mockPlanes[0]] });
 
@@ -937,7 +939,9 @@ describe('GET /api/airplanes', () => {
   test('400 — generation hors whitelist (99)', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ generation: 4 }, { generation: 5 }] })
-      .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] });
+      .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] })
+      .mockResolvedValueOnce({ rows: [] })                                       // whitelist wars
+      .mockResolvedValueOnce({ rows: [] })                                       // whitelist missions;
 
     const res = await request(app).get('/api/airplanes?generation=99');
     expect(res.status).toBe(400);
@@ -947,7 +951,9 @@ describe('GET /api/airplanes', () => {
   test('400 — type hors whitelist', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ generation: 5 }] })
-      .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] });
+      .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] })
+      .mockResolvedValueOnce({ rows: [] })                                       // whitelist wars
+      .mockResolvedValueOnce({ rows: [] })                                       // whitelist missions;
 
     const res = await request(app).get('/api/airplanes?type=NotAType');
     expect(res.status).toBe(400);
@@ -958,6 +964,8 @@ describe('GET /api/airplanes', () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ generation: 5 }] })
       .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }, { name: 'Bombardier' }] })
+      .mockResolvedValueOnce({ rows: [] })                                       // whitelist wars
+      .mockResolvedValueOnce({ rows: [] })                                       // whitelist missions
       .mockResolvedValueOnce({ rows: [{ count: '0' }] })
       .mockResolvedValueOnce({ rows: [] });
 
@@ -985,13 +993,15 @@ describe('GET /api/airplanes', () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ generation: 5 }] }) // whitelist gens
       .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] }) // whitelist types
+      .mockResolvedValueOnce({ rows: [] })                                       // whitelist wars
+      .mockResolvedValueOnce({ rows: [] })                                       // whitelist missions
       .mockResolvedValueOnce({ rows: [{ count: '1' }] })
       .mockResolvedValueOnce({ rows: [mockPlanes[0]] });
 
     const res = await request(app).get('/api/airplanes?country=USA&generation=5');
     expect(res.status).toBe(200);
-    // Le COUNT est le 3ème call (après les 2 whitelist queries)
-    const countCall = mockPool.query.mock.calls[2];
+    // Le COUNT est le 5e call (après les 4 requêtes de whitelist)
+    const countCall = mockPool.query.mock.calls[4];
     expect(countCall[0]).toContain('c.name = $1');
     expect(countCall[0]).toContain('g.generation = $2');
     expect(countCall[0]).toContain('AND');
@@ -1033,9 +1043,9 @@ describe('GET /api/airplanes', () => {
     expect(res.body.data).toHaveLength(1);
 
     const mainCall = mockPool.query.mock.calls[1];
-    expect(mainCall[0]).toContain('search_vector @@ websearch_to_tsquery');
+    expect(mainCall[0]).toContain("search_vector @@ (websearch_to_tsquery('simple', $1) || to_tsquery('simple', $2))");
     expect(mainCall[0]).toContain('ORDER BY ts_rank');
-    expect(mainCall[1]).toEqual(expect.arrayContaining(['rafale']));
+    expect(mainCall[1]).toEqual(expect.arrayContaining(['rafale', 'rafale:*']));
   });
 
   test('200 — search vide ignoré (aucune condition FTS)', async () => {
@@ -1087,7 +1097,9 @@ describe('GET /api/airplanes/facets', () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ k: 'France', n: 5 }, { k: 'USA', n: 8 }] })
       .mockResolvedValueOnce({ rows: [{ k: 4, n: 10 }, { k: 5, n: 3 }] })
-      .mockResolvedValueOnce({ rows: [{ k: 'Chasseur', n: 9 }, { k: 'Bombardier', n: 4 }] });
+      .mockResolvedValueOnce({ rows: [{ k: 'Chasseur', n: 9 }, { k: 'Bombardier', n: 4 }] })
+      .mockResolvedValueOnce({ rows: [{ k: 'Guerre du Vietnam', n: 12 }] })
+      .mockResolvedValueOnce({ rows: [{ k: 'Interception', n: 7 }] });
 
     const res = await request(app).get('/api/airplanes/facets');
     expect(res.status).toBe(200);
@@ -1097,25 +1109,31 @@ describe('GET /api/airplanes/facets', () => {
     expect(res.body.countries).toEqual({ France: 5, USA: 8 });
     expect(res.body.generations).toEqual({ 4: 10, 5: 3 });
     expect(res.body.types).toEqual({ Chasseur: 9, Bombardier: 4 });
+    expect(res.body.wars).toEqual({ 'Guerre du Vietnam': 12 });
+    expect(res.body.missions).toEqual({ Interception: 7 });
   });
 
   test('200 — accepte les filtres country/generation/type en query', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ k: 'France', n: 2 }] })
       .mockResolvedValueOnce({ rows: [{ k: 4, n: 2 }] })
-      .mockResolvedValueOnce({ rows: [{ k: 'Multirôle', n: 2 }] });
+      .mockResolvedValueOnce({ rows: [{ k: 'Multirôle', n: 2 }] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] });
 
     const res = await request(app)
       .get('/api/airplanes/facets')
       .query({ country: 'France', generation: '4', type: 'Multirôle' });
     expect(res.status).toBe(200);
-    // Chaque groupe exclut son propre filtre (pattern facet), donc 3 queries lancées
-    expect(mockPool.query).toHaveBeenCalledTimes(3);
+    // Chaque groupe exclut son propre filtre (pattern facet), donc 5 queries lancées
+    expect(mockPool.query).toHaveBeenCalledTimes(5);
   });
 
   test('200 — ignore les clés nulles dans les réponses', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ k: null, n: 0 }, { k: 'France', n: 5 }] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] });
 
@@ -2923,7 +2941,9 @@ describe('GET /api/referentials', () => {
       .mockResolvedValueOnce({ rows: [{ id: 1, name: 'France' }] })           // countries
       .mockResolvedValueOnce({ rows: [{ generation: 4 }, { generation: 5 }] }) // generations
       .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Chasseur', description: null }] }) // types
-      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Dassault', code: 'DAS', country_id: 1, country_name: 'France' }] }); // manufacturers
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Dassault', code: 'DAS', country_id: 1, country_name: 'France' }] }) // manufacturers
+      .mockResolvedValueOnce({ rows: [{ name: "Guerre d'Indochine", name_en: 'First Indochina War', date_start: '1946-12-19', date_end: '1954-07-21' }] }) // wars
+      .mockResolvedValueOnce({ rows: [{ name: 'Interception', name_en: 'Interception' }] }); // missions
 
     const res = await request(app).get('/api/referentials');
     expect(res.status).toBe(200);
@@ -2933,6 +2953,9 @@ describe('GET /api/referentials', () => {
     expect(res.body).toHaveProperty('manufacturers');
     expect(res.body.generations).toEqual([4, 5]);
     expect(res.body.countries).toHaveLength(1);
+    // Conflits : nom FR canonique + slug de la page du conflit
+    expect(res.body.wars[0]).toMatchObject({ name_fr: "Guerre d'Indochine", slug: 'guerre-d-indochine' });
+    expect(res.body.missions[0]).toMatchObject({ name_fr: 'Interception' });
   });
 
   test('200 — header Cache-Control présent (cacheable)', async () => {
@@ -5054,5 +5077,179 @@ describe('Audit sécurité — cardinalité des métriques', () => {
     const raw = metric.values.filter(v => String(v.labels.route).includes('zz-inconnu'));
     expect(raw).toHaveLength(0);
     expect(metric.values.some(v => v.labels.route === 'api_unmatched')).toBe(true);
+  });
+});
+
+// =============================================================================
+// CONFLITS ET MISSIONS — filtres du hangar, API /wars, pages /conflits
+// =============================================================================
+describe('Filtres conflit et mission — GET /api/airplanes', () => {
+  // getValidReferentials : générations, types, conflits, missions
+  function mockWhitelist({ wars = [], missions = [] } = {}) {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ generation: 4 }] })
+      .mockResolvedValueOnce({ rows: [{ name: 'Chasseur' }] })
+      .mockResolvedValueOnce({ rows: wars.map((name) => ({ name })) })
+      .mockResolvedValueOnce({ rows: missions.map((name) => ({ name })) });
+  }
+
+  test('200 — ?war= filtre par EXISTS sur airplane_wars (nom FR canonique)', async () => {
+    mockWhitelist({ wars: ['Guerre du Vietnam'] });
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '1' }] })
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'F-4 Phantom II' }] });
+
+    const res = await request(app).get('/api/airplanes?war=' + encodeURIComponent('Guerre du Vietnam'));
+    expect(res.status).toBe(200);
+    const countCall = mockPool.query.mock.calls[4];
+    expect(countCall[0]).toContain('FROM airplane_wars aw JOIN wars w');
+    expect(countCall[1][0]).toBe('Guerre du Vietnam');
+  });
+
+  test('200 — ?mission= combinable avec ?war= (AND)', async () => {
+    mockWhitelist({ wars: ['Guerre du Golfe'], missions: ['Interception'] });
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '0' }] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).get('/api/airplanes?war=Guerre%20du%20Golfe&mission=Interception');
+    expect(res.status).toBe(200);
+    const countCall = mockPool.query.mock.calls[4];
+    expect(countCall[0]).toContain('airplane_wars');
+    expect(countCall[0]).toContain('airplane_missions');
+    // queryParams reçoit ensuite limit/offset (muté après l'appel)
+    expect(countCall[1].slice(0, 2)).toEqual(['Guerre du Golfe', 'Interception']);
+  });
+
+  test('400 — conflit hors référentiel', async () => {
+    mockWhitelist({ wars: ['Guerre du Vietnam'] });
+    const res = await request(app).get('/api/airplanes?war=Guerre%20invent%C3%A9e');
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/war invalide/);
+  });
+
+  test('400 — mission hors référentiel', async () => {
+    mockWhitelist({ missions: ['Interception'] });
+    const res = await request(app).get('/api/airplanes?mission=Pique-nique');
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/mission invalide/);
+  });
+
+  test('200 — recherche avec syntaxe websearch : pas de variante préfixe', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ count: '0' }] })
+      .mockResolvedValueOnce({ rows: [] });
+
+    const res = await request(app).get('/api/airplanes?search=' + encodeURIComponent('rafale -mirage'));
+    expect(res.status).toBe(200);
+    const mainCall = mockPool.query.mock.calls[1];
+    expect(mainCall[0]).toContain("search_vector @@ websearch_to_tsquery('simple', $1)");
+    expect(mainCall[0]).not.toContain("to_tsquery('simple', $2)");
+  });
+});
+
+describe('GET /api/airplanes/:id/related — clés de lien des conflits et missions', () => {
+  test('ajoute name_fr (missions, conflits) et slug (conflits)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [{ name: 'Interception', name_en: 'Interception', description: 'd', description_en: 'd' }] })
+      .mockResolvedValueOnce({ rows: [{ name: "Guerre d'Indochine", name_en: 'First Indochina War', description: 'd', description_en: 'd', date_start: '1946-12-19', date_end: '1954-07-21' }] });
+
+    const res = await request(app).get('/api/airplanes/7/related?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.body.wars[0]).toMatchObject({ name: 'First Indochina War', name_fr: "Guerre d'Indochine", slug: 'guerre-d-indochine' });
+    expect(res.body.missions[0]).toMatchObject({ name_fr: 'Interception' });
+  });
+});
+
+describe('API /api/wars', () => {
+  const wars = [
+    { id: 1, name: "Guerre d'Indochine", name_en: 'First Indochina War', date_start: '1946-12-19', date_end: '1954-07-21', description: 'fr', description_en: 'en', count: 5 },
+    { id: 2, name: 'Guerre sans appareil', name_en: null, date_start: '1960-01-01', date_end: null, description: null, description_en: null, count: 0 },
+  ];
+
+  test('200 — liste : seuls les conflits rattachés à au moins un appareil, avec slug', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: wars });
+    const res = await request(app).get('/api/wars');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0]).toMatchObject({ slug: 'guerre-d-indochine', name_fr: "Guerre d'Indochine", count: 5 });
+    expect(res.headers['cache-control']).toMatch(/public/);
+  });
+
+  test('200 — détail : appareils traduits (EN) avec type_name_fr', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: wars })
+      .mockResolvedValueOnce({ rows: [{ id: 3, name: 'F8F Bearcat', name_en: null, type_name: 'Chasseur', type_name_en: 'Fighter', country_name: 'États-Unis', country_name_en: 'United States', country_code: 'USA' }] });
+    const res = await request(app).get('/api/wars/guerre-d-indochine?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ name: 'First Indochina War', name_fr: "Guerre d'Indochine", description: 'en', count: 5 });
+    expect(res.body.airplanes[0]).toMatchObject({ name: 'F8F Bearcat', type_name: 'Fighter', type_name_fr: 'Chasseur' });
+    expect(mockPool.query.mock.calls[1][1]).toEqual([1]);
+  });
+
+  test('404 — slug inconnu ou conflit sans appareil', async () => {
+    mockPool.query.mockResolvedValue({ rows: wars });
+    expect((await request(app).get('/api/wars/guerre-inconnue')).status).toBe(404);
+    expect((await request(app).get('/api/wars/guerre-sans-appareil')).status).toBe(404);
+  });
+
+  test('400 — slug au format invalide', async () => {
+    const res = await request(app).get('/api/wars/' + encodeURIComponent('Guerre <script>'));
+    expect(res.status).toBe(400);
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+});
+
+describe('SSR /conflits et /conflits/:slug', () => {
+  test('/conflits sert la page avec ses balises par défaut', async () => {
+    const res = await request(app).get('/conflits');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<title>Conflits | Vol d&#39;Histoire</title>');
+    expect(res.text).toContain('<link rel="canonical" href="https://vol-histoire.titouan-borde.com/conflits">');
+  });
+
+  test('/conflits/:slug injecte titre, description, canonical et h1 du conflit', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [
+      { name: "Guerre d'Indochine", name_en: 'First Indochina War', description: 'Description <b>FR</b>', description_en: 'EN', date_start: '1946-12-19', date_end: '1954-07-21' },
+    ] });
+    const res = await request(app).get('/conflits/guerre-d-indochine');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<title>Guerre d&#39;Indochine (1946-1954) | Vol d&#39;Histoire</title>');
+    expect(res.text).toContain('<link rel="canonical" href="https://vol-histoire.titouan-borde.com/conflits/guerre-d-indochine">');
+    expect(res.text).toContain('<h1 id="page-hero-heading">Guerre d&#39;Indochine</h1>');
+    // Description échappée, jamais injectée telle quelle
+    expect(res.text).toContain('Description &lt;b&gt;FR&lt;/b&gt;');
+    expect(res.text).not.toContain('<b>FR</b>');
+  });
+
+  test('/conflits/:slug — un « $& » dans le nom reste du texte', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [
+      { name: 'Opération $& test', name_en: null, description: 'd', description_en: null, date_start: null, date_end: null },
+    ] });
+    const res = await request(app).get('/conflits/operation-test');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<h1 id="page-hero-heading">Opération $&amp; test</h1>');
+  });
+
+  test('/conflits/:slug inconnu → 404', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).get('/conflits/guerre-inconnue');
+    expect(res.status).toBe(404);
+  });
+});
+
+describe('GET /sitemap.xml — pages de conflit', () => {
+  beforeEach(() => require('../utils/cache')._resetForTests());
+
+  test('liste /conflits et une page par conflit rattaché', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Rafale' }] })
+      .mockResolvedValueOnce({ rows: [{ name: 'Guerre du Golfe' }] });
+    const res = await request(app).get('/sitemap.xml');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<loc>https://vol-histoire.titouan-borde.com/conflits</loc>');
+    expect(res.text).toContain('<loc>https://vol-histoire.titouan-borde.com/conflits/guerre-du-golfe</loc>');
   });
 });

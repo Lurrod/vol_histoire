@@ -3,6 +3,8 @@ const { validateAirplaneData } = require('../validators');
 const { authorize } = require('../middleware/auth');
 const asyncHandler = require('../middleware/asyncHandler');
 const { pickLang, pickLangMany } = require('../i18n');
+const { prefixTsquery } = require('../utils/search');
+const { slugify } = require('../utils/url');
 
 // Vérifie l'existence des clés étrangères d'un avion en une seule requête.
 // Retourne un tableau de messages d'erreur (vide si tout est valide).
@@ -38,13 +40,17 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
   async function getValidReferentials() {
     if (referentialCache) return referentialCache;
     const pool = getPool();
-    const [gens, types] = await Promise.all([
+    const [gens, types, wars, missions] = await Promise.all([
       pool.query('SELECT DISTINCT generation FROM generation'),
       pool.query('SELECT name FROM type'),
+      pool.query('SELECT name FROM wars'),
+      pool.query('SELECT name FROM missions'),
     ]);
     referentialCache = {
       generations: new Set(gens.rows.map((r) => Number(r.generation))),
       typeNames: new Set(types.rows.map((r) => r.name)),
+      warNames: new Set(wars.rows.map((r) => r.name)),
+      missionNames: new Set(missions.rows.map((r) => r.name)),
     };
     return referentialCache;
   }
@@ -67,6 +73,9 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     const country = req.query.country || '';
     const generation = req.query.generation || '';
     const type = req.query.type || '';
+    // Conflit et mission : nom FR canonique, comme `country` et `type`.
+    const war = (req.query.war || '').toString();
+    const mission = (req.query.mission || '').toString();
     // Full-text search : trimé, max 100 chars (websearch_to_tsquery ignore les
     // caractères non-alphanumériques bizarres, donc pas de sanitization à faire)
     const searchRaw = (req.query.search || '').toString().trim();
@@ -78,13 +87,19 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     }
 
     // Validation stricte contre la whitelist BD (chargée lazy en mémoire)
-    if (generation || type) {
+    if (generation || type || war || mission) {
       const valid = await getValidReferentials();
       if (generation && !valid.generations.has(Number(generation))) {
         return res.status(400).json({ message: 'Paramètre generation invalide' });
       }
       if (type && !valid.typeNames.has(type)) {
         return res.status(400).json({ message: 'Paramètre type invalide' });
+      }
+      if (war && !valid.warNames.has(war)) {
+        return res.status(400).json({ message: 'Paramètre war invalide' });
+      }
+      if (mission && !valid.missionNames.has(mission)) {
+        return res.status(400).json({ message: 'Paramètre mission invalide' });
       }
     }
 
@@ -116,14 +131,31 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       queryParams.push(type);
       conditions.push(`t.name = $${queryParams.length}`);
     }
+    if (war) {
+      queryParams.push(war);
+      conditions.push(`EXISTS (SELECT 1 FROM airplane_wars aw JOIN wars w ON w.id = aw.id_wars
+        WHERE aw.id_airplane = a.id AND w.name = $${queryParams.length})`);
+    }
+    if (mission) {
+      queryParams.push(mission);
+      conditions.push(`EXISTS (SELECT 1 FROM airplane_missions am JOIN missions m ON m.id = am.id_mission
+        WHERE am.id_airplane = a.id AND m.name = $${queryParams.length})`);
+    }
 
     // Full-text search : match sur search_vector (tsvector généré côté DB)
     // websearch_to_tsquery accepte "F-16 chasseur", "rafale -mirage", "\"exact phrase\"", etc.
-    let searchParamIdx = null;
+    // On y ajoute en OU la variante « préfixe » (dernier mot incomplet : « mira »
+    // trouve le Mirage) ; voir utils/search.js.
+    let tsquerySql = null;
     if (search) {
       queryParams.push(search);
-      searchParamIdx = queryParams.length;
-      conditions.push(`a.search_vector @@ websearch_to_tsquery('simple', $${searchParamIdx})`);
+      tsquerySql = `websearch_to_tsquery('simple', $${queryParams.length})`;
+      const prefix = prefixTsquery(search);
+      if (prefix) {
+        queryParams.push(prefix);
+        tsquerySql = `(${tsquerySql} || to_tsquery('simple', $${queryParams.length}))`;
+      }
+      conditions.push(`a.search_vector @@ ${tsquerySql}`);
     }
 
     if (conditions.length > 0) {
@@ -141,7 +173,7 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     // Si une recherche est en cours, on trie par pertinence (ts_rank) — sinon
     // on applique le sort demandé ou le défaut.
     if (search) {
-      query += ` ORDER BY ts_rank(a.search_vector, websearch_to_tsquery('simple', $${searchParamIdx})) DESC, a.id ASC`;
+      query += ` ORDER BY ts_rank(a.search_vector, ${tsquerySql}) DESC, a.id ASC`;
     } else {
       query += ' ORDER BY ' + (sortMap[sort] || 'a.id ASC');
     }
@@ -293,14 +325,22 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
         `SELECT wars.name, wars.name_en, wars.date_start, wars.date_end, wars.description, wars.description_en
          FROM airplane_wars
          JOIN wars ON airplane_wars.id_wars = wars.id
-         WHERE airplane_wars.id_airplane = $1`, [id]
+         WHERE airplane_wars.id_airplane = $1
+         ORDER BY wars.date_start`, [id]
       )
     ]);
+    // Nom FR canonique (clé du filtre du hangar) et slug (page du conflit),
+    // capturés avant la traduction par pickLangMany.
+    const withKeys = (rows, translated, withSlug) => translated.map((r, i) => ({
+      ...r,
+      name_fr: rows[i].name,
+      ...(withSlug ? { slug: slugify(rows[i].name) } : {}),
+    }));
     res.json({
       armament: pickLangMany(armamentRes.rows, req.lang, ['name', 'description'], ['name']),
       tech: pickLangMany(techRes.rows, req.lang, ['name', 'description'], ['name']),
-      missions: pickLangMany(missionsRes.rows, req.lang, ['name', 'description']),
-      wars: pickLangMany(warsRes.rows, req.lang, ['name', 'description']),
+      missions: withKeys(missionsRes.rows, pickLangMany(missionsRes.rows, req.lang, ['name', 'description']), false),
+      wars: withKeys(warsRes.rows, pickLangMany(warsRes.rows, req.lang, ['name', 'description']), true),
     });
   }));
 
@@ -437,7 +477,7 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
   // au lieu de 4 requêtes HTTP séquentielles.
   router.get('/referentials', asyncHandler(async (req, res) => {
     const pool = getPool();
-    const [countries, generations, types, manufacturers] = await Promise.all([
+    const [countries, generations, types, manufacturers, wars, missions] = await Promise.all([
       pool.query(
         'SELECT id, name, name_en FROM countries WHERE id IN (SELECT DISTINCT country_id FROM airplanes WHERE country_id IS NOT NULL) ORDER BY name ASC'
       ),
@@ -448,6 +488,18 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
                c.name AS country_name, c.name_en AS country_name_en
         FROM manufacturer m
         JOIN countries c ON m.country_id = c.id
+        ORDER BY m.name ASC
+      `),
+      pool.query(`
+        SELECT w.name, w.name_en, w.date_start, w.date_end
+        FROM wars w
+        WHERE EXISTS (SELECT 1 FROM airplane_wars aw WHERE aw.id_wars = w.id)
+        ORDER BY w.date_start ASC, w.name ASC
+      `),
+      pool.query(`
+        SELECT m.name, m.name_en
+        FROM missions m
+        WHERE EXISTS (SELECT 1 FROM airplane_missions am WHERE am.id_mission = m.id)
         ORDER BY m.name ASC
       `),
     ]);
@@ -467,6 +519,15 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
         name_fr: types.rows[i].name,
       })),
       manufacturers: pickLangMany(manufacturers.rows, req.lang, ['name', 'country_name'], ['name', 'country_name']),
+      wars: pickLangMany(wars.rows, req.lang, ['name'], ['name']).map((w, i) => ({
+        ...w,
+        name_fr: wars.rows[i].name,
+        slug: slugify(wars.rows[i].name),
+      })),
+      missions: pickLangMany(missions.rows, req.lang, ['name'], ['name']).map((m, i) => ({
+        ...m,
+        name_fr: missions.rows[i].name,
+      })),
     });
   }));
 

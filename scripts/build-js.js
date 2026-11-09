@@ -104,6 +104,9 @@ const BUNDLES = {
     'timeline.js',
   ],
 
+  'conflicts.min.js': [
+    'conflicts.js',
+  ],
   'favorites.min.js': [
     'favorites.js',
   ],

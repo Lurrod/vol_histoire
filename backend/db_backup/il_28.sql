@@ -74,8 +74,7 @@ INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
 ((SELECT id FROM airplanes WHERE name = 'Il-28'), (SELECT id FROM wars WHERE name = 'Guerre du Vietnam')),
 ((SELECT id FROM airplanes WHERE name = 'Il-28'), (SELECT id FROM wars WHERE name = 'Guerre des Six Jours')),
 ((SELECT id FROM airplanes WHERE name = 'Il-28'), (SELECT id FROM wars WHERE name = 'Conflit israélo-arabe')),
-((SELECT id FROM airplanes WHERE name = 'Il-28'), (SELECT id FROM wars WHERE name = 'Guerre Indo-Pakistanaise de 1971')),
-((SELECT id FROM airplanes WHERE name = 'Il-28'), (SELECT id FROM wars WHERE name = 'Guerre d''Afghanistan'));
+((SELECT id FROM airplanes WHERE name = 'Il-28'), (SELECT id FROM wars WHERE name = 'Guerre Indo-Pakistanaise de 1971'));
 
 -- Enrichissement : strates 1 (fiche technique), 2 (motorisation),
 -- 3 (production) et 6 (médias). Filiations : voir zz_backfill_relations.sql.
