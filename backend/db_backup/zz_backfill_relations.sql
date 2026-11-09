@@ -2698,7 +2698,7 @@ UPDATE missions
  WHERE name = 'Supériorité aérienne' AND name_en IS NULL;
 
 UPDATE generation
-   SET description_en = 'First generation: subsonic jet aircraft of the 1940s and 1950s'
+   SET description_en = 'First generation: Subsonic jet aircraft from the 1940s–1950s'
  WHERE generation = 1 AND description_en IS NULL;
 
 COMMIT;

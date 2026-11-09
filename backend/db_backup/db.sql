@@ -528,7 +528,7 @@ INSERT INTO manufacturer (name, name_en, country_id, code) VALUES
 ('René Leduc', 'René Leduc', (SELECT id FROM countries WHERE code = 'FRA'), 'LED');
 
 INSERT INTO generation (generation, description, description_en) VALUES
-(1, 'Première génération : Avions à réaction subsoniques des années 1940-1950', NULL),
+(1, 'Première génération : Avions à réaction subsoniques des années 1940-1950', 'First generation: Subsonic jet aircraft from the 1940s–1950s'),
 (2, 'Deuxième génération : Améliorations de l’aérodynamique et de l’armement dans les années 1950-1960', 'Second generation: Improved aerodynamics and armament in the 1950s–1960s'),
 (3, 'Troisième génération : Introduction des missiles guidés et meilleure maniabilité dans les années 1960-1970', 'Third generation: Introduction of guided missiles and improved maneuverability in the 1960s–1970s'),
 (4, 'Quatrième génération : Hautes performances, systèmes fly-by-wire et radars avancés des années 1970-1990', 'Fourth generation: High performance, fly-by-wire systems and advanced radars from the 1970s–1990s'),
