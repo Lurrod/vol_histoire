@@ -5224,6 +5224,15 @@ describe('SSR /conflits et /conflits/:slug', () => {
     expect(res.text).not.toContain('<b>FR</b>');
   });
 
+  test('/conflits/:slug — un « $& » dans le nom reste du texte', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [
+      { name: 'Opération $& test', name_en: null, description: 'd', description_en: null, date_start: null, date_end: null },
+    ] });
+    const res = await request(app).get('/conflits/operation-test');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<h1 id="page-hero-heading">Opération $&amp; test</h1>');
+  });
+
   test('/conflits/:slug inconnu → 404', async () => {
     mockPool.query.mockResolvedValueOnce({ rows: [] });
     const res = await request(app).get('/conflits/guerre-inconnue');

@@ -44,27 +44,28 @@ module.exports = function createConflictsSsrRouter(getPool) {
     template = ''; // tests : fichier absent, non bloquant
   }
 
-  // Réécrit les balises de tête et le titre de la page.
+  // Réécrit les balises de tête et le titre de la page. Remplaceurs en
+  // fonction : un « $& » ou « $1 » dans un nom de conflit reste du texte.
   function renderHtml({ title, description, url, h1, lang }) {
     let html = template;
     const t = escapeHtml(title);
     const d = escapeHtml(description);
     const u = escapeHtml(url);
     html = html
-      .replace(/<title>[^<]*<\/title>/, `<title>${t}</title>`)
-      .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${d}">`)
-      .replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${u}">`)
-      .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${t}">`)
-      .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${d}">`)
-      .replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${u}">`)
-      .replace(/<meta name="twitter:title" content="[^"]*">/, `<meta name="twitter:title" content="${t}">`)
-      .replace(/<meta name="twitter:description" content="[^"]*">/, `<meta name="twitter:description" content="${d}">`);
+      .replace(/<title>[^<]*<\/title>/, () => `<title>${t}</title>`)
+      .replace(/<meta name="description" content="[^"]*">/, () => `<meta name="description" content="${d}">`)
+      .replace(/<link rel="canonical" href="[^"]*">/, () => `<link rel="canonical" href="${u}">`)
+      .replace(/<meta property="og:title" content="[^"]*">/, () => `<meta property="og:title" content="${t}">`)
+      .replace(/<meta property="og:description" content="[^"]*">/, () => `<meta property="og:description" content="${d}">`)
+      .replace(/<meta property="og:url" content="[^"]*">/, () => `<meta property="og:url" content="${u}">`)
+      .replace(/<meta name="twitter:title" content="[^"]*">/, () => `<meta name="twitter:title" content="${t}">`)
+      .replace(/<meta name="twitter:description" content="[^"]*">/, () => `<meta name="twitter:description" content="${d}">`);
     if (h1) {
       // Le titre du conflit est en dur pour les robots ; data-i18n-html est
       // retiré pour que la traduction côté client ne le remplace pas.
       html = html.replace(
         /<h1 id="page-hero-heading"[^>]*>[\s\S]*?<\/h1>/,
-        `<h1 id="page-hero-heading">${escapeHtml(h1)}</h1>`
+        () => `<h1 id="page-hero-heading">${escapeHtml(h1)}</h1>`
       );
     }
     if (lang === 'en') html = html.replace(/<html lang="fr">/, '<html lang="en">');
