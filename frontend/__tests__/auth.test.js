@@ -123,3 +123,58 @@ describe('clearSession', () => {
     expect(localStorage.getItem('user')).toBeNull();
   });
 });
+
+// =============================================================================
+// fetchWithTimeout — paramètre ?lang= des appels /api
+// =============================================================================
+/* Sans langue mémorisée (première visite), le repli était 'fr' en dur : un
+   visiteur détecté en anglais par i18n.js recevait des données françaises. */
+describe('fetchWithTimeout — langue des appels /api', () => {
+  const calledUrl = () => global.fetch.mock.calls[global.fetch.mock.calls.length - 1][0];
+
+  beforeEach(() => {
+    global.fetch.mockReset();
+    global.fetch.mockResolvedValue({ ok: true, status: 200 });
+    delete window.i18n;
+    // auth.js lit le localStorage de jsdom (le mock global ne le remplace pas).
+    window.localStorage.removeItem('vol-histoire-lang');
+  });
+  afterAll(() => { delete window.i18n; });
+
+  test('la langue mémorisée est prioritaire', async () => {
+    window.localStorage.setItem('vol-histoire-lang', 'en');
+    window.i18n = { currentLang: 'fr' };
+    await auth.fetchWithTimeout('/api/stats');
+    expect(calledUrl()).toBe('/api/stats?lang=en');
+  });
+
+  test('sans langue mémorisée : repli sur i18n.currentLang', async () => {
+    window.i18n = { currentLang: 'en' };
+    await auth.fetchWithTimeout('/api/stats?x=1');
+    expect(calledUrl()).toBe('/api/stats?x=1&lang=en');
+  });
+
+  test('sans langue mémorisée ni i18n : repli sur fr', async () => {
+    await auth.fetchWithTimeout('/api/stats');
+    expect(calledUrl()).toBe('/api/stats?lang=fr');
+  });
+
+  test('localStorage inaccessible : repli sur i18n.currentLang', async () => {
+    window.i18n = { currentLang: 'en' };
+    const spy = jest.spyOn(window.Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('bloqué'); });
+    try {
+      await auth.fetchWithTimeout('/api/stats');
+    } finally {
+      spy.mockRestore();
+    }
+    expect(calledUrl()).toBe('/api/stats?lang=en');
+  });
+
+  test('URL hors /api et lang déjà présent : laissées intactes', async () => {
+    window.i18n = { currentLang: 'en' };
+    await auth.fetchWithTimeout('/locales/en.json');
+    expect(calledUrl()).toBe('/locales/en.json');
+    await auth.fetchWithTimeout('/api/stats?lang=fr');
+    expect(calledUrl()).toBe('/api/stats?lang=fr');
+  });
+});

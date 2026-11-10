@@ -3186,6 +3186,7 @@ WHERE w.name = 'Guerre de Yougoslavie' AND a.name IN (
   'B-52 Stratofortress',
   'Mirage 2000',
   'Super Étendard',
+  'Étendard IV',
   'S-3 Viking',
   'Vickers VC10',
   'MQ-1 Predator',

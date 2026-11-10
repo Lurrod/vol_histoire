@@ -34,15 +34,35 @@ function isOptionalText(value, maxLength = 10000) {
   return value == null || value === '' || (typeof value === 'string' && value.length <= maxLength);
 }
 
+// Caractères refusés tels quels dans une URL stockée : la valeur brute est
+// réinjectée dans des attributs HTML (href="…"), et new URL() accepte
+// https://ex.com/"onmouseover="… sans broncher. Guillemet double, chevrons,
+// accent grave, blancs et caractères de contrôle n'ont rien à faire dans une
+// URL légitime (ils s'écrivent encodés : %22, %3C…). L'apostrophe reste
+// permise : elle figure dans des ancres Wikipédia réelles (« F-15I_Ra'am »)
+// et escapeHtml() l'échappe côté front.
+const URL_FORBIDDEN_CHARS = /[\s\u0000-\u001F\u007F"<>`]/;
+
 function isOptionalUrl(value) {
   if (value == null || value === '') return true;
   if (typeof value !== 'string' || value.length > 2048) return false;
+  if (URL_FORBIDDEN_CHARS.test(value)) return false;
   try {
     const url = new URL(value);
     return url.protocol === 'http:' || url.protocol === 'https:';
   } catch {
     return false;
   }
+}
+
+// Image d'appareil : URL http(s) absolue, ou chemin local du site (/assets/…),
+// format de toutes les fiches du catalogue. « //hote » est refusé : ce serait
+// une URL vers un autre domaine déguisée en chemin.
+function isOptionalImageUrl(value) {
+  if (typeof value === 'string' && value.startsWith('/') && !value.startsWith('//')) {
+    return value.length <= 2048 && !URL_FORBIDDEN_CHARS.test(value);
+  }
+  return isOptionalUrl(value);
 }
 
 function isOptionalDate(value) {
@@ -59,10 +79,13 @@ function isOptionalPositiveNumber(value) {
   return !isNaN(num) && num >= 0;
 }
 
+// Plus grand entier d'une colonne INTEGER : au-delà, PostgreSQL lève une erreur (500)
+const INT4_MAX = 2147483647;
+
 function isOptionalId(value) {
   if (value == null || value === '') return true;
   const num = Number(value);
-  return Number.isInteger(num) && num > 0;
+  return Number.isInteger(num) && num > 0 && num <= INT4_MAX;
 }
 
 // Nombre signé (ex : g_limit_neg peut être négatif)
@@ -98,7 +121,7 @@ function validateAirplaneData(body) {
   if (!isOptionalString(body.little_description, 255)) {
     errors.push('La description courte ne doit pas dépasser 255 caractères.');
   }
-  if (!isOptionalUrl(body.image_url)) {
+  if (!isOptionalImageUrl(body.image_url)) {
     errors.push("L'URL de l'image doit être une URL valide (http/https, max 2048 caractères).");
   }
   if (!isOptionalText(body.description, 10000)) {
@@ -211,6 +234,7 @@ module.exports = {
   isOptionalString,
   isOptionalText,
   isOptionalUrl,
+  isOptionalImageUrl,
   isOptionalNumber,
   isOptionalYear,
   isOptionalNonNegativeInt,

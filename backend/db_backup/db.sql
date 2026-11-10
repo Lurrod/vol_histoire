@@ -57,14 +57,13 @@ GRANT USAGE, SELECT ON SEQUENCE refresh_tokens_id_seq TO vol_user;
 CREATE TABLE IF NOT EXISTS email_tokens (
     id          SERIAL PRIMARY KEY,
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    token       VARCHAR(64) NOT NULL UNIQUE,
+    token_hash  CHAR(64) NOT NULL UNIQUE,          -- SHA-256 hex du jeton envoyé par email ; le jeton en clair n'est jamais stocké
     type        VARCHAR(10) NOT NULL CHECK (type IN ('verify', 'reset', 'email')),
     new_email   VARCHAR(255) NULL,                 -- type 'email' : adresse à appliquer après confirmation
     expires_at  TIMESTAMPTZ NOT NULL,
     used_at     TIMESTAMPTZ,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-CREATE INDEX IF NOT EXISTS idx_email_tokens_token ON email_tokens (token) WHERE used_at IS NULL;
 CREATE INDEX IF NOT EXISTS idx_email_tokens_user_type ON email_tokens (user_id, type) WHERE used_at IS NULL;
 GRANT SELECT, INSERT, UPDATE, DELETE ON email_tokens TO vol_user;
 GRANT USAGE, SELECT ON SEQUENCE email_tokens_id_seq TO vol_user;

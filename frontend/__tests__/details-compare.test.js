@@ -60,4 +60,83 @@ describe('details/compare — état du bouton', () => {
     expect(btn.getAttribute('aria-pressed')).toBe('false');
     expect(btn.querySelector('i').className).toContain('fa-crosshairs');
   });
+
+  test('le comparateur est initialisé sans synchronisation d\'URL (URL de fiche préservée)', () => {
+    expect(window.VH.shared.compare.init).toHaveBeenCalledWith({ urlSync: false });
+  });
+
+  test('toasts : ajout en succès, retrait en information', () => {
+    const btn = document.getElementById('compare-btn');
+    global.showToast.mockClear();
+    btn.click();
+    expect(global.showToast).toHaveBeenLastCalledWith('details.compare_added', 'success');
+    btn.click();
+    expect(global.showToast).toHaveBeenLastCalledWith('details.compare_removed', 'info');
+  });
+
+  test('icône de l\'état : décorative (aria-hidden), une seule à la fois', () => {
+    const btn = document.getElementById('compare-btn');
+    btn.click();
+    expect(btn.querySelectorAll('i, svg.icon')).toHaveLength(1);
+    expect(btn.querySelector('i').getAttribute('aria-hidden')).toBe('true');
+  });
+
+  test('icône déjà convertie en <svg class="icon"> par icons.js : elle aussi remplacée', () => {
+    const btn = document.getElementById('compare-btn');
+    btn.querySelector('i').outerHTML = '<svg class="icon icon-crosshairs"></svg>';
+    btn.click();
+    expect(btn.querySelector('svg.icon')).toBeNull();
+    expect(btn.querySelector('i').className).toContain('fa-check');
+  });
+});
+
+describe('details/compare — cas limites', () => {
+  function bootWith(html, store) {
+    jest.resetModules();
+    document.body.innerHTML = html;
+    window.VH = store === undefined ? { shared: { compare: makeStore() } } : store;
+    return require('../js/details/compare');
+  }
+
+  test('comparateur plein : toast d\'avertissement, bouton inchangé', () => {
+    const store = makeStore();
+    store.toggle = jest.fn(() => 'full');
+    bootWith('<button id="compare-btn"><i></i><span>c</span></button>', { shared: { compare: store } })
+      .setup({ aircraftId: '9' });
+    global.showToast.mockClear();
+    document.getElementById('compare-btn').click();
+    expect(store.toggle).toHaveBeenCalledWith(9);
+    expect(global.showToast).toHaveBeenCalledWith('hangar.compare_max', 'warning');
+    expect(document.getElementById('compare-btn').getAttribute('aria-pressed')).toBe('false');
+  });
+
+  test('showToast indisponible : le clic fonctionne quand même', () => {
+    const saved = global.showToast;
+    delete global.showToast;
+    try {
+      const store = makeStore();
+      bootWith('<button id="compare-btn"><span>c</span></button>', { shared: { compare: store } })
+        .setup({ aircraftId: 3 });
+      const btn = document.getElementById('compare-btn');
+      expect(() => btn.click()).not.toThrow();
+      expect(btn.getAttribute('aria-pressed')).toBe('true');
+      store.toggle = () => 'full';
+      expect(() => btn.click()).not.toThrow();
+    } finally {
+      global.showToast = saved;
+    }
+  });
+
+  test('bouton sans libellé ni icône : une icône est ajoutée en tête', () => {
+    bootWith('<button id="compare-btn"></button>').setup({ aircraftId: 1 });
+    expect(document.getElementById('compare-btn').firstElementChild.tagName).toBe('I');
+  });
+
+  test('sans bouton ou sans comparateur partagé : rien n\'est branché', () => {
+    const store = makeStore();
+    bootWith('', { shared: { compare: store } }).setup({ aircraftId: 1 });
+    expect(store.init).not.toHaveBeenCalled();
+    expect(() => bootWith('<button id="compare-btn"></button>', {}).setup({ aircraftId: 1 })).not.toThrow();
+    expect(() => bootWith('<button id="compare-btn"></button>', { shared: {} }).setup({ aircraftId: 1 })).not.toThrow();
+  });
 });

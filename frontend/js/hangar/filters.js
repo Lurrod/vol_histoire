@@ -71,8 +71,9 @@
    * prend la teinte dorée. Appelée à chaque changement, d'où qu'il vienne
    * (clic, URL, session, « Effacer tout », feuille mobile, carte).
    * `.has-value` est distincte de `.active`, que le bouton « Carte » utilise
-   * pour signaler son panneau ouvert. Les options ne sont pas un listbox
-   * (simples <div>) : pas d'aria-selected ici. */
+   * pour signaler son panneau ouvert. Les options ne sont pas un listbox mais
+   * des <button> bascules : leur état passe par aria-pressed, pas
+   * aria-selected. */
   function syncFilterUi(state) {
     FILTER_KEYS.forEach((key) => {
       const value = state.filters[key];
@@ -208,6 +209,15 @@
     if (p.has('page'))    state.currentPage = Math.max(1, Number(p.get('page')) || 1);
   }
 
+  /* Remet à zéro ce que l'URL décrit (filtres, recherche, tri, page), avant
+   * de la relire au retour arrière. */
+  function resetUrlState(state) {
+    FILTER_KEYS.forEach((key) => { state.filters[key] = null; });
+    state.filters.search = '';
+    state.sort = 'default';
+    state.currentPage = 1;
+  }
+
   function restoreFiltersFromSession(state) {
     const saved = sessionStorage.getItem(SESSION_KEY);
     if (!saved) return;
@@ -234,17 +244,20 @@
         e.stopPropagation();
         const btn = document.getElementById(btnId);
         const dropdown = document.getElementById(dropdownId);
-        const isOpen = dropdown.classList.contains('show');
-        closeAllDropdowns(dropdownId);
-        if (!isOpen) {
-          if (dropdownTimeouts.has(dropdownId)) {
-            clearTimeout(dropdownTimeouts.get(dropdownId));
-            dropdownTimeouts.delete(dropdownId);
-          }
-          dropdown.classList.remove('hidden');
-          setTimeout(() => dropdown.classList.add('show'), 10);
-          btn?.setAttribute('aria-expanded', 'true');
+        // Recliquer le bouton d'une liste ouverte la referme (bouton bascule) :
+        // stopPropagation() empêche le gestionnaire « clic dehors » de le faire.
+        if (dropdown.classList.contains('show')) {
+          closeAllDropdowns();
+          return;
         }
+        closeAllDropdowns(dropdownId);
+        if (dropdownTimeouts.has(dropdownId)) {
+          clearTimeout(dropdownTimeouts.get(dropdownId));
+          dropdownTimeouts.delete(dropdownId);
+        }
+        dropdown.classList.remove('hidden');
+        setTimeout(() => dropdown.classList.add('show'), 10);
+        btn?.setAttribute('aria-expanded', 'true');
       });
     });
     document.querySelectorAll('.close-dropdown').forEach(btn => {
@@ -298,8 +311,12 @@
     });
 
     window.addEventListener('popstate', () => {
+      // readStateFromUrl n'applique que les paramètres PRÉSENTS (au démarrage,
+      // il complète la session) : au retour arrière, l'URL fait foi, donc un
+      // filtre ou une recherche qu'elle ne porte plus est retiré d'abord.
+      resetUrlState(state);
       readStateFromUrl(state);
-      if (searchInput && state.filters.search) searchInput.value = state.filters.search;
+      if (searchInput) searchInput.value = state.filters.search || '';
       if (sortSelect) sortSelect.value = state.sort;
       applyFiltersAndRender(state);
       updateActiveFilters(state);

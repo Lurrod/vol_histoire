@@ -1,7 +1,10 @@
 {
   "name": "vol-histoire",
-  "version": "4.13.1",
+  "version": "4.14.0",
   "private": true,
+  "engines": {
+    "node": ">=20 <25"
+  },
   "scripts": {
     "e2e": "cd e2e && npm test",
     "e2e:headed": "cd e2e && npm run test:headed",
@@ -13,8 +16,8 @@
     "test:all": "cd backend && npm run test:coverage && cd ../e2e && npm test"
   },
   "devDependencies": {
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.2",
     "eslint": "^9.39.4",
-    "sharp": "^0.34.5"
+    "sharp": "^0.35.5"
   }
 }

@@ -16,12 +16,23 @@ beforeEach(() => {
 describe('escapeHtml', () => {
   test('échappe les caractères HTML dangereux', () => {
     expect(escapeHtml('<script>alert("xss")</script>')).toBe(
-      '&lt;script&gt;alert("xss")&lt;/script&gt;'
+      '&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;'
     );
   });
 
-  test('échappe les guillemets et esperluettes', () => {
-    expect(escapeHtml('a & b "c"')).toBe('a &amp; b "c"');
+  test('échappe les guillemets doubles et simples, et les esperluettes', () => {
+    // Sortie utilisée dans des attributs (href="…", data-value="…") :
+    // un guillemet non échappé fermerait l'attribut.
+    expect(escapeHtml('a & b "c" \'d\'')).toBe('a &amp; b &quot;c&quot; &#39;d&#39;');
+  });
+
+  test('sûr dans un attribut : la valeur relue est identique, sans attribut injecté', () => {
+    const url = 'https://ex.com/"onmouseover="alert(1)';
+    const div = document.createElement('div');
+    div.innerHTML = `<a href="${escapeHtml(url)}">x</a>`;
+    const a = div.querySelector('a');
+    expect(a.getAttribute('onmouseover')).toBeNull();
+    expect(a.getAttribute('href')).toBe(url);
   });
 
   test('retourne une chaîne vide pour null', () => {
@@ -393,6 +404,91 @@ describe('clearFieldError', () => {
     expect(input.hasAttribute('aria-invalid')).toBe(false);
     const errEl = document.getElementById('clear-input-error');
     expect(errEl.textContent).toBe('');
+  });
+});
+
+/* aria-describedby peut lister plusieurs identifiants (aide + erreur, WCAG
+   3.3.2). setFieldError / clearFieldError n'en lisaient qu'un : avec
+   « hint » seul, le message d'erreur était écrit DANS l'aide et l'effaçait. */
+describe('setFieldError / clearFieldError — aria-describedby à plusieurs identifiants', () => {
+  function field(id, describedBy, extraHtml = '') {
+    document.body.innerHTML = `
+      <div>
+        <input id="${id}"${describedBy ? ` aria-describedby="${describedBy}"` : ''}>
+        ${extraHtml}
+      </div>`;
+    return document.getElementById(id);
+  }
+
+  test('n\'écrit jamais dans l\'aide : crée l\'erreur et l\'ajoute devant les autres identifiants', () => {
+    const input = field('pw', 'pw-hint', '<p id="pw-hint">8 caractères min</p>');
+    setFieldError(input, 'Trop court');
+
+    expect(document.getElementById('pw-hint').textContent).toBe('8 caractères min');
+    expect(document.getElementById('pw-error').textContent).toBe('Trop court');
+    expect(input.getAttribute('aria-describedby')).toBe('pw-error pw-hint');
+  });
+
+  test('réutilise le span d\'erreur présent dans le HTML sans le dupliquer', () => {
+    const input = field('pw', 'pw-hint',
+      '<span id="pw-error" class="form-error" role="alert"></span><p id="pw-hint">Aide</p>');
+    setFieldError(input, 'Erreur');
+
+    expect(document.querySelectorAll('.form-error')).toHaveLength(1);
+    expect(document.getElementById('pw-error').textContent).toBe('Erreur');
+    expect(input.getAttribute('aria-describedby')).toBe('pw-error pw-hint');
+  });
+
+  test('erreur déjà listée parmi d\'autres : réutilisée, liste inchangée', () => {
+    const input = field('pw', 'pw-hint pw-error',
+      '<p id="pw-hint">Aide</p><span id="pw-error" class="form-error"></span>');
+    setFieldError(input, 'Erreur 1');
+    setFieldError(input, 'Erreur 2');
+
+    expect(input.getAttribute('aria-describedby')).toBe('pw-hint pw-error');
+    expect(document.getElementById('pw-error').textContent).toBe('Erreur 2');
+    expect(document.getElementById('pw-hint').textContent).toBe('Aide');
+  });
+
+  test('clearFieldError retire seulement l\'identifiant d\'erreur et vide son texte', () => {
+    const input = field('pw', 'pw-hint', '<p id="pw-hint">Aide</p>');
+    setFieldError(input, 'Erreur');
+    clearFieldError(input);
+
+    expect(input.getAttribute('aria-describedby')).toBe('pw-hint');
+    expect(document.getElementById('pw-error').textContent).toBe('');
+    expect(document.getElementById('pw-hint').textContent).toBe('Aide');
+    expect(input.hasAttribute('aria-invalid')).toBe(false);
+  });
+
+  test('clearFieldError ne touche pas une aide qui n\'est pas une erreur', () => {
+    const input = field('pw', 'pw-hint', '<p id="pw-hint">Aide</p>');
+    clearFieldError(input);
+
+    expect(input.getAttribute('aria-describedby')).toBe('pw-hint');
+    expect(document.getElementById('pw-hint').textContent).toBe('Aide');
+  });
+
+  test('erreur seule : l\'attribut disparaît au nettoyage puis revient à l\'erreur suivante', () => {
+    const input = field('mail', null);
+    setFieldError(input, 'Invalide');
+    expect(input.getAttribute('aria-describedby')).toBe('mail-error');
+
+    clearFieldError(input);
+    expect(input.hasAttribute('aria-describedby')).toBe(false);
+
+    setFieldError(input, 'Encore invalide');
+    expect(input.getAttribute('aria-describedby')).toBe('mail-error');
+    expect(document.querySelectorAll('.form-error')).toHaveLength(1);
+    expect(document.getElementById('mail-error').textContent).toBe('Encore invalide');
+  });
+
+  test('espaces multiples dans l\'attribut tolérés', () => {
+    const input = field('pw', '  pw-hint   pw-extra ', '<p id="pw-hint">Aide</p><p id="pw-extra">Plus</p>');
+    setFieldError(input, 'Erreur');
+    expect(input.getAttribute('aria-describedby')).toBe('pw-error pw-hint pw-extra');
+    clearFieldError(input);
+    expect(input.getAttribute('aria-describedby')).toBe('pw-hint pw-extra');
   });
 });
 

@@ -1,8 +1,11 @@
 const express = require('express');
 const asyncHandler = require('../middleware/asyncHandler');
 const { buildDetailsPath, slugify } = require('../utils/url');
+const { langUrl } = require('../utils/ssr-head');
 const cache = require('../utils/cache');
 const logger = require('../logger');
+const sitemapRepo = require('../repositories/sitemap');
+const warsRepo = require('../repositories/wars');
 
 const SITEMAP_CACHE_KEY = 'vdh:sitemap:xml';
 const SITEMAP_TTL_SECONDS = 24 * 60 * 60; // 24h côté serveur
@@ -10,29 +13,50 @@ const SITEMAP_BROWSER_MAX_AGE = 60 * 60;  // 1h côté client/CDN
 const SITEMAP_FALLBACK_MAX_AGE = 5 * 60;  // 5min en fallback DB (cache court pour reprise rapide)
 
 const BASE_URL = 'https://vol-histoire.titouan-borde.com';
+// Pages fixes indexables. changefreq et priority ne sont plus publiés :
+// Google les ignore. lastmod n'est donné que lorsqu'il est connu (voir
+// buildSitemapXml) — une date de génération répétée sur toutes les URL est
+// ignorée par les moteurs et masque les vraies mises à jour.
 const STATIC_PAGES = [
-  { loc: '/',                          changefreq: 'weekly',  priority: '1.0' },
-  { loc: '/hangar',                    changefreq: 'weekly',  priority: '0.9' },
-  { loc: '/timeline',                  changefreq: 'monthly', priority: '0.8' },
-  { loc: '/conflits',                  changefreq: 'monthly', priority: '0.8' },
-  { loc: '/contact',                   changefreq: 'yearly',  priority: '0.5' },
-  { loc: '/mentions-legales',          changefreq: 'yearly',  priority: '0.2' },
-  { loc: '/politique-confidentialite', changefreq: 'yearly',  priority: '0.2' },
-  { loc: '/cgu',                       changefreq: 'yearly',  priority: '0.2' },
+  '/',
+  '/hangar',
+  '/timeline',
+  '/conflits',
+  '/credits',
+  '/contact',
+  '/mentions-legales',
+  '/politique-confidentialite',
+  '/cgu',
 ];
+// Pages dont le contenu est le catalogue lui-même : leur lastmod est celui
+// de la fiche modifiée le plus récemment.
+const CATALOGUE_PAGES = new Set(['/', '/hangar']);
 
-function renderUrlEntry(loc, today, changefreq, priority) {
-  const url = `${BASE_URL}${loc}`;
-  return `
+/** Date W3C (AAAA-MM-JJ) d'une valeur de base, null si absente ou invalide. */
+function toLastmod(value) {
+  if (!value) return null;
+  const d = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
+}
+
+/**
+ * Entrées d'une page : une <url> par langue (français à l'URL nue, anglais à
+ * ?lang=en), chacune portant les trois alternates réciproques — le schéma
+ * que Google attend pour des versions linguistiques déclarées par sitemap.
+ */
+function renderUrlEntries(loc, lastmod) {
+  const base = `${BASE_URL}${loc}`;
+  const alternates = [
+    `    <xhtml:link rel="alternate" hreflang="fr" href="${base}" />`,
+    `    <xhtml:link rel="alternate" hreflang="en" href="${langUrl(base, 'en')}" />`,
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${base}" />`,
+  ].join('\n');
+  const lastmodTag = lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : '';
+  return ['fr', 'en'].map(lang => `
   <url>
-    <loc>${url}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="${url}?lang=fr" />
-    <xhtml:link rel="alternate" hreflang="en" href="${url}?lang=en" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${url}" />
-  </url>`;
+    <loc>${langUrl(base, lang)}</loc>${lastmodTag}
+${alternates}
+  </url>`).join('');
 }
 
 function wrapSitemap(urlsXml) {
@@ -44,33 +68,34 @@ function wrapSitemap(urlsXml) {
 
 // Sitemap minimal sans BDD — fallback résilient si la DB est indisponible.
 function buildStaticSitemapXml() {
-  const today = new Date().toISOString().split('T')[0];
-  const staticUrls = STATIC_PAGES
-    .map(p => renderUrlEntry(p.loc, today, p.changefreq, p.priority))
-    .join('');
-  return wrapSitemap(staticUrls);
+  return wrapSitemap(STATIC_PAGES.map(loc => renderUrlEntries(loc, null)).join(''));
 }
 
 async function buildSitemapXml(getPool) {
-  const today = new Date().toISOString().split('T')[0];
   const pool = getPool();
-  const [result, wars] = await Promise.all([
-    pool.query('SELECT id, name FROM airplanes ORDER BY id ASC'),
+  const [airplanes, wars] = await Promise.all([
+    sitemapRepo.listAirplanesForSitemap(pool),
     // Une page par conflit rattaché à au moins un appareil (routes/wars.js).
-    pool.query(`SELECT w.name FROM wars w
-                WHERE EXISTS (SELECT 1 FROM airplane_wars aw WHERE aw.id_wars = w.id)
-                ORDER BY w.date_start ASC NULLS LAST, w.name ASC`),
+    warsRepo.listLinkedNames(pool),
   ]);
 
-  const staticUrls = STATIC_PAGES
-    .map(p => renderUrlEntry(p.loc, today, p.changefreq, p.priority))
+  // Fiches : date de leur dernière écriture en base (updated_at).
+  const airplaneUrls = airplanes
+    .map(row => renderUrlEntries(buildDetailsPath(row.id, row.name), toLastmod(row.updated_at)))
     .join('');
-  const airplaneUrls = result.rows
-    .map(row => renderUrlEntry(buildDetailsPath(row.id, row.name), today, 'monthly', '0.8'))
-    .join('');
+  const catalogueLastmod = airplanes
+    .map(row => toLastmod(row.updated_at))
+    .filter(Boolean)
+    .sort()
+    .pop() || null;
 
-  const warUrls = ((wars && wars.rows) || [])
-    .map(row => renderUrlEntry(`/conflits/${slugify(row.name)}`, today, 'monthly', '0.7'))
+  // Pages fixes et conflits : aucune date de modification n'est tenue en base
+  // pour leur texte, lastmod est donc omis plutôt qu'inventé.
+  const staticUrls = STATIC_PAGES
+    .map(loc => renderUrlEntries(loc, CATALOGUE_PAGES.has(loc) ? catalogueLastmod : null))
+    .join('');
+  const warUrls = wars
+    .map(row => renderUrlEntries(`/conflits/${slugify(row.name)}`, null))
     .join('');
 
   return wrapSitemap(staticUrls + warUrls + airplaneUrls);
@@ -118,3 +143,4 @@ module.exports.SITEMAP_CACHE_KEY = SITEMAP_CACHE_KEY;
 module.exports.invalidateSitemap = () => cache.del(SITEMAP_CACHE_KEY);
 // Exposé pour les tests : permet de vérifier le fallback isolé.
 module.exports.buildStaticSitemapXml = buildStaticSitemapXml;
+module.exports.buildSitemapXml = buildSitemapXml;

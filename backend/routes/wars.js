@@ -4,6 +4,7 @@ const express = require('express');
 const asyncHandler = require('../middleware/asyncHandler');
 const { pickLang, pickLangMany } = require('../i18n');
 const { slugify } = require('../utils/url');
+const warsRepo = require('../repositories/wars');
 
 // Conflits : liste et page dédiée.
 //
@@ -20,15 +21,7 @@ module.exports = function createWarsRouter(getPool) {
   const router = express.Router();
 
   async function loadWars() {
-    const { rows } = await getPool().query(`
-      SELECT w.id, w.name, w.name_en, w.date_start, w.date_end,
-             w.description, w.description_en,
-             COUNT(aw.id_airplane)::int AS count
-      FROM wars w
-      LEFT JOIN airplane_wars aw ON aw.id_wars = w.id
-      GROUP BY w.id
-      ORDER BY w.date_start ASC NULLS LAST, w.name ASC
-    `);
+    const rows = await warsRepo.listWithCounts(getPool());
     return rows.map((r) => ({ ...r, slug: slugify(r.name) }));
   }
 
@@ -56,19 +49,7 @@ module.exports = function createWarsRouter(getPool) {
     const war = (await loadWars()).find((w) => w.slug === slug && w.count > 0);
     if (!war) return res.status(404).json({ message: 'Conflit introuvable' });
 
-    const { rows } = await getPool().query(`
-      SELECT a.id, a.name, a.name_en, a.little_description, a.little_description_en,
-             a.image_url, a.date_first_fly, a.date_operationel,
-             c.code AS country_code, c.name AS country_name, c.name_en AS country_name_en,
-             t.name AS type_name, t.name_en AS type_name_en, g.generation
-      FROM airplane_wars aw
-      JOIN airplanes a ON a.id = aw.id_airplane
-      LEFT JOIN countries c ON c.id = a.country_id
-      LEFT JOIN type t ON t.id = a.type
-      LEFT JOIN generation g ON g.id = a.id_generation
-      WHERE aw.id_wars = $1
-      ORDER BY a.date_first_fly ASC NULLS LAST, a.name ASC
-    `, [war.id]);
+    const rows = await warsRepo.findAirplanes(getPool(), war.id);
 
     const translated = pickLang(war, req.lang, ['name', 'description']);
     res.set('Cache-Control', LIST_CACHE);

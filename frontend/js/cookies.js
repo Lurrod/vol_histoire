@@ -2,16 +2,187 @@
    COOKIE CONSENT SYSTEM
    ================================================================ */
 
+// Marge laissée entre l'élément focalisé et le bord haut du bandeau.
+const BANNER_FOCUS_MARGIN = 16;
+
+/**
+ * WCAG 2.2 — 2.4.11 (focus non masqué). Le bandeau est fixé en bas de
+ * l'écran ; au clavier, le navigateur ne fait défiler que si l'élément sort
+ * de la fenêtre, et le laissait donc SOUS le bandeau (10 contrôles sur 27 du
+ * hangar en mobile). Renvoie de combien de pixels faire défiler la page pour
+ * remonter `target` au-dessus du bandeau, 0 s'il n'est pas caché.
+ *
+ * @param {Element} target  élément qui vient de recevoir le focus
+ * @param {Element} banner  #cookie-banner
+ * @param {Element} [header] en-tête fixe : le haut de l'élément ne passe pas dessous
+ * @returns {number}
+ */
+function bannerOverlap(target, banner, header) {
+  if (!banner || !banner.classList.contains('show')) return 0;
+  if (!target || typeof target.getBoundingClientRect !== 'function' || banner.contains(target)) return 0;
+
+  const r = target.getBoundingClientRect();
+  const b = banner.getBoundingClientRect();
+  if (r.width === 0 && r.height === 0) return 0; // hors rendu (lien d'évitement replié…)
+  if (r.bottom <= b.top || r.top >= b.bottom) return 0;
+
+  // Un élément peint AU-DESSUS du bandeau (toast, modale) n'est pas caché.
+  if (typeof document.elementFromPoint === 'function') {
+    const x = Math.min(Math.max(r.left + r.width / 2, 0), window.innerWidth - 1);
+    const y = Math.min(Math.max(r.bottom - 1, b.top), b.bottom - 1);
+    const hit = document.elementFromPoint(x, y);
+    if (hit && !banner.contains(hit)) return 0;
+  }
+
+  const needed = Math.ceil(r.bottom - b.top + BANNER_FOCUS_MARGIN);
+  const head = header === undefined ? document.querySelector('body > header') : header;
+  const headBottom = head ? head.getBoundingClientRect().bottom : 0;
+  // Élément plus haut que la place disponible : on le remonte jusqu'à
+  // l'en-tête, pas au-delà (il reste alors visible en partie, ce que
+  // demande le critère, au lieu de disparaître par le haut).
+  const room = Math.max(0, Math.floor(r.top - headBottom - BANNER_FOCUS_MARGIN));
+  return Math.min(needed, room);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Conservation du choix (LEGAL-004). La CNIL recommande de redemander le
+// consentement au bout de 6 mois : le choix est daté, et un choix plus ancien
+// (ou sans date lisible) est traité comme une absence de choix — le bandeau
+// revient. Le cookie miroir expire à la même échéance.
+// ─────────────────────────────────────────────────────────────────────────────
+const CONSENT_STORAGE_KEY = 'voldhistoire_cookie_consent';
+const CONSENT_MAX_AGE_DAYS = 180;
+const DAY_MS = 24 * 60 * 60 * 1000;
+const CONSENT_VERSION = '2';
+
+/** Seules deux finalités existent : essentiel (toujours) et mesure d'audience.
+ *  La catégorie « préférence » a été retirée (LEGAL-006) : les stockages de
+ *  confort (langue, vue, comparateur…) sont des traceurs fonctionnels exemptés,
+ *  et aucun code ne consultait ce choix. Le marketing n'est pas utilisé. */
+function normalizePreferences(prefs) {
+  return {
+    essential: true,
+    analytics: Boolean(prefs && prefs.analytics === true),
+    marketing: false,
+  };
+}
+
+/** true si le choix daté `timestamp` a dépassé la durée de conservation. */
+function isConsentExpired(timestamp, now = Date.now()) {
+  const at = Date.parse(timestamp);
+  if (Number.isNaN(at)) return true;
+  return now - at > CONSENT_MAX_AGE_DAYS * DAY_MS;
+}
+
+function removeConsentCookie() {
+  document.cookie = `${CONSENT_STORAGE_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax`;
+}
+
+/**
+ * Choix enregistré et encore valide : { preferences, timestamp }, sinon null.
+ * Un choix expiré est effacé (stockage + cookie) pour que le bandeau revienne.
+ * Les données corrompues ou un stockage inaccessible valent absence de choix.
+ */
+function readConsentRecord(now = Date.now()) {
+  let parsed;
+  try {
+    const brut = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+    if (!brut) return null;
+    parsed = JSON.parse(brut);
+  } catch {
+    return null;
+  }
+  if (!parsed || typeof parsed !== 'object' || !parsed.preferences || typeof parsed.preferences !== 'object') return null;
+  if (isConsentExpired(parsed.timestamp, now)) {
+    try { window.localStorage.removeItem(CONSENT_STORAGE_KEY); } catch { /* stockage bloqué */ }
+    removeConsentCookie();
+    return null;
+  }
+  const preferences = normalizePreferences(parsed.preferences);
+  // Finalité non renseignée ≠ refus : VH.consent.denies() doit rester faux.
+  if (typeof parsed.preferences.analytics !== 'boolean') delete preferences.analytics;
+  return { preferences, timestamp: parsed.timestamp };
+}
+
+/** Enregistre le choix daté (localStorage + cookie miroir de même durée). */
+function writeConsentRecord(prefs, now = Date.now()) {
+  const record = {
+    preferences: normalizePreferences(prefs),
+    timestamp: new Date(now).toISOString(),
+    version: CONSENT_VERSION,
+  };
+  try {
+    window.localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(record));
+  } catch {
+    // Stockage bloqué (navigation privée stricte) : le choix vaut pour la page.
+  }
+  document.cookie = `${CONSENT_STORAGE_KEY}=true; max-age=${CONSENT_MAX_AGE_DAYS * 24 * 60 * 60}; path=/; SameSite=Lax`;
+  return record;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Retrait de la mesure d'audience (LEGAL-005). Refuser doit être aussi effectif
+// qu'accepter : on coupe Google Analytics (drapeau officiel ga-disable-<ID>),
+// on efface ses cookies sur l'hôte ET sur les domaines parents (GA les pose
+// par défaut sur le domaine le plus large possible, ici .titouan-borde.com).
+// ─────────────────────────────────────────────────────────────────────────────
+const GA_COOKIE_RE = /^(_ga(_.+)?|_gid|_gat(_.+)?)$/;
+
+/** Domaines sur lesquels un cookie a pu être posé : hôte, puis chaque parent
+ *  d'au moins deux libellés (« .com » seul est refusé par le navigateur). */
+function cookieDomainCandidates(hostname) {
+  const host = String(hostname || '');
+  const candidates = [''];
+  if (!host || /^[\d.]+$/.test(host) || host.indexOf('.') === -1) return candidates;
+  const labels = host.split('.');
+  for (let i = 0; i <= labels.length - 2; i++) {
+    candidates.push(`.${labels.slice(i).join('.')}`);
+  }
+  return candidates;
+}
+
+/** Noms des cookies de Google Analytics présents sur la page. */
+function analyticsCookieNames() {
+  return document.cookie
+    .split(';')
+    .map((c) => c.split('=')[0].trim())
+    .filter((name) => GA_COOKIE_RE.test(name));
+}
+
+/** Identifiants de mesure GA4 connus : ceux de gtm.js et ceux que révèlent les
+ *  cookies `_ga_<ID>` (le cookie porte l'identifiant sans le préfixe « G- »). */
+function analyticsMeasurementIds() {
+  const ids = new Set(Array.isArray(window.__VH_GA_IDS) ? window.__VH_GA_IDS : []);
+  analyticsCookieNames().forEach((name) => {
+    const m = /^_ga_(.+)$/.exec(name);
+    if (m) ids.add(`G-${m[1]}`);
+  });
+  return Array.from(ids);
+}
+
+/** Efface les cookies GA sur l'hôte et sur chaque domaine parent. */
+function removeAnalyticsCookies(hostname = window.location.hostname) {
+  const names = analyticsCookieNames();
+  const domains = cookieDomainCandidates(hostname);
+  names.forEach((name) => {
+    domains.forEach((domain) => {
+      const domainAttr = domain ? `; domain=${domain}` : '';
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/${domainAttr}`;
+    });
+  });
+  return names;
+}
+
+/** Pose (ou lève) le drapeau ga-disable-<ID> lu par gtag avant chaque envoi. */
+function setAnalyticsDisabled(disabled) {
+  analyticsMeasurementIds().forEach((id) => { window[`ga-disable-${id}`] = disabled; });
+}
+
 class CookieConsent {
   constructor() {
-    this.cookieName = 'voldhistoire_cookie_consent';
-    this.cookieExpiry = 365; // days
-    this.preferences = {
-      essential: true, // Always true
-      analytics: false,
-      preference: false,
-      marketing: false
-    };
+    this.cookieName = CONSENT_STORAGE_KEY;
+    this.cookieExpiry = CONSENT_MAX_AGE_DAYS; // jours
+    this.preferences = normalizePreferences(null);
 
     this.init();
   }
@@ -118,19 +289,12 @@ class CookieConsent {
       modalBackdrop.addEventListener('click', () => this.closeModal());
     }
 
-    // Cookie toggles
+    // Interrupteur de la mesure d'audience (seule finalité réglable)
     const analyticsToggle = document.getElementById('cookie-analytics');
-    const preferenceToggle = document.getElementById('cookie-preference');
 
     if (analyticsToggle) {
       analyticsToggle.addEventListener('change', (e) => {
-        this.preferences.analytics = e.target.checked;
-      });
-    }
-
-    if (preferenceToggle) {
-      preferenceToggle.addEventListener('change', (e) => {
-        this.preferences.preference = e.target.checked;
+        this.preferences = { ...this.preferences, analytics: e.target.checked };
       });
     }
 
@@ -190,11 +354,41 @@ class CookieConsent {
       // Trigger reflow for animation
       banner.offsetHeight;
       banner.classList.add('show');
+      this.guardFocus(banner);
     }
+  }
+
+  /**
+   * Tant que le bandeau est affiché, remonte au-dessus de lui tout élément
+   * qui reçoit le focus en dessous (voir bannerOverlap). La place pour
+   * remonter les derniers éléments de la page est réservée en CSS
+   * (padding-bottom du body, cookies.css).
+   */
+  guardFocus(banner) {
+    if (this._focusGuard) return;
+    this._focusGuard = (e) => {
+      // Bandeau retiré du DOM sans passer par hideBanner : plus rien à garder.
+      if (!banner.isConnected) {
+        this.releaseFocusGuard();
+        return;
+      }
+      const delta = bannerOverlap(e.target, banner);
+      // 'instant' : html porte scroll-behavior: smooth, et un défilement
+      // animé laisserait le focus caché le temps de l'animation.
+      if (delta > 0) window.scrollBy({ top: delta, behavior: 'instant' });
+    };
+    document.addEventListener('focusin', this._focusGuard);
+  }
+
+  releaseFocusGuard() {
+    if (!this._focusGuard) return;
+    document.removeEventListener('focusin', this._focusGuard);
+    this._focusGuard = null;
   }
 
   hideBanner() {
     const banner = document.getElementById('cookie-banner');
+    this.releaseFocusGuard();
     if (banner) {
       banner.classList.remove('show');
       setTimeout(() => {
@@ -228,13 +422,9 @@ class CookieConsent {
 
       // Update toggle states
       const analyticsToggle = document.getElementById('cookie-analytics');
-      const preferenceToggle = document.getElementById('cookie-preference');
 
       if (analyticsToggle) {
         analyticsToggle.checked = this.preferences.analytics;
-      }
-      if (preferenceToggle) {
-        preferenceToggle.checked = this.preferences.preference;
       }
 
       modal.classList.remove('hidden');
@@ -274,12 +464,8 @@ class CookieConsent {
   }
 
   acceptAll() {
-    this.preferences = {
-      essential: true,
-      analytics: true,
-      preference: true,
-      marketing: false // Keep false as not used
-    };
+    // Le marketing reste refusé : le site n'en utilise pas.
+    this.preferences = normalizePreferences({ analytics: true });
 
     this.saveConsent();
     this.applyConsent();
@@ -288,12 +474,7 @@ class CookieConsent {
   }
 
   rejectAll() {
-    this.preferences = {
-      essential: true, // Can't disable essential
-      analytics: false,
-      preference: false,
-      marketing: false
-    };
+    this.preferences = normalizePreferences({ analytics: false });
 
     this.saveConsent();
     this.applyConsent();
@@ -302,16 +483,9 @@ class CookieConsent {
   }
 
   savePreferences() {
-    // Get current toggle states
     const analyticsToggle = document.getElementById('cookie-analytics');
-    const preferenceToggle = document.getElementById('cookie-preference');
 
-    this.preferences = {
-      essential: true,
-      analytics: analyticsToggle ? analyticsToggle.checked : false,
-      preference: preferenceToggle ? preferenceToggle.checked : false,
-      marketing: false
-    };
+    this.preferences = normalizePreferences({ analytics: analyticsToggle ? analyticsToggle.checked : false });
 
     this.saveConsent();
     this.applyConsent();
@@ -320,34 +494,15 @@ class CookieConsent {
     this.showToast(this.t('cookie.toast_saved', 'Vos préférences ont été enregistrées'), 'success');
   }
 
+  /** Enregistre le choix courant, daté, pour CONSENT_MAX_AGE_DAYS jours. */
   saveConsent() {
-    const consentData = {
-      preferences: this.preferences,
-      timestamp: new Date().toISOString(),
-      version: '1.0'
-    };
-
-    // Save to localStorage
-    localStorage.setItem(this.cookieName, JSON.stringify(consentData));
-
-    // Also set a cookie for 365 days
-    const expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() + this.cookieExpiry);
-    document.cookie = `${this.cookieName}=true; expires=${expiryDate.toUTCString()}; path=/; SameSite=Lax`;
+    writeConsentRecord(this.preferences);
   }
 
+  /** Préférences encore valides (choix de moins de 6 mois), sinon null. */
   getConsent() {
-    const consentData = localStorage.getItem(this.cookieName);
-    if (consentData) {
-      try {
-        const parsed = JSON.parse(consentData);
-        return parsed.preferences;
-      } catch {
-        // Erreur silencieuse — données de consentement corrompues
-        return null;
-      }
-    }
-    return null;
+    const record = readConsentRecord();
+    return record ? record.preferences : null;
   }
 
   applyConsent() {
@@ -361,20 +516,11 @@ class CookieConsent {
       window.__loadGTM();
     }
 
-    // Apply analytics cookies
     if (this.preferences.analytics) {
       this.enableAnalytics();
     } else {
       this.disableAnalytics();
     }
-
-    // Apply preference cookies
-    if (this.preferences.preference) {
-      this.enablePreferences();
-    } else {
-      this.disablePreferences();
-    }
-
   }
 
   updateGTMConsent() {
@@ -382,13 +528,15 @@ class CookieConsent {
     window.dataLayer = window.dataLayer || [];
     function gtag(){window.dataLayer.push(arguments);}
 
+    // Aucune finalité « fonctionnalité » ou « personnalisation » n'est confiée
+    // à Google : ces stockages restent refusés quel que soit le choix.
     gtag('consent', 'update', {
       analytics_storage: this.preferences.analytics ? 'granted' : 'denied',
-      ad_storage: this.preferences.marketing ? 'granted' : 'denied',
-      ad_user_data: this.preferences.marketing ? 'granted' : 'denied',
-      ad_personalization: this.preferences.marketing ? 'granted' : 'denied',
-      functionality_storage: this.preferences.preference ? 'granted' : 'denied',
-      personalization_storage: this.preferences.preference ? 'granted' : 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      functionality_storage: 'denied',
+      personalization_storage: 'denied',
       security_storage: 'granted'
     });
 
@@ -396,26 +544,34 @@ class CookieConsent {
     window.dataLayer.push({
       event: 'cookie_consent_update',
       cookie_consent_analytics: this.preferences.analytics,
-      cookie_consent_preference: this.preferences.preference,
-      cookie_consent_marketing: this.preferences.marketing
+      cookie_consent_marketing: false
     });
 
   }
 
   enableAnalytics() {
+    setAnalyticsDisabled(false);
     this.fireEvent('analytics_enabled');
   }
 
+  /**
+   * Refus ou retrait : drapeau ga-disable posé, cookies GA effacés (hôte et
+   * domaines parents). Si GTM a déjà été chargé dans cette page, sa file
+   * d'envoi peut encore partir (défilement, sortie de page) : on recharge la
+   * page, qui repart sans GTM puisque le choix enregistré est un refus.
+   */
   disableAnalytics() {
+    setAnalyticsDisabled(true);
+    removeAnalyticsCookies();
     this.fireEvent('analytics_disabled');
+    if (typeof window.__isGTMLoaded === 'function' && window.__isGTMLoaded()) {
+      this.reloadPage();
+    }
   }
 
-  enablePreferences() {
-    this.fireEvent('preferences_enabled');
-  }
-
-  disablePreferences() {
-    this.fireEvent('preferences_disabled');
+  /** Isolé pour les tests (jsdom n'implémente pas location.reload). */
+  reloadPage() {
+    window.location.reload();
   }
 
   fireEvent(eventName) {
@@ -476,9 +632,9 @@ class CookieConsent {
 
   // Public method to reset consent (useful for testing)
   resetConsent() {
-    localStorage.removeItem(this.cookieName);
-    document.cookie = `${this.cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    location.reload();
+    try { localStorage.removeItem(this.cookieName); } catch { /* stockage bloqué */ }
+    removeConsentCookie();
+    this.reloadPage();
   }
 }
 
@@ -495,10 +651,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-// Listen to cookie consent events (GTM integration)
-document.addEventListener('cookieConsent', () => {
-});
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Source unique du consentement, pour tout code hors de cette classe.
 //
@@ -510,18 +662,24 @@ document.addEventListener('cookieConsent', () => {
 // ─────────────────────────────────────────────────────────────────────────────
 window.VH = window.VH || {};
 window.VH.consent = {
-  STORAGE_KEY: 'voldhistoire_cookie_consent',
+  STORAGE_KEY: CONSENT_STORAGE_KEY,
+  MAX_AGE_DAYS: CONSENT_MAX_AGE_DAYS,
 
-  /** @returns {object|null} les préférences, ou null si aucun choix enregistré */
+  /** @returns {{preferences: object, timestamp: string}|null} choix valide, daté */
+  record() {
+    return readConsentRecord();
+  },
+
+  /** @returns {object|null} les préférences, ou null si aucun choix valide
+   *  (absent, corrompu ou plus vieux que MAX_AGE_DAYS) */
   get() {
-    try {
-      const brut = window.localStorage.getItem(this.STORAGE_KEY);
-      if (!brut) return null;
-      const parsed = JSON.parse(brut);
-      return (parsed && parsed.preferences) || null;
-    } catch {
-      return null; // données corrompues : traitées comme une absence de choix
-    }
+    const record = readConsentRecord();
+    return record ? record.preferences : null;
+  },
+
+  /** Enregistre un choix (daté maintenant) ; renvoie l'enregistrement écrit. */
+  save(preferences) {
+    return writeConsentRecord(preferences);
   },
 
   /** true seulement si la finalité a été explicitement accordée. */
@@ -539,5 +697,15 @@ window.VH.consent = {
 
 // Export conditionnel pour les tests unitaires (Node.js / jsdom)
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { CookieConsent };
+  module.exports = {
+    CookieConsent,
+    bannerOverlap,
+    isConsentExpired,
+    readConsentRecord,
+    writeConsentRecord,
+    cookieDomainCandidates,
+    removeAnalyticsCookies,
+    analyticsMeasurementIds,
+    CONSENT_MAX_AGE_DAYS,
+  };
 }

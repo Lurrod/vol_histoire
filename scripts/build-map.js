@@ -269,8 +269,12 @@ async function build() {
   vb.w = Math.ceil(Math.min(WIDTH, bbox.x1 + pad)) - vb.x;
   vb.h = Math.ceil(Math.min(HEIGHT, bbox.y1 + pad)) - vb.y;
 
+  // role="group" et non "img" : une fois montée, la carte contient des pays
+  // focalisables, que role="img" rendrait présentationnels (axe
+  // nested-interactive). aria-hidden tient tant que le JS ne l'a pas rendue
+  // navigable (js/nations-map.js retire l'attribut et pose aria-label).
   const svg = [
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb.x} ${vb.y} ${vb.w} ${vb.h}" class="world-map" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid meet">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb.x} ${vb.y} ${vb.w} ${vb.h}" class="world-map" role="group" aria-hidden="true" preserveAspectRatio="xMidYMid meet">`,
     `<path class="wm-land" d="${landPath}"/>`,
     `<g class="wm-nations">`,
     ...nations.map((n) => {

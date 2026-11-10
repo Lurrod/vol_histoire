@@ -329,6 +329,26 @@ describe('isOptionalUrl', () => {
   test('refuse une URL avec espace', () => {
     expect(isOptionalUrl('http://example .com/image.jpg')).toBe(false);
   });
+
+  test('refuse un guillemet qui sortirait de l\'attribut href (new URL() l\'accepte)', () => {
+    expect(isOptionalUrl('https://ex.com/"onmouseover="alert(1)')).toBe(false);
+  });
+
+  test('refuse chevrons, accent grave, blancs et caractères de contrôle', () => {
+    expect(isOptionalUrl('https://ex.com/<script>')).toBe(false);
+    expect(isOptionalUrl('https://ex.com/a>b')).toBe(false);
+    expect(isOptionalUrl('https://ex.com/`x`')).toBe(false);
+    expect(isOptionalUrl(' https://ex.com/')).toBe(false);
+    expect(isOptionalUrl('https://ex.com/a\tb')).toBe(false);
+    expect(isOptionalUrl('https://ex.com/a\nb')).toBe(false);
+    expect(isOptionalUrl('https://ex.com/\u0000')).toBe(false);
+  });
+
+  test('accepte une apostrophe (ancre Wikipédia réelle) et les caractères encodés', () => {
+    expect(isOptionalUrl('https://en.wikipedia.org/wiki/Boeing_F-15E_Strike_Eagle#F-15I_Ra\'am')).toBe(true);
+    expect(isOptionalUrl('https://fr.wikipedia.org/wiki/Mirage_2000%22test%22?q=a&b=c')).toBe(true);
+    expect(isOptionalUrl('https://fr.wikipedia.org/wiki/Dassault_Mirage_(avion)')).toBe(true);
+  });
 });
 
 // =============================================================================
@@ -456,6 +476,16 @@ describe('isOptionalId', () => {
   test('refuse une chaîne non numérique', () => {
     expect(isOptionalId('abc')).toBe(false);
   });
+
+  test('accepte la borne haute d’une colonne INTEGER', () => {
+    expect(isOptionalId(2147483647)).toBe(true);
+    expect(isOptionalId('2147483647')).toBe(true);
+  });
+
+  test('refuse un identifiant hors plage INTEGER (500 PostgreSQL sinon)', () => {
+    expect(isOptionalId(2147483648)).toBe(false);
+    expect(isOptionalId('99999999999999999999')).toBe(false);
+  });
 });
 
 // =============================================================================
@@ -506,6 +536,23 @@ describe('validateAirplaneData', () => {
   test('accepte image_url null (optionnel)', () => {
     const data = { ...validData, image_url: null };
     expect(validateAirplaneData(data)).toEqual([]);
+  });
+
+  // Toutes les fiches du catalogue portent un chemin local (/assets/airplanes/…) :
+  // le refuser bloquait toute modification d'une fiche existante depuis l'admin.
+  test('accepte un chemin local du site pour image_url', () => {
+    const data = { ...validData, image_url: '/assets/airplanes/rafale.jpg' };
+    expect(validateAirplaneData(data)).toEqual([]);
+  });
+
+  test.each([
+    ['//evil.example/x.jpg'],
+    ['/assets/"onerror="x.jpg'],
+    ['/assets/a b.jpg'],
+    ['assets/airplanes/rafale.jpg'],
+  ])('refuse le chemin image_url douteux %s', (value) => {
+    const errors = validateAirplaneData({ ...validData, image_url: value });
+    expect(errors).toContain("L'URL de l'image doit être une URL valide (http/https, max 2048 caractères).");
   });
 
   test('retourne une erreur si country_id est décimal', () => {

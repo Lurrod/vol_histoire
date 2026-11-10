@@ -38,7 +38,7 @@
         icon: 'fa-jet-fighter',
         badge: t('onboarding.step2_badge', 'MODULE 01 — HANGAR'),
         title: t('onboarding.step2_title', 'Le Hangar'),
-        desc: t('onboarding.step2_desc', 'Plus de 50 fiches d\'avions de chasse. Filtrez par pays, génération, type. Chaque appareil a ses specs, son armement, son histoire.'),
+        desc: t('onboarding.step2_desc', 'Plus de 400 fiches d\'appareils militaires. Filtrez par pays, génération, type, conflit ou mission. Chaque appareil a ses caractéristiques, son armement, son histoire.'),
         accent: '#C8A96E',
       },
       {
@@ -52,7 +52,7 @@
         icon: 'fa-bullseye',
         badge: t('onboarding.step4_badge', 'MODULE 03 — CHRONOLOGIE'),
         title: t('onboarding.step4_title', 'La Chronologie'),
-        desc: t('onboarding.step4_desc', '75 ans d\'aviation militaire. Une frise interactive pour traverser les générations, des premiers jets à la 5e génération.'),
+        desc: t('onboarding.step4_desc', 'Plus de 80 ans d\'aviation militaire. Une frise interactive pour traverser les générations, des premiers jets à la 5e génération.'),
         accent: '#C8A96E',
       },
     ];

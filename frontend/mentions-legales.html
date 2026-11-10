@@ -8,11 +8,14 @@
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/svg+xml" sizes="16x16" href="/assets/logo/favicon-16.svg">
-  <link rel="apple-touch-icon" href="/assets/logo/icon-192.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/logo/icon-48.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#080c14">
+  <meta name="theme-color" content="#0D0D0D">
   <title data-i18n="legal.mentions_title">Mentions Légales | Vol d'Histoire</title>
   <meta name="description" content="Mentions légales du site Vol d'Histoire - Informations légales et éditoriales.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/mentions-legales">
@@ -57,37 +60,7 @@
 
 
   <!-- Header -->
-  <header>
-    <nav class="container" aria-label="Navigation principale" data-i18n-aria="nav.primary_label">
-      <div class="logo"><picture><source srcset="/assets/logo/vh-mark-primary-gold.svg" media="(max-width: 480px)"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="logo-lockup" width="152" height="40"></picture></div>
-      <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="/"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a></li>
-        <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
-        <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
-        <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-      </ul>
-      <div class="nav-actions">
-        <div class="lang-switch">
-          <button type="button" id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i><span class="lang-btn-label" data-i18n="nav.language">Langue</span></button>
-          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
-            <li><button type="button" class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
-            <li><button type="button" class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
-          </ul>
-        </div>
-        <div class="user-menu"><div class="user-toggle">
-          <a href="#" id="login-icon" class="login-icon" aria-label="Connexion" data-i18n-aria="nav.login"><i class="fas fa-user-circle" aria-hidden="true"></i></a>
-          <div id="user-info-container" class="user-dropdown hidden" role="menu">
-            <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
-            <div class="dropdown-divider"></div>
-            <a href="/settings" id="settings-icon" class="dropdown-item" role="menuitem"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
-            <div class="dropdown-divider"></div>
-            <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
-          </div>
-        </div></div>
-      </div>
-    </nav>
-  </header>
+  <!-- @include header -->
 
   <!-- Hero Section -->
   <section class="page-hero" aria-labelledby="page-hero-heading">
@@ -118,81 +91,77 @@
           <h2 data-i18n="legal.ml_sec1_title"><i class="fas fa-info-circle"></i> 1. Présentation du site</h2>
           <div class="legal-text" data-i18n-html="legal.ml_sec1_body">
             <p>Le site <strong>Vol d'Histoire</strong> est accessible à l'adresse suivante : <a href="https://vol-histoire.titouan-borde.com">https://vol-histoire.titouan-borde.com</a></p>
-            <p>Il s'agit d'un site de référence et d'exploration de l'histoire de l'aviation militaire, proposant une base de données exhaustive d'appareils militaires et leur évolution technique.</p>
+            <p>Il s'agit d'un site de référence et d'exploration de l'histoire de l'aviation militaire depuis 1945, proposant une base de données d'appareils militaires (combat, transport, surveillance, entraînement, drones) et de leur évolution technique, une chronologie interactive, des pages consacrées aux conflits et un système de favoris réservé aux utilisateurs inscrits.</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.ml_sec2_title"><i class="fas fa-building"></i> 2. Éditeur du site</h2>
           <div class="legal-text" data-i18n-html="legal.ml_sec2_body">
-            <p><strong>Raison sociale :</strong> Vol d'Histoire</p>
-            <p><strong>Forme juridique :</strong> Projet personnel</p>
-            <p><strong>Responsable :</strong> Titouan Borde</p>
-            <p><strong>Email :</strong> vdh@titouan-borde.com</p>
-            <p><strong>Directeur de publication :</strong> Titouan Borde</p>
-            <p><strong>Responsable de rédaction :</strong> Titouan Borde</p>
+            <p><strong>Raison sociale :</strong> Vol d'Histoire</p>
+            <p><strong>Forme juridique :</strong> Projet personnel non commercial</p>
+            <p><strong>Responsable :</strong> Titouan Borde</p>
+            <p><strong>Email :</strong> <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
+            <p><strong>Directeur de publication :</strong> Titouan Borde</p>
+            <p><strong>Responsable de rédaction :</strong> Titouan Borde</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.ml_sec3_title"><i class="fas fa-server"></i> 3. Hébergement</h2>
           <div class="legal-text" data-i18n-html="legal.ml_sec3_body">
-            <p><strong>Hébergeur :</strong> OVHcloud</p>
-            <p><strong>Adresse :</strong> 2 rue Kellermann, 59100 Roubaix, France</p>
-            <p><strong>Contact :</strong> <a href="https://www.ovhcloud.com/fr/contact/">https://www.ovhcloud.com/fr/contact/</a></p>
+            <p><strong>Hébergeur :</strong> OVHcloud</p>
+            <p><strong>Adresse :</strong> 2 rue Kellermann, 59100 Roubaix, France</p>
+            <p><strong>Contact :</strong> <a href="https://www.ovhcloud.com/fr/contact/" target="_blank" rel="noopener">https://www.ovhcloud.com/fr/contact/</a></p>
+            <p>Les données de l'application (base PostgreSQL, fichiers statiques, logs) sont hébergées exclusivement au sein de l'Union Européenne.</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.ml_sec4_title"><i class="fas fa-copyright"></i> 4. Propriété intellectuelle</h2>
           <div class="legal-text" data-i18n-html="legal.ml_sec4_body">
-            <h3>4.1 Contenus</h3>
-            <p>L'ensemble des contenus présents sur le site Vol d'Histoire (textes, images, graphismes, logo, icônes, sons, logiciels) est la propriété exclusive de Vol d'Histoire ou de ses partenaires, sauf mention contraire.</p>
-            <p>Toute reproduction, distribution, modification, adaptation, retransmission ou publication de ces différents éléments est strictement interdite sans l'accord exprès par écrit de Vol d'Histoire.</p>
-
-            <h3>4.2 Images et photographies</h3>
-            <p>Les photographies d'avions utilisées sur ce site proviennent de différentes sources :</p>
+            <h3>4.1 Contenus originaux</h3>
+            <p>Les contenus originaux du site Vol d'Histoire (textes, structure, design, code source, base de données) sont la propriété de Vol d'Histoire. Toute reproduction, distribution, modification, adaptation, retransmission ou publication de ces contenus est interdite sans l'accord écrit de Vol d'Histoire.</p>
+            <p>Cette réserve ne s'applique pas aux photographies, qui restent soumises à leur licence d'origine (voir 4.2).</p>
+            <h3>4.2 Photographies</h3>
+            <p>Les photographies d'appareils proviennent pour la plupart de Wikimedia Commons. Elles relèvent du domaine public, de la licence CC0 ou de licences Creative Commons (BY, BY-SA) ; Vol d'Histoire n'en est pas propriétaire et chacune reste réutilisable dans les conditions de sa licence.</p>
             <ul>
-              <li>Photographies libres de droits ou sous licence Creative Commons</li>
-              <li>Photographies propriétaires avec autorisation d'utilisation</li>
-              <li>Photographies du domaine public</li>
+            <li>L'auteur et la licence, avec un lien vers son texte, sont indiqués sous la photo, sur la fiche de l'appareil.</li>
+            <li>L'ensemble des attributions figure sur la page <a href="/credits">Crédits photo</a>.</li>
+            <li>Les images ont été modifiées : redimensionnement, conversion aux formats WebP et AVIF, vignettes.</li>
             </ul>
-            <p>Les crédits photographiques sont indiqués lorsque nécessaire. Si vous estimez qu'une image vous appartenant est utilisée sans autorisation, veuillez nous contacter à : vdh@titouan-borde.com</p>
-
+            <p>Pour une partie du catalogue d'origine, l'auteur n'est pas encore documenté. Si vous êtes l'auteur d'une image et que le crédit est absent ou inexact, ou si vous souhaitez son retrait, écrivez à <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a>.</p>
             <h3>4.3 Marques</h3>
-            <p>Les marques et logos présents sur le site sont des marques déposées. Toute reproduction totale ou partielle de ces marques sans autorisation expresse est interdite.</p>
+            <p>Les marques et logos d'avions ou de constructeurs cités sur le site sont la propriété de leurs détenteurs respectifs. Leur mention n'implique aucune affiliation ni approbation.</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.ml_sec5_title"><i class="fas fa-shield-alt"></i> 5. Protection des données personnelles</h2>
           <div class="legal-text" data-i18n-html="legal.ml_sec5_body">
-            <p>Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, de suppression et d'opposition aux données personnelles vous concernant.</p>
-            <p>Pour exercer ces droits ou pour toute question sur le traitement de vos données, vous pouvez nous contacter :</p>
-            <ul>
-              <li>Par email : vdh@titouan-borde.com</li>
-            </ul>
-            <p>Pour plus d'informations, consultez notre <a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a>.</p>
+            <p>Conformément au Règlement général sur la protection des données (RGPD) et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, de portabilité et d'opposition aux données personnelles vous concernant.</p>
+            <p>Si vous avez un compte, vous pouvez télécharger vos données, corriger votre profil et supprimer votre compte depuis vos <a href="/settings">paramètres</a>. Pour exercer vos autres droits ou pour toute question : <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a>.</p>
+            <p>Pour plus d'informations, consultez notre <a href="/politique-confidentialite">Politique de confidentialité</a>.</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.ml_sec6_title"><i class="fas fa-cookie-bite"></i> 6. Cookies</h2>
           <div class="legal-text" data-i18n-html="legal.ml_sec6_body">
-            <p>Le site Vol d'Histoire utilise des cookies pour améliorer l'expérience utilisateur et analyser le trafic.
-            Les traceurs non essentiels ne sont déposés qu'après votre consentement explicite.</p>
-            <p><strong>Sous-traitants susceptibles de recevoir des données :</strong> Google LLC
-            (Google Analytics / Tag Manager, États-Unis), Functional Software Inc. dite Sentry
-            (supervision technique, États-Unis) et Intuition Machines Inc. dite hCaptcha
-            (protection anti-robot, États-Unis) — transferts encadrés par les Clauses
-            Contractuelles Types de la Commission européenne.</p>
-            <p><strong>Types de cookies utilisés :</strong></p>
+            <p>Le site Vol d'Histoire utilise des cookies et d'autres traceurs, ainsi que des services tiers.</p>
+            <p><strong>Traceurs utilisés :</strong></p>
             <ul>
-              <li><strong>Cookies essentiels :</strong> Nécessaires au fonctionnement du site (authentification, préférences)</li>
-              <li><strong>Cookies analytiques :</strong> Pour comprendre l'utilisation du site et améliorer nos services</li>
-              <li><strong>Cookies de préférence :</strong> Pour mémoriser vos préférences (langue, filtres, etc.)</li>
+            <li><strong>Essentiels et fonctionnels</strong> (sans consentement) : session de connexion, mémorisation de votre choix sur les cookies, langue, affichage du hangar, comparateur, filtres en cours.</li>
+            <li><strong>Mesure d'audience</strong> (avec votre consentement) : Google Analytics, chargé via Google Tag Manager.</li>
             </ul>
-            <p>Vous pouvez gérer vos préférences de cookies à tout moment via les paramètres de votre navigateur ou notre interface de gestion des cookies.</p>
+            <p><strong>Services tiers intégrés :</strong></p>
+            <ul>
+            <li><strong>Google Analytics / Google Tag Manager</strong> (Google) — mesure d'audience, uniquement si vous l'acceptez</li>
+            <li><strong>Sentry</strong> (Functional Software, Inc.) — suivi des erreurs techniques</li>
+            <li><strong>hCaptcha</strong> (Intuition Machines, Inc.) — protection anti-robot des formulaires d'inscription, de mot de passe oublié et de contact</li>
+            <li><strong>OVHcloud</strong> — hébergement et envoi des emails</li>
+            </ul>
+            <p>Le détail de chaque traceur et de sa durée figure dans la <a href="/politique-confidentialite">Politique de confidentialité</a> (section 6). Vous pouvez modifier votre choix à tout moment via le lien « Cookies » en bas de page.</p>
           </div>
         </div>
 
@@ -200,14 +169,12 @@
           <h2 data-i18n="legal.ml_sec7_title"><i class="fas fa-user-shield"></i> 7. Responsabilité</h2>
           <div class="legal-text" data-i18n-html="legal.ml_sec7_body">
             <h3>7.1 Contenu du site</h3>
-            <p>Vol d'Histoire s'efforce de fournir des informations aussi précises que possible. Toutefois, nous ne pouvons garantir l'exactitude, la complétude et l'actualité de l'ensemble des informations diffusées sur le site.</p>
-            <p>En conséquence, l'utilisateur reconnaît utiliser ces informations sous sa responsabilité exclusive.</p>
-
+            <p>Vol d'Histoire s'efforce de fournir des informations aussi précises que possible. Toutefois, nous ne pouvons garantir l'exactitude, la complétude et l'actualité de l'ensemble des informations diffusées.</p>
+            <p>L'utilisateur reconnaît utiliser ces informations sous sa responsabilité exclusive. Ce site est à vocation éducative et historique ; il ne remplace pas une source de référence militaire ou technique officielle.</p>
             <h3>7.2 Liens hypertextes</h3>
-            <p>Le site Vol d'Histoire peut contenir des liens vers d'autres sites. Nous ne pouvons être tenus responsables du contenu de ces sites externes.</p>
-
+            <p>Le site peut contenir des liens vers d'autres sites. Nous ne pouvons être tenus responsables du contenu de ces sites externes.</p>
             <h3>7.3 Indisponibilité du site</h3>
-            <p>Vol d'Histoire ne peut être tenu responsable en cas d'indisponibilité temporaire ou totale du site, que ce soit pour des raisons de maintenance, de mise à jour ou de problèmes techniques.</p>
+            <p>Vol d'Histoire ne peut être tenu responsable en cas d'indisponibilité temporaire ou totale du site, pour des raisons de maintenance, de mise à jour, de cas de force majeure ou de problèmes techniques.</p>
           </div>
         </div>
 
@@ -215,39 +182,29 @@
           <h2 data-i18n="legal.ml_sec8_title"><i class="fas fa-gavel"></i> 8. Droit applicable et juridiction</h2>
           <div class="legal-text" data-i18n-html="legal.ml_sec8_body">
             <p>Les présentes mentions légales sont régies par le droit français.</p>
-            <p>En cas de litige et à défaut d'accord amiable, le litige sera porté devant les tribunaux français conformément aux règles de compétence en vigueur.</p>
+            <p>En cas de litige et à défaut d'accord amiable, le litige sera porté devant les tribunaux français compétents.</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.ml_sec9_title"><i class="fas fa-envelope"></i> 9. Contact</h2>
           <div class="legal-text" data-i18n-html="legal.ml_sec9_body">
-            <p>Pour toute question concernant les mentions légales, vous pouvez nous contacter :</p>
+            <p>Pour toute question concernant les mentions légales :</p>
             <div class="contact-info">
-              <p><i class="fas fa-envelope"></i> Email : <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
+            <p><strong>Email :</strong> <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
             </div>
           </div>
         </div>
 
         <div class="legal-footer">
-          <p data-i18n="legal.last_update"><i class="fas fa-calendar"></i> Dernière mise à jour : avril 2026</p>
+          <p data-i18n="legal.last_update"><i class="fas fa-calendar"></i> Dernière mise à jour : 10 novembre 2026</p>
         </div>
       </div>
     </div>
   </main>
 
   <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section"><div class="footer-logo"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="footer-lockup" width="190" height="50"></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'appareils, du chasseur au transporteur.</p></div>
-        <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/conflits" data-i18n="nav.conflicts">Conflits</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="/contact" data-i18n="footer.contact">Contact</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" class="cookie-settings-link" data-i18n="footer.cookies">Cookies</a></li></ul></div>
-      </div>
-      <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2026 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
-    </div>
-  </footer>
+  <!-- @include footer -->
   <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>

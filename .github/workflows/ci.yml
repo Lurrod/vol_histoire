@@ -6,24 +6,94 @@ on:
   pull_request:
     branches: [main]
 
+# Moindre privilège : aucun job n'écrit dans le dépôt.
+permissions:
+  contents: read
+
+# Actions tierces épinglées par SHA de commit complet (le tag est en
+# commentaire) : un tag peut être redéplacé, un SHA non (DEVOPS-001).
+# Dependabot (.github/dependabot.yml, écosystème github-actions) met à jour
+# le SHA et le commentaire ensemble.
+#
+# Version de Node : .nvmrc à la racine (24) = cible de la CI. Le serveur de
+# production tourne encore en Node 20 (partagé avec d'autres applications) :
+# « engines » accepte donc 20 à 24 et le job test-prod-runtime teste le
+# backend sous Node 20 tant que la montée n'est pas faite (DEVOPS-002).
+
 jobs:
+  # ═══════════════════════════════════════════════════════════
+  # QUALITÉ — ESLint, html-validate, bundles versionnés à jour
+  # ═══════════════════════════════════════════════════════════
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            frontend/package-lock.json
+
+      - name: Install root dependencies (eslint, esbuild)
+        run: npm ci
+
+      # Le build régénère js/vendor/ (DOMPurify, Sentry) depuis frontend/node_modules.
+      - name: Install frontend dependencies
+        run: cd frontend && npm ci
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: html-validate
+        run: npx --yes html-validate@11.21.0 "frontend/*.html"
+
+      # Les bundles sont versionnés et déployés tels quels (le serveur ne lance
+      # pas de build) : un oubli de rebuild partirait en production. Le build
+      # échoue aussi de lui-même sur un « + » compacté dans un calc() et sur
+      # « X:pseudo » (contrôles de build-css.js). Build déterministe, vérifié
+      # deux fois de suite et à l'identique depuis des sources LF ou CRLF.
+      - name: Build (bundles JS/CSS, app-version.js, airplane-fields.js, vendor)
+        run: npm run build
+
+      - name: Generated files match the sources
+        run: |
+          GENERATED=(frontend/js/dist frontend/js/vendor frontend/css frontend/js/app-version.js frontend/js/shared/airplane-fields.js)
+          CHANGES=$(git status --porcelain -- "${GENERATED[@]}")
+          if [ -n "$CHANGES" ]; then
+            echo "::error::Fichiers générés périmés : lancer « npm run build » et committer le résultat."
+            echo "$CHANGES"
+            git --no-pager diff --stat -- "${GENERATED[@]}"
+            exit 1
+          fi
+          echo "✓ Fichiers générés à jour"
+
   # ═══════════════════════════════════════════════════════════
   # CI — Tests + audit sécurité
   # ═══════════════════════════════════════════════════════════
   test:
     runs-on: ubuntu-latest
 
+    # Base d'intégration : les suites de backend/__tests__/integration/ y
+    # exécutent réellement le SQL des routes. Chaque suite recrée son propre
+    # schéma (it_<suite>) et y charge db.sql, un jeu de fiches,
+    # zz_backfill_relations.sql et la frise : aucune étape de chargement
+    # séparée n'est nécessaire, et la base ne garde rien d'une exécution à
+    # l'autre. Le nom doit finir par « _it » (garde-fou de it-db.js).
     services:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: vol_histoire_test
+          POSTGRES_DB: vol_histoire_it
           POSTGRES_USER: vol_user
           POSTGRES_PASSWORD: testpassword
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U vol_user -d vol_histoire_test"
+          --health-cmd="pg_isready -U vol_user -d vol_histoire_it"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
@@ -31,7 +101,7 @@ jobs:
     env:
       DB_USER: vol_user
       DB_HOST: localhost
-      DB_NAME: vol_histoire_test
+      DB_NAME: vol_histoire_it
       DB_PASSWORD: testpassword
       DB_PORT: 5432
       DB_SSL: false
@@ -39,11 +109,79 @@ jobs:
       REFRESH_SECRET: ci-test-refresh-secret-key-minimum-32-characters-long
       NODE_ENV: test
       PORT: 3000
+      IT_DATABASE_URL: postgres://vol_user:testpassword@localhost:5432/vol_histoire_it
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install backend dependencies
+        run: cd backend && npm ci
+
+      # Dépendances de production : bloquant dès « high » (DEVOPS-003).
+      - name: Security audit — backend production (high)
+        run: cd backend && npm audit --omit=dev --audit-level=high
+
+      # Arbre complet, devDependencies comprises : seuil « critical » maintenu
+      # (l'avis modéré autocannon → hyperid → uuid est un compromis accepté).
+      - name: Security audit — backend full tree (critical)
+        run: cd backend && npm audit --audit-level=critical
+
+      - name: Check integration database
+        run: PGPASSWORD=testpassword psql -h localhost -U vol_user -d vol_histoire_it -c "SELECT version();"
+
+      # Tests unitaires + intégration SQL (activée par IT_DATABASE_URL)
+      - name: Run backend tests with coverage
+        run: cd backend && npm run test:coverage
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm ci
+
+      # DOMPurify et @sentry/browser sont des devDependencies du frontend, mais
+      # ils sont livrés aux navigateurs (js/vendor/) : arbre complet, seuil high.
+      - name: Security audit — frontend (high)
+        run: cd frontend && npm audit --audit-level=high
+
+      # Seuils de couverture dans frontend/jest.config.json (95/85/95/95 global,
+      # plancher de 80 % par fichier) : la commande échoue s'ils ne sont pas tenus.
+      - name: Run frontend tests with coverage
+        run: cd frontend && npx jest --config jest.config.json --coverage
+
+      - name: Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: coverage-report
+          path: |
+            backend/coverage/
+            frontend/coverage/
+          retention-days: 7
+
+  # ═══════════════════════════════════════════════════════════
+  # Runtime de production — tests backend sous Node 20
+  # ═══════════════════════════════════════════════════════════
+  # Le serveur partagé tourne encore en Node 20 (trois autres applications y
+  # dépendent) alors que .nvmrc vise 24 : tant que la montée n'est pas faite,
+  # le code livré est aussi testé sur la version qui l'exécute réellement.
+  # Base simulée uniquement (sans IT_DATABASE_URL, l'intégration est sautée).
+  # À supprimer quand le serveur sera passé en Node 24.
+  test-prod-runtime:
+    runs-on: ubuntu-latest
+    env:
+      JWT_SECRET: ci-test-jwt-secret-key-minimum-32-characters-long
+      REFRESH_SECRET: ci-test-refresh-secret-key-minimum-32-characters-long
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 20
           cache: npm
@@ -52,25 +190,8 @@ jobs:
       - name: Install backend dependencies
         run: cd backend && npm ci
 
-      - name: Security audit
-        run: cd backend && npm audit --audit-level=critical
-
-      - name: Run backend tests with coverage
-        run: cd backend && npm run test:coverage
-
-      - name: Install frontend dependencies
-        run: cd frontend && npm ci
-
-      - name: Run frontend tests
-        run: cd frontend && npm test
-
-      - name: Upload coverage report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: backend/coverage/
-          retention-days: 7
+      - name: Run backend tests (Node 20)
+        run: cd backend && npx jest --config jest.config.json --testPathIgnorePatterns=load
 
   # ═══════════════════════════════════════════════════════════
   # E2E — Tests Playwright
@@ -110,11 +231,11 @@ jobs:
       ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8080
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: |
             backend/package-lock.json
@@ -148,7 +269,7 @@ jobs:
           cd backend && node server.js &
           echo $! > /tmp/backend.pid
           # Attendre que /api/health réponde 200
-          for i in 1 2 3 4 5 6 7 8 9 10; do
+          for _ in 1 2 3 4 5 6 7 8 9 10; do
             if curl -sf http://localhost:3000/api/health > /dev/null; then
               echo "Backend prêt"
               exit 0
@@ -167,12 +288,12 @@ jobs:
         if: always()
         run: |
           if [ -f /tmp/backend.pid ]; then
-            kill $(cat /tmp/backend.pid) 2>/dev/null || true
+            kill "$(cat /tmp/backend.pid)" 2>/dev/null || true
           fi
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report
           path: |
@@ -193,11 +314,11 @@ jobs:
       REFRESH_SECRET: ci-test-refresh-secret-key-minimum-32-characters-long
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: backend/package-lock.json
 
@@ -210,76 +331,156 @@ jobs:
   # ═══════════════════════════════════════════════════════════
   # CD — Déploiement sur Kimsufi (uniquement push sur main)
   # ═══════════════════════════════════════════════════════════
+  # Le serveur héberge sept applications pm2 : seule « vol-histoire » est
+  # redémarrée, jamais « pm2 restart all ». Les migrations SQL restent
+  # manuelles (en postgres, par l'entrée standard, après pg_dump) et ne sont
+  # PAS annulées par le retour arrière automatique : voir README, Déploiement.
   deploy:
-    needs: [test, e2e, load]
+    needs: [quality, test, test-prod-runtime, e2e, load]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
+    # Un seul déploiement à la fois ; celui en cours n'est jamais annulé
+    # (un git reset + npm ci interrompu laisserait le serveur à moitié à jour).
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+
+    environment:
+      name: production
+      url: https://vol-histoire.titouan-borde.com
+
+    env:
+      SITE_URL: https://vol-histoire.titouan-borde.com
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # On déploie exactement le commit testé (github.sha), pas « origin/main ».
+      # Si main a déjà avancé, ce run est périmé : le run du commit plus récent
+      # le déploiera après ses propres tests. Sans ce garde, un run lent
+      # pourrait réinstaller un commit plus ancien par-dessus un plus récent.
+      - name: Check that this commit is still the tip of main
+        id: tip
+        run: |
+          TIP=$(git ls-remote origin refs/heads/main | cut -f1)
+          echo "Tête de main : $TIP — commit de ce run : $GITHUB_SHA"
+          if [ "$TIP" = "$GITHUB_SHA" ]; then
+            echo "current=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::main a avancé ($TIP) : déploiement laissé au run de ce commit."
+            echo "current=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Expected version
+        id: expected
+        if: steps.tip.outputs.current == 'true'
+        run: echo "version=$(node -p "require('./backend/package.json').version")" >> "$GITHUB_OUTPUT"
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@v1
+        id: deploy
+        if: steps.tip.outputs.current == 'true'
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Empreinte SHA256 de la clé d'hôte (ssh-keyscan … | ssh-keygen -lf -) :
+          # tant que le secret est vide, la clé d'hôte n'est pas vérifiée.
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
           script: |
-            set -e
-            cd /var/www/vol-histoire
+            set -eu
+            APP_DIR=/var/www/vol-histoire
+            STATE_DIR="$HOME/.vol-histoire-deploy"
+            DEPLOY_SHA='${{ github.sha }}'
+            mkdir -p "$STATE_DIR"
+            cd "$APP_DIR"
 
-            # Sauvegarde + reset propre pour éviter "would be overwritten by merge"
-            # Si des modifs locales existent (édition à la main), on les stash
-            # avec un horodatage pour pouvoir les récupérer ensuite via git stash list.
+            # Commit en ligne AVANT tout changement : c'est la cible du retour
+            # arrière (automatique ci-dessous, ou manuel : scripts/rollback.sh).
+            # Hors du dépôt, pour survivre au reset et au stash.
+            PREV_SHA=$(git rev-parse HEAD)
+            printf '%s\n' "$PREV_SHA" > "$STATE_DIR/previous_sha"
+            printf '%s\n' "$DEPLOY_SHA" > "$STATE_DIR/deploying_sha"
+            printf '%s deploy %s -> %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$PREV_SHA" "$DEPLOY_SHA" >> "$STATE_DIR/history.log"
+
+            # Modifications manuelles éventuelles : mises de côté, horodatées
+            # (git stash list). app-version.js n'est plus réécrit au démarrage,
+            # ce cas doit rester exceptionnel.
             if ! git diff --quiet || ! git diff --cached --quiet; then
-              echo "⚠️  Modifs locales détectées, stash automatique"
+              echo "::warning::Modifications locales sur le serveur, mises de côté (git stash list)"
               git stash push -u -m "auto-stash deploy $(date +%Y-%m-%d_%H:%M:%S)"
             fi
 
-            # Pull les derniers changements (fast-forward strict)
             git fetch origin main
-            git reset --hard origin/main
+            git reset --hard "$DEPLOY_SHA"
+            test "$(git rev-parse HEAD)" = "$DEPLOY_SHA"
+            echo "Commit déployé : $DEPLOY_SHA (précédent : $PREV_SHA)"
 
-            # Afficher la version déployée pour debug
-            echo "Commit déployé : $(git rev-parse --short HEAD)"
+            # Version de Node du serveur comparée à .nvmrc (avertissement seul).
+            WANT_NODE=$(cat .nvmrc)
+            HAVE_NODE=$(node -p 'process.versions.node.split(".")[0]')
+            if [ "$HAVE_NODE" != "$WANT_NODE" ]; then
+              echo "::warning::Node $HAVE_NODE sur le serveur, $WANT_NODE attendu (.nvmrc)"
+            fi
 
-            # Backend : installer les dépendances et redémarrer
             cd backend
             npm ci --omit=dev
             pm2 restart vol-histoire --update-env || pm2 start server.js --name vol-histoire
-            cd ..
-
-            echo "Deploiement termine — version : $(grep '\"version\"' backend/package.json | head -1)"
+            echo "Déploiement terminé — version $(node -p "require('./package.json').version")"
 
       # ─── Smoke tests post-deploy ──────────────────────────────
-      # Vérifie 3 endpoints critiques après le PM2 restart :
-      #   1. /api/health → backend + DB joignable
-      #   2. /          → Apache + frontend statique
-      #   3. /api/airplanes → API REST + données seedées
-      # Retry 3× (espacés 5s) sur chaque endpoint.
-      - name: Smoke test — backend health (DB joignable)
+      #   1. /api/health → backend + DB joignable, processus redémarré
+      #   2. /api/config → version servie = version du commit déployé
+      #   3. /             → Apache + pages
+      #   4. /api/airplanes → API REST + données
+      # Un échec déclenche le retour arrière automatique.
+      - name: Smoke test — backend health (DB joignable, processus récent)
+        if: steps.deploy.outcome == 'success'
         run: |
           set -e
-          URL="https://vol-histoire.titouan-borde.com/api/health"
+          URL="$SITE_URL/api/health?_=$GITHUB_SHA"
           echo "GET $URL"
           sleep 5
-          for i in 1 2 3; do
-            HTTP_CODE=$(curl -s -o /tmp/health.json -w "%{http_code}" "$URL" || echo "000")
+          for i in 1 2 3 4 5 6; do
+            HTTP_CODE=$(curl -s -H 'Cache-Control: no-cache' -o /tmp/health.json -w "%{http_code}" "$URL" || echo "000")
             BODY=$(cat /tmp/health.json 2>/dev/null || echo "")
             echo "Tentative $i — HTTP $HTTP_CODE — $BODY"
-            if [ "$HTTP_CODE" = "200" ] && echo "$BODY" | grep -q '"status":"ok"'; then
-              echo "✓ Backend health OK"
+            if [ "$HTTP_CODE" = "200" ] && [ "$(jq -r '.status' /tmp/health.json 2>/dev/null)" = "ok" ]; then
+              # Un processus démarré il y a plus de 10 min n'est pas celui que
+              # ce déploiement vient de relancer : le restart n'a pas eu lieu.
+              UPTIME=$(jq -r '.uptime | floor' /tmp/health.json)
+              if [ "$UPTIME" -gt 600 ]; then
+                echo "✗ Processus en ligne depuis ${UPTIME}s : pm2 n'a pas redémarré vol-histoire"
+                exit 1
+              fi
+              echo "✓ Backend health OK (uptime ${UPTIME}s)"
               exit 0
             fi
-            [ $i -lt 3 ] && sleep 5
+            [ $i -lt 6 ] && sleep 5
           done
-          echo "✗ Backend health KO après 3 tentatives"
+          echo "✗ Backend health KO après 6 tentatives"
           exit 1
 
-      - name: Smoke test — page d'accueil
+      - name: Smoke test — version déployée
+        if: steps.deploy.outcome == 'success'
+        env:
+          EXPECTED_VERSION: ${{ steps.expected.outputs.version }}
         run: |
           set -e
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://vol-histoire.titouan-borde.com/")
+          SERVED=$(curl -sf -H 'Cache-Control: no-cache' "$SITE_URL/api/config?_=$GITHUB_SHA" | jq -r '.version')
+          echo "Version servie : $SERVED — attendue : $EXPECTED_VERSION"
+          if [ "$SERVED" != "$EXPECTED_VERSION" ]; then
+            echo "✗ La version servie ne correspond pas au commit déployé"
+            exit 1
+          fi
+          echo "✓ Version déployée OK"
+
+      - name: Smoke test — page d'accueil
+        if: steps.deploy.outcome == 'success'
+        run: |
+          set -e
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$SITE_URL/")
           echo "GET / → HTTP $HTTP_CODE"
           if [ "$HTTP_CODE" != "200" ]; then
             echo "✗ Page d'accueil KO"
@@ -288,9 +489,10 @@ jobs:
           echo "✓ Page d'accueil OK"
 
       - name: Smoke test — API airplanes
+        if: steps.deploy.outcome == 'success'
         run: |
           set -e
-          HTTP_CODE=$(curl -s -o /tmp/airplanes.json -w "%{http_code}" "https://vol-histoire.titouan-borde.com/api/airplanes?limit=1")
+          HTTP_CODE=$(curl -s -o /tmp/airplanes.json -w "%{http_code}" "$SITE_URL/api/airplanes?limit=1")
           echo "GET /api/airplanes → HTTP $HTTP_CODE"
           if [ "$HTTP_CODE" != "200" ]; then
             echo "✗ API airplanes KO"
@@ -298,3 +500,53 @@ jobs:
             exit 1
           fi
           echo "✓ API airplanes OK"
+
+      # ─── Retour arrière automatique ───────────────────────────
+      # Si le déploiement ou un smoke test échoue, on réinstalle le commit qui
+      # était en ligne avant ce run (noté sur le serveur par l'étape Deploy).
+      # Le job reste en échec pour signaler l'incident. Le schéma de base
+      # n'est pas touché : une migration déjà jouée reste en place.
+      - name: Rollback to the previous commit
+        id: rollback
+        if: failure() && steps.deploy.outcome != 'skipped'
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
+          script: |
+            set -eu
+            STATE_DIR="$HOME/.vol-histoire-deploy"
+            DEPLOY_SHA='${{ github.sha }}'
+            cd /var/www/vol-histoire
+
+            # L'état noté doit être celui de CE run : sinon on risquerait de
+            # revenir à un commit sans rapport.
+            if [ "$(cat "$STATE_DIR/deploying_sha" 2>/dev/null || true)" != "$DEPLOY_SHA" ]; then
+              echo "::error::État de déploiement absent ou d'un autre run : retour arrière abandonné, intervention manuelle requise."
+              exit 1
+            fi
+            PREV_SHA=$(cat "$STATE_DIR/previous_sha")
+            echo "Retour arrière : $(git rev-parse HEAD) -> $PREV_SHA"
+            git reset --hard "$PREV_SHA"
+            cd backend
+            npm ci --omit=dev
+            pm2 restart vol-histoire --update-env || pm2 start server.js --name vol-histoire
+            printf '%s rollback %s -> %s (auto)\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$DEPLOY_SHA" "$PREV_SHA" >> "$STATE_DIR/history.log"
+            rm -f "$STATE_DIR/deploying_sha"
+            echo "::warning::Production revenue à $PREV_SHA"
+
+      - name: Smoke test — after rollback
+        if: failure() && steps.rollback.outcome == 'success'
+        run: |
+          sleep 5
+          for _ in 1 2 3 4 5 6; do
+            if curl -sf "$SITE_URL/api/health?_=rollback-$GITHUB_SHA" | jq -e '.status == "ok"' > /dev/null; then
+              echo "✓ Version précédente en ligne"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::Le site ne répond pas après le retour arrière : intervention manuelle requise."
+          exit 1

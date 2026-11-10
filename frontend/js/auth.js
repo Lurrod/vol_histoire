@@ -241,7 +241,8 @@ const auth = (() => {
 
   /**
    * Injecte automatiquement `?lang=fr|en` sur toutes les URLs /api/*
-   * en lisant la langue actuelle depuis localStorage (vol-histoire-lang).
+   * en lisant la langue actuelle depuis localStorage (vol-histoire-lang),
+   * à défaut i18n.currentLang, à défaut 'fr'.
    * Les URLs absolues et non-/api sont laissées intactes.
    */
   function withLangParam(url) {
@@ -251,10 +252,16 @@ const auth = (() => {
                   url.includes('://' + (typeof location !== 'undefined' ? location.host : '') + '/api/');
     if (!isApi) return url;
 
-    let lang = 'fr';
+    let lang = null;
     try {
-      lang = localStorage.getItem('vol-histoire-lang') || 'fr';
+      lang = localStorage.getItem('vol-histoire-lang');
     } catch { /* localStorage indisponible */ }
+    // Pas de choix mémorisé (première visite) : la langue détectée par
+    // i18n.js, sinon le français.
+    if (!lang) {
+      const i18nRef = typeof window !== 'undefined' ? window.i18n : null;
+      lang = (i18nRef && i18nRef.currentLang) || 'fr';
+    }
 
     const separator = url.includes('?') ? '&' : '?';
     // Ne pas doubler si lang= déjà présent

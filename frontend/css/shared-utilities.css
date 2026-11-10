@@ -8,12 +8,7 @@
     display: none !important;
   }
 
-  /* GTM noscript iframe (remplace style="display:none;visibility:hidden") */
-  .gtm-noscript {
-    display: none !important;
-    visibility: hidden;
-  }
-
+  /* GTM noscript iframe (remplace style="display:none;
   /* Puce inline (icône ronde) — ex. status alert 404 */
   .u-inline-dot {
     font-size: 0.5rem;
@@ -53,12 +48,30 @@
   /* Modale édition utilisateur (settings) */
   .edit-modal-container { max-width: 460px; width: 92%; }
   .edit-modal-icon-champagne {
-    background: rgba(200, 169, 110, 0.08);
-    border-color: rgba(200, 169, 110, 0.2);
+    background: var(--gold-a08);
+    border-color: var(--gold-a20);
   }
   .edit-modal-icon-champagne i, .edit-modal-icon-champagne .icon { color: var(--hud-cyan); }
   .edit-modal-body { width: 100%; margin: 1.25rem 0 1.5rem; text-align: left; }
   .edit-modal-form-group { margin-bottom: 1rem; }
+
+  /* ============================================================
+     FOCUS CLAVIER — champs de saisie
+     ------------------------------------------------------------
+     Les feuilles de page posent `outline: none` sur :focus et le remplacent
+     par une bordure + une ombre trop discrètes pour le critère WCAG 1.4.11
+     (3:1). Cet anneau franc vivait dans @layer components, où il perdait
+     contre les pages hors couche : il n'a jamais été appliqué. En
+     « utilities », il passe devant @layer page. Cases à cocher, boutons
+     radio et curseurs gardent l'indicateur de leur page (souvent posé sur
+     le libellé voisin, l'input étant transparent).
+     ============================================================ */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--hud-cyan);
+    outline-offset: 2px;
+  }
 
   /* Accessibility : screen reader only */
   .sr-only {
@@ -72,20 +85,18 @@
     white-space: nowrap;
     border: 0;
   }
+}
 
-  /* Reduced motion — `!important` obligatoire : une déclaration en couche
-     (@layer) perd contre toute feuille de page hors couche ; en !important,
-     c'est l'inverse, la couche l'emporte. Sans lui, la règle n'agissait que
-     sur les pages qui avaient leur propre garde. */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-
+/* ============================================================
+   PLANCHERS PAR DÉFAUT — couche « shared »
+   ------------------------------------------------------------
+   Cibles tactiles et masquage à l'impression : ce sont des valeurs par
+   défaut que les pages relèvent (.page-details .btn passe à 48 px au
+   toucher). En « utilities », elles écraseraient ces surcharges depuis que
+   les pages sont dans @layer page ; en « shared », la page garde la main,
+   comme avant.
+   ============================================================ */
+@layer shared {
   /* Touch targets */
   @media (hover: none) and (pointer: coarse) {
     .btn          { min-height: 44px; }
@@ -104,3 +115,22 @@
   }
 }
 
+/* ============================================================
+   GARDE-FOU « MOUVEMENTS RÉDUITS »
+   ------------------------------------------------------------
+   Couche « guards », déclarée la première (voir tokens.css) : pour les
+   déclarations !important, c'est la couche la plus tôt déclarée qui gagne.
+   Ce garde-fou l'emporte donc sur toutes les autres règles importantes,
+   feuilles de page comprises. Jusqu'en v4.13.1 il vivait dans « utilities »
+   et ne tenait que parce que les pages étaient hors couche.
+   ============================================================ */
+@layer guards {
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

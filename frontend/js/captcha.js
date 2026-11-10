@@ -38,7 +38,14 @@
       s.async = true;
       s.defer = true;
       s.onload = () => { scriptLoaded = true; resolve(); };
-      s.onerror = () => reject(new Error('hCaptcha script load error'));
+      // Échec (coupure passagère, bloqueur) : on oublie la promesse rejetée et
+      // on retire la balise, pour qu'un prochain envoi retente le chargement
+      // au lieu d'échouer jusqu'au rechargement de la page.
+      s.onerror = () => {
+        scriptLoading = null;
+        s.remove();
+        reject(new Error('hCaptcha script load error'));
+      };
       document.head.appendChild(s);
     });
     return scriptLoading;

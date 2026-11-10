@@ -1,4 +1,6 @@
-/* Édition + suppression fiche (admin/editor). */
+/* Édition + suppression fiche (admin/editor).
+ * Le formulaire lui-même (champs, listes, remplissage, lecture) est
+ * VH.shared.airplaneForm, commun avec la création au hangar (ARCH-007). */
 (function () {
   window.VH = window.VH || {};
   window.VH.details = window.VH.details || {};
@@ -8,67 +10,75 @@
     const deleteBtn = document.getElementById('delete-btn');
     const editModal = document.getElementById('edit-modal');
     const editForm = document.getElementById('edit-form');
+    const fieldsRoot = document.getElementById('edit-form-fields');
     const cancelEditBtn = document.getElementById('cancel-edit-btn');
     const modalClose = document.querySelector('.modal-close');
     let _focusTrap = null;
     let _previousFocus = null;
+    // Construit à la première ouverture : i18n est alors chargé.
+    let _form = null;
 
-    // Liste des couples (id dom, prop du modèle) pour éviter la duplication
-    // texte/nombre : map des champs simples (value attr). Les dates et selects
-    // sont gérés séparément.
-    const FIELD_MAP = [
-      // base
-      ['edit-name', 'name'], ['edit-complete-name', 'complete_name'],
-      ['edit-little-description', 'little_description'], ['edit-image-url', 'image_url'],
-      ['edit-description', 'description'], ['edit-status', 'status'],
-      ['edit-max-speed', 'max_speed'], ['edit-max-range', 'max_range'],
-      // strate 1
-      ['edit-length', 'length'], ['edit-wingspan', 'wingspan'], ['edit-height', 'height'],
-      ['edit-wing-area', 'wing_area'], ['edit-empty-weight', 'empty_weight'], ['edit-mtow', 'mtow'],
-      ['edit-service-ceiling', 'service_ceiling'], ['edit-climb-rate', 'climb_rate'],
-      ['edit-g-limit-pos', 'g_limit_pos'], ['edit-g-limit-neg', 'g_limit_neg'],
-      ['edit-combat-radius', 'combat_radius'], ['edit-crew', 'crew'],
-      // strate 2
-      ['edit-engine-name', 'engine_name'], ['edit-engine-count', 'engine_count'],
-      ['edit-engine-type', 'engine_type'], ['edit-thrust-dry', 'thrust_dry'], ['edit-thrust-wet', 'thrust_wet'],
-      // strate 3
-      ['edit-production-start', 'production_start'], ['edit-production-end', 'production_end'],
-      ['edit-units-built', 'units_built'], ['edit-unit-cost-usd', 'unit_cost_usd'],
-      ['edit-unit-cost-year', 'unit_cost_year'], ['edit-operators-count', 'operators_count'],
-      ['edit-variants', 'variants'],
-      // strate 4
-      ['edit-nickname', 'nickname'],
-      ['edit-image-credit', 'image_credit'], ['edit-image-licence', 'image_licence'],
-      // strate 6
-      ['edit-wikipedia-fr', 'wikipedia_fr'], ['edit-wikipedia-en', 'wikipedia_en'],
-      ['edit-youtube-showcase', 'youtube_showcase'], ['edit-manufacturer-page', 'manufacturer_page'],
-    ];
+    const submitBtn = editForm?.querySelector('[type="submit"]') || document.querySelector('button[form="edit-form"]');
+    // Vrai seulement quand la fiche ET toutes les listes sont chargées : tant
+    // qu'une liste est incomplète, enregistrer réécrirait ses clés à NULL.
+    let _formReady = false;
+    // Une réouverture rapide ne doit pas être remplie par un chargement ancien.
+    let _openTicket = 0;
+
+    function setFormReady(ready) {
+      _formReady = ready;
+      if (submitBtn) submitBtn.disabled = !ready;
+    }
+
+    function ensureForm() {
+      if (!_form) _form = VH.shared.airplaneForm.mount(fieldsRoot, { prefix: 'edit' });
+      return _form;
+    }
+
+    /* Fiche dans une langue donnée. Le formulaire se remplit avec la fiche
+     * française : l'API traduit `name`, `description`, `status`… quand
+     * l'interface est en anglais, et renvoyer ces valeurs écrirait de
+     * l'anglais (ou « Translation needed ») dans les colonnes françaises.
+     * La fiche anglaise fournit les colonnes `_en` (engine_type_en,
+     * variants_en), que la réponse française ne contient pas. */
+    async function loadRecord(lang) {
+      if ((i18n.currentLang || 'fr') === lang) return state.aircraftData;
+      const res = await auth.fetchWithTimeout(`/api/airplanes/${state.aircraftId}?lang=${lang}`);
+      if (!res.ok) throw new Error(`Chargement de la fiche impossible (HTTP ${res.status})`);
+      return res.json();
+    }
+
+    async function prepareForm(form, ticket) {
+      try {
+        const [record, recordEn, referentials, airplanes] = await Promise.all([
+          loadRecord('fr'),
+          loadRecord('en'),
+          VH.shared.airplaneForm.loadReferentials(),
+          VH.shared.airplaneOptions.fetchAll(),
+        ]);
+        if (ticket !== _openTicket) return;
+        form.setReferentials(referentials);
+        // Prédécesseur / successeur / rival : tout le catalogue, sauf l'avion courant.
+        form.setAirplanes(airplanes, state.aircraftId);
+        form.fill(record, recordEn);
+        setFormReady(true);
+      } catch {
+        if (ticket !== _openTicket) return;
+        setFormReady(false);
+        showToast(i18n.t('common.loading_error'), 'error');
+      }
+    }
+
+    // Fermeture animée en cours : annulée si la modale est rouverte avant la
+    // fin, sinon sa minuterie de repli la refermerait aussitôt.
+    let _cancelPendingClose = null;
 
     function openEditModal() {
       if (!state.aircraftData) return;
-      const a = state.aircraftData;
-
-      // Champs simples via FIELD_MAP
-      for (const [elId, key] of FIELD_MAP) {
-        const el = document.getElementById(elId);
-        if (el) el.value = a[key] ?? '';
-      }
-      // Dates (ISO → YYYY-MM-DD)
-      document.getElementById('edit-date-concept').value = a.date_concept?.split('T')[0] || '';
-      document.getElementById('edit-date-first-fly').value = a.date_first_fly?.split('T')[0] || '';
-      document.getElementById('edit-date-operationel').value = a.date_operationel?.split('T')[0] || '';
-      // Select enum
-      document.getElementById('edit-stealth-level').value = a.stealth_level || '';
-
-      loadFormSelects().then(() => {
-        document.getElementById('edit-country-id').value = a.country_id || '';
-        document.getElementById('edit-manufacturer-id').value = a.id_manufacturer || '';
-        document.getElementById('edit-generation-id').value = a.id_generation || '';
-        document.getElementById('edit-type').value = a.type || '';
-        document.getElementById('edit-predecessor-id').value = a.predecessor_id || '';
-        document.getElementById('edit-successor-id').value = a.successor_id || '';
-        document.getElementById('edit-rival-id').value = a.rival_id || '';
-      });
+      _cancelPendingClose?.();
+      const form = ensureForm();
+      setFormReady(false);
+      prepareForm(form, ++_openTicket);
 
       _previousFocus = document.activeElement;
       editModal.classList.add('show');
@@ -91,52 +101,30 @@
       // animationend ne se déclenche pas).
       editModal.classList.add('is-closing');
       let done = false;
+      let timer = null;
       const finish = () => {
         if (done) return;
         done = true;
+        _cancelPendingClose = null;
+        clearTimeout(timer);
+        editModal.removeEventListener('animationend', finish);
+        // Modale retirée du DOM entre-temps : la page n'est plus la sienne.
+        if (!editModal.isConnected) return;
         editModal.classList.remove('show', 'is-closing');
         document.body.style.overflow = '';
       };
       editModal.addEventListener('animationend', finish, { once: true });
-      setTimeout(finish, 320);
+      timer = setTimeout(finish, 320);
+      _cancelPendingClose = () => {
+        done = true;
+        _cancelPendingClose = null;
+        clearTimeout(timer);
+        editModal.removeEventListener('animationend', finish);
+        editModal.classList.remove('is-closing');
+      };
       _previousFocus?.focus();
     }
     VH.details.admin.closeEditModal = closeEditModal;
-
-    async function loadFormSelects() {
-      try {
-        const [referentialsRes, airplanesRes] = await Promise.all([
-          auth.fetchWithTimeout('/api/referentials'),
-          auth.fetchWithTimeout('/api/airplanes?limit=500'),
-        ]);
-        if (!referentialsRes.ok) throw new Error('Erreur chargement référentiels');
-        const { countries, manufacturers, types } = await referentialsRes.json();
-        const placeholder = `<option value="">${i18n.t('details.select')}</option>`;
-
-        document.getElementById('edit-country-id').innerHTML = placeholder +
-          countries.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
-        document.getElementById('edit-manufacturer-id').innerHTML = placeholder +
-          manufacturers.map(m => `<option value="${m.id}">${escapeHtml(m.name)}</option>`).join('');
-        document.getElementById('edit-type').innerHTML = placeholder +
-          types.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('');
-        document.getElementById('edit-generation-id').innerHTML = placeholder +
-          [1, 2, 3, 4, 5].map(g => `<option value="${g}">${g}${i18n.currentLang === 'en' ? (['st','nd','rd'][g-1]||'th') + ' Generation' : 'e Génération'}</option>`).join('');
-
-        // Liste des avions pour predecessor/successor/rival (exclut l'avion courant)
-        if (airplanesRes.ok) {
-          const payload = await airplanesRes.json();
-          const list = Array.isArray(payload) ? payload : (payload.data || []);
-          const options = [`<option value="">—</option>`].concat(
-            list.filter(ap => Number(ap.id) !== Number(state.aircraftId))
-                .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
-                .map(ap => `<option value="${ap.id}">${escapeHtml(ap.name || '')}</option>`)
-          ).join('');
-          document.getElementById('edit-predecessor-id').innerHTML = options;
-          document.getElementById('edit-successor-id').innerHTML = options;
-          document.getElementById('edit-rival-id').innerHTML = options;
-        }
-      } catch { /* silencieux */ }
-    }
 
     editBtn?.addEventListener('click', openEditModal);
     [cancelEditBtn, modalClose].forEach(btn => btn?.addEventListener('click', closeEditModal));
@@ -146,88 +134,17 @@
 
     editForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      // Listes ou fiche non chargées : enregistrer effacerait des relations.
+      if (!_formReady || !_form) return;
       if (!auth.getToken() || (state.userRole !== 1 && state.userRole !== 2)) {
         showToast(i18n.t('common.unauthorized'), 'error');
         return;
       }
-      const num = (id) => {
-        const v = document.getElementById(id).value;
-        if (v === '' || v == null) return null;
-        const n = Number(v);
-        return isNaN(n) ? null : n;
-      };
-      const str = (id) => {
-        const v = document.getElementById(id).value;
-        return v === '' ? null : v;
-      };
-      const intOrNull = (id) => {
-        const v = document.getElementById(id).value;
-        if (v === '' || v == null) return null;
-        const n = parseInt(v, 10);
-        return isNaN(n) ? null : n;
-      };
-
-      const formData = {
-        // base
-        name: str('edit-name') || '',
-        complete_name: str('edit-complete-name'),
-        little_description: str('edit-little-description'),
-        image_url: str('edit-image-url'),
-        description: str('edit-description'),
-        country_id: intOrNull('edit-country-id'),
-        id_manufacturer: intOrNull('edit-manufacturer-id'),
-        id_generation: intOrNull('edit-generation-id'),
-        type: intOrNull('edit-type'),
-        status: str('edit-status'),
-        date_concept: str('edit-date-concept'),
-        date_first_fly: str('edit-date-first-fly'),
-        date_operationel: str('edit-date-operationel'),
-        max_speed: num('edit-max-speed'),
-        max_range: num('edit-max-range'),
-        // strate 1
-        length: num('edit-length'),
-        wingspan: num('edit-wingspan'),
-        height: num('edit-height'),
-        wing_area: num('edit-wing-area'),
-        empty_weight: num('edit-empty-weight'),
-        mtow: num('edit-mtow'),
-        service_ceiling: intOrNull('edit-service-ceiling'),
-        climb_rate: num('edit-climb-rate'),
-        g_limit_pos: num('edit-g-limit-pos'),
-        g_limit_neg: num('edit-g-limit-neg'),
-        combat_radius: num('edit-combat-radius'),
-        crew: intOrNull('edit-crew'),
-        // strate 2
-        engine_name: str('edit-engine-name'),
-        engine_count: intOrNull('edit-engine-count'),
-        engine_type: str('edit-engine-type'),
-        thrust_dry: num('edit-thrust-dry'),
-        thrust_wet: num('edit-thrust-wet'),
-        // strate 3
-        production_start: intOrNull('edit-production-start'),
-        production_end: intOrNull('edit-production-end'),
-        units_built: intOrNull('edit-units-built'),
-        unit_cost_usd: intOrNull('edit-unit-cost-usd'),
-        unit_cost_year: intOrNull('edit-unit-cost-year'),
-        operators_count: intOrNull('edit-operators-count'),
-        variants: str('edit-variants'),
-        // strate 4
-        stealth_level: str('edit-stealth-level'),
-        nickname: str('edit-nickname'),
-        predecessor_id: intOrNull('edit-predecessor-id'),
-        successor_id: intOrNull('edit-successor-id'),
-        rival_id: intOrNull('edit-rival-id'),
-        // strate 6
-        wikipedia_fr: str('edit-wikipedia-fr'),
-        wikipedia_en: str('edit-wikipedia-en'),
-        youtube_showcase: str('edit-youtube-showcase'),
-        manufacturer_page: str('edit-manufacturer-page'),
-        image_credit: str('edit-image-credit'),
-        image_licence: str('edit-image-licence'),
-      };
+      // Tous les champs du formulaire ; un champ absent du corps serait
+      // laissé inchangé par le PUT, un champ vide (null) est effacé.
+      const formData = _form.read();
 
       // Enregistrement en cours : bouton bloqué, pas de double envoi.
-      const submitBtn = editForm.querySelector('[type="submit"]') || document.querySelector('button[form="edit-form"]');
       if (submitBtn?.getAttribute('aria-busy') === 'true') return;
       submitBtn?.setAttribute('aria-busy', 'true');
       if (submitBtn) submitBtn.disabled = true;
@@ -245,7 +162,7 @@
         showToast(error.message || i18n.t('common.update_error'), 'error');
       } finally {
         submitBtn?.removeAttribute('aria-busy');
-        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtn) submitBtn.disabled = !_formReady;
       }
     });
 
@@ -267,4 +184,5 @@
   }
 
   VH.details.admin = { setup, closeEditModal: () => {} };
+  if (typeof module !== 'undefined' && module.exports) module.exports = VH.details.admin;
 })();

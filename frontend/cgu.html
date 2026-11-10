@@ -8,11 +8,14 @@
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/svg+xml" sizes="16x16" href="/assets/logo/favicon-16.svg">
-  <link rel="apple-touch-icon" href="/assets/logo/icon-192.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/logo/icon-48.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#080c14">
+  <meta name="theme-color" content="#0D0D0D">
   <title data-i18n="legal.terms_title">Conditions Générales d'Utilisation | Vol d'Histoire</title>
   <meta name="description" content="Conditions Générales d'Utilisation du site Vol d'Histoire - Règles et modalités d'utilisation.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/cgu">
@@ -57,37 +60,7 @@
 
 
   <!-- Header -->
-  <header>
-    <nav class="container" aria-label="Navigation principale" data-i18n-aria="nav.primary_label">
-      <div class="logo"><picture><source srcset="/assets/logo/vh-mark-primary-gold.svg" media="(max-width: 480px)"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="logo-lockup" width="152" height="40"></picture></div>
-      <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="/"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a></li>
-        <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
-        <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
-        <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-      </ul>
-      <div class="nav-actions">
-        <div class="lang-switch">
-          <button type="button" id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i><span class="lang-btn-label" data-i18n="nav.language">Langue</span></button>
-          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
-            <li><button type="button" class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
-            <li><button type="button" class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
-          </ul>
-        </div>
-        <div class="user-menu"><div class="user-toggle">
-          <a href="#" id="login-icon" class="login-icon" aria-label="Connexion" data-i18n-aria="nav.login"><i class="fas fa-user-circle" aria-hidden="true"></i></a>
-          <div id="user-info-container" class="user-dropdown hidden" role="menu">
-            <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
-            <div class="dropdown-divider"></div>
-            <a href="/settings" id="settings-icon" class="dropdown-item" role="menuitem"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
-            <div class="dropdown-divider"></div>
-            <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
-          </div>
-        </div></div>
-      </div>
-    </nav>
-  </header>
+  <!-- @include header -->
 
   <!-- Hero Section -->
   <section class="page-hero" aria-labelledby="page-hero-heading">
@@ -127,13 +100,15 @@
         <div class="legal-section">
           <h2 data-i18n="legal.cgu_sec1_title"><i class="fas fa-info-circle"></i> 1. Objet</h2>
           <div class="legal-text" data-i18n-html="legal.cgu_sec1_body">
-            <p>Les présentes Conditions Générales d'Utilisation (CGU) ont pour objet de définir les modalités et conditions d'utilisation du site <strong>Vol d'Histoire</strong>, accessible à l'adresse <a href="https://vol-histoire.titouan-borde.com">https://vol-histoire.titouan-borde.com</a>.</p>
-            <p>Le site Vol d'Histoire est une plateforme dédiée à l'histoire de l'aviation militaire, proposant :</p>
+            <p>Les présentes Conditions générales d'utilisation (CGU) ont pour objet de définir les modalités et conditions d'utilisation du site <strong>Vol d'Histoire</strong>, accessible à l'adresse <a href="https://vol-histoire.titouan-borde.com">https://vol-histoire.titouan-borde.com</a>.</p>
+            <p>Vol d'Histoire est un projet personnel non commercial dédié à l'histoire de l'aviation militaire depuis 1945, proposant :</p>
             <ul>
-              <li>Une base de données d'appareils militaires historiques</li>
-              <li>Des fiches techniques détaillées</li>
-              <li>Une chronologie interactive de l'aviation militaire</li>
-              <li>Un système de favoris pour les utilisateurs inscrits</li>
+            <li>Une base de données d'appareils militaires : combat, transport, surveillance, entraînement, drones</li>
+            <li>Des fiches techniques détaillées avec caractéristiques, armement, technologies et missions</li>
+            <li>Une chronologie interactive et des pages consacrées aux conflits</li>
+            <li>Un mode de comparaison d'appareils</li>
+            <li>Un système de favoris pour les utilisateurs inscrits</li>
+            <li>Une interface bilingue français / anglais</li>
             </ul>
           </div>
         </div>
@@ -142,23 +117,22 @@
           <h2 data-i18n="legal.cgu_sec2_title"><i class="fas fa-user-plus"></i> 2. Accès au site</h2>
           <div class="legal-text" data-i18n-html="legal.cgu_sec2_body">
             <h3>2.1 Accès libre</h3>
-            <p>L'accès au site est gratuit et libre pour la consultation des contenus publics. Certaines fonctionnalités avancées nécessitent la création d'un compte utilisateur.</p>
-
+            <p>L'accès au site est gratuit et libre pour la consultation des contenus publics. Aucun abonnement payant n'est proposé. Les favoris nécessitent la création d'un compte utilisateur.</p>
             <h3>2.2 Conditions d'accès</h3>
             <p>Pour accéder au site, vous devez :</p>
             <ul>
-              <li>Disposer d'un accès à Internet</li>
-              <li>Utiliser un navigateur web moderne et à jour</li>
-              <li>Accepter les cookies essentiels au fonctionnement du site</li>
+            <li>Disposer d'un accès à Internet</li>
+            <li>Utiliser un navigateur web récent (Chrome, Firefox, Safari, Edge)</li>
+            <li>Activer JavaScript</li>
+            <li>Autoriser les cookies et le stockage local nécessaires au fonctionnement (session, langue) pour utiliser votre compte</li>
             </ul>
-
             <h3>2.3 Disponibilité</h3>
-            <p>Nous nous efforçons de maintenir le site accessible 24h/24 et 7j/7, mais nous ne pouvons garantir une disponibilité permanente en raison :</p>
+            <p>Nous nous efforçons de maintenir le site accessible en permanence, sans pouvoir le garantir en raison :</p>
             <ul>
-              <li>Des opérations de maintenance programmées</li>
-              <li>Des mises à jour techniques</li>
-              <li>Des cas de force majeure</li>
-              <li>Des défaillances techniques imprévisibles</li>
+            <li>Des opérations de maintenance</li>
+            <li>Des mises à jour techniques</li>
+            <li>Des cas de force majeure</li>
+            <li>Des défaillances techniques imprévisibles</li>
             </ul>
             <p>Aucune indemnité ne pourra être réclamée en cas d'interruption du service.</p>
           </div>
@@ -170,107 +144,68 @@
             <h3>3.1 Inscription</h3>
             <p>Pour créer un compte, vous devez :</p>
             <ul>
-              <li>Avoir au moins 13 ans (les mineurs de 13 à 15 ans doivent obtenir l'autorisation parentale)</li>
-              <li>Fournir des informations exactes et à jour</li>
-              <li>Créer un mot de passe sécurisé</li>
-              <li>Accepter les présentes CGU et la Politique de Confidentialité</li>
+            <li>Être âgé d'au moins <strong>15 ans</strong></li>
+            <li>Fournir une adresse email valide et un pseudonyme</li>
+            <li>Choisir un mot de passe conforme à notre politique : <strong>8 à 128 caractères, au moins 1 majuscule, 1 minuscule et 1 chiffre</strong></li>
+            <li>Réussir la vérification anti-robot hCaptcha</li>
+            <li>Accepter les présentes CGU et la Politique de confidentialité</li>
             </ul>
-
-            <h3>3.2 Responsabilité du compte</h3>
+            <h3>3.2 Vérification de l'adresse email</h3>
+            <p>Après l'inscription, vous recevez un email contenant un lien de vérification valable <strong>30 minutes</strong>, à usage unique. Votre compte doit être vérifié avant de pouvoir vous connecter. Si vous n'avez pas reçu l'email, vérifiez votre dossier de courrier indésirable ou demandez un nouvel envoi depuis la page de connexion. Un compte non vérifié est supprimé automatiquement 7 jours après l'inscription.</p>
+            <h3>3.3 Réinitialisation du mot de passe</h3>
+            <p>En cas d'oubli, vous pouvez demander un lien de réinitialisation depuis la page « Mot de passe oublié », protégée par hCaptcha. Le lien est valable <strong>15 minutes</strong> et ne sert qu'une fois. Pour des raisons de sécurité, nous ne confirmons jamais l'existence d'un compte associé à une adresse email.</p>
+            <h3>3.4 Responsabilité du compte</h3>
             <p>Vous êtes responsable de :</p>
             <ul>
-              <li>La confidentialité de vos identifiants de connexion</li>
-              <li>Toutes les activités effectuées sous votre compte</li>
-              <li>La mise à jour de vos informations personnelles</li>
+            <li>La confidentialité de vos identifiants de connexion</li>
+            <li>Toutes les activités effectuées sous votre compte</li>
+            <li>La mise à jour de vos informations personnelles</li>
             </ul>
-            <p>En cas d'utilisation non autorisée de votre compte, vous devez nous en informer immédiatement à : <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
-
-            <h3>3.3 Suspension et résiliation</h3>
-            <p>Nous nous réservons le droit de suspendre ou résilier votre compte sans préavis en cas de :</p>
+            <p>En cas d'utilisation non autorisée de votre compte, informez-nous immédiatement à : <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
+            <h3>3.5 Suspension et résiliation</h3>
+            <p>Nous nous réservons le droit de suspendre ou de résilier votre compte en cas de :</p>
             <ul>
-              <li>Violation des présentes CGU</li>
-              <li>Comportement frauduleux ou abusif</li>
-              <li>Inactivité prolongée (plus de 2 ans)</li>
-              <li>Demande de votre part</li>
+            <li>Violation des présentes CGU</li>
+            <li>Comportement frauduleux, abusif ou malveillant</li>
+            <li>Tentatives répétées d'accès non autorisé</li>
+            <li>Demande de votre part</li>
             </ul>
-
-            <h3>3.4 Suppression du compte</h3>
-            <p>Vous pouvez supprimer votre compte à tout moment via les paramètres de votre profil ou en nous contactant. La suppression entraînera :</p>
+            <h3>3.6 Suppression du compte</h3>
+            <p>Vous pouvez supprimer votre compte à tout moment depuis vos paramètres (Zone de danger) ou en nous écrivant. La suppression est <strong>immédiate et définitive</strong> :</p>
             <ul>
-              <li>La suppression définitive de vos données personnelles (sous 30 jours)</li>
-              <li>La perte d'accès à vos favoris et préférences</li>
-              <li>L'impossibilité de récupérer votre compte</li>
+            <li>Vos données de compte et vos favoris sont effacés</li>
+            <li>Vos sessions sont fermées</li>
+            <li>Le compte ne peut pas être récupéré</li>
             </ul>
+            <p>Avant de supprimer votre compte, vous pouvez télécharger vos données depuis Paramètres › Cookies et confidentialité.</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.cgu_sec4_title"><i class="fas fa-shield-alt"></i> 4. Utilisation du site</h2>
           <div class="legal-text" data-i18n-html="legal.cgu_sec4_body">
-            <h3>4.1 Usage autorisé</h3>
-            <p>Vous pouvez utiliser le site pour :</p>
-            <div class="allowed-uses">
-              <div class="use-item allowed">
-                <i class="fas fa-check-circle"></i>
-                <span>Consulter les informations sur les avions</span>
-              </div>
-              <div class="use-item allowed">
-                <i class="fas fa-check-circle"></i>
-                <span>Créer et gérer vos favoris</span>
-              </div>
-              <div class="use-item allowed">
-                <i class="fas fa-check-circle"></i>
-                <span>Utiliser les fonctionnalités de recherche et filtrage</span>
-              </div>
-              <div class="use-item allowed">
-                <i class="fas fa-check-circle"></i>
-                <span>Partager des liens vers le contenu du site</span>
-              </div>
-            </div>
-
-            <h3>4.2 Usages interdits</h3>
-            <p>Il est strictement interdit de :</p>
-            <div class="allowed-uses">
-              <div class="use-item forbidden">
-                <i class="fas fa-times-circle"></i>
-                <span>Extraire massivement des données du site (scraping)</span>
-              </div>
-              <div class="use-item forbidden">
-                <i class="fas fa-times-circle"></i>
-                <span>Tenter d'accéder à des comptes ou zones non autorisés</span>
-              </div>
-              <div class="use-item forbidden">
-                <i class="fas fa-times-circle"></i>
-                <span>Diffuser des virus, malwares ou codes malveillants</span>
-              </div>
-              <div class="use-item forbidden">
-                <i class="fas fa-times-circle"></i>
-                <span>Usurper l'identité d'une autre personne</span>
-              </div>
-              <div class="use-item forbidden">
-                <i class="fas fa-times-circle"></i>
-                <span>Utiliser le site à des fins commerciales sans autorisation</span>
-              </div>
-              <div class="use-item forbidden">
-                <i class="fas fa-times-circle"></i>
-                <span>Surcharger intentionnellement les serveurs</span>
-              </div>
-              <div class="use-item forbidden">
-                <i class="fas fa-times-circle"></i>
-                <span>Modifier ou désassembler le code source du site</span>
-              </div>
-              <div class="use-item forbidden">
-                <i class="fas fa-times-circle"></i>
-                <span>Publier du contenu illégal, offensant ou inapproprié</span>
-              </div>
-            </div>
-
-            <p>Toute violation de ces règles peut entraîner :</p>
+            <h3>4.1 Usages autorisés</h3>
+            <p>Vous pouvez utiliser le site pour :</p>
             <ul>
-              <li>La suspension immédiate de votre compte</li>
-              <li>L'interdiction d'accès au site</li>
-              <li>Des poursuites judiciaires si nécessaire</li>
+            <li>Consulter les informations sur les avions</li>
+            <li>Créer et gérer vos favoris</li>
+            <li>Utiliser les fonctionnalités de recherche, de filtrage, de comparaison et de timeline</li>
+            <li>Partager des liens vers le contenu du site</li>
+            <li>Exporter une fiche en PDF pour votre usage personnel</li>
             </ul>
+            <h3>4.2 Usages interdits</h3>
+            <p>Il est strictement interdit de :</p>
+            <ul>
+            <li>Extraire massivement des données (scraping automatisé, bots)</li>
+            <li>Tenter d'accéder à des comptes ou zones non autorisés</li>
+            <li>Diffuser des virus, malwares ou codes malveillants</li>
+            <li>Usurper l'identité d'une autre personne</li>
+            <li>Utiliser le site à des fins commerciales sans autorisation</li>
+            <li>Surcharger intentionnellement les serveurs</li>
+            <li>Modifier, décompiler ou désassembler le code source</li>
+            <li>Contourner les mécanismes de sécurité (rate limiting, hCaptcha, authentification)</li>
+            </ul>
+            <p>Toute violation peut entraîner la suspension immédiate du compte, l'interdiction d'accès au site, et des poursuites judiciaires si nécessaire.</p>
           </div>
         </div>
 
@@ -278,26 +213,25 @@
           <h2 data-i18n="legal.cgu_sec5_title"><i class="fas fa-copyright"></i> 5. Propriété intellectuelle</h2>
           <div class="legal-text" data-i18n-html="legal.cgu_sec5_body">
             <h3>5.1 Droits sur le site</h3>
-            <p>Tous les éléments du site (structure, design, textes, images, logos, icônes, base de données, code source) sont protégés par le droit d'auteur et appartiennent à Vol d'Histoire ou à ses partenaires.</p>
-
+            <p>Les éléments originaux du site (structure, design, textes, base de données, code source) sont protégés par le droit d'auteur et appartiennent à Vol d'Histoire.</p>
             <h3>5.2 Licence d'utilisation</h3>
             <p>Nous vous accordons une licence limitée, non exclusive, non transférable et révocable pour :</p>
             <ul>
-              <li>Accéder au contenu du site pour votre usage personnel</li>
-              <li>Télécharger des pages pour consultation hors ligne personnelle</li>
-              <li>Partager des liens vers les pages du site</li>
+            <li>Accéder au contenu du site pour votre usage personnel</li>
+            <li>Partager des liens vers les pages publiques</li>
+            <li>Exporter une fiche au format PDF pour un usage strictement personnel</li>
             </ul>
-
             <h3>5.3 Restrictions</h3>
-            <p>Vous ne pouvez pas :</p>
+            <p>Sauf accord écrit, vous ne pouvez pas, pour les contenus originaux de Vol d'Histoire :</p>
             <ul>
-              <li>Reproduire, copier ou redistribuer le contenu du site</li>
-              <li>Créer des œuvres dérivées basées sur le contenu</li>
-              <li>Supprimer les mentions de copyright ou droits d'auteur</li>
-              <li>Utiliser le contenu à des fins commerciales</li>
+            <li>Les reproduire, les copier ou les redistribuer</li>
+            <li>Créer des œuvres dérivées à partir de ces contenus</li>
+            <li>Supprimer les mentions de droits</li>
+            <li>Les utiliser à des fins commerciales</li>
             </ul>
-
-            <h3>5.4 Signalement de violation</h3>
+            <h3>5.4 Photographies sous licence libre</h3>
+            <p>Les photographies d'appareils n'appartiennent pas à Vol d'Histoire. Elles restent soumises à leur licence d'origine (domaine public, CC0 ou licences Creative Commons), indiquée sous chaque photo et sur la page <a href="/credits">Crédits photo</a>, et vous pouvez les réutiliser dans les conditions de cette licence. Les restrictions de l'article 5.3 ne s'appliquent qu'aux contenus originaux de Vol d'Histoire.</p>
+            <h3>5.5 Signalement de violation</h3>
             <p>Si vous pensez que du contenu du site viole vos droits de propriété intellectuelle, contactez-nous : <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
           </div>
         </div>
@@ -306,25 +240,17 @@
           <h2 data-i18n="legal.cgu_sec6_title"><i class="fas fa-image"></i> 6. Contenu et sources</h2>
           <div class="legal-text" data-i18n-html="legal.cgu_sec6_body">
             <h3>6.1 Exactitude des informations</h3>
-            <p>Nous nous efforçons de fournir des informations précises et à jour. Cependant :</p>
+            <p>Les données des fiches sont compilées depuis des sources publiques, historiques et spécialisées. Malgré nos efforts de précision :</p>
             <ul>
-              <li>Les informations sont fournies "en l'état" sans garantie</li>
-              <li>Des erreurs ou omissions peuvent survenir</li>
-              <li>Les spécifications techniques peuvent varier selon les sources</li>
+            <li>Les informations sont fournies « en l'état » sans garantie</li>
+            <li>Des erreurs ou omissions peuvent survenir</li>
+            <li>Les caractéristiques techniques peuvent varier selon les sources</li>
             </ul>
-            <p>Nous ne pouvons être tenus responsables des décisions prises sur la base de ces informations.</p>
-
+            <p>Vol d'Histoire est un projet éducatif et historique ; il ne remplace pas une source militaire officielle ou un ouvrage de référence.</p>
             <h3>6.2 Sources et attributions</h3>
-            <p>Les informations et images proviennent de :</p>
-            <ul>
-              <li>Sources publiques et historiques</li>
-              <li>Licences Creative Commons</li>
-              <li>Domaine public</li>
-              <li>Partenaires autorisés</li>
-            </ul>
-
+            <p>Les informations proviennent de sources publiques et historiques, citées sur les fiches lorsqu'elles sont documentées. Les photographies relèvent du domaine public ou de licences libres ; leur auteur et leur licence figurent sous chaque photo et sur la page <a href="/credits">Crédits photo</a>.</p>
             <h3>6.3 Mise à jour du contenu</h3>
-            <p>Nous nous réservons le droit de modifier, corriger ou supprimer tout contenu du site sans préavis.</p>
+            <p>Nous nous réservons le droit de modifier, corriger ou supprimer tout contenu sans préavis.</p>
           </div>
         </div>
 
@@ -332,68 +258,34 @@
           <h2 data-i18n="legal.cgu_sec7_title"><i class="fas fa-link"></i> 7. Liens hypertextes</h2>
           <div class="legal-text" data-i18n-html="legal.cgu_sec7_body">
             <h3>7.1 Liens sortants</h3>
-            <p>Le site peut contenir des liens vers des sites externes. Nous ne sommes pas responsables :</p>
+            <p>Le site peut contenir des liens vers des sites externes. Nous ne sommes pas responsables :</p>
             <ul>
-              <li>Du contenu de ces sites tiers</li>
-              <li>De leur politique de confidentialité</li>
-              <li>De leurs pratiques en matière de données</li>
+            <li>Du contenu de ces sites tiers</li>
+            <li>De leur politique de confidentialité</li>
+            <li>De leurs pratiques en matière de données personnelles</li>
             </ul>
-
             <h3>7.2 Liens entrants</h3>
-            <p>Vous pouvez créer des liens vers notre site, sous réserve de :</p>
+            <p>Vous pouvez créer des liens vers notre site, sous réserve de :</p>
             <ul>
-              <li>Ne pas utiliser de techniques de framing</li>
-              <li>Ne pas induire en erreur sur l'origine du contenu</li>
-              <li>Ne pas nuire à notre réputation</li>
-              <li>Respecter nos droits de propriété intellectuelle</li>
+            <li>Ne pas utiliser de techniques de framing ou de masquage</li>
+            <li>Ne pas induire en erreur sur l'origine du contenu</li>
+            <li>Ne pas nuire à notre réputation</li>
             </ul>
-            <p>Les liens vers des pages internes spécifiques nécessitent notre autorisation.</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.cgu_sec8_title"><i class="fas fa-exclamation-triangle"></i> 8. Limitation de responsabilité</h2>
           <div class="legal-text" data-i18n-html="legal.cgu_sec8_body">
-            <p>Dans les limites autorisées par la loi, Vol d'Histoire ne peut être tenu responsable de :</p>
-
-            <div class="liability-grid">
-              <div class="liability-item">
-                <i class="fas fa-server"></i>
-                <h3>Interruptions de service</h3>
-                <p>Pannes, maintenance, problèmes techniques</p>
-              </div>
-
-              <div class="liability-item">
-                <i class="fas fa-exclamation"></i>
-                <h3>Erreurs de contenu</h3>
-                <p>Inexactitudes, omissions dans les informations</p>
-              </div>
-
-              <div class="liability-item">
-                <i class="fas fa-virus"></i>
-                <h3>Virus et malwares</h3>
-                <p>Dommages causés par des éléments malveillants</p>
-              </div>
-
-              <div class="liability-item">
-                <i class="fas fa-user-lock"></i>
-                <h3>Utilisation du compte</h3>
-                <p>Usage non autorisé de vos identifiants</p>
-              </div>
-
-              <div class="liability-item">
-                <i class="fas fa-database"></i>
-                <h3>Perte de données</h3>
-                <p>Suppression ou corruption de données</p>
-              </div>
-
-              <div class="liability-item">
-                <i class="fas fa-external-link-alt"></i>
-                <h3>Sites tiers</h3>
-                <p>Contenu et pratiques des sites externes</p>
-              </div>
-            </div>
-
+            <p>Dans les limites autorisées par la loi, Vol d'Histoire ne peut être tenu responsable de :</p>
+            <ul>
+            <li><strong>Interruptions de service :</strong> pannes, maintenance, problèmes techniques</li>
+            <li><strong>Erreurs de contenu :</strong> inexactitudes ou omissions dans les informations affichées</li>
+            <li><strong>Virus et malwares :</strong> dommages causés par des éléments malveillants tiers</li>
+            <li><strong>Utilisation du compte :</strong> usage non autorisé de vos identifiants</li>
+            <li><strong>Perte de données :</strong> suppression accidentelle ou corruption</li>
+            <li><strong>Sites tiers :</strong> contenu et pratiques des sites externes liés</li>
+            </ul>
             <p>Vous utilisez le site à vos propres risques.</p>
           </div>
         </div>
@@ -402,30 +294,28 @@
           <h2 data-i18n="legal.cgu_sec9_title"><i class="fas fa-user-check"></i> 9. Rôles et permissions</h2>
           <div class="legal-text" data-i18n-html="legal.cgu_sec9_body">
             <h3>9.1 Utilisateurs standards</h3>
-            <p>Peuvent :</p>
+            <p>Peuvent :</p>
             <ul>
-              <li>Consulter la base de données</li>
-              <li>Créer et gérer leurs favoris</li>
-              <li>Utiliser les filtres et la recherche</li>
+            <li>Consulter la base de données complète</li>
+            <li>Créer et gérer leurs favoris</li>
+            <li>Utiliser les filtres, la recherche et la comparaison</li>
+            <li>Exporter des fiches en PDF</li>
             </ul>
-
             <h3>9.2 Éditeurs</h3>
-            <p>En plus des droits des utilisateurs standards, peuvent :</p>
+            <p>En plus des droits des utilisateurs standards, peuvent :</p>
             <ul>
-              <li>Modifier les fiches d'avions existantes</li>
-              <li>Ajouter de nouveaux avions</li>
-              <li>Corriger les erreurs dans la base de données</li>
+            <li>Modifier les fiches d'avions existantes</li>
+            <li>Ajouter de nouveaux appareils</li>
+            <li>Corriger les erreurs dans la base de données</li>
             </ul>
-
             <h3>9.3 Administrateurs</h3>
-            <p>Disposent de tous les droits pour :</p>
+            <p>Disposent de tous les droits pour :</p>
             <ul>
-              <li>Gérer les utilisateurs et leurs rôles</li>
-              <li>Modérer le contenu</li>
-              <li>Accéder aux statistiques du site</li>
-              <li>Configurer les paramètres généraux</li>
+            <li>Gérer les utilisateurs et leurs rôles</li>
+            <li>Modérer le contenu</li>
+            <li>Accéder aux statistiques du site</li>
+            <li>Configurer les paramètres généraux</li>
             </ul>
-
             <p>Les éditeurs et administrateurs s'engagent à utiliser leurs privilèges de manière responsable et conforme aux présentes CGU.</p>
           </div>
         </div>
@@ -441,18 +331,15 @@
         <div class="legal-section">
           <h2 data-i18n="legal.cgu_sec11_title"><i class="fas fa-edit"></i> 11. Modifications des CGU</h2>
           <div class="legal-text" data-i18n-html="legal.cgu_sec11_body">
-            <p>Nous nous réservons le droit de modifier les présentes CGU à tout moment.</p>
-
+            <p>Nous nous réservons le droit de modifier les présentes CGU pour refléter les évolutions du site ou de la réglementation.</p>
             <h3>Notification des modifications</h3>
-            <p>En cas de modification substantielle, nous vous informerons par :</p>
-            <ul>
-              <li>Une bannière sur le site</li>
-              <li>Un email (pour les utilisateurs inscrits)</li>
-              <li>Une notification lors de votre connexion</li>
-            </ul>
-
+            <p>En cas de modification substantielle, nous vous en informerons par un message sur le site et, si vous avez un compte, par email.</p>
             <h3>Acceptation des modifications</h3>
-            <p>En continuant à utiliser le site après la notification des modifications, vous acceptez les nouvelles CGU. Si vous n'acceptez pas les modifications, vous devez cesser d'utiliser le site.</p>
+            <p>En continuant à utiliser le site après notification, vous acceptez les nouvelles CGU. Si vous n'acceptez pas les modifications, vous devez cesser d'utiliser le site et pouvez supprimer votre compte.</p>
+            <h3>Historique des versions</h3>
+            <ul class="version-history">
+            <li><strong>Version 1.2 — 10 novembre 2026 :</strong> périmètre du catalogue précisé, délais alignés sur le fonctionnement réel (lien de vérification de 30 minutes, de réinitialisation de 15 minutes, suppression immédiate du compte), exception pour les photographies sous licence libre.</li>
+            </ul>
           </div>
         </div>
 
@@ -461,15 +348,12 @@
           <div class="legal-text" data-i18n-html="legal.cgu_sec12_body">
             <h3>12.1 Loi applicable</h3>
             <p>Les présentes CGU sont régies par le droit français.</p>
-
             <h3>12.2 Règlement des litiges</h3>
-            <p>En cas de litige :</p>
-            <ol>
-              <li><strong>Médiation :</strong> Nous encourageons une résolution amiable. Contactez-nous à : <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></li>
-              <li><strong>Médiation de la consommation :</strong> Si vous êtes un consommateur, vous pouvez recourir à un médiateur agréé</li>
-              <li><strong>Juridiction :</strong> À défaut d'accord amiable, les tribunaux français seront compétents</li>
-            </ol>
-
+            <ul>
+            <li><strong>Médiation :</strong> nous encourageons une résolution amiable. Contactez-nous à <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></li>
+            <li><strong>Médiation de la consommation :</strong> si vous êtes un consommateur, vous pouvez recourir à un médiateur agréé</li>
+            <li><strong>Juridiction :</strong> à défaut d'accord amiable, les tribunaux français seront compétents</li>
+            </ul>
             <h3>12.3 Divisibilité</h3>
             <p>Si une clause des présentes CGU est déclarée nulle ou inapplicable, les autres clauses restent en vigueur.</p>
           </div>
@@ -478,22 +362,16 @@
         <div class="legal-section">
           <h2 data-i18n="legal.cgu_sec13_title"><i class="fas fa-phone"></i> 13. Contact</h2>
           <div class="legal-text" data-i18n-html="legal.cgu_sec13_body">
-            <p>Pour toute question concernant les présentes CGU, vous pouvez nous contacter :</p>
+            <p>Pour toute question concernant les présentes CGU :</p>
             <div class="contact-info">
-              <div class="contact-method">
-                <i class="fas fa-envelope"></i>
-                <div>
-                  <strong>Contact (général, juridique, support)</strong>
-                  <p><a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
-                </div>
-              </div>
+            <p><strong>Email :</strong> <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
             </div>
           </div>
         </div>
 
         <div class="legal-footer">
-          <p data-i18n="legal.last_update"><i class="fas fa-calendar"></i> Dernière mise à jour : avril 2026</p>
-          <p data-i18n="legal.version"><i class="fas fa-check-double"></i> Version 1.1</p>
+          <p data-i18n="legal.last_update"><i class="fas fa-calendar"></i> Dernière mise à jour : 10 novembre 2026</p>
+          <p data-i18n="legal.version"><i class="fas fa-check-double"></i> Version 1.2</p>
         </div>
 
         <div class="acceptance-box">
@@ -507,17 +385,7 @@
     </div>
   </main>
 
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section"><div class="footer-logo"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="footer-lockup" width="190" height="50"></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'appareils, du chasseur au transporteur.</p></div>
-        <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/conflits" data-i18n="nav.conflicts">Conflits</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="/contact" data-i18n="footer.contact">Contact</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" class="cookie-settings-link" data-i18n="footer.cookies">Cookies</a></li></ul></div>
-      </div>
-      <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2026 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
-    </div>
-  </footer>
+  <!-- @include footer -->
   <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>

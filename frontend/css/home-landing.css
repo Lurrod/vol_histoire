@@ -35,11 +35,11 @@
   font-size: 1rem;
   color: var(--text-primary);
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--border-field);
   border-radius: 8px;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
-.page-home .hero-search-input::placeholder { color: var(--text-ghost); }
+.page-home .hero-search-input::placeholder { color: var(--text-placeholder); }
 /* Croix d'effacement : même glyphe et mêmes teintes que la recherche du hangar
    (hangar.css), à la place du bouton natif bleu de Chrome. */
 .page-home .hero-search-input::-webkit-search-cancel-button {
@@ -61,7 +61,7 @@
 .page-home .hero-search-input:focus {
   outline: none;
   border-color: var(--hud-cyan);
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--white-a07);
 }
 .page-home .hero-search-input:focus-visible {
   box-shadow: 0 0 0 3px rgba(200, 169, 110, 0.25);
@@ -122,7 +122,7 @@
   border-radius: 6px;
   cursor: pointer;
 }
-.page-home .hero-suggest-item[aria-selected="true"] { background: rgba(200, 169, 110, 0.12); }
+.page-home .hero-suggest-item[aria-selected="true"] { background: var(--gold-a12); }
 .page-home .hero-suggest-thumb {
   flex: none;
   width: 72px;
@@ -212,7 +212,7 @@
   flex-direction: column;
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--white-a07);
   background: rgba(20, 20, 20, 0.6);
   color: var(--text-primary);
   text-decoration: none;
@@ -283,7 +283,7 @@
 }
 .page-home .mission-family {
   padding: 1.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--white-a07);
   border-radius: 12px;
   background: rgba(20, 20, 20, 0.5);
 }
@@ -302,7 +302,7 @@
 }
 .page-home .mission-family-title span {
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: var(--text-xs);
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -387,7 +387,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--white-a08);
   border-radius: 10px;
   background: rgba(20, 20, 20, 0.6);
   color: var(--text-primary);

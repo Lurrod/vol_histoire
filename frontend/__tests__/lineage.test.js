@@ -84,4 +84,74 @@ describe('lineage.render', () => {
     ], 2);
     expect(document.querySelector('#lineage-chain').innerHTML).not.toContain('<img');
   });
+
+  // jsdom ne calcule aucune mise en page : dimensions et scrollLeft simulés.
+  function fakeLayout(list, { scrollWidth, clientWidth }) {
+    let scrollLeft = 0;
+    Object.defineProperty(list, 'scrollWidth', { configurable: true, value: scrollWidth });
+    Object.defineProperty(list, 'clientWidth', { configurable: true, value: clientWidth });
+    Object.defineProperty(list, 'scrollLeft', {
+      configurable: true, get: () => scrollLeft, set: (v) => { scrollLeft = v; },
+    });
+    const pos = (prop, value) => jest.spyOn(HTMLElement.prototype, prop, 'get')
+      .mockImplementation(function () { return this.classList.contains('is-current') ? value : 0; });
+    pos('offsetLeft', 700);
+    pos('offsetWidth', 100);
+  }
+  afterEach(() => jest.restoreAllMocks());
+
+  test('bande qui déborde : l\'appareil courant est centré (scrollLeft)', () => {
+    const list = document.getElementById('lineage-chain');
+    fakeLayout(list, { scrollWidth: 1000, clientWidth: 300 });
+    lineage.render(CHAIN, 20);
+    // 700 - (300 - 100) / 2
+    expect(list.scrollLeft).toBe(600);
+  });
+
+  test('bande sans débordement : pas de défilement', () => {
+    const list = document.getElementById('lineage-chain');
+    fakeLayout(list, { scrollWidth: 300, clientWidth: 300 });
+    lineage.render(CHAIN, 20);
+    expect(list.scrollLeft).toBe(0);
+  });
+});
+
+describe('lineage.load', () => {
+  const flush = () => new Promise((r) => setTimeout(r, 0));
+  const res = (body, ok = true) => Promise.resolve({ ok, status: ok ? 200 : 500, json: () => Promise.resolve(body) });
+
+  test('interroge /api/airplanes/:id/lineage et rend la chaîne', async () => {
+    global.auth = { fetchWithTimeout: jest.fn(() => res({ chain: CHAIN })) };
+    await lineage.load({ aircraftId: '20' });
+    expect(auth.fetchWithTimeout).toHaveBeenCalledWith('/api/airplanes/20/lineage');
+    expect(document.querySelectorAll('.lineage-node')).toHaveLength(3);
+    expect(document.getElementById('lineage-section').classList.contains('hidden')).toBe(false);
+  });
+
+  test('réponse en erreur : section masquée, sans exception', async () => {
+    document.getElementById('lineage-section').classList.remove('hidden');
+    global.auth = { fetchWithTimeout: jest.fn(() => res({}, false)) };
+    await expect(lineage.load({ aircraftId: '20' })).resolves.toBeUndefined();
+    expect(document.getElementById('lineage-section').classList.contains('hidden')).toBe(true);
+  });
+
+  test('erreur réseau : section masquée', async () => {
+    document.getElementById('lineage-section').classList.remove('hidden');
+    global.auth = { fetchWithTimeout: jest.fn(() => Promise.reject(new Error('timeout'))) };
+    await lineage.load({ aircraftId: '20' });
+    await flush();
+    expect(document.getElementById('lineage-section').classList.contains('hidden')).toBe(true);
+  });
+
+  test('page sans section de filiation : aucun appel réseau', async () => {
+    document.body.innerHTML = '';
+    global.auth = { fetchWithTimeout: jest.fn() };
+    await lineage.load({ aircraftId: '20' });
+    expect(auth.fetchWithTimeout).not.toHaveBeenCalled();
+  });
+
+  test('render sans conteneur : ne lève pas', () => {
+    document.body.innerHTML = '';
+    expect(() => lineage.render(CHAIN, 20)).not.toThrow();
+  });
 });

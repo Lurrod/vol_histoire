@@ -2,10 +2,13 @@
   "testEnvironment": "node",
   "testMatch": ["**/__tests__/**/*.test.js"],
   "collectCoverageFrom": [
-    "validators.js",
-    "app.js",
-    "middleware/**/*.js",
-    "routes/**/*.js"
+    "**/*.js",
+    "!**/__tests__/**",
+    "!db_backup/**",
+    "!migrations/**",
+    "!coverage/**",
+    "!node_modules/**",
+    "!jest-resolver.js"
   ],
   "coverageReporters": ["text", "lcov"],
   "coverageThreshold": {

@@ -13,11 +13,15 @@
 
   function renderAircraftDetails(state) {
     const a = state.aircraftData;
-    document.title = `${a.name} | Vol d'Histoire`;
 
     const slug = VH.details.data.slugify(a.name);
     const cleanPath = `/details/${slug}-${state.aircraftId}`;
-    history.replaceState({ id: state.aircraftId }, document.title, cleanPath);
+    // ?lang=en désigne la version anglaise indexée (SEO-001) : on la garde ;
+    // l'ancien ?id= disparaît au profit du chemin propre. Le titre est posé
+    // par updateSeoMeta (celui du serveur quand la page a été rendue en SSR).
+    const lang = new URLSearchParams(location.search).get('lang');
+    const query = lang ? `?lang=${encodeURIComponent(lang)}` : '';
+    history.replaceState({ id: state.aircraftId }, '', cleanPath + query);
     const pageUrl = `https://vol-histoire.titouan-borde.com${cleanPath}`;
     const imageUrl = a.image_url || 'https://vol-histoire.titouan-borde.com/assets/airplanes/a10-thunderbolt-2.jpg';
     VH.details.data.updateSeoMeta(state, a.name, a.description, imageUrl, pageUrl);
@@ -40,11 +44,7 @@
       document.getElementById('hero-year').textContent = new Date(a.date_operationel).getFullYear();
     }
 
-    const heroImage = document.getElementById('hero-image');
-    const heroUrl = a.image_url || `/assets/logo/placeholder-airplane-${i18n.currentLang === 'en' ? 'en' : 'fr'}.svg`;
-    VH.shared.picture.applySourcesTo(heroImage, heroUrl);
-    heroImage.alt = [a.name, a.manufacturer_name, a.country_name].filter(Boolean).join(' — ');
-    heroImage.loading = 'lazy';
+    renderHeroImage(a);
 
     renderImageCredit(a);
 
@@ -81,9 +81,56 @@
 
   // Attribution de la photo. Les licences Creative Commons imposent de citer
   // l'auteur : sans crédit renseigné, la légende reste masquée.
+  function placeholderUrl() {
+    return `/assets/logo/placeholder-airplane-${i18n.currentLang === 'en' ? 'en' : 'fr'}.svg`;
+  }
+
+  /* Image hero = élément LCP de la fiche : le SSR la pose avec
+   * fetchpriority="high". Elle ne doit jamais repasser en loading="lazy"
+   * (PERF-005), y compris sur le repli /details?id=X où le JS la remplit. */
+  function renderHeroImage(a) {
+    const heroImage = document.getElementById('hero-image');
+    if (!heroImage) return;
+    VH.shared.picture.applySourcesTo(heroImage, a.image_url || placeholderUrl());
+    heroImage.alt = [a.name, a.manufacturer_name, a.country_name].filter(Boolean).join(' — ');
+    heroImage.loading = 'eager';
+  }
+
+  /* Repli d'image sans gestionnaire en ligne : la CSP (script-src sans
+   * 'unsafe-inline') bloque tout attribut onerror="…" (JS-005). Les erreurs de
+   * chargement d'image ne remontent pas : l'écouteur délégué est posé en phase
+   * de capture. Première erreur : placeholder SVG localisé (les <source>
+   * AVIF / WebP sont retirées, un <source> en 404 ne retombant pas sur
+   * l'<img>) ; si le placeholder échoue aussi, l'image est masquée. */
+  const _fallbackBound = new WeakSet();
+  function bindImageFallback(container) {
+    if (!container || _fallbackBound.has(container)) return;
+    _fallbackBound.add(container);
+    container.addEventListener('error', (e) => {
+      const img = e.target;
+      if (!img || img.tagName !== 'IMG') return;
+      const pic = img.closest('picture');
+      if (img.dataset.fallback === '1') {
+        (pic || img).hidden = true;
+        return;
+      }
+      img.dataset.fallback = '1';
+      if (pic) pic.querySelectorAll('source').forEach((src) => src.remove());
+      img.src = placeholderUrl();
+    }, true);
+  }
+
   function renderImageCredit(a) {
     const el = document.getElementById('image-credit');
     if (!el) return;
+    const photoCredit = VH.shared && VH.shared.photoCredit;
+    if (photoCredit) {
+      // Auteur, lien vers la licence et mention des modifications (LEGAL-003).
+      const shown = photoCredit.fillCredit(el, { author: a.image_credit, licence: a.image_licence }, (k) => i18n.t(k));
+      el.hidden = !shown;
+      return;
+    }
+    // Repli sans le module partagé : texte seul.
     const licence = a.image_licence === 'Public domain'
       ? i18n.t('details.licence_public_domain')
       : a.image_licence;
@@ -143,13 +190,23 @@
     const grid = document.getElementById('production-grid');
     if (!section || !grid) return;
 
-    const fmtCost = (cents) => cents == null ? null : (
-      cents >= 1_000_000_000
-        ? `${(cents / 1_000_000_000).toFixed(2).replace(/\.00$/, '')} Md $`
-        : cents >= 1_000_000
-          ? `${(cents / 1_000_000).toFixed(1).replace(/\.0$/, '')} M $`
-          : cents.toLocaleString(i18n.currentLang === 'en' ? 'en' : 'fr') + ' $'
-    );
+    // Séparateur décimal et abréviation selon la langue : « 2,1 Md $ » en
+    // français, « 2.1 B $ » en anglais. Repli français tant que les locales
+    // ne sont pas chargées (i18n.t() renvoie alors la clé).
+    const locale = i18n.currentLang === 'en' ? 'en' : 'fr';
+    const unitLabel = (key, fallback) => {
+      const value = i18n.t(key);
+      return value && value !== key ? value : fallback;
+    };
+    const fmtNumber = (n, maxDigits) =>
+      new Intl.NumberFormat(locale, { minimumFractionDigits: 0, maximumFractionDigits: maxDigits }).format(n);
+    const fmtCost = (raw) => {
+      if (raw == null) return null;
+      const usd = Number(raw); // BIGINT : pg le renvoie en chaîne
+      if (usd >= 1_000_000_000) return `${fmtNumber(usd / 1_000_000_000, 2)} ${unitLabel('details.cost_billion', 'Md $')}`;
+      if (usd >= 1_000_000) return `${fmtNumber(usd / 1_000_000, 1)} ${unitLabel('details.cost_million', 'M $')}`;
+      return `${fmtNumber(usd, 0)} $`;
+    };
 
     const prodYears = a.production_start
       ? (a.production_end
@@ -214,19 +271,18 @@
       if (!id || !name) return;
       const slug = VH.details.data.slugify(name);
       const href = `/details/${slug}-${id}`;
-      const imgSrc = img || '/assets/airplanes/placeholder.jpg';
-      const relPic = VH.shared.picture.pictureHtml(imgSrc, {
+      // Pas d'image en base : placeholder SVG localisé, comme shared/card.js.
+      const relPic = VH.shared.picture.pictureHtml(img || placeholderUrl(), {
         alt: '',
         loading: 'lazy',
         width: '300',
         height: '200',
-        onerror: "this.closest('picture').style.display='none'",
       });
       cards.push(`
         <a class="related-card" href="${href}">
           <span class="related-relation">${relation}</span>
           <div class="related-img">${relPic}</div>
-          <h4>${escapeHtml(name)}</h4>
+          <h3>${escapeHtml(name)}</h3>
           <span class="related-arrow"><i class="fas fa-arrow-right"></i></span>
         </a>
       `);
@@ -237,6 +293,7 @@
 
     if (cards.length === 0) { section.classList.add('hidden'); return; }
     section.classList.remove('hidden');
+    bindImageFallback(grid);
     grid.innerHTML = cards.join('');
   }
 
@@ -335,7 +392,7 @@
         : escapeHtml(war.name);
       return `
         <div class="war-card${war.slug ? ' war-card-linked' : ''}">
-          <h4>${title}</h4>
+          <h3>${title}</h3>
           <div class="war-period"><i class="fas fa-calendar-days"></i><span>${startYear} - ${endYear}</span></div>
           <p>${escapeHtml(war.description) || i18n.t('details.no_desc_available')}</p>
           ${war.slug ? `<span class="war-more" aria-hidden="true">${i18n.t('details.war_see_aircraft')} <i class="fas fa-arrow-right"></i></span>` : ''}
@@ -344,7 +401,10 @@
     }).join('');
   }
 
-  VH.details.render = { renderAircraftDetails, renderArmament, renderTechnologies, renderMissions, finalizeCapabilities, renderWars, renderImageCredit };
+  VH.details.render = {
+    renderAircraftDetails, renderArmament, renderTechnologies, renderMissions, finalizeCapabilities,
+    renderWars, renderImageCredit, renderHeroImage, renderRelatedAircraft,
+  };
 
   // Export conditionnel pour les tests unitaires (Node.js / jsdom)
   if (typeof module !== 'undefined' && module.exports) {

@@ -33,39 +33,35 @@ const i18n = (() => {
     // 2) localStorage
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored && SUPPORTED_LANGS.includes(stored)) return stored;
-    // 3) Browser lang
+    // 3) Browser lang — mémorisée : auth.js lit localStorage pour ajouter
+    // ?lang= aux appels /api. Sans cela, un premier visiteur anglophone
+    // recevait les données en français (repli 'fr'), et conflicts.js
+    // réécrivait en français le h1 que le serveur avait rendu en anglais.
     const browserLang = (navigator.language || '').slice(0, 2);
-    if (SUPPORTED_LANGS.includes(browserLang)) return browserLang;
+    if (SUPPORTED_LANGS.includes(browserLang)) {
+      localStorage.setItem(STORAGE_KEY, browserLang);
+      return browserLang;
+    }
     // 4) Default
     return DEFAULT_LANG;
   }
 
-  /** Update URL, canonical and hreflang tags to reflect the current language */
-  function updateLangMeta(lang) {
-    // Update ?lang= in URL without reload
+  /**
+   * Choix explicite de langue : le reporte dans l'URL (?lang=), pour que le
+   * rechargement qui suit soit rendu par le serveur dans cette langue et que
+   * l'adresse copiée garde la langue choisie.
+   *
+   * Le canonical et les hreflang ne sont JAMAIS modifiés côté client : le
+   * serveur les fixe (canonical auto-référent par langue, hreflang
+   * réciproques). Les réécrire faisait dépendre le signal canonique de la
+   * langue du robot qui rend la page (SEO-002). Pour la même raison, une
+   * langue simplement détectée (navigateur, choix mémorisé) ne touche pas
+   * à l'URL.
+   */
+  function updateLangUrl(lang) {
     const url = new URL(window.location.href);
     url.searchParams.set('lang', lang);
-    window.history.replaceState(null, '', url.toString());
-
-    // Update canonical
-    const canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) {
-      const canonicalUrl = new URL(canonical.href);
-      canonicalUrl.searchParams.set('lang', lang);
-      canonical.href = canonicalUrl.toString();
-    }
-
-    // Update hreflang tags
-    document.querySelectorAll('link[hreflang]').forEach(link => {
-      const hl = link.getAttribute('hreflang');
-      const linkUrl = new URL(link.href);
-      if (hl === 'x-default') {
-        linkUrl.searchParams.delete('lang');
-      } else {
-        linkUrl.searchParams.set('lang', hl);
-      }
-      link.href = linkUrl.toString();
-    });
+    window.history.replaceState(window.history.state, '', url.toString());
   }
 
   /** Load JSON translation file */
@@ -108,12 +104,17 @@ const i18n = (() => {
    *  blocs de contenu des pages légales (pages contrôlées 100% côté auteur,
    *  jamais d'input user injecté dedans). Les tags exécutables (script, style,
    *  iframe, object, embed, form, input) restent interdits. */
+  // Les tableaux (inventaire des cookies de la politique de confidentialité)
+  // sont autorisés : sans eux, DOMPurify retirait <table>, <tr>, <td>… et
+  // l'inventaire s'affichait en un seul bloc de texte. <section> + tabindex +
+  // aria-label rendent sa zone de défilement atteignable au clavier.
   const PURIFY_CONFIG = {
     ALLOWED_TAGS: [
       'a', 'strong', 'em', 'br', 'span', 'i', 'u', 'b',
-      'p', 'ul', 'ol', 'li', 'h3', 'h4', 'h5', 'div',
+      'p', 'ul', 'ol', 'li', 'h3', 'h4', 'h5', 'div', 'section', 'code',
+      'table', 'caption', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td',
     ],
-    ALLOWED_ATTR: ['href', 'class', 'target', 'rel', 'id'],
+    ALLOWED_ATTR: ['href', 'class', 'target', 'rel', 'id', 'scope', 'colspan', 'rowspan', 'role', 'tabindex', 'aria-label'],
   };
 
   function sanitizeHtml(html) {
@@ -170,7 +171,11 @@ const i18n = (() => {
     // <title>
     const titleKey = document.querySelector('title[data-i18n]');
     if (titleKey) {
-      document.title = t(titleKey.getAttribute('data-i18n'));
+      // Traduction absente (locales non chargées, hors ligne) : le titre du
+      // serveur reste, plutôt que la clé brute « details.title ».
+      const key = titleKey.getAttribute('data-i18n');
+      const translated = t(key);
+      if (translated !== key) document.title = translated;
     }
 
     // Update <html lang>
@@ -197,17 +202,18 @@ const i18n = (() => {
     translations = await loadTranslations(lang);
     isLoaded = true;
     applyToDOM();
-    updateLangMeta(lang);
+    updateLangUrl(lang);
     // Dispatch event so JS modules can react
     window.dispatchEvent(new CustomEvent('langChanged', { detail: { lang } }));
     // i18n BD : si la langue change effectivement et qu'on est sur une page
     // qui affiche du contenu DB (hangar, details, favorites, timeline, index),
     // on recharge pour refetch /api/* avec le bon ?lang=.
     // Les pages sans données DB (login, settings, legal) peuvent être exclues
-    // pour éviter les reloads inutiles.
+    // pour éviter les reloads inutiles. /conflits recharge aussi : son titre
+    // d'onglet et son h1 sont écrits par le serveur dans la langue de l'URL.
     if (previous && previous !== lang) {
       const path = window.location.pathname;
-      const needsReload = /^\/$|^\/(hangar|details|favorites|timeline)/.test(path);
+      const needsReload = /^\/$|^\/(hangar|details|favorites|timeline|conflits)/.test(path);
       if (needsReload) {
         // Petit délai pour que l'event langChanged soit traité par les listeners
         // et que le localStorage soit bien écrit avant le reload.
@@ -222,7 +228,6 @@ const i18n = (() => {
     translations = await loadTranslations(currentLang);
     isLoaded = true;
     applyToDOM();
-    updateLangMeta(currentLang);
 
     // Bind lang toggle button + dropdown
     document.addEventListener('click', (e) => {

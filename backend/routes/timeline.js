@@ -12,6 +12,7 @@ const express = require('express');
 const asyncHandler = require('../middleware/asyncHandler');
 const cache = require('../utils/cache');
 const logger = require('../logger');
+const timelineRepo = require('../repositories/timeline');
 
 const CACHE_KEY = 'vdh:timeline:v1';
 const CACHE_TTL_S = 30 * 60; // 30 minutes
@@ -34,59 +35,7 @@ module.exports = function createTimelineRouter(getPool) {
       }
     }
 
-    const pool = getPool();
-
-    // 1. Événements éditoriaux ordonnés par décennie puis date.
-    //    LEFT JOIN airplanes pour hydrater la fiche liée si présente.
-    const eventsPromise = pool.query(`
-      SELECT
-        e.id,
-        e.event_date,
-        e.era_decade,
-        e.kind,
-        e.title_fr,
-        e.title_en,
-        e.body_fr,
-        e.body_en,
-        e.quote_author_fr,
-        e.quote_author_en,
-        a.id             AS airplane_id,
-        a.name           AS airplane_name,
-        a.name_en        AS airplane_name_en,
-        a.image_url      AS airplane_image_url,
-        a.little_description AS airplane_little_description,
-        a.little_description_en AS airplane_little_description_en
-      FROM timeline_events e
-      LEFT JOIN airplanes a ON e.airplane_id = a.id
-      ORDER BY e.era_decade, e.event_date, e.id
-    `);
-
-    // 2. Appareils de chaque décennie (service opérationnel).
-    //    Un avion opérationnel en 1968 appartient à la décennie 1960.
-    const aircraftPromise = pool.query(`
-      SELECT
-        a.id,
-        a.name,
-        a.name_en,
-        a.image_url,
-        a.little_description,
-        a.little_description_en,
-        a.date_operationel,
-        EXTRACT(YEAR FROM a.date_operationel)::int / 10 * 10 AS era_decade,
-        c.name    AS country_name,
-        c.name_en AS country_name_en,
-        g.generation,
-        t.name    AS type_name,
-        t.name_en AS type_name_en
-      FROM airplanes a
-      LEFT JOIN countries  c ON a.country_id    = c.id
-      LEFT JOIN generation g ON a.id_generation = g.id
-      LEFT JOIN type       t ON a.type          = t.id
-      WHERE a.date_operationel IS NOT NULL
-      ORDER BY a.date_operationel, a.id
-    `);
-
-    const [eventsRes, aircraftRes] = await Promise.all([eventsPromise, aircraftPromise]);
+    const { events, aircraft } = await timelineRepo.loadTimeline(getPool());
 
     // Regroupement en structure par décennie.
     const decadeMap = new Map();
@@ -95,7 +44,7 @@ module.exports = function createTimelineRouter(getPool) {
       decadeMap.set(d, { decade: d, events: [], aircraft: [] });
     }
 
-    for (const row of eventsRes.rows) {
+    for (const row of events) {
       const bucket = decadeMap.get(row.era_decade);
       if (!bucket) continue; // défense : décennie inattendue
       bucket.events.push({
@@ -119,7 +68,7 @@ module.exports = function createTimelineRouter(getPool) {
       });
     }
 
-    for (const row of aircraftRes.rows) {
+    for (const row of aircraft) {
       const bucket = decadeMap.get(Number(row.era_decade));
       if (!bucket) continue;
       bucket.aircraft.push({

@@ -542,6 +542,70 @@ describe('POST /api/refresh', () => {
     expect(res.body.code).toBe('REFRESH_REPLAY');
   });
 
+  // JS-007 — la révocation totale qui suit un rejeu ne doit jamais échouer en
+  // silence : c'est précisément le moment où une compromission est suspectée.
+  describe('rejeu : échec de la révocation totale journalisé', () => {
+    const logger = require('../logger');
+    let errorSpy;
+    beforeEach(() => { errorSpy = jest.spyOn(logger, 'error').mockImplementation(() => ({ errorId: 'test' })); });
+    afterEach(() => errorSpy.mockRestore());
+
+    test('jeton rotaté rejoué, base indisponible → 401 REFRESH_REPLAY et logger.error', async () => {
+      mockPool.query
+        .mockResolvedValueOnce({ rows: [{ user_id: 1, revoked: true, rotated_at: new Date(), live: true }] })
+        .mockRejectedValueOnce(new Error('connexion perdue'))   // revokeAllUserRefreshTokens
+        .mockRejectedValueOnce(new Error('connexion perdue'));  // nouvelle tentative
+
+      const res = await request(app)
+        .post('/api/refresh')
+        .set('Cookie', `refreshToken=${refreshTokenValid}`);
+
+      expect(res.status).toBe(401);
+      expect(res.body.code).toBe('REFRESH_REPLAY');
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.stringMatching(/révocation/i),
+        expect.objectContaining({ userId: 1, error: expect.any(Error), route: 'POST /refresh' })
+      );
+    });
+
+    test('course entre deux rotations, base indisponible → 401 REFRESH_REPLAY et logger.error', async () => {
+      mockPool.query
+        .mockResolvedValueOnce(TOKEN_ROW_VALID)
+        .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1, token_version: 0 }] })
+        .mockResolvedValueOnce({ rows: [], rowCount: 0 })        // rotation : UPDATE ne révoque rien
+        .mockRejectedValueOnce(new Error('timeout'))             // revokeAllUserRefreshTokens
+        .mockRejectedValueOnce(new Error('timeout'));            // nouvelle tentative
+
+      const res = await request(app)
+        .post('/api/refresh')
+        .set('Cookie', `refreshToken=${refreshTokenValid}`);
+
+      expect(res.status).toBe(401);
+      expect(res.body.code).toBe('REFRESH_REPLAY');
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.stringMatching(/révocation/i),
+        expect.objectContaining({ userId: 1, error: expect.any(Error) })
+      );
+    });
+
+    test('échec passager : la seconde tentative révoque, rien n\'est journalisé en erreur', async () => {
+      mockPool.query
+        .mockResolvedValueOnce({ rows: [{ user_id: 1, revoked: true, rotated_at: new Date(), live: true }] })
+        .mockRejectedValueOnce(new Error('connexion perdue'))
+        .mockResolvedValueOnce({ rows: [], rowCount: 3 });
+
+      const res = await request(app)
+        .post('/api/refresh')
+        .set('Cookie', `refreshToken=${refreshTokenValid}`);
+
+      expect(res.status).toBe(401);
+      expect(res.body.code).toBe('REFRESH_REPLAY');
+      const revokes = mockPool.query.mock.calls.filter(c => /UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = \$1/.test(c[0]));
+      expect(revokes).toHaveLength(2);
+      expect(errorSpy).not.toHaveBeenCalled();
+    });
+  });
+
   test('rotation : marque l\'ancien jeton rotated_at pour reconnaître un rejeu ultérieur', async () => {
     mockPool.query
       .mockResolvedValueOnce(TOKEN_ROW_VALID)
@@ -1382,8 +1446,9 @@ describe('GET /details/:slug — server-rendered meta', () => {
     });
     const res = await request(app).get('/details/rafale-42');
     expect(res.status).toBe(200);
-    // Le preload cible la variante .avif du même nom de base
-    expect(res.text).toMatch(/<link rel="preload" as="image" href="\/assets\/airplanes\/rafale\.avif" type="image\/avif" fetchpriority="high">/);
+    // Le preload cible la variante .avif du même nom de base (versionnée par
+    // le lot SSR : ?v=<version>, cf. ssr-meta.test.js)
+    expect(res.text).toMatch(/<link rel="preload" as="image" href="\/assets\/airplanes\/rafale\.avif\?v=[^"]+" type="image\/avif" fetchpriority="high">/);
   });
 
   test('200 — pas de preload AVIF pour une image distante (URL externe)', async () => {
@@ -1640,6 +1705,47 @@ describe('PUT /api/airplanes/:id', () => {
       .set('Authorization', `Bearer ${tokenMember}`)
       .send(updatedData);
     expect(res.status).toBe(403);
+  });
+
+  // Perte de données silencieuse : le formulaire de la fiche n'envoie ni
+  // engine_type_en ni variants_en, et l'UPDATE réécrivait toutes les colonnes —
+  // chaque modification les remettait à NULL. Un champ ABSENT du corps n'est
+  // plus touché ; un champ PRÉSENT à null ou '' est effacé.
+  test('200 — un champ absent du corps n\'est pas modifié', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(fkAllValid)
+      .mockResolvedValueOnce({ rows: [{ id: 5, name: 'F-16 Block 60' }] });
+
+    const res = await request(app)
+      .put('/api/airplanes/5')
+      .set('Authorization', `Bearer ${tokenAdmin}`)
+      .send({ max_speed: 2100, name: '  F-16 Block 60  ' });
+
+    expect(res.status).toBe(200);
+    const [sql, params] = mockPool.query.mock.calls[1];
+    expect(sql).toMatch(/^UPDATE airplanes SET/);
+    expect(sql).toMatch(/\bname = \$1\b/);
+    expect(sql).toMatch(/\bmax_speed = \$2\b/);
+    expect(sql).not.toMatch(/engine_type_en|variants_en|predecessor_id|image_credit/);
+    expect(sql).toMatch(/WHERE id = \$3 RETURNING \*/);
+    expect(params).toEqual(['F-16 Block 60', 2100, '5']);
+  });
+
+  test('200 — un champ présent à null ou vide est effacé', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(fkAllValid)
+      .mockResolvedValueOnce({ rows: [{ id: 5, name: 'F-16' }] });
+
+    const res = await request(app)
+      .put('/api/airplanes/5')
+      .set('Authorization', `Bearer ${tokenAdmin}`)
+      .send({ name: 'F-16', variants_en: '', engine_type_en: null });
+
+    expect(res.status).toBe(200);
+    const [sql, params] = mockPool.query.mock.calls[1];
+    expect(sql).toMatch(/\bengine_type_en = \$2\b/);
+    expect(sql).toMatch(/\bvariants_en = \$3\b/);
+    expect(params).toEqual(['F-16', null, null, '5']);
   });
 });
 
@@ -2721,13 +2827,14 @@ describe('GET /sitemap.xml', () => {
     expect(res.text).toContain('/hangar');
 
     // hreflang fr/en avec ?lang= distinct pour les pages statiques
-    expect(res.text).toContain('hreflang="fr" href="https://vol-histoire.titouan-borde.com/hangar?lang=fr"');
+    // SEO-001 : le français est servi à l'URL nue (aussi x-default).
+    expect(res.text).toContain('hreflang="fr" href="https://vol-histoire.titouan-borde.com/hangar"');
     expect(res.text).toContain('hreflang="en" href="https://vol-histoire.titouan-borde.com/hangar?lang=en"');
     // x-default pointe vers l'URL sans ?lang=
     expect(res.text).toContain('hreflang="x-default" href="https://vol-histoire.titouan-borde.com/hangar"');
 
     // hreflang pour les avions avec ?lang= (URL slug)
-    expect(res.text).toContain('hreflang="fr" href="https://vol-histoire.titouan-borde.com/details/f-22-raptor-1?lang=fr"');
+    expect(res.text).toContain('hreflang="fr" href="https://vol-histoire.titouan-borde.com/details/f-22-raptor-1"');
     expect(res.text).toContain('hreflang="en" href="https://vol-histoire.titouan-borde.com/details/f-22-raptor-1?lang=en"');
   });
 
@@ -2959,13 +3066,19 @@ describe('GET /api/referentials', () => {
   });
 
   test('200 — header Cache-Control présent (cacheable)', async () => {
+    // Six requêtes (pays, générations, types, constructeurs, conflits, missions).
+    // Le test n'en simulait que quatre : la réponse partait en 500 après la pose
+    // de l'en-tête, et l'assertion passait par accident.
     mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] });
 
     const res = await request(app).get('/api/referentials');
+    expect(res.status).toBe(200);
     expect(res.headers['cache-control']).toBeDefined();
     expect(res.headers['cache-control']).toMatch(/public/);
     expect(res.headers['cache-control']).toMatch(/max-age=\d+/);
@@ -3990,7 +4103,8 @@ describe('GET /details/:slug — branches renderHtml fallbacks', () => {
     expect(res.status).toBe(200);
     // escapeHtml encode l'apostrophe en &#39;
     expect(res.text).toMatch(/<title>Avion Test \| Vol d&#39;Histoire<\/title>/);
-    expect(res.text).toContain('Découvrez les spécifications');
+    // Insécable avant « : » (typographie française de la meta description).
+    expect(res.text).toMatch(/Fiche technique, armement, production et histoire[^ ]: Avion Test\./);
     expect(res.text).not.toMatch(/"datePublished":/);
   });
 
@@ -4411,6 +4525,29 @@ describe('app.js — Clean URLs + redirections .html', () => {
     expect(res.status).toBe(200);
   });
 
+  test('404 — GET /404 sert la page d’erreur avec le statut 404 (jamais 200 indexable)', async () => {
+    const res = await request(app).get('/404');
+    expect(res.status).toBe(404);
+    expect(res.headers['content-type']).toMatch(/text\/html/);
+  });
+
+  test('SEO-001 — /hangar?lang=en sert la variante anglaise, /hangar la française', async () => {
+    const en = await request(app).get('/hangar?lang=en');
+    expect(en.status).toBe(200);
+    expect(en.text).toMatch(/<html[^>]*lang="en"/);
+    expect(en.headers.vary).toMatch(/Accept-Language/i);
+    const fr = await request(app).get('/hangar').set('Accept-Language', 'fr-FR');
+    expect(fr.text).toMatch(/<html[^>]*lang="fr"/);
+    expect(fr.headers.vary).toMatch(/Accept-Language/i);
+  });
+
+  test('200 — GET /offline sert la page hors ligne pré-cachée par le service worker', async () => {
+    const res = await request(app).get('/offline');
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toMatch(/text\/html/);
+    expect(res.text).toMatch(/noindex/);
+  });
+
   test('404 — GET /cookie-consent retourne 404 (VH-S2 + VH-A3 : URL propre masquée)', async () => {
     // cookie-consent.html est un fragment chargé par cookies.js, pas une page publique.
     // /cookie-consent (URL propre, sans .html) doit renvoyer 404 pour éviter d'exposer
@@ -4505,16 +4642,74 @@ describe('app.js — Static Cache-Control (lignes 295-302)', () => {
 // app.js — sendCachedHtml fallback sendFile — ligne 343
 // =============================================================================
 describe('app.js — sendCachedHtml fallback (ligne 343)', () => {
-  test('chemin non caché → res.sendFile est appelé', () => {
+  test('chemin non caché et introuvable → 404, sans sendFile brut', async () => {
     const mockRes = {
       locals: { cspNonce: 'test-nonce' },
       set: jest.fn().mockReturnThis(),
+      status: jest.fn().mockReturnThis(),
       send: jest.fn(),
       sendFile: jest.fn(),
     };
-    app.sendCachedHtml(mockRes, '/nowhere/not-in-cache.html');
-    expect(mockRes.sendFile).toHaveBeenCalledWith('/nowhere/not-in-cache.html');
-    expect(mockRes.send).not.toHaveBeenCalled();
+    await app.sendCachedHtml(mockRes, '/nowhere/not-in-cache.html');
+    expect(mockRes.sendFile).not.toHaveBeenCalled();
+    expect(mockRes.status).toHaveBeenCalledWith(404);
+  });
+
+  test('chemin non caché mais présent sur disque → lu et nonçé (scripts compris)', async () => {
+    const os = require('os');
+    const fsLocal = require('fs');
+    const pathLocal = require('path');
+    const file = pathLocal.join(os.tmpdir(), `vh-late-page-${process.pid}.html`);
+    fsLocal.writeFileSync(file, '<html><script defer src="js/late.js"></script></html>');
+    try {
+      const mockRes = {
+        locals: { cspNonce: 'n0nce' },
+        set: jest.fn().mockReturnThis(),
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
+      await app.sendCachedHtml(mockRes, file);
+      expect(mockRes.send).toHaveBeenCalledWith('<html><script defer src="js/late.js" nonce="n0nce"></script></html>');
+    } finally {
+      fsLocal.unlinkSync(file);
+    }
+  });
+
+  test('injectCspNonce — nonce sur les <script src> locaux seulement', () => {
+    const html = [
+      '<script defer src="js/dist/app.min.js?v=1"></script>',
+      '<script defer src="/js/gtm.js"></script>',
+      '<script src="https://evil.example/x.js"></script>',
+      '<script src="//evil.example/x.js"></script>',
+      '<script src="data:text/javascript,alert(1)"></script>',
+      '<script type="application/ld+json">{"a":1}</script>',
+      '<script src="js/a.js" nonce="deja"></script>',
+    ].join('');
+    const out = app.injectCspNonce(html, 'abc');
+    expect(out).toContain('<script defer src="js/dist/app.min.js?v=1" nonce="abc">');
+    expect(out).toContain('<script defer src="/js/gtm.js" nonce="abc">');
+    expect(out).toContain('<script src="https://evil.example/x.js"></script>');
+    expect(out).toContain('<script src="//evil.example/x.js"></script>');
+    expect(out).toContain('<script src="data:text/javascript,alert(1)"></script>');
+    expect(out).toContain('<script type="application/ld+json">{"a":1}</script>');
+    expect(out).toContain('<script src="js/a.js" nonce="deja">');
+  });
+
+  test('toutes les pages du cache HTML : chaque <script src> reçoit le nonce', () => {
+    const fsLocal = require('fs');
+    const pathLocal = require('path');
+    const dir = pathLocal.join(__dirname, '../../frontend');
+    const pages = fsLocal.readdirSync(dir).filter((f) => f.endsWith('.html') && f !== 'cookie-consent.html');
+    expect(pages.length).toBeGreaterThan(10);
+    for (const page of pages) {
+      const cached = app.htmlCache.get(pathLocal.join(dir, page));
+      expect(cached).not.toBeNull();
+      const out = app.injectCspNonce(cached, 'NONCE');
+      const scripts = out.match(/<script\b[^>]*\bsrc=[^>]*>/gi) || [];
+      for (const tag of scripts) {
+        expect(`${page}: ${tag}`).toMatch(/nonce="NONCE"/);
+      }
+    }
   });
 
   test('injectCspNonce — passe nonce sur <style> non noncés', () => {
@@ -4899,7 +5094,9 @@ describe('VH-T1 — details-ssr renderHtml branches supplémentaires', () => {
     });
     const res = await request(app).get('/details/hreflang-206');
     expect(res.status).toBe(200);
-    expect(res.text).toMatch(/hreflang="fr" href="[^"]*\/details\/hreflang-206\?lang=fr"/);
+    // SEO-001 : français à l'URL nue, canonical auto-référent.
+    expect(res.text).toMatch(/hreflang="fr" href="[^"]*\/details\/hreflang-206"/);
+    expect(res.text).toMatch(/<link rel="canonical" href="[^"]*\/details\/hreflang-206">/);
     expect(res.text).toMatch(/hreflang="en" href="[^"]*\/details\/hreflang-206\?lang=en"/);
     // x-default reste sur l'URL nue
     expect(res.text).toMatch(/hreflang="x-default" href="[^"]*\/details\/hreflang-206"/);

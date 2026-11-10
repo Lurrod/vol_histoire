@@ -1,57 +1,34 @@
-/* Formulaire admin : populate selects + modal + submit create. */
+/* Formulaire admin du hangar : modale de création d'un appareil.
+ * Le formulaire lui-même (champs, listes, lecture) est VH.shared.airplaneForm,
+ * commun avec l'édition sur la fiche (ARCH-007). */
 (function () {
   window.VH = window.VH || {};
   window.VH.hangar = window.VH.hangar || {};
 
+  // Référentiels déjà chargés par hangar/data.js pour les filtres : la modale
+  // les réutilise au lieu de refaire la requête.
+  let _referentials = null;
+  let _form = null;
+
+  /* Appelé par hangar/data.js une fois /api/referentials chargé. En cas
+   * d'échec de ce chargement, il n'est pas appelé : la modale relancera la
+   * requête elle-même à l'ouverture. */
   function populateFormSelects(state) {
-    const countrySelect = document.getElementById('aircraft-country');
-    const manufacturerSelect = document.getElementById('aircraft-manufacturer');
-    const generationSelect = document.getElementById('aircraft-generation');
-    const typeSelect = document.getElementById('aircraft-type');
-    const placeholder = `<option value="">${i18n.t('hangar.select')}</option>`;
-
-    if (countrySelect) {
-      countrySelect.innerHTML = placeholder +
-        state.countries.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
-    }
-    if (manufacturerSelect) {
-      manufacturerSelect.innerHTML = placeholder +
-        state.manufacturers.map(m => `<option value="${m.id}">${escapeHtml(m.name)}${m.country_name ? ` (${escapeHtml(m.country_name)})` : ''}</option>`).join('');
-    }
-    if (generationSelect) {
-      generationSelect.innerHTML = placeholder +
-        state.generations.map(g => `<option value="${escapeHtml(String(g))}">${escapeHtml(String(g))}e Génération</option>`).join('');
-    }
-    if (typeSelect) {
-      typeSelect.innerHTML = placeholder +
-        state.types.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('');
-    }
-  }
-
-  // Charge la liste complète d'avions pour les selects predecessor / successor / rival.
-  async function populateRelationSelects() {
-    const ids = ['aircraft-predecessor-id', 'aircraft-successor-id', 'aircraft-rival-id'];
-    if (!ids.some(id => document.getElementById(id))) return;
-    try {
-      const res = await auth.fetchWithTimeout('/api/airplanes?limit=500');
-      if (!res.ok) return;
-      const payload = await res.json();
-      const list = Array.isArray(payload) ? payload : (payload.data || []);
-      const options = ['<option value="">—</option>'].concat(
-        list
-          .sort((a, b) => (a.name || '').localeCompare(b.name || ''))
-          .map(ap => `<option value="${ap.id}">${escapeHtml(ap.name || '')}</option>`)
-      ).join('');
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = options;
-      });
-    } catch { /* silencieux */ }
+    const refs = {
+      countries: state.countries,
+      manufacturers: state.manufacturers,
+      generations: state.generations,
+      types: state.types,
+    };
+    if (!VH.shared.airplaneForm.isReferentials(refs)) return;
+    _referentials = refs;
+    _form?.setReferentials(refs);
   }
 
   function setupAdminModal(state) {
     const modal = document.getElementById('aircraft-modal');
     const modalForm = document.getElementById('aircraft-form');
+    const fieldsRoot = document.getElementById('aircraft-form-fields');
     const addBtn = document.getElementById('add-airplane-btn');
     const cancelBtn = document.getElementById('cancel-btn');
     const modalClose = document.querySelector('.modal-close');
@@ -64,6 +41,18 @@
     let _previousFocus = null;
     let _closeTimer = null;
     let _submitting = false;
+    // Vrai quand les référentiels et la liste des appareils sont chargés.
+    let _ready = false;
+    let _openTicket = 0;
+
+    function syncSubmit() {
+      if (submitBtn) submitBtn.disabled = _submitting || !_ready;
+    }
+
+    function setReady(ready) {
+      _ready = ready;
+      syncSubmit();
+    }
 
     /* Bouton d'envoi : désactivé pendant la requête (pas de double création),
      * icône remplacée par un indicateur. icons.js ne convertit que les <i>
@@ -71,8 +60,8 @@
     function setSubmitting(on) {
       if (_submitting === on) return;
       _submitting = on;
+      syncSubmit();
       if (!submitBtn) return;
-      submitBtn.disabled = on;
       submitBtn.classList.toggle('is-loading', on);
       submitBtn.setAttribute('aria-busy', on ? 'true' : 'false');
       const icon = document.createElement('i');
@@ -80,6 +69,35 @@
       icon.setAttribute('aria-hidden', 'true');
       const current = submitBtn.querySelector('.icon, i');
       if (current) current.replaceWith(icon); else submitBtn.prepend(icon);
+    }
+
+    function ensureForm() {
+      if (!_form) {
+        _form = VH.shared.airplaneForm.mount(fieldsRoot, { prefix: 'aircraft' });
+        if (_referentials) _form.setReferentials(_referentials);
+      }
+      return _form;
+    }
+
+    /* Référentiels et liste complète des appareils (filiations). Tant que
+     * l'un manque, « Enregistrer » reste désactivé et un toast le dit : des
+     * listes vides enverraient leurs clés à NULL sans prévenir (JS-001). */
+    async function prepareForm(form, ticket) {
+      try {
+        const [refs, airplanes] = await Promise.all([
+          _referentials ? Promise.resolve(_referentials) : VH.shared.airplaneForm.loadReferentials(),
+          VH.shared.airplaneOptions.fetchAll(),
+        ]);
+        if (ticket !== _openTicket) return;
+        _referentials = refs;
+        form.setReferentials(refs);
+        form.setAirplanes(airplanes);
+        setReady(true);
+      } catch {
+        if (ticket !== _openTicket) return;
+        setReady(false);
+        showToast(i18n.t('common.loading_error'), 'error');
+      }
     }
 
     function isOpen() { return !!modal && modal.classList.contains('show'); }
@@ -96,11 +114,13 @@
     function openModal() {
       if (!modal) return;
       if (_closeTimer) finishClose();
+      const form = ensureForm();
+      setReady(false);
+      prepareForm(form, ++_openTicket);
       _previousFocus = document.activeElement;
       modal.classList.add('show');
       document.body.classList.add('modal-open');
       _focusTrap = trapFocus(modal, { onEscape: closeModal });
-      populateRelationSelects();
     }
     function closeModal() {
       // Échap est relayé par hangar.js même modale fermée : ne rien animer.
@@ -124,94 +144,15 @@
 
     modalForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      // Requête déjà partie (double clic, Entrée répétée) : on ignore.
-      if (_submitting) return;
+      // Requête déjà partie (double clic, Entrée répétée) ou listes non
+      // chargées : on ignore.
+      if (_submitting || !_ready || !_form) return;
       const payload = auth.getPayload();
       if (!payload) { showToast(i18n.t('common.unauthorized'), 'error'); return; }
       const userRole = Number(payload.role);
       if (userRole !== 1 && userRole !== 2) { showToast(i18n.t('common.unauthorized'), 'error'); return; }
 
-      const num = (id) => {
-        const el = document.getElementById(id);
-        if (!el) return null;
-        const v = el.value;
-        if (v === '' || v == null) return null;
-        const n = Number(v);
-        return isNaN(n) ? null : n;
-      };
-      const intOrNull = (id) => {
-        const el = document.getElementById(id);
-        if (!el) return null;
-        const v = el.value;
-        if (v === '' || v == null) return null;
-        const n = parseInt(v, 10);
-        return isNaN(n) ? null : n;
-      };
-      const str = (id) => {
-        const el = document.getElementById(id);
-        if (!el) return null;
-        const v = el.value;
-        return v === '' ? null : v;
-      };
-
-      const formData = {
-        // base
-        name: str('aircraft-name') || '',
-        complete_name: str('aircraft-complete-name'),
-        little_description: str('aircraft-little-description'),
-        image_url: str('aircraft-image-url'),
-        description: str('aircraft-description'),
-        country_id: intOrNull('aircraft-country'),
-        id_manufacturer: intOrNull('aircraft-manufacturer'),
-        id_generation: intOrNull('aircraft-generation'),
-        type: intOrNull('aircraft-type'),
-        status: str('aircraft-status'),
-        date_concept: str('aircraft-date-concept'),
-        date_first_fly: str('aircraft-date-first-fly'),
-        date_operationel: str('aircraft-date-operational'),
-        max_speed: num('aircraft-max-speed'),
-        max_range: num('aircraft-max-range'),
-        // strate 1
-        length: num('aircraft-length'),
-        wingspan: num('aircraft-wingspan'),
-        height: num('aircraft-height'),
-        wing_area: num('aircraft-wing-area'),
-        empty_weight: num('aircraft-empty-weight'),
-        mtow: num('aircraft-mtow'),
-        service_ceiling: intOrNull('aircraft-service-ceiling'),
-        climb_rate: num('aircraft-climb-rate'),
-        g_limit_pos: num('aircraft-g-limit-pos'),
-        g_limit_neg: num('aircraft-g-limit-neg'),
-        combat_radius: num('aircraft-combat-radius'),
-        crew: intOrNull('aircraft-crew'),
-        // strate 2
-        engine_name: str('aircraft-engine-name'),
-        engine_count: intOrNull('aircraft-engine-count'),
-        engine_type: str('aircraft-engine-type'),
-        thrust_dry: num('aircraft-thrust-dry'),
-        thrust_wet: num('aircraft-thrust-wet'),
-        // strate 3
-        production_start: intOrNull('aircraft-production-start'),
-        production_end: intOrNull('aircraft-production-end'),
-        units_built: intOrNull('aircraft-units-built'),
-        unit_cost_usd: intOrNull('aircraft-unit-cost-usd'),
-        unit_cost_year: intOrNull('aircraft-unit-cost-year'),
-        operators_count: intOrNull('aircraft-operators-count'),
-        variants: str('aircraft-variants'),
-        // strate 4
-        stealth_level: str('aircraft-stealth-level'),
-        nickname: str('aircraft-nickname'),
-        predecessor_id: intOrNull('aircraft-predecessor-id'),
-        successor_id: intOrNull('aircraft-successor-id'),
-        rival_id: intOrNull('aircraft-rival-id'),
-        // strate 6
-        wikipedia_fr: str('aircraft-wikipedia-fr'),
-        wikipedia_en: str('aircraft-wikipedia-en'),
-        youtube_showcase: str('aircraft-youtube-showcase'),
-        manufacturer_page: str('aircraft-manufacturer-page'),
-        image_credit: str('aircraft-image-credit'),
-        image_licence: str('aircraft-image-licence'),
-      };
+      const formData = _form.read();
 
       setSubmitting(true);
       try {
@@ -222,6 +163,8 @@
         });
         if (!response.ok) throw new Error(i18n.t('common.create_error'));
         showToast(i18n.t('common.added'), 'success');
+        // La nouvelle fiche doit figurer dans les listes de la prochaine ouverture.
+        VH.shared.airplaneOptions.invalidate();
         closeModal();
         VH.hangar.data.loadAircraft(state);
       } catch (error) {
@@ -235,4 +178,9 @@
   }
 
   VH.hangar.admin = { populateFormSelects, setupAdminModal, closeModal: () => {} };
+
+  // Export conditionnel pour les tests unitaires (Node.js / jsdom)
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = VH.hangar.admin;
+  }
 })();

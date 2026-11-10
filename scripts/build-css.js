@@ -48,17 +48,47 @@ const BUNDLES = {
     'nations-map.css',
     'home-landing.css',
   ],
-  'hangar.min.css': ['hangar.css', 'compare.css', 'nations-map.css'],
+  // catalog.css : bandeau, recherche, filtres et cartes communs au hangar, aux
+  // favoris et aux conflits (73 règles autrefois copiées dans deux feuilles).
+  'hangar.min.css': ['catalog.css', 'hangar.css', 'compare.css', 'nations-map.css'],
   'details.min.css': ['details.css', 'details-lineage.css', 'compare.css'],
   'timeline.min.css': ['timeline.css'],
-  'favorites.min.css': ['favorites.css'],
+  'favorites.min.css': ['catalog.css', 'favorites.css'],
   // La page des conflits reprend le bandeau et les cartes de favorites.css.
-  'conflicts.min.css': ['favorites.css', 'conflicts.css'],
+  'conflicts.min.css': ['catalog.css', 'favorites.css', 'conflicts.css'],
   'login.min.css': ['login.css'],
   'settings.min.css': ['settings.css'],
   'legal.min.css': ['legal.css'],
   'contact.min.css': ['contact.css'],
 };
+
+// ── Cascade layers ─────────────────────────────────────────────────────
+//
+// L'ordre des couches est déclaré en tête de tokens.css :
+//   guards < base < components < shared < page < utilities.
+// Les fichiers entièrement hors couche sont enveloppés ici, au build, plutôt
+// que réindentés à la main :
+//   - les fichiers de core listés dans CORE_FILE_LAYERS vont dans « shared » ;
+//   - tout fichier d'un bundle de page va dans « page ».
+// Avant v4.14, les feuilles de page étaient hors couche : elles battaient
+// toute règle en couche, même plus spécifique, et un composant partagé ne
+// pouvait rien leur imposer sans !important (cf. garde-fou mouvements réduits).
+const CORE_FILE_LAYERS = {
+  'shared-responsive.css': 'shared',
+  'shared-onboarding.css': 'shared',
+  'cookies.css': 'shared',
+};
+const PAGE_LAYER = 'page';
+
+function layerFor(bundle, file) {
+  if (bundle === 'core.min.css') return CORE_FILE_LAYERS[file] || null;
+  return PAGE_LAYER;
+}
+
+function wrapInLayer(content, layer) {
+  if (!layer) return content;
+  return `@layer ${layer} {\n${content}\n}\n`;
+}
 
 // ── Détection de duplication ──────────────────────────────────────────
 //
@@ -126,14 +156,67 @@ function protectParenPlus(css) {
   return out;
 }
 
+// L'espace AVANT « : » n'est jamais retiré : dans un sélecteur, c'est un
+// combinateur descendant. « .page-login :focus-visible » (tout descendant
+// focalisé) devenait « .page-login:focus-visible » (le body lui-même, jamais
+// focalisé) et la règle mourait sans erreur. Dans une déclaration, l'espace
+// avant « : » n'existe pas dans nos sources : rien n'est perdu en poids.
 function minify(css) {
   return protectParenPlus(css.replace(/\/\*[\s\S]*?\*\//g, ''))
     .replace(/\s+/g, ' ')
-    .replace(/\s*([{}:;,>+~])\s*/g, '$1')
+    .replace(/\s*([{};,>+~])\s*/g, '$1')
+    .replace(/:\s+/g, ':')
     .replace(/^\s+|\s+$/g, '')
     .replace(/;}/g, '}')
     .replace(/}@/g, '}\n@')
     .split(PLUS_TOKEN).join(' + ');
+}
+
+// ── Contrôles post-minification ───────────────────────────────────────
+//
+// Deux défauts du minifieur ont déjà tué des règles en silence : le « + »
+// compacté dans calc() et l'espace retiré devant « :pseudo ». Ces contrôles
+// font échouer le build si l'un d'eux réapparaît.
+
+// Préludes de règles (texte avant « { »), hors at-rules.
+function selectorPreludes(css) {
+  const out = [];
+  const re = /([^{};]+)\{/g;
+  let m;
+  while ((m = re.exec(css)) !== null) {
+    const p = m[1].trim();
+    if (p && !p.startsWith('@')) out.push(p);
+  }
+  return out;
+}
+
+// Sélecteurs descendants vers une pseudo-classe ou un pseudo-élément :
+// « .a :focus », « .b ::before ». Un combinateur (, > + ~ ( ) avant
+// l'espace n'en fait pas partie.
+const DESCENDANT_PSEUDO = /[^\s,>+~(]\s+::?[a-zA-Z-]/g;
+
+function countDescendantPseudo(css) {
+  return selectorPreludes(css.replace(/\/\*[\s\S]*?\*\//g, ''))
+    .reduce((n, p) => n + (p.match(DESCENDANT_PSEUDO) || []).length, 0);
+}
+
+// « + » sans espaces à l'intérieur d'un calc()/clamp()/min()/max().
+function brokenCalcPlus(minified) {
+  const hits = minified.match(/calc\([^;}]*/g) || [];
+  return hits.filter((h) => /[^ ]\+[^ ]/.test(h));
+}
+
+function checkMinified(outName, raw, minified) {
+  const errors = [];
+  const src = countDescendantPseudo(raw);
+  const min = countDescendantPseudo(minified);
+  if (src !== min) {
+    errors.push(`${outName} : ${src} sélecteur(s) « X :pseudo » dans la source, ${min} dans le .min — le minifieur a changé leur sens`);
+  }
+  for (const h of brokenCalcPlus(minified)) {
+    errors.push(`${outName} : « + » compacté dans ${h.slice(0, 60)}`);
+  }
+  return errors;
 }
 
 // ── Build ─────────────────────────────────────────────────────────────
@@ -141,6 +224,7 @@ function minify(css) {
 function main() {
   let totalIn = 0;
   let totalOut = 0;
+  const checkErrors = [];
 
   // Pré-charger tous les fichiers pour la détection de duplication
   const fileContents = new Map();
@@ -173,7 +257,7 @@ function main() {
       }
       const content = fileContents.get(file) || fs.readFileSync(fp, 'utf8');
       totalIn += content.length;
-      raw += `\n/* === ${file} === */\n` + content;
+      raw += `\n/* === ${file} === */\n` + wrapInLayer(content, layerFor(outName, file));
     }
 
     if (missing.length) {
@@ -181,6 +265,7 @@ function main() {
     }
 
     const minified = minify(raw);
+    checkErrors.push(...checkMinified(outName, raw, minified));
     const outPath = path.join(CSS_DIR, outName);
     fs.writeFileSync(outPath, minified, 'utf8');
     totalOut += minified.length;
@@ -197,6 +282,16 @@ function main() {
   console.log('');
   console.log(`  TOTAL${' '.repeat(16)} ${(totalIn / 1024).toFixed(1).padStart(7)} KB → ${(totalOut / 1024).toFixed(1).padStart(7)} KB  (−${((1 - totalOut / totalIn) * 100).toFixed(0)}%)`);
   console.log(`\n  ${Object.keys(BUNDLES).length} bundles écrits dans frontend/css/`);
+
+  if (checkErrors.length > 0) {
+    console.error('\n  ✗ Contrôles post-minification en échec :');
+    for (const e of checkErrors) console.error(`      ${e}`);
+    process.exitCode = 1;
+  }
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { minify, countDescendantPseudo, brokenCalcPlus };

@@ -20,25 +20,12 @@ if (process.env.REFRESH_SECRET.length < 32) {
 const app = require('./app');
 const { resolveListenHost } = require('./utils/network');
 const { Pool } = require('pg');
-const fs = require('fs');
-const path = require('path');
 
-// Génère frontend/js/app-version.js depuis backend/package.json à chaque boot.
-// Le fichier expose window.APP_VERSION (lu par sentry-init.js pour le tag release)
-// et window.APP_BUILD (timestamp du boot, utile pour cache-busting et debug).
-(function writeAppVersion() {
-  try {
-    const pkg = require('./package.json');
-    const out = `/* Auto-généré au boot du serveur — ne pas éditer */
-window.APP_VERSION = ${JSON.stringify(pkg.version)};
-window.APP_BUILD   = ${JSON.stringify(new Date().toISOString())};
-`;
-    fs.writeFileSync(path.join(__dirname, '../frontend/js/app-version.js'), out);
-    logger.info('app-version.js généré', { version: pkg.version });
-  } catch (err) {
-    logger.error('Échec génération app-version.js', { error: err });
-  }
-})();
+// frontend/js/app-version.js (window.APP_VERSION, release Sentry) n'est plus
+// écrit au démarrage : il est généré par scripts/build-js.js depuis le
+// package.json racine, puis concaténé dans app.min.js. L'écrire ici ne
+// changeait pas le bundle déjà construit et modifiait un fichier suivi par git
+// à chaque boot du serveur (JS-004).
 
 const pool = new Pool({
   user: process.env.DB_USER,
