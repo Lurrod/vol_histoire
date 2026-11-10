@@ -1,0 +1,46 @@
+name: Photo et droits d'auteur
+description: Crédit ou licence inexacts, photo du mauvais appareil, ou demande de retrait par l'auteur.
+title: "[Photo] "
+labels: ["photo", "à trier"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Les photographies proviennent pour l'essentiel de Wikimedia Commons, chacune sous sa licence d'origine. La [page des crédits photo](https://vol-histoire.titouan-borde.com/credits) les liste toutes.
+        **Vous êtes l'auteur d'une photo et souhaitez son retrait sans le faire publiquement ?** Écrivez plutôt via le [formulaire de contact](https://vol-histoire.titouan-borde.com/contact) : la demande sera traitée de la même façon.
+
+  - type: input
+    id: fiche
+    attributes:
+      label: Adresse de la fiche
+      placeholder: https://vol-histoire.titouan-borde.com/details/…
+    validations:
+      required: true
+
+  - type: dropdown
+    id: probleme
+    attributes:
+      label: Nature du problème
+      options:
+        - L'auteur crédité est inexact
+        - La licence indiquée est inexacte
+        - La photo ne montre pas cet appareil (ou une autre version)
+        - Je suis l'auteur et je demande le retrait de la photo
+        - Je suis l'auteur et je demande une autre mention de crédit
+        - Qualité insuffisante (floue, filigrane, sujet tronqué)
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Précisions
+      description: Mention de crédit attendue, licence réelle, version exacte de l'appareil photographié…
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: Source de la photo
+      description: Lien vers la page d'origine (Commons, site de l'auteur…), si vous la connaissez.

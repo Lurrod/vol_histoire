@@ -1,0 +1,73 @@
+name: Proposer un appareil
+description: Suggérer un aéronef militaire (depuis 1945) qui n'a pas encore sa fiche.
+title: "[Appareil] "
+labels: ["contenu", "nouvel appareil", "à trier"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Le catalogue couvre les aéronefs militaires depuis 1945 : chasseurs, bombardiers, transports, ravitailleurs, avions de surveillance et d'entraînement, drones, prototypes…
+        Vérifiez d'abord dans le [hangar](https://vol-histoire.titouan-borde.com/hangar) que l'appareil n'existe pas déjà, éventuellement sous un autre nom.
+
+  - type: input
+    id: nom
+    attributes:
+      label: Nom de l'appareil
+      placeholder: Dassault Mirage 2000-9
+    validations:
+      required: true
+
+  - type: input
+    id: pays
+    attributes:
+      label: Pays de conception
+    validations:
+      required: true
+
+  - type: input
+    id: constructeur
+    attributes:
+      label: Constructeur
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options:
+        - Chasseur ou multirôle
+        - Bombardier ou attaque au sol
+        - Transport
+        - Ravitailleur
+        - Reconnaissance ou surveillance
+        - Guerre électronique
+        - Entraînement
+        - Drone
+        - Prototype ou appareil de recherche
+        - Autre
+    validations:
+      required: true
+
+  - type: textarea
+    id: interet
+    attributes:
+      label: Pourquoi cet appareil a sa place dans le catalogue
+      description: Rôle historique, innovation, conflits, place dans une lignée d'appareils déjà présents…
+    validations:
+      required: true
+
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources
+      description: Références vérifiables pour les caractéristiques et l'histoire de l'appareil.
+    validations:
+      required: true
+
+  - type: input
+    id: photo
+    attributes:
+      label: Photo libre de droits (facultatif)
+      description: Lien vers une photo de Wikimedia Commons sous licence libre (domaine public, CC0, CC BY ou CC BY-SA), de préférence en vol, sans filigrane.
+      placeholder: https://commons.wikimedia.org/wiki/File:…

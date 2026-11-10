@@ -1,0 +1,44 @@
+name: Suggestion d'amélioration
+description: Une idée de fonctionnalité ou d'amélioration du site.
+title: "[Suggestion] "
+labels: ["enhancement", "à trier"]
+body:
+  - type: textarea
+    id: besoin
+    attributes:
+      label: Le besoin
+      description: Ce que vous cherchiez à faire, et ce qui vous en a empêché ou l'a rendu difficile.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposition
+    attributes:
+      label: Votre proposition
+      description: Comment vous imagineriez la solution.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: pages
+    attributes:
+      label: Pages concernées
+      multiple: true
+      options:
+        - Accueil
+        - Hangar (catalogue, filtres, recherche)
+        - Fiche d'un appareil
+        - Comparateur
+        - Chronologie
+        - Conflits
+        - Favoris
+        - Compte et paramètres
+        - Tout le site
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives envisagées
+      description: Facultatif. D'autres façons de répondre au même besoin.

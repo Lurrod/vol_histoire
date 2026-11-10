@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Signaler une faille de sécurité
+    url: https://github.com/Lurrod/vol_histoire/security/advisories/new
+    about: Signalement privé, visible seulement du mainteneur. Ne jamais décrire une faille dans un ticket public.
+  - name: Question, données personnelles (RGPD) ou demande privée
+    url: https://vol-histoire.titouan-borde.com/contact
+    about: Formulaire de contact du site. Pour toute demande liée à votre compte ou à vos données, n'ouvrez pas de ticket public.
