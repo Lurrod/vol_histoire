@@ -9,7 +9,7 @@
 <h1 align="center">Vol d'Histoire</h1>
 
 <p align="center">
-  <strong>Encyclopedie interactive de l'aviation militaire depuis 1960</strong><br>
+  <strong>Encyclopedie interactive de l'aviation militaire depuis 1945</strong><br>
   <em>434 appareils &middot; 33 nations &middot; 61 conflits &middot; 200+ systemes d'armes</em>
 </p>
 
@@ -24,7 +24,7 @@
 
 ## Presentation
 
-**Vol d'Histoire** est une application web dediee a l'histoire de l'aviation militaire de 1960 a nos jours. Elle propose un catalogue interactif d'avions de chasse, bombardiers et appareils de reconnaissance, enrichi de fiches techniques detaillees (dimensions, motorisation, production, variantes), de narratifs Markdown bilingues FR/EN, d'une frise chronologique et d'un systeme de favoris personnalise.
+**Vol d'Histoire** est une application web dediee a l'histoire de l'aviation militaire de 1945 a nos jours. Elle propose un catalogue interactif d'avions de combat, de transport, de surveillance et d'entrainement, de drones et de prototypes, enrichi de fiches techniques detaillees (dimensions, motorisation, production, variantes), de narratifs Markdown bilingues FR/EN, d'une frise chronologique et d'un systeme de favoris personnalise.
 
 ---
 
@@ -86,7 +86,7 @@ vol_histoire/
 │   │   ├── mailer / logger / cache Tests des gabarits d'email, du logger, du cache
 │   │   └── load.test.js           Tests de charge (autocannon)
 │   └── db_backup/
-│       ├── db.sql                 Schema complet (14 tables + triggers)
+│       ├── db.sql                 Schema complet (19 tables + triggers)
 │       └── *.sql                  434 fichiers avions (INSERT + enrichissement complet)
 │
 ├── frontend/                      Vanilla HTML / CSS / JS (pas de framework)
@@ -132,7 +132,7 @@ vol_histoire/
 │   │   └── [page].js              Point d'entree court par page
 │   ├── locales/                   fr.json, en.json (parite 100%)
 │   ├── partials/                  header.html, footer.html (inclus par serveHtml au demarrage)
-│   ├── __tests__/                 64 suites Jest + jsdom (couverture mesuree sur tout js/**)
+│   ├── __tests__/                 70 suites Jest + jsdom (couverture mesuree sur tout js/**)
 │   └── *.html                     19 pages
 │
 ├── e2e/                           Tests Playwright (21 specs)
@@ -165,7 +165,7 @@ vol_histoire/
 
 ## Base de donnees
 
-**14 tables** PostgreSQL avec relations many-to-many, audit trail (`created_at`, `updated_at`), triggers automatiques, colonne `tsvector` generee pour la recherche full-text :
+**19 tables** PostgreSQL avec relations many-to-many, audit trail (`created_at`, `updated_at`), triggers automatiques, colonne `tsvector` generee pour la recherche full-text :
 
 ```
 roles ──────────┐
@@ -224,7 +224,7 @@ Le schema et les donnees (y compris l'enrichissement complet) sont distribues da
 ```bash
 createdb vol_histoire
 
-# 1. Schema complet (14 tables, triggers, index, FTS)
+# 1. Schema complet (19 tables, triggers, index, FTS)
 psql -U vol_user -d vol_histoire -f backend/db_backup/db.sql
 
 # 2. Importer les 434 avions (chaque fichier contient INSERT + enrichissement)
@@ -260,12 +260,11 @@ Email : le serveur SMTP est fixé dans `backend/mailer.js` (OVH, `ssl0.ovh.net:4
 ### 4. Demarrer
 
 ```bash
-# Backend (port 3000)
+# Backend + site (port 3000)
 cd backend && npm start
-
-# Frontend (port 8080)
-cd frontend && npx live-server --port=8080
 ```
+
+Le backend sert aussi les pages : il y inclut l'en-tete et le pied de page (partials) et le rendu serveur des fiches. Un serveur statique comme live-server afficherait des pages sans en-tete, et l'API refuserait ses requetes (origine non autorisee).
 
 ### 5. Assets (apres modification des sources)
 
@@ -284,18 +283,18 @@ python scripts/build-icons.py
 node scripts/build-map.js
 ```
 
-Le site est accessible sur `http://localhost:8080`.
+Le site est accessible sur `http://localhost:3000`.
 La documentation API Swagger est sur `http://localhost:3000/api/docs` (mode dev uniquement).
 
 ---
 
 ## Tests
 
-Le projet dispose de **828 tests backend**, **1 292 tests frontend** et **21 specs E2E** :
+Le projet dispose de **959 tests backend**, **1 469 tests frontend** et **21 specs E2E** :
 
 ```bash
-# Backend — 754 tests (routes, validators, SSR, mailer, logger…) ; la suite
-# d'integration (74 tests sur vraie base) est sautee sans IT_DATABASE_URL
+# Backend — 869 tests (routes, validators, SSR, mailer, logger…) ; la suite
+# d'integration (90 tests sur vraie base) est sautee sans IT_DATABASE_URL
 cd backend && npm test
 
 # Backend — suite d'integration sur vraie base (nom de base obligatoirement en *_it)
@@ -316,13 +315,13 @@ cd e2e && npx playwright test
 
 | Suite | Tests | Outil |
 |-------|-------|-------|
-| Backend (routes, unitaires) | 754 | Jest + Supertest |
-| Backend integration (vraie base) | 74 | Jest + PostgreSQL |
+| Backend (routes, unitaires) | 869 | Jest + Supertest |
+| Backend integration (vraie base) | 90 | Jest + PostgreSQL |
 | Backend charge | inclus | autocannon |
-| Frontend unit + DOM | 1 292 | Jest + jsdom |
+| Frontend unit + DOM | 1 469 | Jest + jsdom |
 | E2E | 136 scenarios (21 specs) | Playwright |
 
-Couverture : backend 95,9 % des lignes (seuil 80), frontend 99,9 % des lignes et 89,9 % des branches sur tout `js/**` (seuils globaux 95/85/95/95, plancher de 80 % par fichier).
+Couverture : backend 96,0 % des lignes (seuil 80), frontend 99,8 % des lignes et 90,0 % des branches sur tout `js/**` (seuils globaux 95/85/95/95 ; plancher par fichier : 80 % des lignes, instructions et fonctions, 60 % des branches).
 
 ---
 
@@ -338,7 +337,7 @@ Couverture : backend 95,9 % des lignes (seuil 80), frontend 99,9 % des lignes et
 | `load` | tests de charge autocannon |
 | `deploy` | push sur `main` uniquement, après les quatre jobs ci-dessus |
 
-Node 24 partout : `.nvmrc` (lu par `setup-node`), champ `engines` des quatre `package.json`, et la production. Sur le serveur, `vol-histoire` tourne sous `/opt/node-24` (interpréteur pm2) ; le Node système reste en 20 pour les autres applications, et les scripts de déploiement et de retour arrière placent `/opt/node-24/bin` en tête du `PATH`. Le déploiement affiche un avertissement si la version ne correspond pas à `.nvmrc`. Les actions tierces sont épinglées par SHA de commit ; Dependabot les met à jour.
+Node 24 partout : `.nvmrc` (lu par `setup-node`), champ `engines` des quatre `package.json`, et la production. Sur le serveur, `vol-histoire` tourne avec un Node 24 dédié (interpréteur pm2), distinct du Node système utilisé par les autres applications ; les scripts de déploiement et de retour arrière le placent en tête du `PATH`. Le déploiement affiche un avertissement si la version ne correspond pas à `.nvmrc`. Les actions tierces sont épinglées par SHA de commit ; Dependabot les met à jour.
 
 Les bundles sont versionnés et déployés tels quels : **toute modification de JS/CSS source doit être suivie de `npm run build` et du commit des fichiers générés**, sinon le job `quality` échoue.
 
@@ -346,14 +345,14 @@ Les bundles sont versionnés et déployés tels quels : **toute modification de 
 
 1. Un seul déploiement à la fois (`concurrency: deploy-production`, jamais annulé en cours de route).
 2. Le run vérifie qu'il porte toujours la tête de `main` ; sinon il s'arrête sans rien faire, le run du commit plus récent déploiera.
-3. Sur le serveur (`/var/www/vol-histoire`) : le commit en ligne est noté dans `~/.vol-histoire-deploy/previous_sha` (journal : `history.log`), puis `git reset --hard <commit testé>`, `npm ci --omit=dev` et `pm2 restart vol-histoire`. **Jamais `pm2 restart all`** : le serveur héberge d'autres applications.
+3. Sur le serveur : le commit en ligne est noté hors du dépôt (avec un journal des déploiements), puis `git reset --hard <commit testé>`, `npm ci --omit=dev` et `pm2 restart vol-histoire`. **Jamais `pm2 restart all`** : le serveur héberge d'autres applications.
 4. Smoke tests : `/api/health` (base joignable, processus redémarré depuis moins de 10 min), `/api/config` (la version servie doit être celle de `backend/package.json` du commit déployé), `/`, `/api/airplanes`.
 5. Si le déploiement ou un smoke test échoue : **retour arrière automatique** au commit noté à l'étape 3, nouveau contrôle de santé, et le job reste rouge.
 
 Retour arrière manuel (problème découvert plus tard), sur le serveur :
 
 ```bash
-cd /var/www/vol-histoire
+cd <dossier du dépôt sur le serveur>
 bash scripts/rollback.sh --list   # historique des déploiements
 bash scripts/rollback.sh          # revient au commit précédent le dernier déploiement
 bash scripts/rollback.sh <sha>    # ou à un commit précis
@@ -361,7 +360,7 @@ bash scripts/rollback.sh <sha>    # ou à un commit précis
 
 Puis faire un revert sur `main`, sinon le prochain push redéploie la version fautive.
 
-**Migrations SQL : manuelles, et non annulées par le retour arrière.** Avant toute migration : `pg_dump` de la base ; la migration se joue en `postgres` par l'entrée standard (`sudo -u postgres psql -d vol_histoire < backend/migrations/<fichier>.sql`, `postgres` ne pouvant pas lire `/var/www`). Préférer des migrations additives et compatibles avec le code précédent : le retour arrière du code reste alors sans risque.
+**Migrations SQL : manuelles, et non annulées par le retour arrière.** Avant toute migration : `pg_dump` de la base ; la migration se joue en `postgres` par l'entrée standard (`sudo -u postgres psql -d vol_histoire < backend/migrations/<fichier>.sql`, l'utilisateur `postgres` ne pouvant pas lire le dossier de l'application). Préférer des migrations additives et compatibles avec le code précédent : le retour arrière du code reste alors sans risque.
 
 ---
 
@@ -374,11 +373,11 @@ Puis faire un revert sur `main`, sinon le prochain push redéploie la version fa
 | **Cookies** | HttpOnly, Secure, SameSite=Strict, Path=/api |
 | **CSRF** | SameSite + Bearer header + CORS whitelist + CSP form-action |
 | **Mots de passe** | bcryptjs cost 12, validation 8-128 chars, 1 maj/min/chiffre |
-| **Email** | Verification obligatoire, tokens 24h, rate limit 3 req/15 min |
+| **Email** | Verification obligatoire ; liens a usage unique, valables 30 min (verification) ou 15 min (reinitialisation), stockes haches (SHA-256) ; 3 envois / 15 min |
 | **Captcha** | hCaptcha invisible sur register, forgot-password, contact |
 | **XSS** | escapeHtml() partout, DOMPurify 3.x pour injection HTML, safeSetHTML() wrapper |
 | **Headers** | CSP nonce (style-src-attr 'none'), HSTS (1 an + preload), COOP same-origin, CORP same-site, X-Frame-Options DENY, Permissions-Policy |
-| **Rate limiting** | Par route (register 10, login 20, forgot 5, contact 5, global 200 / 15 min) + Redis fallback memoire |
+| **Rate limiting** | Par route, fenetre de 15 min : inscription 10, connexion 20, rafraichissement 30, envoi d'email (verification, mot de passe oublie) 3, liens d'email 5, contact 5, export des donnees 10, global 200 + Redis fallback memoire |
 | **SQL** | Requetes parametrees, transactions atomiques, whitelist sort |
 | **SEO redirect** | 301 canonicalisation `/details?id=X` → `/details/<slug>-<id>` |
 

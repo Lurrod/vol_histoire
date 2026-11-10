@@ -5000,10 +5000,11 @@ WHERE title_fr = 'Crise des missiles de Cuba — treize jours à l''altimètre' 
 
 -- ── Traductions manquantes du référentiel ─────────────────────────────────
 --
--- Posé ici et non dans db.sql : quatre constructeurs sont déclarés par les
--- fiches elles-mêmes, donc après db.sql. Pour eux le nom est un nom propre,
--- identique dans les deux langues ; les deux autres cas demandent une vraie
--- traduction et sont donc explicites.
+-- Filet de sécurité pour les bases déjà installées : tout le référentiel se
+-- déclare désormais dans db.sql (avec ses traductions), mais des constructeurs
+-- autrefois déclarés par les fiches peuvent y être restés sans name_en. Un nom
+-- de constructeur est un nom propre, identique dans les deux langues ; les deux
+-- autres cas demandent une vraie traduction et sont donc explicites.
 
 UPDATE manufacturer SET name_en = name WHERE name_en IS NULL;
 

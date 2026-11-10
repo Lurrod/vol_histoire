@@ -3,9 +3,26 @@
 Scripts destinés aux bases **déjà installées**. Une installation à neuf n'en a
 pas besoin : `db_backup/db.sql` puis les fiches contiennent déjà le résultat.
 
+## Les scripts
+
+| Fichier | Contenu | Compatible avec le code précédent |
+|---|---|---|
+| `001_mise_a_niveau.sql` | Schéma, référentiel, furtivité, crédits photo, corrections de contenu, contraintes `CHECK` | oui |
+| `002_securite_sessions.sql` | `users.token_version`, compteur d'échecs de connexion, rotation des refresh tokens (v4.11.1) | oui (additive) |
+| `003_jetons_haches.sql` | `email_tokens.token` → `token_hash` (SHA-256), jetons en cours hachés sur place (v4.14.0) | **non** : à jouer au moment du déploiement du code qui l'attend |
+
+En production, les tables appartiennent à `postgres` : jouer les scripts en
+`postgres`, par l'entrée standard (`sudo -u postgres psql -d vol_histoire < fichier.sql`),
+après une sauvegarde `pg_dump`.
+
+**Tout `UPDATE` d'`airplanes` dans `001` (et dans `zz_backfill_relations.sql`)
+porte une garde `IS DISTINCT FROM`** sur les colonnes écrites : un rejeu ne doit
+modifier que les lignes réellement différentes, sinon le déclencheur remet
+`updated_at` à jour sur toutes les fiches et le `lastmod` du sitemap ment.
+
 ## Mise à niveau
 
-Trois étapes, dans cet ordre. Séquence vérifiée sur une base reconstruite à
+Étapes, dans cet ordre. Séquence vérifiée sur une base reconstruite à
 l'état de production : **107 → 383 fiches** au passage v4.7.0, puis
 **383 → 434** aux lots 25 à 28, **aucun écart** avec une installation neuve sur
 les 57 colonnes métier et les 14 tables.
@@ -13,6 +30,10 @@ les 57 colonnes métier et les 14 tables.
 ```bash
 # 1. Schéma, référentiel, furtivité, crédits photo et contraintes
 psql -U vol_user -d vol_histoire -f backend/migrations/001_mise_a_niveau.sql
+
+# 1 bis. Sécurité des sessions et jetons d'email hachés (si pas encore joués)
+psql -U vol_user -d vol_histoire -f backend/migrations/002_securite_sessions.sql
+psql -U vol_user -d vol_histoire -f backend/migrations/003_jetons_haches.sql
 
 # 2. Fiches absentes de la base (276 au passage v4.7.0, 51 aux lots 25-28)
 #    --dry-run liste sans rien écrire

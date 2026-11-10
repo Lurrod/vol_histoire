@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Retour arrière MANUEL de la production (à lancer SUR le serveur, dans
-# /var/www/vol-histoire, avec l'utilisateur qui déploie).
+# Retour arrière MANUEL de la production (à lancer SUR le serveur, dans le
+# dossier du dépôt, avec l'utilisateur qui déploie).
 #
 #   bash scripts/rollback.sh            # revient au commit noté avant le dernier déploiement
 #   bash scripts/rollback.sh <sha>      # revient à un commit précis
