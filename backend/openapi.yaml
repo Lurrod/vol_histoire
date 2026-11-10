@@ -59,6 +59,10 @@ tags:
     description: Liveness, readiness, métriques Prometheus, statut applicatif
   - name: Config
     description: Configuration publique exposée au frontend
+  - name: Content
+    description: Frise chronologique éditoriale
+  - name: Contact
+    description: Formulaire de contact du site
 
 components:
   securitySchemes:
@@ -1369,6 +1373,7 @@ paths:
         n'est pas documentée. Cacheable (Cache-Control public).
       responses:
         '200':
+          description: Une ligne par fiche
           content:
             application/json:
               schema:
@@ -1381,6 +1386,108 @@ paths:
                     name_en: { type: string, nullable: true }
                     image_credit: { type: string, nullable: true }
                     image_licence: { type: string, nullable: true, example: 'CC BY-SA 2.0' }
+
+  /timeline:
+    get:
+      tags: [Content]
+      summary: Frise chronologique par décennie (1940 → 2020)
+      description: >
+        Événements éditoriaux (table `timeline_events`, textes FR et EN) et
+        appareils mis en service dans chaque décennie. Réponse mise en cache
+        30 minutes (Redis, sinon mémoire) ; l'en-tête `X-Cache` vaut `HIT`
+        ou `MISS`. `?force=1` ignore le cache et le recalcule.
+      parameters:
+        - name: force
+          in: query
+          schema: { type: string, enum: ['1'] }
+      responses:
+        '200':
+          description: Neuf décennies, de 1940 à 2020
+          headers:
+            X-Cache: { schema: { type: string, enum: [HIT, MISS] } }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  generated_at: { type: string, format: date-time }
+                  decades:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        decade: { type: integer, example: 1990 }
+                        events:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id: { type: integer }
+                              event_date: { type: string, format: date }
+                              kind: { type: string, description: 'Nature de l''événement (war, doctrine, rupture, milestone…)' }
+                              title_fr: { type: string }
+                              title_en: { type: string, nullable: true }
+                              body_fr: { type: string }
+                              body_en: { type: string, nullable: true }
+                              quote_author_fr: { type: string, nullable: true }
+                              quote_author_en: { type: string, nullable: true }
+                              airplane:
+                                type: object
+                                nullable: true
+                                description: Appareil illustrant l'événement, s'il y en a un.
+                                properties:
+                                  id: { type: integer }
+                                  name: { type: string }
+                                  name_en: { type: string, nullable: true }
+                                  image_url: { type: string }
+                                  little_description: { type: string, nullable: true }
+                                  little_description_en: { type: string, nullable: true }
+                        aircraft:
+                          type: array
+                          description: Appareils dont la mise en service tombe dans la décennie.
+                          items:
+                            type: object
+                            properties:
+                              id: { type: integer }
+                              name: { type: string }
+                              name_en: { type: string, nullable: true }
+                              image_url: { type: string }
+                              date_operationel: { type: string, format: date }
+                              country_name: { type: string }
+                              generation: { type: integer, nullable: true }
+                              type_name: { type: string }
+
+  /contact:
+    post:
+      tags: [Contact]
+      summary: Envoyer un message par le formulaire de contact
+      description: >
+        Envoie un email au destinataire configuré (`CONTACT_EMAIL`, sinon
+        `MAIL_USER`), en réponse à l'adresse saisie. Protégé par hCaptcha
+        (`h-captcha-response`) et limité à 5 messages par 15 minutes.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, message]
+              properties:
+                firstname: { type: string }
+                lastname: { type: string }
+                email: { type: string, format: email }
+                subject: { type: string, enum: [general, bug, contrib, partner, other], default: general }
+                message: { type: string, maxLength: 5000 }
+                h-captcha-response: { type: string }
+      responses:
+        '200':
+          description: Message envoyé
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '400': { description: 'Email invalide, message absent ou trop long, sujet inconnu, captcha refusé' }
+        '429': { description: Trop de messages envoyés }
+        '500': { description: Échec de l'envoi de l'email }
 
   /wars/{slug}:
     get:

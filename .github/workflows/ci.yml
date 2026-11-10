@@ -16,10 +16,9 @@ permissions:
 # le SHA et le commentaire ensemble.
 #
 # Version de Node : .nvmrc à la racine (24), la même que le champ « engines »
-# et que la production (DEVOPS-002). Sur le serveur, vol-histoire tourne sous
-# /opt/node-24 (interpréteur pm2) ; le Node système reste en 20 pour les
-# autres applications : les scripts de déploiement mettent /opt/node-24 en tête
-# du PATH.
+# et que la production (DEVOPS-002). Sur le serveur, vol-histoire tourne avec
+# un Node 24 dédié (interpréteur pm2), distinct du Node système des autres
+# applications : les scripts de déploiement le placent en tête du PATH.
 
 jobs:
   # ═══════════════════════════════════════════════════════════
@@ -80,8 +79,8 @@ jobs:
 
     # Base d'intégration : les suites de backend/__tests__/integration/ y
     # exécutent réellement le SQL des routes. Chaque suite recrée son propre
-    # schéma (it_<suite>) et y charge db.sql, un jeu de fiches,
-    # zz_backfill_relations.sql et la frise : aucune étape de chargement
+    # schéma (it_<suite>) et y charge db.sql, un jeu de fiches, la frise puis
+    # zz_backfill_relations.sql : aucune étape de chargement
     # séparée n'est nécessaire, et la base ne garde rien d'une exécution à
     # l'autre. Le nom doit finir par « _it » (garde-fou de it-db.js).
     services:
@@ -301,7 +300,7 @@ jobs:
         run: cd backend && npm run test:load
 
   # ═══════════════════════════════════════════════════════════
-  # CD — Déploiement sur Kimsufi (uniquement push sur main)
+  # CD — Déploiement en production (uniquement push sur main)
   # ═══════════════════════════════════════════════════════════
   # Le serveur héberge sept applications pm2 : seule « vol-histoire » est
   # redémarrée, jamais « pm2 restart all ». Les migrations SQL restent
