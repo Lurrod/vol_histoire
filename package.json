@@ -16,8 +16,9 @@
     "test:all": "cd backend && npm run test:coverage && cd ../e2e && npm test"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "esbuild": "^0.28.2",
-    "eslint": "^9.39.4",
+    "eslint": "^10.14.0",
     "sharp": "^0.35.5"
   }
 }
