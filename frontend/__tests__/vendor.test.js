@@ -59,12 +59,11 @@ describe('vendor/sentry.min.js', () => {
     loadScript('sentry.min.js');
   });
 
-  test('expose window.Sentry.init et captureException, version 8.x déclarée', () => {
+  test('expose window.Sentry.init et captureException, à la version déclarée dans frontend/package.json', () => {
     expect(typeof window.Sentry.init).toBe('function');
     expect(typeof window.Sentry.captureException).toBe('function');
     const banner = fs.readFileSync(path.join(VENDOR, 'sentry.min.js'), 'utf8').slice(0, 200);
     const version = packageVersion('@sentry/browser');
-    expect(version).toMatch(/^8\./);
     expect(banner).toContain(`@sentry/browser ${version}`);
   });
 

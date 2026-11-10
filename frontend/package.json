@@ -10,7 +10,7 @@
     "test:watch": "jest --config jest.config.json --watch"
   },
   "devDependencies": {
-    "@sentry/browser": "^8.55.2",
+    "@sentry/browser": "^11.11.0",
     "dompurify": "^3.4.17",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.5.2"
