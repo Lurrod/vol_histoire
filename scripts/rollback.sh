@@ -76,8 +76,10 @@ main() {
   git reset --hard "${target}"
 
   cd backend
+  # Node 24 dédié (/opt/node-24) ; le Node système (20) sert les autres applications.
+  if [ -x /opt/node-24/bin/node ]; then export PATH="/opt/node-24/bin:$PATH"; fi
   npm ci --omit=dev
-  pm2 restart vol-histoire --update-env || pm2 start server.js --name vol-histoire
+  pm2 restart vol-histoire --update-env || pm2 start server.js --name vol-histoire --interpreter "$(command -v node)"
   cd ..
 
   mkdir -p "${state_dir}"

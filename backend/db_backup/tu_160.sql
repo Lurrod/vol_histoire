@@ -1,3 +1,9 @@
+-- Tupolev Tu-160
+--
+-- Photo : Air-to-air with a Tupolev Tu-160.jpg (même prise de vue, recadrée)
+--   licence CC BY 4.0 — Vadim Savitsky, ministère de la Défense de la Fédération de Russie (mil.ru)
+--   https://commons.wikimedia.org/wiki/File:Air-to-air_with_a_Tupolev_Tu-160.jpg
+
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -106,3 +112,12 @@ WHERE name = 'Tu-160';
 -- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
 -- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
 UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Tu-160';
+
+-- Crédit photo (strate 6). La photo portait dans ses métadonnées « SAVITSKY
+-- Vadim », photographe du ministère russe de la Défense : c'est la même prise
+-- de vue que le fichier Commons cité en en-tête, publié par mil.ru sous
+-- CC BY 4.0. Photo conservée, désormais créditée.
+UPDATE airplanes SET
+  image_credit      = 'Vadim Savitsky, Ministry of Defence of the Russian Federation',
+  image_licence     = 'CC BY 4.0'
+WHERE name = 'Tu-160';

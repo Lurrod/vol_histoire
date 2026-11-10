@@ -1,3 +1,9 @@
+-- Northrop F-5EM Tiger II (Força Aérea Brasileira)
+--
+-- Photo : Northrop F-5 (Forca Aerea Brasileira) Operação Ágata 11 (27543292150).jpg
+--   licence CC BY 2.0 — Ministério da Defesa (Brésil)
+--   https://commons.wikimedia.org/wiki/File:Northrop_F-5_(Forca_Aerea_Brasileira)_Opera%C3%A7%C3%A3o_%C3%81gata_11_(27543292150).jpg
+
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -98,3 +104,11 @@ WHERE name = 'F-5EM Tiger II';
 -- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
 -- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
 UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-5EM Tiger II';
+
+-- Crédit photo (strate 6). L'image précédente portait « (C)2011 Johnson
+-- Barros/FAB », incrusté dans l'image : remplacée par un F-5EM de la FAB en
+-- vol, photo libre du ministère brésilien de la Défense (voir l'en-tête).
+UPDATE airplanes SET
+  image_credit      = 'Ministério da Defesa (Brasil)',
+  image_licence     = 'CC BY 2.0'
+WHERE name = 'F-5EM Tiger II';

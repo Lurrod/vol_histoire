@@ -23,7 +23,11 @@
 -- ne trouvent pas leur cible sont sans effet : il peut être joué avant ou
 -- après l'import.
 --
--- Entièrement rejouable : chaque étape est gardée.
+-- Entièrement rejouable : chaque étape est gardée. Tout UPDATE de `airplanes`
+-- porte une garde IS DISTINCT FROM sur les colonnes qu'il écrit : seules les
+-- lignes réellement modifiées sont touchées, sinon le déclencheur de updated_at
+-- daterait du jour toutes les fiches à chaque rejeu (lastmod du sitemap faussé).
+-- Une nouvelle instruction doit suivre la même règle.
 
 BEGIN;
 
@@ -1814,440 +1818,440 @@ WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Aile volante');
 -- 'aucune' est une valeur explicite — aucune mesure de réduction de signature
 -- radar — et non un « inconnu » déguisé.
 
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-1 Skyraider';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-10 Thunderbolt II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-26 Invader';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-3 Skywarrior';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-37 Dragonfly';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-4 Skyhawk';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-5 Vigilante';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-6 Intruder';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-7 Corsair II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AC-130 Spectre';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AIDC AT-3 Tzu Chung';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AIDC F-CK-1 Ching-kuo';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AIDC T-5 Brave Eagle';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AMX A-1 Brésilien';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AMX International AMX';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AV-8B Harrier II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aeritalia G.222';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aermacchi MB-326';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aermacchi MB-339';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aero L-159 ALCA';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aero L-29 Delfín';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aero L-39 Albatros';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Airbus A330 MRTT';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Airbus A400M Atlas';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Alenia C-27J Spartan';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Alpha Jet Allemand';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-12';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-124 Ruslan';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-2';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-22 Antei';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-26';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-32';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-72';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Atlas Cheetah';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Atlas Impala';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Avro Canada CF-100 Canuck';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Avro Canada CF-105 Arrow';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Avro Shackleton';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Avro Vulcan';
-UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'B-1 Lancer';
-UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'B-2 Spirit';
-UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'B-21 Raider';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-29 Superfortress';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-36 Peacemaker';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-47 Stratojet';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-52 Stratofortress';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-58 Hustler';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'BAC TSR-2';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'BAE Hawk';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'BAE Sea Harrier';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bayraktar TB2';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bell X-1';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bell X-14';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Beriev A-50';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Beriev Be-12 Chaïka';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Beriev Be-200';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Blackburn Buccaneer';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Boeing X-32';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Breguet Alizé';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Breguet Atlantique';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Britten-Norman Defender';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-119 Flying Boxcar';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-130 Hercules';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-141 Starlifter';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-17 Globemaster III';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-2 Greyhound';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-5 Galaxy';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'CAC CA-27 Sabre';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'CASA C-101 Aviojet';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'CASA C-212 Aviocar';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'CASA/IPTN CN-235';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Canadair CT-114 Tutor';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Chengdu FC-1/JF-17';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Chengdu J-10';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Chengdu J-20';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Chengdu J-7';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'D-558-2 Skyrocket';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'DHC-4 Caribou';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'DHC-5 Buffalo';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Dassault MD 315 Flamant';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Dornier Do 28 Skyservant';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Dornier Do 31';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'E-2 Hawkeye';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'E-3 Sentry';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'EA-18G Growler';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'EA-6B Prowler';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'EC-121 Warning Star';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'ENAER T-35 Pillán';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'EWR VJ 101';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Elbit Hermes 900';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer E-99';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer EMB-110 Bandeirante';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer EMB-312 Tucano';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer EMB-314 Super Tucano';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer EMB-326 Xavante';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer KC-390 Millennium';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'English Electric Canberra';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'English Electric Lightning';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Eurofighter Typhoon Allemand';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Eurofighter Typhoon Anglais';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Eurofighter Typhoon Italien';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-100 Super Sabre';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-101 Voodoo';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-102 Delta Dagger';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-104 Starfighter';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-104 Starfighter Allemand';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-104S Starfighter Italien';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-105 Thunderchief';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-106 Delta Dart';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-111 Aardvark';
-UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'F-117 Nighthawk';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-14 Tomcat';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-15 Eagle';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-15E Strike Eagle';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-15EX Eagle II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-15I Ra''am';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-16 Fighting Falcon';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-16I Sufa';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-16XL';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-20 Tigershark';
-UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'F-22 Raptor';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'F-35 Lightning II';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'F-35 Lightning II Italien';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'F-35B Lightning II Anglais';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'F-35I Adir';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-4 Phantom II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-4 Phantom II Allemand';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-4E Kurnass';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-4EJ Kai';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-5 Freedom Fighter';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-5EM Tiger II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-8 Crusader';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-80 Shooting Star';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-82 Twin Mustang';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-84F Thunderstreak';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-86 Sabre';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-89 Scorpion';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-8E (FN) Crusader';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-94 Starfire';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F/A-18 Hornet';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'F/A-18E Super Hornet';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F11F Tiger';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F2Y Sea Dart';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F3D Skyknight';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F4D Skyray';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F7U Cutlass';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F9F Cougar';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F9F Panther';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'FFA P-16';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'FMA IA 58 Pucará';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'FMA IA 63 Pampa';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fairey Delta 2';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fairey Firefly';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fairey Gannet';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fiat G.91';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fokker F27 Maritime';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fokker S.14 Machtrainer';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Folland Gnat';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fouga CM.170 Magister';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fuji T-7';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'GAF Jindivik';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'GAF Nomad';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Gloster Javelin';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Gloster Meteor';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Guizhou JL-9';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'HAL AMCA';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HAL Ajeet';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HAL HF-24 Marut';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HAL HJT-36 Sitara';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'HAL Tejas Mk1';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'HAL Tejas Mk1A';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'HAL Tejas Mk2';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HESA Saeqeh';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HFB 320 Hansa Jet';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Handley Page Victor';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker Hunter';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker P.1127 Kestrel';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker Sea Hawk';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker Siddeley Harrier';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker Siddeley Nimrod';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Helwan HA-300';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hispano HA-200 Saeta';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hongdu JL-8';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hongdu K-8 Karakorum';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hongdu L-15';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAI Arava';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'IAI Harop';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAI Heron';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAI Kfir';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAI Lavi';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAI Nesher';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAR-99 Șoim';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Il-28';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Iliouchine Il-114';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Iliouchine Il-20';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Iliouchine Il-38';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Iliouchine Il-76';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Iliouchine Il-78 Midas';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Jaguar';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Jaguar IS';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Jet Provost';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KAI FA-50';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'KAI KF-21 Boramae';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KAI KT-1 Woongbi';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KAI T-50 Golden Eagle';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KC-10 Extender';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KC-135 Stratotanker';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KC-46 Pegasus';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KC-97 Stratofreighter';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Kawasaki C-1';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Kawasaki C-2';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Kawasaki P-1';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Kawasaki T-4';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'LTV XC-142';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'La-15';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Let L-410 Turbolet';
-UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'Lockheed A-12';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Lockheed D-21';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Lockheed XFV';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'M-346 Master';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MQ-1 Predator';
-UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'MQ-25 Stingray';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MQ-9 Reaper';
-UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'MiG 1.44';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-15';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-17';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-19';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-21';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-21 Allemand';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-21 Bison';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-23';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-23 Allemand';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-25';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-27';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-29';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-29 Allemand';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-31';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'MiG-35';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-9';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage 2000';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage 2000H Vajra';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage 4000';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage 5';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage F1';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage G8';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage III';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage III V';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage IIICJ Shahak';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage IV';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mitsubishi F-1';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mitsubishi F-104J';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mitsubishi F-15J';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mitsubishi F-2';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mitsubishi T-2';
-UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'Mitsubishi X-2 Shinshin';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Myasishchev M-4';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Myasishchev M-50';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Myasishchev M-55';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mystère IV';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Nanchang CJ-6';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Nanchang Q-5';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Nord Noratlas';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'OV-1 Mohawk';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'OV-10 Bronco';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Ouragan';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'P-2 Neptune';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'P-3 Orion';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'P-8 Poseidon';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'PAC Super Mushshak';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'PZL M28 Skytruck';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'PZL TS-11 Iskra';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'PZL-130 Orlik';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Panavia Tornado';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Panavia Tornado Allemand';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Panavia Tornado Italien';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Pilatus PC-7';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Pilatus PC-9';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'RQ-4 Global Hawk';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Rafale';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Rafale EH';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Rockwell XFV-12';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Ryan Firebee';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'S-3 Viking';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'SF.260';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'SOCATA TB-30 Epsilon';
-UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'SR-71 Blackbird';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 105';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 29 Tunnan';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 32 Lansen';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 35 Draken';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 37 Viggen';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab GlobalEye';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Saab JAS 39 Gripen';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saunders-Roe SR.53';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Scottish Aviation Bulldog';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Sea Vixen';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shaanxi Y-8';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shenyang J-11';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shenyang J-15';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Shenyang J-16';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Shenyang J-35';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shenyang J-5';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shenyang J-6';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shenyang J-8';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'ShinMaywa US-1A';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'ShinMaywa US-2';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Short SC.1';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shorts Tucano';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Soko G-2 Galeb';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Soko G-4 Super Galeb';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Soko J-22 Orao';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-11';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-15';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-17';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-24';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-25';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-27';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-30';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-30MKI';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-33';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Su-34';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Su-35';
-UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'Su-57';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-7';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-9';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Sukhoi T-4';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Super Mystère B2';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Super Étendard';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Supermarine Attacker';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Supermarine Scimitar';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Supermarine Swift';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-28 Trojan';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-33 Shooting Star';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-34 Mentor';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-37 Tweet';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-38 Talon';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-6 Texan II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'TAI Hürkuş';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'TAI Kaan';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Transall C-160';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-128';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-141 Strizh';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-142';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-143 Reys';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-16';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-160';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-22';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-22M';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-95';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tupolev Tu-4';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'U-2 Dragon Lady';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'VFW VAK 191B';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Valmet L-70 Vinka';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Vautour II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Vickers VC10';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Vickers Valiant';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Westland Wyvern';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Wing Loong II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'X-13 Vertijet';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'X-15';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'X-29';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'X-3 Stiletto';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'X-31';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'X-47B';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'XB-70 Valkyrie';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'XFY Pogo';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'XQ-58 Valkyrie';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Xian H-6';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Xian Y-20 Kunpeng';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'YF-17 Cobra';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'YF-22';
-UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'YF-23 Black Widow II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-130';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-141';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-23';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-25';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-28';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-36';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-38';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'de Havilland Vampire';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'de Havilland Venom';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'nEUROn';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Étendard IV';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Pilatus PC-21';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Boeing T-7 Red Hawk';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Airbus C295';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-225 Mriya';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bayraktar Akıncı';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-17';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-66 Destroyer';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Martin B-57 Canberra';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'S-2 Tracker';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shaanxi KJ-500';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'V-22 Osprey';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bell XV-15';
-UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'Bayraktar Kızılelma';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'TAI Anka';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'MQ-28 Ghost Bat';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Sukhoi S-70 Okhotnik';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Hongdu GJ-11 Sharp Sword';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'CASC CH-5 Rainbow';
-UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Boeing X-45';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MQ-4C Triton';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'TAI Hürjet';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aero L-39NG Skyfox';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Boeing E-7 Wedgetail';
-UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'General Atomics YFQ-42A Dark Merlin';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Elbit Hermes 450';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MQ-1C Gray Eagle';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bayraktar TB3';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 21R';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAe 33 Pulqui II';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'FH-1 Phantom';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F2H Banshee';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F3H Demon';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Northrop YB-49';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Leduc 010';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Nord 1500 Griffon';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'SNCASO Trident';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F4U Corsair';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker Sea Fury';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F8F Bearcat';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AC-47 Spooky';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Canadair CP-107 Argus';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HU-16 Albatross';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'E-1 Tracer';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KJ-2000';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 340 AEW&C';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shaanxi Y-9';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-123 Provider';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'DHC-2 Beaver';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Canadair CL-84 Dynavert';
-UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'Northrop Tacit Blue';
-UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Lockheed Martin X-59 QueSST';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-1 Skyraider' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-10 Thunderbolt II' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-26 Invader' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-3 Skywarrior' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-37 Dragonfly' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-4 Skyhawk' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-5 Vigilante' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-6 Intruder' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'A-7 Corsair II' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AC-130 Spectre' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AIDC AT-3 Tzu Chung' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AIDC F-CK-1 Ching-kuo' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AIDC T-5 Brave Eagle' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AMX A-1 Brésilien' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AMX International AMX' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AV-8B Harrier II' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aeritalia G.222' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aermacchi MB-326' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aermacchi MB-339' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aero L-159 ALCA' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aero L-29 Delfín' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aero L-39 Albatros' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Airbus A330 MRTT' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Airbus A400M Atlas' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Alenia C-27J Spartan' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Alpha Jet Allemand' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-12' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-124 Ruslan' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-2' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-22 Antei' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-26' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-32' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-72' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Atlas Cheetah' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Atlas Impala' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Avro Canada CF-100 Canuck' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Avro Canada CF-105 Arrow' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Avro Shackleton' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Avro Vulcan' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'B-1 Lancer' AND stealth_level IS DISTINCT FROM 'moderee';
+UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'B-2 Spirit' AND stealth_level IS DISTINCT FROM 'tres_elevee';
+UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'B-21 Raider' AND stealth_level IS DISTINCT FROM 'tres_elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-29 Superfortress' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-36 Peacemaker' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-47 Stratojet' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-52 Stratofortress' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-58 Hustler' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'BAC TSR-2' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'BAE Hawk' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'BAE Sea Harrier' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bayraktar TB2' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bell X-1' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bell X-14' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Beriev A-50' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Beriev Be-12 Chaïka' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Beriev Be-200' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Blackburn Buccaneer' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Boeing X-32' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Breguet Alizé' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Breguet Atlantique' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Britten-Norman Defender' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-119 Flying Boxcar' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-130 Hercules' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-141 Starlifter' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-17 Globemaster III' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-2 Greyhound' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-5 Galaxy' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'CAC CA-27 Sabre' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'CASA C-101 Aviojet' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'CASA C-212 Aviocar' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'CASA/IPTN CN-235' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Canadair CT-114 Tutor' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Chengdu FC-1/JF-17' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Chengdu J-10' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Chengdu J-20' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Chengdu J-7' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'D-558-2 Skyrocket' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'DHC-4 Caribou' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'DHC-5 Buffalo' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Dassault MD 315 Flamant' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Dornier Do 28 Skyservant' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Dornier Do 31' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'E-2 Hawkeye' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'E-3 Sentry' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'EA-18G Growler' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'EA-6B Prowler' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'EC-121 Warning Star' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'ENAER T-35 Pillán' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'EWR VJ 101' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Elbit Hermes 900' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer E-99' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer EMB-110 Bandeirante' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer EMB-312 Tucano' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer EMB-314 Super Tucano' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer EMB-326 Xavante' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Embraer KC-390 Millennium' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'English Electric Canberra' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'English Electric Lightning' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Eurofighter Typhoon Allemand' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Eurofighter Typhoon Anglais' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Eurofighter Typhoon Italien' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-100 Super Sabre' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-101 Voodoo' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-102 Delta Dagger' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-104 Starfighter' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-104 Starfighter Allemand' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-104S Starfighter Italien' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-105 Thunderchief' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-106 Delta Dart' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-111 Aardvark' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'F-117 Nighthawk' AND stealth_level IS DISTINCT FROM 'tres_elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-14 Tomcat' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-15 Eagle' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-15E Strike Eagle' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-15EX Eagle II' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-15I Ra''am' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-16 Fighting Falcon' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-16I Sufa' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-16XL' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-20 Tigershark' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'F-22 Raptor' AND stealth_level IS DISTINCT FROM 'tres_elevee';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'F-35 Lightning II' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'F-35 Lightning II Italien' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'F-35B Lightning II Anglais' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'F-35I Adir' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-4 Phantom II' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-4 Phantom II Allemand' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-4E Kurnass' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-4EJ Kai' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-5 Freedom Fighter' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-5EM Tiger II' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-8 Crusader' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-80 Shooting Star' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-82 Twin Mustang' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-84F Thunderstreak' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-86 Sabre' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-89 Scorpion' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-8E (FN) Crusader' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F-94 Starfire' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F/A-18 Hornet' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'F/A-18E Super Hornet' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F11F Tiger' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F2Y Sea Dart' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F3D Skyknight' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F4D Skyray' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F7U Cutlass' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F9F Cougar' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F9F Panther' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'FFA P-16' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'FMA IA 58 Pucará' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'FMA IA 63 Pampa' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fairey Delta 2' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fairey Firefly' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fairey Gannet' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fiat G.91' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fokker F27 Maritime' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fokker S.14 Machtrainer' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Folland Gnat' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fouga CM.170 Magister' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Fuji T-7' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'GAF Jindivik' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'GAF Nomad' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Gloster Javelin' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Gloster Meteor' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Guizhou JL-9' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'HAL AMCA' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HAL Ajeet' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HAL HF-24 Marut' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HAL HJT-36 Sitara' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'HAL Tejas Mk1' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'HAL Tejas Mk1A' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'HAL Tejas Mk2' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HESA Saeqeh' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HFB 320 Hansa Jet' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Handley Page Victor' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker Hunter' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker P.1127 Kestrel' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker Sea Hawk' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker Siddeley Harrier' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker Siddeley Nimrod' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Helwan HA-300' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hispano HA-200 Saeta' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hongdu JL-8' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hongdu K-8 Karakorum' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hongdu L-15' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAI Arava' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'IAI Harop' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAI Heron' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAI Kfir' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAI Lavi' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAI Nesher' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAR-99 Șoim' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Il-28' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Iliouchine Il-114' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Iliouchine Il-20' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Iliouchine Il-38' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Iliouchine Il-76' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Iliouchine Il-78 Midas' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Jaguar' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Jaguar IS' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Jet Provost' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KAI FA-50' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'KAI KF-21 Boramae' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KAI KT-1 Woongbi' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KAI T-50 Golden Eagle' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KC-10 Extender' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KC-135 Stratotanker' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KC-46 Pegasus' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KC-97 Stratofreighter' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Kawasaki C-1' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Kawasaki C-2' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Kawasaki P-1' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Kawasaki T-4' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'LTV XC-142' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'La-15' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Let L-410 Turbolet' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'Lockheed A-12' AND stealth_level IS DISTINCT FROM 'moderee';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Lockheed D-21' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Lockheed XFV' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'M-346 Master' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MQ-1 Predator' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'MQ-25 Stingray' AND stealth_level IS DISTINCT FROM 'moderee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MQ-9 Reaper' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'MiG 1.44' AND stealth_level IS DISTINCT FROM 'moderee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-15' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-17' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-19' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-21' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-21 Allemand' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-21 Bison' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-23' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-23 Allemand' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-25' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-27' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-29' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-29 Allemand' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-31' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'MiG-35' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MiG-9' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage 2000' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage 2000H Vajra' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage 4000' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage 5' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage F1' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage G8' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage III' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage III V' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage IIICJ Shahak' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mirage IV' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mitsubishi F-1' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mitsubishi F-104J' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mitsubishi F-15J' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mitsubishi F-2' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mitsubishi T-2' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'Mitsubishi X-2 Shinshin' AND stealth_level IS DISTINCT FROM 'moderee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Myasishchev M-4' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Myasishchev M-50' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Myasishchev M-55' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Mystère IV' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Nanchang CJ-6' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Nanchang Q-5' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Nord Noratlas' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'OV-1 Mohawk' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'OV-10 Bronco' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Ouragan' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'P-2 Neptune' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'P-3 Orion' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'P-8 Poseidon' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'PAC Super Mushshak' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'PZL M28 Skytruck' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'PZL TS-11 Iskra' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'PZL-130 Orlik' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Panavia Tornado' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Panavia Tornado Allemand' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Panavia Tornado Italien' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Pilatus PC-7' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Pilatus PC-9' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'RQ-4 Global Hawk' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Rafale' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Rafale EH' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Rockwell XFV-12' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Ryan Firebee' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'S-3 Viking' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'SF.260' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'SOCATA TB-30 Epsilon' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'SR-71 Blackbird' AND stealth_level IS DISTINCT FROM 'moderee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 105' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 29 Tunnan' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 32 Lansen' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 35 Draken' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 37 Viggen' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab GlobalEye' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Saab JAS 39 Gripen' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saunders-Roe SR.53' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Scottish Aviation Bulldog' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Sea Vixen' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shaanxi Y-8' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shenyang J-11' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shenyang J-15' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Shenyang J-16' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Shenyang J-35' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shenyang J-5' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shenyang J-6' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shenyang J-8' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'ShinMaywa US-1A' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'ShinMaywa US-2' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Short SC.1' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shorts Tucano' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Soko G-2 Galeb' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Soko G-4 Super Galeb' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Soko J-22 Orao' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-11' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-15' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-17' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-24' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-25' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-27' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-30' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-30MKI' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-33' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Su-34' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'Su-35' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'Su-57' AND stealth_level IS DISTINCT FROM 'moderee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-7' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Su-9' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Sukhoi T-4' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Super Mystère B2' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Super Étendard' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Supermarine Attacker' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Supermarine Scimitar' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Supermarine Swift' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-28 Trojan' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-33 Shooting Star' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-34 Mentor' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-37 Tweet' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-38 Talon' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'T-6 Texan II' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'TAI Hürkuş' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'TAI Kaan' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Transall C-160' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-128' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-141 Strizh' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-142' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-143 Reys' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-16' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-160' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-22' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-22M' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tu-95' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Tupolev Tu-4' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'U-2 Dragon Lady' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'VFW VAK 191B' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Valmet L-70 Vinka' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Vautour II' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Vickers VC10' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Vickers Valiant' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Westland Wyvern' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Wing Loong II' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'X-13 Vertijet' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'X-15' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'X-29' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'X-3 Stiletto' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'X-31' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'X-47B' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'XB-70 Valkyrie' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'XFY Pogo' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'XQ-58 Valkyrie' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Xian H-6' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Xian Y-20 Kunpeng' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'YF-17 Cobra' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'YF-22' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'YF-23 Black Widow II' AND stealth_level IS DISTINCT FROM 'tres_elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-130' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-141' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-23' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-25' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-28' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-36' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-38' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'de Havilland Vampire' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'de Havilland Venom' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'nEUROn' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Étendard IV' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Pilatus PC-21' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Boeing T-7 Red Hawk' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Airbus C295' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Antonov An-225 Mriya' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bayraktar Akıncı' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Yak-17' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'B-66 Destroyer' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Martin B-57 Canberra' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'S-2 Tracker' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shaanxi KJ-500' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'V-22 Osprey' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bell XV-15' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'moderee'      WHERE name = 'Bayraktar Kızılelma' AND stealth_level IS DISTINCT FROM 'moderee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'TAI Anka' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'MQ-28 Ghost Bat' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Sukhoi S-70 Okhotnik' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Hongdu GJ-11 Sharp Sword' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'CASC CH-5 Rainbow' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'elevee'       WHERE name = 'Boeing X-45' AND stealth_level IS DISTINCT FROM 'elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MQ-4C Triton' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'TAI Hürjet' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Aero L-39NG Skyfox' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Boeing E-7 Wedgetail' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'reduite'      WHERE name = 'General Atomics YFQ-42A Dark Merlin' AND stealth_level IS DISTINCT FROM 'reduite';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Elbit Hermes 450' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'MQ-1C Gray Eagle' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Bayraktar TB3' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 21R' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'IAe 33 Pulqui II' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'FH-1 Phantom' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F2H Banshee' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F3H Demon' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Northrop YB-49' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Leduc 010' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Nord 1500 Griffon' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'SNCASO Trident' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F4U Corsair' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Hawker Sea Fury' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'F8F Bearcat' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'AC-47 Spooky' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Canadair CP-107 Argus' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'HU-16 Albatross' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'E-1 Tracer' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'KJ-2000' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Saab 340 AEW&C' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Shaanxi Y-9' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'C-123 Provider' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'DHC-2 Beaver' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Canadair CL-84 Dynavert' AND stealth_level IS DISTINCT FROM 'aucune';
+UPDATE airplanes SET stealth_level = 'tres_elevee'  WHERE name = 'Northrop Tacit Blue' AND stealth_level IS DISTINCT FROM 'tres_elevee';
+UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Lockheed Martin X-59 QueSST' AND stealth_level IS DISTINCT FROM 'aucune';
 
 -- ═══ 4. Crédits photo ════════════════════════════════════════════════════
 --
@@ -2255,333 +2259,333 @@ UPDATE airplanes SET stealth_level = 'aucune'       WHERE name = 'Lockheed Marti
 -- antérieures, d'origine non tracée, restent à NULL : aucune légende ne
 -- s'affiche alors, plutôt qu'un crédit inventé.
 
-UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany', image_licence = 'CC BY 2.0' WHERE name = 'A-1 Skyraider';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'A-26 Invader';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'A-3 Skywarrior';
-UPDATE airplanes SET image_credit = 'TSGT KEN HAMMOND', image_licence = 'Public domain' WHERE name = 'A-37 Dragonfly';
-UPDATE airplanes SET image_credit = 'Lt.JG Nelson, U.S. Navy', image_licence = 'Public domain' WHERE name = 'A-4 Skyhawk';
-UPDATE airplanes SET image_credit = 'NASA Dryden Flight Research Center', image_licence = 'Public domain' WHERE name = 'A-5 Vigilante';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'A-6 Intruder';
-UPDATE airplanes SET image_credit = 'Robert L. Lawson, U.S. Navy', image_licence = 'Public domain' WHERE name = 'A-7 Corsair II';
-UPDATE airplanes SET image_credit = 'MSgt Christopher Boitz', image_licence = 'Public domain' WHERE name = 'AC-130 Spectre';
-UPDATE airplanes SET image_credit = '玄史生', image_licence = 'CC BY-SA 4.0' WHERE name = 'AIDC AT-3 Tzu Chung';
-UPDATE airplanes SET image_credit = 'RudolphChen', image_licence = 'CC BY-SA 4.0' WHERE name = 'AIDC F-CK-1 Ching-kuo';
-UPDATE airplanes SET image_credit = '廢柴老闆', image_licence = 'CC0' WHERE name = 'AIDC T-5 Brave Eagle';
-UPDATE airplanes SET image_credit = 'Sgt. David Ornelas Baeza', image_licence = 'Public domain' WHERE name = 'AV-8B Harrier II';
-UPDATE airplanes SET image_credit = 'Adrian Pingstone ( Arpingstone )', image_licence = 'Public domain' WHERE name = 'Aeritalia G.222';
-UPDATE airplanes SET image_credit = 'Peter Ellis', image_licence = 'CC BY-SA 4.0' WHERE name = 'Aermacchi MB-326';
-UPDATE airplanes SET image_credit = 'Milan Nykodym from Kutna Hora, Czech Republic', image_licence = 'CC BY-SA 2.0' WHERE name = 'Aero L-159 ALCA';
-UPDATE airplanes SET image_credit = 'Oren Rozen', image_licence = 'CC BY-SA 3.0' WHERE name = 'Aero L-29 Delfín';
-UPDATE airplanes SET image_credit = 'U.S. Navy photo', image_licence = 'Public domain' WHERE name = 'Aero L-39 Albatros';
-UPDATE airplanes SET image_credit = 'U.S. Air Force photo by Christian Turner', image_licence = 'Public domain' WHERE name = 'Airbus A330 MRTT';
-UPDATE airplanes SET image_credit = 'Peng Chen', image_licence = 'CC BY-SA 4.0' WHERE name = 'Airbus A400M Atlas';
-UPDATE airplanes SET image_credit = 'Steve Lynes', image_licence = 'CC BY 2.0' WHERE name = 'Alenia C-27J Spartan';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Antonov An-12';
-UPDATE airplanes SET image_credit = 'Md Shaifuzzaman Ayon', image_licence = 'CC BY-SA 4.0' WHERE name = 'Antonov An-124 Ruslan';
-UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'Antonov An-2';
-UPDATE airplanes SET image_credit = 'Navigator-avia', image_licence = 'CC BY-SA 3.0' WHERE name = 'Antonov An-22 Antei';
-UPDATE airplanes SET image_credit = 'Oleg V. Belyakov - AirTeamImages', image_licence = 'CC BY-SA 3.0' WHERE name = 'Antonov An-26';
-UPDATE airplanes SET image_credit = 'Dmitry Karpezo', image_licence = 'CC BY-SA 3.0' WHERE name = 'Antonov An-32';
-UPDATE airplanes SET image_credit = 'Aeroprints.com', image_licence = 'CC BY-SA 3.0' WHERE name = 'Antonov An-72';
-UPDATE airplanes SET image_credit = 'Bob Adams from George, South Africa', image_licence = 'CC BY-SA 2.0' WHERE name = 'Atlas Cheetah';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Atlas Impala';
-UPDATE airplanes SET image_credit = 'Canoe1967', image_licence = 'CC BY 3.0' WHERE name = 'Avro Canada CF-100 Canuck';
-UPDATE airplanes SET image_credit = 'Unknown photographer, copyright originally held by the Government of Canada', image_licence = 'Public domain' WHERE name = 'Avro Canada CF-105 Arrow';
-UPDATE airplanes SET image_credit = 'RAF', image_licence = 'Public domain' WHERE name = 'Avro Shackleton';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'B-21 Raider';
-UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'B-29 Superfortress';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'B-36 Peacemaker';
-UPDATE airplanes SET image_credit = 'US Air Force photo', image_licence = 'Public domain' WHERE name = 'B-47 Stratojet';
-UPDATE airplanes SET image_credit = 'United States Air Force', image_licence = 'Public domain' WHERE name = 'B-58 Hustler';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'BAC TSR-2';
-UPDATE airplanes SET image_credit = 'Tim Felce (Airwolfhound)', image_licence = 'CC BY-SA 2.0' WHERE name = 'BAE Hawk';
-UPDATE airplanes SET image_credit = 'Bayhaluk', image_licence = 'CC BY-SA 4.0' WHERE name = 'Bayraktar TB2';
-UPDATE airplanes SET image_credit = NULL, image_licence = 'Public domain' WHERE name = 'Bell X-1';
-UPDATE airplanes SET image_credit = 'NASA Ames Research Center / Art Melliar', image_licence = 'Public domain' WHERE name = 'Bell X-14';
-UPDATE airplanes SET image_credit = 'Ludvig14', image_licence = 'CC BY-SA 4.0' WHERE name = 'Beriev A-50';
-UPDATE airplanes SET image_credit = 'U.S. Navy photo by Mass Communication Specialist 2nd Class John Herman', image_licence = 'Public domain' WHERE name = 'Beriev Be-12 Chaïka';
-UPDATE airplanes SET image_credit = 'New York-air', image_licence = 'CC BY-SA 4.0' WHERE name = 'Beriev Be-200';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'Boeing X-32';
-UPDATE airplanes SET image_credit = 'Clément Gruin', image_licence = 'CC BY-SA 4.0' WHERE name = 'Breguet Alizé';
-UPDATE airplanes SET image_credit = 'U.S. Department of Defense', image_licence = 'Public domain' WHERE name = 'Breguet Atlantique';
-UPDATE airplanes SET image_credit = 'Jerry Gunner', image_licence = 'CC BY-SA 4.0' WHERE name = 'Britten-Norman Defender';
-UPDATE airplanes SET image_credit = 'United States Air Force', image_licence = 'Public domain' WHERE name = 'C-119 Flying Boxcar';
-UPDATE airplanes SET image_credit = '<div class="fn value"> U.S. Air Force photo by Tech. Sgt. Howard Blair</div>', image_licence = 'Public domain' WHERE name = 'C-130 Hercules';
-UPDATE airplanes SET image_credit = 'U.S. Department of Defense', image_licence = 'Public domain' WHERE name = 'C-141 Starlifter';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'C-17 Globemaster III';
-UPDATE airplanes SET image_credit = 'LCdr. John R. Leenhouts, U.S. Navy', image_licence = 'Public domain' WHERE name = 'C-2 Greyhound';
-UPDATE airplanes SET image_credit = 'Roland Balik', image_licence = 'Public domain' WHERE name = 'C-5 Galaxy';
-UPDATE airplanes SET image_credit = 'Stephen Edmonds from Melbourne, Australia', image_licence = 'CC BY-SA 2.0' WHERE name = 'CAC CA-27 Sabre';
-UPDATE airplanes SET image_credit = 'Photo by Senior Airman Renee Nicole Finona / 48th Fighter Wing', image_licence = 'Public domain' WHERE name = 'CASA C-101 Aviojet';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'CASA C-212 Aviocar';
-UPDATE airplanes SET image_credit = 'William Murphy from Dublin, Ireland', image_licence = 'CC BY-SA 2.0' WHERE name = 'CASA/IPTN CN-235';
-UPDATE airplanes SET image_credit = 'Airman Jacob B. Wrightsman', image_licence = 'Public domain' WHERE name = 'Canadair CT-114 Tutor';
-UPDATE airplanes SET image_credit = 'NACA', image_licence = 'Public domain' WHERE name = 'D-558-2 Skyrocket';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Weston, Spalding, Lincs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'DHC-4 Caribou';
-UPDATE airplanes SET image_credit = 'Nik Deblauwe', image_licence = 'CC BY-SA 2.0' WHERE name = 'DHC-5 Buffalo';
-UPDATE airplanes SET image_credit = 'Lionel Allorge', image_licence = 'CC BY-SA 3.0' WHERE name = 'Dassault MD 315 Flamant';
-UPDATE airplanes SET image_credit = 'Thomas Vogt from Paderborn, Deutschland', image_licence = 'CC BY 2.0' WHERE name = 'Dornier Do 28 Skyservant';
-UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany, Germany', image_licence = 'CC BY 2.0' WHERE name = 'Dornier Do 31';
-UPDATE airplanes SET image_credit = 'US Navy', image_licence = 'Public domain' WHERE name = 'E-2 Hawkeye';
-UPDATE airplanes SET image_credit = 'Ronnie Macdonald from Chelmsford and Largs, United Kingdom', image_licence = 'CC BY 2.0' WHERE name = 'E-3 Sentry';
-UPDATE airplanes SET image_credit = 'Noah Wulf', image_licence = 'CC BY-SA 4.0' WHERE name = 'EA-18G Growler';
-UPDATE airplanes SET image_credit = 'Cpl. Neysa Huertas Quinones', image_licence = 'Public domain' WHERE name = 'EA-6B Prowler';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Weston, Spalding, Lincs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'EC-121 Warning Star';
-UPDATE airplanes SET image_credit = 'Dick Gilbert', image_licence = 'CC BY 2.0' WHERE name = 'ENAER T-35 Pillán';
-UPDATE airplanes SET image_credit = 'Jmcc150 at English Wikipedia', image_licence = 'Public domain' WHERE name = 'EWR VJ 101';
-UPDATE airplanes SET image_credit = 'Tangopaso', image_licence = 'CC BY-SA 3.0' WHERE name = 'Elbit Hermes 900';
-UPDATE airplanes SET image_credit = 'Andre Gustavo Stumpf Filho from Brasil', image_licence = 'CC BY 2.0' WHERE name = 'Embraer E-99';
-UPDATE airplanes SET image_credit = 'Sebastián Laguna', image_licence = 'CC BY 2.0' WHERE name = 'Embraer EMB-110 Bandeirante';
-UPDATE airplanes SET image_credit = 'Matti Blume', image_licence = 'CC BY-SA 4.0' WHERE name = 'Embraer KC-390 Millennium';
-UPDATE airplanes SET image_credit = 'Daniel Z97', image_licence = 'CC BY 4.0' WHERE name = 'English Electric Canberra';
-UPDATE airplanes SET image_credit = 'Michaela Pereckas', image_licence = 'CC BY 2.0' WHERE name = 'F-100 Super Sabre';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'F-101 Voodoo';
-UPDATE airplanes SET image_credit = 'United States Air Force Photo', image_licence = 'Public domain' WHERE name = 'F-102 Delta Dagger';
-UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'F-104 Starfighter';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'F-105 Thunderchief';
-UPDATE airplanes SET image_credit = 'Staff Sgt. John K. McDowell', image_licence = 'Public domain' WHERE name = 'F-106 Delta Dart';
-UPDATE airplanes SET image_credit = 'Staff Sgt. Aaron Allmon II', image_licence = 'Public domain' WHERE name = 'F-117 Nighthawk';
-UPDATE airplanes SET image_credit = 'Airman 1st Class Matthew Seefeldt', image_licence = 'Public domain' WHERE name = 'F-15 Eagle';
-UPDATE airplanes SET image_credit = 'Ethan Wagner', image_licence = 'Public domain' WHERE name = 'F-15EX Eagle II';
-UPDATE airplanes SET image_credit = 'NASA/Carla Thomas', image_licence = 'Public domain' WHERE name = 'F-16XL';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'F-20 Tigershark';
-UPDATE airplanes SET image_credit = 'Glenn Research Center (NASA/DFRC)', image_licence = 'Public domain' WHERE name = 'F-8 Crusader';
-UPDATE airplanes SET image_credit = 'Eric Salard', image_licence = 'CC BY-SA 2.0' WHERE name = 'F-80 Shooting Star';
-UPDATE airplanes SET image_credit = NULL, image_licence = 'Public domain' WHERE name = 'F-82 Twin Mustang';
-UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany, Germany', image_licence = 'CC BY 2.0' WHERE name = 'F-84F Thunderstreak';
-UPDATE airplanes SET image_credit = '205weeman17', image_licence = 'CC BY-SA 3.0' WHERE name = 'F-86 Sabre';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'F-89 Scorpion';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'F-94 Starfire';
-UPDATE airplanes SET image_credit = 'Cmdr. John Leenhouts, USN', image_licence = 'Public domain' WHERE name = 'F/A-18 Hornet';
-UPDATE airplanes SET image_credit = 'Petty Officer 1st Class David Mercil, U.S. Navy', image_licence = 'Public domain' WHERE name = 'F/A-18E Super Hornet';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F11F Tiger';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F2Y Sea Dart';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F3D Skyknight';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F4D Skyray';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F7U Cutlass';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F9F Cougar';
-UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'F9F Panther';
-UPDATE airplanes SET image_credit = 'Comet Photo AG', image_licence = 'CC BY-SA 4.0' WHERE name = 'FFA P-16';
-UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany, Germany', image_licence = 'CC BY 2.0' WHERE name = 'FMA IA 58 Pucará';
-UPDATE airplanes SET image_credit = 'JO2 Pete Hatzakos', image_licence = 'Public domain' WHERE name = 'FMA IA 63 Pampa';
-UPDATE airplanes SET image_credit = 'Hugh Llewelyn from Keynsham, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Fairey Delta 2';
-UPDATE airplanes SET image_credit = 'Ken Mist from Brampton, Canada', image_licence = 'CC BY-SA 2.0' WHERE name = 'Fairey Firefly';
-UPDATE airplanes SET image_credit = 'thinboyfatter', image_licence = 'CC BY 2.0' WHERE name = 'Fairey Gannet';
-UPDATE airplanes SET image_credit = 'Master Sgt. H.D. Robinson, U.S. Air Force photo 342-C-KE-62474', image_licence = 'Public domain' WHERE name = 'Fiat G.91';
-UPDATE airplanes SET image_credit = 'Aero Icarus from Zürich, Switzerland', image_licence = 'CC BY-SA 2.0' WHERE name = 'Fokker F27 Maritime';
-UPDATE airplanes SET image_credit = 'André Gerwing', image_licence = 'CC BY-SA 4.0' WHERE name = 'Fokker S.14 Machtrainer';
-UPDATE airplanes SET image_credit = 'Michael Gaylard from Horsham, UK', image_licence = 'CC BY 2.0' WHERE name = 'Folland Gnat';
-UPDATE airplanes SET image_credit = 'Ad Meskens You are free to use this picture for any purpose as long as you credit its author, Ad Meskens . Exa', image_licence = 'CC BY-SA 4.0' WHERE name = 'Fouga CM.170 Magister';
-UPDATE airplanes SET image_credit = 'Jerry Gunner from Lincoln, UK', image_licence = 'CC BY 2.0' WHERE name = 'Fuji T-7';
-UPDATE airplanes SET image_credit = 'Jonathan Rabbitt', image_licence = 'CC BY 3.0' WHERE name = 'GAF Jindivik';
-UPDATE airplanes SET image_credit = 'Z3144228', image_licence = 'CC BY-SA 4.0' WHERE name = 'GAF Nomad';
-UPDATE airplanes SET image_credit = 'tormentor4555', image_licence = 'PDM-owner' WHERE name = 'Gloster Javelin';
-UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany, Germany', image_licence = 'CC BY 2.0' WHERE name = 'Gloster Meteor';
-UPDATE airplanes SET image_credit = 'N509FZ', image_licence = 'CC BY-SA 4.0' WHERE name = 'Guizhou JL-9';
-UPDATE airplanes SET image_credit = 'Aeroprints.com', image_licence = 'CC BY-SA 3.0' WHERE name = 'HAL HJT-36 Sitara';
-UPDATE airplanes SET image_credit = 'Shahram Sharifi', image_licence = 'CC BY-SA 4.0' WHERE name = 'HESA Saeqeh';
-UPDATE airplanes SET image_credit = 'JoachimKohler-HB', image_licence = 'CC BY-SA 4.0' WHERE name = 'HFB 320 Hansa Jet';
-UPDATE airplanes SET image_credit = 'Photo by LT. COL. PAUL BACKS', image_licence = 'Public domain' WHERE name = 'Handley Page Victor';
-UPDATE airplanes SET image_credit = 'Tim Felce (Airwolfhound)', image_licence = 'CC BY-SA 2.0' WHERE name = 'Hawker Hunter';
-UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'Hawker P.1127 Kestrel';
-UPDATE airplanes SET image_credit = 'Smudge 9000 from North Kent Coast, England', image_licence = 'CC BY 2.0' WHERE name = 'Hawker Sea Hawk';
-UPDATE airplanes SET image_credit = 'Colin Cooke Photo', image_licence = 'CC BY-SA 4.0' WHERE name = 'Hawker Siddeley Nimrod';
-UPDATE airplanes SET image_credit = 'High Contrast', image_licence = 'CC BY 3.0 de' WHERE name = 'Helwan HA-300';
-UPDATE airplanes SET image_credit = 'Bene Riobó', image_licence = 'CC BY-SA 4.0' WHERE name = 'Hispano HA-200 Saeta';
-UPDATE airplanes SET image_credit = 'Kurush Pawar from Dubai, United Arab Emirates', image_licence = 'CC BY-SA 2.0' WHERE name = 'Hongdu K-8 Karakorum';
-UPDATE airplanes SET image_credit = 'Z3144228', image_licence = 'CC0' WHERE name = 'Hongdu L-15';
-UPDATE airplanes SET image_credit = 'Photographer: Mosbatho', image_licence = 'CC BY 4.0' WHERE name = 'IAI Arava';
-UPDATE airplanes SET image_credit = 'Matti Blume', image_licence = 'CC BY-SA 4.0' WHERE name = 'IAI Harop';
-UPDATE airplanes SET image_credit = 'SSGT REYNALDO RAMON', image_licence = 'Public domain' WHERE name = 'IAI Heron';
-UPDATE airplanes SET image_credit = 'Cătălin Cocîrlă', image_licence = 'CC BY-SA 4.0' WHERE name = 'IAR-99 Șoim';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Il-28';
-UPDATE airplanes SET image_credit = 'Artem Katranzhi', image_licence = 'CC BY-SA 2.0' WHERE name = 'Iliouchine Il-114';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Iliouchine Il-20';
-UPDATE airplanes SET image_credit = 'Photographer''s Name: Lt. David M. Kennedy, USN', image_licence = 'Public domain' WHERE name = 'Iliouchine Il-38';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Iliouchine Il-76';
-UPDATE airplanes SET image_credit = 'Staff Sgt. Gerald Currington.', image_licence = 'Public domain' WHERE name = 'Iliouchine Il-78 Midas';
-UPDATE airplanes SET image_credit = 'Hugh Llewelyn from Keynsham, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Jet Provost';
-UPDATE airplanes SET image_credit = 'Staff Sgt. Anthony Small', image_licence = 'Public domain' WHERE name = 'KAI FA-50';
-UPDATE airplanes SET image_credit = '대한민국 국방부 - Ministry of National Defense of the Republic of Korea', image_licence = 'KOGL Type 1' WHERE name = 'KAI KF-21 Boramae';
-UPDATE airplanes SET image_credit = 'Doo Ho Kim', image_licence = 'CC BY-SA 2.0' WHERE name = 'KAI KT-1 Woongbi';
-UPDATE airplanes SET image_credit = 'Senior Airman Mitchell Corley', image_licence = 'Public domain' WHERE name = 'KAI T-50 Golden Eagle';
-UPDATE airplanes SET image_credit = 'U.S. Air Force photo by Staff Sgt. Jerry Morrison', image_licence = 'Public domain' WHERE name = 'KC-10 Extender';
-UPDATE airplanes SET image_credit = 'Ronnie Macdonald from Chelmsford and Largs, United Kingdom', image_licence = 'CC BY 2.0' WHERE name = 'KC-135 Stratotanker';
-UPDATE airplanes SET image_credit = 'USAF Christopher Okula', image_licence = 'Public domain' WHERE name = 'KC-46 Pegasus';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'KC-97 Stratofreighter';
-UPDATE airplanes SET image_credit = 'Jerry Gunner from Lincoln, UK', image_licence = 'CC BY 2.0' WHERE name = 'Kawasaki C-1';
-UPDATE airplanes SET image_credit = 'Hunini', image_licence = 'CC BY-SA 4.0' WHERE name = 'Kawasaki C-2';
-UPDATE airplanes SET image_credit = '海上自衛隊', image_licence = 'CC BY 4.0' WHERE name = 'Kawasaki P-1';
-UPDATE airplanes SET image_credit = 'Jerry Gunner from Lincoln, UK', image_licence = 'CC BY 2.0' WHERE name = 'Kawasaki T-4';
-UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'LTV XC-142';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'La-15';
-UPDATE airplanes SET image_credit = 'Raf24~commonswiki', image_licence = 'CC BY-SA 4.0' WHERE name = 'Let L-410 Turbolet';
-UPDATE airplanes SET image_credit = 'U.S.Air Force', image_licence = 'Public domain' WHERE name = 'Lockheed A-12';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'Lockheed D-21';
-UPDATE airplanes SET image_credit = 'ZLEA', image_licence = 'CC BY-SA 4.0' WHERE name = 'Lockheed XFV';
-UPDATE airplanes SET image_credit = 'Myself ( Adrian Pingstone ).', image_licence = 'Public domain' WHERE name = 'M-346 Master';
-UPDATE airplanes SET image_credit = 'Petty Officer 3rd Class Jeffrey S. Viano, U.S. Navy', image_licence = 'Public domain' WHERE name = 'MQ-1 Predator';
-UPDATE airplanes SET image_credit = 'United States Navy photo courtesy of Boeing', image_licence = 'Public domain' WHERE name = 'MQ-25 Stingray';
-UPDATE airplanes SET image_credit = 'Lt. Col. Leslie Pratt', image_licence = 'Public domain' WHERE name = 'MQ-9 Reaper';
-UPDATE airplanes SET image_credit = 'Hornet Driver', image_licence = 'CC BY-SA 4.0' WHERE name = 'MiG 1.44';
-UPDATE airplanes SET image_credit = 'Alf van Beem', image_licence = 'CC0' WHERE name = 'MiG-15';
-UPDATE airplanes SET image_credit = 'Balon Greyjoy', image_licence = 'CC0' WHERE name = 'MiG-17';
-UPDATE airplanes SET image_credit = 'U.S. Air Force photo', image_licence = 'Public domain' WHERE name = 'MiG-19';
-UPDATE airplanes SET image_credit = 'Ronnie Macdonald from Chelmsford and Largs, United Kingdom', image_licence = 'CC BY 2.0' WHERE name = 'MiG-27';
-UPDATE airplanes SET image_credit = 'Doomych', image_licence = 'Public domain' WHERE name = 'MiG-35';
-UPDATE airplanes SET image_credit = 'Mike1979 Russia', image_licence = 'CC BY-SA 3.0' WHERE name = 'MiG-9';
-UPDATE airplanes SET image_credit = 'Acroterion', image_licence = 'CC BY-SA 4.0' WHERE name = 'Mirage 4000';
-UPDATE airplanes SET image_credit = 'Anidaat', image_licence = 'CC BY-SA 4.0' WHERE name = 'Mirage 5';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Mirage G8';
-UPDATE airplanes SET image_credit = 'Duch.seb', image_licence = 'CC BY-SA 3.0' WHERE name = 'Mirage III V';
-UPDATE airplanes SET image_credit = 'SSGT Terry Smith', image_licence = 'Public domain' WHERE name = 'Mitsubishi F-104J';
-UPDATE airplanes SET image_credit = 'Mike1979 Russia', image_licence = 'CC BY-SA 3.0' WHERE name = 'Myasishchev M-4';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Myasishchev M-50';
-UPDATE airplanes SET image_credit = 'Oleg V. Belyakov - AirTeamImages', image_licence = 'CC BY-SA 3.0' WHERE name = 'Myasishchev M-55';
-UPDATE airplanes SET image_credit = 'Jean-Christophe BENOIST', image_licence = 'CC BY-SA 3.0' WHERE name = 'Mystère IV';
-UPDATE airplanes SET image_credit = '颐园居', image_licence = 'CC BY-SA 4.0' WHERE name = 'Nanchang CJ-6';
-UPDATE airplanes SET image_credit = 'Thomas Vogt from Paderborn, Deutschland', image_licence = 'CC BY 2.0' WHERE name = 'Nord Noratlas';
-UPDATE airplanes SET image_credit = 'Christopher M. Reed', image_licence = 'CC BY 4.0' WHERE name = 'OV-1 Mohawk';
-UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'OV-10 Bronco';
-UPDATE airplanes SET image_credit = 'Groumfy69', image_licence = 'Public domain' WHERE name = 'Ouragan';
-UPDATE airplanes SET image_credit = 'USN', image_licence = 'Public domain' WHERE name = 'P-2 Neptune';
-UPDATE airplanes SET image_credit = 'U.S. Navy photo by Petty Officer 2nd Class Alec Kramer', image_licence = 'Public domain' WHERE name = 'P-3 Orion';
-UPDATE airplanes SET image_credit = 'Balon Greyjoy', image_licence = 'CC0' WHERE name = 'P-8 Poseidon';
-UPDATE airplanes SET image_credit = 'Mztourist', image_licence = 'CC BY-SA 4.0' WHERE name = 'PAC Super Mushshak';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'PZL M28 Skytruck';
-UPDATE airplanes SET image_credit = 'Leafnode , original by Lukas skywalker', image_licence = 'CC BY-SA 4.0' WHERE name = 'PZL TS-11 Iskra';
-UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'PZL-130 Orlik';
-UPDATE airplanes SET image_credit = 'GerardvdSchaaf', image_licence = 'CC BY 4.0' WHERE name = 'Pilatus PC-7';
-UPDATE airplanes SET image_credit = 'Matti Blume', image_licence = 'CC BY-SA 4.0' WHERE name = 'Pilatus PC-9';
-UPDATE airplanes SET image_credit = 'Tangopaso', image_licence = 'CC BY-SA 3.0' WHERE name = 'RQ-4 Global Hawk';
-UPDATE airplanes SET image_credit = 'North American Aviation', image_licence = 'Public domain' WHERE name = 'Rockwell XFV-12';
-UPDATE airplanes SET image_credit = 'SSGT DANIEL PEREZ', image_licence = 'Public domain' WHERE name = 'Ryan Firebee';
-UPDATE airplanes SET image_credit = 'US Navy', image_licence = 'Public domain' WHERE name = 'S-3 Viking';
-UPDATE airplanes SET image_credit = 'Philippine Air Force', image_licence = 'Public domain' WHERE name = 'SF.260';
-UPDATE airplanes SET image_credit = '123-photos', image_licence = 'CC BY-SA 4.0' WHERE name = 'SOCATA TB-30 Epsilon';
-UPDATE airplanes SET image_credit = 'Matt Morgan', image_licence = 'CC BY-SA 2.0' WHERE name = 'Saab 105';
-UPDATE airplanes SET image_credit = 'TunaFish Spotting', image_licence = 'CC BY-SA 4.0' WHERE name = 'Saab 29 Tunnan';
-UPDATE airplanes SET image_credit = 'Ronnie Macdonald from Chelmsford, United Kingdom', image_licence = 'CC BY 2.0' WHERE name = 'Saab 32 Lansen';
-UPDATE airplanes SET image_credit = 'Airwolfhound from Hertfordshire, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Saab GlobalEye';
-UPDATE airplanes SET image_credit = 'Hugh Llewelyn from Keynsham, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Saunders-Roe SR.53';
-UPDATE airplanes SET image_credit = 'Adrian Pingstone', image_licence = 'Public domain' WHERE name = 'Scottish Aviation Bulldog';
-UPDATE airplanes SET image_credit = 'wallycacsabre', image_licence = 'CC BY 2.0' WHERE name = 'Sea Vixen';
-UPDATE airplanes SET image_credit = 'Alert5', image_licence = 'CC BY-SA 4.0' WHERE name = 'Shaanxi Y-8';
-UPDATE airplanes SET image_credit = 'TurnOnTheNight', image_licence = 'CC BY-SA 4.0' WHERE name = 'Shenyang J-35';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'ShinMaywa US-1A';
-UPDATE airplanes SET image_credit = 'Eeldrorq', image_licence = 'CC0' WHERE name = 'ShinMaywa US-2';
-UPDATE airplanes SET image_credit = 'wilford peloquin', image_licence = 'CC BY 2.0' WHERE name = 'Short SC.1';
-UPDATE airplanes SET image_credit = 'Adrian Pingstone', image_licence = 'Public domain' WHERE name = 'Shorts Tucano';
-UPDATE airplanes SET image_credit = 'Bidgee', image_licence = 'CC BY-SA 3.0 au' WHERE name = 'Soko G-2 Galeb';
-UPDATE airplanes SET image_credit = 'Rob Schleiffert from Holland', image_licence = 'CC BY-SA 2.0' WHERE name = 'Soko G-4 Super Galeb';
-UPDATE airplanes SET image_credit = 'Srđan Popović', image_licence = 'CC BY-SA 4.0' WHERE name = 'Soko J-22 Orao';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Su-11';
-UPDATE airplanes SET image_credit = 'И. Руденко', image_licence = 'CC BY 4.0' WHERE name = 'Su-33';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Su-7';
-UPDATE airplanes SET image_credit = 'Alf van Beem', image_licence = 'Public domain' WHERE name = 'Su-9';
-UPDATE airplanes SET image_credit = 'Sergey Dukachev', image_licence = 'CC BY 2.5' WHERE name = 'Sukhoi T-4';
-UPDATE airplanes SET image_credit = 'Alf van Beem', image_licence = 'CC0' WHERE name = 'Super Mystère B2';
-UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'Supermarine Attacker';
-UPDATE airplanes SET image_credit = 'TSRL', image_licence = 'CC BY-SA 3.0' WHERE name = 'Supermarine Scimitar';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Supermarine Swift';
-UPDATE airplanes SET image_credit = 'Pseudopanax at English Wikipedia', image_licence = 'Public domain' WHERE name = 'T-28 Trojan';
-UPDATE airplanes SET image_credit = 'Alejandro Pena Edited by: FOX 52 and Bammesk', image_licence = 'Public domain' WHERE name = 'T-33 Shooting Star';
-UPDATE airplanes SET image_credit = 'DON S. MONTGOMERY, USN (RET.)', image_licence = 'Public domain' WHERE name = 'T-34 Mentor';
-UPDATE airplanes SET image_credit = 'Mike LaChance from Crowley, Tx, USA', image_licence = 'CC BY 2.0' WHERE name = 'T-37 Tweet';
-UPDATE airplanes SET image_credit = 'Airman 1st Class Harrison Sullivan', image_licence = 'Public domain' WHERE name = 'T-38 Talon';
-UPDATE airplanes SET image_credit = 'United States Air Force', image_licence = 'Public domain' WHERE name = 'T-6 Texan II';
-UPDATE airplanes SET image_credit = 'Ibex73', image_licence = 'CC BY-SA 4.0' WHERE name = 'TAI Hürkuş';
-UPDATE airplanes SET image_credit = 'Dimir', image_licence = 'CC BY-SA 4.0' WHERE name = 'TAI Kaan';
-UPDATE airplanes SET image_credit = 'bomberpilot', image_licence = 'CC BY-SA 2.0' WHERE name = 'Transall C-160';
-UPDATE airplanes SET image_credit = 'Mike1979 Russia', image_licence = 'CC BY-SA 3.0' WHERE name = 'Tu-128';
-UPDATE airplanes SET image_credit = 'VargaA', image_licence = 'CC BY-SA 4.0' WHERE name = 'Tu-141 Strizh';
-UPDATE airplanes SET image_credit = NULL, image_licence = 'Public domain' WHERE name = 'Tu-142';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Tu-143 Reys';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'Tu-16';
-UPDATE airplanes SET image_credit = 'Зимин Василий', image_licence = 'Public domain' WHERE name = 'Tu-22';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Tupolev Tu-4';
-UPDATE airplanes SET image_credit = 'United States Department of the Air Force', image_licence = 'Public domain' WHERE name = 'U-2 Dragon Lady';
-UPDATE airplanes SET image_credit = 'André Gerwing', image_licence = 'CC BY-SA 4.0' WHERE name = 'VFW VAK 191B';
-UPDATE airplanes SET image_credit = 'VynedJ', image_licence = 'CC BY 4.0' WHERE name = 'Valmet L-70 Vinka';
-UPDATE airplanes SET image_credit = 'Jerry Gunner from Lincoln, UK', image_licence = 'CC BY 2.0' WHERE name = 'Vautour II';
-UPDATE airplanes SET image_credit = 'Hugh Llewelyn from Keynsham, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Vickers VC10';
-UPDATE airplanes SET image_credit = 'Umeyou', image_licence = 'CC BY-SA 3.0' WHERE name = 'Vickers Valiant';
-UPDATE airplanes SET image_credit = 'kitmasterbloke', image_licence = 'CC BY 2.0' WHERE name = 'Westland Wyvern';
-UPDATE airplanes SET image_credit = 'Mztourist', image_licence = 'CC BY-SA 4.0' WHERE name = 'Wing Loong II';
-UPDATE airplanes SET image_credit = 'San Diego Air & Space Museum', image_licence = 'Public domain' WHERE name = 'X-13 Vertijet';
-UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'X-15';
-UPDATE airplanes SET image_credit = 'NASA / DFRC / Larry Sammons', image_licence = 'Public domain' WHERE name = 'X-29';
-UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'X-3 Stiletto';
-UPDATE airplanes SET image_credit = 'Jim Ross, NASA Dryden Flight Research Center (NASA-DFRC)', image_licence = 'Public domain' WHERE name = 'X-31';
-UPDATE airplanes SET image_credit = 'DARPA', image_licence = 'Public domain' WHERE name = 'X-47B';
-UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'XB-70 Valkyrie';
-UPDATE airplanes SET image_credit = 'USN', image_licence = 'Public domain' WHERE name = 'XFY Pogo';
-UPDATE airplanes SET image_credit = '88 Air Base Wing Public Affairs', image_licence = 'Public domain' WHERE name = 'XQ-58 Valkyrie';
-UPDATE airplanes SET image_credit = 'N509FZ', image_licence = 'CC BY-SA 4.0' WHERE name = 'Xian Y-20 Kunpeng';
-UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'YF-17 Cobra';
-UPDATE airplanes SET image_credit = NULL, image_licence = 'Public domain' WHERE name = 'YF-22';
-UPDATE airplanes SET image_credit = 'Logan Rickert', image_licence = 'CC BY 4.0' WHERE name = 'YF-23 Black Widow II';
-UPDATE airplanes SET image_credit = 'Ministry of Defence', image_licence = 'CC BY 4.0' WHERE name = 'Yak-130';
-UPDATE airplanes SET image_credit = 'Mike1979 Russia', image_licence = 'CC BY-SA 4.0' WHERE name = 'Yak-141';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Yak-23';
-UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'Yak-25';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Yak-28';
-UPDATE airplanes SET image_credit = 'Maarten', image_licence = 'CC BY 2.0' WHERE name = 'Yak-36';
-UPDATE airplanes SET image_credit = 'US Navy Service Depicted: Other Service', image_licence = 'Public domain' WHERE name = 'Yak-38';
-UPDATE airplanes SET image_credit = 'Pseudopanax', image_licence = 'Public domain' WHERE name = 'de Havilland Vampire';
-UPDATE airplanes SET image_credit = 'Tony Hisgett from Birmingham, UK', image_licence = 'CC BY 2.0' WHERE name = 'de Havilland Venom';
-UPDATE airplanes SET image_credit = 'Tangopaso', image_licence = 'CC BY-SA 3.0' WHERE name = 'nEUROn';
-UPDATE airplanes SET image_credit = 'David Álvarez López from Gijón, España', image_licence = 'CC BY 2.0' WHERE name = 'Pilatus PC-21';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Boeing T-7 Red Hawk';
-UPDATE airplanes SET image_credit = 'Colin Cooke Photo', image_licence = 'CC BY-SA 2.0' WHERE name = 'Airbus C295';
-UPDATE airplanes SET image_credit = 'Bahnfrend', image_licence = 'CC BY-SA 4.0' WHERE name = 'Antonov An-225 Mriya';
-UPDATE airplanes SET image_credit = 'CeeGee', image_licence = 'CC BY-SA 4.0' WHERE name = 'Bayraktar Akıncı';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Yak-17';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'B-66 Destroyer';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Martin B-57 Canberra';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'S-2 Tracker';
-UPDATE airplanes SET image_credit = '颐园居', image_licence = 'CC BY-SA 4.0' WHERE name = 'Shaanxi KJ-500';
-UPDATE airplanes SET image_credit = 'Cpl. Melissa Wenger, U.S. Marine Corps', image_licence = 'Public domain' WHERE name = 'V-22 Osprey';
-UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'Bell XV-15';
-UPDATE airplanes SET image_credit = 'Ata Barış', image_licence = 'CC BY-SA 4.0' WHERE name = 'Bayraktar Kızılelma';
-UPDATE airplanes SET image_credit = 'Mustafa Karabaş (TUSAŞ)', image_licence = 'CC BY-SA 4.0' WHERE name = 'TAI Anka';
-UPDATE airplanes SET image_credit = 'Senior Airman Adrien Tran, U.S. Air Force', image_licence = 'Public domain' WHERE name = 'MQ-28 Ghost Bat';
-UPDATE airplanes SET image_credit = 'Ministère de la Défense de la Fédération de Russie (mil.ru)', image_licence = 'CC BY 4.0' WHERE name = 'Sukhoi S-70 Okhotnik';
-UPDATE airplanes SET image_credit = '颐园居', image_licence = 'CC BY-SA 4.0' WHERE name = 'Hongdu GJ-11 Sharp Sword';
-UPDATE airplanes SET image_credit = 'Infinty 0', image_licence = 'CC BY-SA 4.0' WHERE name = 'CASC CH-5 Rainbow';
-UPDATE airplanes SET image_credit = 'Jim Ross, NASA', image_licence = 'Public domain' WHERE name = 'Boeing X-45';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'MQ-4C Triton';
-UPDATE airplanes SET image_credit = 'tolgaozbekcom', image_licence = 'CC BY 3.0' WHERE name = 'TAI Hürjet';
-UPDATE airplanes SET image_credit = 'Admiralis-generalis-Aladeen', image_licence = 'CC BY-SA 4.0' WHERE name = 'Aero L-39NG Skyfox';
-UPDATE airplanes SET image_credit = 'Lawrence Crespo, U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Boeing E-7 Wedgetail';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'General Atomics YFQ-42A Dark Merlin';
-UPDATE airplanes SET image_credit = 'Nehemia Gershuni-Aylho', image_licence = 'CC BY-SA 3.0' WHERE name = 'Elbit Hermes 450';
-UPDATE airplanes SET image_credit = 'John Higgins', image_licence = 'Public domain' WHERE name = 'MQ-1C Gray Eagle';
-UPDATE airplanes SET image_credit = 'Carl9311', image_licence = 'CC0' WHERE name = 'Bayraktar TB3';
-UPDATE airplanes SET image_credit = 'André Gerwing', image_licence = 'CC BY-SA 4.0' WHERE name = 'Saab 21R';
-UPDATE airplanes SET image_credit = 'Aeroprints.com', image_licence = 'CC BY-SA 3.0' WHERE name = 'IAe 33 Pulqui II';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'FH-1 Phantom';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F2H Banshee';
-UPDATE airplanes SET image_credit = 'Joe Sewell', image_licence = 'Public domain' WHERE name = 'F3H Demon';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Northrop YB-49';
-UPDATE airplanes SET image_credit = NULL, image_licence = 'Public domain' WHERE name = 'Leduc 010';
-UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany, Germany', image_licence = 'CC BY 2.0' WHERE name = 'Nord 1500 Griffon';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'SNCASO Trident';
-UPDATE airplanes SET image_credit = 'Noah Wulf', image_licence = 'CC BY-SA 3.0' WHERE name = 'F4U Corsair';
-UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'Hawker Sea Fury';
-UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'F8F Bearcat';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'AC-47 Spooky';
-UPDATE airplanes SET image_credit = 'Taylormcalear', image_licence = 'CC BY-SA 4.0' WHERE name = 'Canadair CP-107 Argus';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'HU-16 Albatross';
-UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'E-1 Tracer';
-UPDATE airplanes SET image_credit = 'Danny Yu', image_licence = 'CC BY-SA 4.0' WHERE name = 'KJ-2000';
-UPDATE airplanes SET image_credit = 'Bene Riobó', image_licence = 'CC BY-SA 4.0' WHERE name = 'Saab 340 AEW&C';
-UPDATE airplanes SET image_credit = 'Alert5', image_licence = 'CC BY-SA 4.0' WHERE name = 'Shaanxi Y-9';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'C-123 Provider';
-UPDATE airplanes SET image_credit = 'Dave_S.', image_licence = 'CC BY 4.0' WHERE name = 'DHC-2 Beaver';
-UPDATE airplanes SET image_credit = 'San Diego Air & Space Museum Archives', image_licence = 'Public domain' WHERE name = 'Canadair CL-84 Dynavert';
-UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Northrop Tacit Blue';
-UPDATE airplanes SET image_credit = 'Jim Ross, NASA', image_licence = 'Public domain' WHERE name = 'Lockheed Martin X-59 QueSST';
+UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany', image_licence = 'CC BY 2.0' WHERE name = 'A-1 Skyraider' AND (image_credit, image_licence) IS DISTINCT FROM ('Clemens Vasters from Viersen, Germany', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'A-26 Invader' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'A-3 Skywarrior' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'TSGT KEN HAMMOND', image_licence = 'Public domain' WHERE name = 'A-37 Dragonfly' AND (image_credit, image_licence) IS DISTINCT FROM ('TSGT KEN HAMMOND', 'Public domain');
+UPDATE airplanes SET image_credit = 'Lt.JG Nelson, U.S. Navy', image_licence = 'Public domain' WHERE name = 'A-4 Skyhawk' AND (image_credit, image_licence) IS DISTINCT FROM ('Lt.JG Nelson, U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'NASA Dryden Flight Research Center', image_licence = 'Public domain' WHERE name = 'A-5 Vigilante' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA Dryden Flight Research Center', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'A-6 Intruder' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'Robert L. Lawson, U.S. Navy', image_licence = 'Public domain' WHERE name = 'A-7 Corsair II' AND (image_credit, image_licence) IS DISTINCT FROM ('Robert L. Lawson, U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'MSgt Christopher Boitz', image_licence = 'Public domain' WHERE name = 'AC-130 Spectre' AND (image_credit, image_licence) IS DISTINCT FROM ('MSgt Christopher Boitz', 'Public domain');
+UPDATE airplanes SET image_credit = '玄史生', image_licence = 'CC BY-SA 4.0' WHERE name = 'AIDC AT-3 Tzu Chung' AND (image_credit, image_licence) IS DISTINCT FROM ('玄史生', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'RudolphChen', image_licence = 'CC BY-SA 4.0' WHERE name = 'AIDC F-CK-1 Ching-kuo' AND (image_credit, image_licence) IS DISTINCT FROM ('RudolphChen', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = '廢柴老闆', image_licence = 'CC0' WHERE name = 'AIDC T-5 Brave Eagle' AND (image_credit, image_licence) IS DISTINCT FROM ('廢柴老闆', 'CC0');
+UPDATE airplanes SET image_credit = 'Sgt. David Ornelas Baeza', image_licence = 'Public domain' WHERE name = 'AV-8B Harrier II' AND (image_credit, image_licence) IS DISTINCT FROM ('Sgt. David Ornelas Baeza', 'Public domain');
+UPDATE airplanes SET image_credit = 'Adrian Pingstone ( Arpingstone )', image_licence = 'Public domain' WHERE name = 'Aeritalia G.222' AND (image_credit, image_licence) IS DISTINCT FROM ('Adrian Pingstone ( Arpingstone )', 'Public domain');
+UPDATE airplanes SET image_credit = 'Peter Ellis', image_licence = 'CC BY-SA 4.0' WHERE name = 'Aermacchi MB-326' AND (image_credit, image_licence) IS DISTINCT FROM ('Peter Ellis', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Milan Nykodym from Kutna Hora, Czech Republic', image_licence = 'CC BY-SA 2.0' WHERE name = 'Aero L-159 ALCA' AND (image_credit, image_licence) IS DISTINCT FROM ('Milan Nykodym from Kutna Hora, Czech Republic', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Oren Rozen', image_licence = 'CC BY-SA 3.0' WHERE name = 'Aero L-29 Delfín' AND (image_credit, image_licence) IS DISTINCT FROM ('Oren Rozen', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'U.S. Navy photo', image_licence = 'Public domain' WHERE name = 'Aero L-39 Albatros' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy photo', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Air Force photo by Christian Turner', image_licence = 'Public domain' WHERE name = 'Airbus A330 MRTT' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force photo by Christian Turner', 'Public domain');
+UPDATE airplanes SET image_credit = 'Peng Chen', image_licence = 'CC BY-SA 4.0' WHERE name = 'Airbus A400M Atlas' AND (image_credit, image_licence) IS DISTINCT FROM ('Peng Chen', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Steve Lynes', image_licence = 'CC BY 2.0' WHERE name = 'Alenia C-27J Spartan' AND (image_credit, image_licence) IS DISTINCT FROM ('Steve Lynes', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Antonov An-12' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Md Shaifuzzaman Ayon', image_licence = 'CC BY-SA 4.0' WHERE name = 'Antonov An-124 Ruslan' AND (image_credit, image_licence) IS DISTINCT FROM ('Md Shaifuzzaman Ayon', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'Antonov An-2' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Navigator-avia', image_licence = 'CC BY-SA 3.0' WHERE name = 'Antonov An-22 Antei' AND (image_credit, image_licence) IS DISTINCT FROM ('Navigator-avia', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Oleg V. Belyakov - AirTeamImages', image_licence = 'CC BY-SA 3.0' WHERE name = 'Antonov An-26' AND (image_credit, image_licence) IS DISTINCT FROM ('Oleg V. Belyakov - AirTeamImages', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Dmitry Karpezo', image_licence = 'CC BY-SA 3.0' WHERE name = 'Antonov An-32' AND (image_credit, image_licence) IS DISTINCT FROM ('Dmitry Karpezo', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Aeroprints.com', image_licence = 'CC BY-SA 3.0' WHERE name = 'Antonov An-72' AND (image_credit, image_licence) IS DISTINCT FROM ('Aeroprints.com', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Bob Adams from George, South Africa', image_licence = 'CC BY-SA 2.0' WHERE name = 'Atlas Cheetah' AND (image_credit, image_licence) IS DISTINCT FROM ('Bob Adams from George, South Africa', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Atlas Impala' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Peterborough, Cambs UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Canoe1967', image_licence = 'CC BY 3.0' WHERE name = 'Avro Canada CF-100 Canuck' AND (image_credit, image_licence) IS DISTINCT FROM ('Canoe1967', 'CC BY 3.0');
+UPDATE airplanes SET image_credit = 'Unknown photographer, copyright originally held by the Government of Canada', image_licence = 'Public domain' WHERE name = 'Avro Canada CF-105 Arrow' AND (image_credit, image_licence) IS DISTINCT FROM ('Unknown photographer, copyright originally held by the Government of Canada', 'Public domain');
+UPDATE airplanes SET image_credit = 'RAF', image_licence = 'Public domain' WHERE name = 'Avro Shackleton' AND (image_credit, image_licence) IS DISTINCT FROM ('RAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'B-21 Raider' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'B-29 Superfortress' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA', 'Public domain');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'B-36 Peacemaker' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'US Air Force photo', image_licence = 'Public domain' WHERE name = 'B-47 Stratojet' AND (image_credit, image_licence) IS DISTINCT FROM ('US Air Force photo', 'Public domain');
+UPDATE airplanes SET image_credit = 'United States Air Force', image_licence = 'Public domain' WHERE name = 'B-58 Hustler' AND (image_credit, image_licence) IS DISTINCT FROM ('United States Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'BAC TSR-2' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Tim Felce (Airwolfhound)', image_licence = 'CC BY-SA 2.0' WHERE name = 'BAE Hawk' AND (image_credit, image_licence) IS DISTINCT FROM ('Tim Felce (Airwolfhound)', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Bayhaluk', image_licence = 'CC BY-SA 4.0' WHERE name = 'Bayraktar TB2' AND (image_credit, image_licence) IS DISTINCT FROM ('Bayhaluk', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = NULL, image_licence = 'Public domain' WHERE name = 'Bell X-1' AND (image_credit, image_licence) IS DISTINCT FROM (NULL, 'Public domain');
+UPDATE airplanes SET image_credit = 'NASA Ames Research Center / Art Melliar', image_licence = 'Public domain' WHERE name = 'Bell X-14' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA Ames Research Center / Art Melliar', 'Public domain');
+UPDATE airplanes SET image_credit = 'Ludvig14', image_licence = 'CC BY-SA 4.0' WHERE name = 'Beriev A-50' AND (image_credit, image_licence) IS DISTINCT FROM ('Ludvig14', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'U.S. Navy photo by Mass Communication Specialist 2nd Class John Herman', image_licence = 'Public domain' WHERE name = 'Beriev Be-12 Chaïka' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy photo by Mass Communication Specialist 2nd Class John Herman', 'Public domain');
+UPDATE airplanes SET image_credit = 'New York-air', image_licence = 'CC BY-SA 4.0' WHERE name = 'Beriev Be-200' AND (image_credit, image_licence) IS DISTINCT FROM ('New York-air', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'Boeing X-32' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'Clément Gruin', image_licence = 'CC BY-SA 4.0' WHERE name = 'Breguet Alizé' AND (image_credit, image_licence) IS DISTINCT FROM ('Clément Gruin', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'U.S. Department of Defense', image_licence = 'Public domain' WHERE name = 'Breguet Atlantique' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Department of Defense', 'Public domain');
+UPDATE airplanes SET image_credit = 'Jerry Gunner', image_licence = 'CC BY-SA 4.0' WHERE name = 'Britten-Norman Defender' AND (image_credit, image_licence) IS DISTINCT FROM ('Jerry Gunner', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'United States Air Force', image_licence = 'Public domain' WHERE name = 'C-119 Flying Boxcar' AND (image_credit, image_licence) IS DISTINCT FROM ('United States Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = '<div class="fn value"> U.S. Air Force photo by Tech. Sgt. Howard Blair</div>', image_licence = 'Public domain' WHERE name = 'C-130 Hercules' AND (image_credit, image_licence) IS DISTINCT FROM ('<div class="fn value"> U.S. Air Force photo by Tech. Sgt. Howard Blair</div>', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Department of Defense', image_licence = 'Public domain' WHERE name = 'C-141 Starlifter' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Department of Defense', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'C-17 Globemaster III' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'LCdr. John R. Leenhouts, U.S. Navy', image_licence = 'Public domain' WHERE name = 'C-2 Greyhound' AND (image_credit, image_licence) IS DISTINCT FROM ('LCdr. John R. Leenhouts, U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'Roland Balik', image_licence = 'Public domain' WHERE name = 'C-5 Galaxy' AND (image_credit, image_licence) IS DISTINCT FROM ('Roland Balik', 'Public domain');
+UPDATE airplanes SET image_credit = 'Stephen Edmonds from Melbourne, Australia', image_licence = 'CC BY-SA 2.0' WHERE name = 'CAC CA-27 Sabre' AND (image_credit, image_licence) IS DISTINCT FROM ('Stephen Edmonds from Melbourne, Australia', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Photo by Senior Airman Renee Nicole Finona / 48th Fighter Wing', image_licence = 'Public domain' WHERE name = 'CASA C-101 Aviojet' AND (image_credit, image_licence) IS DISTINCT FROM ('Photo by Senior Airman Renee Nicole Finona / 48th Fighter Wing', 'Public domain');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'CASA C-212 Aviocar' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'William Murphy from Dublin, Ireland', image_licence = 'CC BY-SA 2.0' WHERE name = 'CASA/IPTN CN-235' AND (image_credit, image_licence) IS DISTINCT FROM ('William Murphy from Dublin, Ireland', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Airman Jacob B. Wrightsman', image_licence = 'Public domain' WHERE name = 'Canadair CT-114 Tutor' AND (image_credit, image_licence) IS DISTINCT FROM ('Airman Jacob B. Wrightsman', 'Public domain');
+UPDATE airplanes SET image_credit = 'NACA', image_licence = 'Public domain' WHERE name = 'D-558-2 Skyrocket' AND (image_credit, image_licence) IS DISTINCT FROM ('NACA', 'Public domain');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Weston, Spalding, Lincs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'DHC-4 Caribou' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Weston, Spalding, Lincs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Nik Deblauwe', image_licence = 'CC BY-SA 2.0' WHERE name = 'DHC-5 Buffalo' AND (image_credit, image_licence) IS DISTINCT FROM ('Nik Deblauwe', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Lionel Allorge', image_licence = 'CC BY-SA 3.0' WHERE name = 'Dassault MD 315 Flamant' AND (image_credit, image_licence) IS DISTINCT FROM ('Lionel Allorge', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Thomas Vogt from Paderborn, Deutschland', image_licence = 'CC BY 2.0' WHERE name = 'Dornier Do 28 Skyservant' AND (image_credit, image_licence) IS DISTINCT FROM ('Thomas Vogt from Paderborn, Deutschland', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany, Germany', image_licence = 'CC BY 2.0' WHERE name = 'Dornier Do 31' AND (image_credit, image_licence) IS DISTINCT FROM ('Clemens Vasters from Viersen, Germany, Germany', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'US Navy', image_licence = 'Public domain' WHERE name = 'E-2 Hawkeye' AND (image_credit, image_licence) IS DISTINCT FROM ('US Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'Ronnie Macdonald from Chelmsford and Largs, United Kingdom', image_licence = 'CC BY 2.0' WHERE name = 'E-3 Sentry' AND (image_credit, image_licence) IS DISTINCT FROM ('Ronnie Macdonald from Chelmsford and Largs, United Kingdom', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Noah Wulf', image_licence = 'CC BY-SA 4.0' WHERE name = 'EA-18G Growler' AND (image_credit, image_licence) IS DISTINCT FROM ('Noah Wulf', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Cpl. Neysa Huertas Quinones', image_licence = 'Public domain' WHERE name = 'EA-6B Prowler' AND (image_credit, image_licence) IS DISTINCT FROM ('Cpl. Neysa Huertas Quinones', 'Public domain');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Weston, Spalding, Lincs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'EC-121 Warning Star' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Weston, Spalding, Lincs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Dick Gilbert', image_licence = 'CC BY 2.0' WHERE name = 'ENAER T-35 Pillán' AND (image_credit, image_licence) IS DISTINCT FROM ('Dick Gilbert', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Jmcc150 at English Wikipedia', image_licence = 'Public domain' WHERE name = 'EWR VJ 101' AND (image_credit, image_licence) IS DISTINCT FROM ('Jmcc150 at English Wikipedia', 'Public domain');
+UPDATE airplanes SET image_credit = 'Tangopaso', image_licence = 'CC BY-SA 3.0' WHERE name = 'Elbit Hermes 900' AND (image_credit, image_licence) IS DISTINCT FROM ('Tangopaso', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Andre Gustavo Stumpf Filho from Brasil', image_licence = 'CC BY 2.0' WHERE name = 'Embraer E-99' AND (image_credit, image_licence) IS DISTINCT FROM ('Andre Gustavo Stumpf Filho from Brasil', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Sebastián Laguna', image_licence = 'CC BY 2.0' WHERE name = 'Embraer EMB-110 Bandeirante' AND (image_credit, image_licence) IS DISTINCT FROM ('Sebastián Laguna', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Matti Blume', image_licence = 'CC BY-SA 4.0' WHERE name = 'Embraer KC-390 Millennium' AND (image_credit, image_licence) IS DISTINCT FROM ('Matti Blume', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Daniel Z97', image_licence = 'CC BY 4.0' WHERE name = 'English Electric Canberra' AND (image_credit, image_licence) IS DISTINCT FROM ('Daniel Z97', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = 'Michaela Pereckas', image_licence = 'CC BY 2.0' WHERE name = 'F-100 Super Sabre' AND (image_credit, image_licence) IS DISTINCT FROM ('Michaela Pereckas', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'F-101 Voodoo' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'United States Air Force Photo', image_licence = 'Public domain' WHERE name = 'F-102 Delta Dagger' AND (image_credit, image_licence) IS DISTINCT FROM ('United States Air Force Photo', 'Public domain');
+UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'F-104 Starfighter' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'F-105 Thunderchief' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'Staff Sgt. John K. McDowell', image_licence = 'Public domain' WHERE name = 'F-106 Delta Dart' AND (image_credit, image_licence) IS DISTINCT FROM ('Staff Sgt. John K. McDowell', 'Public domain');
+UPDATE airplanes SET image_credit = 'Staff Sgt. Aaron Allmon II', image_licence = 'Public domain' WHERE name = 'F-117 Nighthawk' AND (image_credit, image_licence) IS DISTINCT FROM ('Staff Sgt. Aaron Allmon II', 'Public domain');
+UPDATE airplanes SET image_credit = 'Airman 1st Class Matthew Seefeldt', image_licence = 'Public domain' WHERE name = 'F-15 Eagle' AND (image_credit, image_licence) IS DISTINCT FROM ('Airman 1st Class Matthew Seefeldt', 'Public domain');
+UPDATE airplanes SET image_credit = 'Ethan Wagner', image_licence = 'Public domain' WHERE name = 'F-15EX Eagle II' AND (image_credit, image_licence) IS DISTINCT FROM ('Ethan Wagner', 'Public domain');
+UPDATE airplanes SET image_credit = 'NASA/Carla Thomas', image_licence = 'Public domain' WHERE name = 'F-16XL' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA/Carla Thomas', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'F-20 Tigershark' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'Glenn Research Center (NASA/DFRC)', image_licence = 'Public domain' WHERE name = 'F-8 Crusader' AND (image_credit, image_licence) IS DISTINCT FROM ('Glenn Research Center (NASA/DFRC)', 'Public domain');
+UPDATE airplanes SET image_credit = 'Eric Salard', image_licence = 'CC BY-SA 2.0' WHERE name = 'F-80 Shooting Star' AND (image_credit, image_licence) IS DISTINCT FROM ('Eric Salard', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = NULL, image_licence = 'Public domain' WHERE name = 'F-82 Twin Mustang' AND (image_credit, image_licence) IS DISTINCT FROM (NULL, 'Public domain');
+UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany, Germany', image_licence = 'CC BY 2.0' WHERE name = 'F-84F Thunderstreak' AND (image_credit, image_licence) IS DISTINCT FROM ('Clemens Vasters from Viersen, Germany, Germany', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = '205weeman17', image_licence = 'CC BY-SA 3.0' WHERE name = 'F-86 Sabre' AND (image_credit, image_licence) IS DISTINCT FROM ('205weeman17', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'F-89 Scorpion' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'F-94 Starfire' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'Cmdr. John Leenhouts, USN', image_licence = 'Public domain' WHERE name = 'F/A-18 Hornet' AND (image_credit, image_licence) IS DISTINCT FROM ('Cmdr. John Leenhouts, USN', 'Public domain');
+UPDATE airplanes SET image_credit = 'Petty Officer 1st Class David Mercil, U.S. Navy', image_licence = 'Public domain' WHERE name = 'F/A-18E Super Hornet' AND (image_credit, image_licence) IS DISTINCT FROM ('Petty Officer 1st Class David Mercil, U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F11F Tiger' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F2Y Sea Dart' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F3D Skyknight' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F4D Skyray' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F7U Cutlass' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F9F Cougar' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'F9F Panther' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA', 'Public domain');
+UPDATE airplanes SET image_credit = 'Comet Photo AG', image_licence = 'CC BY-SA 4.0' WHERE name = 'FFA P-16' AND (image_credit, image_licence) IS DISTINCT FROM ('Comet Photo AG', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany, Germany', image_licence = 'CC BY 2.0' WHERE name = 'FMA IA 58 Pucará' AND (image_credit, image_licence) IS DISTINCT FROM ('Clemens Vasters from Viersen, Germany, Germany', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'JO2 Pete Hatzakos', image_licence = 'Public domain' WHERE name = 'FMA IA 63 Pampa' AND (image_credit, image_licence) IS DISTINCT FROM ('JO2 Pete Hatzakos', 'Public domain');
+UPDATE airplanes SET image_credit = 'Hugh Llewelyn from Keynsham, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Fairey Delta 2' AND (image_credit, image_licence) IS DISTINCT FROM ('Hugh Llewelyn from Keynsham, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Ken Mist from Brampton, Canada', image_licence = 'CC BY-SA 2.0' WHERE name = 'Fairey Firefly' AND (image_credit, image_licence) IS DISTINCT FROM ('Ken Mist from Brampton, Canada', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'thinboyfatter', image_licence = 'CC BY 2.0' WHERE name = 'Fairey Gannet' AND (image_credit, image_licence) IS DISTINCT FROM ('thinboyfatter', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Master Sgt. H.D. Robinson, U.S. Air Force photo 342-C-KE-62474', image_licence = 'Public domain' WHERE name = 'Fiat G.91' AND (image_credit, image_licence) IS DISTINCT FROM ('Master Sgt. H.D. Robinson, U.S. Air Force photo 342-C-KE-62474', 'Public domain');
+UPDATE airplanes SET image_credit = 'Aero Icarus from Zürich, Switzerland', image_licence = 'CC BY-SA 2.0' WHERE name = 'Fokker F27 Maritime' AND (image_credit, image_licence) IS DISTINCT FROM ('Aero Icarus from Zürich, Switzerland', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'André Gerwing', image_licence = 'CC BY-SA 4.0' WHERE name = 'Fokker S.14 Machtrainer' AND (image_credit, image_licence) IS DISTINCT FROM ('André Gerwing', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Michael Gaylard from Horsham, UK', image_licence = 'CC BY 2.0' WHERE name = 'Folland Gnat' AND (image_credit, image_licence) IS DISTINCT FROM ('Michael Gaylard from Horsham, UK', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Ad Meskens You are free to use this picture for any purpose as long as you credit its author, Ad Meskens . Exa', image_licence = 'CC BY-SA 4.0' WHERE name = 'Fouga CM.170 Magister' AND (image_credit, image_licence) IS DISTINCT FROM ('Ad Meskens You are free to use this picture for any purpose as long as you credit its author, Ad Meskens . Exa', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Jerry Gunner from Lincoln, UK', image_licence = 'CC BY 2.0' WHERE name = 'Fuji T-7' AND (image_credit, image_licence) IS DISTINCT FROM ('Jerry Gunner from Lincoln, UK', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Jonathan Rabbitt', image_licence = 'CC BY 3.0' WHERE name = 'GAF Jindivik' AND (image_credit, image_licence) IS DISTINCT FROM ('Jonathan Rabbitt', 'CC BY 3.0');
+UPDATE airplanes SET image_credit = 'Z3144228', image_licence = 'CC BY-SA 4.0' WHERE name = 'GAF Nomad' AND (image_credit, image_licence) IS DISTINCT FROM ('Z3144228', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'tormentor4555', image_licence = 'PDM-owner' WHERE name = 'Gloster Javelin' AND (image_credit, image_licence) IS DISTINCT FROM ('tormentor4555', 'PDM-owner');
+UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany, Germany', image_licence = 'CC BY 2.0' WHERE name = 'Gloster Meteor' AND (image_credit, image_licence) IS DISTINCT FROM ('Clemens Vasters from Viersen, Germany, Germany', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'N509FZ', image_licence = 'CC BY-SA 4.0' WHERE name = 'Guizhou JL-9' AND (image_credit, image_licence) IS DISTINCT FROM ('N509FZ', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Aeroprints.com', image_licence = 'CC BY-SA 3.0' WHERE name = 'HAL HJT-36 Sitara' AND (image_credit, image_licence) IS DISTINCT FROM ('Aeroprints.com', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Shahram Sharifi', image_licence = 'CC BY-SA 4.0' WHERE name = 'HESA Saeqeh' AND (image_credit, image_licence) IS DISTINCT FROM ('Shahram Sharifi', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'JoachimKohler-HB', image_licence = 'CC BY-SA 4.0' WHERE name = 'HFB 320 Hansa Jet' AND (image_credit, image_licence) IS DISTINCT FROM ('JoachimKohler-HB', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Photo by LT. COL. PAUL BACKS', image_licence = 'Public domain' WHERE name = 'Handley Page Victor' AND (image_credit, image_licence) IS DISTINCT FROM ('Photo by LT. COL. PAUL BACKS', 'Public domain');
+UPDATE airplanes SET image_credit = 'Tim Felce (Airwolfhound)', image_licence = 'CC BY-SA 2.0' WHERE name = 'Hawker Hunter' AND (image_credit, image_licence) IS DISTINCT FROM ('Tim Felce (Airwolfhound)', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'Hawker P.1127 Kestrel' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA', 'Public domain');
+UPDATE airplanes SET image_credit = 'Smudge 9000 from North Kent Coast, England', image_licence = 'CC BY 2.0' WHERE name = 'Hawker Sea Hawk' AND (image_credit, image_licence) IS DISTINCT FROM ('Smudge 9000 from North Kent Coast, England', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Colin Cooke Photo', image_licence = 'CC BY-SA 4.0' WHERE name = 'Hawker Siddeley Nimrod' AND (image_credit, image_licence) IS DISTINCT FROM ('Colin Cooke Photo', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'High Contrast', image_licence = 'CC BY 3.0 de' WHERE name = 'Helwan HA-300' AND (image_credit, image_licence) IS DISTINCT FROM ('High Contrast', 'CC BY 3.0 de');
+UPDATE airplanes SET image_credit = 'Bene Riobó', image_licence = 'CC BY-SA 4.0' WHERE name = 'Hispano HA-200 Saeta' AND (image_credit, image_licence) IS DISTINCT FROM ('Bene Riobó', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Kurush Pawar from Dubai, United Arab Emirates', image_licence = 'CC BY-SA 2.0' WHERE name = 'Hongdu K-8 Karakorum' AND (image_credit, image_licence) IS DISTINCT FROM ('Kurush Pawar from Dubai, United Arab Emirates', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Z3144228', image_licence = 'CC0' WHERE name = 'Hongdu L-15' AND (image_credit, image_licence) IS DISTINCT FROM ('Z3144228', 'CC0');
+UPDATE airplanes SET image_credit = 'Photographer: Mosbatho', image_licence = 'CC BY 4.0' WHERE name = 'IAI Arava' AND (image_credit, image_licence) IS DISTINCT FROM ('Photographer: Mosbatho', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = 'Matti Blume', image_licence = 'CC BY-SA 4.0' WHERE name = 'IAI Harop' AND (image_credit, image_licence) IS DISTINCT FROM ('Matti Blume', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'SSGT REYNALDO RAMON', image_licence = 'Public domain' WHERE name = 'IAI Heron' AND (image_credit, image_licence) IS DISTINCT FROM ('SSGT REYNALDO RAMON', 'Public domain');
+UPDATE airplanes SET image_credit = 'Cătălin Cocîrlă', image_licence = 'CC BY-SA 4.0' WHERE name = 'IAR-99 Șoim' AND (image_credit, image_licence) IS DISTINCT FROM ('Cătălin Cocîrlă', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Il-28' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Artem Katranzhi', image_licence = 'CC BY-SA 2.0' WHERE name = 'Iliouchine Il-114' AND (image_credit, image_licence) IS DISTINCT FROM ('Artem Katranzhi', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Iliouchine Il-20' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Photographer''s Name: Lt. David M. Kennedy, USN', image_licence = 'Public domain' WHERE name = 'Iliouchine Il-38' AND (image_credit, image_licence) IS DISTINCT FROM ('Photographer''s Name: Lt. David M. Kennedy, USN', 'Public domain');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Iliouchine Il-76' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Staff Sgt. Gerald Currington.', image_licence = 'Public domain' WHERE name = 'Iliouchine Il-78 Midas' AND (image_credit, image_licence) IS DISTINCT FROM ('Staff Sgt. Gerald Currington.', 'Public domain');
+UPDATE airplanes SET image_credit = 'Hugh Llewelyn from Keynsham, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Jet Provost' AND (image_credit, image_licence) IS DISTINCT FROM ('Hugh Llewelyn from Keynsham, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Staff Sgt. Anthony Small', image_licence = 'Public domain' WHERE name = 'KAI FA-50' AND (image_credit, image_licence) IS DISTINCT FROM ('Staff Sgt. Anthony Small', 'Public domain');
+UPDATE airplanes SET image_credit = '대한민국 국방부 - Ministry of National Defense of the Republic of Korea', image_licence = 'KOGL Type 1' WHERE name = 'KAI KF-21 Boramae' AND (image_credit, image_licence) IS DISTINCT FROM ('대한민국 국방부 - Ministry of National Defense of the Republic of Korea', 'KOGL Type 1');
+UPDATE airplanes SET image_credit = 'Doo Ho Kim', image_licence = 'CC BY-SA 2.0' WHERE name = 'KAI KT-1 Woongbi' AND (image_credit, image_licence) IS DISTINCT FROM ('Doo Ho Kim', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Senior Airman Mitchell Corley', image_licence = 'Public domain' WHERE name = 'KAI T-50 Golden Eagle' AND (image_credit, image_licence) IS DISTINCT FROM ('Senior Airman Mitchell Corley', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Air Force photo by Staff Sgt. Jerry Morrison', image_licence = 'Public domain' WHERE name = 'KC-10 Extender' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force photo by Staff Sgt. Jerry Morrison', 'Public domain');
+UPDATE airplanes SET image_credit = 'Ronnie Macdonald from Chelmsford and Largs, United Kingdom', image_licence = 'CC BY 2.0' WHERE name = 'KC-135 Stratotanker' AND (image_credit, image_licence) IS DISTINCT FROM ('Ronnie Macdonald from Chelmsford and Largs, United Kingdom', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'USAF Christopher Okula', image_licence = 'Public domain' WHERE name = 'KC-46 Pegasus' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF Christopher Okula', 'Public domain');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'KC-97 Stratofreighter' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'Jerry Gunner from Lincoln, UK', image_licence = 'CC BY 2.0' WHERE name = 'Kawasaki C-1' AND (image_credit, image_licence) IS DISTINCT FROM ('Jerry Gunner from Lincoln, UK', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Hunini', image_licence = 'CC BY-SA 4.0' WHERE name = 'Kawasaki C-2' AND (image_credit, image_licence) IS DISTINCT FROM ('Hunini', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = '海上自衛隊', image_licence = 'CC BY 4.0' WHERE name = 'Kawasaki P-1' AND (image_credit, image_licence) IS DISTINCT FROM ('海上自衛隊', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = 'Jerry Gunner from Lincoln, UK', image_licence = 'CC BY 2.0' WHERE name = 'Kawasaki T-4' AND (image_credit, image_licence) IS DISTINCT FROM ('Jerry Gunner from Lincoln, UK', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'LTV XC-142' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA', 'Public domain');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'La-15' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Raf24~commonswiki', image_licence = 'CC BY-SA 4.0' WHERE name = 'Let L-410 Turbolet' AND (image_credit, image_licence) IS DISTINCT FROM ('Raf24~commonswiki', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'U.S.Air Force', image_licence = 'Public domain' WHERE name = 'Lockheed A-12' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S.Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'Lockheed D-21' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = 'ZLEA', image_licence = 'CC BY-SA 4.0' WHERE name = 'Lockheed XFV' AND (image_credit, image_licence) IS DISTINCT FROM ('ZLEA', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Myself ( Adrian Pingstone ).', image_licence = 'Public domain' WHERE name = 'M-346 Master' AND (image_credit, image_licence) IS DISTINCT FROM ('Myself ( Adrian Pingstone ).', 'Public domain');
+UPDATE airplanes SET image_credit = 'Petty Officer 3rd Class Jeffrey S. Viano, U.S. Navy', image_licence = 'Public domain' WHERE name = 'MQ-1 Predator' AND (image_credit, image_licence) IS DISTINCT FROM ('Petty Officer 3rd Class Jeffrey S. Viano, U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'United States Navy photo courtesy of Boeing', image_licence = 'Public domain' WHERE name = 'MQ-25 Stingray' AND (image_credit, image_licence) IS DISTINCT FROM ('United States Navy photo courtesy of Boeing', 'Public domain');
+UPDATE airplanes SET image_credit = 'Lt. Col. Leslie Pratt', image_licence = 'Public domain' WHERE name = 'MQ-9 Reaper' AND (image_credit, image_licence) IS DISTINCT FROM ('Lt. Col. Leslie Pratt', 'Public domain');
+UPDATE airplanes SET image_credit = 'Hornet Driver', image_licence = 'CC BY-SA 4.0' WHERE name = 'MiG 1.44' AND (image_credit, image_licence) IS DISTINCT FROM ('Hornet Driver', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alf van Beem', image_licence = 'CC0' WHERE name = 'MiG-15' AND (image_credit, image_licence) IS DISTINCT FROM ('Alf van Beem', 'CC0');
+UPDATE airplanes SET image_credit = 'Balon Greyjoy', image_licence = 'CC0' WHERE name = 'MiG-17' AND (image_credit, image_licence) IS DISTINCT FROM ('Balon Greyjoy', 'CC0');
+UPDATE airplanes SET image_credit = 'U.S. Air Force photo', image_licence = 'Public domain' WHERE name = 'MiG-19' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force photo', 'Public domain');
+UPDATE airplanes SET image_credit = 'Ronnie Macdonald from Chelmsford and Largs, United Kingdom', image_licence = 'CC BY 2.0' WHERE name = 'MiG-27' AND (image_credit, image_licence) IS DISTINCT FROM ('Ronnie Macdonald from Chelmsford and Largs, United Kingdom', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Doomych', image_licence = 'Public domain' WHERE name = 'MiG-35' AND (image_credit, image_licence) IS DISTINCT FROM ('Doomych', 'Public domain');
+UPDATE airplanes SET image_credit = 'Mike1979 Russia', image_licence = 'CC BY-SA 3.0' WHERE name = 'MiG-9' AND (image_credit, image_licence) IS DISTINCT FROM ('Mike1979 Russia', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Acroterion', image_licence = 'CC BY-SA 4.0' WHERE name = 'Mirage 4000' AND (image_credit, image_licence) IS DISTINCT FROM ('Acroterion', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Anidaat', image_licence = 'CC BY-SA 4.0' WHERE name = 'Mirage 5' AND (image_credit, image_licence) IS DISTINCT FROM ('Anidaat', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Mirage G8' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Duch.seb', image_licence = 'CC BY-SA 3.0' WHERE name = 'Mirage III V' AND (image_credit, image_licence) IS DISTINCT FROM ('Duch.seb', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'SSGT Terry Smith', image_licence = 'Public domain' WHERE name = 'Mitsubishi F-104J' AND (image_credit, image_licence) IS DISTINCT FROM ('SSGT Terry Smith', 'Public domain');
+UPDATE airplanes SET image_credit = 'Mike1979 Russia', image_licence = 'CC BY-SA 3.0' WHERE name = 'Myasishchev M-4' AND (image_credit, image_licence) IS DISTINCT FROM ('Mike1979 Russia', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Myasishchev M-50' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Oleg V. Belyakov - AirTeamImages', image_licence = 'CC BY-SA 3.0' WHERE name = 'Myasishchev M-55' AND (image_credit, image_licence) IS DISTINCT FROM ('Oleg V. Belyakov - AirTeamImages', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Jean-Christophe BENOIST', image_licence = 'CC BY-SA 3.0' WHERE name = 'Mystère IV' AND (image_credit, image_licence) IS DISTINCT FROM ('Jean-Christophe BENOIST', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = '颐园居', image_licence = 'CC BY-SA 4.0' WHERE name = 'Nanchang CJ-6' AND (image_credit, image_licence) IS DISTINCT FROM ('颐园居', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Thomas Vogt from Paderborn, Deutschland', image_licence = 'CC BY 2.0' WHERE name = 'Nord Noratlas' AND (image_credit, image_licence) IS DISTINCT FROM ('Thomas Vogt from Paderborn, Deutschland', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Christopher M. Reed', image_licence = 'CC BY 4.0' WHERE name = 'OV-1 Mohawk' AND (image_credit, image_licence) IS DISTINCT FROM ('Christopher M. Reed', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'OV-10 Bronco' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA', 'Public domain');
+UPDATE airplanes SET image_credit = 'Groumfy69', image_licence = 'Public domain' WHERE name = 'Ouragan' AND (image_credit, image_licence) IS DISTINCT FROM ('Groumfy69', 'Public domain');
+UPDATE airplanes SET image_credit = 'USN', image_licence = 'Public domain' WHERE name = 'P-2 Neptune' AND (image_credit, image_licence) IS DISTINCT FROM ('USN', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy photo by Petty Officer 2nd Class Alec Kramer', image_licence = 'Public domain' WHERE name = 'P-3 Orion' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy photo by Petty Officer 2nd Class Alec Kramer', 'Public domain');
+UPDATE airplanes SET image_credit = 'Balon Greyjoy', image_licence = 'CC0' WHERE name = 'P-8 Poseidon' AND (image_credit, image_licence) IS DISTINCT FROM ('Balon Greyjoy', 'CC0');
+UPDATE airplanes SET image_credit = 'Mztourist', image_licence = 'CC BY-SA 4.0' WHERE name = 'PAC Super Mushshak' AND (image_credit, image_licence) IS DISTINCT FROM ('Mztourist', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'PZL M28 Skytruck' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Leafnode , original by Lukas skywalker', image_licence = 'CC BY-SA 4.0' WHERE name = 'PZL TS-11 Iskra' AND (image_credit, image_licence) IS DISTINCT FROM ('Leafnode , original by Lukas skywalker', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'PZL-130 Orlik' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'GerardvdSchaaf', image_licence = 'CC BY 4.0' WHERE name = 'Pilatus PC-7' AND (image_credit, image_licence) IS DISTINCT FROM ('GerardvdSchaaf', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = 'Matti Blume', image_licence = 'CC BY-SA 4.0' WHERE name = 'Pilatus PC-9' AND (image_credit, image_licence) IS DISTINCT FROM ('Matti Blume', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Tangopaso', image_licence = 'CC BY-SA 3.0' WHERE name = 'RQ-4 Global Hawk' AND (image_credit, image_licence) IS DISTINCT FROM ('Tangopaso', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'North American Aviation', image_licence = 'Public domain' WHERE name = 'Rockwell XFV-12' AND (image_credit, image_licence) IS DISTINCT FROM ('North American Aviation', 'Public domain');
+UPDATE airplanes SET image_credit = 'SSGT DANIEL PEREZ', image_licence = 'Public domain' WHERE name = 'Ryan Firebee' AND (image_credit, image_licence) IS DISTINCT FROM ('SSGT DANIEL PEREZ', 'Public domain');
+UPDATE airplanes SET image_credit = 'US Navy', image_licence = 'Public domain' WHERE name = 'S-3 Viking' AND (image_credit, image_licence) IS DISTINCT FROM ('US Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'Philippine Air Force', image_licence = 'Public domain' WHERE name = 'SF.260' AND (image_credit, image_licence) IS DISTINCT FROM ('Philippine Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = '123-photos', image_licence = 'CC BY-SA 4.0' WHERE name = 'SOCATA TB-30 Epsilon' AND (image_credit, image_licence) IS DISTINCT FROM ('123-photos', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Matt Morgan', image_licence = 'CC BY-SA 2.0' WHERE name = 'Saab 105' AND (image_credit, image_licence) IS DISTINCT FROM ('Matt Morgan', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'TunaFish Spotting', image_licence = 'CC BY-SA 4.0' WHERE name = 'Saab 29 Tunnan' AND (image_credit, image_licence) IS DISTINCT FROM ('TunaFish Spotting', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Ronnie Macdonald from Chelmsford, United Kingdom', image_licence = 'CC BY 2.0' WHERE name = 'Saab 32 Lansen' AND (image_credit, image_licence) IS DISTINCT FROM ('Ronnie Macdonald from Chelmsford, United Kingdom', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Airwolfhound from Hertfordshire, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Saab GlobalEye' AND (image_credit, image_licence) IS DISTINCT FROM ('Airwolfhound from Hertfordshire, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Hugh Llewelyn from Keynsham, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Saunders-Roe SR.53' AND (image_credit, image_licence) IS DISTINCT FROM ('Hugh Llewelyn from Keynsham, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Adrian Pingstone', image_licence = 'Public domain' WHERE name = 'Scottish Aviation Bulldog' AND (image_credit, image_licence) IS DISTINCT FROM ('Adrian Pingstone', 'Public domain');
+UPDATE airplanes SET image_credit = 'wallycacsabre', image_licence = 'CC BY 2.0' WHERE name = 'Sea Vixen' AND (image_credit, image_licence) IS DISTINCT FROM ('wallycacsabre', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Alert5', image_licence = 'CC BY-SA 4.0' WHERE name = 'Shaanxi Y-8' AND (image_credit, image_licence) IS DISTINCT FROM ('Alert5', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'TurnOnTheNight', image_licence = 'CC BY-SA 4.0' WHERE name = 'Shenyang J-35' AND (image_credit, image_licence) IS DISTINCT FROM ('TurnOnTheNight', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'ShinMaywa US-1A' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Eeldrorq', image_licence = 'CC0' WHERE name = 'ShinMaywa US-2' AND (image_credit, image_licence) IS DISTINCT FROM ('Eeldrorq', 'CC0');
+UPDATE airplanes SET image_credit = 'wilford peloquin', image_licence = 'CC BY 2.0' WHERE name = 'Short SC.1' AND (image_credit, image_licence) IS DISTINCT FROM ('wilford peloquin', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Adrian Pingstone', image_licence = 'Public domain' WHERE name = 'Shorts Tucano' AND (image_credit, image_licence) IS DISTINCT FROM ('Adrian Pingstone', 'Public domain');
+UPDATE airplanes SET image_credit = 'Bidgee', image_licence = 'CC BY-SA 3.0 au' WHERE name = 'Soko G-2 Galeb' AND (image_credit, image_licence) IS DISTINCT FROM ('Bidgee', 'CC BY-SA 3.0 au');
+UPDATE airplanes SET image_credit = 'Rob Schleiffert from Holland', image_licence = 'CC BY-SA 2.0' WHERE name = 'Soko G-4 Super Galeb' AND (image_credit, image_licence) IS DISTINCT FROM ('Rob Schleiffert from Holland', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Srđan Popović', image_licence = 'CC BY-SA 4.0' WHERE name = 'Soko J-22 Orao' AND (image_credit, image_licence) IS DISTINCT FROM ('Srđan Popović', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Su-11' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'И. Руденко', image_licence = 'CC BY 4.0' WHERE name = 'Su-33' AND (image_credit, image_licence) IS DISTINCT FROM ('И. Руденко', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Su-7' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Alf van Beem', image_licence = 'Public domain' WHERE name = 'Su-9' AND (image_credit, image_licence) IS DISTINCT FROM ('Alf van Beem', 'Public domain');
+UPDATE airplanes SET image_credit = 'Sergey Dukachev', image_licence = 'CC BY 2.5' WHERE name = 'Sukhoi T-4' AND (image_credit, image_licence) IS DISTINCT FROM ('Sergey Dukachev', 'CC BY 2.5');
+UPDATE airplanes SET image_credit = 'Alf van Beem', image_licence = 'CC0' WHERE name = 'Super Mystère B2' AND (image_credit, image_licence) IS DISTINCT FROM ('Alf van Beem', 'CC0');
+UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'Supermarine Attacker' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'TSRL', image_licence = 'CC BY-SA 3.0' WHERE name = 'Supermarine Scimitar' AND (image_credit, image_licence) IS DISTINCT FROM ('TSRL', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Supermarine Swift' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Pseudopanax at English Wikipedia', image_licence = 'Public domain' WHERE name = 'T-28 Trojan' AND (image_credit, image_licence) IS DISTINCT FROM ('Pseudopanax at English Wikipedia', 'Public domain');
+UPDATE airplanes SET image_credit = 'Alejandro Pena Edited by: FOX 52 and Bammesk', image_licence = 'Public domain' WHERE name = 'T-33 Shooting Star' AND (image_credit, image_licence) IS DISTINCT FROM ('Alejandro Pena Edited by: FOX 52 and Bammesk', 'Public domain');
+UPDATE airplanes SET image_credit = 'DON S. MONTGOMERY, USN (RET.)', image_licence = 'Public domain' WHERE name = 'T-34 Mentor' AND (image_credit, image_licence) IS DISTINCT FROM ('DON S. MONTGOMERY, USN (RET.)', 'Public domain');
+UPDATE airplanes SET image_credit = 'Mike LaChance from Crowley, Tx, USA', image_licence = 'CC BY 2.0' WHERE name = 'T-37 Tweet' AND (image_credit, image_licence) IS DISTINCT FROM ('Mike LaChance from Crowley, Tx, USA', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Airman 1st Class Harrison Sullivan', image_licence = 'Public domain' WHERE name = 'T-38 Talon' AND (image_credit, image_licence) IS DISTINCT FROM ('Airman 1st Class Harrison Sullivan', 'Public domain');
+UPDATE airplanes SET image_credit = 'United States Air Force', image_licence = 'Public domain' WHERE name = 'T-6 Texan II' AND (image_credit, image_licence) IS DISTINCT FROM ('United States Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'Ibex73', image_licence = 'CC BY-SA 4.0' WHERE name = 'TAI Hürkuş' AND (image_credit, image_licence) IS DISTINCT FROM ('Ibex73', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Dimir', image_licence = 'CC BY-SA 4.0' WHERE name = 'TAI Kaan' AND (image_credit, image_licence) IS DISTINCT FROM ('Dimir', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'bomberpilot', image_licence = 'CC BY-SA 2.0' WHERE name = 'Transall C-160' AND (image_credit, image_licence) IS DISTINCT FROM ('bomberpilot', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Mike1979 Russia', image_licence = 'CC BY-SA 3.0' WHERE name = 'Tu-128' AND (image_credit, image_licence) IS DISTINCT FROM ('Mike1979 Russia', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'VargaA', image_licence = 'CC BY-SA 4.0' WHERE name = 'Tu-141 Strizh' AND (image_credit, image_licence) IS DISTINCT FROM ('VargaA', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = NULL, image_licence = 'Public domain' WHERE name = 'Tu-142' AND (image_credit, image_licence) IS DISTINCT FROM (NULL, 'Public domain');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Tu-143 Reys' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'Tu-16' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'Зимин Василий', image_licence = 'Public domain' WHERE name = 'Tu-22' AND (image_credit, image_licence) IS DISTINCT FROM ('Зимин Василий', 'Public domain');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Tupolev Tu-4' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'United States Department of the Air Force', image_licence = 'Public domain' WHERE name = 'U-2 Dragon Lady' AND (image_credit, image_licence) IS DISTINCT FROM ('United States Department of the Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'André Gerwing', image_licence = 'CC BY-SA 4.0' WHERE name = 'VFW VAK 191B' AND (image_credit, image_licence) IS DISTINCT FROM ('André Gerwing', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'VynedJ', image_licence = 'CC BY 4.0' WHERE name = 'Valmet L-70 Vinka' AND (image_credit, image_licence) IS DISTINCT FROM ('VynedJ', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = 'Jerry Gunner from Lincoln, UK', image_licence = 'CC BY 2.0' WHERE name = 'Vautour II' AND (image_credit, image_licence) IS DISTINCT FROM ('Jerry Gunner from Lincoln, UK', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Hugh Llewelyn from Keynsham, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Vickers VC10' AND (image_credit, image_licence) IS DISTINCT FROM ('Hugh Llewelyn from Keynsham, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Umeyou', image_licence = 'CC BY-SA 3.0' WHERE name = 'Vickers Valiant' AND (image_credit, image_licence) IS DISTINCT FROM ('Umeyou', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'kitmasterbloke', image_licence = 'CC BY 2.0' WHERE name = 'Westland Wyvern' AND (image_credit, image_licence) IS DISTINCT FROM ('kitmasterbloke', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Mztourist', image_licence = 'CC BY-SA 4.0' WHERE name = 'Wing Loong II' AND (image_credit, image_licence) IS DISTINCT FROM ('Mztourist', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'San Diego Air & Space Museum', image_licence = 'Public domain' WHERE name = 'X-13 Vertijet' AND (image_credit, image_licence) IS DISTINCT FROM ('San Diego Air & Space Museum', 'Public domain');
+UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'X-15' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA', 'Public domain');
+UPDATE airplanes SET image_credit = 'NASA / DFRC / Larry Sammons', image_licence = 'Public domain' WHERE name = 'X-29' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA / DFRC / Larry Sammons', 'Public domain');
+UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'X-3 Stiletto' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA', 'Public domain');
+UPDATE airplanes SET image_credit = 'Jim Ross, NASA Dryden Flight Research Center (NASA-DFRC)', image_licence = 'Public domain' WHERE name = 'X-31' AND (image_credit, image_licence) IS DISTINCT FROM ('Jim Ross, NASA Dryden Flight Research Center (NASA-DFRC)', 'Public domain');
+UPDATE airplanes SET image_credit = 'DARPA', image_licence = 'Public domain' WHERE name = 'X-47B' AND (image_credit, image_licence) IS DISTINCT FROM ('DARPA', 'Public domain');
+UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'XB-70 Valkyrie' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA', 'Public domain');
+UPDATE airplanes SET image_credit = 'USN', image_licence = 'Public domain' WHERE name = 'XFY Pogo' AND (image_credit, image_licence) IS DISTINCT FROM ('USN', 'Public domain');
+UPDATE airplanes SET image_credit = '88 Air Base Wing Public Affairs', image_licence = 'Public domain' WHERE name = 'XQ-58 Valkyrie' AND (image_credit, image_licence) IS DISTINCT FROM ('88 Air Base Wing Public Affairs', 'Public domain');
+UPDATE airplanes SET image_credit = 'N509FZ', image_licence = 'CC BY-SA 4.0' WHERE name = 'Xian Y-20 Kunpeng' AND (image_credit, image_licence) IS DISTINCT FROM ('N509FZ', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'USAF', image_licence = 'Public domain' WHERE name = 'YF-17 Cobra' AND (image_credit, image_licence) IS DISTINCT FROM ('USAF', 'Public domain');
+UPDATE airplanes SET image_credit = NULL, image_licence = 'Public domain' WHERE name = 'YF-22' AND (image_credit, image_licence) IS DISTINCT FROM (NULL, 'Public domain');
+UPDATE airplanes SET image_credit = 'Logan Rickert', image_licence = 'CC BY 4.0' WHERE name = 'YF-23 Black Widow II' AND (image_credit, image_licence) IS DISTINCT FROM ('Logan Rickert', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = 'Ministry of Defence', image_licence = 'CC BY 4.0' WHERE name = 'Yak-130' AND (image_credit, image_licence) IS DISTINCT FROM ('Ministry of Defence', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = 'Mike1979 Russia', image_licence = 'CC BY-SA 4.0' WHERE name = 'Yak-141' AND (image_credit, image_licence) IS DISTINCT FROM ('Mike1979 Russia', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Yak-23' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'Yak-25' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Yak-28' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'Maarten', image_licence = 'CC BY 2.0' WHERE name = 'Yak-36' AND (image_credit, image_licence) IS DISTINCT FROM ('Maarten', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'US Navy Service Depicted: Other Service', image_licence = 'Public domain' WHERE name = 'Yak-38' AND (image_credit, image_licence) IS DISTINCT FROM ('US Navy Service Depicted: Other Service', 'Public domain');
+UPDATE airplanes SET image_credit = 'Pseudopanax', image_licence = 'Public domain' WHERE name = 'de Havilland Vampire' AND (image_credit, image_licence) IS DISTINCT FROM ('Pseudopanax', 'Public domain');
+UPDATE airplanes SET image_credit = 'Tony Hisgett from Birmingham, UK', image_licence = 'CC BY 2.0' WHERE name = 'de Havilland Venom' AND (image_credit, image_licence) IS DISTINCT FROM ('Tony Hisgett from Birmingham, UK', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Tangopaso', image_licence = 'CC BY-SA 3.0' WHERE name = 'nEUROn' AND (image_credit, image_licence) IS DISTINCT FROM ('Tangopaso', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'David Álvarez López from Gijón, España', image_licence = 'CC BY 2.0' WHERE name = 'Pilatus PC-21' AND (image_credit, image_licence) IS DISTINCT FROM ('David Álvarez López from Gijón, España', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Boeing T-7 Red Hawk' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'Colin Cooke Photo', image_licence = 'CC BY-SA 2.0' WHERE name = 'Airbus C295' AND (image_credit, image_licence) IS DISTINCT FROM ('Colin Cooke Photo', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Bahnfrend', image_licence = 'CC BY-SA 4.0' WHERE name = 'Antonov An-225 Mriya' AND (image_credit, image_licence) IS DISTINCT FROM ('Bahnfrend', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'CeeGee', image_licence = 'CC BY-SA 4.0' WHERE name = 'Bayraktar Akıncı' AND (image_credit, image_licence) IS DISTINCT FROM ('CeeGee', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'Yak-17' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'B-66 Destroyer' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Martin B-57 Canberra' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'S-2 Tracker' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = '颐园居', image_licence = 'CC BY-SA 4.0' WHERE name = 'Shaanxi KJ-500' AND (image_credit, image_licence) IS DISTINCT FROM ('颐园居', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Cpl. Melissa Wenger, U.S. Marine Corps', image_licence = 'Public domain' WHERE name = 'V-22 Osprey' AND (image_credit, image_licence) IS DISTINCT FROM ('Cpl. Melissa Wenger, U.S. Marine Corps', 'Public domain');
+UPDATE airplanes SET image_credit = 'NASA', image_licence = 'Public domain' WHERE name = 'Bell XV-15' AND (image_credit, image_licence) IS DISTINCT FROM ('NASA', 'Public domain');
+UPDATE airplanes SET image_credit = 'Ata Barış', image_licence = 'CC BY-SA 4.0' WHERE name = 'Bayraktar Kızılelma' AND (image_credit, image_licence) IS DISTINCT FROM ('Ata Barış', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Mustafa Karabaş (TUSAŞ)', image_licence = 'CC BY-SA 4.0' WHERE name = 'TAI Anka' AND (image_credit, image_licence) IS DISTINCT FROM ('Mustafa Karabaş (TUSAŞ)', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Senior Airman Adrien Tran, U.S. Air Force', image_licence = 'Public domain' WHERE name = 'MQ-28 Ghost Bat' AND (image_credit, image_licence) IS DISTINCT FROM ('Senior Airman Adrien Tran, U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'Ministère de la Défense de la Fédération de Russie (mil.ru)', image_licence = 'CC BY 4.0' WHERE name = 'Sukhoi S-70 Okhotnik' AND (image_credit, image_licence) IS DISTINCT FROM ('Ministère de la Défense de la Fédération de Russie (mil.ru)', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = '颐园居', image_licence = 'CC BY-SA 4.0' WHERE name = 'Hongdu GJ-11 Sharp Sword' AND (image_credit, image_licence) IS DISTINCT FROM ('颐园居', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Infinty 0', image_licence = 'CC BY-SA 4.0' WHERE name = 'CASC CH-5 Rainbow' AND (image_credit, image_licence) IS DISTINCT FROM ('Infinty 0', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Jim Ross, NASA', image_licence = 'Public domain' WHERE name = 'Boeing X-45' AND (image_credit, image_licence) IS DISTINCT FROM ('Jim Ross, NASA', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'MQ-4C Triton' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'tolgaozbekcom', image_licence = 'CC BY 3.0' WHERE name = 'TAI Hürjet' AND (image_credit, image_licence) IS DISTINCT FROM ('tolgaozbekcom', 'CC BY 3.0');
+UPDATE airplanes SET image_credit = 'Admiralis-generalis-Aladeen', image_licence = 'CC BY-SA 4.0' WHERE name = 'Aero L-39NG Skyfox' AND (image_credit, image_licence) IS DISTINCT FROM ('Admiralis-generalis-Aladeen', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Lawrence Crespo, U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Boeing E-7 Wedgetail' AND (image_credit, image_licence) IS DISTINCT FROM ('Lawrence Crespo, U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'General Atomics YFQ-42A Dark Merlin' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'Nehemia Gershuni-Aylho', image_licence = 'CC BY-SA 3.0' WHERE name = 'Elbit Hermes 450' AND (image_credit, image_licence) IS DISTINCT FROM ('Nehemia Gershuni-Aylho', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'John Higgins', image_licence = 'Public domain' WHERE name = 'MQ-1C Gray Eagle' AND (image_credit, image_licence) IS DISTINCT FROM ('John Higgins', 'Public domain');
+UPDATE airplanes SET image_credit = 'Carl9311', image_licence = 'CC0' WHERE name = 'Bayraktar TB3' AND (image_credit, image_licence) IS DISTINCT FROM ('Carl9311', 'CC0');
+UPDATE airplanes SET image_credit = 'André Gerwing', image_licence = 'CC BY-SA 4.0' WHERE name = 'Saab 21R' AND (image_credit, image_licence) IS DISTINCT FROM ('André Gerwing', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Aeroprints.com', image_licence = 'CC BY-SA 3.0' WHERE name = 'IAe 33 Pulqui II' AND (image_credit, image_licence) IS DISTINCT FROM ('Aeroprints.com', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'FH-1 Phantom' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'F2H Banshee' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'Joe Sewell', image_licence = 'Public domain' WHERE name = 'F3H Demon' AND (image_credit, image_licence) IS DISTINCT FROM ('Joe Sewell', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Northrop YB-49' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = NULL, image_licence = 'Public domain' WHERE name = 'Leduc 010' AND (image_credit, image_licence) IS DISTINCT FROM (NULL, 'Public domain');
+UPDATE airplanes SET image_credit = 'Clemens Vasters from Viersen, Germany, Germany', image_licence = 'CC BY 2.0' WHERE name = 'Nord 1500 Griffon' AND (image_credit, image_licence) IS DISTINCT FROM ('Clemens Vasters from Viersen, Germany, Germany', 'CC BY 2.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'SNCASO Trident' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Noah Wulf', image_licence = 'CC BY-SA 3.0' WHERE name = 'F4U Corsair' AND (image_credit, image_licence) IS DISTINCT FROM ('Noah Wulf', 'CC BY-SA 3.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson', image_licence = 'CC BY-SA 2.0' WHERE name = 'Hawker Sea Fury' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'Alan Wilson from Stilton, Peterborough, Cambs, UK', image_licence = 'CC BY-SA 2.0' WHERE name = 'F8F Bearcat' AND (image_credit, image_licence) IS DISTINCT FROM ('Alan Wilson from Stilton, Peterborough, Cambs, UK', 'CC BY-SA 2.0');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'AC-47 Spooky' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'Taylormcalear', image_licence = 'CC BY-SA 4.0' WHERE name = 'Canadair CP-107 Argus' AND (image_credit, image_licence) IS DISTINCT FROM ('Taylormcalear', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'HU-16 Albatross' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Navy', image_licence = 'Public domain' WHERE name = 'E-1 Tracer' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Navy', 'Public domain');
+UPDATE airplanes SET image_credit = 'Danny Yu', image_licence = 'CC BY-SA 4.0' WHERE name = 'KJ-2000' AND (image_credit, image_licence) IS DISTINCT FROM ('Danny Yu', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Bene Riobó', image_licence = 'CC BY-SA 4.0' WHERE name = 'Saab 340 AEW&C' AND (image_credit, image_licence) IS DISTINCT FROM ('Bene Riobó', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'Alert5', image_licence = 'CC BY-SA 4.0' WHERE name = 'Shaanxi Y-9' AND (image_credit, image_licence) IS DISTINCT FROM ('Alert5', 'CC BY-SA 4.0');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'C-123 Provider' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'Dave_S.', image_licence = 'CC BY 4.0' WHERE name = 'DHC-2 Beaver' AND (image_credit, image_licence) IS DISTINCT FROM ('Dave_S.', 'CC BY 4.0');
+UPDATE airplanes SET image_credit = 'San Diego Air & Space Museum Archives', image_licence = 'Public domain' WHERE name = 'Canadair CL-84 Dynavert' AND (image_credit, image_licence) IS DISTINCT FROM ('San Diego Air & Space Museum Archives', 'Public domain');
+UPDATE airplanes SET image_credit = 'U.S. Air Force', image_licence = 'Public domain' WHERE name = 'Northrop Tacit Blue' AND (image_credit, image_licence) IS DISTINCT FROM ('U.S. Air Force', 'Public domain');
+UPDATE airplanes SET image_credit = 'Jim Ross, NASA', image_licence = 'Public domain' WHERE name = 'Lockheed Martin X-59 QueSST' AND (image_credit, image_licence) IS DISTINCT FROM ('Jim Ross, NASA', 'Public domain');
 
 -- ═══ 5. Réparation des liaisons perdues ════════════════════════════
 --
@@ -3017,19 +3021,37 @@ UPDATE airplanes SET
   nickname = 'Tiger II',
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Northrop_F-5',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Northrop_F-5'
-WHERE name = 'F-5 Freedom Fighter';
+WHERE name = 'F-5 Freedom Fighter'
+  AND (length, wingspan, height, wing_area, empty_weight, mtow, service_ceiling, climb_rate, combat_radius,
+       crew, g_limit_pos, engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
+       production_start, production_end, units_built, operators_count, nickname, wikipedia_fr, wikipedia_en)
+      IS DISTINCT FROM
+      (14.38, 8.13, 4.08, 17.28, 4410, 11187, 15800, 175, 1405, 1, 7.33, 'General Electric J85-GE-21B', 2,
+       'Turboréacteur avec postcombustion', 'Afterburning turbojet', 15.57, 22.2, 1962, 1987, 2246, 30,
+       'Tiger II', 'https://fr.wikipedia.org/wiki/Northrop_F-5',
+       'https://en.wikipedia.org/wiki/Northrop_F-5');
 UPDATE airplanes SET
   unit_cost_usd = 2100000, unit_cost_year = 1975,
   variants    = E'- **F-5A/B** : Freedom Fighter initial\n- **F-5E/F Tiger II** : version modernisée, radar AN/APQ-159\n- **F-5G / F-20 Tigershark** : prototype avorté (un seul moteur F404)',
   variants_en = E'- **F-5A/B** : initial Freedom Fighter\n- **F-5E/F Tiger II** : modernised variant, AN/APQ-159 radar\n- **F-5G / F-20 Tigershark** : aborted single-F404 prototype'
-WHERE name = 'F-5 Freedom Fighter';
+WHERE name = 'F-5 Freedom Fighter'
+  AND (unit_cost_usd, unit_cost_year, variants, variants_en)
+      IS DISTINCT FROM
+      (2100000, 1975,
+       E'- **F-5A/B** : Freedom Fighter initial\n- **F-5E/F Tiger II** : version modernisée, radar AN/APQ-159\n- **F-5G / F-20 Tigershark** : prototype avorté (un seul moteur F404)',
+       E'- **F-5A/B** : initial Freedom Fighter\n- **F-5E/F Tiger II** : modernised variant, AN/APQ-159 radar\n- **F-5G / F-20 Tigershark** : aborted single-F404 prototype');
 UPDATE airplanes SET
   description = E'## Genèse\nConçu dans les années 1950 pour offrir aux alliés des États-Unis un chasseur supersonique simple, léger et économique. Le F-5 est l''avion de l''« allié » par excellence durant la guerre froide.\n\n## Carrière opérationnelle\nExporté dans plus de 30 pays : Iran, Corée du Sud, Vietnam du Sud, Jordanie, Arabie saoudite, Brésil, Norvège. Souvent premier appareil supersonique des forces aériennes émergentes. Engagé au Vietnam et lors des conflits du Moyen-Orient.\n\n## Héritage\nEncore en service dans plusieurs pays (Brésil, Chili, Corée du Sud, Mexique, Suisse) grâce à sa simplicité et ses coûts de maintenance modestes. Base du projet **F-20 Tigershark** avorté.',
   description_en = E'## Genesis\nDesigned in the 1950s to give US allies a simple, light and affordable supersonic fighter. The F-5 is the quintessential Cold War "ally" aircraft.\n\n## Operational career\nExported to more than 30 countries: Iran, South Korea, South Vietnam, Jordan, Saudi Arabia, Brazil, Norway. Often the first supersonic aircraft of emerging air forces. Used in Vietnam and Middle East conflicts.\n\n## Legacy\nStill in service in several countries (Brazil, Chile, South Korea, Mexico, Switzerland) thanks to its simplicity and low maintenance costs. Basis for the aborted **F-20 Tigershark** project.'
-WHERE name = 'F-5 Freedom Fighter';
+WHERE name = 'F-5 Freedom Fighter'
+  AND (description, description_en)
+      IS DISTINCT FROM
+      (E'## Genèse\nConçu dans les années 1950 pour offrir aux alliés des États-Unis un chasseur supersonique simple, léger et économique. Le F-5 est l''avion de l''« allié » par excellence durant la guerre froide.\n\n## Carrière opérationnelle\nExporté dans plus de 30 pays : Iran, Corée du Sud, Vietnam du Sud, Jordanie, Arabie saoudite, Brésil, Norvège. Souvent premier appareil supersonique des forces aériennes émergentes. Engagé au Vietnam et lors des conflits du Moyen-Orient.\n\n## Héritage\nEncore en service dans plusieurs pays (Brésil, Chili, Corée du Sud, Mexique, Suisse) grâce à sa simplicité et ses coûts de maintenance modestes. Base du projet **F-20 Tigershark** avorté.',
+       E'## Genesis\nDesigned in the 1950s to give US allies a simple, light and affordable supersonic fighter. The F-5 is the quintessential Cold War "ally" aircraft.\n\n## Operational career\nExported to more than 30 countries: Iran, South Korea, South Vietnam, Jordan, Saudi Arabia, Brazil, Norway. Often the first supersonic aircraft of emerging air forces. Used in Vietnam and Middle East conflicts.\n\n## Legacy\nStill in service in several countries (Brazil, Chile, South Korea, Mexico, Switzerland) thanks to its simplicity and low maintenance costs. Basis for the aborted **F-20 Tigershark** project.');
 UPDATE airplanes SET youtube_showcase = 'https://www.youtube.com/watch?v=_OC8gae2H7g'
-WHERE name = 'F-5 Freedom Fighter';
-UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-5 Freedom Fighter';
+WHERE name = 'F-5 Freedom Fighter'
+  AND youtube_showcase IS DISTINCT FROM 'https://www.youtube.com/watch?v=_OC8gae2H7g';
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-5 Freedom Fighter' AND stealth_level IS DISTINCT FROM 'aucune';
 UPDATE airplanes SET
   length = 16.6, wingspan = 10.7, height = 4.8, wing_area = 32.5,
   empty_weight = 9038, mtow = 15500, service_ceiling = 17700, climb_rate = 160,
@@ -3041,18 +3063,35 @@ UPDATE airplanes SET
   nickname = 'Crusader',
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Vought_F-8_Crusader',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Vought_F-8_Crusader'
-WHERE name = 'F-8E (FN) Crusader';
+WHERE name = 'F-8E (FN) Crusader'
+  AND (length, wingspan, height, wing_area, empty_weight, mtow, service_ceiling, climb_rate, combat_radius,
+       crew, g_limit_pos, engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
+       production_start, production_end, units_built, nickname, wikipedia_fr, wikipedia_en)
+      IS DISTINCT FROM
+      (16.6, 10.7, 4.8, 32.5, 9038, 15500, 17700, 160, 660, 1, 6.4, 'Pratt & Whitney J57-P-20A', 1,
+       'Turboréacteur avec postcombustion', 'Afterburning turbojet', 47.6, 80.1, 1954, 1964, 1261,
+       'Crusader', 'https://fr.wikipedia.org/wiki/Vought_F-8_Crusader',
+       'https://en.wikipedia.org/wiki/Vought_F-8_Crusader');
 UPDATE airplanes SET
   unit_cost_usd = 1500000, unit_cost_year = 1960,
   operators_count = 1,
   variants    = E'- **F-8A/C/D/E** : versions US Navy\n- **F-8E (FN)** : version française pour la Marine nationale (35 exemplaires, porte-avions Clemenceau/Foch)\n- **RF-8A** : reconnaissance (impliqué dans la crise de Cuba)',
   variants_en = E'- **F-8A/C/D/E** : US Navy versions\n- **F-8E (FN)** : French Navy variant (35 built, Clemenceau/Foch carriers)\n- **RF-8A** : reconnaissance (Cuban Missile Crisis)'
-WHERE name = 'F-8E (FN) Crusader';
+WHERE name = 'F-8E (FN) Crusader'
+  AND (unit_cost_usd, unit_cost_year, operators_count, variants, variants_en)
+      IS DISTINCT FROM
+      (1500000, 1960, 1,
+       E'- **F-8A/C/D/E** : versions US Navy\n- **F-8E (FN)** : version française pour la Marine nationale (35 exemplaires, porte-avions Clemenceau/Foch)\n- **RF-8A** : reconnaissance (impliqué dans la crise de Cuba)',
+       E'- **F-8A/C/D/E** : US Navy versions\n- **F-8E (FN)** : French Navy variant (35 built, Clemenceau/Foch carriers)\n- **RF-8A** : reconnaissance (Cuban Missile Crisis)');
 UPDATE airplanes SET
   description = E'## Genèse\nIntercepteur embarqué US Navy des années 1950, réputé pour sa vitesse (Mach 1.8) mais aussi pour sa difficulté de pilotage à basse vitesse lors des appontages. Dernier chasseur à usage du canon comme arme principale.\n\n## Carrière opérationnelle\nRôle majeur au Vietnam (surnom : « *MiG Master* » pour ses 19 victoires contre les MiG-17 et MiG-21). La **Marine nationale française** reçoit 42 F-8E (FN) en 1964-1965, opérant depuis les porte-avions Clemenceau et Foch pendant 35 ans.\n\n## Héritage\nRetraité par la US Navy en 1976, mais prolongé par la Marine française jusqu''en 1999. Dernier chasseur français à catapultage classique avant l''ère Rafale M.',
   description_en = E'## Genesis\n1950s US Navy carrier interceptor, famous for its speed (Mach 1.8) but also for its tricky low-speed handling during carrier landings. The last fighter to rely on the gun as its primary weapon.\n\n## Operational career\nMajor role in Vietnam (nicknamed "*MiG Master*" for its 19 victories against MiG-17s and MiG-21s). The **French Navy** received 42 F-8E (FN) in 1964-1965, operating from the Clemenceau and Foch carriers for 35 years.\n\n## Legacy\nRetired by the US Navy in 1976, but extended by the French Navy until 1999. The last French fighter using conventional catapult launch before the Rafale M era.'
-WHERE name = 'F-8E (FN) Crusader';
-UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-8E (FN) Crusader';
+WHERE name = 'F-8E (FN) Crusader'
+  AND (description, description_en)
+      IS DISTINCT FROM
+      (E'## Genèse\nIntercepteur embarqué US Navy des années 1950, réputé pour sa vitesse (Mach 1.8) mais aussi pour sa difficulté de pilotage à basse vitesse lors des appontages. Dernier chasseur à usage du canon comme arme principale.\n\n## Carrière opérationnelle\nRôle majeur au Vietnam (surnom : « *MiG Master* » pour ses 19 victoires contre les MiG-17 et MiG-21). La **Marine nationale française** reçoit 42 F-8E (FN) en 1964-1965, opérant depuis les porte-avions Clemenceau et Foch pendant 35 ans.\n\n## Héritage\nRetraité par la US Navy en 1976, mais prolongé par la Marine française jusqu''en 1999. Dernier chasseur français à catapultage classique avant l''ère Rafale M.',
+       E'## Genesis\n1950s US Navy carrier interceptor, famous for its speed (Mach 1.8) but also for its tricky low-speed handling during carrier landings. The last fighter to rely on the gun as its primary weapon.\n\n## Operational career\nMajor role in Vietnam (nicknamed "*MiG Master*" for its 19 victories against MiG-17s and MiG-21s). The **French Navy** received 42 F-8E (FN) in 1964-1965, operating from the Clemenceau and Foch carriers for 35 years.\n\n## Legacy\nRetired by the US Navy in 1976, but extended by the French Navy until 1999. The last French fighter using conventional catapult launch before the Rafale M era.');
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'F-8E (FN) Crusader' AND stealth_level IS DISTINCT FROM 'aucune';
 UPDATE airplanes SET
   length = 34.8, wingspan = 33.0, height = 9.85, wing_area = 167.55,
   empty_weight = 37200, mtow = 79000, service_ceiling = 13100, climb_rate = 19,
@@ -3064,17 +3103,33 @@ UPDATE airplanes SET
   operators_count = 1,
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Xian_H-6',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Xian_H-6'
-WHERE name = 'Xian H-6';
+WHERE name = 'Xian H-6'
+  AND (length, wingspan, height, wing_area, empty_weight, mtow, service_ceiling, climb_rate, combat_radius,
+       crew, engine_name, engine_count, engine_type, engine_type_en, thrust_dry, production_start,
+       production_end, units_built, operators_count, wikipedia_fr, wikipedia_en)
+      IS DISTINCT FROM
+      (34.8, 33.0, 9.85, 167.55, 37200, 79000, 13100, 19, 1800, 4, 'Xian WP-8', 2, 'Turboréacteur',
+       'Turbojet', 93.2, 1959, NULL, 230, 1, 'https://fr.wikipedia.org/wiki/Xian_H-6',
+       'https://en.wikipedia.org/wiki/Xian_H-6');
 UPDATE airplanes SET
   unit_cost_usd = 35000000, unit_cost_year = 2010,
   variants    = E'- **H-6A/B/C/D/E** : variantes initiales (bombes nucléaires, missiles antinavires)\n- **H-6H/M** : porteurs de missiles de croisière KD-63\n- **H-6K** : modernisation profonde (turbofans D-30, YJ-12/KD-20)\n- **H-6N** : version porte-missile aéroporté longue portée\n- **HY-6** : ravitailleur',
   variants_en = E'- **H-6A/B/C/D/E** : early variants (nuclear, anti-ship)\n- **H-6H/M** : KD-63 cruise missile carriers\n- **H-6K** : deep upgrade (D-30 turbofans, YJ-12/KD-20)\n- **H-6N** : long-range aeroballistic missile carrier\n- **HY-6** : tanker'
-WHERE name = 'Xian H-6';
+WHERE name = 'Xian H-6'
+  AND (unit_cost_usd, unit_cost_year, variants, variants_en)
+      IS DISTINCT FROM
+      (35000000, 2010,
+       E'- **H-6A/B/C/D/E** : variantes initiales (bombes nucléaires, missiles antinavires)\n- **H-6H/M** : porteurs de missiles de croisière KD-63\n- **H-6K** : modernisation profonde (turbofans D-30, YJ-12/KD-20)\n- **H-6N** : version porte-missile aéroporté longue portée\n- **HY-6** : ravitailleur',
+       E'- **H-6A/B/C/D/E** : early variants (nuclear, anti-ship)\n- **H-6H/M** : KD-63 cruise missile carriers\n- **H-6K** : deep upgrade (D-30 turbofans, YJ-12/KD-20)\n- **H-6N** : long-range aeroballistic missile carrier\n- **HY-6** : tanker');
 UPDATE airplanes SET
   description = E'## Genèse\nCopie chinoise sous licence du **Tu-16 Badger soviétique**, produite à partir de 1959. Seul bombardier stratégique chinois historique, modernisé en continu depuis 60 ans.\n\n## Carrière opérationnelle\nPilier de la dissuasion nucléaire chinoise pendant la guerre froide. Variantes modernisées **H-6K** (moteurs D-30, avionique numérique, missiles de croisière YJ-12/KD-20) et **H-6N** (porte-missile aéroballistique longue portée). Patrouilles régulières autour de Taïwan.\n\n## Héritage\nPlus de **230 exemplaires** construits. Seul bombardier stratégique chinois actuel. Successeur **H-20** furtif attendu pour 2026-2030 (équivalent du B-2 Spirit).',
   description_en = E'## Genesis\nChinese licence-built copy of the Soviet **Tu-16 Badger**, produced from 1959. China''s only historical strategic bomber, continuously upgraded for 60 years.\n\n## Operational career\nPillar of Chinese nuclear deterrence during the Cold War. Upgraded **H-6K** (D-30 engines, digital avionics, YJ-12/KD-20 cruise missiles) and **H-6N** (long-range air-launched ballistic missile carrier) variants. Regular patrols around Taiwan.\n\n## Legacy\nMore than **230 built**. China''s only current strategic bomber. Stealth successor **H-20** expected for 2026-2030 (equivalent to the B-2 Spirit).'
-WHERE name = 'Xian H-6';
-UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Xian H-6';
+WHERE name = 'Xian H-6'
+  AND (description, description_en)
+      IS DISTINCT FROM
+      (E'## Genèse\nCopie chinoise sous licence du **Tu-16 Badger soviétique**, produite à partir de 1959. Seul bombardier stratégique chinois historique, modernisé en continu depuis 60 ans.\n\n## Carrière opérationnelle\nPilier de la dissuasion nucléaire chinoise pendant la guerre froide. Variantes modernisées **H-6K** (moteurs D-30, avionique numérique, missiles de croisière YJ-12/KD-20) et **H-6N** (porte-missile aéroballistique longue portée). Patrouilles régulières autour de Taïwan.\n\n## Héritage\nPlus de **230 exemplaires** construits. Seul bombardier stratégique chinois actuel. Successeur **H-20** furtif attendu pour 2026-2030 (équivalent du B-2 Spirit).',
+       E'## Genesis\nChinese licence-built copy of the Soviet **Tu-16 Badger**, produced from 1959. China''s only historical strategic bomber, continuously upgraded for 60 years.\n\n## Operational career\nPillar of Chinese nuclear deterrence during the Cold War. Upgraded **H-6K** (D-30 engines, digital avionics, YJ-12/KD-20 cruise missiles) and **H-6N** (long-range air-launched ballistic missile carrier) variants. Regular patrols around Taiwan.\n\n## Legacy\nMore than **230 built**. China''s only current strategic bomber. Stealth successor **H-20** expected for 2026-2030 (equivalent to the B-2 Spirit).');
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Xian H-6' AND stealth_level IS DISTINCT FROM 'aucune';
 UPDATE airplanes SET
   length = 22.0, wingspan = 14.7, height = 6.4, wing_area = 62.0,
   empty_weight = 17700, mtow = 35000, service_ceiling = 17500,
@@ -3086,17 +3141,33 @@ UPDATE airplanes SET
   operators_count = 1,
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Shenyang_J-16',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Shenyang_J-16'
-WHERE name = 'Shenyang J-16';
+WHERE name = 'Shenyang J-16'
+  AND (length, wingspan, height, wing_area, empty_weight, mtow, service_ceiling, combat_radius, crew,
+       engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet, production_start,
+       production_end, units_built, operators_count, wikipedia_fr, wikipedia_en)
+      IS DISTINCT FROM
+      (22.0, 14.7, 6.4, 62.0, 17700, 35000, 17500, 1500, 2, 'WS-10B', 2, 'Turbofan avec postcombustion',
+       'Afterburning turbofan', 74.5, 140.0, 2011, NULL, 300, 1,
+       'https://fr.wikipedia.org/wiki/Shenyang_J-16', 'https://en.wikipedia.org/wiki/Shenyang_J-16');
 UPDATE airplanes SET
   unit_cost_usd = 60000000, unit_cost_year = 2020,
   variants    = E'- **J-16** : chasseur multi-rôle biplace\n- **J-16D** : guerre électronique (analogue au EA-18G Growler)',
   variants_en = E'- **J-16** : two-seat multi-role fighter\n- **J-16D** : electronic warfare (EA-18G Growler analogue)'
-WHERE name = 'Shenyang J-16';
+WHERE name = 'Shenyang J-16'
+  AND (unit_cost_usd, unit_cost_year, variants, variants_en)
+      IS DISTINCT FROM
+      (60000000, 2020,
+       E'- **J-16** : chasseur multi-rôle biplace\n- **J-16D** : guerre électronique (analogue au EA-18G Growler)',
+       E'- **J-16** : two-seat multi-role fighter\n- **J-16D** : electronic warfare (EA-18G Growler analogue)');
 UPDATE airplanes SET
   description = E'## Genèse\nÉquivalent chinois du **F-15E Strike Eagle** et du Su-30. Biplace multi-rôle lourd développé à partir du J-11B à la fin des années 2000. Premier vol en 2011.\n\n## Carrière opérationnelle\nPilier de l''aviation tactique chinoise moderne. Version J-16D de guerre électronique analogue à l''EA-18G Growler américain. Intégré dans les exercices de projection de puissance vers Taïwan et en mer de Chine méridionale.\n\n## Héritage\nPlus de **300 exemplaires** produits. Représente l''aboutissement de la famille Flanker chinoise, avant l''arrivée progressive des J-20 et J-35 furtifs.',
   description_en = E'## Genesis\nChinese equivalent of the **F-15E Strike Eagle** and the Su-30. Heavy two-seat multi-role aircraft developed from the J-11B in the late 2000s. First flew in 2011.\n\n## Operational career\nBackbone of modern Chinese tactical aviation. J-16D electronic-warfare variant analogous to the US EA-18G Growler. Integrated in power-projection exercises toward Taiwan and in the South China Sea.\n\n## Legacy\nMore than **300 built**. Represents the culmination of the Chinese Flanker family, before the progressive arrival of the stealth J-20 and J-35.'
-WHERE name = 'Shenyang J-16';
-UPDATE airplanes SET stealth_level = 'reduite' WHERE name = 'Shenyang J-16';
+WHERE name = 'Shenyang J-16'
+  AND (description, description_en)
+      IS DISTINCT FROM
+      (E'## Genèse\nÉquivalent chinois du **F-15E Strike Eagle** et du Su-30. Biplace multi-rôle lourd développé à partir du J-11B à la fin des années 2000. Premier vol en 2011.\n\n## Carrière opérationnelle\nPilier de l''aviation tactique chinoise moderne. Version J-16D de guerre électronique analogue à l''EA-18G Growler américain. Intégré dans les exercices de projection de puissance vers Taïwan et en mer de Chine méridionale.\n\n## Héritage\nPlus de **300 exemplaires** produits. Représente l''aboutissement de la famille Flanker chinoise, avant l''arrivée progressive des J-20 et J-35 furtifs.',
+       E'## Genesis\nChinese equivalent of the **F-15E Strike Eagle** and the Su-30. Heavy two-seat multi-role aircraft developed from the J-11B in the late 2000s. First flew in 2011.\n\n## Operational career\nBackbone of modern Chinese tactical aviation. J-16D electronic-warfare variant analogous to the US EA-18G Growler. Integrated in power-projection exercises toward Taiwan and in the South China Sea.\n\n## Legacy\nMore than **300 built**. Represents the culmination of the Chinese Flanker family, before the progressive arrival of the stealth J-20 and J-35.');
+UPDATE airplanes SET stealth_level = 'reduite' WHERE name = 'Shenyang J-16' AND stealth_level IS DISTINCT FROM 'reduite';
 UPDATE airplanes SET
   length = 11.36, wingspan = 10.08, height = 3.8, wing_area = 22.6,
   empty_weight = 3939, mtow = 6055, service_ceiling = 14700, climb_rate = 35,
@@ -3107,16 +3178,30 @@ UPDATE airplanes SET
   production_start = 1956, production_end = 1959, units_built = 767,
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Shenyang_J-5',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Shenyang_J-5'
-WHERE name = 'Shenyang J-5';
+WHERE name = 'Shenyang J-5'
+  AND (length, wingspan, height, wing_area, empty_weight, mtow, service_ceiling, climb_rate, combat_radius,
+       crew, engine_name, engine_count, engine_type, engine_type_en, thrust_dry, production_start,
+       production_end, units_built, wikipedia_fr, wikipedia_en)
+      IS DISTINCT FROM
+      (11.36, 10.08, 3.8, 22.6, 3939, 6055, 14700, 35, 560, 1, 'WP-5D', 1, 'Turboréacteur', 'Turbojet',
+       26.48, 1956, 1959, 767, 'https://fr.wikipedia.org/wiki/Shenyang_J-5',
+       'https://en.wikipedia.org/wiki/Shenyang_J-5');
 UPDATE airplanes SET
   unit_cost_usd = 200000, unit_cost_year = 1958,
   operators_count = 15
-WHERE name = 'Shenyang J-5';
+WHERE name = 'Shenyang J-5'
+  AND (unit_cost_usd, unit_cost_year, operators_count)
+      IS DISTINCT FROM
+      (200000, 1958, 15);
 UPDATE airplanes SET
   description = E'## Genèse\nCopie chinoise sous licence du **MiG-17F soviétique** produite à partir de 1956. Premier chasseur à réaction produit en Chine, base de l''industrie aéronautique militaire chinoise.\n\n## Carrière opérationnelle\nEngagé dans les affrontements **Chine-Taïwan** des années 1950-60 (crise du détroit de Formose). Exporté en Corée du Nord, Vietnam, Albanie, Égypte, Pakistan. Premiers combats aériens de l''aviation chinoise.\n\n## Héritage\nRetiré depuis les années 1990. Pierre fondatrice de l''industrie aéronautique militaire chinoise, qui aboutira 70 ans plus tard au J-20 furtif.',
   description_en = E'## Genesis\nChinese licence-built copy of the Soviet **MiG-17F**, produced from 1956. First jet fighter produced in China, foundation stone of the Chinese military aviation industry.\n\n## Operational career\nUsed in the **China-Taiwan** clashes of the 1950s-60s (Taiwan Strait crises). Exported to North Korea, Vietnam, Albania, Egypt, Pakistan. First air combats of Chinese aviation.\n\n## Legacy\nRetired since the 1990s. Foundation stone of the Chinese military aviation industry, which would lead 70 years later to the stealth J-20.'
-WHERE name = 'Shenyang J-5';
-UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Shenyang J-5';
+WHERE name = 'Shenyang J-5'
+  AND (description, description_en)
+      IS DISTINCT FROM
+      (E'## Genèse\nCopie chinoise sous licence du **MiG-17F soviétique** produite à partir de 1956. Premier chasseur à réaction produit en Chine, base de l''industrie aéronautique militaire chinoise.\n\n## Carrière opérationnelle\nEngagé dans les affrontements **Chine-Taïwan** des années 1950-60 (crise du détroit de Formose). Exporté en Corée du Nord, Vietnam, Albanie, Égypte, Pakistan. Premiers combats aériens de l''aviation chinoise.\n\n## Héritage\nRetiré depuis les années 1990. Pierre fondatrice de l''industrie aéronautique militaire chinoise, qui aboutira 70 ans plus tard au J-20 furtif.',
+       E'## Genesis\nChinese licence-built copy of the Soviet **MiG-17F**, produced from 1956. First jet fighter produced in China, foundation stone of the Chinese military aviation industry.\n\n## Operational career\nUsed in the **China-Taiwan** clashes of the 1950s-60s (Taiwan Strait crises). Exported to North Korea, Vietnam, Albania, Egypt, Pakistan. First air combats of Chinese aviation.\n\n## Legacy\nRetired since the 1990s. Foundation stone of the Chinese military aviation industry, which would lead 70 years later to the stealth J-20.');
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Shenyang J-5' AND stealth_level IS DISTINCT FROM 'aucune';
 UPDATE airplanes SET
   length = 15.65, wingspan = 9.68, height = 4.51, wing_area = 27.95,
   empty_weight = 6375, mtow = 11830, service_ceiling = 15900, climb_rate = 180,
@@ -3128,15 +3213,29 @@ UPDATE airplanes SET
   operators_count = 7,
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Nanchang_Q-5',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Nanchang_Q-5'
-WHERE name = 'Nanchang Q-5';
+WHERE name = 'Nanchang Q-5'
+  AND (length, wingspan, height, wing_area, empty_weight, mtow, service_ceiling, climb_rate, combat_radius,
+       crew, engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
+       production_start, production_end, units_built, operators_count, wikipedia_fr, wikipedia_en)
+      IS DISTINCT FROM
+      (15.65, 9.68, 4.51, 27.95, 6375, 11830, 15900, 180, 600, 1, 'WP-6A', 2,
+       'Turboréacteur avec postcombustion', 'Afterburning turbojet', 25.5, 36.78, 1970, 2012, 1300, 7,
+       'https://fr.wikipedia.org/wiki/Nanchang_Q-5', 'https://en.wikipedia.org/wiki/Nanchang_Q-5');
 UPDATE airplanes SET
   unit_cost_usd = 2000000, unit_cost_year = 1975
-WHERE name = 'Nanchang Q-5';
+WHERE name = 'Nanchang Q-5'
+  AND (unit_cost_usd, unit_cost_year)
+      IS DISTINCT FROM
+      (2000000, 1975);
 UPDATE airplanes SET
   description = E'## Genèse\nDérivé d''attaque au sol du J-6 (MiG-19 chinois) développé dans les années 1960. Fuselage allongé, prise d''air latérale pour loger un radar bombardement, soute à bombes interne pour emport nucléaire tactique.\n\n## Carrière opérationnelle\nChasseur-bombardier principal de la PLA Air Force pendant 40 ans. Exporté en **7 pays** dont Pakistan, Bangladesh, Corée du Nord, Myanmar. Engagé dans les tensions avec l''Inde et les conflits birmans.\n\n## Héritage\nPlus de **1 300 exemplaires** produits. Retiré de Chine en 2017. Pakistan dernier opérateur actif. Témoin de la montée en puissance de l''industrie aéronautique chinoise.',
   description_en = E'## Genesis\nGround-attack derivative of the J-6 (Chinese MiG-19) developed in the 1960s. Lengthened fuselage, side air intakes to accommodate a bombing radar, internal weapons bay for tactical nuclear delivery.\n\n## Operational career\nMain fighter-bomber of the PLA Air Force for 40 years. Exported to **7 countries** including Pakistan, Bangladesh, North Korea, Myanmar. Used in tensions with India and Burmese conflicts.\n\n## Legacy\nMore than **1,300 built**. Retired from China in 2017. Pakistan last active operator. A witness to the rise of the Chinese aeronautical industry.'
-WHERE name = 'Nanchang Q-5';
-UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Nanchang Q-5';
+WHERE name = 'Nanchang Q-5'
+  AND (description, description_en)
+      IS DISTINCT FROM
+      (E'## Genèse\nDérivé d''attaque au sol du J-6 (MiG-19 chinois) développé dans les années 1960. Fuselage allongé, prise d''air latérale pour loger un radar bombardement, soute à bombes interne pour emport nucléaire tactique.\n\n## Carrière opérationnelle\nChasseur-bombardier principal de la PLA Air Force pendant 40 ans. Exporté en **7 pays** dont Pakistan, Bangladesh, Corée du Nord, Myanmar. Engagé dans les tensions avec l''Inde et les conflits birmans.\n\n## Héritage\nPlus de **1 300 exemplaires** produits. Retiré de Chine en 2017. Pakistan dernier opérateur actif. Témoin de la montée en puissance de l''industrie aéronautique chinoise.',
+       E'## Genesis\nGround-attack derivative of the J-6 (Chinese MiG-19) developed in the 1960s. Lengthened fuselage, side air intakes to accommodate a bombing radar, internal weapons bay for tactical nuclear delivery.\n\n## Operational career\nMain fighter-bomber of the PLA Air Force for 40 years. Exported to **7 countries** including Pakistan, Bangladesh, North Korea, Myanmar. Used in tensions with India and Burmese conflicts.\n\n## Legacy\nMore than **1,300 built**. Retired from China in 2017. Pakistan last active operator. A witness to the rise of the Chinese aeronautical industry.');
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Nanchang Q-5' AND stealth_level IS DISTINCT FROM 'aucune';
 UPDATE airplanes SET
   length = 21.94, wingspan = 14.70, height = 6.36, wing_area = 62.0,
   empty_weight = 18400, mtow = 38800, service_ceiling = 17300, climb_rate = 230,
@@ -3149,21 +3248,40 @@ UPDATE airplanes SET
   nickname = 'Flanker-C',
   wikipedia_fr = 'https://fr.wikipedia.org/wiki/Soukho%C3%AF_Su-30',
   wikipedia_en = 'https://en.wikipedia.org/wiki/Sukhoi_Su-30'
-WHERE name = 'Su-30';
+WHERE name = 'Su-30'
+  AND (length, wingspan, height, wing_area, empty_weight, mtow, service_ceiling, climb_rate, combat_radius,
+       crew, g_limit_pos, engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
+       production_start, production_end, units_built, operators_count, nickname, wikipedia_fr, wikipedia_en)
+      IS DISTINCT FROM
+      (21.94, 14.70, 6.36, 62.0, 18400, 38800, 17300, 230, 1500, 2, 9.0, 'Saturn AL-31FP', 2,
+       'Turbofan avec postcombustion et poussée vectorielle', 'Thrust-vectoring afterburning turbofan',
+       74.5, 122.6, 1994, NULL, 630, 10, 'Flanker-C', 'https://fr.wikipedia.org/wiki/Soukho%C3%AF_Su-30',
+       'https://en.wikipedia.org/wiki/Sukhoi_Su-30');
 UPDATE airplanes SET
   unit_cost_usd = 50000000, unit_cost_year = 2018,
-  manufacturer_page = 'https://www.sukhoi.org/eng/',
   variants    = E'- **Su-30MK** : version export initiale\n- **Su-30MKK** : export Chine\n- **Su-30MKI** : export Inde (canards, AL-31FP vectoriel)\n- **Su-30SM** : version russe moderne\n- **Su-30MKM/MKA/MKV** : Malaisie, Algérie, Venezuela',
   variants_en = E'- **Su-30MK** : initial export\n- **Su-30MKK** : Chinese export\n- **Su-30MKI** : Indian export (canards, thrust-vectoring AL-31FP)\n- **Su-30SM** : modern Russian version\n- **Su-30MKM/MKA/MKV** : Malaysia, Algeria, Venezuela'
-WHERE name = 'Su-30';
+WHERE name = 'Su-30'
+  AND (unit_cost_usd, unit_cost_year, variants, variants_en)
+      IS DISTINCT FROM
+      (50000000, 2018,
+       E'- **Su-30MK** : version export initiale\n- **Su-30MKK** : export Chine\n- **Su-30MKI** : export Inde (canards, AL-31FP vectoriel)\n- **Su-30SM** : version russe moderne\n- **Su-30MKM/MKA/MKV** : Malaisie, Algérie, Venezuela',
+       E'- **Su-30MK** : initial export\n- **Su-30MKK** : Chinese export\n- **Su-30MKI** : Indian export (canards, thrust-vectoring AL-31FP)\n- **Su-30SM** : modern Russian version\n- **Su-30MKM/MKA/MKV** : Malaysia, Algeria, Venezuela');
 UPDATE airplanes SET
   description = E'## Genèse\nÉvolution biplace multi-rôle du Su-27 développée dans les années 1990-2000. Plusieurs variantes d''export nommées selon le client : **MKK** (Chine), **MKI** (Inde, avec canards et poussée vectorielle), **MKM** (Malaisie), **SM** (Russie).\n\n## Carrière opérationnelle\nChasseur principal de l''Indian Air Force (272 ex. MKI), de la Chine, du Vietnam, d''Algérie, Venezuela, Ouganda. Engagé en Syrie (Russie), en Ukraine (Russie, 2022+). Grand succès à l''export russe des années 2000.\n\n## Héritage\nProduit à **600+ exemplaires**. L''équivalent fonctionnel russe du F-15E américain. Son succès a financé la base industrielle russe d''aviation de combat pendant la décennie de crise post-soviétique.',
   description_en = E'## Genesis\nTwo-seat multi-role evolution of the Su-27 developed in the 1990s-2000s. Several export variants named after the customer: **MKK** (China), **MKI** (India, with canards and thrust vectoring), **MKM** (Malaysia), **SM** (Russia).\n\n## Operational career\nMain fighter of the Indian Air Force (272 MKI), China, Vietnam, Algeria, Venezuela, Uganda. Used in Syria (Russia), in Ukraine (Russia, 2022+). Major Russian export success in the 2000s.\n\n## Legacy\nProduced to **600+ airframes**. The Russian functional counterpart of the US F-15E. Its success funded the Russian combat-aviation industrial base through the post-Soviet crisis decade.'
-WHERE name = 'Su-30';
-UPDATE airplanes SET manufacturer_page = NULL WHERE name = 'Su-30';
+WHERE name = 'Su-30'
+  AND (description, description_en)
+      IS DISTINCT FROM
+      (E'## Genèse\nÉvolution biplace multi-rôle du Su-27 développée dans les années 1990-2000. Plusieurs variantes d''export nommées selon le client : **MKK** (Chine), **MKI** (Inde, avec canards et poussée vectorielle), **MKM** (Malaisie), **SM** (Russie).\n\n## Carrière opérationnelle\nChasseur principal de l''Indian Air Force (272 ex. MKI), de la Chine, du Vietnam, d''Algérie, Venezuela, Ouganda. Engagé en Syrie (Russie), en Ukraine (Russie, 2022+). Grand succès à l''export russe des années 2000.\n\n## Héritage\nProduit à **600+ exemplaires**. L''équivalent fonctionnel russe du F-15E américain. Son succès a financé la base industrielle russe d''aviation de combat pendant la décennie de crise post-soviétique.',
+       E'## Genesis\nTwo-seat multi-role evolution of the Su-27 developed in the 1990s-2000s. Several export variants named after the customer: **MKK** (China), **MKI** (India, with canards and thrust vectoring), **MKM** (Malaysia), **SM** (Russia).\n\n## Operational career\nMain fighter of the Indian Air Force (272 MKI), China, Vietnam, Algeria, Venezuela, Uganda. Used in Syria (Russia), in Ukraine (Russia, 2022+). Major Russian export success in the 2000s.\n\n## Legacy\nProduced to **600+ airframes**. The Russian functional counterpart of the US F-15E. Its success funded the Russian combat-aviation industrial base through the post-Soviet crisis decade.');
+-- Le bloc d'origine posait manufacturer_page puis la remettait à NULL : seule
+-- la valeur finale est rejouée, sinon chaque rejeu modifierait deux fois la ligne.
+UPDATE airplanes SET manufacturer_page = NULL WHERE name = 'Su-30' AND manufacturer_page IS DISTINCT FROM NULL;
 UPDATE airplanes SET youtube_showcase = 'https://www.youtube.com/watch?v=gNx6DV8EcF8'
-WHERE name = 'Su-30';
-UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Su-30';
+WHERE name = 'Su-30'
+  AND youtube_showcase IS DISTINCT FROM 'https://www.youtube.com/watch?v=gNx6DV8EcF8';
+UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Su-30' AND stealth_level IS DISTINCT FROM 'aucune';
 
 -- Une clé étrangère nulle n'interrompt pas un INSERT : une fiche qui référence
 -- un constructeur absent au moment du chargement entre en base avec
@@ -4590,7 +4708,7 @@ END $$;
 
 -- Statuts : le catalogue employait « Actif » et « En service » pour le même
 -- état, et 33 fiches n'avaient pas de traduction. Un libellé par état.
-UPDATE airplanes SET status = 'En service' WHERE status = 'Actif';
+UPDATE airplanes SET status = 'En service' WHERE status = 'Actif' AND status IS DISTINCT FROM 'En service';
 UPDATE airplanes SET status_en = 'In service' WHERE status = 'En service' AND status_en IS DISTINCT FROM 'In service';
 UPDATE airplanes SET status_en = 'Retired' WHERE status = 'Retiré' AND status_en IS DISTINCT FROM 'Retired';
 UPDATE airplanes SET status_en = 'Cancelled' WHERE status = 'Annulé' AND status_en IS DISTINCT FROM 'Cancelled';
@@ -4598,11 +4716,20 @@ UPDATE airplanes SET status_en = 'In development' WHERE status = 'En développem
 
 -- Production des trois fiches d'opérateur est-allemand, jusqu'ici vides.
 UPDATE airplanes SET production_start = 1959, production_end = 1985
- WHERE name = 'MiG-21 Allemand' AND production_start IS NULL;
+ WHERE name = 'MiG-21 Allemand' AND production_start IS NULL
+   AND (production_start, production_end)
+      IS DISTINCT FROM
+      (1959, 1985);
 UPDATE airplanes SET production_start = 1969, production_end = 1985
- WHERE name = 'MiG-23 Allemand' AND production_start IS NULL;
+ WHERE name = 'MiG-23 Allemand' AND production_start IS NULL
+   AND (production_start, production_end)
+      IS DISTINCT FROM
+      (1969, 1985);
 UPDATE airplanes SET production_start = 1982, production_end = 1991
- WHERE name = 'MiG-29 Allemand' AND production_start IS NULL;
+ WHERE name = 'MiG-29 Allemand' AND production_start IS NULL
+   AND (production_start, production_end)
+      IS DISTINCT FROM
+      (1982, 1991);
 
 -- « Guerre d'Indochine » : retirée en v4.5.3 faute d'appareil rattachable, elle
 -- revient en v4.13.0 avec le F8F Bearcat, le Flamant, le C-119… (section 2).
@@ -4673,14 +4800,30 @@ UPDATE airplanes SET description = replace(description,
   description_en = replace(description_en,
     'Engaged by France in Chad, Iraq (2003).',
     'Engaged by France in Chad, in the Gulf War (Operation Daguet, 1991), in Afghanistan (from 2007), in Libya (2011) and in Mali (2013).')
- WHERE name = 'Mirage F1';
+ WHERE name = 'Mirage F1'
+   AND (description, description_en)
+      IS DISTINCT FROM
+      (replace(description,
+    'Engagé par la France au Tchad, en Irak (2003).',
+    'Engagé par la France au Tchad, pendant la guerre du Golfe (opération Daguet, 1991), en Afghanistan (à partir de 2007), en Libye (2011) et au Mali (2013).'),
+       replace(description_en,
+    'Engaged by France in Chad, Iraq (2003).',
+    'Engaged by France in Chad, in the Gulf War (Operation Daguet, 1991), in Afghanistan (from 2007), in Libya (2011) and in Mali (2013).'));
 UPDATE airplanes SET description = replace(description,
     'Engagé en Libye (2011), Syrie, Irak. ',
     'La Luftwaffe ne l''a pas engagé au combat : l''Allemagne s''est abstenue sur l''intervention en Libye (2011), et sa participation à la coalition contre l''État islamique reposait sur des Tornado de reconnaissance et des avions ravitailleurs. '),
   description_en = replace(description_en,
     'Engaged in Libya (2011), Syria, Iraq. ',
     'The Luftwaffe has not used it in combat: Germany abstained on the 2011 Libya intervention, and its contribution to the coalition against the Islamic State relied on Tornado reconnaissance aircraft and tankers. ')
- WHERE name = 'Eurofighter Typhoon Allemand';
+ WHERE name = 'Eurofighter Typhoon Allemand'
+   AND (description, description_en)
+      IS DISTINCT FROM
+      (replace(description,
+    'Engagé en Libye (2011), Syrie, Irak. ',
+    'La Luftwaffe ne l''a pas engagé au combat : l''Allemagne s''est abstenue sur l''intervention en Libye (2011), et sa participation à la coalition contre l''État islamique reposait sur des Tornado de reconnaissance et des avions ravitailleurs. '),
+       replace(description_en,
+    'Engaged in Libya (2011), Syria, Iraq. ',
+    'The Luftwaffe has not used it in combat: Germany abstained on the 2011 Libya intervention, and its contribution to the coalition against the Islamic State relied on Tornado reconnaissance aircraft and tankers. '));
 UPDATE airplanes SET description = replace(replace(description,
     'Engagé lors de la **guerre du Golfe** (1991) pour l''appui aux frégates françaises.',
     'Les Étendard IVP de reconnaissance photographique opèrent au-dessus du **Liban** (1983-1984), de la **Bosnie-Herzégovine** (à partir de 1993) et du **Kosovo** (1999).'),
@@ -4691,21 +4834,49 @@ UPDATE airplanes SET description = replace(replace(description,
     'The IVP photo-reconnaissance version flew over **Lebanon** (1983-1984), **Bosnia-Herzegovina** (from 1993) and **Kosovo** (1999).'),
     'Retired in 1991, replaced by the Super Étendard.',
     'The IVM was retired in 1991, replaced by the Super Étendard; the IVP flew until 2000.')
- WHERE name = 'Étendard IV';
+ WHERE name = 'Étendard IV'
+   AND (description, description_en)
+      IS DISTINCT FROM
+      (replace(replace(description,
+    'Engagé lors de la **guerre du Golfe** (1991) pour l''appui aux frégates françaises.',
+    'Les Étendard IVP de reconnaissance photographique opèrent au-dessus du **Liban** (1983-1984), de la **Bosnie-Herzégovine** (à partir de 1993) et du **Kosovo** (1999).'),
+    'Retiré en 1991, remplacé par le Super Étendard.',
+    'Les IVM sont retirés en 1991, remplacés par le Super Étendard ; les IVP volent jusqu''en 2000.'),
+       replace(replace(description_en,
+    'Engaged in the **Gulf War** (1991) supporting French frigates.',
+    'The IVP photo-reconnaissance version flew over **Lebanon** (1983-1984), **Bosnia-Herzegovina** (from 1993) and **Kosovo** (1999).'),
+    'Retired in 1991, replaced by the Super Étendard.',
+    'The IVM was retired in 1991, replaced by the Super Étendard; the IVP flew until 2000.'));
 UPDATE airplanes SET description = replace(description,
     'y compris pendant la guerre du Golfe où il assure la surveillance de surface.',
     'y compris au début de la crise du Golfe : en 1990, quatre Alizé embarqués sur le *Clemenceau* pour l''opération Salamandre assurent la surveillance maritime.'),
   description_en = replace(description_en,
     'including through the Gulf War where it provided surface surveillance.',
     'including at the start of the Gulf crisis: in 1990, four Alizés embarked on *Clemenceau* for Operation Salamandre provided maritime surveillance.')
- WHERE name = 'Breguet Alizé';
+ WHERE name = 'Breguet Alizé'
+   AND (description, description_en)
+      IS DISTINCT FROM
+      (replace(description,
+    'y compris pendant la guerre du Golfe où il assure la surveillance de surface.',
+    'y compris au début de la crise du Golfe : en 1990, quatre Alizé embarqués sur le *Clemenceau* pour l''opération Salamandre assurent la surveillance maritime.'),
+       replace(description_en,
+    'including through the Gulf War where it provided surface surveillance.',
+    'including at the start of the Gulf crisis: in 1990, four Alizés embarked on *Clemenceau* for Operation Salamandre provided maritime surveillance.'));
 UPDATE airplanes SET description = replace(description,
     'Engagé en Syrie et en Ukraine.',
     'Engagé en Ukraine depuis 2022. En Syrie, sa présence se limite à deux MiG-31K déployés en juin 2021 sur la base de Hmeimim pour un exercice en Méditerranée orientale.'),
   description_en = replace(description_en,
     'Used in Syria and Ukraine.',
     'Used in combat over Ukraine since 2022. In Syria, its presence was limited to two MiG-31Ks deployed to Hmeimim in June 2021 for an exercise in the eastern Mediterranean.')
- WHERE name = 'MiG-31';
+ WHERE name = 'MiG-31'
+   AND (description, description_en)
+      IS DISTINCT FROM
+      (replace(description,
+    'Engagé en Syrie et en Ukraine.',
+    'Engagé en Ukraine depuis 2022. En Syrie, sa présence se limite à deux MiG-31K déployés en juin 2021 sur la base de Hmeimim pour un exercice en Méditerranée orientale.'),
+       replace(description_en,
+    'Used in Syria and Ukraine.',
+    'Used in combat over Ukraine since 2022. In Syria, its presence was limited to two MiG-31Ks deployed to Hmeimim in June 2021 for an exercise in the eastern Mediterranean.'));
 UPDATE airplanes SET description = replace(replace(description,
     'en Iran-Irak, en Érythrée-Éthiopie, au Soudan, au Yémen.',
     'dans la guerre Iran-Irak, au Liban (1982, aux mains de l''aviation syrienne), au Pérou (guerre du Cenepa, 1995), au Yémen et dans la guerre civile syrienne.'),
@@ -4716,7 +4887,19 @@ UPDATE airplanes SET description = replace(replace(description,
     'the Iran-Iraq War, Lebanon (1982, flown by the Syrian air force), Peru (Cenepa War, 1995), Yemen and the Syrian civil war.'),
     'still in service in Syria, Libya, Vietnam, Peru, Angola.',
     'still in service in Angola, Iran, Libya, Vietnam and Yemen.')
- WHERE name = 'Su-17';
+ WHERE name = 'Su-17'
+   AND (description, description_en)
+      IS DISTINCT FROM
+      (replace(replace(description,
+    'en Iran-Irak, en Érythrée-Éthiopie, au Soudan, au Yémen.',
+    'dans la guerre Iran-Irak, au Liban (1982, aux mains de l''aviation syrienne), au Pérou (guerre du Cenepa, 1995), au Yémen et dans la guerre civile syrienne.'),
+    'toujours en service en Syrie, Libye, Vietnam, Pérou, Angola.',
+    'toujours en service en Angola, en Iran, en Libye, au Vietnam et au Yémen.'),
+       replace(replace(description_en,
+    'Iran-Iraq, Eritrea-Ethiopia, Sudan, Yemen.',
+    'the Iran-Iraq War, Lebanon (1982, flown by the Syrian air force), Peru (Cenepa War, 1995), Yemen and the Syrian civil war.'),
+    'still in service in Syria, Libya, Vietnam, Peru, Angola.',
+    'still in service in Angola, Iran, Libya, Vietnam and Yemen.'));
 UPDATE airplanes SET description = replace(replace(description,
     'Engagements français : Kosovo, Afghanistan, Libye, Mali, Irak (opération Chammal 2015).',
     'L''Irak en loue cinq de 1983 à 1985 pour attaquer les pétroliers pendant la guerre Iran-Irak. Engagements français : Liban (1983), Kosovo (1999), Afghanistan (2001-2011), Libye (2011), Irak (opération Chammal, 2015).'),
@@ -4727,21 +4910,49 @@ UPDATE airplanes SET description = replace(replace(description,
     'Iraq leased five from 1983 to 1985 to strike tankers during the Iran-Iraq War. French engagements: Lebanon (1983), Kosovo (1999), Afghanistan (2001-2011), Libya (2011), Iraq (Operation Chammal, 2015).'),
     'The last single-engined French fighter in service.',
     'The last single-engined combat aircraft of French naval aviation.')
- WHERE name = 'Super Étendard';
+ WHERE name = 'Super Étendard'
+   AND (description, description_en)
+      IS DISTINCT FROM
+      (replace(replace(description,
+    'Engagements français : Kosovo, Afghanistan, Libye, Mali, Irak (opération Chammal 2015).',
+    'L''Irak en loue cinq de 1983 à 1985 pour attaquer les pétroliers pendant la guerre Iran-Irak. Engagements français : Liban (1983), Kosovo (1999), Afghanistan (2001-2011), Libye (2011), Irak (opération Chammal, 2015).'),
+    'Dernier chasseur français mono-réacteur en service.',
+    'Dernier avion de combat monoréacteur de l''aéronautique navale française.'),
+       replace(replace(description_en,
+    'French engagements: Kosovo, Afghanistan, Libya, Mali, Iraq (Operation Chammal 2015).',
+    'Iraq leased five from 1983 to 1985 to strike tankers during the Iran-Iraq War. French engagements: Lebanon (1983), Kosovo (1999), Afghanistan (2001-2011), Libya (2011), Iraq (Operation Chammal, 2015).'),
+    'The last single-engined French fighter in service.',
+    'The last single-engined combat aircraft of French naval aviation.'));
 UPDATE airplanes SET description = replace(description,
     'Aucun autre appareil de guet aérien avancé n''a jamais été conçu pour opérer depuis un porte-avions. Le Hawkeye est resté sans concurrent pendant soixante ans, et le E-2D',
     'Successeur de l''E-1 Tracer, le Hawkeye est resté, pendant plus de quarante ans après le retrait du Gannet AEW.3 britannique en 1978, le seul avion de guet aérien embarqué à voilure fixe en service, et le E-2D'),
   description_en = replace(description_en,
     'No other airborne early warning aircraft has ever been designed to operate from a carrier. The Hawkeye stood without a competitor for sixty years, and the E-2D',
     'Successor to the E-1 Tracer, the Hawkeye remained, for more than forty years after the British Gannet AEW.3 was retired in 1978, the only fixed-wing carrier-borne airborne early warning aircraft in service, and the E-2D')
- WHERE name = 'E-2 Hawkeye';
+ WHERE name = 'E-2 Hawkeye'
+   AND (description, description_en)
+      IS DISTINCT FROM
+      (replace(description,
+    'Aucun autre appareil de guet aérien avancé n''a jamais été conçu pour opérer depuis un porte-avions. Le Hawkeye est resté sans concurrent pendant soixante ans, et le E-2D',
+    'Successeur de l''E-1 Tracer, le Hawkeye est resté, pendant plus de quarante ans après le retrait du Gannet AEW.3 britannique en 1978, le seul avion de guet aérien embarqué à voilure fixe en service, et le E-2D'),
+       replace(description_en,
+    'No other airborne early warning aircraft has ever been designed to operate from a carrier. The Hawkeye stood without a competitor for sixty years, and the E-2D',
+    'Successor to the E-1 Tracer, the Hawkeye remained, for more than forty years after the British Gannet AEW.3 was retired in 1978, the only fixed-wing carrier-borne airborne early warning aircraft in service, and the E-2D'));
 UPDATE airplanes SET variants = replace(variants,
     'six prototypes, premier vol stationnaire en octobre 1960',
     'six prototypes, premier vol stationnaire captif le 21 octobre 1960, libre le 19 novembre 1960'),
   variants_en = replace(variants_en,
     'six prototypes, first hover in October 1960',
     'six prototypes, first tethered hover on 21 October 1960, first free hover on 19 November 1960')
- WHERE name = 'Hawker P.1127 Kestrel';
+ WHERE name = 'Hawker P.1127 Kestrel'
+   AND (variants, variants_en)
+      IS DISTINCT FROM
+      (replace(variants,
+    'six prototypes, premier vol stationnaire en octobre 1960',
+    'six prototypes, premier vol stationnaire captif le 21 octobre 1960, libre le 19 novembre 1960'),
+       replace(variants_en,
+    'six prototypes, first hover in October 1960',
+    'six prototypes, first tethered hover on 21 October 1960, first free hover on 19 November 1960'));
 
 -- Photo du MiG-29 (LEGAL-002) : l'ancienne portait « © 2007 Katsuhiko
 -- TOKUNAGA/DACT, All Rights Reserved ». Même nom de fichier, nouvelle photo libre.
@@ -4751,6 +4962,22 @@ UPDATE airplanes SET image_credit = 'Tim Felce (Airwolfhound)', image_licence = 
 -- sous Open Government Licence v1.0, qui impose d'en citer la source.
 UPDATE airplanes SET image_credit = 'Cpl Mike Jones, Ministry of Defence', image_licence = 'OGL v1.0'
  WHERE name = 'Panavia Tornado' AND image_credit IS DISTINCT FROM 'Cpl Mike Jones, Ministry of Defence';
+-- F-35I Adir : l'ancienne image, de provenance non documentée, est remplacée par
+-- la version sans cadre de la même prise de vue, publiée par l'armée de l'air
+-- israélienne sur Commons (CC BY 4.0). Même nom de fichier.
+UPDATE airplanes SET image_credit = 'Major Ofer, Israeli Air Force', image_licence = 'CC BY 4.0'
+ WHERE name = 'F-35I Adir'
+   AND (image_credit, image_licence) IS DISTINCT FROM ('Major Ofer, Israeli Air Force', 'CC BY 4.0');
+-- F-5EM Tiger II : l'ancienne portait « (C)2011 Johnson Barros/FAB » incrusté.
+-- Nouvelle photo libre du ministère brésilien de la Défense, même nom de fichier.
+UPDATE airplanes SET image_credit = 'Ministério da Defesa (Brasil)', image_licence = 'CC BY 2.0'
+ WHERE name = 'F-5EM Tiger II'
+   AND (image_credit, image_licence) IS DISTINCT FROM ('Ministério da Defesa (Brasil)', 'CC BY 2.0');
+-- Tu-160 : photo conservée. C'est un cliché de Vadim Savitsky publié par le
+-- ministère russe de la Défense (mil.ru) sous CC BY 4.0 : il ne manquait que le crédit.
+UPDATE airplanes SET image_credit = 'Vadim Savitsky, Ministry of Defence of the Russian Federation', image_licence = 'CC BY 4.0'
+ WHERE name = 'Tu-160'
+   AND (image_credit, image_licence) IS DISTINCT FROM ('Vadim Savitsky, Ministry of Defence of the Russian Federation', 'CC BY 4.0');
 
 -- ═══ 7. Contraintes de cohérence ═════════════════════════════════════════
 --

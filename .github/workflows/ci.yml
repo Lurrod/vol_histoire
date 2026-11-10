@@ -15,10 +15,11 @@ permissions:
 # Dependabot (.github/dependabot.yml, écosystème github-actions) met à jour
 # le SHA et le commentaire ensemble.
 #
-# Version de Node : .nvmrc à la racine (24) = cible de la CI. Le serveur de
-# production tourne encore en Node 20 (partagé avec d'autres applications) :
-# « engines » accepte donc 20 à 24 et le job test-prod-runtime teste le
-# backend sous Node 20 tant que la montée n'est pas faite (DEVOPS-002).
+# Version de Node : .nvmrc à la racine (24), la même que le champ « engines »
+# et que la production (DEVOPS-002). Sur le serveur, vol-histoire tourne sous
+# /opt/node-24 (interpréteur pm2) ; le Node système reste en 20 pour les
+# autres applications : les scripts de déploiement mettent /opt/node-24 en tête
+# du PATH.
 
 jobs:
   # ═══════════════════════════════════════════════════════════
@@ -165,35 +166,6 @@ jobs:
           retention-days: 7
 
   # ═══════════════════════════════════════════════════════════
-  # Runtime de production — tests backend sous Node 20
-  # ═══════════════════════════════════════════════════════════
-  # Le serveur partagé tourne encore en Node 20 (trois autres applications y
-  # dépendent) alors que .nvmrc vise 24 : tant que la montée n'est pas faite,
-  # le code livré est aussi testé sur la version qui l'exécute réellement.
-  # Base simulée uniquement (sans IT_DATABASE_URL, l'intégration est sautée).
-  # À supprimer quand le serveur sera passé en Node 24.
-  test-prod-runtime:
-    runs-on: ubuntu-latest
-    env:
-      JWT_SECRET: ci-test-jwt-secret-key-minimum-32-characters-long
-      REFRESH_SECRET: ci-test-refresh-secret-key-minimum-32-characters-long
-      NODE_ENV: test
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: backend/package-lock.json
-
-      - name: Install backend dependencies
-        run: cd backend && npm ci
-
-      - name: Run backend tests (Node 20)
-        run: cd backend && npx jest --config jest.config.json --testPathIgnorePatterns=load
-
-  # ═══════════════════════════════════════════════════════════
   # E2E — Tests Playwright
   # ═══════════════════════════════════════════════════════════
   e2e:
@@ -336,7 +308,7 @@ jobs:
   # manuelles (en postgres, par l'entrée standard, après pg_dump) et ne sont
   # PAS annulées par le retour arrière automatique : voir README, Déploiement.
   deploy:
-    needs: [quality, test, test-prod-runtime, e2e, load]
+    needs: [quality, test, e2e, load]
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
@@ -390,6 +362,9 @@ jobs:
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
           script: |
             set -eu
+            # Node 24 dédié (/opt/node-24) : le Node système (20) sert les autres
+            # applications du serveur. npm ci et pm2 start l'utilisent ainsi.
+            if [ -x /opt/node-24/bin/node ]; then export PATH="/opt/node-24/bin:$PATH"; fi
             APP_DIR=/var/www/vol-histoire
             STATE_DIR="$HOME/.vol-histoire-deploy"
             DEPLOY_SHA='${{ github.sha }}'
@@ -426,7 +401,7 @@ jobs:
 
             cd backend
             npm ci --omit=dev
-            pm2 restart vol-histoire --update-env || pm2 start server.js --name vol-histoire
+            pm2 restart vol-histoire --update-env || pm2 start server.js --name vol-histoire --interpreter "$(command -v node)"
             echo "Déploiement terminé — version $(node -p "require('./package.json').version")"
 
       # ─── Smoke tests post-deploy ──────────────────────────────
@@ -517,6 +492,9 @@ jobs:
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
           script: |
             set -eu
+            # Node 24 dédié (/opt/node-24) : le Node système (20) sert les autres
+            # applications du serveur. npm ci et pm2 start l'utilisent ainsi.
+            if [ -x /opt/node-24/bin/node ]; then export PATH="/opt/node-24/bin:$PATH"; fi
             STATE_DIR="$HOME/.vol-histoire-deploy"
             DEPLOY_SHA='${{ github.sha }}'
             cd /var/www/vol-histoire
@@ -532,7 +510,7 @@ jobs:
             git reset --hard "$PREV_SHA"
             cd backend
             npm ci --omit=dev
-            pm2 restart vol-histoire --update-env || pm2 start server.js --name vol-histoire
+            pm2 restart vol-histoire --update-env || pm2 start server.js --name vol-histoire --interpreter "$(command -v node)"
             printf '%s rollback %s -> %s (auto)\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$DEPLOY_SHA" "$PREV_SHA" >> "$STATE_DIR/history.log"
             rm -f "$STATE_DIR/deploying_sha"
             echo "::warning::Production revenue à $PREV_SHA"
