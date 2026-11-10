@@ -1,3 +1,9 @@
+-- Lockheed Martin F-35I Adir
+--
+-- Photo : IAF-F-35I-2016-12-13-nf.jpg
+--   licence CC BY 4.0 — Major Ofer, Israeli Air Force
+--   https://commons.wikimedia.org/wiki/File:IAF-F-35I-2016-12-13-nf.jpg
+
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -110,3 +116,12 @@ WHERE name = 'F-35I Adir';
 -- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
 -- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
 UPDATE airplanes SET stealth_level = 'elevee' WHERE name = 'F-35I Adir';
+
+-- Crédit photo (strate 6). L'image précédente, de provenance non documentée,
+-- portait dans ses métadonnées « Ofer Berkovich » : remplacée par la version
+-- sans cadre de la même prise de vue, publiée sur Commons par l'armée de l'air
+-- israélienne sous licence libre (voir l'en-tête du fichier).
+UPDATE airplanes SET
+  image_credit      = 'Major Ofer, Israeli Air Force',
+  image_licence     = 'CC BY 4.0'
+WHERE name = 'F-35I Adir';

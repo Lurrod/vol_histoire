@@ -1,6 +1,6 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.14.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
-  <img src="https://img.shields.io/badge/node-20%20%7C%2024-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
+  <img src="https://img.shields.io/badge/version-4.14.1-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/node-24-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/tests-2120-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
   <img src="https://img.shields.io/badge/licence-All%20Rights%20Reserved-C0392B?style=for-the-badge&labelColor=0D0D0D" alt="Licence">
@@ -338,7 +338,7 @@ Couverture : backend 95,9 % des lignes (seuil 80), frontend 99,9 % des lignes et
 | `load` | tests de charge autocannon |
 | `deploy` | push sur `main` uniquement, après les quatre jobs ci-dessus |
 
-Node 24 est la cible : `.nvmrc` (lu par `setup-node`). **Le serveur de production tourne encore en Node 20**, partagé avec d'autres applications : le champ `engines` des quatre `package.json` accepte `>=20 <25`, le job `test-prod-runtime` teste le backend sous Node 20, et le déploiement affiche un avertissement tant que `node -v` diffère de `.nvmrc`. Les actions tierces sont épinglées par SHA de commit ; Dependabot les met à jour.
+Node 24 partout : `.nvmrc` (lu par `setup-node`), champ `engines` des quatre `package.json`, et la production. Sur le serveur, `vol-histoire` tourne sous `/opt/node-24` (interpréteur pm2) ; le Node système reste en 20 pour les autres applications, et les scripts de déploiement et de retour arrière placent `/opt/node-24/bin` en tête du `PATH`. Le déploiement affiche un avertissement si la version ne correspond pas à `.nvmrc`. Les actions tierces sont épinglées par SHA de commit ; Dependabot les met à jour.
 
 Les bundles sont versionnés et déployés tels quels : **toute modification de JS/CSS source doit être suivie de `npm run build` et du commit des fichiers générés**, sinon le job `quality` échoue.
 
@@ -410,7 +410,7 @@ Puis faire un revert sur `main`, sinon le prochain push redéploie la version fa
 | Couche | Technologies |
 |---|---|
 | **Frontend** | HTML5, CSS3 (design tokens, responsive mobile-first), JavaScript ES6+ vanilla (pas de framework) |
-| **Backend** | Node.js 20 (prod) / 24 (CI), Express 5.3 (CommonJS) |
+| **Backend** | Node.js 24, Express 5.3 (CommonJS) |
 | **Base de donnees** | PostgreSQL 14+ (pg 8.20) avec `tsvector` + GIN pour la recherche full-text |
 | **Cache** | Redis (optionnel, fallback memoire) |
 | **Auth** | JWT (jsonwebtoken 9.0) + refresh tokens + bcryptjs (cost 12) |
