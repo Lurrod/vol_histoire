@@ -7,6 +7,9 @@ const logger = require('../logger');
 const { withTransaction } = require('../db');
 const asyncHandler = require('../middleware/asyncHandler');
 const verifyHcaptcha = require('../middleware/hcaptcha');
+const usersRepo = require('../repositories/users');
+const emailTokensRepo = require('../repositories/email-tokens');
+const refreshTokensRepo = require('../repositories/refresh-tokens');
 const {
   generateAccessToken,
   generateRefreshToken,
@@ -35,33 +38,33 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
   async function issueEmailToken(userId, type, ttlMs, newEmail = null) {
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + ttlMs);
-    await withTransaction(getPool(), async (client) => {
-      await client.query(
-        'UPDATE email_tokens SET used_at = NOW() WHERE user_id = $1 AND type = $2 AND used_at IS NULL',
-        [userId, type]
-      );
-      await client.query(
-        'INSERT INTO email_tokens (user_id, token, type, expires_at, new_email) VALUES ($1, $2, $3, $4, $5)',
-        [userId, token, type, expiresAt, newEmail]
-      );
-    });
+    await withTransaction(getPool(), (client) =>
+      emailTokensRepo.replaceOpen(client, { userId, type, token, expiresAt, newEmail })
+    );
     return token;
   }
 
   /**
-   * Consomme un jeton email à usage unique dans la transaction donnée.
-   * Le UPDATE gardé par `used_at IS NULL` rend la consommation atomique : deux
-   * requêtes concurrentes avec le même jeton ne peuvent pas réussir toutes les deux.
-   * @returns {Promise<{ user_id: number, new_email: string|null }|null>}
+   * Révocation de toutes les sessions après un rejeu de refresh token.
+   * C'est le moment précis où une compromission est suspectée : un échec ne
+   * peut pas passer en silence. Une seconde tentative absorbe un incident
+   * passager (connexion perdue, timeout) ; si elle échoue aussi, l'échec est
+   * journalisé en erreur (donc remonté à Sentry) avec l'utilisateur concerné.
+   * La réponse au client reste 401 REFRESH_REPLAY : son cookie est effacé dans
+   * tous les cas, et un code distinct n'apprendrait rien d'utile à un attaquant.
    */
-  async function consumeEmailToken(client, token, type) {
-    const result = await client.query(
-      `UPDATE email_tokens SET used_at = NOW()
-       WHERE token = $1 AND type = $2 AND used_at IS NULL AND expires_at > NOW()
-       RETURNING user_id, new_email`,
-      [token, type]
-    );
-    return result.rows[0] || null;
+  async function revokeAllAfterReplay(userId, jti) {
+    try {
+      await revokeAllUserRefreshTokens(userId);
+    } catch {
+      try {
+        await revokeAllUserRefreshTokens(userId);
+      } catch (err) {
+        logger.error('Échec de la révocation des sessions après rejeu de refresh token', {
+          error: err, userId, jti, route: 'POST /refresh',
+        });
+      }
+    }
   }
 
   // -----------------------------------------------------------------------------
@@ -81,7 +84,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)' });
     }
 
-    const userExists = await getPool().query('SELECT id, email_verified FROM users WHERE email = $1', [email]);
+    const existing = await usersRepo.findRegistrationState(getPool(), email);
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Anti-énumération : réponse identique, envoyée AVANT tout travail qui
@@ -90,7 +93,6 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     res.status(201).json({ message: 'Compte créé. Vérifiez votre boîte email pour activer votre compte.' });
 
     try {
-      const existing = userExists.rows[0];
       if (existing && existing.email_verified) return;
 
       let userId;
@@ -99,13 +101,9 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
         // au moment de la vérification par le titulaire de la boîte (voir
         // POST /auth/verify-email) ; on envoie simplement un nouveau lien.
         userId = existing.id;
-        await getPool().query('UPDATE users SET name = $1 WHERE id = $2 AND email_verified = FALSE', [name, userId]);
+        await usersRepo.renameUnverified(getPool(), userId, name);
       } else {
-        const insertResult = await getPool().query(
-          'INSERT INTO users (name, email, password, role_id) VALUES ($1, $2, $3, $4) RETURNING id',
-          [name, email, hashedPassword, 3]
-        );
-        userId = insertResult.rows[0].id;
+        userId = await usersRepo.insert(getPool(), { name, email, passwordHash: hashedPassword, roleId: 3 });
       }
 
       const verifyToken = await issueEmailToken(userId, 'verify', VERIFY_TOKEN_TTL_MS);
@@ -137,18 +135,13 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       return res.status(400).json({ message: 'Mot de passe requis' });
     }
 
-    const user = await getPool().query(
-      'SELECT id, name, email, password, role_id, token_version, email_verified, failed_login_count, locked_until FROM users WHERE email = $1',
-      [email]
-    );
+    const userData = await usersRepo.findForLogin(getPool(), email);
 
     // Anti timing-attack : bcrypt.compare est toujours exécuté, même si
     // l'utilisateur n'existe pas, pour garantir un temps de réponse constant.
     const DUMMY_HASH = '$2a$12$mPEeg.GN9eKdtN4Hd23tve9R3aTnsNjlXIz9.tO5hM2ZU1EPP3BvC';
-    const storedHash = user.rows.length > 0 ? user.rows[0].password : DUMMY_HASH;
+    const storedHash = userData ? userData.password : DUMMY_HASH;
     const validPassword = await bcrypt.compare(password, storedHash);
-
-    const userData = user.rows[0];
 
     // Compte verrouillé : message générique pour ne pas leaker l'existence
     // d'un compte (user enumeration). Même status/message qu'un mdp incorrect
@@ -157,24 +150,15 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-    if (user.rows.length === 0 || !validPassword) {
-      // Incrément du compteur d'échecs si le compte existe.
-      // Si seuil atteint : verrouillage du compte pour LOCKOUT_DURATION_MIN minutes.
-      // On ne révèle pas au client qu'un compte existe : 400 générique dans tous les cas.
-      // Incrément atomique côté SQL : la valeur lue plus haut est périmée dès
-      // que des tentatives arrivent en parallèle (bcrypt.compare rend la main),
-      // et un `SET failed_login_count = $1` calculé en JS perdrait des échecs.
+    if (!userData || !validPassword) {
+      // Incrément du compteur d'échecs si le compte existe (atomique en SQL,
+      // voir usersRepo.recordFailedLogin). Au seuil : verrouillage du compte
+      // pour LOCKOUT_DURATION_MIN minutes. On ne révèle pas au client qu'un
+      // compte existe : 400 générique dans tous les cas.
       if (userData) {
-        await getPool().query(
-          `UPDATE users
-           SET failed_login_count = failed_login_count + 1,
-               locked_until = CASE
-                 WHEN failed_login_count + 1 >= $1 THEN NOW() + ($2 || ' minutes')::interval
-                 ELSE locked_until
-               END
-           WHERE id = $3`,
-          [LOCKOUT_MAX_ATTEMPTS, String(LOCKOUT_DURATION_MIN), userData.id]
-        );
+        await usersRepo.recordFailedLogin(getPool(), userData.id, {
+          maxAttempts: LOCKOUT_MAX_ATTEMPTS, lockMinutes: LOCKOUT_DURATION_MIN,
+        });
       }
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
     }
@@ -189,10 +173,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
     // Login réussi : reset compteur + lockout
     if (userData.failed_login_count > 0 || userData.locked_until) {
-      await getPool().query(
-        'UPDATE users SET failed_login_count = 0, locked_until = NULL WHERE id = $1',
-        [userData.id]
-      );
+      await usersRepo.resetFailedLogins(getPool(), userData.id);
     }
 
     const accessToken = generateAccessToken(userData);
@@ -227,7 +208,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
         logger.warn('Replay refresh token détecté — révocation totale', {
           userId: tokenState.userId, jti: decoded.jti, route: 'POST /refresh',
         });
-        await revokeAllUserRefreshTokens(tokenState.userId).catch(() => {});
+        await revokeAllAfterReplay(tokenState.userId, decoded.jti);
         clearRefreshCookie(res);
         return res.status(401).json({ message: 'Session compromise', code: 'REFRESH_REPLAY' });
       }
@@ -237,11 +218,8 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       }
 
       // Récupérer les données fraîches de l'utilisateur en DB
-      const result = await getPool().query(
-        'SELECT id, name, email, role_id, token_version FROM users WHERE id = $1',
-        [decoded.id]
-      );
-      if (result.rows.length === 0) {
+      const user = await usersRepo.findSessionUser(getPool(), decoded.id);
+      if (!user) {
         clearRefreshCookie(res);
         await revokeRefreshToken(decoded.jti);
         return res.status(401).json({ message: 'Utilisateur introuvable', code: 'USER_NOT_FOUND' });
@@ -251,7 +229,6 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       // nouvelle dans la même transaction. Protège contre :
       //   - Crash entre les 2 étapes (session orpheline ou double-active)
       //   - Race condition 2 requêtes concurrentes de /refresh avec le même JTI
-      const user = result.rows[0];
       const newAccessToken = generateAccessToken(user);
       const { token: newRefreshToken, jti: newJti } = generateRefreshToken(user);
 
@@ -264,7 +241,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
           logger.warn('Replay refresh token détecté — révocation totale', {
             userId: user.id, jti: decoded.jti, route: 'POST /refresh',
           });
-          await revokeAllUserRefreshTokens(user.id).catch(() => {});
+          await revokeAllAfterReplay(user.id, decoded.jti);
           clearRefreshCookie(res);
           return res.status(401).json({ message: 'Session compromise', code: 'REFRESH_REPLAY' });
         }
@@ -316,23 +293,11 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
     const hashedPassword = await bcrypt.hash(password, 12);
     const userId = await withTransaction(getPool(), async (client) => {
-      const consumed = await consumeEmailToken(client, token, 'verify');
+      const consumed = await emailTokensRepo.consume(client, token, 'verify');
       if (!consumed) return null;
-      await client.query(
-        `UPDATE users
-         SET password = $1, email_verified = TRUE, failed_login_count = 0, locked_until = NULL,
-             token_version = token_version + 1
-         WHERE id = $2`,
-        [hashedPassword, consumed.user_id]
-      );
-      await client.query(
-        "UPDATE email_tokens SET used_at = NOW() WHERE user_id = $1 AND type = 'verify' AND used_at IS NULL",
-        [consumed.user_id]
-      );
-      await client.query(
-        'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
-        [consumed.user_id]
-      );
+      await usersRepo.activateWithPassword(client, consumed.user_id, hashedPassword);
+      await emailTokensRepo.closeOpen(client, consumed.user_id, 'verify');
+      await refreshTokensRepo.revokeAllForUser(client, consumed.user_id);
       return consumed.user_id;
     });
     if (!userId) {
@@ -341,9 +306,9 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
     // Envoi de l'email de bienvenue (non bloquant)
     try {
-      const userResult = await getPool().query('SELECT name, email FROM users WHERE id = $1', [userId]);
-      if (userResult.rows.length > 0) {
-        const { name, email } = userResult.rows[0];
+      const contact = await usersRepo.findContact(getPool(), userId);
+      if (contact) {
+        const { name, email } = contact;
         mailer.sendWelcomeEmail(email, name).catch(err =>
           logger.warn('Échec envoi email bienvenue', { error: err.message, userId })
         );
@@ -363,16 +328,10 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     }
     try {
       const changed = await withTransaction(getPool(), async (client) => {
-        const consumed = await consumeEmailToken(client, token, 'email');
+        const consumed = await emailTokensRepo.consume(client, token, 'email');
         if (!consumed || !consumed.new_email) return false;
-        await client.query(
-          'UPDATE users SET email = $1, email_verified = TRUE, token_version = token_version + 1 WHERE id = $2',
-          [consumed.new_email, consumed.user_id]
-        );
-        await client.query(
-          'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
-          [consumed.user_id]
-        );
+        await usersRepo.applyEmailChange(client, consumed.user_id, consumed.new_email);
+        await refreshTokensRepo.revokeAllForUser(client, consumed.user_id);
         return true;
       });
       if (!changed) {
@@ -402,13 +361,8 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     res.json({ message: 'Si un compte non vérifié existe, un email vient d\'être envoyé.' });
 
     try {
-      const userResult = await getPool().query(
-        'SELECT id, name, email_verified FROM users WHERE email = $1',
-        [email]
-      );
-      if (userResult.rows.length === 0 || userResult.rows[0].email_verified) return;
-
-      const user = userResult.rows[0];
+      const user = await usersRepo.findMailRecipient(getPool(), email);
+      if (!user || user.email_verified) return;
 
       const verifyToken = await issueEmailToken(user.id, 'verify', VERIFY_TOKEN_TTL_MS);
       await mailer.sendVerificationEmail(email, user.name, verifyToken);
@@ -429,13 +383,8 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     res.json({ message: 'Si un compte vérifié existe, un email de réinitialisation vient d\'être envoyé.' });
 
     try {
-      const userResult = await getPool().query(
-        'SELECT id, name, email_verified FROM users WHERE email = $1',
-        [email]
-      );
-      if (userResult.rows.length === 0 || !userResult.rows[0].email_verified) return;
-
-      const user = userResult.rows[0];
+      const user = await usersRepo.findMailRecipient(getPool(), email);
+      if (!user || !user.email_verified) return;
 
       const resetToken = await issueEmailToken(user.id, 'reset', RESET_TOKEN_TTL_MS);
       await mailer.sendPasswordResetEmail(email, user.name, resetToken);
@@ -455,34 +404,20 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)' });
     }
 
-    const result = await getPool().query(
-      `SELECT id, user_id FROM email_tokens
-       WHERE token = $1 AND type = 'reset' AND used_at IS NULL AND expires_at > NOW()`,
-      [token]
-    );
-    if (result.rows.length === 0) {
+    const resetToken = await emailTokensRepo.findOpenReset(getPool(), token);
+    if (!resetToken) {
       return res.status(400).json({ message: 'Token invalide ou expiré', code: 'TOKEN_INVALID' });
     }
 
-    const { id: tokenId, user_id: userId } = result.rows[0];
+    const { id: tokenId, user_id: userId } = resetToken;
     const hashedPassword = await bcrypt.hash(password, 12);
 
     // Transaction : consommer le token (une seule fois), changer le mot de passe,
     // révoquer les sessions et invalider les access tokens déjà émis.
     const applied = await withTransaction(getPool(), async (client) => {
-      const used = await client.query(
-        'UPDATE email_tokens SET used_at = NOW() WHERE id = $1 AND used_at IS NULL',
-        [tokenId]
-      );
-      if (used.rowCount === 0) return false;
-      await client.query(
-        'UPDATE users SET password = $1, failed_login_count = 0, locked_until = NULL, token_version = token_version + 1 WHERE id = $2',
-        [hashedPassword, userId]
-      );
-      await client.query(
-        'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
-        [userId]
-      );
+      if (!(await emailTokensRepo.markUsed(client, tokenId))) return false;
+      await usersRepo.resetPassword(client, userId, hashedPassword);
+      await refreshTokensRepo.revokeAllForUser(client, userId);
       return true;
     });
     if (!applied) {

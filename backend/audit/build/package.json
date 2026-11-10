@@ -1,9 +1,0 @@
-{
-  "name": "vol-histoire-audit-build",
-  "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "exceljs": "^4.4.0",
-    "pdfkit": "^0.17.0"
-  }
-}

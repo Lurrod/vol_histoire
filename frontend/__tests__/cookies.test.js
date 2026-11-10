@@ -24,8 +24,9 @@ describe('CookieConsent — constructeur', () => {
     const cc = new CookieConsent();
     expect(cc.preferences.essential).toBe(true);
     expect(cc.preferences.analytics).toBe(false);
-    expect(cc.preferences.preference).toBe(false);
     expect(cc.preferences.marketing).toBe(false);
+    // Catégorie « préférence » retirée (LEGAL-006) : elle ne pilotait rien.
+    expect(cc.preferences).not.toHaveProperty('preference');
   });
 
   test('definit le nom du cookie "voldhistoire_cookie_consent"', () => {
@@ -33,9 +34,9 @@ describe('CookieConsent — constructeur', () => {
     expect(cc.cookieName).toBe('voldhistoire_cookie_consent');
   });
 
-  test('definit l\'expiration a 365 jours', () => {
+  test('conserve le choix 180 jours (6 mois, LEGAL-004)', () => {
     const cc = new CookieConsent();
-    expect(cc.cookieExpiry).toBe(365);
+    expect(cc.cookieExpiry).toBe(180);
   });
 });
 
@@ -53,24 +54,24 @@ describe('CookieConsent — saveConsent / getConsent', () => {
   });
 
   test('saveConsent() persiste les preferences dans localStorage', () => {
-    cc.preferences = { essential: true, analytics: true, preference: false, marketing: false };
+    cc.preferences = { essential: true, analytics: true, marketing: false };
     cc.saveConsent();
     const raw = localStorage.getItem('voldhistoire_cookie_consent');
     expect(raw).not.toBeNull();
     const parsed = JSON.parse(raw);
-    expect(parsed.preferences.analytics).toBe(true);
-    expect(parsed.preferences.preference).toBe(false);
-    expect(parsed.timestamp).toBeDefined();
-    expect(parsed.version).toBe('1.0');
+    expect(parsed.preferences).toEqual({ essential: true, analytics: true, marketing: false });
+    expect(Number.isNaN(Date.parse(parsed.timestamp))).toBe(false);
+    expect(parsed.version).toBe('2');
+    // Cookie miroir posé en même temps
+    expect(document.cookie).toContain('voldhistoire_cookie_consent=true');
   });
 
   test('getConsent() recupere les preferences sauvegardees', () => {
-    cc.preferences = { essential: true, analytics: true, preference: true, marketing: false };
+    cc.preferences = { essential: true, analytics: true, marketing: false };
     cc.saveConsent();
     const consent = cc.getConsent();
     expect(consent).not.toBeNull();
     expect(consent.analytics).toBe(true);
-    expect(consent.preference).toBe(true);
   });
 
   test('getConsent() retourne null sur JSON corrompu', () => {
@@ -91,27 +92,20 @@ describe('CookieConsent — acceptAll / rejectAll', () => {
     cc = new CookieConsent();
   });
 
-  test('acceptAll() active analytics + preference, garde marketing false', () => {
+  test('acceptAll() active analytics, garde marketing false', () => {
     cc.acceptAll();
-    expect(cc.preferences.essential).toBe(true);
-    expect(cc.preferences.analytics).toBe(true);
-    expect(cc.preferences.preference).toBe(true);
-    expect(cc.preferences.marketing).toBe(false);
+    expect(cc.preferences).toEqual({ essential: true, analytics: true, marketing: false });
   });
 
   test('acceptAll() persiste le consent', () => {
     cc.acceptAll();
     const consent = cc.getConsent();
     expect(consent.analytics).toBe(true);
-    expect(consent.preference).toBe(true);
   });
 
   test('rejectAll() force tout a false sauf essential', () => {
     cc.rejectAll();
-    expect(cc.preferences.essential).toBe(true);
-    expect(cc.preferences.analytics).toBe(false);
-    expect(cc.preferences.preference).toBe(false);
-    expect(cc.preferences.marketing).toBe(false);
+    expect(cc.preferences).toEqual({ essential: true, analytics: false, marketing: false });
   });
 
   test('rejectAll() persiste le consent (essentials only)', () => {
@@ -188,5 +182,115 @@ describe('CookieConsent — toast', () => {
     expect(toast.classList.contains('fade-out')).toBe(true);
     expect(toast.getAttribute('style')).toBeNull();
     jest.useRealTimers();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WCAG 2.2 — 2.4.11 : le focus ne doit pas rester caché sous le bandeau.
+// jsdom ne calcule aucune mise en page : les rectangles sont simulés.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('bannerOverlap — focus caché par le bandeau', () => {
+  const { bannerOverlap } = require('../js/cookies');
+  const rect = (top, bottom, left = 0, right = 200) => ({
+    top, bottom, left, right, width: right - left, height: bottom - top,
+  });
+  let banner;
+  let target;
+
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <header id="hdr"></header>
+      <button id="cible">Filtre</button>
+      <aside id="cookie-banner" class="cookie-banner show"><button id="dedans">OK</button></aside>`;
+    banner = document.getElementById('cookie-banner');
+    target = document.getElementById('cible');
+    banner.getBoundingClientRect = () => rect(586, 812, 0, 375);
+    delete document.elementFromPoint;
+  });
+
+  test('0 quand le bandeau n’est pas affiché', () => {
+    banner.classList.remove('show');
+    target.getBoundingClientRect = () => rect(633, 678);
+    expect(bannerOverlap(target, banner)).toBe(0);
+  });
+
+  test('0 pour un élément du bandeau lui-même', () => {
+    const dedans = document.getElementById('dedans');
+    dedans.getBoundingClientRect = () => rect(700, 740);
+    expect(bannerOverlap(dedans, banner)).toBe(0);
+  });
+
+  test('0 pour un élément entièrement au-dessus du bandeau', () => {
+    target.getBoundingClientRect = () => rect(300, 344);
+    expect(bannerOverlap(target, banner)).toBe(0);
+  });
+
+  test('0 pour un élément sans boîte (lien d’évitement replié)', () => {
+    target.getBoundingClientRect = () => rect(0, 0, 0, 0);
+    expect(bannerOverlap(target, banner)).toBe(0);
+  });
+
+  test('distance à défiler pour remonter l’élément au-dessus du bandeau, marge comprise', () => {
+    target.getBoundingClientRect = () => rect(633, 678);
+    // 678 - 586 + 16 de marge
+    expect(bannerOverlap(target, banner)).toBe(108);
+  });
+
+  test('0 si un autre élément est posé au-dessus du bandeau (toast, modale)', () => {
+    target.getBoundingClientRect = () => rect(700, 740);
+    document.elementFromPoint = () => target;
+    expect(bannerOverlap(target, banner)).toBe(0);
+  });
+
+  test('défile quand le point testé tombe sur le bandeau', () => {
+    target.getBoundingClientRect = () => rect(700, 740);
+    document.elementFromPoint = () => banner;
+    expect(bannerOverlap(target, banner)).toBe(170);
+  });
+
+  test('ne fait pas passer le haut d’un élément haut sous l’en-tête', () => {
+    document.getElementById('hdr').getBoundingClientRect = () => rect(0, 70);
+    target.getBoundingClientRect = () => rect(120, 760);
+    // Il faudrait 190 px ; le haut (120) ne peut monter qu'à 70 + 16 : 34 px.
+    expect(bannerOverlap(target, banner, document.getElementById('hdr'))).toBe(34);
+  });
+});
+
+describe('CookieConsent — garde du focus tant que le bandeau est affiché', () => {
+  let cc;
+  let scrollBy;
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    localStorage.clear();
+    document.body.innerHTML = `
+      <button id="cible">Filtre</button>
+      <aside id="cookie-banner" class="cookie-banner hidden"></aside>`;
+    cc = new CookieConsent();
+    jest.advanceTimersByTime(250); // le bandeau s'affiche après 200 ms
+    document.getElementById('cookie-banner').getBoundingClientRect = () => ({
+      top: 586, bottom: 812, left: 0, right: 375, width: 375, height: 226,
+    });
+    document.getElementById('cible').getBoundingClientRect = () => ({
+      top: 633, bottom: 678, left: 0, right: 200, width: 200, height: 45,
+    });
+    scrollBy = jest.fn();
+    window.scrollBy = scrollBy;
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  test('un élément focalisé sous le bandeau est remonté sans animation', () => {
+    document.getElementById('cible').focus();
+    expect(scrollBy).toHaveBeenCalledWith({ top: 108, behavior: 'instant' });
+  });
+
+  test('plus aucune correction une fois le bandeau fermé', () => {
+    cc.hideBanner();
+    jest.advanceTimersByTime(500);
+    document.getElementById('cible').focus();
+    expect(scrollBy).not.toHaveBeenCalled();
   });
 });

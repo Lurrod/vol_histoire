@@ -3,6 +3,28 @@
    Single source of truth for all custom properties.
    ====================================================================== */
 
+/* ── ORDRE DES COUCHES (cascade layers) ───────────────────────────────
+   Déclaré ici parce que tokens.css est le premier fichier de core.min.css :
+   c'est la PREMIÈRE apparition d'un nom de couche qui fixe son rang
+   (icons.css ouvre déjà @layer base avant base.css).
+
+   Déclarations normales, de la plus faible à la plus forte :
+     guards < base < components < shared < page < utilities
+   - base       : reset, éléments nus, icônes ;
+   - components : composants partagés (shared-base.css) ;
+   - shared     : règles transverses longtemps restées hors couche
+                  (responsive de l'en-tête, consentement, visite guidée,
+                  fil d'Ariane) — elles gardent la main sur components ;
+   - page       : feuilles de page, enveloppées par scripts/build-css.js ;
+   - utilities  : .hidden, .sr-only… l'emportent sur les pages.
+
+   !important inverse l'ordre : une déclaration importante d'une couche
+   déclarée tôt bat celles des couches suivantes. D'où « guards » en tête :
+   le garde-fou « mouvements réduits » (shared-utilities.css) l'emporte sur
+   tout le reste, pages comprises.
+   ──────────────────────────────────────────────────────────────────── */
+@layer guards, base, components, shared, page, utilities;
+
 /* ── BREAKPOINTS (4 paliers, em) ──────────────────────────────────────
    phone  :  30em  (480px)  — petits mobiles
    tablet :  48em  (768px)  — tablettes portrait
@@ -12,6 +34,13 @@
    ──────────────────────────────────────────────────────────────────── */
 
 :root {
+  /* Le site est sombre par identité, sans variante claire. Le déclarer fait
+     passer les contrôles natifs (cases, select, input[type=date], barres de
+     défilement non stylées, autoremplissage) en thème sombre. La balise
+     <meta name="color-scheme" content="dark"> des pages le fait savoir avant
+     même le chargement de cette feuille. */
+  color-scheme: dark;
+
   /* ============================================================
      COULEURS — PALETTE MINIMALISTE PREMIUM
      ============================================================ */
@@ -19,9 +48,16 @@
   --hud-green:  #5A8A6A;   /* vert militaire désaturé */
   --hud-amber:  #B8956A;   /* ambre secondaire */
   --accent:     #C0392B;   /* rouge danger — fonds, bordures, icônes */
-  /* Le même rouge en texte sur fond sombre ne passe qu'à 3,44:1, sous le seuil
-     AA de 4,5:1. Cette variante monte à 4,9:1 sur #121212. */
-  --accent-text: #E74C3C;
+  /* Le même rouge en texte sur fond sombre ne passe qu'à 3,4-3,6:1, sous le
+     seuil AA de 4,5:1. Variante claire du même rouge, pour le TEXTE seulement
+     (messages d'erreur, toasts, boutons de suppression) : 6,7:1 sur #0D0D0D,
+     5,7:1 sur le fond teinté des boutons de danger, 4,7:1 au pire sur deux
+     toasts d'erreur superposés. L'ancienne valeur #E74C3C tombait à 3,6:1
+     sur ces fonds teintés. */
+  --accent-text: #F07167;
+  /* Même logique pour le vert : #5A8A6A en texte tombe à 3,5-4,4:1 (toast de
+     succès, règles de mot de passe validées). Teinte éclaircie : 5,6-6,5:1. */
+  --hud-green-text: #7FB08F;
   --success:    #2E7D52;   /* vert succès désaturé */
   --warning:    #B8860B;   /* or foncé pour les avertissements */
   --purple:     #7C6FA0;   /* violet assourdi */
@@ -35,25 +71,20 @@
   --night-soft: #1A1A1A;   /* surface douce */
   --white:      #ffffff;
 
-  --black:      #000000;
-
-  /* Alias de rétrocompatibilité */
-  --cyan:       var(--hud-cyan);
-  --surface:    var(--night-mid);
-  --surface-2:  var(--night-soft);
-  --bg:         rgba(255, 255, 255, 0.04);
-  --bg-dark:    var(--night-mid);
-  --bg-secondary: #ecf0f1;
-
   /* ============================================================
      TEXTE
      ============================================================ */
   --text-light:     #E8E6E1;               /* blanc légèrement chaud */
   --text-primary:   #F0EDE8;               /* blanc cassé premium */
+  /* Échelle décroissante. Plancher : --text-ghost, 5,1 à 5,5:1 sur les fonds
+     #0D0D0D à #222 — aucun texte ne descend en dessous (WCAG 1.4.3). Les
+     rgba(255,255,255,0.25…0.5) écrits en dur dans les pages tombaient à
+     2,2-4,5:1. muted et faint étaient inversés (muted plus sombre). */
   --text-secondary: rgba(240, 237, 232, 0.72);
-  --text-muted:     rgba(240, 237, 232, 0.62);
-  --text-faint:     rgba(240, 237, 232, 0.66);
+  --text-muted:     rgba(240, 237, 232, 0.66);
+  --text-faint:     rgba(240, 237, 232, 0.62);
   --text-ghost:     rgba(240, 237, 232, 0.55);
+  --text-placeholder: var(--text-ghost);   /* indications de saisie */
 
   /* ============================================================
      BORDURES
@@ -62,10 +93,30 @@
   --border-mid:     rgba(255, 255, 255, 0.10);
   --border-cyan:    rgba(200, 169, 110, 0.16);
   --border-cyan-md: rgba(200, 169, 110, 0.28);
+  /* Limite d'un champ de saisie au repos : 3,2:1 contre le fond (WCAG
+     1.4.11). Les 0.09 d'origine plafonnaient à 1,2:1, champ invisible. */
+  --border-field:   rgba(240, 237, 232, 0.38);
 
   /* Alias (utilisé dans plusieurs pages) */
   --border:       var(--border-subtle);
   --border-light: rgba(255, 255, 255, 0.04);
+
+  /* ============================================================
+     VOILES — opacités récurrentes du blanc et du champagne
+     Les valeurs rgba() les plus fréquentes des feuilles de page (jusqu'à
+     47 occurrences chacune), nommées. Fonds et bordures uniquement :
+     pour du texte, utiliser --text-* (contraste garanti).
+     ============================================================ */
+  --white-a02: rgba(255, 255, 255, 0.02);
+  --white-a04: rgba(255, 255, 255, 0.04);
+  --white-a06: rgba(255, 255, 255, 0.06);
+  --white-a07: rgba(255, 255, 255, 0.07);
+  --white-a08: rgba(255, 255, 255, 0.08);
+  --white-a12: rgba(255, 255, 255, 0.12);
+  --gold-a08: rgba(200, 169, 110, 0.08);
+  --gold-a12: rgba(200, 169, 110, 0.12);
+  --gold-a15: rgba(200, 169, 110, 0.15);
+  --gold-a20: rgba(200, 169, 110, 0.2);
 
   /* ============================================================
      TYPOGRAPHIE
@@ -73,8 +124,10 @@
   --font-sans:    'DM Sans', sans-serif;
   --font-display: 'Barlow Condensed', sans-serif;
 
-  /* Tailles */
-  --text-xs:   0.70rem;
+  /* Tailles. --text-xs est le PLANCHER du texte informatif (12 px) : en
+     dessous, seulement des décors (chevrons, puces, flèches). 69 tailles de
+     0.5 à 0.72rem (8,8-11,5 px sur mobile) y ont été ramenées en v4.14. */
+  --text-xs:   0.75rem;
   --text-sm:   0.85rem;
   --text-base: 0.95rem;
   --text-md:   1.00rem;
@@ -129,12 +182,7 @@
   --shadow:      0 2px 8px  rgba(0, 0, 0, 0.35);
   --shadow-lg:   0 6px 20px rgba(0, 0, 0, 0.45);
   --shadow-xl:   0 12px 40px rgba(0, 0, 0, 0.55);
-  --shadow-cyan: 0 2px 12px rgba(200, 169, 110, 0.10);
   --focus-ring:  0 0 0 2px var(--hud-cyan);
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-dark:    linear-gradient(135deg, #0D0D0D 0%, #141414 100%);
 
   /* ============================================================
      TRANSITIONS — base partagée (transitions-dev, ease-out propre)
@@ -153,9 +201,6 @@
      overshoot atténué (« refinement not reinvention »). Chaque snippet
      t-* lit ces noms sémantiques — ne pas dupliquer ce bloc.
      ============================================================ */
-  /* Card resize */
-  --resize-dur: 300ms;
-  --resize-ease: var(--ease);
   /* Number pop-in (digits) — distance & flou réduits */
   --digit-dur: 460ms;
   --digit-distance: 6px;
@@ -164,28 +209,10 @@
   --digit-ease: cubic-bezier(0.34, 1.22, 0.64, 1); /* overshoot atténué (def. 1.45) */
   --digit-dir-x: 0;
   --digit-dir-y: 1;
-  /* Notification badge */
-  --badge-slide-dur: 260ms;
-  --badge-pop-dur: 460ms;
-  --badge-pop-close-dur: 180ms;
-  --badge-fade-dur: 360ms;
-  --badge-fade-close-dur: 180ms;
-  --badge-blur: 1px;
-  --badge-offset-x: -8.2px;
-  --badge-offset-y: 12.4px;
-  --badge-slide-ease: var(--ease);
-  --badge-pop-ease: cubic-bezier(0.34, 1.2, 0.64, 1); /* atténué (def. 1.36) */
-  --badge-close-ease: cubic-bezier(0.4, 0, 0.2, 1);
-  /* Text states swap */
-  --text-swap-dur: 150ms;
-  --text-swap-translate-y: 4px;
-  --text-swap-blur: 1px;
-  --text-swap-ease: ease-in-out;
   /* Menu dropdown */
   --dropdown-open-dur: 250ms;
   --dropdown-close-dur: 150ms;
   --dropdown-pre-scale: 0.97;
-  --dropdown-closing-scale: 0.99;
   --dropdown-ease: var(--ease);
   /* Modal open / close */
   --modal-open-dur: 250ms;
@@ -196,18 +223,8 @@
   /* Panel reveal */
   --panel-open-dur: 380ms;
   --panel-close-dur: 320ms;
-  --panel-translate-y: 100px;
   --panel-blur: 1px;
   --panel-ease: var(--ease);
-  /* Page side-by-side */
-  --page-slide-dur: 200ms;
-  --page-fade-dur: 200ms;
-  --page-slide-distance: 8px;
-  --page-blur: 2px;
-  --page-stagger: 0ms;
-  --page-exit-enabled: 1;
-  --page-slide-ease: var(--ease);
-  --page-fade-ease: var(--ease);
   /* Icon swap — scale de départ moins extrême */
   --icon-swap-dur: 200ms;
   --icon-swap-blur: 1.5px;
@@ -228,13 +245,6 @@
   --check-ease-rotate: var(--ease);
   --check-ease-bob: cubic-bezier(0.34, 1.2, 0.64, 1); /* atténué (def. 1.35) */
   --check-ease-path: var(--ease);
-  /* Avatar group hover — lift & spring assagis */
-  --avatar-lift: -4px;
-  --avatar-dur: 320ms;
-  --avatar-scale: 1.04;             /* def. 1.05 */
-  --avatar-falloff: 0.45;
-  --avatar-ease-in: var(--ease);
-  --avatar-ease-out: cubic-bezier(0.34, 1.8, 0.64, 1); /* spring atténué (def. 3.85) */
   /* Error state shake */
   --shake-distance: 6px;
   --shake-overshoot: 3px;           /* def. 4px */
@@ -242,8 +252,6 @@
   --shake-dur-b: 60ms;
   --shake-total: 280ms;             /* = 2*(--shake-dur-a) + 2*(--shake-dur-b) ; littéral car le minifieur CSS casse calc() avec « nombre + var() » */
   --shake-ease: var(--ease);
-  --revert-hold: 3000ms;
-  --revert-dur: 280ms;
 
   /* ============================================================
      LAYOUT
@@ -268,25 +276,11 @@
   --z-modal:    10000;  /* modales — toujours au-dessus */
 
   /* ============================================================
-     VARIABLES THÈME CLAIR — utilisées par login.css (panneau form)
-     ============================================================ */
-  --light-bg:       #ffffff;
-  --light-bg-soft:  #f8f9fa;
-  --light-text:     #1A1A1A;
-  --light-text-sub: #6B6B6B;
-  --light-border:   #E0DDD8;
-  --light-blue:     #4A7FA0;
-  --light-blue-dk:  #3A6F90;
-
-  /* ============================================================
      VARIABLES DE COMPATIBILITÉ
      Utilisées dans les anciens CSS de page. Résolues vers le thème dark.
      ============================================================ */
   --primary:         var(--night-mid);
-  --primary-light:   var(--night-soft);
   --primary-dark:    var(--text-primary);
   --secondary:       var(--hud-cyan);
-  --secondary-light: #D4B87E;
   --secondary-dark:  #B8956A;
-  --info:            var(--blue);
 }

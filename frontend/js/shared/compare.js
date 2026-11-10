@@ -302,10 +302,18 @@
     return isNaN(y) ? null : y;
   }
 
+  // Valeur numérique d'une colonne, ou NaN si elle est absente : Number(null)
+  // et Number('') valent 0, et une donnée inconnue serait alors comptée comme
+  // la meilleure (poids à vide le plus bas) ou dessinée en barre à 0 %.
+  function numeric(raw) {
+    if (raw == null || (typeof raw === 'string' && raw.trim() === '')) return NaN;
+    return Number(raw);
+  }
+
   function extreme(items, key, highest) {
     let best = null;
     items.forEach((item) => {
-      const v = Number(item[key]);
+      const v = numeric(item[key]);
       if (isNaN(v)) return;
       if (best === null || (highest ? v > best : v < best)) best = v;
     });
@@ -313,7 +321,7 @@
   }
 
   function bestClass(items, item, key, higherIsBetter) {
-    const v = Number(item[key]);
+    const v = numeric(item[key]);
     if (isNaN(v)) return '';
     const target = extreme(items, key, higherIsBetter);
     return (target !== null && v === target) ? ' cmp-best' : '';
@@ -402,7 +410,7 @@
 
     function perfRow(label, key, unit, max, higherIsBetter) {
       const cells = items.map((a) => {
-        const v = Number(a[key]);
+        const v = numeric(a[key]);
         const cls = bestClass(items, a, key, higherIsBetter);
         const valStr = isNaN(v) ? '<span class="cmp-dash">—</span>' : fmt(a[key], unit);
         const barStr = isNaN(v) ? '' : barHtml(v, max, cls ? 'var(--hud-cyan)' : 'rgba(255,255,255,0.12)');

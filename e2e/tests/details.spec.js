@@ -31,11 +31,13 @@ test.describe('Page Détails', () => {
     }).toPass({ timeout: 10000 });
   });
 
-  test('un ID inexistant redirige vers 404', async ({ page }) => {
-    // details.js fait window.location.href = '/404' sur erreur de chargement
-    await page.goto('/details?id=99999');
-    await page.waitForURL('**/404', { timeout: 8000 });
-    await expect(page).toHaveURL(/\/404/);
+  test('un ID inexistant répond 404 avec la page d’erreur (SEO-009)', async ({ page }) => {
+    // Le rendu serveur répond lui-même 404 + noindex : plus de redirection
+    // client vers /404, donc jamais de 200 indexable pour une fiche absente.
+    const response = await page.goto('/details?id=99999');
+    expect(response.status()).toBe(404);
+    await expect(page.locator('h1.error-title')).toBeVisible();
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
   });
 
   test('la section capacités affiche les 3 colonnes pour un avion complet', async ({ page }) => {

@@ -93,8 +93,8 @@ UPDATE airplanes SET
   unit_cost_usd     = NULL,
   unit_cost_year    = NULL,
   operators_count   = 0,
-  variants          = E'- **P.1127** : six prototypes, premier vol stationnaire en octobre 1960\n- **Kestrel FGA.1** : neuf exemplaires d''évaluation pour un escadron tripartite\n- **XV-6A** : six Kestrel cédés aux **États-Unis**, évalués par l''armée, la Navy et la NASA\n- **Hawker Siddeley Harrier** : version opérationnelle, en service à partir de 1969\n- Le premier appontage vertical a lieu sur le HMS Ark Royal en **février 1963**',
-  variants_en       = E'- **P.1127** : six prototypes, first hover in October 1960\n- **Kestrel FGA.1** : nine evaluation aircraft for a tripartite squadron\n- **XV-6A** : six Kestrels handed to the **United States**, evaluated by the Army, Navy and NASA\n- **Hawker Siddeley Harrier** : the operational version, in service from 1969\n- The first vertical deck landing took place on HMS Ark Royal in **February 1963**',
+  variants          = E'- **P.1127** : six prototypes, premier vol stationnaire captif le 21 octobre 1960, libre le 19 novembre 1960\n- **Kestrel FGA.1** : neuf exemplaires d''évaluation pour un escadron tripartite\n- **XV-6A** : six Kestrel cédés aux **États-Unis**, évalués par l''armée, la Navy et la NASA\n- **Hawker Siddeley Harrier** : version opérationnelle, en service à partir de 1969\n- Le premier appontage vertical a lieu sur le HMS Ark Royal en **février 1963**',
+  variants_en       = E'- **P.1127** : six prototypes, first tethered hover on 21 October 1960, first free hover on 19 November 1960\n- **Kestrel FGA.1** : nine evaluation aircraft for a tripartite squadron\n- **XV-6A** : six Kestrels handed to the **United States**, evaluated by the Army, Navy and NASA\n- **Hawker Siddeley Harrier** : the operational version, in service from 1969\n- The first vertical deck landing took place on HMS Ark Royal in **February 1963**',
 
   -- Strate 4 : qualitatif
   nickname          = 'Kestrel',

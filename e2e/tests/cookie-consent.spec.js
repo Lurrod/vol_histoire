@@ -50,7 +50,8 @@ test.describe('Cookie Consent', () => {
     );
     expect(consent.preferences.essential).toBe(true);
     expect(consent.preferences.analytics).toBe(false);
-    expect(consent.preferences.preference).toBe(false);
+    // Catégorie « préférence » supprimée (LEGAL-006) : langue, filtres… sont fonctionnels.
+    expect(consent.preferences.preference).toBeUndefined();
   });
 
   test('ouvrir les paramètres → modal visible', async ({ page }) => {
@@ -87,7 +88,8 @@ test.describe('Cookie Consent', () => {
       JSON.parse(localStorage.getItem('voldhistoire_cookie_consent'))
     );
     expect(consent.preferences.analytics).toBe(true);
-    expect(consent.preferences.preference).toBe(false);
+    // Catégorie « préférence » supprimée (LEGAL-006) : langue, filtres… sont fonctionnels.
+    expect(consent.preferences.preference).toBeUndefined();
   });
 
   test('ESC ferme la modal cookies', async ({ page }) => {

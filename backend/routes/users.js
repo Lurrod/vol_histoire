@@ -14,20 +14,22 @@ const {
 const logger = require('../logger');
 const { withTransaction } = require('../db');
 const asyncHandler = require('../middleware/asyncHandler');
+const usersRepo = require('../repositories/users');
+const emailTokensRepo = require('../repositories/email-tokens');
+const refreshTokensRepo = require('../repositories/refresh-tokens');
+const favoritesRepo = require('../repositories/favorites');
+const { idParam, cleanSearch } = require('../middleware/input-guards');
 
 // Durée de validité du lien de confirmation d'un changement d'adresse
 const EMAIL_CHANGE_TTL_MS = 30 * 60 * 1000;
 
-module.exports = function createUsersRouter(getPool, { mailer } = {}) {
+const passThrough = (req, res, next) => next();
+
+module.exports = function createUsersRouter(getPool, { mailer, dataExportLimiter = passThrough } = {}) {
   const router = express.Router();
 
-  // Validation des IDs
-  router.param('id', (req, res, next, value) => {
-    if (!/^\d+$/.test(value)) {
-      return res.status(400).json({ message: 'ID invalide' });
-    }
-    next();
-  });
+  // Validation des IDs : entier int4 positif, sinon 400 (SEC-003).
+  router.param('id', idParam());
 
   // -----------------------------------------------------------------------------
   // Utilisateurs
@@ -36,41 +38,46 @@ module.exports = function createUsersRouter(getPool, { mailer } = {}) {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 20));
     const offset = (page - 1) * limit;
-    const search = typeof req.query.search === 'string' ? req.query.search.trim() : '';
+    const search = cleanSearch(req.query.search);
 
-    const whereParts = [];
-    const whereValues = [];
-    if (search) {
-      whereValues.push(`%${search}%`);
-      whereParts.push(`(name ILIKE $${whereValues.length} OR email ILIKE $${whereValues.length})`);
-    }
-    const whereSql = whereParts.length ? `WHERE ${whereParts.join(' AND ')}` : '';
-
-    const countResult = await getPool().query(
-      `SELECT COUNT(*) FROM users ${whereSql}`,
-      whereValues
-    );
-    const total = parseInt(countResult.rows[0].count, 10);
-
-    const listValues = [...whereValues, limit, offset];
-    const result = await getPool().query(
-      `SELECT id, name, email, role_id FROM users ${whereSql} ORDER BY id LIMIT $${listValues.length - 1} OFFSET $${listValues.length}`,
-      listValues
-    );
+    const { total, rows } = await usersRepo.findPage(getPool(), { search, limit, offset });
     res.json({
-      data: result.rows,
+      data: rows,
       meta: { total, page, limit, totalPages: Math.ceil(total / limit) }
     });
   }));
 
-  router.get('/users/:id', authorize([1, 2, 3]), isOwnerOrAdmin('id'), asyncHandler(async (req, res) => {
-    const { id } = req.params;
-
-    const result = await getPool().query('SELECT id, name, email, role_id FROM users WHERE id = $1', [id]);
-    if (result.rows.length === 0) {
+  // Export des données personnelles du compte connecté (droit d'accès et à la
+  // portabilité, LEGAL-011) : profil et favoris, en JSON téléchargeable.
+  // Le choix de cookies n'est conservé que dans le navigateur : `consent` vaut
+  // null côté serveur. Déclarée avant /users/:id par lisibilité (« me » n'est
+  // de toute façon pas un identifiant valide).
+  router.get('/users/me/export', dataExportLimiter, authorize([1, 2, 3]), asyncHandler(async (req, res) => {
+    const userId = Number(req.user.id);
+    const [user, favorites] = await Promise.all([
+      usersRepo.findForExport(getPool(), userId),
+      favoritesRepo.listForExport(getPool(), userId),
+    ]);
+    if (!user) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
-    res.json(result.rows[0]);
+    const payload = {
+      exported_at: new Date().toISOString(),
+      user,
+      favorites,
+      consent: null,
+    };
+    res.set('Cache-Control', 'no-store');
+    res.set('Content-Disposition', `attachment; filename="vol-histoire-donnees-${userId}.json"`);
+    res.type('application/json; charset=utf-8').send(JSON.stringify(payload, null, 2));
+  }));
+
+  router.get('/users/:id', authorize([1, 2, 3]), isOwnerOrAdmin('id'), asyncHandler(async (req, res) => {
+    const user = await usersRepo.findPublicById(getPool(), req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+    res.json(user);
   }));
 
   // Changement de profil. Pour son propre compte, l'email et le mot de passe
@@ -93,11 +100,10 @@ module.exports = function createUsersRouter(getPool, { mailer } = {}) {
       return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)' });
     }
 
-    const current = await getPool().query('SELECT id, name, email, password FROM users WHERE id = $1', [id]);
-    if (current.rows.length === 0) {
+    const user = await usersRepo.findWithPassword(getPool(), id);
+    if (!user) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
-    const user = current.rows[0];
     const isSelf = Number(req.user.id) === Number(id);
     const newEmail = email ? email.trim().toLowerCase() : null;
     const emailChanges = Boolean(newEmail) && newEmail !== user.email;
@@ -118,27 +124,19 @@ module.exports = function createUsersRouter(getPool, { mailer } = {}) {
     const hashedPassword = password ? await bcrypt.hash(password, 12) : null;
     // Un admin agissant sur le compte d'un autre applique l'email directement.
     const directEmail = emailChanges && !isSelf ? newEmail : null;
-    const fields = [];
-    const values = [];
-    if (name) { values.push(name); fields.push(`name = $${values.length}`); }
-    if (directEmail) { values.push(directEmail); fields.push(`email = $${values.length}`); }
-    if (hashedPassword) { values.push(hashedPassword); fields.push(`password = $${values.length}`); }
+    const changes = { name: name || undefined, email: directEmail || undefined, passwordHash: hashedPassword || undefined };
+    const writes = Boolean(name || directEmail || hashedPassword);
     const revokesSessions = Boolean(hashedPassword || directEmail);
 
     let updated;
     try {
       updated = await withTransaction(getPool(), async (client) => {
         let row = { id: user.id, name: user.name, email: user.email };
-        if (fields.length > 0) {
-          values.push(id);
-          const upd = await client.query(
-            `UPDATE users SET ${fields.join(', ')} WHERE id = $${values.length} RETURNING id, name, email, role_id, token_version`,
-            values
-          );
-          row = upd.rows[0];
+        if (writes) {
+          row = await usersRepo.updateProfile(client, id, changes);
         }
         if (revokesSessions) {
-          await client.query('UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE', [id]);
+          await refreshTokensRepo.revokeAllForUser(client, id);
           row = { ...row, token_version: await bumpTokenVersion(client, id) };
         }
         return row;
@@ -185,16 +183,9 @@ module.exports = function createUsersRouter(getPool, { mailer } = {}) {
   async function requestEmailChange(user, newEmail) {
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + EMAIL_CHANGE_TTL_MS);
-    await withTransaction(getPool(), async (client) => {
-      await client.query(
-        "UPDATE email_tokens SET used_at = NOW() WHERE user_id = $1 AND type = 'email' AND used_at IS NULL",
-        [user.id]
-      );
-      await client.query(
-        'INSERT INTO email_tokens (user_id, token, type, expires_at, new_email) VALUES ($1, $2, $3, $4, $5)',
-        [user.id, token, 'email', expiresAt, newEmail]
-      );
-    });
+    await withTransaction(getPool(), (client) =>
+      emailTokensRepo.replaceOpen(client, { userId: user.id, type: 'email', token, expiresAt, newEmail })
+    );
     try {
       await mailer.sendEmailChangeConfirmation(newEmail, user.name, token);
       await mailer.sendEmailChangeNotice(user.email, user.name);
@@ -219,48 +210,41 @@ module.exports = function createUsersRouter(getPool, { mailer } = {}) {
       return res.status(400).json({ message: 'Rôle invalide (1 = admin, 2 = éditeur, 3 = membre)' });
     }
 
-    const fields = [];
-    const values = [];
-    let i = 1;
-    if (name !== undefined) { fields.push(`name = $${i++}`); values.push(name.trim()); }
-    if (email !== undefined) { fields.push(`email = $${i++}`); values.push(email.trim().toLowerCase()); }
-    if (role_id !== undefined) { fields.push(`role_id = $${i++}`); values.push(Number(role_id)); }
+    const changes = {
+      name: name !== undefined ? name.trim() : undefined,
+      email: email !== undefined ? email.trim().toLowerCase() : undefined,
+      roleId: role_id !== undefined ? Number(role_id) : undefined,
+    };
 
-    if (fields.length === 0) {
+    if (Object.values(changes).every((v) => v === undefined)) {
       return res.status(400).json({ message: 'Aucune donnée à mettre à jour' });
     }
 
     try {
-      values.push(id);
-      const query = `UPDATE users SET ${fields.join(', ')} WHERE id = $${i} RETURNING id, name, email, role_id`;
-
       // Un changement d'email ou de role par un admin doit invalider les
       // sessions en cours : l'identité ou le scope d'autorisation change,
       // les JWT/refresh tokens existants ne doivent plus être utilisables
       // (révocation des refresh tokens + incrément de token_version).
       const revokeSessions = email !== undefined || role_id !== undefined;
 
-      let result;
+      let updated;
       if (revokeSessions) {
-        result = await withTransaction(getPool(), async (client) => {
-          const upd = await client.query(query, values);
-          if (upd.rows.length > 0) {
-            await client.query(
-              'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
-              [id]
-            );
+        updated = await withTransaction(getPool(), async (client) => {
+          const row = await usersRepo.adminUpdate(client, id, changes);
+          if (row) {
+            await refreshTokensRepo.revokeAllForUser(client, id);
             await bumpTokenVersion(client, id);
           }
-          return upd;
+          return row;
         });
       } else {
-        result = await getPool().query(query, values);
+        updated = await usersRepo.adminUpdate(getPool(), id, changes);
       }
 
-      if (result.rows.length === 0) {
+      if (!updated) {
         return res.status(404).json({ message: 'Utilisateur non trouvé' });
       }
-      res.json(result.rows[0]);
+      res.json(updated);
     } catch (error) {
       if (error.code === '23505') {
         return res.status(409).json({ message: 'Cet email est déjà utilisé' });
@@ -274,14 +258,11 @@ module.exports = function createUsersRouter(getPool, { mailer } = {}) {
     const { id } = req.params;
 
     // Transaction : révoquer les sessions + supprimer le compte
-    const result = await withTransaction(getPool(), async (client) => {
-      await client.query(
-        'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
-        [id]
-      );
-      return client.query('DELETE FROM users WHERE id = $1 RETURNING id', [id]);
+    const deleted = await withTransaction(getPool(), async (client) => {
+      await refreshTokensRepo.revokeAllForUser(client, id);
+      return usersRepo.deleteById(client, id);
     });
-    if (result.rows.length === 0) {
+    if (!deleted) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
     res.json({ message: 'Compte supprimé avec succès' });

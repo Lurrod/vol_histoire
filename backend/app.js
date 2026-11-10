@@ -5,8 +5,6 @@ const cors = require('cors');
 const path = require('path');
 const crypto = require('crypto');
 const cookieParser = require('cookie-parser');
-const swaggerUi = require('swagger-ui-express');
-const YAML = require('yaml');
 const fs = require('fs');
 const authMiddleware = require('./middleware/auth');
 const logger = require('./logger');
@@ -19,6 +17,8 @@ const observability = require('./middleware/observability');
 const createMonitoringRouter = require('./routes/monitoring');
 const { buildHtmlCache } = require('./middleware/serveHtml');
 const { blockPrivateStatic } = require('./utils/static-guard');
+const { rejectNulBytes } = require('./middleware/input-guards');
+const { createCspReportRouter } = require('./middleware/csp-report');
 
 const app = express();
 
@@ -54,6 +54,12 @@ app.use((req, res, next) => {
   next();
 });
 
+// Remontée des violations CSP (SEC-006) : `report-to` pour les navigateurs qui
+// implémentent la Reporting API, `report-uri` pour les autres (Firefox). Les
+// deux visent la même route, qui accepte les deux formats.
+const CSP_REPORT_PATH = '/api/csp-report';
+const CSP_REPORT_GROUP = 'csp-endpoint';
+
 app.use((req, res, next) => {
   const nonce = res.locals.cspNonce;
   const styleHosts = "https://hcaptcha.com https://*.hcaptcha.com";
@@ -67,9 +73,21 @@ app.use((req, res, next) => {
   // same-site sur CORP = permet les assets cross-sous-domaine tout en bloquant l'embed hostile.
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
   res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
+  res.setHeader('Reporting-Endpoints', `${CSP_REPORT_GROUP}="${CSP_REPORT_PATH}"`);
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
-    "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://browser.sentry-cdn.com https://hcaptcha.com https://*.hcaptcha.com",
+    // Scripts : nonce + 'strict-dynamic' (SEC-006). Chaque <script src> local
+    // reçoit le nonce de la requête (injectCspNonce) ; un script ainsi approuvé
+    // peut en charger d'autres par createElement — gtm.js après consentement,
+    // puis les balises du conteneur GTM, l'API hCaptcha, le SDK Sentry local.
+    // Un <script> injecté dans le HTML, lui, n'a pas le nonce : il est bloqué,
+    // même s'il vise googletagmanager.com (contournement connu d'une liste
+    // d'hôtes, que le chemin /gtm.js ne fermait pas : l'identifiant du
+    // conteneur passe en paramètre). Les navigateurs qui comprennent
+    // 'strict-dynamic' ignorent 'self' et les hôtes ; ceux-ci ne servent qu'aux
+    // très anciens navigateurs. Le CDN Sentry a disparu : le SDK est servi en
+    // local (js/vendor/sentry.min.js).
+    `script-src 'nonce-${nonce}' 'strict-dynamic' 'self' https://www.googletagmanager.com https://www.google-analytics.com https://hcaptcha.com https://*.hcaptcha.com`,
     // CSP L3 : nonce sur <style>, pas d'inline style="" autorisé.
     // Tous les styles dynamiques injectés via innerHTML passent par des
     // classes CSS ou element.style.setProperty() post-insertion (non bloqués
@@ -82,7 +100,9 @@ app.use((req, res, next) => {
     `style-src 'self' 'nonce-${nonce}' ${styleHosts}`,
     "font-src 'self'",
     "img-src 'self' https://www.googletagmanager.com data:",
-    "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://*.ingest.sentry.io https://*.sentry.io https://hcaptcha.com https://*.hcaptcha.com",
+    // Hôtes Sentry retirés (SEC-006) : aucun DSN front n'est configuré. Si l'on
+    // active Sentry navigateur un jour, rajouter ici l'hôte d'ingestion du DSN.
+    "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com https://hcaptcha.com https://*.hcaptcha.com",
     "frame-src https://hcaptcha.com https://*.hcaptcha.com",
     "media-src 'self'",
     "object-src 'none'",
@@ -91,6 +111,8 @@ app.use((req, res, next) => {
     "frame-ancestors 'none'",
     "worker-src 'self'",
     "manifest-src 'self'",
+    `report-uri ${CSP_REPORT_PATH}`,
+    `report-to ${CSP_REPORT_GROUP}`,
   ].join('; '));
   res.removeHeader('X-Powered-By');
   next();
@@ -154,6 +176,10 @@ const LIMITER_DEFS = [
   { key: 'resetPassword', max: 5,   msg: 'Trop de tentatives, réessayez dans 15 minutes.' },
   { key: 'email',         max: 3,   msg: 'Trop de demandes, réessayez dans 15 minutes.' },
   { key: 'contact',       max: 5,   msg: 'Trop de messages envoyés, réessayez dans 15 minutes.' },
+  // Une page en défaut peut envoyer plusieurs rapports CSP par chargement.
+  { key: 'cspReport',     max: 60,  msg: 'Trop de rapports, réessayez plus tard.' },
+  // Export des données personnelles (LEGAL-011) : requête rare et coûteuse.
+  { key: 'dataExport',    max: 10,  msg: "Trop de demandes d'export, réessayez dans 15 minutes." },
 ];
 
 function buildLimiter({ max, msg }, store) {
@@ -182,6 +208,8 @@ const refreshLimiter       = (req, res, next) => _impl.refresh(req, res, next);
 const resetPasswordLimiter = (req, res, next) => _impl.resetPassword(req, res, next);
 const emailLimiter         = (req, res, next) => _impl.email(req, res, next);
 const contactLimiter       = (req, res, next) => _impl.contact(req, res, next);
+const cspReportLimiter     = (req, res, next) => _impl.cspReport(req, res, next);
+const dataExportLimiter    = (req, res, next) => _impl.dataExport(req, res, next);
 
 // Upgrade vers Redis — appelé depuis server.js si REDIS_URL est défini.
 // 1. Connexion paresseuse + ping pour valider rapidement (échec → fallback mémoire)
@@ -240,28 +268,54 @@ app.initRedis = async function initRedis() {
 // Appliquer le limiteur global à toutes les routes API
 app.use('/api/', globalApiLimiter);
 
-// Middleware i18n : attache req.lang (fr/en) sur toutes les routes /api/*
-app.use('/api/', langMiddleware);
+// Octet NUL dans la requête ou le corps → 400 avant toute requête SQL
+// (PostgreSQL le refuse en UTF-8 : c'était un 500). SEC-003.
+app.use('/api/', rejectNulBytes);
+
+// Rapports de violation CSP (SEC-006) — corps propres (application/csp-report,
+// application/reports+json), que express.json() global ne lit pas.
+app.use('/api', createCspReportRouter({ logger, limiter: cspReportLimiter }));
+
+// Middleware i18n : attache req.lang (fr/en) à toutes les requêtes. Monté
+// ailleurs que sur /api/ : les rendus serveur (/details, /conflits) en ont
+// besoin pour écrire titre, description et h1 dans la langue du visiteur
+// (?lang= puis Accept-Language) — limités à /api, ils restaient en français.
+app.use(langMiddleware);
 
 // -----------------------------------------------------------------------------
 // Documentation API (Swagger UI)
 // -----------------------------------------------------------------------------
-try {
-  const openapiDoc = YAML.parse(fs.readFileSync(path.join(__dirname, 'openapi.yaml'), 'utf8'));
-  // En production, restreindre l'accès à la doc API aux admins
-  if (process.env.NODE_ENV === 'production') {
-    app.use('/api/docs', (req, res) => {
-      res.status(404).sendFile(path.join(__dirname, '../frontend/index.html'));
-    });
-  } else {
+// Désactivée en production (404). swagger-ui-express et yaml ne sont chargés
+// que dans la branche hors production (DEVOPS-009) : le processus de prod ne
+// les requiert jamais, ils vivent en devDependencies (`npm ci --omit=dev`).
+if (process.env.NODE_ENV === 'production') {
+  app.use('/api/docs', (req, res) => {
+    // Page 404 servie par le cache HTML (nonce CSP posé sur ses scripts).
+    res.status(404);
+    sendCachedHtml(res, path.join(__dirname, '../frontend/404.html'));
+  });
+} else {
+  try {
+    const swaggerUi = require('swagger-ui-express');
+    const YAML = require('yaml');
+    const openapiDoc = YAML.parse(fs.readFileSync(path.join(__dirname, 'openapi.yaml'), 'utf8'));
     const swaggerThemeCss = fs.readFileSync(path.join(__dirname, 'assets/swagger-theme.css'), 'utf8');
-    app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapiDoc, {
+    // Les <script> de Swagger UI ne portent pas le nonce : la page de doc
+    // (hors production seulement) garde l'ancienne règle 'self'.
+    const relaxDocsScriptSrc = (req, res, next) => {
+      const csp = res.getHeader('Content-Security-Policy');
+      if (typeof csp === 'string') {
+        res.setHeader('Content-Security-Policy', csp.replace(/script-src [^;]+/, "script-src 'self'"));
+      }
+      next();
+    };
+    app.use('/api/docs', relaxDocsScriptSrc, swaggerUi.serve, swaggerUi.setup(openapiDoc, {
       customCss: swaggerThemeCss,
       customSiteTitle: 'Vol d\'Histoire — API Docs',
       customfavIcon: '/favicon.ico',
     }));
-  }
-} catch { /* openapi.yaml absent (tests) — Swagger désactivé */ }
+  } catch { /* openapi.yaml ou devDependencies absents — Swagger désactivé */ }
+}
 
 // -----------------------------------------------------------------------------
 // Pool PostgreSQL (injectable pour les tests)
@@ -284,6 +338,55 @@ app.use('/api', createMonitoringRouter(() => pool));
 // Cache headers : 30 jours sur fonts (immutable), 1 an sur les fichiers dont
 // l'URL porte un ?v= (le bump de version suffit à invalider), 1 jour sur le
 // reste, pas de cache sur HTML (rendu dynamique potentiel + invalidation rapide).
+const IMAGE_EXTS = new Set(['.svg', '.png', '.jpg', '.jpeg', '.webp', '.avif', '.ico']);
+
+function isVersionedRequest(req) {
+  const url = (req && (req.originalUrl || req.url)) || '';
+  const q = url.indexOf('?');
+  return q >= 0 && /(?:^|&)v=[^&]+/.test(url.slice(q + 1));
+}
+
+// -----------------------------------------------------------------------------
+// URL canoniques des pages : 301 AVANT express.static
+// -----------------------------------------------------------------------------
+// Sans cela, express.static servait /index.html, /hangar.html… tels quels :
+// hors du cache HTML, donc sans ?v= sur les assets ni nonce sur le <style>
+// critique (bloqué par la CSP), et sans en-tête ni pied de page (inclusions).
+// Express ignorant la casse et le slash final, /HANGAR et /hangar/ répondaient
+// aussi 200 : autant d'URL en double.
+// Exceptions : les fichiers qui ne sont demandés que sous leur nom complet.
+const HTML_FILE_EXCEPTIONS = new Set([
+  '/cookie-consent.html',          // fragment chargé par cookies.js (fetch)
+  '/googleb250c8eb3ae5dfa7.html',  // vérification Google Search Console
+]);
+
+function canonicalPagePath(p) {
+  let target = p;
+  if (/\.html$/i.test(target)) target = target.slice(0, -5);
+  // Seules les pages (sans extension) sont normalisées : un asset garde sa casse.
+  if (!path.extname(target)) {
+    target = target.toLowerCase();
+    if (target.length > 1) target = target.replace(/\/+$/, '');
+    if (target === '' || target === '/index') target = '/';
+  }
+  return target;
+}
+
+function canonicalPageRedirect(req, res, next) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  const p = req.path;
+  if (p === '/api' || p.startsWith('/api/') || p.startsWith('/.well-known/')) return next();
+  if (HTML_FILE_EXCEPTIONS.has(p)) return next();
+  // Garde anti-redirection ouverte : « //domaine » ou « /\domaine » dans un
+  // Location serait lu comme une URL d'un autre site.
+  if (p.startsWith('//') || p.includes('\\')) return next();
+  const target = canonicalPagePath(p);
+  if (target === p) return next();
+  const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+  return res.redirect(301, target + query);
+}
+app.use(canonicalPageRedirect);
+
 const STATIC_OPTS = {
   setHeaders: (res, filePath, _stat) => {
     const ext = path.extname(filePath).toLowerCase();
@@ -303,14 +406,18 @@ const STATIC_OPTS = {
     } else if (ext === '.woff2' || ext === '.woff') {
       // Fonts : long cache + immutable (le contenu ne change jamais)
       res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
-    } else if (['.css', '.js', '.svg', '.png', '.jpg', '.jpeg', '.webp', '.avif', '.ico'].includes(ext)) {
+    } else if (ext === '.css' || ext === '.js') {
       // Les CSS et JS sont servis avec ?v=<version> : le contenu d'une URL
-      // donnée ne change jamais, donc un an de cache immuable. Les images n'ont
-      // pas ce paramètre et gardent une journée.
-      const versionne = ext === '.css' || ext === '.js';
-      res.setHeader('Cache-Control', versionne
+      // donnée ne change jamais, donc un an de cache immuable.
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    } else if (IMAGE_EXTS.has(ext)) {
+      // Images : une URL versionnée (?v=, posé par shared/picture.js et le
+      // SSR des fiches) change à chaque release, donc un an immuable. Sans
+      // version (og:image, JSON-LD, favicons, logos), une photo peut être
+      // remplacée sous le même nom : une journée, revalidée en arrière-plan.
+      res.setHeader('Cache-Control', isVersionedRequest(res.req)
         ? 'public, max-age=31536000, immutable'
-        : 'public, max-age=86400, s-maxage=604800');
+        : 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=604800');
     }
   },
 };
@@ -345,25 +452,50 @@ const pkgVersion = (() => {
 const frontendRoot = path.join(__dirname, '../frontend');
 const htmlCache = buildHtmlCache(frontendRoot, pkgVersion);
 logger.info && logger.info('HTML cache initialisé', { count: htmlCache.count, version: pkgVersion });
+// Marqueur <!-- @include x --> sans fragment frontend/partials/x.html : la
+// page est servie avec le marqueur, l'oubli doit se voir au démarrage.
+htmlCache.warnings.forEach(w => logger.warn && logger.warn('Inclusion HTML non résolue', { detail: w }));
 
-// Injecte le nonce CSP sur chaque balise <style> (sans attribut nonce existant).
-// Coût : O(n) sur la taille du HTML (~sub-ms pour 50 Ko), acceptable en runtime.
+// Un <script src> est nonçé seulement s'il vise un fichier du site (chemin
+// relatif ou absolu, jamais « // » ni un schéma) : même si une donnée mal
+// échappée glissait un <script src="https://…"> dans un rendu SSR, il ne
+// recevrait pas le nonce et resterait bloqué. Les <script> sans src (JSON-LD)
+// ne s'exécutent pas : inutile de les nonçer.
+const LOCAL_SCRIPT_SRC = /\bsrc\s*=\s*"(?!\/\/|[a-z][a-z0-9+.-]*:)[^"]+"/i;
+
+// Injecte le nonce CSP sur chaque balise <style> et sur chaque <script src>
+// local (sans attribut nonce existant). Coût : O(n) sur la taille du HTML
+// (~sub-ms pour 50 Ko), acceptable en runtime.
 function injectCspNonce(html, nonce) {
   if (!nonce) return html;
-  return html.replace(/<style(\s+[^>]*)?>/gi, (match, attrs) => {
-    if (attrs && /\bnonce\s*=/.test(attrs)) return match; // déjà nonçé
-    return `<style${attrs || ''} nonce="${nonce}">`;
-  });
+  return html
+    .replace(/<style(\s+[^>]*)?>/gi, (match, attrs) => {
+      if (attrs && /\bnonce\s*=/.test(attrs)) return match; // déjà nonçé
+      return `<style${attrs || ''} nonce="${nonce}">`;
+    })
+    .replace(/<script(\s+[^>]*)>/gi, (match, attrs) => {
+      if (/\bnonce\s*=/.test(attrs) || !LOCAL_SCRIPT_SRC.test(attrs)) return match;
+      return `<script${attrs} nonce="${nonce}">`;
+    });
 }
 
 function sendCachedHtml(res, filePath) {
-  const cached = htmlCache.get(filePath);
+  // Variante anglaise (lang, title, description, og, canonical) si req.lang === 'en' :
+  // la langue vient de ?lang= puis d'Accept-Language, d'où le Vary.
+  const cached = htmlCache.get(filePath, res.req && res.req.lang);
   if (cached !== null) {
+    res.vary('Accept-Language');
     res.set('Content-Type', 'text/html; charset=utf-8');
     return res.send(injectCspNonce(cached, res.locals.cspNonce));
   }
-  // Fallback : fichier ajouté après le boot, on le sert via sendFile
-  return res.sendFile(filePath);
+  // Fallback : fichier ajouté après le boot. Lu puis nonçé comme les autres :
+  // servi brut, ses scripts seraient bloqués par 'strict-dynamic'.
+  return fs.promises.readFile(filePath, 'utf8')
+    .then((html) => {
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      res.send(injectCspNonce(html, res.locals.cspNonce));
+    })
+    .catch(() => res.status(404).send('Page non trouvée'));
 }
 app.htmlCache = htmlCache;          // exposé pour le SSR router /details
 app.sendCachedHtml = sendCachedHtml;
@@ -403,7 +535,7 @@ const createAuthRouter = require('./routes/auth');
 app.use('/api', createAuthRouter(() => pool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, resetPasswordLimiter, mailer }));
 
 const createUsersRouter = require('./routes/users');
-app.use('/api', createUsersRouter(() => pool, { mailer }));
+app.use('/api', createUsersRouter(() => pool, { mailer, dataExportLimiter }));
 
 // IMPORTANT : le routeur facets doit être monté AVANT airplanes, sinon
 // /api/airplanes/facets est capté par la route /api/airplanes/:id qui
@@ -413,6 +545,9 @@ app.use('/api', createFacetsRouter(() => pool));
 
 const createWarsRouter = require('./routes/wars');
 app.use('/api', createWarsRouter(() => pool));
+
+const createCreditsRouter = require('./routes/credits');
+app.use('/api', createCreditsRouter(() => pool));
 
 const createAirplanesRouter = require('./routes/airplanes');
 const { invalidateSitemap } = require('./routes/sitemap');
@@ -469,15 +604,8 @@ app.get('/api/health', async (req, res) => {
 // Clean URLs : /hangar → hangar.html, /a-propos → a-propos.html, etc.
 // -----------------------------------------------------------------------------
 
-// Redirection 301 : supprimer .html des URLs (SEO)
-app.use((req, res, next) => {
-  if (req.path.endsWith('.html') && req.method === 'GET') {
-    const clean = req.path.slice(0, -5);
-    const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
-    return res.redirect(301, clean + query);
-  }
-  next();
-});
+// La redirection 301 des variantes (.html, majuscules, slash final) est faite
+// par canonicalPageRedirect, avant express.static.
 
 // Servir le fichier .html correspondant à l'URL propre
 const fsPromises = fs.promises;
@@ -516,6 +644,12 @@ app.use(async (req, res, next) => {
     return sendCachedHtml(res, notFoundFile);
   }
 
+  // /404 est une vraie page d'erreur : statut 404, jamais un 200 indexable.
+  if (req.path === '/404') {
+    res.status(404);
+    return sendCachedHtml(res, path.join(frontendDir, '404.html'));
+  }
+
   // Vérification rapide via le Set pré-construit
   if (validPages.has(req.path)) {
     return sendCachedHtml(res, path.join(frontendDir, req.path + '.html'));
@@ -542,9 +676,27 @@ app.use(async (req, res, next) => {
 // -----------------------------------------------------------------------------
 // Gestionnaire d'erreurs global
 // -----------------------------------------------------------------------------
+// Erreurs de lecture du corps (body-parser) : la faute est côté client. Elles
+// répondaient 500 et chacune produisait une ligne « Erreur non gérée » avec sa
+// pile (SEC-002). `err.type` est posé par body-parser.
+const BODY_ERRORS = {
+  'entity.parse.failed': { status: 400, message: 'Corps de requête JSON invalide' },
+  'entity.too.large': { status: 413, message: 'Corps de requête trop volumineux (100 Ko maximum)' },
+  'encoding.unsupported': { status: 415, message: 'Encodage du corps non pris en charge' },
+  'charset.unsupported': { status: 415, message: 'Jeu de caractères non pris en charge' },
+  'request.aborted': { status: 400, message: 'Requête interrompue' },
+  'request.size.invalid': { status: 400, message: 'Taille de requête incohérente' },
+  'stream.encoding.set': { status: 400, message: 'Requête invalide' },
+};
+
 app.use((err, req, res, _next) => {
   if (err.message === 'Origine non autorisée par CORS') {
     return res.status(403).json({ message: 'Origine non autorisée' });
+  }
+  const bodyError = BODY_ERRORS[err.type];
+  if (bodyError) {
+    logger.debug('Corps de requête rejeté', { reqId: req.id, path: req.path, type: err.type });
+    return res.status(bodyError.status).json({ message: bodyError.message });
   }
   // Passer l'objet Error complet (pas err.message string) → permet à Sentry
   // de capturer la stack trace via captureException(meta.error).

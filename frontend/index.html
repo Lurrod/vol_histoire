@@ -8,11 +8,14 @@
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/svg+xml" sizes="16x16" href="/assets/logo/favicon-16.svg">
-  <link rel="apple-touch-icon" href="/assets/logo/icon-192.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/logo/icon-48.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#080c14">
+  <meta name="theme-color" content="#0D0D0D">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -71,37 +74,7 @@
 <a href="#main-content" class="skip-link">Aller au contenu</a>
 
   <!-- Header -->
-  <header>
-    <nav class="container" aria-label="Navigation principale" data-i18n-aria="nav.primary_label">
-      <div class="logo"><picture><source srcset="/assets/logo/vh-mark-primary-gold.svg" media="(max-width: 480px)"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="logo-lockup" width="152" height="40"></picture></div>
-      <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="/" class="active" aria-current="page"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a></li>
-        <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
-        <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
-        <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-      </ul>
-      <div class="nav-actions">
-        <div class="lang-switch">
-          <button type="button" id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i><span class="lang-btn-label" data-i18n="nav.language">Langue</span></button>
-          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
-            <li><button type="button" class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
-            <li><button type="button" class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
-          </ul>
-        </div>
-        <div class="user-menu"><div class="user-toggle">
-          <a href="/login" id="login-icon" class="login-icon" aria-label="Connexion" data-i18n-aria="nav.login"><i class="fas fa-user-circle" aria-hidden="true"></i></a>
-          <div id="user-info-container" class="user-dropdown hidden" role="menu">
-            <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
-            <div class="dropdown-divider"></div>
-            <a href="/settings" id="settings-icon" class="dropdown-item" role="menuitem"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
-            <div class="dropdown-divider"></div>
-            <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
-          </div>
-        </div></div>
-      </div>
-    </nav>
-  </header>
+  <!-- @include header -->
 
   <!-- HERO -->
   <main id="main-content">
@@ -115,7 +88,7 @@
           <span class="gradient-text" data-i18n="home.hero_split_title_l3">une fiche à la fois.</span>
         </h1>
         <div class="hero-split-meta">
-          <span><strong id="hero-split-stat-airplanes">383</strong> <span data-i18n="home.hero_split_meta_aircraft">appareils</span></span>
+          <span><strong id="hero-split-stat-airplanes">434</strong> <span data-i18n="home.hero_split_meta_aircraft">appareils</span></span>
           <span class="hero-split-dot" aria-hidden="true">·</span>
           <span><strong id="hero-split-stat-countries">33</strong> <span data-i18n="home.hero_split_meta_nations">nations</span></span>
           <span class="hero-split-dot" aria-hidden="true">·</span>
@@ -179,7 +152,10 @@
               </button>
             </header>
             <div class="hero-quiz-stage">
-              <img class="hero-quiz-image" id="hero-quiz-image" src="/assets/airplanes/f15-eagle.jpg" alt="Silhouette à deviner" data-i18n-alt="home.hero_quiz_image_alt" width="640" height="280">
+              <!-- <picture> : applySourcesTo() y pose les srcset AVIF / WebP de
+                   l'appareil du jour. Pas de photo initiale (pixel transparent) :
+                   elle était téléchargée pour rien avant d'être remplacée. -->
+              <picture class="hero-quiz-picture"><source type="image/avif" srcset=""><source type="image/webp" srcset=""><img class="hero-quiz-image" id="hero-quiz-image" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Silhouette à deviner" data-i18n-alt="home.hero_quiz_image_alt" width="640" height="280" fetchpriority="high" decoding="async"></picture>
               <span class="hero-quiz-badge" id="hero-quiz-badge" aria-hidden="true">?</span>
             </div>
             <div class="hero-quiz-options" id="hero-quiz-options" role="group" aria-label="Trois propositions de réponse" data-i18n-aria="home.hero_quiz_options_aria">
@@ -274,7 +250,7 @@
     <div class="container">
       <div class="section-header light">
         <span class="section-badge"><i class="fas fa-globe"></i> <span data-i18n="home.nations_map_badge">Géographie</span></span>
-        <h2 id="nations-map-title" data-i18n="home.nations_map_title">Qui Construit Quoi</h2>
+        <h2 id="nations-map-title" data-i18n="home.nations_map_title">Qui construit quoi</h2>
         <p data-i18n="home.nations_map_desc">Chaque nation qui a conçu un appareil du catalogue depuis 1945. Cliquez sur un pays pour ouvrir le hangar filtré.</p>
       </div>
       <div class="nations-map-frame">
@@ -310,17 +286,7 @@
   </main>
 
   <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section"><div class="footer-logo"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="footer-lockup" width="190" height="50"></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'appareils, du chasseur au transporteur.</p></div>
-        <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/conflits" data-i18n="nav.conflicts">Conflits</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="/contact" data-i18n="footer.contact">Contact</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" class="cookie-settings-link" data-i18n="footer.cookies">Cookies</a></li></ul></div>
-      </div>
-      <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2026 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
-    </div>
-  </footer>
+  <!-- @include footer -->
   <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>

@@ -36,7 +36,7 @@
   width: 2rem;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, rgba(200, 169, 110, 0.12), rgba(200, 169, 110, 0.45));
+  background: linear-gradient(90deg, var(--gold-a12), rgba(200, 169, 110, 0.45));
 }
 
 .page-details .lineage-link {
@@ -45,8 +45,8 @@
   gap: 0.15rem;
   min-width: 8.5rem;
   padding: 0.6rem 0.9rem;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--white-a02);
+  border: 1px solid var(--white-a07);
   border-radius: 10px;
   text-decoration: none;
   transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
@@ -64,7 +64,7 @@
 }
 
 .page-details .lineage-year {
-  font-size: 0.7rem;
+  font-size: var(--text-xs);
   letter-spacing: 0.08em;
   color: var(--text-ghost);
   font-variant-numeric: tabular-nums;

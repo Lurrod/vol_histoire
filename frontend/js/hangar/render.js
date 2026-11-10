@@ -33,8 +33,10 @@
       return;
     }
 
-    container.innerHTML = state.aircraft.map(a => VH.shared.renderAircraftCard(a)).join('');
-    VH.shared.bindCardNavigation(container);
+    // Chaque carte est un lien (titre étendu à la carte) : aucun gestionnaire
+    // de navigation à poser. La case « Comparer <nom> » est rendue avec la
+    // carte ; hangar/compare.js la coche d'après la sélection.
+    container.innerHTML = state.aircraft.map(a => VH.shared.renderAircraftCard(a, { compare: true })).join('');
   }
 
   function renderPagination(state) {

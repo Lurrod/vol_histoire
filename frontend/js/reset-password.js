@@ -21,6 +21,13 @@
   setupPasswordToggle(document.getElementById('toggle-rp-pw'), pwInput);
   setupPasswordToggle(document.getElementById('toggle-rp-pw-confirm'), pwConfirmInput);
 
+  /** Libellé traduit ; repli français tant que les locales ne sont pas
+   *  chargées (i18n.t() renvoie alors la clé). */
+  function tr(key, fallback) {
+    const value = (typeof i18n !== 'undefined' && typeof i18n.t === 'function') ? i18n.t(key) : null;
+    return value && value !== key ? value : fallback;
+  }
+
   // Indicateur de force
   pwInput.addEventListener('input', () => {
     const pw = pwInput.value;
@@ -34,13 +41,13 @@
     strengthFill.style.width = strength + '%';
     if (strength < 40) {
       strengthFill.style.background = '#e74c3c';
-      strengthHint.textContent = 'Mot de passe trop faible';
+      strengthHint.textContent = tr('reset_password.strength_weak', 'Mot de passe trop faible');
     } else if (strength < 70) {
       strengthFill.style.background = '#f39c12';
-      strengthHint.textContent = 'Mot de passe moyen';
+      strengthHint.textContent = tr('reset_password.strength_medium', 'Mot de passe moyen');
     } else {
       strengthFill.style.background = '#34d964';
-      strengthHint.textContent = 'Mot de passe fort';
+      strengthHint.textContent = tr('reset_password.strength_strong', 'Mot de passe fort');
     }
   });
 
@@ -55,13 +62,19 @@
     pwConfirmInput.removeAttribute('aria-invalid');
   }
 
+  // Balisage d'origine du bouton (icône + <span data-i18n>), mémorisé au
+  // passage en chargement puis restauré tel quel : le réécrire en dur
+  // l'aurait figé en français et soustrait aux changements de langue.
+  let idleButtonHtml = null;
+
   function setLoading(loading) {
     if (loading) {
+      idleButtonHtml = submitBtn.innerHTML;
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<div class="loading-spinner"></div>';
     } else {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = '<i class="fas fa-lock"></i> Enregistrer le mot de passe';
+      if (idleButtonHtml !== null) submitBtn.innerHTML = idleButtonHtml;
     }
   }
 
@@ -100,8 +113,10 @@
         setTimeout(() => { window.location.href = '/login'; }, 2000);
       } else {
         if (data.code === 'TOKEN_INVALID') {
-          document.getElementById('rp-form-section').style.display = 'none';
-          document.getElementById('rp-invalid').style.display = 'block';
+          // Par la classe, comme le cas « jeton absent » : #rp-invalid porte
+          // .hidden (display: none !important), qu'un style.display ne bat pas.
+          document.getElementById('rp-form-section').classList.add('hidden');
+          document.getElementById('rp-invalid').classList.remove('hidden');
         } else {
           showError(data.message || 'Une erreur est survenue.');
           setLoading(false);

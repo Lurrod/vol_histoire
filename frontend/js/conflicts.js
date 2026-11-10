@@ -89,10 +89,10 @@
 
     const grid = $('conflict-aircraft');
     if (grid) {
+      // Cartes-liens (titre étendu à la carte) : rien à brancher.
       grid.innerHTML = (war.airplanes || [])
         .map((a) => VH.shared.renderAircraftCard(a))
         .join('');
-      VH.shared.bindCardNavigation(grid);
     }
     $('conflict-detail')?.classList.remove('hidden');
   }
@@ -127,7 +127,8 @@
   VH.conflicts = { period, slugFromPath };
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = VH.conflicts;
+    // Tests : init et les rendus en plus, sans les exposer dans VH.conflicts.
+    module.exports = Object.assign({}, VH.conflicts, { init, renderList, renderWar });
   } else {
     document.addEventListener('DOMContentLoaded', init);
   }

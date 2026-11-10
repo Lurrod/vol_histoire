@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.13.1-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
-  <img src="https://img.shields.io/badge/node-%3E%3D18-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
+  <img src="https://img.shields.io/badge/version-4.14.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/node-20%20%7C%2024-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
-  <img src="https://img.shields.io/badge/tests-539-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-2120-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
   <img src="https://img.shields.io/badge/licence-All%20Rights%20Reserved-C0392B?style=for-the-badge&labelColor=0D0D0D" alt="Licence">
 </p>
 
@@ -72,12 +72,18 @@ vol_histoire/
 │   │   ├── facets.js              Facettes dynamiques hangar
 │   │   ├── monitoring.js          Endpoint status protege
 │   │   ├── stats.js               Stats (cache 5 min + invalidation)
+│   │   ├── conflicts-ssr.js       SSR des pages conflit (langue du visiteur)
 │   │   └── sitemap.js             Sitemap XML (cache Redis 24h)
+│   ├── repositories/              Requetes SQL par domaine (pool en parametre, lignes en retour)
+│   ├── utils/
+│   │   ├── airplane-fields.js     Table unique des 52 champs d'un appareil (INSERT/UPDATE)
+│   │   └── ssr-head.js            Meta, JSON-LD et en-tetes communs du SSR
 │   ├── __tests__/
-│   │   ├── api.test.js            Tests integration (Jest + Supertest)
+│   │   ├── integration/           Suite sur vraie base PostgreSQL (IT_DATABASE_URL, base *_it)
+│   │   ├── api.test.js            Tests des routes (Jest + Supertest, base simulee)
+│   │   ├── ssr-*.test.js          SSR, partials, redirections
 │   │   ├── validators.test.js     Tests unitaires validators
-│   │   ├── sanitize-logs.test.js  Tests scrub PII
-│   │   ├── url.test.js            Tests slugify / idFromSlug
+│   │   ├── mailer / logger / cache Tests des gabarits d'email, du logger, du cache
 │   │   └── load.test.js           Tests de charge (autocannon)
 │   └── db_backup/
 │       ├── db.sql                 Schema complet (14 tables + triggers)
@@ -107,7 +113,7 @@ vol_histoire/
 │   │   │   ├── markdown.js        Parser Markdown safe (3 sections narratif)
 │   │   │   ├── radar.js           Radar SVG capacites
 │   │   │   ├── favorites.js       Toggle favori
-│   │   │   ├── admin.js           Modal edition 40+ champs
+│   │   │   ├── admin.js           Modal edition (formulaire partage)
 │   │   │   └── ui.js              Share bar, scroll progress, PDF export
 │   │   ├── hangar/
 │   │   │   ├── data.js            Fetch + recherche FTS
@@ -115,15 +121,21 @@ vol_histoire/
 │   │   │   ├── render.js          Cartes + pagination (etat URL preserve)
 │   │   │   ├── compare.js         Modale comparaison 2-4 avions
 │   │   │   ├── view-toggle.js     Grille / liste
-│   │   │   ├── admin.js           Modal creation avion
+│   │   │   ├── admin.js           Modal creation avion (formulaire partage)
 │   │   │   └── mobile-sheet.js    Sheet filtres mobile
-│   │   └── [page].js              Logique specifique par page
+│   │   ├── shared/
+│   │   │   ├── airplane-form.js   Formulaire d'appareil unique (creation + edition)
+│   │   │   ├── airplane-fields.js GENERE par build-js.js depuis backend/utils/airplane-fields.js
+│   │   │   ├── card.js            Carte appareil (motif « block link »)
+│   │   │   └── compare.js         Comparateur partage hangar + fiche
+│   │   ├── favorites/ timeline/ settings/ login/ home/   Modules par page (state, data, render…)
+│   │   └── [page].js              Point d'entree court par page
 │   ├── locales/                   fr.json, en.json (parite 100%)
-│   ├── __tests__/
-│   │   └── utils.test.js          Tests unitaires utils (Jest + jsdom)
-│   └── *.html                     18 pages
+│   ├── partials/                  header.html, footer.html (inclus par serveHtml au demarrage)
+│   ├── __tests__/                 64 suites Jest + jsdom (couverture mesuree sur tout js/**)
+│   └── *.html                     19 pages
 │
-├── e2e/                           Tests Playwright (16 specs)
+├── e2e/                           Tests Playwright (21 specs)
 │   ├── tests/
 │   │   ├── auth-flow.spec.js      Register, login, favoris, logout
 │   │   ├── admin-crud.spec.js     CRUD avions (admin)
@@ -193,7 +205,7 @@ La table `airplanes` contient 61 colonnes incluant les strates d'enrichissement,
 
 | Outil | Version |
 |---|---|
-| Node.js | 18+ |
+| Node.js | 24 (`.nvmrc`, champ `engines` des `package.json`) |
 | PostgreSQL | 14+ |
 | Redis | optionnel (fallback memoire) |
 
@@ -237,9 +249,13 @@ referentiel, furtivite, credits photo et contraintes `CHECK`.
 cp backend/.env.example backend/.env
 ```
 
-Variables requises : `DB_USER`, `DB_HOST`, `DB_NAME`, `DB_PASSWORD`, `DB_PORT`, `JWT_SECRET`, `REFRESH_SECRET`, `MAIL_USER`, `MAIL_PASS`, `FRONTEND_URL`.
+`backend/.env.example` liste **toutes** les variables lues par le code, commentées, avec des valeurs factices.
 
-Optionnelles : `REDIS_URL`, `HCAPTCHA_SECRET`, `HCAPTCHA_SITEKEY`, `SENTRY_DSN`.
+- Requises (arrêt au démarrage sinon) : `DB_USER`, `DB_HOST`, `DB_NAME`, `DB_PASSWORD`, `JWT_SECRET`, `REFRESH_SECRET` (ces deux derniers : 32 caractères minimum).
+- Requises en production : `NODE_ENV=production` (sans lui, et sans erreur : cookies sans `Secure`, `/api/docs` exposé, `/api/metrics` sans jeton), `MAIL_USER` / `MAIL_PASS` (arrêt au démarrage s'ils manquent), `HCAPTCHA_SECRET` (sinon la vérification du captcha est sautée), `METRICS_TOKEN`, `ALLOWED_ORIGINS`, `FRONTEND_URL`.
+- Optionnelles : `DB_PORT`, `DB_SSL` (`false` | `no-verify` | `true`, défaut `true`), `PORT`, `HOST`, `LOG_LEVEL`, `CONTACT_EMAIL`, `HCAPTCHA_SITEKEY`, `REDIS_URL`, `SENTRY_DSN`, `SENTRY_ENVIRONMENT`, `SENTRY_RELEASE`, `SENTRY_TRACES_SAMPLE_RATE`, `SENTRY_CAPTURE_WARN`.
+
+Email : le serveur SMTP est fixé dans `backend/mailer.js` (OVH, `ssl0.ovh.net:465`, SSL/TLS) ; seuls `MAIL_USER` et `MAIL_PASS` se configurent — il n'existe pas de variables `SMTP_*`.
 
 ### 4. Demarrer
 
@@ -275,11 +291,15 @@ La documentation API Swagger est sur `http://localhost:3000/api/docs` (mode dev 
 
 ## Tests
 
-Le projet dispose de **555 tests backend** + **tests frontend et E2E** :
+Le projet dispose de **828 tests backend**, **1 292 tests frontend** et **21 specs E2E** :
 
 ```bash
-# Backend — 555 tests unitaires + integration
+# Backend — 754 tests (routes, validators, SSR, mailer, logger…) ; la suite
+# d'integration (74 tests sur vraie base) est sautee sans IT_DATABASE_URL
 cd backend && npm test
+
+# Backend — suite d'integration sur vraie base (nom de base obligatoirement en *_it)
+IT_DATABASE_URL=postgres://user:mdp@localhost:5432/vol_histoire_it npm test
 
 # Backend — couverture de code
 npm run test:coverage
@@ -287,19 +307,61 @@ npm run test:coverage
 # Backend — tests de charge (autocannon, 50-100 connexions)
 npm run test:load
 
-# Frontend — tests unitaires (utils, i18n, cookies, nav, render, comparateur, filiation, carte, widgets du jour)
-cd frontend && npm test
+# Frontend — tests unitaires et DOM (jsdom) de tout js/**
+cd frontend && npx jest --coverage
 
-# E2E — Playwright (19 specs)
+# E2E — Playwright (21 specs ; serveur sur le port 3000, NODE_ENV=test)
 cd e2e && npx playwright test
 ```
 
 | Suite | Tests | Outil |
 |-------|-------|-------|
-| Backend unit/integration | 555 | Jest + Supertest |
+| Backend (routes, unitaires) | 754 | Jest + Supertest |
+| Backend integration (vraie base) | 74 | Jest + PostgreSQL |
 | Backend charge | inclus | autocannon |
-| Frontend unit | 162 | Jest + jsdom |
-| E2E | 121 | Playwright |
+| Frontend unit + DOM | 1 292 | Jest + jsdom |
+| E2E | 136 scenarios (21 specs) | Playwright |
+
+Couverture : backend 95,9 % des lignes (seuil 80), frontend 99,9 % des lignes et 89,9 % des branches sur tout `js/**` (seuils globaux 95/85/95/95, plancher de 80 % par fichier).
+
+---
+
+## Integration continue et deploiement
+
+`.github/workflows/ci.yml`, sur chaque PR vers `main` et chaque push sur `main` :
+
+| Job | Contenu |
+|---|---|
+| `quality` | `npm run lint` (ESLint), `html-validate` sur `frontend/*.html`, `npm run build` puis échec si un fichier généré diffère du dépôt (`frontend/js/dist`, `frontend/js/vendor`, `frontend/css/*.min.css`, `app-version.js`, `shared/airplane-fields.js`) |
+| `test` | `npm audit` (backend : dépendances de production au seuil `high`, arbre complet au seuil `critical` ; frontend : `high`), Jest backend avec couverture et suite d'intégration sur PostgreSQL, Jest frontend avec couverture (seuils de `frontend/jest.config.json`) |
+| `e2e` | Playwright sur une base seedée |
+| `load` | tests de charge autocannon |
+| `deploy` | push sur `main` uniquement, après les quatre jobs ci-dessus |
+
+Node 24 est la cible : `.nvmrc` (lu par `setup-node`). **Le serveur de production tourne encore en Node 20**, partagé avec d'autres applications : le champ `engines` des quatre `package.json` accepte `>=20 <25`, le job `test-prod-runtime` teste le backend sous Node 20, et le déploiement affiche un avertissement tant que `node -v` diffère de `.nvmrc`. Les actions tierces sont épinglées par SHA de commit ; Dependabot les met à jour.
+
+Les bundles sont versionnés et déployés tels quels : **toute modification de JS/CSS source doit être suivie de `npm run build` et du commit des fichiers générés**, sinon le job `quality` échoue.
+
+### Deroulement du deploiement
+
+1. Un seul déploiement à la fois (`concurrency: deploy-production`, jamais annulé en cours de route).
+2. Le run vérifie qu'il porte toujours la tête de `main` ; sinon il s'arrête sans rien faire, le run du commit plus récent déploiera.
+3. Sur le serveur (`/var/www/vol-histoire`) : le commit en ligne est noté dans `~/.vol-histoire-deploy/previous_sha` (journal : `history.log`), puis `git reset --hard <commit testé>`, `npm ci --omit=dev` et `pm2 restart vol-histoire`. **Jamais `pm2 restart all`** : le serveur héberge d'autres applications.
+4. Smoke tests : `/api/health` (base joignable, processus redémarré depuis moins de 10 min), `/api/config` (la version servie doit être celle de `backend/package.json` du commit déployé), `/`, `/api/airplanes`.
+5. Si le déploiement ou un smoke test échoue : **retour arrière automatique** au commit noté à l'étape 3, nouveau contrôle de santé, et le job reste rouge.
+
+Retour arrière manuel (problème découvert plus tard), sur le serveur :
+
+```bash
+cd /var/www/vol-histoire
+bash scripts/rollback.sh --list   # historique des déploiements
+bash scripts/rollback.sh          # revient au commit précédent le dernier déploiement
+bash scripts/rollback.sh <sha>    # ou à un commit précis
+```
+
+Puis faire un revert sur `main`, sinon le prochain push redéploie la version fautive.
+
+**Migrations SQL : manuelles, et non annulées par le retour arrière.** Avant toute migration : `pg_dump` de la base ; la migration se joue en `postgres` par l'entrée standard (`sudo -u postgres psql -d vol_histoire < backend/migrations/<fichier>.sql`, `postgres` ne pouvant pas lire `/var/www`). Préférer des migrations additives et compatibles avec le code précédent : le retour arrière du code reste alors sans risque.
 
 ---
 
@@ -348,7 +410,7 @@ cd e2e && npx playwright test
 | Couche | Technologies |
 |---|---|
 | **Frontend** | HTML5, CSS3 (design tokens, responsive mobile-first), JavaScript ES6+ vanilla (pas de framework) |
-| **Backend** | Node.js 18+, Express 5.2 (CommonJS) |
+| **Backend** | Node.js 20 (prod) / 24 (CI), Express 5.3 (CommonJS) |
 | **Base de donnees** | PostgreSQL 14+ (pg 8.20) avec `tsvector` + GIN pour la recherche full-text |
 | **Cache** | Redis (optionnel, fallback memoire) |
 | **Auth** | JWT (jsonwebtoken 9.0) + refresh tokens + bcryptjs (cost 12) |

@@ -39,6 +39,42 @@
   display: none;
 }
 
+/* ----------------------------------------------------------------
+   Focus jamais caché sous le bandeau (WCAG 2.2 — 2.4.11)
+   ----------------------------------------------------------------
+   Le bandeau est fixé en bas de l'écran. Le navigateur fait défiler juste
+   assez pour amener l'élément focalisé dans la fenêtre : sans réserve, il
+   l'amenait SOUS le bandeau (10 éléments sur 27 du hangar en mobile).
+   Tant que le bandeau est affiché :
+   - sa hauteur est plafonnée par --cookie-banner-max (défilement interne
+     au-delà, utile au zoom texte 200 %) ;
+   - scroll-padding-bottom fait défiler le focus au-dessus de cette hauteur ;
+   - le padding du body laisse aux derniers éléments de la page (pied) la
+     place de remonter au-dessus du bandeau.
+   Hauteur fixe par palier plutôt que mesurée en JS : la CSP interdit
+   d'écrire dans element.style, et une classe ne peut pas porter une mesure. */
+:root { --cookie-banner-max: min(10.5rem, 40vh); }  /* contenu : 131-155 px */
+@media (max-width: 64em) {
+  :root { --cookie-banner-max: min(12.5rem, 40vh); }  /* 160-190 px */
+}
+@media (max-width: 48em) {
+  :root { --cookie-banner-max: min(19rem, 45vh); }    /* 140-291 px (320 px de large) */
+}
+
+.cookie-banner {
+  max-height: var(--cookie-banner-max);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+html:has(#cookie-banner.show) {
+  scroll-padding-bottom: calc(var(--cookie-banner-max) + var(--sp-4));
+}
+
+body:has(#cookie-banner.show) {
+  padding-bottom: var(--cookie-banner-max);
+}
+
 .cookie-banner-content {
   max-width: 75em;
   margin: 0 auto;
@@ -133,7 +169,7 @@
 .cookie-modal-container {
   position: relative;
   background: var(--night-mid, #141414);
-  border: 1px solid rgba(200, 169, 110, 0.15);
+  border: 1px solid var(--gold-a15);
   border-radius: 16px;
   max-width: 800px;
   width: 90%;
@@ -154,7 +190,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 2rem;
-  border-bottom: 1px solid rgba(200, 169, 110, 0.15);
+  border-bottom: 1px solid var(--gold-a15);
   background: rgba(200, 169, 110, 0.04);
 }
 
@@ -178,7 +214,7 @@
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-ghost);
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 8px;
@@ -191,7 +227,7 @@
 }
 
 .cookie-modal-close:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--white-a06);
   color: #fff;
 }
 
@@ -219,7 +255,7 @@
 /* Cookie Category */
 .cookie-category {
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--white-a08);
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.2s;
@@ -234,7 +270,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--white-a02);
   transition: background-color 0.2s;
 }
 
@@ -273,13 +309,8 @@
 }
 
 .cookie-category-icon.analytics {
-  background: rgba(200, 169, 110, 0.12);
+  background: var(--gold-a12);
   color: var(--hud-cyan, #C8A96E);
-}
-
-.cookie-category-icon.preference {
-  background: rgba(124, 111, 160, 0.15);
-  color: var(--purple, #7C6FA0);
 }
 
 .cookie-category-icon.marketing {
@@ -296,7 +327,7 @@
 
 .cookie-category-description {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-ghost);
   line-height: 1.5;
   margin: 0;
 }
@@ -339,7 +370,7 @@ body.cookie-modal-open {
   display: block;
   width: 54px;
   height: 28px;
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--white-a12);
   border-radius: 50px;
   position: relative;
   cursor: pointer;
@@ -379,8 +410,8 @@ body.cookie-modal-open {
 /* Cookie Category Details */
 .cookie-category-details {
   padding: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid var(--white-a06);
+  background: var(--white-a02);
 }
 
 .cookie-category-details p {
@@ -401,7 +432,7 @@ body.cookie-modal-open {
 }
 
 .cookie-category-details li {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-ghost);
   line-height: 1.8;
   margin-bottom: 0.25rem;
   padding-left: 1.25rem;
@@ -424,11 +455,11 @@ body.cookie-modal-open {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-ghost);
   font-size: 0.875rem;
   margin: 1rem 0 0 0;
   padding-top: 1rem;
-  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  border-top: 1px dashed var(--white-a08);
 }
 
 .cookie-duration i, .cookie-duration .icon {
@@ -481,7 +512,7 @@ body.cookie-modal-open {
   display: flex;
   gap: 1rem;
   padding: 1.5rem 2rem;
-  border-top: 1px solid rgba(200, 169, 110, 0.15);
+  border-top: 1px solid var(--gold-a15);
   background: rgba(200, 169, 110, 0.04);
   justify-content: flex-end;
   flex-wrap: wrap;
@@ -492,6 +523,7 @@ body.cookie-modal-open {
   .cookie-banner-content {
     flex-direction: column;
     align-items: stretch;
+    gap: 1rem;
   }
 
   .cookie-banner-actions {
@@ -513,29 +545,43 @@ body.cookie-modal-open {
 }
 
 @media (max-width: 48em) {
+  /* Bandeau compact : il occupait 46 % d'un écran de téléphone (387 px sur
+     812), assez pour cacher la moitié des contrôles. L'icône décorative
+     disparaît et les trois boutons partagent des lignes au lieu d'en
+     prendre une chacun. */
   .cookie-banner {
-    padding: 1rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .cookie-banner-content {
+    gap: 0.75rem;
   }
 
   .cookie-banner-text {
-    flex-direction: column;
-    gap: 1rem;
+    gap: 0;
   }
 
   .cookie-icon {
-    font-size: 2rem;
+    display: none;
   }
 
   .cookie-message h3 {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
   }
 
   .cookie-message p {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
   }
 
   .cookie-banner-actions {
-    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cookie-banner-actions .btn {
+    flex: 1 1 auto;
+    padding: 0.55rem 0.75rem;
   }
 
   .cookie-modal-header h2 {

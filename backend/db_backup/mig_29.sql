@@ -1,3 +1,9 @@
+-- Mikoyan MiG-29
+--
+-- Photo : Polish MiG-29 flight demonstration at 2015 RIAT (1).jpg
+--   licence CC BY-SA 2.0 — Tim Felce (Airwolfhound)
+--   https://commons.wikimedia.org/wiki/File:Polish_MiG-29_flight_demonstration_at_2015_RIAT_(1).jpg
+
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -110,3 +116,11 @@ WHERE name = 'MiG-29';
 -- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
 -- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
 UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'MiG-29';
+
+-- Crédit photo (strate 6). L'image précédente portait dans ses métadonnées
+-- « © 2007 Katsuhiko TOKUNAGA/DACT, All Rights Reserved » : remplacée par une
+-- photo sous licence libre (voir l'en-tête du fichier).
+UPDATE airplanes SET
+  image_credit      = 'Tim Felce (Airwolfhound)',
+  image_licence     = 'CC BY-SA 2.0'
+WHERE name = 'MiG-29';

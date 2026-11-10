@@ -493,4 +493,11 @@ module.exports = {
   sendContactEmail,
   sendWelcomeEmail,
   verifyConnection,
+  // Gabarits purs (entrée → HTML), exposés pour les tests.
+  buildVerifyTemplate,
+  buildResetTemplate,
+  buildContactTemplate,
+  buildWelcomeTemplate,
+  buildNoticeTemplate,
+  escapeHtmlEmail,
 };

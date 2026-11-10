@@ -18,13 +18,19 @@
     if (emailInput) emailInput.removeAttribute('aria-invalid');
   }
 
+  // Balisage d'origine du bouton (icône + <span data-i18n>), mémorisé au
+  // passage en chargement puis restauré tel quel : le réécrire en dur
+  // l'aurait figé en français et soustrait aux changements de langue.
+  let idleButtonHtml = null;
+
   function setLoading(loading) {
     if (loading) {
+      idleButtonHtml = submitBtn.innerHTML;
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<div class="loading-spinner"></div>';
     } else {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer le lien';
+      if (idleButtonHtml !== null) submitBtn.innerHTML = idleButtonHtml;
     }
   }
 

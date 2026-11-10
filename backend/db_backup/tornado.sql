@@ -1,3 +1,9 @@
+-- Panavia Tornado
+--
+-- Photo : RAF Tornado GR4 MOD 45155233.jpg
+--   licence OGL v1.0 — Cpl Mike Jones, Ministry of Defence (Crown Copyright)
+--   https://commons.wikimedia.org/wiki/File:RAF_Tornado_GR4_MOD_45155233.jpg
+
 -- Insertion dans airplanes
 INSERT INTO airplanes (
     name,
@@ -108,3 +114,11 @@ WHERE name = 'Panavia Tornado';
 -- 'aucune' = aucune mesure de réduction de signature radar, valeur explicite
 -- et non « inconnu ». Filiations : voir zz_backfill_relations.sql.
 UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Panavia Tornado';
+
+-- Crédit photo (strate 6). Photo du ministère britannique de la Défense
+-- (« Crown Copyright » dans ses métadonnées), réutilisable sous Open Government
+-- Licence à condition d'en citer la source.
+UPDATE airplanes SET
+  image_credit      = 'Cpl Mike Jones, Ministry of Defence',
+  image_licence     = 'OGL v1.0'
+WHERE name = 'Panavia Tornado';

@@ -231,3 +231,89 @@ describe('renderImageCredit()', () => {
     expect(() => render.renderImageCredit({ image_credit: 'X', image_licence: 'Y' })).not.toThrow();
   });
 });
+
+describe('titres des cartes (A11Y-007) : h3 sous le h2 de section', () => {
+  test('renderWars emet un h3, plus aucun h4', () => {
+    document.body.innerHTML = '<div id="wars-list"></div>';
+    render.renderWars([{ name: 'Golfe', description: 'd', date_start: '1990-08-02', date_end: '1991-02-28', slug: 'golfe' }]);
+    expect(document.querySelector('#wars-list .war-card h3')).not.toBeNull();
+    expect(document.querySelector('#wars-list h4')).toBeNull();
+  });
+});
+
+describe('renderHeroImage() — element LCP (PERF-005)', () => {
+  beforeAll(() => { require('../js/shared/picture'); });
+
+  test('ne repasse jamais l\'image hero en loading="lazy"', () => {
+    document.body.innerHTML = '<picture><source type="image/avif"><source type="image/webp">'
+      + '<img id="hero-image" fetchpriority="high" alt=""></picture>';
+    render.renderHeroImage({ image_url: '/assets/airplanes/rafale.jpg', name: 'Rafale' });
+    const img = document.getElementById('hero-image');
+    expect(img.loading).not.toBe('lazy');
+    expect(img.getAttribute('fetchpriority')).toBe('high');
+    expect(img.getAttribute('src')).toBe('/assets/airplanes/rafale.jpg');
+  });
+
+  test('sans image : placeholder SVG localise', () => {
+    document.body.innerHTML = '<picture><img id="hero-image" alt=""></picture>';
+    render.renderHeroImage({ image_url: null, name: 'X' });
+    expect(document.getElementById('hero-image').getAttribute('src')).toBe('/assets/logo/placeholder-airplane-fr.svg');
+  });
+});
+
+describe('renderRelatedAircraft() — repli d\'image sans onerror en ligne (JS-005)', () => {
+  beforeAll(() => { require('../js/shared/picture'); });
+  beforeEach(() => {
+    document.body.innerHTML = '<section id="related-aircraft-section" class="hidden"><div id="related-grid"></div></section>';
+  });
+
+  const base = { predecessor_id: 22, predecessor_name: 'MiG-21', predecessor_image: '/assets/airplanes/mig21.jpg' };
+
+  test('aucun attribut on* dans le HTML emis (CSP script-src sans unsafe-inline)', () => {
+    render.renderRelatedAircraft(base);
+    const html = document.getElementById('related-grid').innerHTML;
+    expect(html).not.toMatch(/\son[a-z]+=/i);
+    expect(document.querySelector('#related-grid .related-card h3').textContent).toBe('MiG-21');
+    expect(document.querySelector('#related-grid h4')).toBeNull();
+  });
+
+  test('sans image en base : placeholder SVG localise, plus de placeholder.jpg inexistant', () => {
+    render.renderRelatedAircraft({ successor_id: 292, successor_name: 'MiG-35', successor_image: null });
+    const html = document.getElementById('related-grid').innerHTML;
+    expect(html).not.toContain('placeholder.jpg');
+    expect(document.querySelector('#related-grid img').getAttribute('src')).toBe('/assets/logo/placeholder-airplane-fr.svg');
+    expect(document.querySelector('#related-grid source')).toBeNull();
+  });
+
+  test('image en erreur : placeholder SVG et sources AVIF/WebP retirees', () => {
+    render.renderRelatedAircraft(base);
+    const img = document.querySelector('#related-grid img');
+    expect(document.querySelectorAll('#related-grid source')).toHaveLength(2);
+    img.dispatchEvent(new Event('error')); // ne bulle pas : capte en phase de capture
+    expect(img.getAttribute('src')).toBe('/assets/logo/placeholder-airplane-fr.svg');
+    expect(document.querySelectorAll('#related-grid source')).toHaveLength(0);
+    expect(img.closest('picture').hidden).toBe(false);
+  });
+
+  test('placeholder en erreur a son tour : l\'image est masquee, sans boucle', () => {
+    render.renderRelatedAircraft(base);
+    const img = document.querySelector('#related-grid img');
+    img.dispatchEvent(new Event('error'));
+    img.dispatchEvent(new Event('error'));
+    expect(img.closest('picture').hidden).toBe(true);
+    expect(img.getAttribute('src')).toBe('/assets/logo/placeholder-airplane-fr.svg');
+  });
+
+  test('un seul ecouteur meme apres plusieurs rendus', () => {
+    const grid = document.getElementById('related-grid');
+    const spy = jest.spyOn(grid, 'addEventListener');
+    render.renderRelatedAircraft(base);
+    render.renderRelatedAircraft(base);
+    expect(spy.mock.calls.filter(([type]) => type === 'error')).toHaveLength(1);
+  });
+
+  test('aucune relation : section masquee', () => {
+    render.renderRelatedAircraft({});
+    expect(document.getElementById('related-aircraft-section').classList.contains('hidden')).toBe(true);
+  });
+});

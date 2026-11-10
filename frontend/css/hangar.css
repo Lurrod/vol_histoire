@@ -10,16 +10,6 @@
    PAGE HERO
    ====================================================================== */
 /* Fond photographique flouté : voir shared-base.css (source unique). */
-body.page-hangar {
-  background: var(--night);
-}
-.page-hangar .page-hero {
-  position: relative;
-  background: transparent;
-  padding: 7rem 0 6rem;
-  margin-top: 70px;
-  overflow: hidden;
-}
 
 .page-hangar .hero-background {
   position: absolute; inset: 0;
@@ -29,18 +19,6 @@ body.page-hangar {
 }
 
 /* MODERN HERO LAYOUT */
-.page-hangar .page-hero-inner { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: flex-end; gap: 4rem; }
-.page-hangar .hero-text { flex: 1; max-width: 48em; }
-.page-hangar .hero-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.66); display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem; }
-.page-hangar .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
-.page-hangar .hero-text h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 700; letter-spacing: -2px; line-height: 1.0; color: var(--white); margin-bottom: 2rem; }
-.page-hangar .hero-muted { display: block; color: rgba(255,255,255,0.55); font-weight: 300; letter-spacing: -1px; }
-.page-hangar .hero-text > p { font-size: 1rem; color: rgba(255,255,255,0.62); max-width: 420px; line-height: 1.85; margin-bottom: 0; }
-.page-hangar .hero-data { display: flex; flex-direction: column; padding-left: 3rem; border-left: 1px solid rgba(255,255,255,0.08); flex-shrink: 0; min-width: 220px; }
-.page-hangar .data-row { display: flex; align-items: baseline; justify-content: space-between; gap: 2rem; padding: 1.25rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
-.page-hangar .data-row:last-child { border-bottom: none; padding-bottom: 0; }
-.page-hangar .data-number { font-family: 'DM Sans', sans-serif; font-size: 2.25rem; font-weight: 700; color: var(--white); letter-spacing: -1px; }
-.page-hangar .data-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2.5px; color: rgba(255,255,255,0.28); }
 
 /* ======================================================================
    TOOLBAR (recherche + filtres + tri) — même pattern que favorites
@@ -53,81 +31,34 @@ body.page-hangar {
 }
 
 .page-hangar .search-box { position: relative; flex: 1; min-width: 250px; }
-.page-hangar .search-box i, .page-hangar .search-box .icon, .page-hangar .search-box .icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.3); font-size: 1rem; }
 .page-hangar .search-box input {
   width: 100%; padding: 0.8rem 1rem 0.8rem 3.25rem;
-  border: 1px solid rgba(255,255,255,0.09);
+  border: 1px solid var(--border-field);
   border-radius: 10px; font-size: 0.9rem;
   transition: var(--transition-fast);
   font-family: 'DM Sans', sans-serif;
-  background: rgba(255,255,255,0.04); color: var(--white);
+  background: var(--white-a04); color: var(--white);
 }
-.page-hangar .search-box input::placeholder { color: rgba(255,255,255,0.25); }
-.page-hangar .search-box input:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
-.page-hangar .search-box input::-webkit-search-cancel-button {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  margin-right: 0.25rem;
-  background-color: rgba(255, 255, 255, 0.45);
-  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z'/></svg>") center/contain no-repeat;
-          mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z'/></svg>") center/contain no-repeat;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-.page-hangar .search-box input::-webkit-search-cancel-button:hover {
-  background-color: var(--hud-cyan);
-}
-.page-hangar .search-box input::-ms-clear { display: none; }
 
-.page-hangar .clear-btn { display: none !important; }
-
-.page-hangar .toolbar-right { display: flex; align-items: center; gap: 0.75rem; position: relative; }
-
-.page-hangar .filter-btn {
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.7rem 1.25rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.09);
-  border-radius: 10px; font-size: 0.85rem;
-  font-family: 'DM Sans', sans-serif; font-weight: 500;
-  cursor: pointer; transition: var(--transition-fast);
-  color: rgba(255,255,255,0.65); white-space: nowrap;
-}
-.page-hangar .filter-btn:hover { border-color: rgba(255,255,255,0.18); color: var(--white); background: rgba(255,255,255,0.07); }
 /* .active : panneau ouvert (bouton « Carte ») ; .has-value : un filtre est
    appliqué (posée par VH.hangar.filters.syncFilterUi). Même teinte dorée. */
-.page-hangar .filter-btn.active, .page-hangar .filter-btn.has-value { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
-.page-hangar .filter-btn:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
-.page-hangar .filter-btn .fa-chevron-down, .page-hangar .filter-btn .icon-chevron-down { font-size: 0.65rem; transition: transform 0.2s var(--ease); }
 /* Le JS bascule aria-expanded, pas .active : c'est lui qui pilote le chevron. */
-.page-hangar .filter-btn[aria-expanded="true"] .fa-chevron-down, .page-hangar .filter-btn[aria-expanded="true"] .icon-chevron-down { transform: rotate(180deg); }
 
 .page-hangar .sort-select {
   padding: 0.7rem 2.25rem 0.7rem 1rem;
-  border: 1px solid rgba(255,255,255,0.09);
+  border: 1px solid var(--border-field);
   border-radius: 10px; font-family: 'DM Sans', sans-serif; font-weight: 500;
   cursor: pointer; transition: var(--transition-fast);
   appearance: none;
-  background: rgba(255,255,255,0.04) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+  background: var(--white-a04) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
   color: rgba(255,255,255,0.65); font-size: 0.85rem; white-space: nowrap;
 }
 .page-hangar .sort-select:hover { border-color: rgba(255,255,255,0.18); }
-.page-hangar .sort-select:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); }
-.page-hangar .sort-select option { background: var(--night-mid); color: var(--white); }
+.page-hangar .sort-select:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px var(--white-a12); }
 
 /* Active Filters */
-.page-hangar .active-filters { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
-.page-hangar .active-filters-label { font-size: 0.8rem; color: rgba(255,255,255,0.4); font-weight: 500; display: flex; align-items: center; }
-.page-hangar .active-filter { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(200,169,110,0.08); color: var(--hud-cyan); padding: 0.4rem 0.875rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600; border: 1px solid rgba(200,169,110,0.2); }
-.page-hangar .remove-filter-btn { background: rgba(200,169,110,0.15); border: none; /* 28px : sous 24px la cible echoue au critere WCAG 2.5.8 */ width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: var(--hud-cyan); font-size: 0.6rem; }
-.page-hangar .remove-filter-btn:hover { background: rgba(200,169,110,0.3); }
-.page-hangar .clear-all-filters { padding: 0.4rem 1rem; background: transparent; border: 1px solid rgba(231,76,60,0.4); color: var(--accent); border-radius: 50px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition-fast); }
-.page-hangar .clear-all-filters:hover { background: rgba(231,76,60,0.15); border-color: var(--accent); }
 
 /* Filter Dropdowns */
-.page-hangar .filter-group { position: relative; display: inline-flex; }
 /* Ancrée au bord gauche de son bouton : avec sept contrôles, la rangée de
    filtres passe sous la recherche et part du bord gauche ; une liste ancrée
    à droite (380 px) sortait alors de l'écran pour « Pays ». */
@@ -136,28 +67,16 @@ body.page-hangar {
   width: 380px; max-width: 90vw;
   background: rgba(20,20,20,0.72); backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2);
   border: 1px solid rgba(255,255,255,0.09);
-  border-radius: 12px; box-shadow: 0 20px 56px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.02) inset;
+  border-radius: 12px; box-shadow: 0 20px 56px rgba(0,0,0,0.55), 0 0 0 1px var(--white-a02) inset;
   max-height: 400px; overflow-y: auto; z-index: var(--z-panel);
   opacity: 0; transform: translateY(-8px);
   transition: var(--transition); pointer-events: none;
 }
-.page-hangar .filter-dropdown.show { opacity: 1; transform: translateY(0); pointer-events: all; }
-.page-hangar .filter-dropdown-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.07); position: sticky; top: 0; background: rgba(20,20,20,0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); z-index: 1; }
-.page-hangar .filter-dropdown-header h3 { font-family: 'DM Sans', sans-serif; font-weight: 700; color: var(--white); font-size: 0.9rem; }
-.page-hangar .close-dropdown { background: transparent; border: none; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.45); }
-.page-hangar .close-dropdown:hover { background: rgba(255,255,255,0.08); color: var(--white); }
-.page-hangar .filter-options { padding: 0.75rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.5rem; }
-.page-hangar .filter-option { padding: 0.7rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; cursor: pointer; transition: var(--transition-fast); text-align: center; font-weight: 500; font-size: 0.85rem; color: rgba(255,255,255,0.65); }
-.page-hangar .filter-option:hover { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.07); color: var(--white); }
 /* Options en <button> : atteignables au clavier, réinitialisées au style des cases. */
-.page-hangar button.filter-option { font-family: inherit; line-height: inherit; width: 100%; }
-.page-hangar .filter-option:focus-visible { outline: none; border-color: var(--hud-cyan); box-shadow: var(--focus-ring); color: var(--white); }
-.page-hangar .filter-option:active { transform: scale(0.98); }
-.page-hangar .filter-option.selected { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.35); color: var(--hud-cyan); }
 /* Conflits et missions : libellés longs, une option par ligne, période à droite. */
 .page-hangar #war-options, .page-hangar #mission-options { grid-template-columns: 1fr; }
 .page-hangar #war-options .filter-option, .page-hangar #mission-options .filter-option { display: flex; align-items: baseline; gap: 0.5rem; text-align: left; }
-.page-hangar .filter-option-meta { margin-left: auto; font-size: 0.72rem; color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.page-hangar .filter-option-meta { margin-left: auto; font-size: var(--text-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* Results count */
 .page-hangar .results-info { font-size: 0.9rem; color: rgba(255,255,255,0.66); font-weight: 500; margin-bottom: 1.5rem; }
@@ -166,42 +85,19 @@ body.page-hangar {
    AIRCRAFT GRID — 3 colonnes fixes, même largeur que favorites
    ====================================================================== */
 .page-hangar .aircraft-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-bottom: 5rem; }
-.page-hangar .aircraft-grid.list-view { grid-template-columns: 1fr; }
 
-.page-hangar .aircraft-card { background: rgba(255,255,255,0.04); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.09); transition: var(--transition); cursor: pointer; position: relative; }
-.page-hangar .aircraft-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.07); border-color: rgba(200,169,110,0.28); box-shadow: 0 12px 32px rgba(0,0,0,0.35), 0 0 30px rgba(200,169,110,0.08); }
+.page-hangar .aircraft-card { background: var(--white-a04); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.09); transition: var(--transition); cursor: pointer; position: relative; }
 
-.page-hangar .aircraft-image { position: relative; height: 220px; overflow: hidden; background: var(--night-soft); }
-.page-hangar .aircraft-image img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
-.page-hangar .aircraft-card:hover .aircraft-image img { transform: scale(1.08); }
-
-.page-hangar .aircraft-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,13,13,0.9) 0%, transparent 50%); display: flex; align-items: flex-end; padding: 1.25rem; }
-.page-hangar .aircraft-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.page-hangar .aircraft-badge { padding: 0.3rem 0.8rem; backdrop-filter: blur(10px); border-radius: 50px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-.page-hangar .aircraft-badge.generation { background: rgba(200,169,110,0.15); border: 1px solid rgba(200,169,110,0.3); color: var(--hud-cyan); }
-.page-hangar .aircraft-badge.type { background: rgba(255,171,0,0.15); border: 1px solid rgba(255,171,0,0.3); color: var(--hud-amber); }
-
-.page-hangar .aircraft-content { padding: 2rem; }
-.page-hangar .aircraft-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-.page-hangar .aircraft-title { flex: 1; }
-.page-hangar .aircraft-name-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
-.page-hangar .aircraft-name-row h3 { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin: 0; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .page-hangar .aircraft-name-row .country-flag { flex-shrink: 0; border-radius: 2px; }
-.page-hangar .aircraft-title h3 { font-family: 'DM Sans', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--white); margin-bottom: 0.25rem; }
-.page-hangar .aircraft-country { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.45); }
 .page-hangar .country-flag { width: 22px; height: auto; border-radius: 2px; display: block; }
 .page-hangar .aircraft-description { display: none; }
-.page-hangar .aircraft-specs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.07); }
-.page-hangar .spec-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.5); }
-.page-hangar .spec-item i, .page-hangar .spec-item .icon { color: var(--hud-cyan); width: 16px; }
-
 
 /* Pagination */
 .page-hangar .pagination { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin: 6rem 0 5rem; }
-.page-hangar .pagination button { padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.7); }
-.page-hangar .pagination button:hover:not(:disabled) { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.07); color: var(--white); }
+.page-hangar .pagination button { padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border: 1px solid var(--white-a08); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.7); }
+.page-hangar .pagination button:hover:not(:disabled) { border-color: rgba(255,255,255,0.2); background: var(--white-a07); color: var(--white); }
 .page-hangar .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
-.page-hangar .pagination .page-info { padding: 0.75rem 1.25rem; font-weight: 600; color: rgba(255,255,255,0.5); transition: opacity 0.2s var(--ease); }
+.page-hangar .pagination .page-info { padding: 0.75rem 1.25rem; font-weight: 600; color: var(--text-ghost); transition: opacity 0.2s var(--ease); }
 /* Chargement en cours (lockPagination) : boutons désactivés, page estompée. */
 .page-hangar .pagination[aria-busy="true"] .page-info { opacity: 0.45; }
 .page-hangar .pagination[aria-busy="true"] button { cursor: progress; }
@@ -232,45 +128,41 @@ body.page-hangar.modal-open { overflow: hidden; }
 /* Envoi en cours */
 .page-hangar .btn:disabled { cursor: not-allowed; }
 .page-hangar .btn.is-loading { cursor: progress; opacity: 0.75; }
-.page-hangar .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.75rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.page-hangar .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.75rem 2rem; border-bottom: 1px solid var(--white-a07); }
 .page-hangar .modal-header h2 { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 0.75rem; }
-.page-hangar .modal-close { background: transparent; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: rgba(255,255,255,0.5); font-size: 1.5rem; }
-.page-hangar .modal-close:hover { background: rgba(255,255,255,0.08); color: var(--white); transform: rotate(90deg); }
+.page-hangar .modal-close { background: transparent; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition-fast); color: var(--text-ghost); font-size: 1.5rem; }
+.page-hangar .modal-close:hover { background: var(--white-a08); color: var(--white); transform: rotate(90deg); }
 
 .page-hangar .modal-form { flex: 1; overflow-y: auto; padding: 2rem; }
 .page-hangar .form-sections { display: flex; flex-direction: column; gap: 2rem; }
-.page-hangar .form-section { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem; }
+.page-hangar .form-section { background: var(--white-a02); border: 1px solid var(--white-a06); border-radius: 12px; padding: 1.5rem; }
 .page-hangar .form-section h3 { font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
 .page-hangar .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
 .page-hangar .form-group { display: flex; flex-direction: column; }
 .page-hangar .form-group.span-2 { grid-column: span 2; }
 .page-hangar .form-group label { font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
 .page-hangar .form-group input, .page-hangar .form-group select, .page-hangar .form-group textarea {
-  padding: 0.875rem 1rem; border: 1px solid rgba(255,255,255,0.09);
+  padding: 0.875rem 1rem; border: 1px solid var(--border-field);
   border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
   transition: var(--transition-fast); background: rgba(255,255,255,0.03); color: var(--white);
 }
-.page-hangar .form-group input::placeholder, .page-hangar .form-group textarea::placeholder { color: rgba(255,255,255,0.25); }
-.page-hangar .form-group input:focus, .page-hangar .form-group select:focus, .page-hangar .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
+.page-hangar .form-group input::placeholder, .page-hangar .form-group textarea::placeholder { color: var(--text-placeholder); }
+.page-hangar .form-group input:focus, .page-hangar .form-group select:focus, .page-hangar .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px var(--white-a12); background: rgba(255,255,255,0.05); }
 .page-hangar .form-group select option { background: var(--night-mid); color: var(--white); }
 .page-hangar .form-group textarea { resize: vertical; min-height: 100px; }
 
-.page-hangar .modal-footer { display: flex; justify-content: flex-end; gap: 1rem; padding: 1.75rem 2rem; border-top: 1px solid rgba(255,255,255,0.07); }
+.page-hangar .modal-footer { display: flex; justify-content: flex-end; gap: 1rem; padding: 1.75rem 2rem; border-top: 1px solid var(--white-a07); }
 
 /* Buttons */
 .page-hangar .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; padding: 0.875rem 1.75rem; border: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: var(--transition); font-family: 'DM Sans', sans-serif; white-space: nowrap; }
 .page-hangar .btn-primary { background: var(--hud-cyan); color: var(--night); border: 1px solid transparent; font-weight: 700; }
 .page-hangar .btn-primary:hover { background: #D4B87E; }
-.page-hangar .btn-secondary { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.12); }
-.page-hangar .btn-secondary:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
-.page-hangar .btn-outline { background: transparent; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
-.page-hangar .btn-outline:hover { background: rgba(255,255,255,0.05); }
+.page-hangar .btn-secondary { background: var(--white-a04); color: rgba(255,255,255,0.7); border: 1px solid var(--white-a12); }
 .page-hangar .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
+.page-hangar .btn-secondary:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
 
 /* Empty State */
-.page-hangar .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center; color: rgba(255,255,255,0.4); grid-column: 1 / -1; }
-.page-hangar .empty-state i, .page-hangar .empty-state .icon { font-size: 4rem; color: rgba(200,169,110,0.15); margin-bottom: 1.5rem; }
-.page-hangar .empty-state h3 { font-size: 1.5rem; color: rgba(255,255,255,0.7); margin-bottom: 0.75rem; font-weight: 600; }
+.page-hangar .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center; color: var(--text-ghost); grid-column: 1 / -1; }
 .page-hangar .empty-state p { font-size: 1.1rem; max-width: 400px; }
 
 /* ======================================================================
@@ -305,8 +197,8 @@ body.page-hangar.modal-open { overflow: hidden; }
   .page-hangar .hero-text > p { margin-inline: auto; }
   .page-hangar .hero-text h1 { font-size: clamp(2.5rem, 8vw, 4rem); }
   /* Trois colonnes égales, chiffre centré : voir shared-responsive.css. */
-  .page-hangar .hero-data { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding-left: 0; border-left: none; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 2rem; width: 100%; min-width: 0; }
-  .page-hangar .data-row { flex-direction: column; gap: 0.2rem; border-bottom: none; padding: 0 0.5rem; border-right: 1px solid rgba(255,255,255,0.06); justify-content: center; align-items: center; text-align: center; }
+  .page-hangar .hero-data { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding-left: 0; border-left: none; border-top: 1px solid var(--white-a07); padding-top: 2rem; width: 100%; min-width: 0; }
+  .page-hangar .data-row { flex-direction: column; gap: 0.2rem; border-bottom: none; padding: 0 0.5rem; border-right: 1px solid var(--white-a06); justify-content: center; align-items: center; text-align: center; }
   .page-hangar .data-row:last-child { border-right: none; }
   .page-hangar .data-number { font-size: 1.75rem; }
   .page-hangar .aircraft-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
@@ -380,7 +272,7 @@ body.page-hangar.modal-open { overflow: hidden; }
 
 /* Print */
 @media print {
-  .page-hangar header, .page-hangar .filters-section, .page-hangar .pagination, .page-hangar .modal, .page-hangar #toast-container, .page-hangar footer, .page-hangar .hero-hud-grid { display: none !important; }
+  .page-hangar header, .page-hangar .pagination, .page-hangar .modal, .page-hangar #toast-container, .page-hangar footer { display: none !important; }
   .page-hangar .page-hero { padding: 2rem 0; }
   .page-hangar * { background: white !important; color: black !important; box-shadow: none !important; }
 }
@@ -410,7 +302,7 @@ body.page-hangar.modal-open { overflow: hidden; }
 .page-hangar .view-btn:hover { color: var(--hud-cyan); }
 .page-hangar .view-btn[aria-pressed="true"] {
   color: var(--hud-cyan);
-  background: rgba(200,169,110,0.08);
+  background: var(--gold-a08);
 }
 
 /* ----------------------------------------------------------------------
@@ -425,7 +317,7 @@ body.page-hangar.modal-open { overflow: hidden; }
   align-items: stretch;
   border: 1px solid rgba(255,255,255,0.09);
   border-radius: 12px;
-  background: rgba(255,255,255,0.04);
+  background: var(--white-a04);
   overflow: hidden;
   min-height: 110px;
 }
@@ -459,16 +351,19 @@ body.page-hangar.modal-open { overflow: hidden; }
 
 /* Compare : notch accrochée à l'extrémité droite, juste la checkbox */
 .page-hangar .aircraft-list .compare-check {
-  position: static;
+  /* relative (et non static) : sans position, le z-index ne s'applique pas
+     et le lien étendu de la carte (::after) recouvrirait la case. */
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   margin: 0;
   gap: 0;
-  background: rgba(255,255,255,0.02);
+  background: var(--white-a02);
   border: none;
-  border-left: 1px solid rgba(255,255,255,0.08);
+  border-left: 1px solid var(--white-a08);
   border-radius: 0;
   backdrop-filter: none;
   top: auto;
@@ -500,7 +395,7 @@ body.page-hangar.modal-open { overflow: hidden; }
   backdrop-filter: blur(8px);
   padding: 0.35rem 0.6rem;
   border-radius: var(--r-md);
-  font-size: 0.7rem;
+  font-size: var(--text-xs);
   color: var(--text-primary);
   display: inline-flex;
   align-items: center;
@@ -509,7 +404,7 @@ body.page-hangar.modal-open { overflow: hidden; }
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid var(--white-a08);
 }
 /* 18px par defaut chez le navigateur : sous le minimum de 24x24 du critere
    WCAG 2.5.8. La case du comparateur est une cible frequente sur mobile. */
@@ -517,7 +412,6 @@ body.page-hangar.modal-open { overflow: hidden; }
 .page-hangar .compare-check:hover { border-color: var(--hud-cyan); }
 
 /* Barre + modale du comparateur → compare.css (partagé avec la fiche) */
-
 
 /* Mobile filter sheet */
 .page-hangar .filter-sheet:not([open]) { display: none !important; }
@@ -577,7 +471,7 @@ body.page-hangar.modal-open { overflow: hidden; }
 .page-hangar .fs-item:hover { border-color: rgba(200,169,110,0.35); background-color: rgba(255,255,255,0.03); }
 .page-hangar .fs-item:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
 .page-hangar .fs-item:active { background-color: rgba(200,169,110,0.06); }
-.page-hangar .fs-item.active { border-color: var(--hud-cyan); color: var(--hud-cyan); background-color: rgba(200,169,110,0.08); }
+.page-hangar .fs-item.active { border-color: var(--hud-cyan); color: var(--hud-cyan); background-color: var(--gold-a08); }
 
 /* Ouverture : la feuille monte, le voile se pose. Fermeture : .is-closing
    (mobile-sheet.js) joue l'inverse avant de fermer le <dialog>. */
@@ -654,5 +548,4 @@ body.page-hangar.modal-open { overflow: hidden; }
 }
 
 /* lang-switch → shared.css */
-
 

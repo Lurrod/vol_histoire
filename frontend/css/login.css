@@ -3,7 +3,6 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 
 /* header/nav/hamburger/user-menu/hidden → shared.css */
 
-
 /* ==================== AUTH SECTION — SPLIT SCREEN ==================== */
 .page-login .auth-section {
   display: flex;
@@ -44,8 +43,8 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(var(--white-a02) 1px, transparent 1px),
+    linear-gradient(90deg, var(--white-a02) 1px, transparent 1px);
   background-size: 60px 60px;
 }
 
@@ -62,7 +61,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  border: 1px solid rgba(200, 169, 110, 0.2);
+  border: 1px solid var(--gold-a20);
 }
 .page-login .radar-ring.ring-2 { inset: 25%; }
 .page-login .radar-ring.ring-3 { inset: 50%; }
@@ -81,7 +80,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 0deg, rgba(200,169,110,0.15) 40deg, transparent 80deg);
+  background: conic-gradient(from 0deg, transparent 0deg, var(--gold-a15) 40deg, transparent 80deg);
   animation: radarSpin 4s linear infinite;
 }
 
@@ -166,7 +165,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 
 .page-login .visual-subtitle {
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-ghost);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   font-weight: 300;
@@ -191,7 +190,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 }
 .page-login .stat-label {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-ghost);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -217,12 +216,11 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 }
 .page-login .tagline-text {
   font-size: 0.75rem;
-  color: rgba(200, 169, 110, 0.5);
+  color: rgba(200, 169, 110, 0.8)  /* 5,4:1 (0.5 : 2,9:1) */;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-weight: 500;
 }
-
 
 /* ---- RIGHT: Form Panel ---- */
 .page-login .auth-form-panel {
@@ -290,7 +288,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   background: transparent;
   border: 1px solid transparent;
   border-radius: 10px;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-ghost);
   font-family: inherit;
   font-size: 0.9rem;
   font-weight: 500;
@@ -355,7 +353,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  background: rgba(200, 169, 110, 0.08);
+  background: var(--gold-a08);
   color: var(--hud-cyan);
   font-size: 1.25rem;
   margin-bottom: 1.25rem;
@@ -408,7 +406,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   width: 100%;
   min-height: 48px;
   padding: 0.8rem 1rem;
-  border: 1px solid rgba(200, 169, 110, 0.16);
+  border: 1px solid var(--border-field);
   border-radius: 10px;
   font-family: 'DM Sans', sans-serif;
   font-size: 0.95rem;
@@ -476,7 +474,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 }
 .page-login .toggle-password:hover {
   color: var(--secondary);
-  background: rgba(200, 169, 110, 0.08);
+  background: var(--gold-a08);
 }
 
 /* Password Strength */
@@ -495,10 +493,20 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   transition: width 0.3s ease, background 0.3s ease;
 }
 .page-login .strength-text {
-  font-size: 0.7rem;
+  font-size: var(--text-xs);
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+/* Exigences du mot de passe, affichées AVANT la saisie (WCAG 3.3.2).
+   --text-secondary : 8,2:1 sur le panneau #1A1A1A ; 0.8rem, au-dessus du
+   plancher --text-xs. */
+.page-login .password-hint {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  margin: 0.35rem 0 0;
 }
 
 /* Form Options */
@@ -658,7 +666,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   font-family: 'DM Sans', sans-serif;
 }
 .page-login .switch-form:hover {
-  background: rgba(200, 169, 110, 0.08);
+  background: var(--gold-a08);
   transform: translateX(4px);
 }
 .page-login .switch-form i, .page-login .switch-form .icon {
@@ -670,9 +678,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 /* Security Footer */
 /* toast → shared.css */
 
-
 /* footer → shared.css */
-
 
 /* ==================== RESPONSIVE ==================== */
 /* footer responsive @1200px → shared.css */
@@ -691,7 +697,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
     max-width: 520px;
     border-radius: 16px;
     margin: 1rem;
-    border: 1px solid rgba(200, 169, 110, 0.12);
+    border: 1px solid var(--gold-a12);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   }
   .page-login .auth-form-panel::before { display: none; }
@@ -790,7 +796,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 }
 .ev-notice-desc {
   margin: 0 0 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-ghost);
   font-size: 0.82rem;
   line-height: 1.5;
 }
@@ -846,10 +852,9 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   margin: 0 0 0.5rem;
 }
 .rp-success p {
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-ghost);
   margin: 0 0 1.5rem;
 }
-
 
 /* ============================================================
    Mouvement reduit — les points du radar clignotent en boucle
@@ -870,8 +875,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
     transform: none;
   }
   .radar-dot,
-  .radar-sweep,
-  .visual-panel [class*="radar"] {
+  .radar-sweep {
     animation: none !important;
     transition: none !important;
   }

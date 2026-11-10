@@ -1,0 +1,62 @@
+# Mises à jour de dépendances — une PR groupée par écosystème et par semaine.
+# Les versions mineures et correctives sont regroupées ; les montées majeures
+# (ioredis 6, @sentry/node 11, dotenv 18…) arrivent dans un groupe à part pour
+# être planifiées et testées séparément.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      racine-mineures:
+        update-types: [minor, patch]
+      racine-majeures:
+        update-types: [major]
+
+  - package-ecosystem: npm
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      backend-mineures:
+        update-types: [minor, patch]
+      backend-majeures:
+        update-types: [major]
+
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      frontend-mineures:
+        update-types: [minor, patch]
+      frontend-majeures:
+        update-types: [major]
+
+  - package-ecosystem: npm
+    directory: /e2e
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      e2e-mineures:
+        update-types: [minor, patch]
+      e2e-majeures:
+        update-types: [major]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns: ["*"]

@@ -49,3 +49,9 @@ install.cmd
 .names.json
 .credits-lot*.json
 .pgenv
+
+# Notes de travail locales (catalogue de lots)
+list.md
+
+# Instantanés du serveur MCP Playwright (outillage local)
+.playwright-mcp/

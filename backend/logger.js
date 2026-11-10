@@ -85,8 +85,16 @@ function log(level, message, meta) {
           if (k !== 'error') scope.setExtra(k, v);
         });
       }
-      if (safeMeta && safeMeta.error instanceof Error) {
-        Sentry.captureException(safeMeta.error);
+      // scrub() rend une Error sous forme d'objet simple ({ name, message,
+      // stack, … }) : tester `safeMeta.error instanceof Error` ne réussissait
+      // donc jamais, et Sentry recevait un simple message sans la pile. On
+      // décide sur l'original et on reconstruit une Error à partir de la
+      // version nettoyée (les propriétés personnalisées ne partent pas).
+      if (meta && meta.error instanceof Error && safeMeta && safeMeta.error) {
+        const clean = new Error(safeMeta.error.message);
+        clean.name = safeMeta.error.name;
+        clean.stack = safeMeta.error.stack;
+        Sentry.captureException(clean);
       } else {
         Sentry.captureMessage(message);
       }

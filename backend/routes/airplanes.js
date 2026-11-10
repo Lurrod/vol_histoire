@@ -3,22 +3,16 @@ const { validateAirplaneData } = require('../validators');
 const { authorize } = require('../middleware/auth');
 const asyncHandler = require('../middleware/asyncHandler');
 const { pickLang, pickLangMany } = require('../i18n');
-const { prefixTsquery } = require('../utils/search');
 const { slugify } = require('../utils/url');
+const airplanesRepo = require('../repositories/airplanes');
+const referentialsRepo = require('../repositories/referentials');
+const favoritesRepo = require('../repositories/favorites');
+const { idParam, cleanSearch } = require('../middleware/input-guards');
 
 // Vérifie l'existence des clés étrangères d'un avion en une seule requête.
 // Retourne un tableau de messages d'erreur (vide si tout est valide).
-async function validateAirplaneFKs(pool, { country_id, id_manufacturer, id_generation, type }) {
-  const clean = (v) => (v === '' || v === undefined) ? null : v;
-  const checks = await pool.query(
-    `SELECT
-      ($1::integer IS NULL OR EXISTS(SELECT 1 FROM countries    WHERE id = $1)) AS country_ok,
-      ($2::integer IS NULL OR EXISTS(SELECT 1 FROM manufacturer WHERE id = $2)) AS manufacturer_ok,
-      ($3::integer IS NULL OR EXISTS(SELECT 1 FROM generation   WHERE id = $3)) AS generation_ok,
-      ($4::integer IS NULL OR EXISTS(SELECT 1 FROM type         WHERE id = $4)) AS type_ok`,
-    [clean(country_id), clean(id_manufacturer), clean(id_generation), clean(type)]
-  );
-  const { country_ok, manufacturer_ok, generation_ok, type_ok } = checks.rows[0];
+async function validateAirplaneFKs(pool, body) {
+  const { country_ok, manufacturer_ok, generation_ok, type_ok } = await airplanesRepo.checkForeignKeys(pool, body);
   const errors = [];
   if (!country_ok)      errors.push('country_id invalide');
   if (!manufacturer_ok) errors.push('id_manufacturer invalide');
@@ -39,31 +33,21 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
   let referentialCache = null;
   async function getValidReferentials() {
     if (referentialCache) return referentialCache;
-    const pool = getPool();
-    const [gens, types, wars, missions] = await Promise.all([
-      pool.query('SELECT DISTINCT generation FROM generation'),
-      pool.query('SELECT name FROM type'),
-      pool.query('SELECT name FROM wars'),
-      pool.query('SELECT name FROM missions'),
-    ]);
+    const values = await airplanesRepo.loadFilterValues(getPool());
     referentialCache = {
-      generations: new Set(gens.rows.map((r) => Number(r.generation))),
-      typeNames: new Set(types.rows.map((r) => r.name)),
-      warNames: new Set(wars.rows.map((r) => r.name)),
-      missionNames: new Set(missions.rows.map((r) => r.name)),
+      generations: new Set(values.generations),
+      typeNames: new Set(values.typeNames),
+      warNames: new Set(values.warNames),
+      missionNames: new Set(values.missionNames),
     };
     return referentialCache;
   }
   // Exposé pour les tests + invalidation manuelle si besoin
   router.invalidateReferentialCache = () => { referentialCache = null; };
 
-  // Validation des IDs
-  router.param('id', (req, res, next, value) => {
-    if (!/^\d+$/.test(value)) {
-      return res.status(400).json({ message: 'ID invalide' });
-    }
-    next();
-  });
+  // Validation des IDs : entier int4 positif, sinon 400 avant toute requête
+  // (« 2147483648 » faisait lever « integer out of range » → 500). SEC-003.
+  router.param('id', idParam());
 
   // -----------------------------------------------------------------------------
   // Avions
@@ -76,10 +60,10 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     // Conflit et mission : nom FR canonique, comme `country` et `type`.
     const war = (req.query.war || '').toString();
     const mission = (req.query.mission || '').toString();
-    // Full-text search : trimé, max 100 chars (websearch_to_tsquery ignore les
-    // caractères non-alphanumériques bizarres, donc pas de sanitization à faire)
-    const searchRaw = (req.query.search || '').toString().trim();
-    const search = searchRaw.length > 0 && searchRaw.length <= 100 ? searchRaw : '';
+    // Full-text search : caractères de contrôle neutralisés, trimé, max 100
+    // chars (websearch_to_tsquery ignore les autres caractères bizarres). Un
+    // paramètre répété (tableau) compte comme absent. SEC-003.
+    const search = cleanSearch(req.query.search);
 
     // Validation format (sans DB) — rejette texte, 0, négatif
     if (generation && !/^[1-9]\d*$/.test(generation)) {
@@ -103,106 +87,22 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       }
     }
 
-    let query = `
-      SELECT a.id, a.name, a.name_en, a.complete_name, a.complete_name_en,
-             a.little_description, a.little_description_en, a.image_url,
-             a.max_speed, c.name as country_name, c.name_en as country_name_en,
-             c.code as country_code,
-             g.generation, t.name as type_name, t.name_en as type_name_en,
-             a.date_operationel
-      FROM airplanes a
-      LEFT JOIN countries c ON a.country_id = c.id
-      LEFT JOIN generation g ON a.id_generation = g.id
-      LEFT JOIN type t ON a.type = t.id
-    `;
-    const queryParams = [];
-    const conditions = [];
-
-    // S4 FIX : Combiner les filtres avec AND au lieu de else if
-    if (country) {
-      queryParams.push(country);
-      conditions.push(`c.name = $${queryParams.length}`);
-    }
-    if (generation) {
-      queryParams.push(Number(generation));
-      conditions.push(`g.generation = $${queryParams.length}`);
-    }
-    if (type) {
-      queryParams.push(type);
-      conditions.push(`t.name = $${queryParams.length}`);
-    }
-    if (war) {
-      queryParams.push(war);
-      conditions.push(`EXISTS (SELECT 1 FROM airplane_wars aw JOIN wars w ON w.id = aw.id_wars
-        WHERE aw.id_airplane = a.id AND w.name = $${queryParams.length})`);
-    }
-    if (mission) {
-      queryParams.push(mission);
-      conditions.push(`EXISTS (SELECT 1 FROM airplane_missions am JOIN missions m ON m.id = am.id_mission
-        WHERE am.id_airplane = a.id AND m.name = $${queryParams.length})`);
-    }
-
-    // Full-text search : match sur search_vector (tsvector généré côté DB)
-    // websearch_to_tsquery accepte "F-16 chasseur", "rafale -mirage", "\"exact phrase\"", etc.
-    // On y ajoute en OU la variante « préfixe » (dernier mot incomplet : « mira »
-    // trouve le Mirage) ; voir utils/search.js.
-    let tsquerySql = null;
-    if (search) {
-      queryParams.push(search);
-      tsquerySql = `websearch_to_tsquery('simple', $${queryParams.length})`;
-      const prefix = prefixTsquery(search);
-      if (prefix) {
-        queryParams.push(prefix);
-        tsquerySql = `(${tsquerySql} || to_tsquery('simple', $${queryParams.length}))`;
-      }
-      conditions.push(`a.search_vector @@ ${tsquerySql}`);
-    }
-
-    if (conditions.length > 0) {
-      query += ' WHERE ' + conditions.join(' AND ');
-    }
-
-    // S4 FIX : Whitelist stricte du tri pour éviter toute injection
-    const sortMap = {
-      'nation': 'c.name ASC',
-      'service-date': 'a.date_operationel DESC',
-      'alphabetical': 'a.name ASC',
-      'generation': 'g.generation DESC',
-      'type': 't.name ASC',
-    };
-    // Si une recherche est en cours, on trie par pertinence (ts_rank) — sinon
-    // on applique le sort demandé ou le défaut.
-    if (search) {
-      query += ` ORDER BY ts_rank(a.search_vector, ${tsquerySql}) DESC, a.id ASC`;
-    } else {
-      query += ' ORDER BY ' + (sortMap[sort] || 'a.id ASC');
-    }
-
     // Pagination
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 100));
     const offset = (page - 1) * limit;
 
-    // Compter le total avant pagination
-    const countQuery = `SELECT COUNT(*) FROM airplanes a
-      LEFT JOIN countries c ON a.country_id = c.id
-      LEFT JOIN generation g ON a.id_generation = g.id
-      LEFT JOIN type t ON a.type = t.id` + (conditions.length > 0 ? ' WHERE ' + conditions.join(' AND ') : '');
-    const countResult = await getPool().query(countQuery, queryParams);
-    const total = parseInt(countResult.rows[0].count, 10);
-
-    queryParams.push(limit, offset);
-    query += ` LIMIT $${queryParams.length - 1} OFFSET $${queryParams.length}`;
-
-    const result = await getPool().query(query, queryParams);
+    const { total, rows } = await airplanesRepo.findPage(getPool(), {
+      country, generation, type, war, mission, search, sort, limit, offset,
+    });
     // i18n : noms propres (name, complete_name, country_name) fallback FR ;
     // little_description → "Translation needed" si name_en NULL
     // On capture les noms FR canoniques AVANT pickLang pour les exposer
     // comme clés stables côté client (type_name_fr, country_name_fr).
-    const typeFr = result.rows.map(r => r.type_name);
-    const countryFr = result.rows.map(r => r.country_name);
+    const typeFr = rows.map(r => r.type_name);
+    const countryFr = rows.map(r => r.country_name);
     const data = pickLangMany(
-      result.rows,
+      rows,
       req.lang,
       ['name', 'complete_name', 'little_description', 'country_name', 'type_name'],
       ['name', 'complete_name', 'country_name'] // noms propres → fallback FR
@@ -215,33 +115,12 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
   }));
 
   router.get('/airplanes/:id', asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const result = await getPool().query(
-      `SELECT airplanes.*,
-              manufacturer.name AS manufacturer_name, manufacturer.name_en AS manufacturer_name_en,
-              generation.generation,
-              generation.description AS generation_description, generation.description_en AS generation_description_en,
-              type.name AS type_name, type.name_en AS type_name_en,
-              countries.name AS country_name, countries.name_en AS country_name_en,
-              predecessor.name AS predecessor_name, predecessor.name_en AS predecessor_name_en, predecessor.image_url AS predecessor_image,
-              successor.name AS successor_name, successor.name_en AS successor_name_en, successor.image_url AS successor_image,
-              rival.name AS rival_name, rival.name_en AS rival_name_en, rival.image_url AS rival_image
-       FROM airplanes
-       LEFT JOIN manufacturer ON airplanes.id_manufacturer = manufacturer.id
-       LEFT JOIN generation ON airplanes.id_generation = generation.id
-       LEFT JOIN type ON airplanes.type = type.id
-       LEFT JOIN countries ON airplanes.country_id = countries.id
-       LEFT JOIN airplanes predecessor ON airplanes.predecessor_id = predecessor.id
-       LEFT JOIN airplanes successor ON airplanes.successor_id = successor.id
-       LEFT JOIN airplanes rival ON airplanes.rival_id = rival.id
-       WHERE airplanes.id = $1`,
-      [id]
-    );
-    if (result.rows.length === 0) {
+    const airplane = await airplanesRepo.findById(getPool(), req.params.id);
+    if (!airplane) {
       return res.status(404).json({ message: 'Avion non trouvé' });
     }
     const row = pickLang(
-      result.rows[0],
+      airplane,
       req.lang,
       ['name', 'complete_name', 'little_description', 'description', 'status',
        'manufacturer_name', 'type_name', 'country_name', 'generation_description',
@@ -254,81 +133,27 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
   }));
 
   router.get('/airplanes/:id/armament', asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const result = await getPool().query(
-      `SELECT armement.name, armement.name_en, armement.description, armement.description_en
-       FROM airplane_armement
-       JOIN armement ON airplane_armement.id_armement = armement.id
-       WHERE airplane_armement.id_airplane = $1`,
-      [id]
-    );
-    res.json(pickLangMany(result.rows, req.lang, ['name', 'description'], ['name']));
+    const rows = await airplanesRepo.findArmament(getPool(), req.params.id);
+    res.json(pickLangMany(rows, req.lang, ['name', 'description'], ['name']));
   }));
 
   router.get('/airplanes/:id/tech', asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const result = await getPool().query(
-      `SELECT t.name, t.name_en, t.description, t.description_en
-       FROM airplane_tech at
-       JOIN tech t ON at.id_tech = t.id
-       WHERE at.id_airplane = $1`,
-      [id]
-    );
-    res.json(pickLangMany(result.rows, req.lang, ['name', 'description'], ['name']));
+    const rows = await airplanesRepo.findTech(getPool(), req.params.id);
+    res.json(pickLangMany(rows, req.lang, ['name', 'description'], ['name']));
   }));
 
   router.get('/airplanes/:id/missions', asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const result = await getPool().query(
-      `SELECT missions.name, missions.name_en, missions.description, missions.description_en
-       FROM airplane_missions
-       JOIN missions ON airplane_missions.id_mission = missions.id
-       WHERE airplane_missions.id_airplane = $1`,
-      [id]
-    );
-    res.json(pickLangMany(result.rows, req.lang, ['name', 'description']));
+    const rows = await airplanesRepo.findMissions(getPool(), req.params.id);
+    res.json(pickLangMany(rows, req.lang, ['name', 'description']));
   }));
 
   router.get('/airplanes/:id/wars', asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const result = await getPool().query(
-      `SELECT wars.name, wars.name_en, wars.date_start, wars.date_end, wars.description, wars.description_en
-       FROM airplane_wars
-       JOIN wars ON airplane_wars.id_wars = wars.id
-       WHERE airplane_wars.id_airplane = $1`,
-      [id]
-    );
-    res.json(pickLangMany(result.rows, req.lang, ['name', 'description']));
+    const rows = await airplanesRepo.findWars(getPool(), req.params.id);
+    res.json(pickLangMany(rows, req.lang, ['name', 'description']));
   }));
 
   router.get('/airplanes/:id/related', asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const [armamentRes, techRes, missionsRes, warsRes] = await Promise.all([
-      getPool().query(
-        `SELECT armement.name, armement.name_en, armement.description, armement.description_en
-         FROM airplane_armement
-         JOIN armement ON airplane_armement.id_armement = armement.id
-         WHERE airplane_armement.id_airplane = $1`, [id]
-      ),
-      getPool().query(
-        `SELECT t.name, t.name_en, t.description, t.description_en FROM airplane_tech at
-         JOIN tech t ON at.id_tech = t.id
-         WHERE at.id_airplane = $1`, [id]
-      ),
-      getPool().query(
-        `SELECT missions.name, missions.name_en, missions.description, missions.description_en
-         FROM airplane_missions
-         JOIN missions ON airplane_missions.id_mission = missions.id
-         WHERE airplane_missions.id_airplane = $1`, [id]
-      ),
-      getPool().query(
-        `SELECT wars.name, wars.name_en, wars.date_start, wars.date_end, wars.description, wars.description_en
-         FROM airplane_wars
-         JOIN wars ON airplane_wars.id_wars = wars.id
-         WHERE airplane_wars.id_airplane = $1
-         ORDER BY wars.date_start`, [id]
-      )
-    ]);
+    const related = await airplanesRepo.findRelated(getPool(), req.params.id);
     // Nom FR canonique (clé du filtre du hangar) et slug (page du conflit),
     // capturés avant la traduction par pickLangMany.
     const withKeys = (rows, translated, withSlug) => translated.map((r, i) => ({
@@ -337,81 +162,33 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       ...(withSlug ? { slug: slugify(rows[i].name) } : {}),
     }));
     res.json({
-      armament: pickLangMany(armamentRes.rows, req.lang, ['name', 'description'], ['name']),
-      tech: pickLangMany(techRes.rows, req.lang, ['name', 'description'], ['name']),
-      missions: withKeys(missionsRes.rows, pickLangMany(missionsRes.rows, req.lang, ['name', 'description']), false),
-      wars: withKeys(warsRes.rows, pickLangMany(warsRes.rows, req.lang, ['name', 'description']), true),
+      armament: pickLangMany(related.armament, req.lang, ['name', 'description'], ['name']),
+      tech: pickLangMany(related.tech, req.lang, ['name', 'description'], ['name']),
+      missions: withKeys(related.missions, pickLangMany(related.missions, req.lang, ['name', 'description']), false),
+      wars: withKeys(related.wars, pickLangMany(related.wars, req.lang, ['name', 'description']), true),
     });
   }));
 
   // ---------------------------------------------------------------------------
-  // Filiation : chaîne complète predecessor → … → appareil → … → successor.
-  //
-  // Les colonnes predecessor_id / successor_id ne portent qu'un maillon chacune ;
-  // la lignée entière (Ouragan → Mystère IV → … → Rafale) n'est reconstituable
-  // qu'en remontant la chaîne de proche en proche. Deux CTE récursives le font
-  // en une requête, avec deux garde-fous : profondeur bornée à MAX_LINEAGE_DEPTH
-  // et tableau `path` interdisant de repasser sur un id déjà visité (le graphe
-  // n'est pas garanti acyclique — rien en base n'empêche A → B → A).
+  // Filiation : chaîne complète predecessor → … → appareil → … → successor
+  // (deux CTE récursives bornées, voir repositories/airplanes.js#findLineage).
   // ---------------------------------------------------------------------------
   const MAX_LINEAGE_DEPTH = 6;
 
   router.get('/airplanes/:id/lineage', asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const result = await getPool().query(
-      `WITH RECURSIVE ancestors AS (
-         SELECT a.id, a.predecessor_id, 0 AS depth, ARRAY[a.id] AS path
-         FROM airplanes a WHERE a.id = $1
-         UNION ALL
-         SELECT p.id, p.predecessor_id, anc.depth - 1, anc.path || p.id
-         FROM ancestors anc
-         JOIN airplanes p ON p.id = anc.predecessor_id
-         WHERE anc.depth > -$2::int AND NOT (p.id = ANY(anc.path))
-       ),
-       descendants AS (
-         SELECT a.id, a.successor_id, 0 AS depth, ARRAY[a.id] AS path
-         FROM airplanes a WHERE a.id = $1
-         UNION ALL
-         SELECT s.id, s.successor_id, des.depth + 1, des.path || s.id
-         FROM descendants des
-         JOIN airplanes s ON s.id = des.successor_id
-         WHERE des.depth < $2::int AND NOT (s.id = ANY(des.path))
-       ),
-       chain AS (
-         SELECT id, MIN(depth) AS depth FROM (
-           SELECT id, depth FROM ancestors
-           UNION ALL
-           SELECT id, depth FROM descendants
-         ) u GROUP BY id
-       )
-       SELECT a.id, a.name, a.name_en, a.image_url, chain.depth,
-              c.code AS country_code,
-              EXTRACT(YEAR FROM COALESCE(a.date_operationel, a.date_first_fly))::int AS year
-       FROM chain
-       JOIN airplanes a ON a.id = chain.id
-       LEFT JOIN countries c ON a.country_id = c.id
-       ORDER BY chain.depth ASC`,
-      [id, MAX_LINEAGE_DEPTH]
-    );
-
-    if (result.rows.length === 0) {
+    const rows = await airplanesRepo.findLineage(getPool(), req.params.id, MAX_LINEAGE_DEPTH);
+    if (rows.length === 0) {
       return res.status(404).json({ message: 'Avion non trouvé' });
     }
-
     res.json({
-      chain: pickLangMany(result.rows, req.lang, ['name'], ['name']),
-      truncated: result.rows.length >= MAX_LINEAGE_DEPTH * 2 + 1,
+      chain: pickLangMany(rows, req.lang, ['name'], ['name']),
+      truncated: rows.length >= MAX_LINEAGE_DEPTH * 2 + 1,
     });
   }));
 
   router.get('/airplanes/:id/favorite', authorize([1, 2, 3]), asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const userId = req.user.id;
-    const result = await getPool().query(
-      'SELECT 1 FROM favorites WHERE user_id = $1 AND airplane_id = $2',
-      [userId, id]
-    );
-    res.json({ isFavorite: result.rows.length > 0 });
+    const isFavorite = await favoritesRepo.exists(getPool(), req.user.id, req.params.id);
+    res.json({ isFavorite });
   }));
 
   // Cache-Control commun aux référentiels (rarement modifiés)
@@ -421,190 +198,91 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
   const REFERENTIALS_CACHE = 'public, max-age=300, s-maxage=3600, stale-while-revalidate=600';
 
   router.get('/countries', asyncHandler(async (req, res) => {
-    const result = await getPool().query(
-      'SELECT id, name, name_en FROM countries WHERE id IN (SELECT DISTINCT country_id FROM airplanes WHERE country_id IS NOT NULL) ORDER BY name ASC'
-    );
+    const rows = await referentialsRepo.listCountriesWithAirplanes(getPool());
     res.set('Cache-Control', REFERENTIALS_CACHE);
-    res.json(pickLangMany(result.rows, req.lang, ['name'], ['name']));
+    res.json(pickLangMany(rows, req.lang, ['name'], ['name']));
   }));
 
   // Nations de conception + nombre de fiches — alimente la carte de l'accueil.
   // `name` (FR canonique) est renvoyé en plus du nom traduit : c'est la valeur
   // qu'attend le filtre `country` de GET /airplanes, qui compare sur countries.name.
   router.get('/nations', asyncHandler(async (req, res) => {
-    const result = await getPool().query(
-      `SELECT c.code, c.name, c.name_en, COUNT(a.id)::int AS count
-       FROM countries c
-       JOIN airplanes a ON a.country_id = c.id
-       GROUP BY c.code, c.name, c.name_en
-       ORDER BY count DESC, c.name ASC`
-    );
-    const nameFr = result.rows.map((r) => r.name);
-    const rows = pickLangMany(result.rows, req.lang, ['name'], ['name'])
+    const nations = await referentialsRepo.listNations(getPool());
+    const nameFr = nations.map((r) => r.name);
+    const rows = pickLangMany(nations, req.lang, ['name'], ['name'])
       .map((row, i) => ({ ...row, name_fr: nameFr[i] }));
     res.set('Cache-Control', REFERENTIALS_CACHE);
     res.json(rows);
   }));
 
   router.get('/generations', asyncHandler(async (req, res) => {
-    const result = await getPool().query('SELECT DISTINCT generation FROM generation ORDER BY generation ASC');
+    const rows = await referentialsRepo.listGenerations(getPool());
     res.set('Cache-Control', REFERENTIALS_CACHE);
-    res.json(result.rows.map((row) => row.generation));
+    res.json(rows.map((row) => row.generation));
   }));
 
   router.get('/types', asyncHandler(async (req, res) => {
-    const result = await getPool().query(
-      'SELECT id, name, name_en, description, description_en FROM type ORDER BY name ASC'
-    );
+    const rows = await referentialsRepo.listTypes(getPool());
     res.set('Cache-Control', REFERENTIALS_CACHE);
-    res.json(pickLangMany(result.rows, req.lang, ['name', 'description']));
+    res.json(pickLangMany(rows, req.lang, ['name', 'description']));
   }));
 
   router.get('/manufacturers', asyncHandler(async (req, res) => {
-    const result = await getPool().query(`
-      SELECT m.id, m.name, m.name_en, m.code, m.country_id,
-             c.name AS country_name, c.name_en AS country_name_en
-      FROM manufacturer m
-      JOIN countries c ON m.country_id = c.id
-      ORDER BY m.name ASC
-    `);
+    const rows = await referentialsRepo.listManufacturers(getPool());
     res.set('Cache-Control', REFERENTIALS_CACHE);
-    res.json(pickLangMany(result.rows, req.lang, ['name', 'country_name'], ['name', 'country_name']));
+    res.json(pickLangMany(rows, req.lang, ['name', 'country_name'], ['name', 'country_name']));
   }));
 
   // Endpoint combiné : récupère tous les référentiels en 1 seul round-trip.
   // Permet au frontend de loader filtres + dropdowns en parallèle (Promise.all SQL)
   // au lieu de 4 requêtes HTTP séquentielles.
   router.get('/referentials', asyncHandler(async (req, res) => {
-    const pool = getPool();
-    const [countries, generations, types, manufacturers, wars, missions] = await Promise.all([
-      pool.query(
-        'SELECT id, name, name_en FROM countries WHERE id IN (SELECT DISTINCT country_id FROM airplanes WHERE country_id IS NOT NULL) ORDER BY name ASC'
-      ),
-      pool.query('SELECT DISTINCT generation FROM generation ORDER BY generation ASC'),
-      pool.query('SELECT id, name, name_en, description, description_en FROM type ORDER BY name ASC'),
-      pool.query(`
-        SELECT m.id, m.name, m.name_en, m.code, m.country_id,
-               c.name AS country_name, c.name_en AS country_name_en
-        FROM manufacturer m
-        JOIN countries c ON m.country_id = c.id
-        ORDER BY m.name ASC
-      `),
-      pool.query(`
-        SELECT w.name, w.name_en, w.date_start, w.date_end
-        FROM wars w
-        WHERE EXISTS (SELECT 1 FROM airplane_wars aw WHERE aw.id_wars = w.id)
-        ORDER BY w.date_start ASC, w.name ASC
-      `),
-      pool.query(`
-        SELECT m.name, m.name_en
-        FROM missions m
-        WHERE EXISTS (SELECT 1 FROM airplane_missions am WHERE am.id_mission = m.id)
-        ORDER BY m.name ASC
-      `),
-    ]);
+    const { countries, generations, types, manufacturers, wars, missions } =
+      await referentialsRepo.loadAll(getPool());
 
     res.set('Cache-Control', REFERENTIALS_CACHE);
     res.json({
       // On expose le nom canonique FR (name_fr) en plus du nom traduit (name),
       // pour que le frontend puisse utiliser le FR comme clé d'URL stable
       // (indépendante de la langue d'affichage).
-      countries: pickLangMany(countries.rows, req.lang, ['name'], ['name']).map((c, i) => ({
+      countries: pickLangMany(countries, req.lang, ['name'], ['name']).map((c, i) => ({
         ...c,
-        name_fr: countries.rows[i].name,
+        name_fr: countries[i].name,
       })),
-      generations: generations.rows.map((row) => row.generation),
-      types: pickLangMany(types.rows, req.lang, ['name', 'description']).map((t, i) => ({
+      generations: generations.map((row) => row.generation),
+      types: pickLangMany(types, req.lang, ['name', 'description']).map((t, i) => ({
         ...t,
-        name_fr: types.rows[i].name,
+        name_fr: types[i].name,
       })),
-      manufacturers: pickLangMany(manufacturers.rows, req.lang, ['name', 'country_name'], ['name', 'country_name']),
-      wars: pickLangMany(wars.rows, req.lang, ['name'], ['name']).map((w, i) => ({
+      manufacturers: pickLangMany(manufacturers, req.lang, ['name', 'country_name'], ['name', 'country_name']),
+      wars: pickLangMany(wars, req.lang, ['name'], ['name']).map((w, i) => ({
         ...w,
-        name_fr: wars.rows[i].name,
-        slug: slugify(wars.rows[i].name),
+        name_fr: wars[i].name,
+        slug: slugify(wars[i].name),
       })),
-      missions: pickLangMany(missions.rows, req.lang, ['name'], ['name']).map((m, i) => ({
+      missions: pickLangMany(missions, req.lang, ['name'], ['name']).map((m, i) => ({
         ...m,
-        name_fr: missions.rows[i].name,
+        name_fr: missions[i].name,
       })),
     });
   }));
 
+  // Création et modification : les colonnes écrites sont celles de
+  // utils/airplane-fields.js (source unique), dans le même ordre.
   router.post('/airplanes', authorize([1, 2]), asyncHandler(async (req, res) => {
     const errors = validateAirplaneData(req.body);
     if (errors.length > 0) {
       return res.status(400).json({ message: 'Données invalides', errors });
     }
 
-    const {
-      name, complete_name, little_description, image_url, description,
-      country_id, date_concept, date_first_fly, date_operationel,
-      max_speed, max_range, id_manufacturer, id_generation, type, status,
-      // Strate 1 : fiche technique étendue
-      length: len, wingspan, height, wing_area, empty_weight, mtow,
-      service_ceiling, climb_rate, g_limit_pos, g_limit_neg, combat_radius, crew,
-      // Strate 2 : motorisation
-      engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
-      // Strate 3 : production
-      production_start, production_end, units_built, unit_cost_usd, unit_cost_year,
-      operators_count, variants, variants_en,
-      // Strate 4 : qualitatif
-      stealth_level, nickname, predecessor_id, successor_id, rival_id,
-      // Strate 6 : médias externes
-      wikipedia_fr, wikipedia_en, youtube_showcase, manufacturer_page,
-      image_credit, image_licence,
-    } = req.body;
-
-    const clean = (v) => (v === '' || v === undefined) ? null : v;
-
-    const fkErrors = await validateAirplaneFKs(getPool(), { country_id, id_manufacturer, id_generation, type });
+    const fkErrors = await validateAirplaneFKs(getPool(), req.body);
     if (fkErrors.length > 0) {
       return res.status(400).json({ message: 'Référence invalide', errors: fkErrors });
     }
 
-    const result = await getPool().query(
-      `INSERT INTO airplanes
-        (name, complete_name, little_description, image_url, description, country_id,
-         date_concept, date_first_fly, date_operationel, max_speed, max_range,
-         id_manufacturer, id_generation, type, status,
-         length, wingspan, height, wing_area, empty_weight, mtow,
-         service_ceiling, climb_rate, g_limit_pos, g_limit_neg, combat_radius, crew,
-         engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
-         production_start, production_end, units_built, unit_cost_usd, unit_cost_year,
-         operators_count, variants, variants_en,
-         stealth_level, nickname, predecessor_id, successor_id, rival_id,
-         wikipedia_fr, wikipedia_en, youtube_showcase, manufacturer_page,
-         image_credit, image_licence)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15,
-               $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27,
-               $28, $29, $30, $31, $32, $33,
-               $34, $35, $36, $37, $38, $39, $40, $41,
-               $42, $43, $44, $45, $46,
-               $47, $48, $49, $50, $51, $52)
-       RETURNING *`,
-      [
-        name.trim(), clean(complete_name), clean(little_description), clean(image_url),
-        clean(description), clean(country_id), clean(date_concept), clean(date_first_fly),
-        clean(date_operationel), clean(max_speed), clean(max_range), clean(id_manufacturer),
-        clean(id_generation), clean(type), clean(status),
-        clean(len), clean(wingspan), clean(height), clean(wing_area),
-        clean(empty_weight), clean(mtow), clean(service_ceiling), clean(climb_rate),
-        clean(g_limit_pos), clean(g_limit_neg), clean(combat_radius), clean(crew),
-        clean(engine_name), clean(engine_count), clean(engine_type), clean(engine_type_en),
-        clean(thrust_dry), clean(thrust_wet),
-        clean(production_start), clean(production_end), clean(units_built),
-        clean(unit_cost_usd), clean(unit_cost_year), clean(operators_count),
-        clean(variants), clean(variants_en),
-        clean(stealth_level), clean(nickname),
-        clean(predecessor_id), clean(successor_id), clean(rival_id),
-        clean(wikipedia_fr), clean(wikipedia_en), clean(youtube_showcase), clean(manufacturer_page),
-        clean(image_credit), clean(image_licence),
-      ]
-    );
-
+    const created = await airplanesRepo.insert(getPool(), req.body);
     onAirplaneChange?.();
-    res.status(201).json(result.rows[0]);
+    res.status(201).json(created);
   }));
 
   router.put('/airplanes/:id', authorize([1, 2]), asyncHandler(async (req, res) => {
@@ -615,34 +293,13 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       return res.status(400).json({ message: 'Données invalides', errors });
     }
 
-    const {
-      // Champs existants
-      name, complete_name, little_description, image_url, description,
-      country_id, date_concept, date_first_fly, date_operationel,
-      max_speed, max_range, id_manufacturer, id_generation, type, status,
-      // Strate 1 : fiche technique étendue
-      length: len, wingspan, height, wing_area, empty_weight, mtow,
-      service_ceiling, climb_rate, g_limit_pos, g_limit_neg, combat_radius, crew,
-      // Strate 2 : motorisation
-      engine_name, engine_count, engine_type, engine_type_en, thrust_dry, thrust_wet,
-      // Strate 3 : production
-      production_start, production_end, units_built, unit_cost_usd, unit_cost_year,
-      operators_count, variants, variants_en,
-      // Strate 4 : qualitatif
-      stealth_level, nickname, predecessor_id, successor_id, rival_id,
-      // Strate 6 : médias externes
-      wikipedia_fr, wikipedia_en, youtube_showcase, manufacturer_page,
-      image_credit, image_licence,
-    } = req.body;
-
-    const clean = (v) => (v === '' || v === undefined) ? null : v;
-
-    const fkErrors = await validateAirplaneFKs(getPool(), { country_id, id_manufacturer, id_generation, type });
+    const fkErrors = await validateAirplaneFKs(getPool(), req.body);
     if (fkErrors.length > 0) {
       return res.status(400).json({ message: 'Référence invalide', errors: fkErrors });
     }
 
     // Sanity : un avion ne peut pas se référencer lui-même comme predecessor/successor/rival
+    const { predecessor_id, successor_id, rival_id } = req.body;
     const selfRefIds = [predecessor_id, successor_id, rival_id]
       .map(v => v == null || v === '' ? null : Number(v))
       .filter(v => v != null && v === Number(id));
@@ -650,62 +307,22 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       return res.status(400).json({ message: "Un avion ne peut pas se référencer lui-même (prédécesseur / successeur / rival)." });
     }
 
-    const result = await getPool().query(
-      `UPDATE airplanes SET
-        name = $1, complete_name = $2, little_description = $3, image_url = $4,
-        description = $5, country_id = $6, date_concept = $7, date_first_fly = $8,
-        date_operationel = $9, max_speed = $10, max_range = $11,
-        id_manufacturer = $12, id_generation = $13, type = $14, status = $15,
-        length = $16, wingspan = $17, height = $18, wing_area = $19,
-        empty_weight = $20, mtow = $21, service_ceiling = $22, climb_rate = $23,
-        g_limit_pos = $24, g_limit_neg = $25, combat_radius = $26, crew = $27,
-        engine_name = $28, engine_count = $29, engine_type = $30, engine_type_en = $31,
-        thrust_dry = $32, thrust_wet = $33,
-        production_start = $34, production_end = $35, units_built = $36,
-        unit_cost_usd = $37, unit_cost_year = $38, operators_count = $39,
-        variants = $40, variants_en = $41,
-        stealth_level = $42, nickname = $43,
-        predecessor_id = $44, successor_id = $45, rival_id = $46,
-        wikipedia_fr = $47, wikipedia_en = $48, youtube_showcase = $49, manufacturer_page = $50,
-        image_credit = $51, image_licence = $52
-       WHERE id = $53 RETURNING *`,
-      [
-        name.trim(), clean(complete_name), clean(little_description), clean(image_url),
-        clean(description), clean(country_id), clean(date_concept), clean(date_first_fly),
-        clean(date_operationel), clean(max_speed), clean(max_range), clean(id_manufacturer),
-        clean(id_generation), clean(type), clean(status),
-        clean(len), clean(wingspan), clean(height), clean(wing_area),
-        clean(empty_weight), clean(mtow), clean(service_ceiling), clean(climb_rate),
-        clean(g_limit_pos), clean(g_limit_neg), clean(combat_radius), clean(crew),
-        clean(engine_name), clean(engine_count), clean(engine_type), clean(engine_type_en),
-        clean(thrust_dry), clean(thrust_wet),
-        clean(production_start), clean(production_end), clean(units_built),
-        clean(unit_cost_usd), clean(unit_cost_year), clean(operators_count),
-        clean(variants), clean(variants_en),
-        clean(stealth_level), clean(nickname),
-        clean(predecessor_id), clean(successor_id), clean(rival_id),
-        clean(wikipedia_fr), clean(wikipedia_en), clean(youtube_showcase), clean(manufacturer_page),
-        clean(image_credit), clean(image_licence),
-        id,
-      ]
-    );
-
-    if (result.rows.length === 0) {
+    const updated = await airplanesRepo.update(getPool(), id, req.body);
+    if (!updated) {
       return res.status(404).json({ message: 'Avion non trouvé' });
     }
 
     onAirplaneChange?.();
-    res.json(result.rows[0]);
+    res.json(updated);
   }));
 
   router.delete('/airplanes/:id', authorize([1, 2]), asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const result = await getPool().query('DELETE FROM airplanes WHERE id = $1 RETURNING id, name', [id]);
-    if (result.rows.length === 0) {
+    const removed = await airplanesRepo.remove(getPool(), req.params.id);
+    if (!removed) {
       return res.status(404).json({ message: 'Avion non trouvé' });
     }
     onAirplaneChange?.();
-    res.json({ message: `Avion "${result.rows[0].name}" supprimé avec succès` });
+    res.json({ message: `Avion "${removed.name}" supprimé avec succès` });
   }));
 
   return router;

@@ -8,11 +8,14 @@
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/svg+xml" sizes="16x16" href="/assets/logo/favicon-16.svg">
-  <link rel="apple-touch-icon" href="/assets/logo/icon-192.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/logo/icon-48.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.webmanifest">
-  <meta name="theme-color" content="#080c14">
+  <meta name="theme-color" content="#0D0D0D">
   <title data-i18n="legal.privacy_title">Politique de Confidentialité | Vol d'Histoire</title>
   <meta name="description" content="Politique de confidentialité et protection des données personnelles sur Vol d'Histoire.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/politique-confidentialite">
@@ -48,7 +51,7 @@
   }
   </script>
   <link rel="preload" href="fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/BarlowCondensed-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/core.min.css">
   <link rel="stylesheet" href="css/legal.min.css">
   </head>
@@ -57,37 +60,7 @@
 
 
   <!-- Header -->
-  <header>
-    <nav class="container" aria-label="Navigation principale" data-i18n-aria="nav.primary_label">
-      <div class="logo"><picture><source srcset="/assets/logo/vh-mark-primary-gold.svg" media="(max-width: 480px)"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="logo-lockup" width="152" height="40"></picture></div>
-      <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
-      <ul class="nav-links" id="nav-links">
-        <li><a href="/"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a></li>
-        <li><a href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
-        <li><a href="/timeline"><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
-        <li><a href="/favorites"><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-      </ul>
-      <div class="nav-actions">
-        <div class="lang-switch">
-          <button type="button" id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i><span class="lang-btn-label" data-i18n="nav.language">Langue</span></button>
-          <ul class="lang-dropdown" id="lang-dropdown" role="menu">
-            <li><button type="button" class="lang-option" data-lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
-            <li><button type="button" class="lang-option" data-lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
-          </ul>
-        </div>
-        <div class="user-menu"><div class="user-toggle">
-          <a href="#" id="login-icon" class="login-icon" aria-label="Connexion" data-i18n-aria="nav.login"><i class="fas fa-user-circle" aria-hidden="true"></i></a>
-          <div id="user-info-container" class="user-dropdown hidden" role="menu">
-            <div class="user-header"><div class="user-avatar"><i class="fas fa-user-circle"></i></div><div class="user-details"><span id="user-name" class="user-name" data-i18n="nav.user_default">Utilisateur</span><span class="user-role" data-i18n="nav.user_role">Membre</span></div></div>
-            <div class="dropdown-divider"></div>
-            <a href="/settings" id="settings-icon" class="dropdown-item" role="menuitem"><i class="fas fa-cog"></i><span data-i18n="nav.settings">Paramètres</span></a>
-            <div class="dropdown-divider"></div>
-            <a href="#" id="logout-icon" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i><span data-i18n="nav.logout">Déconnexion</span></a>
-          </div>
-        </div></div>
-      </div>
-    </nav>
-  </header>
+  <!-- @include header -->
 
   <!-- Hero Section -->
   <section class="page-hero" aria-labelledby="page-hero-heading">
@@ -127,343 +100,135 @@
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec1_title"><i class="fas fa-user-shield"></i> 1. Responsable du traitement</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec1_body">
-            <p>Le responsable du traitement des données personnelles est :</p>
+            <p>Le responsable du traitement des données personnelles est :</p>
             <p><strong>Titouan Borde</strong> — projet personnel Vol d'Histoire</p>
-            <p><strong>Email :</strong> vdh@titouan-borde.com</p>
+            <p><strong>Email :</strong> <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec2_title"><i class="fas fa-database"></i> 2. Données collectées</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec2_body">
-            <h3>2.1 Données d'inscription</h3>
+            <h3>2.1 Données de compte</h3>
             <p>Lors de la création d'un compte, nous collectons :</p>
             <ul>
-              <li>Nom ou pseudonyme</li>
-              <li>Adresse email</li>
-              <li>Mot de passe (chiffré)</li>
-              <li>Date d'inscription</li>
+            <li>Nom ou pseudonyme</li>
+            <li>Adresse email</li>
+            <li>Mot de passe (stocké après hachage bcrypt, jamais en clair)</li>
+            <li>Date d'inscription et statut de vérification de l'adresse</li>
+            <li>Rôle assigné (utilisateur, éditeur ou administrateur)</li>
+            <li>Données de sécurité : nombre d'échecs de connexion, verrouillage temporaire, sessions actives</li>
             </ul>
-
-            <h3>2.2 Données d'utilisation</h3>
-            <p>Lors de votre navigation sur le site, nous collectons automatiquement :</p>
+            <h3>2.2 Favoris</h3>
+            <p>Les appareils que vous ajoutez à vos favoris, rattachés à votre compte.</p>
+            <h3>2.3 Formulaire de contact</h3>
+            <p>Prénom et nom (facultatifs), adresse email, sujet et message. Le message nous est transmis par email ; il n'est pas enregistré dans la base de données du site. Le journal du serveur garde la trace de l'envoi (adresse de l'expéditeur et sujet).</p>
+            <h3>2.4 Données techniques</h3>
             <ul>
-              <li>Adresse IP</li>
-              <li>Type de navigateur et version</li>
-              <li>Système d'exploitation</li>
-              <li>Pages visitées et durée de visite</li>
-              <li>Date et heure de connexion</li>
-              <li>Données de référencement (site d'origine)</li>
+            <li>Journaux du serveur : adresse IP, navigateur, page demandée, date et heure</li>
+            <li>Rapports d'erreurs techniques (Sentry)</li>
+            <li>Sur les formulaires d'inscription, de mot de passe oublié et de contact : données techniques analysées par hCaptcha pour distinguer un humain d'un robot</li>
             </ul>
-
-            <h3>2.3 Données de préférences</h3>
-            <ul>
-              <li>Avions ajoutés aux favoris</li>
-              <li>Préférences de filtrage et d'affichage</li>
-              <li>Historique de navigation sur le site</li>
-            </ul>
-
-            <h3>2.4 Cookies</h3>
-            <p>Nous utilisons des cookies pour améliorer votre expérience. Voir la section 6 pour plus de détails.</p>
+            <h3>2.5 Mesure d'audience (avec votre consentement)</h3>
+            <p>Si vous l'acceptez, Google Analytics collecte un identifiant pseudonyme de navigateur, les pages consultées et la durée de visite, le type d'appareil et de navigateur, la page de provenance et une localisation approximative déduite de l'adresse IP.</p>
+            <h3>2.6 Données stockées dans votre navigateur</h3>
+            <p>Langue, affichage du hangar, comparateur, filtres en cours et visite guidée déjà vue restent dans votre navigateur et ne sont pas envoyés au serveur (voir section 6).</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec3_title"><i class="fas fa-bullseye"></i> 3. Finalités du traitement</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec3_body">
-            <p>Vos données personnelles sont collectées et traitées pour les finalités suivantes :</p>
-
-            <div class="purpose-grid">
-              <div class="purpose-card">
-                <i class="fas fa-user-check"></i>
-                <h3>Gestion des comptes</h3>
-                <p>Création, gestion et sécurisation de votre compte utilisateur</p>
-                <span class="legal-basis">Base légale : Exécution du contrat</span>
-              </div>
-
-              <div class="purpose-card">
-                <i class="fas fa-heart"></i>
-                <h3>Fonctionnalités</h3>
-                <p>Gestion des favoris et personnalisation de l'expérience</p>
-                <span class="legal-basis">Base légale : Intérêt légitime</span>
-              </div>
-
-              <div class="purpose-card">
-                <i class="fas fa-chart-line"></i>
-                <h3>Analyses statistiques</h3>
-                <p>Mesure d'audience (Google Analytics), déclenchée uniquement après acceptation</p>
-                <span class="legal-basis">Base légale : Consentement</span>
-              </div>
-
-              <div class="purpose-card">
-                <i class="fas fa-envelope"></i>
-                <h3>Communication</h3>
-                <p>Envoi d'informations importantes et notifications</p>
-                <span class="legal-basis">Base légale : Consentement</span>
-              </div>
-
-              <div class="purpose-card">
-                <i class="fas fa-shield"></i>
-                <h3>Sécurité</h3>
-                <p>Prévention des fraudes et protection du site</p>
-                <span class="legal-basis">Base légale : Intérêt légitime</span>
-              </div>
-
-              <div class="purpose-card">
-                <i class="fas fa-balance-scale"></i>
-                <h3>Obligations légales</h3>
-                <p>Respect des obligations légales et réglementaires</p>
-                <span class="legal-basis">Base légale : Obligation légale</span>
-              </div>
-            </div>
+            <p>Vos données sont traitées pour les finalités suivantes :</p>
+            <ul>
+            <li><strong>Gestion du compte</strong> (inscription, connexion, vérification de l'adresse, réinitialisation du mot de passe, favoris) — base légale : exécution du contrat (CGU)</li>
+            <li><strong>Emails de service</strong> (vérification, réinitialisation, changement d'adresse) — base légale : exécution du contrat</li>
+            <li><strong>Sécurité du service</strong> (limitation des tentatives, verrouillage temporaire, journaux du serveur, hCaptcha sur l'inscription, le mot de passe oublié et le contact) — base légale : intérêt légitime</li>
+            <li><strong>Réponse à vos demandes de contact</strong> — base légale : intérêt légitime</li>
+            <li><strong>Suivi des erreurs techniques</strong> (Sentry) — base légale : intérêt légitime</li>
+            <li><strong>Mesure d'audience</strong> (Google Analytics, données pseudonymes) — base légale : consentement</li>
+            </ul>
+            <p>Vos données ne servent à aucune publicité ni à aucun profilage.</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec4_title"><i class="fas fa-clock"></i> 4. Durée de conservation</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec4_body">
-            <p>Vos données sont conservées pendant les durées suivantes :</p>
-
-            <div class="retention-table">
-              <div class="retention-row">
-                <div class="retention-type">
-                  <i class="fas fa-user"></i>
-                  <strong>Données de compte</strong>
-                </div>
-                <div class="retention-duration">
-                  Jusqu'à la suppression du compte + 1 an (pour les obligations légales)
-                </div>
-              </div>
-
-              <div class="retention-row">
-                <div class="retention-type">
-                  <i class="fas fa-key"></i>
-                  <strong>Jeton d'accès (JWT)</strong>
-                </div>
-                <div class="retention-duration">
-                  15 minutes (expiration automatique)
-                </div>
-              </div>
-
-              <div class="retention-row">
-                <div class="retention-type">
-                  <i class="fas fa-rotate"></i>
-                  <strong>Jeton de rafraîchissement</strong>
-                </div>
-                <div class="retention-duration">
-                  7 jours, révocation immédiate à la déconnexion
-                </div>
-              </div>
-
-              <div class="retention-row">
-                <div class="retention-type">
-                  <i class="fas fa-chart-bar"></i>
-                  <strong>Données analytiques (Google Analytics)</strong>
-                </div>
-                <div class="retention-duration">
-                  14 mois maximum
-                </div>
-              </div>
-
-              <div class="retention-row">
-                <div class="retention-type">
-                  <i class="fas fa-cookie-bite"></i>
-                  <strong>Cookies</strong>
-                </div>
-                <div class="retention-duration">
-                  13 mois maximum
-                </div>
-              </div>
-
-              <div class="retention-row">
-                <div class="retention-type">
-                  <i class="fas fa-bug"></i>
-                  <strong>Logs techniques et Sentry</strong>
-                </div>
-                <div class="retention-duration">
-                  30 jours
-                </div>
-              </div>
-
-              <div class="retention-row">
-                <div class="retention-type">
-                  <i class="fas fa-file-alt"></i>
-                  <strong>Logs de connexion</strong>
-                </div>
-                <div class="retention-duration">
-                  12 mois (obligation légale)
-                </div>
-              </div>
-
-              <div class="retention-row">
-                <div class="retention-type">
-                  <i class="fas fa-heart"></i>
-                  <strong>Données de favoris</strong>
-                </div>
-                <div class="retention-duration">
-                  Jusqu'à la suppression du compte ou suppression manuelle
-                </div>
-              </div>
-            </div>
-
-            <p>À l'issue de ces durées, vos données sont supprimées de manière sécurisée et définitive.</p>
+            <ul>
+            <li><strong>Compte et favoris :</strong> jusqu'à la suppression du compte. La suppression, depuis vos paramètres ou sur demande, est immédiate et définitive.</li>
+            <li><strong>Compte dont l'adresse n'a pas été vérifiée :</strong> supprimé automatiquement 7 jours après l'inscription.</li>
+            <li><strong>Liens envoyés par email :</strong> vérification de l'adresse 30 minutes, changement d'adresse 30 minutes, réinitialisation du mot de passe 15 minutes ; chaque lien ne sert qu'une fois.</li>
+            <li><strong>Jeton d'accès :</strong> 15 minutes.</li>
+            <li><strong>Session (refresh token) :</strong> 7 jours, révoquée à la déconnexion et au changement de mot de passe. Une session révoquée reste en base jusqu'à son expiration, pour détecter une réutilisation frauduleuse.</li>
+            <li><strong>Verrouillage après 10 échecs de connexion :</strong> 15 minutes.</li>
+            <li><strong>Demandes de contact :</strong> 12 mois dans la messagerie de l'éditeur, puis supprimées.</li>
+            <li><strong>Journaux du serveur :</strong> 12 mois au plus.</li>
+            <li><strong>Rapports d'erreurs (Sentry) :</strong> 30 jours.</li>
+            <li><strong>Mesure d'audience :</strong> cookies Google Analytics 13 mois au plus ; données conservées 14 mois dans Google Analytics.</li>
+            <li><strong>Votre choix sur les cookies :</strong> 6 mois, puis il vous est redemandé.</li>
+            </ul>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec5_title"><i class="fas fa-share-nodes"></i> 5. Partage des données</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec5_body">
-            <h3>5.1 Principe général</h3>
-            <p>Vos données personnelles ne sont <strong>jamais vendues</strong> à des tiers.</p>
-
-            <h3>5.2 Destinataires des données</h3>
-            <p>Vos données peuvent être partagées avec :</p>
+            <p>Vos données personnelles ne sont <strong>jamais vendues</strong>. Elles ne sont communiquées aux autorités que sur réquisition légale.</p>
+            <p>Les prestataires suivants traitent certaines données pour notre compte :</p>
             <ul>
-              <li><strong>Personnel autorisé :</strong> Nos équipes techniques et administratives dans la limite de leurs fonctions</li>
-              <li><strong>Prestataires techniques :</strong> Hébergement, maintenance, analyses (sous contrat de confidentialité)</li>
-              <li><strong>Autorités légales :</strong> Sur réquisition judiciaire ou obligation légale</li>
+            <li><strong>OVHcloud</strong> (OVH SAS, France) — hébergement du serveur et de la base de données, envoi des emails. Données hébergées dans l'Union européenne.</li>
+            <li><strong>Google</strong> (Google Ireland Limited ; Google LLC, États-Unis) — Google Analytics et Google Tag Manager, uniquement si vous acceptez la mesure d'audience.</li>
+            <li><strong>Functional Software, Inc. (Sentry)</strong> (États-Unis) — rapports d'erreurs techniques.</li>
+            <li><strong>Intuition Machines, Inc. (hCaptcha)</strong> (États-Unis) — protection anti-robot des formulaires d'inscription, de mot de passe oublié et de contact.</li>
             </ul>
-
-            <h3>5.3 Transferts hors UE</h3>
-            <p>Vos données sont hébergées au sein de l'Union Européenne. En cas de transfert hors UE, des garanties appropriées (clauses contractuelles types) sont mises en place.</p>
+            <h3>Transferts hors de l'Union européenne</h3>
+            <p>Les données traitées par Google, Sentry et hCaptcha peuvent être transférées aux États-Unis. Ces transferts reposent sur la décision d'adéquation de la Commission européenne du 10 juillet 2023 (cadre de protection des données UE–États-Unis, « Data Privacy Framework ») lorsque le prestataire y est certifié, et à défaut sur les clauses contractuelles types de la Commission européenne proposées par le prestataire. Vous pouvez nous demander une copie de ces garanties à <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a>.</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec6_title"><i class="fas fa-cookie-bite"></i> 6. Cookies et traceurs</h2>
-          <div class="legal-text" data-i18n-html="legal.pc_sec6_body">
-            <h3>6.1 Types de cookies utilisés</h3>
-
+          <div class="legal-text" data-i18n-html="legal.pc_sec6_body_v2">
+            <h3>6.1 Catégories de traceurs</h3>
             <div class="cookie-types">
-              <div class="cookie-card essential">
-                <i class="fas fa-check-circle"></i>
-                <h3>Cookies essentiels</h3>
-                <p>Nécessaires au fonctionnement du site (authentification, sécurité, préférences de base)</p>
-                <span class="cookie-consent">Pas de consentement requis</span>
-              </div>
-
-              <div class="cookie-card analytics">
-                <i class="fas fa-chart-pie"></i>
-                <h3>Cookies analytiques</h3>
-                <p>Mesure d'audience et amélioration du site</p>
-                <span class="cookie-consent">Consentement requis</span>
-              </div>
-
-              <div class="cookie-card preference">
-                <i class="fas fa-sliders-h"></i>
-                <h3>Cookies de préférence</h3>
-                <p>Mémorisation de vos choix (filtres, affichage, langue)</p>
-                <span class="cookie-consent">Consentement requis</span>
-              </div>
+            <div class="cookie-card essential">
+            <i class="fas fa-check-circle"></i><h4>Essentiels et fonctionnels</h4>
+            <p>Nécessaires au service que vous demandez : session, sécurité, choix des cookies, langue, comparateur, affichage</p>
+            <span class="cookie-consent">Pas de consentement requis</span></div>
+            <div class="cookie-card analytics">
+            <i class="fas fa-chart-pie"></i><h4>Mesure d'audience</h4>
+            <p>Google Analytics : fréquentation du site, avec un identifiant pseudonyme</p>
+            <span class="cookie-consent">Consentement requis</span></div>
             </div>
-
             <h3>6.2 Inventaire détaillé</h3>
-            <p>Liste exhaustive des cookies et traceurs déposés ou susceptibles de l'être, conformément à la délibération CNIL n° 2020-091&nbsp;:</p>
-
-            <div class="cookies-inventory-wrap">
-              <table class="cookies-inventory">
-                <caption class="sr-only">Inventaire détaillé des cookies et traceurs : nom, type, durée, finalité, stockage et exigence de consentement.</caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Nom</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Durée</th>
-                    <th scope="col">Finalité</th>
-                    <th scope="col">Stockage</th>
-                    <th scope="col">Consentement</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>refreshToken</code></td>
-                    <td>Essentiel</td>
-                    <td>7 jours</td>
-                    <td>Renouvellement de session authentifiée (rotation jti)</td>
-                    <td>Cookie HttpOnly · SameSite=Strict · Path=/api</td>
-                    <td>Exempté (CNIL)</td>
-                  </tr>
-                  <tr>
-                    <td><code>voldhistoire_cookie_consent</code></td>
-                    <td>Essentiel</td>
-                    <td>365 jours</td>
-                    <td>Mémorisation de vos préférences RGPD</td>
-                    <td>Cookie + localStorage</td>
-                    <td>Exempté (CNIL)</td>
-                  </tr>
-                  <tr>
-                    <td><code>vol-histoire-lang</code></td>
-                    <td>Essentiel</td>
-                    <td>Persistant</td>
-                    <td>Langue d'affichage (FR / EN)</td>
-                    <td>localStorage</td>
-                    <td>Exempté (UX de base)</td>
-                  </tr>
-                  <tr>
-                    <td><code>vh_hangar_view</code></td>
-                    <td>Préférence</td>
-                    <td>Persistant</td>
-                    <td>Vue grille ou liste sur le hangar</td>
-                    <td>localStorage</td>
-                    <td>Requis</td>
-                  </tr>
-                  <tr>
-                    <td><code>vh_compare_ids</code></td>
-                    <td>Préférence</td>
-                    <td>Persistant</td>
-                    <td>Liste des appareils sélectionnés pour comparaison</td>
-                    <td>localStorage</td>
-                    <td>Requis</td>
-                  </tr>
-                  <tr>
-                    <td><code>vh-onboarding-done</code></td>
-                    <td>Préférence</td>
-                    <td>Persistant</td>
-                    <td>Indicateur «&nbsp;onboarding vu&nbsp;» (évite la ré-affichage)</td>
-                    <td>localStorage</td>
-                    <td>Requis</td>
-                  </tr>
-                  <tr>
-                    <td><code>_ga</code></td>
-                    <td>Analytique</td>
-                    <td>13 mois</td>
-                    <td>Mesure d'audience Google Analytics 4 — utilisateur unique</td>
-                    <td>Cookie tiers (Google)</td>
-                    <td>Requis</td>
-                  </tr>
-                  <tr>
-                    <td><code>_ga_&lt;ID&gt;</code></td>
-                    <td>Analytique</td>
-                    <td>13 mois</td>
-                    <td>Identifiant de session GA4 par container</td>
-                    <td>Cookie tiers (Google)</td>
-                    <td>Requis</td>
-                  </tr>
-                  <tr>
-                    <td><code>_gid</code></td>
-                    <td>Analytique</td>
-                    <td>24 heures</td>
-                    <td>Distinction des utilisateurs sur 24&nbsp;h</td>
-                    <td>Cookie tiers (Google)</td>
-                    <td>Requis</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <p class="cookies-marketing-note"><strong>Cookies marketing&nbsp;:</strong> aucun cookie publicitaire ou de retargeting n'est actuellement déposé sur ce site.</p>
-
-            <h3>6.3 Gestion des cookies</h3>
-            <p>Vous pouvez à tout moment&nbsp;:</p>
+            <p>Liste des cookies et autres traceurs utilisés par le site, conformément à la délibération CNIL n° 2020-091 :</p>
+            <section class="cookies-inventory-wrap" tabindex="0" aria-label="Inventaire des cookies"><table class="cookies-inventory"><caption class="sr-only">Inventaire détaillé des cookies et traceurs : nom, type, durée, finalité, stockage et exigence de consentement.</caption><thead><tr><th scope="col">Nom</th><th scope="col">Type</th><th scope="col">Durée</th><th scope="col">Finalité</th><th scope="col">Stockage</th><th scope="col">Consentement</th></tr>
+            </thead><tbody>
+            <tr><td><code>refreshToken</code></td><td>Essentiel</td><td>7 jours</td><td>Maintien de la session connectée (renouvellement du jeton d'accès)</td><td>Cookie HttpOnly · Secure · SameSite=Strict · Path=/api</td><td>Exempté</td></tr>
+            <tr><td><code>vh_session</code></td><td>Essentiel</td><td>7 jours</td><td>Signale au navigateur qu'une session existe ; ne contient aucune donnée personnelle</td><td>Cookie · SameSite=Strict</td><td>Exempté</td></tr>
+            <tr><td><code>voldhistoire_cookie_consent</code></td><td>Essentiel</td><td>6 mois</td><td>Mémorisation de votre choix sur les cookies et de sa date</td><td>Cookie + localStorage</td><td>Exempté</td></tr>
+            <tr><td><code>vol-histoire-lang</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Langue d'affichage (FR / EN)</td><td>localStorage</td><td>Exempté</td></tr>
+            <tr><td><code>vh_hangar_view</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Affichage du hangar en grille ou en liste</td><td>localStorage</td><td>Exempté</td></tr>
+            <tr><td><code>vh_compare_ids</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Appareils choisis pour le comparateur</td><td>localStorage</td><td>Exempté</td></tr>
+            <tr><td><code>vh-onboarding-done</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Visite guidée déjà vue (évite de la réafficher)</td><td>localStorage</td><td>Exempté</td></tr>
+            <tr><td><code>hangar_filters</code></td><td>Fonctionnel</td><td>Fermeture de l'onglet</td><td>Filtres du hangar, pour retrouver la même liste depuis une fiche</td><td>sessionStorage</td><td>Exempté</td></tr>
+            <tr><td>Cache du site</td><td>Fonctionnel</td><td>Jusqu'à la version suivante du site</td><td>Fichiers du site gardés par le service worker pour un affichage plus rapide</td><td>Cache du navigateur</td><td>Exempté</td></tr>
+            <tr><td><code>_ga</code></td><td>Mesure d'audience</td><td>13 mois</td><td>Identifiant pseudonyme du navigateur (Google Analytics 4)</td><td>Cookie déposé par Google Analytics</td><td>Requis</td></tr>
+            <tr><td><code>_ga_&lt;ID&gt;</code></td><td>Mesure d'audience</td><td>13 mois</td><td>État de la session de mesure (Google Analytics 4)</td><td>Cookie déposé par Google Analytics</td><td>Requis</td></tr>
+            <tr><td>hCaptcha</td><td>Sécurité</td><td>Fixée par hCaptcha</td><td>Distinguer un humain d'un robot sur les formulaires d'inscription, de mot de passe oublié et de contact</td><td>Traceurs d'hCaptcha sur son propre domaine</td><td>Exempté (sécurité)</td></tr>
+            </tbody></table>
+            </section>
+            <p class="cookies-marketing-note"><strong>Cookies publicitaires :</strong> aucun. Sentry, utilisé pour le suivi des erreurs, ne dépose pas de cookie.</p>
+            <h3>6.3 Gérer vos choix</h3>
             <ul>
-              <li>Accepter ou refuser les cookies via notre bandeau de consentement</li>
-              <li>Modifier vos préférences dans les paramètres de votre compte</li>
-              <li>Configurer votre navigateur pour bloquer les cookies</li>
-              <li>Supprimer les cookies déjà enregistrés</li>
+            <li>Votre choix est conservé 6 mois, puis vous est redemandé.</li>
+            <li>Vous pouvez le modifier à tout moment via le lien « Cookies » en bas de chaque page ou, si vous avez un compte, dans Paramètres › Cookies et confidentialité.</li>
+            <li>Refuser ou retirer votre consentement efface les cookies de Google Analytics et interrompt la mesure d'audience.</li>
+            <li>Vous pouvez aussi effacer les données du site depuis les réglages de votre navigateur : langue, comparateur et affichage reviennent alors à leur état par défaut.</li>
             </ul>
-
             <div class="info-box">
-              <i class="fas fa-exclamation-triangle"></i>
-              <p>Le refus des cookies essentiels peut empêcher l'accès à certaines fonctionnalités du site.</p>
+            <i class="fas fa-exclamation-triangle"></i><p>Bloquer les traceurs essentiels dans votre navigateur empêche la connexion à votre compte.</p>
             </div>
           </div>
         </div>
@@ -471,129 +236,58 @@
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec7_title"><i class="fas fa-lock"></i> 7. Sécurité des données</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec7_body">
-            <p>Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles pour protéger vos données :</p>
-
-            <div class="security-grid">
-              <div class="security-item">
-                <i class="fas fa-shield"></i>
-                <h3>Chiffrement</h3>
-                <p>HTTPS et chiffrement des données sensibles</p>
-              </div>
-
-              <div class="security-item">
-                <i class="fas fa-key"></i>
-                <h3>Mots de passe</h3>
-                <p>Stockage sécurisé avec hachage (bcrypt)</p>
-              </div>
-
-              <div class="security-item">
-                <i class="fas fa-user-lock"></i>
-                <h3>Accès restreints</h3>
-                <p>Principe du moindre privilège</p>
-              </div>
-
-              <div class="security-item">
-                <i class="fas fa-server"></i>
-                <h3>Sauvegardes</h3>
-                <p>Sauvegardes régulières et sécurisées</p>
-              </div>
-
-              <div class="security-item">
-                <i class="fas fa-eye"></i>
-                <h3>Surveillance</h3>
-                <p>Monitoring et détection des intrusions</p>
-              </div>
-
-              <div class="security-item">
-                <i class="fas fa-sync"></i>
-                <h3>Mises à jour</h3>
-                <p>Correctifs de sécurité réguliers</p>
-              </div>
-            </div>
-
-            <p>Malgré ces mesures, aucun système n'est infaillible. En cas de violation de données, nous vous informerons dans les 72 heures conformément au RGPD.</p>
+            <p>Nous mettons en œuvre des mesures techniques et organisationnelles pour protéger vos données :</p>
+            <ul>
+            <li><strong>Chiffrement en transit :</strong> HTTPS sur toutes les connexions, HSTS activé</li>
+            <li><strong>En-têtes de sécurité :</strong> Content-Security-Policy (CSP), X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy</li>
+            <li><strong>Mots de passe :</strong> hachage bcrypt avec sel unique, jamais stockés en clair. Politique : 8 à 128 caractères, au moins 1 majuscule, 1 minuscule et 1 chiffre</li>
+            <li><strong>Sessions :</strong> jetons signés à durée courte, sessions stockées en base et révocables, toutes les sessions coupées au changement de mot de passe</li>
+            <li><strong>Limitation de débit :</strong> protection des routes sensibles (inscription, connexion, mot de passe oublié, contact) contre les attaques par force brute</li>
+            <li><strong>hCaptcha :</strong> protection anti-robot des formulaires publics</li>
+            <li><strong>Requêtes SQL paramétrées :</strong> protection contre les injections SQL</li>
+            <li><strong>Sauvegardes</strong> de la base de données</li>
+            <li><strong>Mises à jour régulières</strong> des dépendances et correctifs de sécurité</li>
+            </ul>
+            <p>Malgré ces mesures, aucun système n'est infaillible. En cas de violation de données personnelles, nous la notifierons à la CNIL dans les 72 heures lorsqu'elle présente un risque pour vos droits (article 33 du RGPD) et, si ce risque est élevé, nous vous en informerons dans les meilleurs délais (article 34).</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec8_title"><i class="fas fa-hand-paper"></i> 8. Vos droits</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec8_body">
-            <p>Conformément au RGPD, vous disposez des droits suivants sur vos données personnelles :</p>
-
-            <div class="rights-grid">
-              <div class="right-card">
-                <i class="fas fa-eye"></i>
-                <h3>Droit d'accès</h3>
-                <p>Consulter les données que nous détenons sur vous</p>
-              </div>
-
-              <div class="right-card">
-                <i class="fas fa-pen"></i>
-                <h3>Droit de rectification</h3>
-                <p>Corriger des données inexactes ou incomplètes</p>
-              </div>
-
-              <div class="right-card">
-                <i class="fas fa-trash"></i>
-                <h3>Droit à l'effacement</h3>
-                <p>Supprimer vos données ("droit à l'oubli")</p>
-              </div>
-
-              <div class="right-card">
-                <i class="fas fa-hand"></i>
-                <h3>Droit d'opposition</h3>
-                <p>Vous opposer à certains traitements</p>
-              </div>
-
-              <div class="right-card">
-                <i class="fas fa-pause"></i>
-                <h3>Droit à la limitation</h3>
-                <p>Limiter temporairement le traitement</p>
-              </div>
-
-              <div class="right-card">
-                <i class="fas fa-download"></i>
-                <h3>Droit à la portabilité</h3>
-                <p>Récupérer vos données dans un format lisible</p>
-              </div>
-            </div>
-
+            <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+            <ul>
+            <li><strong>Droit d'accès</strong> — consulter les données que nous détenons sur vous</li>
+            <li><strong>Droit de rectification</strong> — corriger des données inexactes ou incomplètes</li>
+            <li><strong>Droit à l'effacement</strong> (« droit à l'oubli »)</li>
+            <li><strong>Droit d'opposition</strong> aux traitements fondés sur l'intérêt légitime</li>
+            <li><strong>Droit à la limitation</strong> du traitement</li>
+            <li><strong>Droit à la portabilité</strong> — récupérer vos données dans un format lisible par une machine</li>
+            <li><strong>Droit de retirer votre consentement</strong> à tout moment, pour la mesure d'audience</li>
+            </ul>
             <h3>Exercer vos droits</h3>
-            <p>Pour exercer vos droits, contactez-nous :</p>
-            <div class="contact-methods">
-              <div class="contact-method">
-                <i class="fas fa-envelope"></i>
-                <div>
-                  <strong>Par email</strong>
-                  <p><a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
-                </div>
-              </div>
-              <div class="contact-method">
-                <i class="fas fa-cog"></i>
-                <div>
-                  <strong>Via votre compte</strong>
-                  <p><a href="/settings">Paramètres &gt; Confidentialité</a></p>
-                </div>
-              </div>
-            </div>
-
-            <p>Nous répondrons à votre demande dans un délai d'un mois. Une pièce d'identité peut être demandée pour vérifier votre identité.</p>
-
-            <h3>Réclamation</h3>
+            <p>Depuis votre compte, dans vos <a href="/settings">paramètres</a> :</p>
+            <ul>
+            <li><strong>Profil</strong> — corriger votre nom ou votre adresse email</li>
+            <li><strong>Cookies et confidentialité › Télécharger mes données</strong> — fichier JSON contenant votre profil et vos favoris (accès et portabilité)</li>
+            <li><strong>Zone de danger</strong> — supprimer votre compte, immédiatement et définitivement</li>
+            </ul>
+            <p>Pour tout autre droit, ou si vous n'avez pas de compte, écrivez à <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a>. Nous répondons dans un délai d'un mois. Une preuve d'identité peut être demandée en cas de doute raisonnable.</p>
+            <h3>Réclamation auprès de la CNIL</h3>
             <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la CNIL :</p>
-            <p><strong>CNIL</strong> - 3 Place de Fontenoy, 75007 Paris</p>
-            <p>Site web : <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">www.cnil.fr<span class="sr-only" data-i18n="legal.new_tab"> (nouvel onglet)</span></a></p>
+            <p><strong>CNIL</strong> — 3 Place de Fontenoy, TSA 80715, 75334 PARIS CEDEX 07</p>
+            <p>Site web : <a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a></p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec9_title"><i class="fas fa-child"></i> 9. Mineurs</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec9_body">
-            <p>Notre site est accessible à tous, y compris aux mineurs. Cependant :</p>
+            <p>L'âge minimum pour créer un compte sur Vol d'Histoire est fixé à <strong>15 ans</strong>, conformément à l'article 8 du RGPD transposé en droit français.</p>
             <ul>
-              <li>Les mineurs de moins de 15 ans doivent obtenir l'autorisation de leurs parents pour créer un compte</li>
-              <li>Nous ne collectons pas sciemment de données sur des enfants de moins de 13 ans</li>
-              <li>Si vous êtes parent et constatez que votre enfant a fourni des données sans votre consentement, contactez-nous</li>
+            <li>Les mineurs de moins de 15 ans peuvent consulter le site mais ne peuvent pas créer de compte sans le consentement d'un parent ou titulaire de l'autorité parentale</li>
+            <li>Nous ne collectons pas sciemment de données personnelles d'enfants de moins de 15 ans</li>
+            <li>Si vous êtes parent et constatez qu'un mineur a fourni des données sans votre consentement, contactez-nous pour suppression immédiate</li>
             </ul>
           </div>
         </div>
@@ -601,30 +295,29 @@
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec10_title"><i class="fas fa-sync-alt"></i> 10. Modifications</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec10_body">
-            <p>Nous nous réservons le droit de modifier cette politique de confidentialité à tout moment.</p>
-            <p>En cas de modification substantielle, nous vous informerons par :</p>
-            <ul>
-              <li>Un message sur le site</li>
-              <li>Un email à l'adresse enregistrée (si vous êtes inscrit)</li>
-              <li>Une notification lors de votre prochaine connexion</li>
+            <p>Cette politique peut évoluer avec le site ou la réglementation. La date de la dernière mise à jour figure en bas de page. En cas de modification substantielle, nous vous en informerons par un message sur le site et, si vous avez un compte, par email.</p>
+            <h3>Historique des versions</h3>
+            <ul class="version-history">
+            <li><strong>Version 2.0 — 10 novembre 2026 :</strong> durées alignées sur le fonctionnement réel (suppression immédiate du compte, liens de 30 et 15 minutes), choix des cookies conservé 6 mois, catégorie « préférence » supprimée, inventaire des traceurs refait, formulaire de contact décrit, transferts hors UE précisés, téléchargement des données depuis les paramètres.</li>
+            <li><strong>Version 1.1 — 8 septembre 2026 :</strong> la mesure d'audience repose sur le consentement ; durées des jetons de session corrigées.</li>
+            <li><strong>Version 1.0 — avril 2026 :</strong> première publication.</li>
             </ul>
-            <p>La date de dernière mise à jour est toujours indiquée en bas de cette page.</p>
           </div>
         </div>
 
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec11_title"><i class="fas fa-question-circle"></i> 11. Questions</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec11_body">
-            <p>Pour toute question concernant cette politique de confidentialité ou le traitement de vos données personnelles, n'hésitez pas à nous contacter :</p>
+            <p>Pour toute question concernant cette politique ou le traitement de vos données :</p>
             <div class="contact-info">
-              <p><i class="fas fa-envelope"></i> Email : <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
-              <p><i class="fas fa-user-shield"></i> Responsable du traitement : Titouan Borde</p>
+            <p><strong>Email :</strong> <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a></p>
+            <p><strong>Responsable du traitement :</strong> Titouan Borde</p>
             </div>
           </div>
         </div>
 
         <div class="legal-footer">
-          <p data-i18n="legal.last_update"><i class="fas fa-calendar"></i> Dernière mise à jour : avril 2026</p>
+          <p data-i18n="legal.last_update"><i class="fas fa-calendar"></i> Dernière mise à jour : 10 novembre 2026</p>
           <p data-i18n="legal.rgpd_compliant"><i class="fas fa-check-circle"></i> Conforme au RGPD (UE) 2016/679</p>
         </div>
       </div>
@@ -632,17 +325,7 @@
   </main>
 
   <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section"><div class="footer-logo"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="footer-lockup" width="190" height="50"></div><p data-i18n="footer.desc">Explorez l'histoire de l'aviation militaire à travers notre collection exhaustive d'appareils, du chasseur au transporteur.</p></div>
-        <div class="footer-section"><h3 data-i18n="footer.nav_title">Navigation</h3><ul><li><a href="/" data-i18n="nav.home">Accueil</a></li><li><a href="/hangar" data-i18n="nav.hangar">Hangar</a></li><li><a href="/timeline" data-i18n="nav.timeline">Chronologie</a></li><li><a href="/conflits" data-i18n="nav.conflicts">Conflits</a></li><li><a href="/favorites" data-i18n="nav.favorites">Favoris</a></li><li><a href="/login" data-i18n="nav.login">Connexion</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.resources_title">Ressources</h3><ul><li><a href="/contact" data-i18n="footer.contact">Contact</a></li></ul></div>
-        <div class="footer-section"><h3 data-i18n="footer.legal_title">Légal</h3><ul><li><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a></li><li><a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a></li><li><a href="/cgu" data-i18n="footer.terms">CGU</a></li><li><a href="#" class="cookie-settings-link" data-i18n="footer.cookies">Cookies</a></li></ul></div>
-      </div>
-      <div class="footer-bottom"><p data-i18n="footer.copyright">&copy; 2026 Vol d'Histoire. Tous droits réservés.</p><p data-i18n-html="footer.made_with">Développé avec <i class="fas fa-heart"></i> pour les passionnés d'aviation</p></div>
-    </div>
-  </footer>
+  <!-- @include footer -->
   <div id="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>

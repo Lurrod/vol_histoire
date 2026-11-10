@@ -4654,6 +4654,104 @@ DELETE FROM airplane_wars l USING airplanes a, wars w
      OR (w.name = 'Guerre du Vietnam' AND a.name IN ('Chengdu J-7'))
      OR (w.name = 'Guerre froide' AND a.name IN ('MQ-1 Predator', 'HAL Tejas Mk1', 'HAL Tejas Mk1A', 'Su-30MKI', 'MiG-21 Bison', 'Mitsubishi F-2', 'F-5EM Tiger II', 'Eurofighter Typhoon Allemand', 'Eurofighter Typhoon Italien')));
 
+-- Audit du 2026-11-10 (CONT-001) : rattachements que l'histoire dément.
+-- Étendard IV ↔ guerre d'Algérie (mise en service en juin 1962, après le
+-- cessez-le-feu) ; Super Étendard ↔ guerre du Golfe (aucun engagé en 1990-1991,
+-- les cinq appareils loués à l'Irak rendus en 1985) et ↔ guerre du Liban de 1982
+-- (les frappes françaises datent de 1983). L'Étendard IV rejoint la guerre de
+-- Yougoslavie par zz_backfill_relations.sql (IVP au-dessus de la Bosnie et du Kosovo).
+DELETE FROM airplane_wars l USING airplanes a, wars w
+ WHERE l.id_airplane = a.id AND l.id_wars = w.id
+   AND ((w.name = 'Guerre d''Algérie' AND a.name = 'Étendard IV')
+     OR (w.name IN ('Guerre du Golfe', 'Guerre du Liban') AND a.name = 'Super Étendard'));
+
+-- Récits corrigés (CONT-001, CONT-002). Chaque remplacement ne porte que sur la
+-- phrase fautive : sans effet si elle a déjà été corrigée, donc rejouable.
+UPDATE airplanes SET description = replace(description,
+    'Engagé par la France au Tchad, en Irak (2003).',
+    'Engagé par la France au Tchad, pendant la guerre du Golfe (opération Daguet, 1991), en Afghanistan (à partir de 2007), en Libye (2011) et au Mali (2013).'),
+  description_en = replace(description_en,
+    'Engaged by France in Chad, Iraq (2003).',
+    'Engaged by France in Chad, in the Gulf War (Operation Daguet, 1991), in Afghanistan (from 2007), in Libya (2011) and in Mali (2013).')
+ WHERE name = 'Mirage F1';
+UPDATE airplanes SET description = replace(description,
+    'Engagé en Libye (2011), Syrie, Irak. ',
+    'La Luftwaffe ne l''a pas engagé au combat : l''Allemagne s''est abstenue sur l''intervention en Libye (2011), et sa participation à la coalition contre l''État islamique reposait sur des Tornado de reconnaissance et des avions ravitailleurs. '),
+  description_en = replace(description_en,
+    'Engaged in Libya (2011), Syria, Iraq. ',
+    'The Luftwaffe has not used it in combat: Germany abstained on the 2011 Libya intervention, and its contribution to the coalition against the Islamic State relied on Tornado reconnaissance aircraft and tankers. ')
+ WHERE name = 'Eurofighter Typhoon Allemand';
+UPDATE airplanes SET description = replace(replace(description,
+    'Engagé lors de la **guerre du Golfe** (1991) pour l''appui aux frégates françaises.',
+    'Les Étendard IVP de reconnaissance photographique opèrent au-dessus du **Liban** (1983-1984), de la **Bosnie-Herzégovine** (à partir de 1993) et du **Kosovo** (1999).'),
+    'Retiré en 1991, remplacé par le Super Étendard.',
+    'Les IVM sont retirés en 1991, remplacés par le Super Étendard ; les IVP volent jusqu''en 2000.'),
+  description_en = replace(replace(description_en,
+    'Engaged in the **Gulf War** (1991) supporting French frigates.',
+    'The IVP photo-reconnaissance version flew over **Lebanon** (1983-1984), **Bosnia-Herzegovina** (from 1993) and **Kosovo** (1999).'),
+    'Retired in 1991, replaced by the Super Étendard.',
+    'The IVM was retired in 1991, replaced by the Super Étendard; the IVP flew until 2000.')
+ WHERE name = 'Étendard IV';
+UPDATE airplanes SET description = replace(description,
+    'y compris pendant la guerre du Golfe où il assure la surveillance de surface.',
+    'y compris au début de la crise du Golfe : en 1990, quatre Alizé embarqués sur le *Clemenceau* pour l''opération Salamandre assurent la surveillance maritime.'),
+  description_en = replace(description_en,
+    'including through the Gulf War where it provided surface surveillance.',
+    'including at the start of the Gulf crisis: in 1990, four Alizés embarked on *Clemenceau* for Operation Salamandre provided maritime surveillance.')
+ WHERE name = 'Breguet Alizé';
+UPDATE airplanes SET description = replace(description,
+    'Engagé en Syrie et en Ukraine.',
+    'Engagé en Ukraine depuis 2022. En Syrie, sa présence se limite à deux MiG-31K déployés en juin 2021 sur la base de Hmeimim pour un exercice en Méditerranée orientale.'),
+  description_en = replace(description_en,
+    'Used in Syria and Ukraine.',
+    'Used in combat over Ukraine since 2022. In Syria, its presence was limited to two MiG-31Ks deployed to Hmeimim in June 2021 for an exercise in the eastern Mediterranean.')
+ WHERE name = 'MiG-31';
+UPDATE airplanes SET description = replace(replace(description,
+    'en Iran-Irak, en Érythrée-Éthiopie, au Soudan, au Yémen.',
+    'dans la guerre Iran-Irak, au Liban (1982, aux mains de l''aviation syrienne), au Pérou (guerre du Cenepa, 1995), au Yémen et dans la guerre civile syrienne.'),
+    'toujours en service en Syrie, Libye, Vietnam, Pérou, Angola.',
+    'toujours en service en Angola, en Iran, en Libye, au Vietnam et au Yémen.'),
+  description_en = replace(replace(description_en,
+    'Iran-Iraq, Eritrea-Ethiopia, Sudan, Yemen.',
+    'the Iran-Iraq War, Lebanon (1982, flown by the Syrian air force), Peru (Cenepa War, 1995), Yemen and the Syrian civil war.'),
+    'still in service in Syria, Libya, Vietnam, Peru, Angola.',
+    'still in service in Angola, Iran, Libya, Vietnam and Yemen.')
+ WHERE name = 'Su-17';
+UPDATE airplanes SET description = replace(replace(description,
+    'Engagements français : Kosovo, Afghanistan, Libye, Mali, Irak (opération Chammal 2015).',
+    'L''Irak en loue cinq de 1983 à 1985 pour attaquer les pétroliers pendant la guerre Iran-Irak. Engagements français : Liban (1983), Kosovo (1999), Afghanistan (2001-2011), Libye (2011), Irak (opération Chammal, 2015).'),
+    'Dernier chasseur français mono-réacteur en service.',
+    'Dernier avion de combat monoréacteur de l''aéronautique navale française.'),
+  description_en = replace(replace(description_en,
+    'French engagements: Kosovo, Afghanistan, Libya, Mali, Iraq (Operation Chammal 2015).',
+    'Iraq leased five from 1983 to 1985 to strike tankers during the Iran-Iraq War. French engagements: Lebanon (1983), Kosovo (1999), Afghanistan (2001-2011), Libya (2011), Iraq (Operation Chammal, 2015).'),
+    'The last single-engined French fighter in service.',
+    'The last single-engined combat aircraft of French naval aviation.')
+ WHERE name = 'Super Étendard';
+UPDATE airplanes SET description = replace(description,
+    'Aucun autre appareil de guet aérien avancé n''a jamais été conçu pour opérer depuis un porte-avions. Le Hawkeye est resté sans concurrent pendant soixante ans, et le E-2D',
+    'Successeur de l''E-1 Tracer, le Hawkeye est resté, pendant plus de quarante ans après le retrait du Gannet AEW.3 britannique en 1978, le seul avion de guet aérien embarqué à voilure fixe en service, et le E-2D'),
+  description_en = replace(description_en,
+    'No other airborne early warning aircraft has ever been designed to operate from a carrier. The Hawkeye stood without a competitor for sixty years, and the E-2D',
+    'Successor to the E-1 Tracer, the Hawkeye remained, for more than forty years after the British Gannet AEW.3 was retired in 1978, the only fixed-wing carrier-borne airborne early warning aircraft in service, and the E-2D')
+ WHERE name = 'E-2 Hawkeye';
+UPDATE airplanes SET variants = replace(variants,
+    'six prototypes, premier vol stationnaire en octobre 1960',
+    'six prototypes, premier vol stationnaire captif le 21 octobre 1960, libre le 19 novembre 1960'),
+  variants_en = replace(variants_en,
+    'six prototypes, first hover in October 1960',
+    'six prototypes, first tethered hover on 21 October 1960, first free hover on 19 November 1960')
+ WHERE name = 'Hawker P.1127 Kestrel';
+
+-- Photo du MiG-29 (LEGAL-002) : l'ancienne portait « © 2007 Katsuhiko
+-- TOKUNAGA/DACT, All Rights Reserved ». Même nom de fichier, nouvelle photo libre.
+UPDATE airplanes SET image_credit = 'Tim Felce (Airwolfhound)', image_licence = 'CC BY-SA 2.0'
+ WHERE name = 'MiG-29' AND image_credit IS DISTINCT FROM 'Tim Felce (Airwolfhound)';
+-- Tornado : photo du ministère britannique de la Défense (« Crown Copyright »),
+-- sous Open Government Licence v1.0, qui impose d'en citer la source.
+UPDATE airplanes SET image_credit = 'Cpl Mike Jones, Ministry of Defence', image_licence = 'OGL v1.0'
+ WHERE name = 'Panavia Tornado' AND image_credit IS DISTINCT FROM 'Cpl Mike Jones, Ministry of Defence';
+
 -- ═══ 7. Contraintes de cohérence ═════════════════════════════════════════
 --
 -- Jusqu'ici la seule contrainte de la table portait sur `stealth_level` :

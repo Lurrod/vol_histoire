@@ -23,7 +23,17 @@ info:
     Toutes les pages HTML sont servies avec un query string `?v=<version>`
     sur les assets pour bust le cache navigateur à chaque déploiement.
     Les statiques (CSS/JS/fonts) ont un `Cache-Control` long.
-  version: 4.13.1
+
+    ## Erreurs de requête communes
+    - **400** : corps JSON mal formé, octet NUL (`%00`) dans la chaîne de
+      requête ou le corps (`code: INVALID_CHARACTER`), identifiant de chemin
+      qui n'est pas un entier entre 0 et 2147483647 (plage `INTEGER`
+      PostgreSQL). Ces contrôles ont lieu avant toute requête SQL.
+    - **413** : corps de plus de 100 Ko.
+    - **415** : jeu de caractères ou encodage du corps non pris en charge.
+    Les caractères de contrôle d'un paramètre `search` sont remplacés par une
+    espace.
+  version: 4.14.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -162,6 +172,12 @@ components:
 
     AirplaneInput:
       type: object
+      description: |
+        Champs éditables d'une fiche. Liste canonique : `backend/utils/airplane-fields.js`
+        (`AIRPLANE_FIELDS`), qui pilote l'INSERT et l'UPDATE et dont le formulaire
+        d'administration (`frontend/js/shared/airplane-form.js`) est dérivé.
+        Une chaîne vide est enregistrée comme `null`. En POST, un champ absent vaut
+        `null` ; en PUT, voir la sémantique décrite sur `PUT /airplanes/{id}`.
       required: [name]
       properties:
         name:
@@ -204,8 +220,108 @@ components:
           type: number
         max_range:
           type: number
+        length:
+          type: number
+          minimum: 0
+        wingspan:
+          type: number
+          minimum: 0
+        height:
+          type: number
+          minimum: 0
+        wing_area:
+          type: number
+          minimum: 0
         empty_weight:
           type: number
+        mtow:
+          type: number
+          minimum: 0
+        service_ceiling:
+          type: integer
+          minimum: 0
+        climb_rate:
+          type: number
+          minimum: 0
+        g_limit_pos:
+          type: number
+        g_limit_neg:
+          type: number
+        combat_radius:
+          type: number
+          minimum: 0
+        crew:
+          type: integer
+          minimum: 0
+        engine_name:
+          type: string
+          maxLength: 255
+        engine_count:
+          type: integer
+          minimum: 0
+        engine_type:
+          type: string
+          maxLength: 100
+        engine_type_en:
+          type: string
+          maxLength: 100
+          description: Type de motorisation en anglais (servi par `engine_type` quand `?lang=en`).
+        thrust_dry:
+          type: number
+          minimum: 0
+        thrust_wet:
+          type: number
+          minimum: 0
+        production_start:
+          type: integer
+        production_end:
+          type: integer
+        units_built:
+          type: integer
+          minimum: 0
+        unit_cost_usd:
+          type: integer
+          minimum: 0
+        unit_cost_year:
+          type: integer
+        operators_count:
+          type: integer
+          minimum: 0
+        variants:
+          type: string
+          maxLength: 5000
+        variants_en:
+          type: string
+          maxLength: 5000
+          description: Variantes en anglais (servies par `variants` quand `?lang=en`).
+        stealth_level:
+          type: string
+          enum: [aucune, reduite, moderee, elevee, tres_elevee]
+        nickname:
+          type: string
+          maxLength: 255
+        predecessor_id:
+          type: integer
+        successor_id:
+          type: integer
+        rival_id:
+          type: integer
+        wikipedia_fr:
+          type: string
+          format: uri
+          maxLength: 500
+        wikipedia_en:
+          type: string
+          format: uri
+          maxLength: 500
+        youtube_showcase:
+          type: string
+          format: uri
+          maxLength: 500
+        manufacturer_page:
+          type: string
+          format: uri
+          maxLength: 500
         image_credit:
           type: string
           maxLength: 255
@@ -321,14 +437,20 @@ components:
       name: id
       in: path
       required: true
+      description: Entier de 0 à 2147483647 ; toute autre valeur → 400.
       schema:
         type: integer
+        minimum: 0
+        maximum: 2147483647
     UserId:
       name: id
       in: path
       required: true
+      description: Entier de 0 à 2147483647 ; toute autre valeur → 400.
       schema:
         type: integer
+        minimum: 0
+        maximum: 2147483647
 
 paths:
   # ═══════════════════════════════════════════════════════════
@@ -640,6 +762,72 @@ paths:
         '403':
           description: Accès réservé aux admins
 
+  /users/me/export:
+    get:
+      tags: [Users]
+      summary: Exporter ses données personnelles (JSON)
+      description: |
+        Droit d'accès et à la portabilité (RGPD art. 15 et 20) : profil et
+        favoris du compte connecté, en pièce jointe JSON
+        (`vol-histoire-donnees-<id>.json`). Ni hash de mot de passe ni jeton.
+        `consent` vaut toujours `null` : le choix de cookies n'est conservé que
+        dans le navigateur. Limité à 10 demandes par 15 minutes et par IP.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Données du compte
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: attachment; filename="vol-histoire-donnees-42.json"
+            Cache-Control:
+              schema:
+                type: string
+                example: no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [exported_at, user, favorites, consent]
+                properties:
+                  exported_at:
+                    type: string
+                    format: date-time
+                  user:
+                    type: object
+                    properties:
+                      id: { type: integer }
+                      name: { type: string }
+                      email: { type: string, format: email }
+                      role: { type: string, enum: [admin, editeur, utilisateur], nullable: true }
+                      email_verified: { type: boolean }
+                      created_at: { type: string, format: date-time }
+                      updated_at: { type: string, format: date-time }
+                      failed_login_count: { type: integer }
+                      locked_until: { type: string, format: date-time, nullable: true }
+                  favorites:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        airplane_id: { type: integer }
+                        name: { type: string }
+                        added_at: { type: string, format: date-time }
+                  consent:
+                    type: object
+                    nullable: true
+                    description: Toujours `null` (consentement conservé côté navigateur)
+        '401':
+          description: Jeton expiré, invalide ou révoqué
+        '403':
+          description: Non authentifié
+        '404':
+          description: Compte supprimé entre-temps
+        '429':
+          description: Trop de demandes d'export
+
   /users/{id}:
     get:
       tags: [Users]
@@ -931,6 +1119,21 @@ paths:
     put:
       tags: [Airplanes]
       summary: Modifier un avion (admin/éditeur)
+      description: |
+        **Mise à jour partielle par présence des clés** (seules les colonnes de
+        `AirplaneInput` sont prises en compte) :
+
+        - un champ **absent** du corps est **laissé inchangé** ;
+        - un champ présent à `null` ou à `""` est **effacé** (colonne mise à `NULL`) ;
+        - un champ présent avec une valeur la remplace.
+
+        `name` reste obligatoire dans le corps (validation), même s'il ne change pas.
+        Le formulaire d'administration envoie tous ses champs, dont `engine_type_en`
+        et `variants_en` ; un client qui ne gère pas une colonne doit l'omettre
+        plutôt que l'envoyer vide. Les colonnes `_en` ne figurent pas dans
+        `GET /airplanes/{id}?lang=fr` : pour les relire, demander la fiche en
+        `?lang=en` (la valeur anglaise y remplace la colonne française, ou vaut
+        `"Translation needed"` si elle est vide alors que la française ne l'est pas).
       security:
         - BearerAuth: []
       parameters:
@@ -941,11 +1144,18 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AirplaneInput'
+            example:
+              name: MiG-29
+              nickname: Fulcrum
+              engine_type_en: Turbofan
+              successor_id: null
       responses:
         '200':
-          description: Avion modifié
+          description: Avion modifié (ligne complète après mise à jour)
         '400':
-          description: Données invalides
+          description: Données invalides, référence FK invalide ou auto-référence (prédécesseur / successeur / rival)
+        '403':
+          description: Rôle insuffisant
         '404':
           description: Avion non trouvé
 
@@ -1147,6 +1357,30 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/WarSummary'
+
+  /credits:
+    get:
+      tags: [Referentials]
+      summary: Crédits photo de toutes les fiches
+      description: >
+        Source de la page `/credits` (attribution exigée par les licences
+        Creative Commons et OGL). Une ligne par fiche, triée par nom ;
+        `image_credit` et `image_licence` valent `null` quand la provenance
+        n'est pas documentée. Cacheable (Cache-Control public).
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer }
+                    name: { type: string }
+                    name_en: { type: string, nullable: true }
+                    image_credit: { type: string, nullable: true }
+                    image_licence: { type: string, nullable: true, example: 'CC BY-SA 2.0' }
 
   /wars/{slug}:
     get:
@@ -1508,6 +1742,49 @@ paths:
                     type: string
                     nullable: true
                     description: Sitekey publique hCaptcha, ou `null` si non configurée
+
+  /csp-report:
+    post:
+      tags: [Monitoring]
+      summary: Recevoir un rapport de violation CSP
+      description: |
+        Cible des directives `report-uri` et `report-to` (en-tête
+        `Reporting-Endpoints: csp-endpoint="/api/csp-report"`). Accepte
+        l'ancien format `application/csp-report` et la Reporting API
+        `application/reports+json` (lot de rapports ; seuls les
+        `csp-violation` sont lus, 10 au plus par envoi). Chaque violation est
+        journalisée en `warn` avec les URL réduites à origine + chemin ; rien
+        n'est stocké, ni IP ni user-agent. Corps limité à 16 Ko, 60 envois par
+        15 minutes et par IP.
+      requestBody:
+        required: true
+        content:
+          application/csp-report:
+            schema:
+              type: object
+              properties:
+                csp-report:
+                  type: object
+                  additionalProperties: true
+          application/reports+json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  type: { type: string, example: csp-violation }
+                  body: { type: object, additionalProperties: true }
+      responses:
+        '204':
+          description: Rapport reçu
+        '400':
+          description: Corps JSON mal formé
+        '413':
+          description: Corps de plus de 16 Ko
+        '415':
+          description: Type de contenu non pris en charge
+        '429':
+          description: Trop de rapports
 
   # ═══════════════════════════════════════════════════════════
   # MONITORING

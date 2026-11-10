@@ -32,7 +32,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(200, 169, 110, 0.08);
+  background: var(--gold-a08);
   border-radius: 10px;
   color: var(--hud-cyan);
   font-size: 1.3rem;
@@ -119,8 +119,8 @@
 .form-group input,
 .form-group select,
 .form-group textarea {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(200, 169, 110, 0.12);
+  background: var(--white-a04);
+  border: 1px solid var(--border-field);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   color: var(--white);
@@ -143,7 +143,7 @@
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--text-placeholder);
 }
 
 .form-group input:focus:not(:focus-visible),
@@ -232,10 +232,10 @@
 .form-rgpd-notice {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--white-a06);
   font-size: 0.8rem;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-ghost);
 }
 
 .form-rgpd-notice a {

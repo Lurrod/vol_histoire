@@ -32,7 +32,10 @@
         }
         setTimeout(() => btn.classList.remove('flash'), 800);
       } catch {
-        window.prompt('Copier le lien :', url);
+        // Repli français tant que les locales ne sont pas chargées
+        // (i18n.t() renvoie alors la clé).
+        const label = i18n.t('details.copy_link_prompt');
+        window.prompt(label && label !== 'details.copy_link_prompt' ? label : 'Copier le lien :', url);
       }
     }
 

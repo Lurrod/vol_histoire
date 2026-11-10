@@ -8,12 +8,13 @@
 /**
  * Échappe le HTML pour éviter les injections XSS.
  * Utilisable dans les templates : `${escapeHtml(userData.name)}`
+ * Sûr aussi dans un attribut entre guillemets (`href="${escapeHtml(url)}"`) :
+ * les guillemets doubles et simples sont échappés.
  */
 function escapeHtml(text) {
   if (text == null) return '';
-  const div = document.createElement('div');
-  div.textContent = String(text);
-  return div.innerHTML;
+  const escapes = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' };
+  return String(text).replace(/[&<>"']/g, (c) => escapes[c]);
 }
 
 /**
@@ -39,13 +40,17 @@ function safeSetHTML(el, html) {
       // les rôles a11y du fragment injecté (ex: cookie-banner = <aside>).
       ALLOWED_TAGS: ['div', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
                      'a', 'i', 'b', 'strong', 'em', 'br', 'hr', 'img',
-                     'ul', 'ol', 'li', 'button', 'input', 'option',
+                     'ul', 'ol', 'li', 'button', 'input', 'label', 'option',
                      'table', 'tr', 'td', 'th', 'thead', 'tbody',
                      'aside', 'section', 'nav', 'header', 'footer', 'main', 'article'],
       // data-i18n* : attributs déclaratifs lus par i18n.applyToDOM pour
       // traduire le contenu injecté (sans ces attributs, le banner reste figé en FR).
+      // label/for/checked/disabled : interrupteurs du bandeau cookies
+      // (cookie-consent.html) — sans eux, les cookies essentiels arrivaient
+      // décochés et modifiables, le marketing activable, et sans libellé.
       ALLOWED_ATTR: ['class', 'id', 'href', 'src', 'alt', 'title', 'data-id',
                      'data-user-id', 'data-value', 'value', 'type', 'role',
+                     'for', 'checked', 'disabled',
                      'aria-label', 'aria-labelledby', 'aria-hidden', 'aria-live',
                      'tabindex', 'width', 'height', 'loading',
                      'data-i18n', 'data-i18n-html', 'data-i18n-aria',
@@ -309,26 +314,48 @@ function trapFocus(container, options = {}) {
   return { destroy() { container.removeEventListener('keydown', handler); } };
 }
 
+/* aria-describedby peut lister plusieurs identifiants (aide permanente +
+ * erreur, WCAG 3.3.2). Ces helpers n'ajoutent et ne retirent que celui de
+ * l'erreur : une aide déjà référencée n'est jamais écrasée ni vidée. */
+function _describedByIds(inputEl) {
+  return (inputEl.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+}
+
+function _setDescribedByIds(inputEl, ids) {
+  if (ids.length) inputEl.setAttribute('aria-describedby', ids.join(' '));
+  else inputEl.removeAttribute('aria-describedby');
+}
+
+/** Élément d'erreur du champ : un `.form-error` déjà référencé, sinon celui
+ *  nommé `<id>-error` (présent dans le HTML mais pas encore référencé). */
+function _findErrorElement(inputEl, ids) {
+  for (const id of ids) {
+    const el = document.getElementById(id);
+    if (el && el.classList.contains('form-error')) return el;
+  }
+  return inputEl.id ? document.getElementById(inputEl.id + '-error') : null;
+}
+
 /**
  * Affiche une erreur en ligne sous un champ de formulaire.
- * Ajoute aria-invalid="true" et lie le message via aria-describedby.
+ * Ajoute aria-invalid="true" et lie le message via aria-describedby
+ * (placé en tête, devant les éventuelles aides déjà référencées).
  */
 function setFieldError(inputEl, message) {
   if (!inputEl) return;
   inputEl.setAttribute('aria-invalid', 'true');
 
-  let errorId = inputEl.getAttribute('aria-describedby');
-  let errEl = errorId ? document.getElementById(errorId) : null;
+  const ids = _describedByIds(inputEl);
+  let errEl = _findErrorElement(inputEl, ids);
 
   if (!errEl) {
-    errorId = inputEl.id + '-error';
     errEl = document.createElement('span');
-    errEl.id = errorId;
+    errEl.id = inputEl.id + '-error';
     errEl.className = 'form-error';
     errEl.setAttribute('role', 'alert');
     inputEl.parentNode.insertBefore(errEl, inputEl.nextSibling);
-    inputEl.setAttribute('aria-describedby', errorId);
   }
+  if (!ids.includes(errEl.id)) _setDescribedByIds(inputEl, [errEl.id, ...ids]);
 
   errEl.textContent = message;
 
@@ -349,19 +376,21 @@ function setFieldError(inputEl, message) {
 }
 
 /**
- * Retire l'erreur en ligne d'un champ de formulaire.
+ * Retire l'erreur en ligne d'un champ de formulaire : vide le message et
+ * retire son identifiant d'aria-describedby, en laissant les autres.
  */
 function clearFieldError(inputEl) {
   if (!inputEl) return;
   inputEl.removeAttribute('aria-invalid');
   inputEl.classList.remove('is-shaking');
-  const errorId = inputEl.getAttribute('aria-describedby');
-  if (errorId) {
-    const errEl = document.getElementById(errorId);
-    if (errEl && errEl.classList.contains('form-error')) {
-      errEl.textContent = '';
-    }
-  }
+  const ids = _describedByIds(inputEl);
+  const kept = ids.filter((id) => {
+    const el = document.getElementById(id);
+    if (!el || !el.classList.contains('form-error')) return true;
+    el.textContent = '';
+    return false;
+  });
+  if (kept.length !== ids.length) _setDescribedByIds(inputEl, kept);
 }
 
 /**

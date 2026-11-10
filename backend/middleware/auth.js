@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { withTransaction } = require('../db');
+const refreshTokensRepo = require('../repositories/refresh-tokens');
+const usersRepo = require('../repositories/users');
 
 // -----------------------------------------------------------------------------
 // Pool PostgreSQL (injecté depuis app.js via setPool)
@@ -54,10 +56,7 @@ function generateRefreshToken(user) {
  */
 async function storeRefreshToken(jti, userId) {
   const expiresAt = new Date(Date.now() + REFRESH_COOKIE_MAX_AGE);
-  await pool.query(
-    'INSERT INTO refresh_tokens (jti, user_id, expires_at) VALUES ($1, $2, $3)',
-    [jti, userId, expiresAt]
-  );
+  await refreshTokensRepo.insert(pool, jti, userId, expiresAt);
 }
 
 /**
@@ -72,12 +71,8 @@ async function storeRefreshToken(jti, userId) {
  * @returns {Promise<{ state: 'valid'|'reused'|'revoked'|'expired'|'unknown', userId?: number }>}
  */
 async function getRefreshTokenState(jti) {
-  const result = await pool.query(
-    'SELECT user_id, revoked, rotated_at, expires_at > NOW() AS live FROM refresh_tokens WHERE jti = $1',
-    [jti]
-  );
-  if (result.rows.length === 0) return { state: 'unknown' };
-  const row = result.rows[0];
+  const row = await refreshTokensRepo.findState(pool, jti);
+  if (!row) return { state: 'unknown' };
   if (row.revoked) return { state: row.rotated_at ? 'reused' : 'revoked', userId: row.user_id };
   return { state: row.live ? 'valid' : 'expired', userId: row.user_id };
 }
@@ -93,10 +88,7 @@ async function isRefreshTokenValid(jti) {
  * Révoque un refresh token spécifique (logout).
  */
 async function revokeRefreshToken(jti) {
-  await pool.query(
-    'UPDATE refresh_tokens SET revoked = TRUE WHERE jti = $1',
-    [jti]
-  );
+  await refreshTokensRepo.revoke(pool, jti);
 }
 
 /**
@@ -114,19 +106,13 @@ async function revokeRefreshToken(jti) {
 async function rotateRefreshToken(oldJti, newJti, userId) {
   const expiresAt = new Date(Date.now() + REFRESH_COOKIE_MAX_AGE);
   return withTransaction(pool, async (client) => {
-    const revokeResult = await client.query(
-      'UPDATE refresh_tokens SET revoked = TRUE, rotated_at = NOW() WHERE jti = $1 AND revoked = FALSE',
-      [oldJti]
-    );
-    if (revokeResult.rowCount === 0) {
+    const rotated = await refreshTokensRepo.markRotated(client, oldJti);
+    if (rotated === 0) {
       const err = new Error('Refresh token déjà rotaté (replay détecté)');
       err.code = 'REFRESH_REPLAY';
       throw err;
     }
-    await client.query(
-      'INSERT INTO refresh_tokens (jti, user_id, expires_at) VALUES ($1, $2, $3)',
-      [newJti, userId, expiresAt]
-    );
+    await refreshTokensRepo.insert(client, newJti, userId, expiresAt);
   });
 }
 
@@ -135,10 +121,7 @@ async function rotateRefreshToken(oldJti, newJti, userId) {
  * (changement de mot de passe, suppression de compte, etc.).
  */
 async function revokeAllUserRefreshTokens(userId) {
-  await pool.query(
-    'UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE',
-    [userId]
-  );
+  await refreshTokensRepo.revokeAllForUser(pool, userId);
 }
 
 /**
@@ -148,11 +131,7 @@ async function revokeAllUserRefreshTokens(userId) {
  * @param {{ query: Function }} client - client de transaction (ou pool)
  */
 async function bumpTokenVersion(client, userId) {
-  const result = await client.query(
-    'UPDATE users SET token_version = token_version + 1 WHERE id = $1 RETURNING token_version',
-    [userId]
-  );
-  return result.rows[0] ? Number(result.rows[0].token_version) : null;
+  return usersRepo.bumpTokenVersion(client, userId);
 }
 
 /**
@@ -161,9 +140,7 @@ async function bumpTokenVersion(client, userId) {
  * qui permet de reconnaître un rejeu (getRefreshTokenState → 'reused').
  */
 async function cleanupExpiredTokens() {
-  await pool.query(
-    'DELETE FROM refresh_tokens WHERE expires_at < NOW()'
-  );
+  await refreshTokensRepo.deleteExpired(pool);
 }
 
 /**
@@ -172,12 +149,7 @@ async function cleanupExpiredTokens() {
  * Retourne le nombre de comptes supprimés.
  */
 async function cleanupUnverifiedUsers() {
-  const result = await pool.query(
-    `DELETE FROM users
-     WHERE email_verified = FALSE
-       AND created_at < NOW() - INTERVAL '7 days'`
-  );
-  return result.rowCount || 0;
+  return usersRepo.deleteStaleUnverified(pool);
 }
 
 // Témoin de session lisible par le JS. Le refresh token reste httpOnly — donc
@@ -227,8 +199,7 @@ function clearRefreshCookie(res) {
 // de passe ou une suppression ne doit plus rien autoriser. Remplaçable pour les
 // tests (setAuthStateLoader) ; passer null rétablit la lecture en base.
 async function defaultAuthStateLoader(userId) {
-  const result = await pool.query('SELECT role_id, token_version FROM users WHERE id = $1', [userId]);
-  return result.rows[0] || null;
+  return usersRepo.findAuthState(pool, userId);
 }
 let loadAuthState = defaultAuthStateLoader;
 function setAuthStateLoader(fn) { loadAuthState = fn || defaultAuthStateLoader; }

@@ -63,12 +63,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (state.aircraft.length > 0) VH.hangar.render.renderAircraft(state);
   });
 
-  // V2 : URL state (override session)
-  VH.hangar.filters.readStateFromUrl(state);
-  if (searchInput && state.filters.search) searchInput.value = state.filters.search;
-  if (sortSelect) sortSelect.value = state.sort;
-  VH.hangar.filters.applyFiltersAndRender(state);
-  VH.hangar.filters.updateActiveFilters(state);
+  // L'état de l'URL est déjà appliqué plus haut, avant l'unique loadAircraft.
+  // Le relire ici et relancer applyFiltersAndRender doublait la requête
+  // /api/airplanes et le rendu des cartes à chaque ouverture (PERF-006).
 
   // V2 : facettes, vue, comparaison, sheet mobile
   VH.hangar.data.fetchFacets(state);

@@ -130,12 +130,12 @@
   background: rgba(200, 169, 110, 0.07);
   padding: 0.6rem 1.5rem 0.6rem 2rem;
   border-radius: 50px;
-  font-size: 0.7rem;
+  font-size: var(--text-xs);
   font-weight: 700;
   color: var(--hud-cyan, #C8A96E);
   text-transform: uppercase;
   letter-spacing: 2px;
-  border: 1px solid rgba(200, 169, 110, 0.2);
+  border: 1px solid var(--gold-a20);
   margin-bottom: 2.5rem;
   position: relative;
   overflow: hidden;
@@ -160,7 +160,7 @@
   height: 90px;
   margin: 0 auto 2rem;
   border-radius: 50%;
-  border: 2px solid rgba(200, 169, 110, 0.2);
+  border: 2px solid var(--gold-a20);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -172,7 +172,7 @@
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  border: 1px dashed rgba(200, 169, 110, 0.12);
+  border: 1px dashed var(--gold-a12);
   animation: ob-rotate 20s linear infinite;
 }
 @keyframes ob-rotate {
@@ -197,7 +197,7 @@
 /* ── Description ───────────────────────────────────────────── */
 .ob-desc {
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-ghost);
   line-height: 1.8;
   margin: 0 0 2.5rem;
   max-width: 460px;
@@ -216,7 +216,7 @@
   width: 48px;
   height: 3px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--white-a08);
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
@@ -225,7 +225,7 @@
   background: rgba(200, 169, 110, 0.35);
 }
 .ob-bar.active {
-  background: rgba(200, 169, 110, 0.2);
+  background: var(--gold-a20);
 }
 .ob-bar.active::after {
   content: '';
@@ -255,7 +255,7 @@
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: transparent;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--text-ghost);
   transition: all 0.25s;
   display: inline-flex;
   align-items: center;

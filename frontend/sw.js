@@ -1,146 +1,268 @@
-/* Vol d'Histoire — service worker minimal.
+/* Vol d'Histoire — service worker.
+ *
+ * Version : lue dans l'URL d'enregistrement (`/sw.js?v=<version>`, posée par
+ * js/sw-register.js d'après le `?v=` que serveHtml ajoute à chaque script).
+ * Elle est donc toujours celle des pages servies : les URL pré-cachées
+ * (`/css/core.min.css?v=4.13.1`…) sont exactement celles que les pages
+ * demandent. CACHE_VERSION n'est que le repli (sw.js chargé sans paramètre) ;
+ * un test Jest le garde aligné sur package.json — à bumper à chaque release.
  *
  * Stratégie :
- *   - Shell pré-caché à l'install : core CSS, polices, logo, manifest, page d'accueil.
- *   - HTML : network-first avec fallback cache (les visiteurs revenants gardent un
- *     contenu utilisable hors ligne).
- *   - Assets statiques same-origin (/css, /js, /fonts, /assets) : stale-while-revalidate.
- *   - /api/* : passthrough strict (jamais caché — données authentifiées, CORS, CSRF).
- *   - Flèche de secours hors ligne : fallback vers "/" (page d'accueil cached).
- *
- * Versioning : bumper CACHE_VERSION à chaque déploiement pour purger les vieux caches.
+ *   - Install : pré-cache du shell (accueil, page hors ligne, cœur CSS/JS,
+ *     locales, polices, logos). Pas de skipWaiting automatique : la nouvelle
+ *     version attend que la page propose « Recharger » (message SKIP_WAITING).
+ *   - Navigations : network-first ; hors ligne → la page en cache, sinon la
+ *     page /offline (servie sous l'URL demandée, d'où ses chemins absolus).
+ *   - CSS/JS versionnés (?v=) : cache-first (URL immuable).
+ *   - Locales : stale-while-revalidate dans le cache du shell (hors ligne,
+ *     les traductions restent disponibles).
+ *   - Photos d'appareils : stale-while-revalidate dans un cache plafonné.
+ *   - Autres assets statiques : stale-while-revalidate, cache plafonné.
+ *   - /api/* : jamais intercepté (données authentifiées, CSRF).
+ *   Chaque cache runtime est borné (éviction FIFO : ordre d'insertion).
  */
 
-const CACHE_VERSION = 'v4.13.1';
-const SHELL_CACHE = `vh-shell-${CACHE_VERSION}`;
-const RUNTIME_CACHE = `vh-runtime-${CACHE_VERSION}`;
+const CACHE_VERSION = 'v4.14.0';
+const CACHE_PREFIX = 'vh-';
 
-const SHELL_ASSETS = [
-  '/',
-  '/manifest.webmanifest',
-  '/favicon.svg',
-  '/assets/logo/favicon.svg',
-  '/assets/logo/icon-192.png',
-  '/assets/logo/icon-512.png',
-  '/css/core.min.css',
-  '/css/home.min.css',
-  '/fonts/DMSans.woff2',
-  '/fonts/BarlowCondensed-400.woff2',
-  '/fonts/BarlowCondensed-600.woff2',
-];
+const LIMITS = {
+  pages: 40,     // pages HTML visitées
+  static: 120,   // CSS/JS/polices/logos/drapeaux hors pré-cache
+  images: 60,    // photos d'appareils (≈ 30 à 300 Ko chacune)
+};
 
-// -----------------------------------------------------------------------------
-// Install : pré-cache du shell. `catch` sur chaque add pour tolérer un asset 404
-// (un déploiement partiel ne doit pas bloquer l'activation du SW).
-// -----------------------------------------------------------------------------
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(SHELL_CACHE).then(async (cache) => {
-      await Promise.all(
-        SHELL_ASSETS.map((url) =>
-          cache.add(new Request(url, { cache: 'reload' })).catch(() => {
-            /* asset absent ou 404 — on continue */
-          })
-        )
-      );
-      self.skipWaiting();
-    })
-  );
-});
-
-// -----------------------------------------------------------------------------
-// Activate : purge des caches des versions précédentes + claim des clients.
-// -----------------------------------------------------------------------------
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((k) => k !== SHELL_CACHE && k !== RUNTIME_CACHE)
-          .map((k) => caches.delete(k))
-      )
-    ).then(() => self.clients.claim())
-  );
-});
-
-// -----------------------------------------------------------------------------
-// Fetch : routage par type de requête.
-// -----------------------------------------------------------------------------
-self.addEventListener('fetch', (event) => {
-  const request = event.request;
-
-  // Jamais intercepter les non-GET, cross-origin, ni les WebSocket.
-  if (request.method !== 'GET') return;
-  const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return;
-
-  // Passthrough strict pour l'API (auth-sensible, cookies, pas d'intérêt à cacher).
-  if (url.pathname.startsWith('/api/')) return;
-
-  // Ne jamais cacher le service worker lui-même ni /sw.js.
-  if (url.pathname === '/sw.js') return;
-
-  // Navigation HTML : network-first, fallback cache, fallback "/".
-  if (request.mode === 'navigate' || request.destination === 'document') {
-    event.respondWith(networkFirst(request));
-    return;
-  }
-
-  // Assets statiques : stale-while-revalidate.
-  if (isStaticAsset(url.pathname)) {
-    event.respondWith(staleWhileRevalidate(request));
-    return;
-  }
-
-  // Tout le reste : passthrough.
-});
-
-function isStaticAsset(pathname) {
-  return (
-    pathname.startsWith('/css/') ||
-    pathname.startsWith('/js/') ||
-    pathname.startsWith('/fonts/') ||
-    pathname.startsWith('/assets/') ||
-    pathname.endsWith('.css') ||
-    pathname.endsWith('.js') ||
-    pathname.endsWith('.woff2') ||
-    pathname.endsWith('.svg') ||
-    pathname.endsWith('.png') ||
-    pathname.endsWith('.webp') ||
-    pathname.endsWith('.avif')
-  );
-}
-
-async function networkFirst(request) {
+/** Version applicative d'après l'URL du script (`?v=`), sinon le repli. */
+function resolveVersion(scriptUrl) {
+  const fallback = CACHE_VERSION.replace(/^v/, '');
   try {
-    const response = await fetch(request);
-    if (response && response.ok) {
-      const cache = await caches.open(RUNTIME_CACHE);
-      cache.put(request, response.clone()).catch(() => {});
-    }
-    return response;
+    const v = new URL(scriptUrl).searchParams.get('v');
+    return v && /^[0-9A-Za-z._-]{1,32}$/.test(v) ? v : fallback;
   } catch {
-    const cached = await caches.match(request);
-    if (cached) return cached;
-    const shell = await caches.match('/');
-    if (shell) return shell;
-    return new Response('Hors ligne — aucune version en cache.', {
-      status: 503,
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-    });
+    return fallback;
   }
 }
 
-async function staleWhileRevalidate(request) {
-  const cache = await caches.open(RUNTIME_CACHE);
-  const cached = await cache.match(request);
-  const fetchPromise = fetch(request)
-    .then((response) => {
-      if (response && response.ok) {
-        cache.put(request, response.clone()).catch(() => {});
-      }
+/** Noms des caches d'une version donnée. */
+function cacheNames(version) {
+  return {
+    shell: `${CACHE_PREFIX}shell-v${version}`,
+    pages: `${CACHE_PREFIX}pages-v${version}`,
+    static: `${CACHE_PREFIX}static-v${version}`,
+    images: `${CACHE_PREFIX}images-v${version}`,
+  };
+}
+
+/** URL pré-cachées, telles que les pages les demandent réellement. */
+function shellAssets(version) {
+  const v = `?v=${encodeURIComponent(version)}`;
+  return [
+    '/',
+    '/offline',
+    // Cœur CSS/JS : serveHtml ajoute ?v=<version> à chaque css/ et js/.
+    `/css/core.min.css${v}`,
+    `/css/home.min.css${v}`,
+    `/js/dist/app.min.js${v}`,
+    `/js/dist/icons.min.js${v}`,
+    `/js/dist/home.min.js${v}`,
+    `/js/vendor/purify.min.js${v}`,
+    `/js/sw-register.js${v}`,
+    `/js/offline.js${v}`,
+    // Traductions : sans elles, hors ligne, le titre devenait « home.title ».
+    '/locales/fr.json',
+    '/locales/en.json',
+    // Polices : non versionnées (appelées sans paramètre par core.min.css).
+    '/fonts/DMSans.woff2',
+    '/fonts/BarlowCondensed-400.woff2',
+    '/fonts/BarlowCondensed-500.woff2',
+    '/fonts/BarlowCondensed-600.woff2',
+    '/fonts/BarlowCondensed-700.woff2',
+    '/manifest.webmanifest',
+    '/favicon.svg',
+    '/assets/logo/favicon.svg',
+    '/assets/logo/vh-lockup-horizontal-mono-gold.svg',
+    '/assets/logo/vh-mark-primary-gold.svg',
+    '/assets/logo/icon-192.png',
+    '/assets/logo/icon-512.png',
+    '/assets/logo/icon-maskable-192.png',
+    '/assets/logo/icon-maskable-512.png',
+  ];
+}
+
+const STATIC_EXT = /\.(?:css|js|mjs|json|webmanifest|woff2?|svg|png|jpe?g|webp|avif|ico)$/i;
+
+/**
+ * Stratégie à appliquer à une requête : 'none' (le navigateur s'en charge),
+ * 'page', 'immutable', 'locale', 'image' ou 'static'.
+ */
+function routeFor(request, origin) {
+  if (request.method !== 'GET') return 'none';
+  const url = new URL(request.url);
+  if (url.origin !== origin) return 'none';
+  if (url.pathname.startsWith('/api/') || url.pathname === '/sw.js') return 'none';
+  if (request.mode === 'navigate' || request.destination === 'document') return 'page';
+  if (url.pathname.startsWith('/locales/')) return 'locale';
+  if (url.pathname.startsWith('/assets/airplanes/')) return 'image';
+  if (url.searchParams.has('v') && /\.(?:css|js)$/i.test(url.pathname)) return 'immutable';
+  if (STATIC_EXT.test(url.pathname)) return 'static';
+  return 'none';
+}
+
+/**
+ * Réponse cachable : complète (200), même origine, pas une redirection — une
+ * réponse redirigée resservie à une navigation est refusée par le navigateur.
+ */
+function isCacheable(response) {
+  return !!response && response.status === 200 && response.type === 'basic' && !response.redirected;
+}
+
+/** Garde au plus `max` entrées dans le cache (les plus anciennes partent). */
+async function trimCache(cacheStorage, name, max) {
+  const cache = await cacheStorage.open(name);
+  const keys = await cache.keys();
+  const excess = keys.length - max;
+  if (excess <= 0) return 0;
+  await Promise.all(keys.slice(0, excess).map((k) => cache.delete(k)));
+  return excess;
+}
+
+/** Met en cache puis applique le plafond ; n'échoue jamais. */
+async function store(cacheStorage, name, request, response, max) {
+  try {
+    const cache = await cacheStorage.open(name);
+    await cache.put(request, response);
+    if (max) await trimCache(cacheStorage, name, max);
+  } catch {
+    /* quota dépassé ou stockage indisponible : la réponse réseau suffit */
+  }
+}
+
+/**
+ * Fabrique les stratégies sur des dépendances injectées (fetch, caches) :
+ * c'est ce qui permet de les tester sous Jest sans navigateur.
+ * L'écriture en cache n'est jamais attendue avant de répondre (cache.put lit
+ * tout le corps : l'attendre retarderait le premier octet d'une photo) ; elle
+ * est confiée à `keep`, qui la rattache à event.waitUntil.
+ */
+function createStrategies({ fetchFn, cacheStorage, names }) {
+  function save(keep, name, request, response, max) {
+    const p = store(cacheStorage, name, request, response, max);
+    if (keep) keep(p);
+    return p;
+  }
+
+  async function networkFirstPage(request, keep) {
+    try {
+      const response = await fetchFn(request);
+      if (isCacheable(response)) save(keep, names.pages, request, response.clone(), LIMITS.pages);
       return response;
-    })
-    .catch(() => cached);
-  return cached || fetchPromise;
+    } catch {
+      // Le HTML d'une page ne dépend que de son chemin (les filtres, la
+      // langue, ?source=pwa du manifest sont lus par le JS) : à défaut de
+      // l'URL exacte, la même page avec une autre requête convient.
+      const cached = await cacheStorage.match(request)
+        || await cacheStorage.match(request, { ignoreSearch: true });
+      if (cached) return cached;
+      const offline = await cacheStorage.match('/offline');
+      if (offline) return offline;
+      return new Response('Hors ligne — aucune version en cache.', {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      });
+    }
+  }
+
+  async function cacheFirst(request, cacheName, max, keep) {
+    const cached = await cacheStorage.match(request);
+    if (cached) return cached;
+    const response = await fetchFn(request);
+    if (isCacheable(response)) save(keep, cacheName, request, response.clone(), max);
+    return response;
+  }
+
+  async function staleWhileRevalidate(request, cacheName, max, keep) {
+    const cached = await cacheStorage.match(request);
+    const network = fetchFn(request)
+      .then((response) => {
+        if (isCacheable(response)) save(keep, cacheName, request, response.clone(), max);
+        return response;
+      })
+      .catch(() => cached || Response.error());
+    if (cached) {
+      if (keep) keep(network);
+      return cached;
+    }
+    return network;
+  }
+
+  /** Réponse pour une route donnée (voir routeFor). */
+  function handle(route, request, keep) {
+    if (route === 'page') return networkFirstPage(request, keep);
+    if (route === 'immutable') return cacheFirst(request, names.static, LIMITS.static, keep);
+    if (route === 'locale') return staleWhileRevalidate(request, names.shell, 0, keep);
+    if (route === 'image') return staleWhileRevalidate(request, names.images, LIMITS.images, keep);
+    return staleWhileRevalidate(request, names.static, LIMITS.static, keep);
+  }
+
+  return { networkFirstPage, cacheFirst, staleWhileRevalidate, handle };
+}
+
+/** Pré-cache tolérant : un asset absent (404) ne bloque pas l'installation. */
+async function precache(cacheStorage, name, urls, fetchFn) {
+  const cache = await cacheStorage.open(name);
+  const results = await Promise.allSettled(urls.map(async (url) => {
+    const response = await fetchFn(url, { cache: 'reload' });
+    if (!isCacheable(response)) throw new Error(`${url} : HTTP ${response && response.status}`);
+    await cache.put(url, response);
+  }));
+  return results.filter((r) => r.status === 'rejected').length;
+}
+
+/** Supprime les caches du site qui n'appartiennent pas à la version courante. */
+async function purgeOldCaches(cacheStorage, keep) {
+  const keys = await cacheStorage.keys();
+  const stale = keys.filter((k) => k.startsWith(CACHE_PREFIX) && !keep.includes(k));
+  await Promise.all(stale.map((k) => cacheStorage.delete(k)));
+  return stale;
+}
+
+// -----------------------------------------------------------------------------
+// Branchement des événements — uniquement dans un vrai service worker.
+// -----------------------------------------------------------------------------
+if (typeof ServiceWorkerGlobalScope !== 'undefined' && self instanceof ServiceWorkerGlobalScope) {
+  const VERSION = resolveVersion(self.location.href);
+  const NAMES = cacheNames(VERSION);
+  const strategies = createStrategies({
+    fetchFn: (req) => fetch(req),
+    cacheStorage: caches,
+    names: NAMES,
+  });
+
+  self.addEventListener('install', (event) => {
+    event.waitUntil(precache(caches, NAMES.shell, shellAssets(VERSION), (url, init) => fetch(url, init)));
+  });
+
+  self.addEventListener('activate', (event) => {
+    event.waitUntil(
+      purgeOldCaches(caches, Object.values(NAMES)).then(() => self.clients.claim())
+    );
+  });
+
+  // La page propose « Recharger » quand une nouvelle version attend ; le clic
+  // envoie SKIP_WAITING, puis la page se recharge sur controllerchange.
+  self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
+  });
+
+  self.addEventListener('fetch', (event) => {
+    const route = routeFor(event.request, self.location.origin);
+    if (route === 'none') return;
+    event.respondWith(strategies.handle(route, event.request, (p) => event.waitUntil(p)));
+  });
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    CACHE_VERSION, LIMITS, resolveVersion, cacheNames, shellAssets, routeFor,
+    isCacheable, trimCache, store, createStrategies, precache, purgeOldCaches,
+  };
 }

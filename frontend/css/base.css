@@ -6,8 +6,10 @@
 
 /* Fonts auto-hostées : voir frontend/css/fonts.css (chargé via <link> dans chaque HTML) */
 
-/* Établit l'ordre de priorité : page > utilities > components > base */
-@layer base, components, page, utilities;
+/* Ordre des couches : fixé en tête de tokens.css (premier fichier du bundle),
+   répété ici à l'identique. Priorité croissante :
+   guards < base < components < shared < page < utilities. */
+@layer guards, base, components, shared, page, utilities;
 
 /* ============================================================
    RESET
@@ -132,11 +134,14 @@
      ============================================================ */
   .form-error {
     display: block;
-    color: var(--accent);
+    color: var(--accent-text);
     font-size: 0.8rem;
     font-weight: 500;
     margin-top: 0.25rem;
   }
+
+  /* Span d'erreur vide (pas encore d'erreur) : pas d'écart de 4 px. */
+  .form-error:empty { display: none; }
 
   input[aria-invalid="true"],
   textarea[aria-invalid="true"],

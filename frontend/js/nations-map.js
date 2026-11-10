@@ -87,6 +87,11 @@
     // Le SVG généré est marqué aria-hidden : une fois les nations rendues
     // navigables au clavier, il porte du contenu et ne doit plus l'être.
     svg.removeAttribute('aria-hidden');
+    // role="img" rendrait ses descendants présentationnels : les pays,
+    // focalisables, disparaîtraient pour les lecteurs d'écran (axe
+    // nested-interactive, A11Y-010). Un groupe nommé les expose. Posé ici en
+    // plus de scripts/build-map.js, pour ne pas dépendre de la régénération.
+    svg.setAttribute('role', 'group');
     svg.setAttribute('aria-label', i18n.t('home.nations_map_aria'));
 
     svg.querySelectorAll('.wm-nation').forEach(path => {

@@ -85,7 +85,12 @@
     if (window.Sentry) { initSentry(); return; }
     var s = document.createElement('script');
     s.async = true;
-    s.src = 'js/vendor/sentry.min.js';
+    // Les .js sont servis en cache immuable d'un an (app.js) : sans ?v=, un
+    // navigateur garderait l'ancien SDK après une montée de version du
+    // fichier vendor/ (JS-009). serveHtml pose ?v= sur les <script> des pages,
+    // mais ce chargement-ci est dynamique : on le versionne nous-mêmes.
+    s.src = '/js/vendor/sentry.min.js' +
+      (window.APP_VERSION ? '?v=' + encodeURIComponent(window.APP_VERSION) : '');
     s.onload = initSentry;
     s.onerror = function () {
       window.removeEventListener('error', captureBeforeLoad);
