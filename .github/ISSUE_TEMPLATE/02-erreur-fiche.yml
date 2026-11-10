@@ -1,0 +1,69 @@
+name: Erreur dans une fiche
+description: Une caractéristique, une date, un récit ou un rattachement d'appareil est inexact.
+title: "[Fiche] "
+labels: ["contenu", "à trier"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        L'exactitude historique passe avant tout : **une correction n'est appliquée que si elle s'appuie sur une source vérifiable**.
+        Ouvrages de référence, documentation constructeur, archives officielles, articles de presse spécialisée ou encyclopédies avec références sont tous acceptés.
+
+  - type: input
+    id: fiche
+    attributes:
+      label: Adresse de la fiche
+      description: L'URL de la fiche concernée.
+      placeholder: https://vol-histoire.titouan-borde.com/details/rafale-30
+    validations:
+      required: true
+
+  - type: dropdown
+    id: partie
+    attributes:
+      label: Partie concernée
+      options:
+        - Caractéristiques techniques (vitesse, masse, dimensions, autonomie…)
+        - Moteur
+        - Dates (conception, premier vol, mise en service)
+        - Production et statut
+        - Récit (texte de la fiche)
+        - Armement, technologies ou missions
+        - Conflits rattachés
+        - Filiation (prédécesseur, successeur, rival)
+        - Pays, constructeur, type ou génération
+        - Traduction anglaise
+        - Autre
+    validations:
+      required: true
+
+  - type: textarea
+    id: actuel
+    attributes:
+      label: Ce qui est affiché aujourd'hui
+      description: Recopiez la valeur ou la phrase exacte.
+    validations:
+      required: true
+
+  - type: textarea
+    id: correction
+    attributes:
+      label: Ce qui devrait être affiché
+    validations:
+      required: true
+
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources
+      description: Au moins une source vérifiable, avec un lien ou une référence précise (titre, auteur, page).
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: verifications
+    attributes:
+      label: Vérifications
+      options:
+        - label: J'ai vérifié qu'aucun ticket ouvert ne signale déjà cette erreur.
+          required: true

@@ -1,0 +1,93 @@
+name: Bug sur le site
+description: Une page, un bouton ou un affichage ne fonctionne pas comme prévu.
+title: "[Bug] "
+labels: ["bug", "à trier"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de signaler ce problème.
+        Une **erreur dans le contenu d'une fiche** (date, caractéristique, récit) a son propre modèle : « Erreur dans une fiche ».
+        Une **faille de sécurité** ne doit jamais être signalée ici : utilisez le signalement privé (onglet Security).
+
+  - type: input
+    id: url
+    attributes:
+      label: Adresse de la page
+      description: Copiez l'URL de la page où le problème apparaît.
+      placeholder: https://vol-histoire.titouan-borde.com/hangar
+    validations:
+      required: true
+
+  - type: textarea
+    id: etapes
+    attributes:
+      label: Étapes pour reproduire
+      description: Ce que vous avez fait, dans l'ordre.
+      placeholder: |
+        1. Aller sur le hangar
+        2. Ouvrir le filtre « Pays »
+        3. Choisir « France »
+    validations:
+      required: true
+
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Comportement attendu
+    validations:
+      required: true
+
+  - type: textarea
+    id: observe
+    attributes:
+      label: Ce qui se passe à la place
+      description: Message d'erreur affiché, élément manquant, page blanche…
+    validations:
+      required: true
+
+  - type: dropdown
+    id: appareil
+    attributes:
+      label: Type d'appareil
+      options:
+        - Ordinateur
+        - Téléphone
+        - Tablette
+        - Application installée (PWA)
+    validations:
+      required: true
+
+  - type: input
+    id: navigateur
+    attributes:
+      label: Navigateur et version
+      placeholder: Firefox 140, Chrome 147, Safari iOS 19…
+    validations:
+      required: true
+
+  - type: dropdown
+    id: langue
+    attributes:
+      label: Langue du site
+      options:
+        - Français
+        - Anglais
+    validations:
+      required: true
+
+  - type: dropdown
+    id: connecte
+    attributes:
+      label: Étiez-vous connecté à un compte ?
+      options:
+        - Non
+        - Oui
+    validations:
+      required: true
+
+  - type: textarea
+    id: captures
+    attributes:
+      label: Captures d'écran ou messages de la console
+      description: Facultatif. Glissez une image ici. Masquez toute information personnelle (adresse email, nom).
