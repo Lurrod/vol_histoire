@@ -338,6 +338,29 @@ describe('details/admin — ouverture, fermeture et focus de la modale', () => {
     expect(modal().classList.contains('show')).toBe(false);
   });
 
+  test('rouvrir pendant l’animation de fermeture : la modale reste ouverte', async () => {
+    boot();
+    await openModal();
+    window.VH.details.admin.closeEditModal();
+    await openModal();
+    // La minuterie de repli de la fermeture précédente ne doit plus agir.
+    await new Promise((r) => setTimeout(r, 330));
+    expect(modal().classList.contains('show')).toBe(true);
+    expect(modal().classList.contains('is-closing')).toBe(false);
+    expect(document.body.style.overflow).toBe('hidden');
+  });
+
+  test('fermeture d’une modale retirée du DOM : le défilement de la page n’est plus touché', async () => {
+    boot();
+    await openModal();
+    window.VH.details.admin.closeEditModal();
+    // Page remplacée avant la fin de l'animation (ou test suivant).
+    modal().remove();
+    document.body.style.overflow = 'hidden';
+    await new Promise((r) => setTimeout(r, 330));
+    expect(document.body.style.overflow).toBe('hidden');
+  });
+
   test('fermer une modale déjà fermée ou en cours de fermeture : sans effet', async () => {
     boot();
     const destroy = jest.fn();
