@@ -17,6 +17,7 @@ jest.mock('../mailer', () => ({
   sendContactEmail: jest.fn().mockResolvedValue(undefined),
   sendEmailChangeConfirmation: jest.fn().mockResolvedValue(undefined),
   sendEmailChangeNotice: jest.fn().mockResolvedValue(undefined),
+  sendAccountExistsNotice: jest.fn().mockResolvedValue(undefined),
   verifyConnection: jest.fn().mockResolvedValue(undefined),
 }));
 const mailer = require('../mailer');
@@ -81,6 +82,10 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+  // Avant chaque test, pas seulement en tête de fichier : un test qui
+  // recharge app.js relance dotenv.config(), qui repose la clé hCaptcha du
+  // .env local — les tests suivants (login compris) butaient alors sur le captcha.
+  delete process.env.HCAPTCHA_SECRET;
   authState = { ...DEFAULT_AUTH_STATE };
   mockPool.query.mockReset();
   app.invalidateStatsCache?.();
@@ -258,18 +263,38 @@ describe('POST /api/login', () => {
     expect(res.body.message).toBe('Mot de passe requis');
   });
 
-  test('403 — email non vérifié → code EMAIL_NOT_VERIFIED', async () => {
+  // Anti-énumération (audit du 2026-11-16) : un 403 EMAIL_NOT_VERIFIED, même
+  // donné seulement avec le bon mot de passe, servait d'oracle combiné à
+  // l'inscription — s'inscrire sur T avec P puis se connecter avec P répondait
+  // 403 si l'inscription avait créé le compte (T libre), 400 si T existait.
+  // Compte non activé = même réponse qu'un mot de passe faux ou qu'un inconnu.
+  test('400 générique — compte non activé, même avec le bon mot de passe', async () => {
     const hashedPwd = await bcrypt.hash('Password123', 10);
     mockPool.query.mockResolvedValueOnce({
-      rows: [{ id: 5, name: 'Jean', email: 'jean@test.com', password: hashedPwd, role_id: 3, email_verified: false }],
+      rows: [{ id: 5, name: 'Jean', email: 'jean@test.com', password: hashedPwd, role_id: 3, email_verified: false, failed_login_count: 0 }],
     });
+    const unverified = await request(app).post('/api/login').send({ email: 'jean@test.com', password: 'Password123' });
 
-    const res = await request(app).post('/api/login').send({
-      email: 'jean@test.com',
-      password: 'Password123',
-    });
-    expect(res.status).toBe(403);
-    expect(res.body.code).toBe('EMAIL_NOT_VERIFIED');
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const unknown = await request(app).post('/api/login').send({ email: 'personne@test.com', password: 'Password123' });
+
+    expect(unverified.status).toBe(400);
+    expect(unverified.body).toEqual(unknown.body);
+    expect(unverified.body.code).toBeUndefined();
+    expect(unverified.headers['set-cookie']).toBeUndefined();
+    // Bon mot de passe : ce n'est pas un échec à compter vers le verrou
+    expect(mockPool.query).toHaveBeenCalledTimes(2);
+  });
+
+  test('400 générique — compte non activé et mauvais mot de passe : échec compté', async () => {
+    const hashedPwd = await bcrypt.hash('Password123', 10);
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 5, name: 'Jean', email: 'jean@test.com', password: hashedPwd, role_id: 3, email_verified: false, failed_login_count: 0 }] })
+      .mockResolvedValueOnce({ rows: [], rowCount: 1 });
+    const res = await request(app).post('/api/login').send({ email: 'jean@test.com', password: 'Wrong1pass' });
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ message: 'Email ou mot de passe incorrect' });
+    expect(mockPool.query.mock.calls[1][0]).toMatch(/failed_login_count = failed_login_count \+ 1/);
   });
 });
 
@@ -1212,12 +1237,10 @@ describe('GET /api/airplanes/facets', () => {
 // =============================================================================
 describe('Monitoring endpoints', () => {
   describe('GET /api/live', () => {
-    test('200 — toujours OK avec uptime', async () => {
+    test('200 — toujours OK, sans uptime (public)', async () => {
       const res = await request(app).get('/api/live');
       expect(res.status).toBe(200);
-      expect(res.body.status).toBe('ok');
-      expect(typeof res.body.uptime).toBe('number');
-      expect(res.body.uptime).toBeGreaterThanOrEqual(0);
+      expect(res.body).toEqual({ status: 'ok' });
     });
   });
 
@@ -1266,7 +1289,7 @@ describe('Monitoring endpoints', () => {
       const res = await request(app).get('/api/ready');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('ready');
-      expect(res.body.redis).toEqual({ configured: true, ok: false, error: 'ECONNREFUSED' });
+      expect(res.body.redis).toEqual({ configured: true, ok: false });
     });
 
     test('503 — DB KO + Redis KO : redis reporté dans la réponse', async () => {
@@ -2920,6 +2943,30 @@ describe('POST /api/register — réponse avant le travail, gestion échec maile
     await new Promise(resolve => setTimeout(resolve, 350));
   });
 
+  // Second volet de l'anti-énumération : la réponse ne dit rien, mais le
+  // titulaire de la boîte est prévenu qu'on a tenté de s'inscrire avec elle.
+  test('adresse déjà vérifiée : avertissement au titulaire, avec SON nom, sans compte ni lien créé', async () => {
+    mailer.sendAccountExistsNotice.mockReset();
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 7, name: 'Titulaire', email_verified: true }] });
+    const res = await request(app).post('/api/register').set('X-Forwarded-For', '10.0.0.6')
+      .send({ ...validPayload, name: 'Texte choisi par un tiers' });
+    expect(res.status).toBe(201);
+    await flush();
+    expect(mailer.sendAccountExistsNotice).toHaveBeenCalledTimes(1);
+    expect(mailer.sendAccountExistsNotice).toHaveBeenCalledWith('marie@example.com', 'Titulaire');
+    expect(mailer.sendVerificationEmail).not.toHaveBeenCalled();
+    expect(mockPool.query).toHaveBeenCalledTimes(1); // aucune écriture (ni compte, ni jeton)
+  });
+
+  test('adresse déjà vérifiée : échec SMTP de l\'avertissement absorbé, réponse inchangée', async () => {
+    mailer.sendAccountExistsNotice.mockReset().mockRejectedValue(new Error('SMTP down'));
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 7, name: 'Titulaire', email_verified: true }] });
+    const res = await request(app).post('/api/register').set('X-Forwarded-For', '10.0.0.7').send(validPayload);
+    expect(res.status).toBe(201);
+    await flush();
+    expect(mailer.sendAccountExistsNotice).toHaveBeenCalledTimes(1);
+  });
+
   test('201 — premier envoi échoue, retry après la réponse', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [] })
@@ -4465,7 +4512,7 @@ describe('app.js — /api/health et /api/config', () => {
     const res = await request(app).get('/api/health');
     expect(res.status).toBe(200);
     expect(res.body.status).toBe('ok');
-    expect(typeof res.body.uptime).toBe('number');
+    expect(res.body).not.toHaveProperty('uptime');
     expect(res.body.timestamp).toBeDefined();
   });
 

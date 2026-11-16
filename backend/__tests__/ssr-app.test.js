@@ -16,6 +16,7 @@ jest.mock('../mailer', () => ({
   sendContactEmail: jest.fn(),
   sendEmailChangeConfirmation: jest.fn(),
   sendEmailChangeNotice: jest.fn(),
+  sendAccountExistsNotice: jest.fn(),
   verifyConnection: jest.fn(),
 }));
 
@@ -192,5 +193,27 @@ describe('HTML-004 / HTML-007 — icônes et visuel de partage', () => {
     const res = await request(app).get(url);
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toMatch(type);
+  });
+});
+
+describe('Pages à jeton ou adresse dans l’URL — ni cache, ni Referer (audit 2026-11-16)', () => {
+  test.each([
+    '/reset-password?token=abc',
+    '/verify-email?token=abc',
+    '/verify-email?type=email&token=abc',
+    '/check-email',
+    '/reset-password?token=abc&lang=en',
+  ])('%s : no-store + no-referrer', async (url) => {
+    const res = await request(app).get(url);
+    expect(res.status).toBe(200);
+    expect(res.headers['cache-control']).toBe('no-store');
+    expect(res.headers['referrer-policy']).toBe('no-referrer');
+  });
+
+  test('les autres pages gardent la politique globale', async () => {
+    const res = await request(app).get('/forgot-password');
+    expect(res.status).toBe(200);
+    expect(res.headers['cache-control'] || '').not.toMatch(/no-store/);
+    expect(res.headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
   });
 });

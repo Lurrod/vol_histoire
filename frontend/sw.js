@@ -22,7 +22,7 @@
  *   Chaque cache runtime est borné (éviction FIFO : ordre d'insertion).
  */
 
-const CACHE_VERSION = 'v4.14.1';
+const CACHE_VERSION = 'v4.14.2';
 const CACHE_PREFIX = 'vh-';
 
 const LIMITS = {
@@ -112,7 +112,12 @@ function routeFor(request, origin) {
  * réponse redirigée resservie à une navigation est refusée par le navigateur.
  */
 function isCacheable(response) {
-  return !!response && response.status === 200 && response.type === 'basic' && !response.redirected;
+  if (!response || response.status !== 200 || response.type !== 'basic' || response.redirected) return false;
+  // no-store : pages qui portent un jeton dans leur URL (/reset-password?token=…),
+  // que le cache des pages garderait sinon, jeton compris, dans le navigateur.
+  const cc = response.headers && typeof response.headers.get === 'function'
+    ? response.headers.get('Cache-Control') : null;
+  return !(cc && /(?:^|,)\s*no-store\s*(?:,|$)/i.test(cc));
 }
 
 /** Garde au plus `max` entrées dans le cache (les plus anciennes partent). */
@@ -217,6 +222,28 @@ async function precache(cacheStorage, name, urls, fetchFn) {
   return results.filter((r) => r.status === 'rejected').length;
 }
 
+/**
+ * Supprime des caches du site toute entrée dont l'URL porte un jeton de lien
+ * email ou une adresse (?token=, ?email=). Ces pages répondent no-store,
+ * mais un service worker antérieur à ce garde-fou a pu les mettre en cache.
+ * Renvoie le nombre d'entrées supprimées.
+ */
+async function purgeSecretEntries(cacheStorage) {
+  const names = (await cacheStorage.keys()).filter((k) => k.startsWith(CACHE_PREFIX));
+  let removed = 0;
+  for (const name of names) {
+    const cache = await cacheStorage.open(name);
+    for (const request of await cache.keys()) {
+      const params = new URL(request.url).searchParams;
+      if (params.has('token') || params.has('email')) {
+        await cache.delete(request);
+        removed += 1;
+      }
+    }
+  }
+  return removed;
+}
+
 /** Supprime les caches du site qui n'appartiennent pas à la version courante. */
 async function purgeOldCaches(cacheStorage, keep) {
   const keys = await cacheStorage.keys();
@@ -243,7 +270,9 @@ if (typeof ServiceWorkerGlobalScope !== 'undefined' && self instanceof ServiceWo
 
   self.addEventListener('activate', (event) => {
     event.waitUntil(
-      purgeOldCaches(caches, Object.values(NAMES)).then(() => self.clients.claim())
+      purgeOldCaches(caches, Object.values(NAMES))
+        .then(() => purgeSecretEntries(caches))
+        .then(() => self.clients.claim())
     );
   });
 
@@ -263,6 +292,6 @@ if (typeof ServiceWorkerGlobalScope !== 'undefined' && self instanceof ServiceWo
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     CACHE_VERSION, LIMITS, resolveVersion, cacheNames, shellAssets, routeFor,
-    isCacheable, trimCache, store, createStrategies, precache, purgeOldCaches,
+    isCacheable, trimCache, store, createStrategies, precache, purgeOldCaches, purgeSecretEntries,
   };
 }

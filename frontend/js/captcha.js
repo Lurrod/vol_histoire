@@ -2,8 +2,11 @@
  * hCaptcha lazy loader.
  *
  * Charge le widget hCaptcha à la demande SI le backend a une sitekey configurée
- * (lue depuis /api/config). En l'absence de sitekey, expose une fonction
- * `getHcaptchaToken` qui retourne null → le backend skip aussi la vérification.
+ * (lue depuis /api/config). En l'absence de sitekey, `getHcaptchaToken`
+ * retourne null et le formulaire part sans jeton. Ce n'est PAS ce fichier qui
+ * décide : le serveur exige un jeton valide dès que HCAPTCHA_SECRET est posé
+ * (jeton absent → 400 CAPTCHA_FAILED), et en production il refuse de démarrer
+ * sans les deux clés (middleware/hcaptcha.js).
  *
  * Mode invisible : on génère un token uniquement au moment de la soumission
  * du formulaire (via execute), pas au chargement de la page → 0 friction UX.

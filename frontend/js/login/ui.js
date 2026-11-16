@@ -61,7 +61,7 @@
     return `<i class="fas ${icon} ev-btn-icon" aria-hidden="true"></i>${escapeHtml(i18n.t(labelKey))}`;
   }
 
-  async function resendVerification(button, escapedEmail) {
+  async function resendVerification(button, email) {
     button.disabled = true;
     button.setAttribute('aria-busy', 'true');
     button.innerHTML = resendButtonHtml('fa-circle-notch fa-spin', 'login.resending');
@@ -69,12 +69,14 @@
       await auth.fetchWithTimeout('/api/auth/resend-verification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: escapedEmail }),
+        body: JSON.stringify({ email }),
       });
       button.removeAttribute('aria-busy');
       button.innerHTML = resendButtonHtml('fa-check', 'login.resent');
       button.classList.add('ev-resend-success');
-      showToast(i18n.t('login.resent'), 'success');
+      // Réponse du serveur identique que le compte existe ou non : message
+      // au conditionnel.
+      showToast(i18n.t('login.resent_notice'), 'success');
     } catch {
       button.disabled = false;
       button.removeAttribute('aria-busy');
@@ -91,9 +93,9 @@
     notice.id = 'email-not-verified-notice';
     notice.className = 'ev-notice';
 
-    // NB : c'est l'adresse échappée pour le HTML qui part dans le corps JSON
-    // (comportement d'origine, conservé tel quel par le découpage).
-    const escapedEmail = escapeHtml(email);
+    // L'adresse n'est pas insérée dans le HTML : elle part telle quelle dans
+    // le corps JSON (l'ancienne version l'échappait pour le HTML d'abord,
+    // donc o'brien@… ou a&b@… arrivaient faussées au serveur).
     notice.innerHTML = `
       <i class="fas fa-envelope ev-notice-icon"></i>
       <div class="ev-notice-body">
@@ -108,7 +110,7 @@
     ctx.els.loginForm.insertAdjacentElement('afterend', notice);
 
     const button = document.getElementById('resend-verify-btn');
-    button.addEventListener('click', () => resendVerification(button, escapedEmail));
+    button.addEventListener('click', () => resendVerification(button, email));
   }
 
   VH.login.ui = { fetchStats, setButtonLoading, showEmailNotVerifiedNotice, resendVerification };

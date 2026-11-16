@@ -29,9 +29,11 @@ module.exports = function createMonitoringRouter(getPool) {
   const router = express.Router();
   const startedAt = new Date();
 
-  // Liveness — pas de dépendance, juste vérifier que Express répond
+  // Liveness — pas de dépendance, juste vérifier que Express répond.
+  // Pas d'uptime : public, il donnerait la date du dernier redémarrage
+  // (donc des déploiements). Il reste dans /status, protégé par jeton.
   router.get('/live', (req, res) => {
-    res.json({ status: 'ok', uptime: process.uptime() });
+    res.json({ status: 'ok' });
   });
 
   // Readiness — vérifie la dépendance critique (PostgreSQL)
@@ -49,7 +51,9 @@ module.exports = function createMonitoringRouter(getPool) {
         await redisClient.ping();
         redisStatus = { configured: true, ok: true, latencyMs: Date.now() - start };
       } catch (err) {
-        redisStatus = { configured: true, ok: false, error: err.message };
+        // Le message (hôte, port, cause) va au journal, pas à la réponse publique.
+        logger.warn('readiness_redis_failed', { error: err });
+        redisStatus = { configured: true, ok: false };
       }
     }
     try {

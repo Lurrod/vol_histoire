@@ -17,6 +17,9 @@ const jsonRes = (status, body) => Promise.resolve({ ok: status < 300, status, js
 beforeEach(() => {
   global.auth = { fetchWithTimeout: jest.fn() };
   global.setupPasswordToggle = jest.fn();
+  global.takeUrlParams = require('../js/utils').takeUrlParams;
+  global.isValidPassword = require('../js/utils').isValidPassword;
+  global.calculatePasswordStrength = require('../js/utils').calculatePasswordStrength;
   global.i18n = { t: (k) => k };
   delete window.getHcaptchaToken;
 });
@@ -156,7 +159,7 @@ describe('reset-password.js — soumission', () => {
     expect($('rp-password').getAttribute('aria-invalid')).toBe('true');
   });
 
-  test.each(['Court1', 'sansmajuscule1', 'SANSMINUSCULE1', 'SansChiffre'])('mot de passe faible refusé : %s', async (pw) => {
+  test.each(['Court1', 'sansmajuscule1', 'SANSMINUSCULE1', 'SansChiffre', 'Aa1' + 'x'.repeat(126)])('mot de passe faible refusé : %s', async (pw) => {
     load();
     await submit(pw);
     expect(auth.fetchWithTimeout).not.toHaveBeenCalled();

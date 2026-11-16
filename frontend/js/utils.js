@@ -239,7 +239,25 @@ function setupPasswordToggle(buttonEl, inputEl, ...linkedInputs) {
 }
 
 /**
+ * Politique de mot de passe : copie exacte de isValidPassword()
+ * (backend/validators.js), seule règle côté client. Un test Jest compare les
+ * deux verdicts. Les pages ne doivent plus réécrire la règle elles-mêmes.
+ */
+const PASSWORD_MIN_LENGTH = 8;
+const PASSWORD_MAX_LENGTH = 128;
+
+function isValidPassword(password) {
+  return typeof password === 'string'
+    && password.length >= PASSWORD_MIN_LENGTH
+    && password.length <= PASSWORD_MAX_LENGTH
+    && /[a-z]/.test(password)
+    && /[A-Z]/.test(password)
+    && /[0-9]/.test(password);
+}
+
+/**
  * Calcule la force d'un mot de passe (0–100).
+ * Indicatif seulement : le verdict d'acceptation est isValidPassword().
  * Critères : longueur ≥8, minuscule, majuscule, chiffre, longueur ≥12, caractère spécial.
  */
 function calculatePasswordStrength(password) {
@@ -416,7 +434,35 @@ function setNumberPopIn(el, value) {
   el.classList.add('is-animating');
 }
 
+/**
+ * Lit des paramètres sensibles de l'URL (jeton d'un lien reçu par email,
+ * adresse…) puis les retire de la barre d'adresse et de l'entrée d'historique
+ * courante : ils ne restent ni dans l'historique, ni dans ce que GTM ou Sentry
+ * liraient de window.location. Les autres paramètres (?lang=…) sont gardés.
+ * Renvoie { nom: valeur | null }.
+ */
+function takeUrlParams(names) {
+  const url = new URL(window.location.href);
+  const values = {};
+  let changed = false;
+  names.forEach((name) => {
+    values[name] = url.searchParams.get(name);
+    if (url.searchParams.has(name)) {
+      url.searchParams.delete(name);
+      changed = true;
+    }
+  });
+  if (changed) {
+    try {
+      window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
+    } catch {
+      /* historique indisponible : la valeur reste utilisable */
+    }
+  }
+  return values;
+}
+
 // Export conditionnel pour les tests unitaires (Node.js)
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setNumberPopIn, setupPasswordToggle, isValidEmail, calculatePasswordStrength, trapFocus, setFieldError, clearFieldError };
+  module.exports = { takeUrlParams, escapeHtml, safeSetHTML, showToast, animateNumber, setNumberPopIn, setupPasswordToggle, isValidEmail, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, isValidPassword, calculatePasswordStrength, trapFocus, setFieldError, clearFieldError };
 }

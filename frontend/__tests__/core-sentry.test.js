@@ -210,6 +210,24 @@ describe('sentry-init — initialisation', () => {
     expect(beforeSend(message)).toBe(message);
   });
 
+  test('beforeSend masque jeton et email dans les URL (requête et fil d’Ariane)', () => {
+    const { beforeSend } = loadAndInit();
+    const event = {
+      request: { url: 'https://site/reset-password?token=abc&lang=en', query_string: 'token=abc&lang=en' },
+      breadcrumbs: [
+        { category: 'navigation', data: { from: '/verify-email?token=t1', to: '/verify-email' } },
+        { category: 'fetch', data: { url: '/check-email?email=a%40b.fr' } },
+        { category: 'console', message: 'rien' },
+      ],
+    };
+    const out = beforeSend(event);
+    expect(out.request.url).toBe('https://site/reset-password?token=%5BFiltered%5D&lang=en');
+    expect(out.request.query_string).toBe('token=%5BFiltered%5D&lang=en');
+    expect(out.breadcrumbs[0].data).toEqual({ from: '/verify-email?token=%5BFiltered%5D', to: '/verify-email' });
+    expect(out.breadcrumbs[1].data.url).toBe('/check-email?email=%5BFiltered%5D');
+    expect(out.breadcrumbs[2]).toEqual({ category: 'console', message: 'rien' });
+  });
+
   test('les erreurs survenues avant le chargement sont rejouées', () => {
     global.PromiseRejectionEvent = class extends Event {
       constructor(type, init) { super(type); this.reason = init.reason; }

@@ -1,7 +1,7 @@
 /* Connexion / inscription — validation du mot de passe et jauge de force.
  *
- * validatePassword() reprend la règle du serveur (isValidPassword de
- * backend/validators.js, hors borne haute) ; strengthLevel() est la
+ * validatePassword() délègue à isValidPassword() (utils.js), copie de la
+ * règle du serveur, bornes 8–128 comprises ; strengthLevel() est la
  * correspondance pure score → libellé / couleur, testée sans DOM.
  */
 (function () {
@@ -10,7 +10,7 @@
   root.VH.login = root.VH.login || {};
 
   function validatePassword(password) {
-    return password.length >= 8 && /[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password);
+    return isValidPassword(password);
   }
 
   /** Score 0–100 (calculatePasswordStrength, utils.js) → clé i18n et couleurs. */

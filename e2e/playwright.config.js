@@ -36,6 +36,12 @@ module.exports = defineConfig({
         env: {
           NODE_ENV: 'test',
           PORT: '3000',
+          // Le .env local porte les vraies clés hCaptcha : sans ces valeurs
+          // vides (dotenv ne remplace pas une variable déjà définie), la
+          // connexion par l'interface déclencherait le vrai hCaptcha dans
+          // Chromium headless. La CI n'a pas de clé : même comportement.
+          HCAPTCHA_SECRET: '',
+          HCAPTCHA_SITEKEY: '',
         },
       },
 });

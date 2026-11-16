@@ -65,11 +65,17 @@
     try {
       setButtonLoading(submitBtn, true);
 
+      // hCaptcha invisible : aucun défi pour la plupart des visiteurs, exigé
+      // par le serveur dès que sa clé secrète est posée.
+      const captchaToken = window.getHcaptchaToken ? await window.getHcaptchaToken('login') : null;
+      const payload = { email, password };
+      if (captchaToken) payload['h-captcha-response'] = captchaToken;
+
       const response = await auth.fetchWithTimeout('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(payload),
       });
       const data = await readJson(response);
 
@@ -80,7 +86,11 @@
       } else if (response.status === 429) {
         showToast(data.message || i18n.t('login.too_many_attempts'), 'error');
         setButtonLoading(submitBtn, false);
-      } else if (data.code === 'EMAIL_NOT_VERIFIED') {
+      } else if (response.status === 400 && data.code !== 'CAPTCHA_FAILED') {
+        // Échec générique : le serveur ne dit pas si le compte attend son
+        // activation (anti-énumération). L'aide au renvoi du lien suit donc
+        // tout échec, formulée au conditionnel.
+        showToast(data.message || i18n.t('login.invalid_credentials'), 'error');
         setButtonLoading(submitBtn, false);
         showEmailNotVerifiedNotice(ctx, email);
       } else {
@@ -151,7 +161,9 @@
 
       if (response.ok) {
         showToast(i18n.t('login.register_success'), 'success');
-        VH.login.forms.navigate('/check-email?email=' + encodeURIComponent(email));
+        // Adresse transmise hors de l'URL (historique, GTM, Sentry) : check-email.js
+        try { sessionStorage.setItem('vh_pending_email', email); } catch { /* stockage indisponible */ }
+        VH.login.forms.navigate('/check-email');
       } else if (response.status === 429) {
         showToast(data.message || i18n.t('login.too_many_attempts'), 'error');
         setButtonLoading(submitBtn, false);

@@ -40,6 +40,8 @@ async function submitPassword(password, confirm = password) {
 beforeEach(() => {
   global.i18n = { t: jest.fn((k) => k) };
   global.setupPasswordToggle = jest.fn();
+  global.takeUrlParams = require('../js/utils').takeUrlParams;
+  global.isValidPassword = require('../js/utils').isValidPassword;
   global.auth = { fetchWithTimeout: jest.fn(), clearSession: jest.fn() };
 });
 

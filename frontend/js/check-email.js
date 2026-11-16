@@ -1,6 +1,16 @@
 (function() {
-  const params = new URLSearchParams(window.location.search);
-  const email = params.get('email');
+  // L'adresse arrive par sessionStorage (login/forms.js), jamais par l'URL :
+  // elle resterait dans l'historique et dans ce que lisent GTM et Sentry.
+  // Un ancien lien ?email= reste lu, puis l'adresse est retirée de l'URL.
+  const PENDING_KEY = 'vh_pending_email';
+  const fromUrl = takeUrlParams(['email']).email;
+  let email = fromUrl;
+  try {
+    if (fromUrl) sessionStorage.setItem(PENDING_KEY, fromUrl);
+    else email = sessionStorage.getItem(PENDING_KEY);
+  } catch {
+    /* stockage indisponible : seule l'adresse de l'URL est connue */
+  }
 
   // Afficher l'email dans la badge (avec protection XSS)
   const emailEl = document.getElementById('ce-email');

@@ -124,6 +124,13 @@ describe('isCacheable', () => {
     expect(sw.isCacheable(null)).toBe(false);
     expect(sw.isCacheable({ ...res(), redirected: true })).toBe(false);
   });
+
+  test('Cache-Control: no-store respecté (pages à jeton : /reset-password?token=…)', () => {
+    const withCc = (value) => ({ ...res(), headers: { get: (name) => (name.toLowerCase() === 'cache-control' ? value : null) } });
+    expect(sw.isCacheable(withCc('no-store'))).toBe(false);
+    expect(sw.isCacheable(withCc('private, No-Store'))).toBe(false);
+    expect(sw.isCacheable(withCc('no-cache'))).toBe(true);
+  });
 });
 
 describe('trimCache / store (MOB-006)', () => {
@@ -257,5 +264,17 @@ describe('precache / purgeOldCaches', () => {
     const removed = await sw.purgeOldCaches(caches, Object.values(names));
     expect(removed.sort()).toEqual(['vh-runtime-v4.13.1', 'vh-shell-v4.13.0']);
     expect((await caches.keys()).sort()).toEqual(['autre-app', ...Object.values(names)].sort());
+  });
+
+  test('purge les pages mises en cache avec un jeton ou une adresse dans l’URL', async () => {
+    const caches = fakeCaches();
+    await sw.store(caches, names.pages, '/reset-password?token=abc', res('a'));
+    await sw.store(caches, names.pages, '/check-email?email=a%40b.fr', res('b'));
+    await sw.store(caches, names.pages, '/hangar?search=token', res('c'));
+    await sw.store(caches, 'autre-app', '/reset-password?token=zzz', res('d'));
+    expect(await sw.purgeSecretEntries(caches)).toBe(2);
+    const left = (await (await caches.open(names.pages)).keys()).map((k) => k.url);
+    expect(left).toEqual([expect.stringContaining('/hangar?search=token')]);
+    expect(await (await caches.open('autre-app')).keys()).toHaveLength(1);
   });
 });

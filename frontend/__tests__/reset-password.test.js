@@ -22,6 +22,9 @@ function load(search) {
   document.body.innerHTML = DOM;
   window.history.replaceState(null, '', `/reset-password${search}`);
   global.setupPasswordToggle = jest.fn();
+  global.takeUrlParams = require('../js/utils').takeUrlParams;
+  global.isValidPassword = require('../js/utils').isValidPassword;
+  global.calculatePasswordStrength = require('../js/utils').calculatePasswordStrength;
   global.auth = { fetchWithTimeout: jest.fn() };
   require('../js/reset-password');
 }
@@ -46,7 +49,9 @@ describe('reset-password.js — indicateur de force', () => {
     expect(type('abc')).toBe('Password too weak');
     expect(type('abcdefgh')).toBe('Medium password');
     expect(type('Abcdefgh1')).toBe('Strong password');
-    expect(document.getElementById('strength-fill').style.width).toBe('90%');
+    // Score de calculatePasswordStrength (utils.js), le même qu'à l'inscription
+    // et dans les paramètres : 25 (8 car.) + 20 + 20 + 15 = 80.
+    expect(document.getElementById('strength-fill').style.width).toBe('80%');
   });
 
   test('locales pas encore chargées (i18n.t renvoie la clé) : repli français', () => {

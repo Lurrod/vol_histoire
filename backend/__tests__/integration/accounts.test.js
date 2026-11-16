@@ -106,10 +106,10 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       });
     });
 
-    test('connexion refusée tant que l\'email n\'est pas vérifié', async () => {
+    test('connexion refusée tant que l\'email n\'est pas vérifié, sans le dire (anti-énumération)', async () => {
       const res = await api().post('/api/login').send({ email, password: 'Inscrit123' });
-      expect(res.status).toBe(403);
-      expect(res.body.code).toBe('EMAIL_NOT_VERIFIED');
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ message: 'Email ou mot de passe incorrect' });
     });
 
     test('verify-email active le compte avec le mot de passe choisi à la vérification', async () => {

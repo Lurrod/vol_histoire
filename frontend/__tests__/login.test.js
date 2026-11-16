@@ -51,6 +51,7 @@ function installGlobals() {
     clearFieldError: utils.clearFieldError,
     isValidEmail: utils.isValidEmail,
     calculatePasswordStrength: utils.calculatePasswordStrength,
+    isValidPassword: utils.isValidPassword,
     setupPasswordToggle: jest.fn(),
     animateNumber: jest.fn((el, n) => { el.textContent = String(n); }),
   });
@@ -119,6 +120,9 @@ describe('VH.login.strength', () => {
     expect(strength.validatePassword('ABCDEFG1')).toBe(false);
     expect(strength.validatePassword('Abcdefgh')).toBe(false);
     expect(strength.validatePassword('Abc1')).toBe(false);
+    // Borne haute du serveur (128), oubliée par l'ancienne copie de la règle
+    expect(strength.validatePassword('Aa1' + 'x'.repeat(125))).toBe(true);
+    expect(strength.validatePassword('Aa1' + 'x'.repeat(126))).toBe(false);
   });
 
   test.each([
@@ -294,13 +298,23 @@ describe('VH.login.ui', () => {
     expect(JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body)).toEqual({ email: 'a@x.fr' });
     expect(btn.classList.contains('ev-resend-success')).toBe(true);
     expect(btn.disabled).toBe(true);
-    expect(toasts).toContainEqual(['success', 't:login.resent']);
+    // Message conditionnel : l'avis s'affiche sans savoir si le compte existe
+    expect(toasts).toContainEqual(['success', 't:login.resent_notice']);
 
     auth.fetchWithTimeout.mockRejectedValueOnce(new Error('réseau'));
     await login.ui.resendVerification(btn, 'a@x.fr');
     expect(btn.disabled).toBe(false);
     expect(btn.hasAttribute('aria-busy')).toBe(false);
     expect(toasts).toContainEqual(['error', 't:login.server_error']);
+  });
+
+  test('renvoi du lien : l\'adresse part telle quelle, pas échappée pour le HTML', async () => {
+    const login = loadModules();
+    const ctx = login.state.createContext(document);
+    login.ui.showEmailNotVerifiedNotice(ctx, "o'brien&co@x.fr");
+    document.getElementById('resend-verify-btn').click();
+    await flush();
+    expect(JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body)).toEqual({ email: "o'brien&co@x.fr" });
   });
 });
 
@@ -323,6 +337,28 @@ describe('VH.login.forms — connexion', () => {
     expect(document.getElementById('login-email').hasAttribute('aria-invalid')).toBe(false);
     expect(document.getElementById('login-password-error').textContent).toBe('t:login.missing_password');
     expect(auth.fetchWithTimeout).not.toHaveBeenCalled();
+  });
+
+  test('jeton hCaptcha (portée « login ») joint aux identifiants', async () => {
+    const { login, ctx } = setup();
+    window.getHcaptchaToken = jest.fn(() => Promise.resolve('cap'));
+    auth.fetchWithTimeout.mockResolvedValue(jsonResponse(400, { message: 'Email ou mot de passe incorrect' }));
+    document.getElementById('login-email').value = 'pilote@x.fr';
+    ctx.els.loginPassword.value = 'secret';
+    await login.forms.onLoginSubmit(ctx, { preventDefault() {} });
+    expect(window.getHcaptchaToken).toHaveBeenCalledWith('login');
+    const body = JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body);
+    expect(body).toEqual({ email: 'pilote@x.fr', password: 'secret', 'h-captcha-response': 'cap' });
+  });
+
+  test('sans clé de site (jeton null) : identifiants seuls', async () => {
+    const { login, ctx } = setup();
+    window.getHcaptchaToken = jest.fn(() => Promise.resolve(null));
+    auth.fetchWithTimeout.mockResolvedValue(jsonResponse(400, {}));
+    document.getElementById('login-email').value = 'pilote@x.fr';
+    ctx.els.loginPassword.value = 'secret';
+    await login.forms.onLoginSubmit(ctx, { preventDefault() {} });
+    expect(JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body)).toEqual({ email: 'pilote@x.fr', password: 'secret' });
   });
 
   test('succès : jeton et infos utilisateur enregistrés, redirection', async () => {
@@ -355,13 +391,25 @@ describe('VH.login.forms — connexion', () => {
     expect(ctx.els.loginForm.querySelector('button[type="submit"]').disabled).toBe(false);
   });
 
-  test('email non vérifié : avis affiché sous le formulaire', async () => {
+  // Le serveur ne dit plus si le compte attend son activation (oracle
+  // d'énumération) : l'aide « renvoyer le lien » suit tout échec générique.
+  test('échec générique (400) : message d\'erreur ET aide « compte pas encore activé ? »', async () => {
     const { login, ctx } = setup();
-    auth.fetchWithTimeout.mockResolvedValue(jsonResponse(403, { code: 'EMAIL_NOT_VERIFIED' }));
+    auth.fetchWithTimeout.mockResolvedValue(jsonResponse(400, { message: 'Email ou mot de passe incorrect' }));
     document.getElementById('login-email').value = 'pilote@x.fr';
     ctx.els.loginPassword.value = 'secret';
     await login.forms.onLoginSubmit(ctx, { preventDefault() {} });
+    expect(toasts).toContainEqual(['error', 'Email ou mot de passe incorrect']);
     expect(document.getElementById('email-not-verified-notice')).not.toBeNull();
+  });
+
+  test('429 ou erreur serveur : pas d\'aide à l\'activation', async () => {
+    const { login, ctx } = setup();
+    auth.fetchWithTimeout.mockResolvedValue(jsonResponse(429, { message: 'Trop de tentatives' }));
+    document.getElementById('login-email').value = 'pilote@x.fr';
+    ctx.els.loginPassword.value = 'secret';
+    await login.forms.onLoginSubmit(ctx, { preventDefault() {} });
+    expect(document.getElementById('email-not-verified-notice')).toBeNull();
   });
 
   test('réponse non JSON et erreur réseau', async () => {
@@ -431,7 +479,9 @@ describe('VH.login.forms — inscription', () => {
     await login.forms.onRegisterSubmit(ctx, ev);
     const body = JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body);
     expect(body).toEqual({ name: 'Pilote', email: 'p+1@x.fr', password: 'Abcdefg1', 'h-captcha-response': 'cap' });
-    expect(navigations).toEqual(['/check-email?email=p%2B1%40x.fr']);
+    // L'adresse passe par sessionStorage, jamais par l'URL (historique, GTM, Sentry)
+    expect(navigations).toEqual(['/check-email']);
+    expect(sessionStorage.getItem('vh_pending_email')).toBe('p+1@x.fr');
   });
 
   test.each([

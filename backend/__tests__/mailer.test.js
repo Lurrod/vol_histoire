@@ -136,6 +136,18 @@ describe('envoi via SMTP (transport simulé)', () => {
     expect(notice.html).not.toContain('verify-email');
   });
 
+  test('inscription sur une adresse déjà inscrite : avertissement, lien de connexion, aucun jeton', async () => {
+    const { mailer, sendMail } = loadMailer(SMTP);
+    await mailer.sendAccountExistsNotice('a@b.fr', 'Ana <b>');
+    const mail = sendMail.mock.calls[0][0];
+    expect(mail.to).toBe('a@b.fr');
+    expect(mail.subject).toMatch(/Tentative d'inscription/);
+    expect(mail.html).toContain('href="https://vh.example.test/login"');
+    expect(mail.html).toContain('https://vh.example.test/forgot-password');
+    expect(mail.html).not.toMatch(/verify-email|token=/);
+    expect(mail.html).toContain('Ana &lt;b&gt;');
+  });
+
   test('contact : replyTo, sujet préfixé, message échappé', async () => {
     const { mailer, sendMail } = loadMailer(SMTP);
     await mailer.sendContactEmail({

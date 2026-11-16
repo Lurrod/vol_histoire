@@ -400,16 +400,25 @@ jobs:
 
             cd backend
             npm ci --omit=dev
+            # Le redémarrage se vérifie ici, par le PID pm2 : /api/health ne
+            # publie plus l'uptime (il donnait la date des déploiements).
+            OLD_PID=$(pm2 pid vol-histoire 2>/dev/null || true)
             pm2 restart vol-histoire --update-env || pm2 start server.js --name vol-histoire --interpreter "$(command -v node)"
+            NEW_PID=$(pm2 pid vol-histoire 2>/dev/null || true)
+            if [ -z "$NEW_PID" ] || [ "$NEW_PID" = "0" ] || [ "$NEW_PID" = "$OLD_PID" ]; then
+              echo "::error::pm2 n'a pas redémarré vol-histoire (PID avant : ${OLD_PID:-aucun}, après : ${NEW_PID:-aucun})"
+              exit 1
+            fi
+            echo "vol-histoire redémarré (PID ${OLD_PID:-aucun} -> $NEW_PID)"
             echo "Déploiement terminé — version $(node -p "require('./package.json').version")"
 
       # ─── Smoke tests post-deploy ──────────────────────────────
-      #   1. /api/health → backend + DB joignable, processus redémarré
+      #   1. /api/health → backend + DB joignable (redémarrage vérifié au déploiement)
       #   2. /api/config → version servie = version du commit déployé
       #   3. /             → Apache + pages
       #   4. /api/airplanes → API REST + données
       # Un échec déclenche le retour arrière automatique.
-      - name: Smoke test — backend health (DB joignable, processus récent)
+      - name: Smoke test — backend health (DB joignable)
         if: steps.deploy.outcome == 'success'
         run: |
           set -e
@@ -421,14 +430,7 @@ jobs:
             BODY=$(cat /tmp/health.json 2>/dev/null || echo "")
             echo "Tentative $i — HTTP $HTTP_CODE — $BODY"
             if [ "$HTTP_CODE" = "200" ] && [ "$(jq -r '.status' /tmp/health.json 2>/dev/null)" = "ok" ]; then
-              # Un processus démarré il y a plus de 10 min n'est pas celui que
-              # ce déploiement vient de relancer : le restart n'a pas eu lieu.
-              UPTIME=$(jq -r '.uptime | floor' /tmp/health.json)
-              if [ "$UPTIME" -gt 600 ]; then
-                echo "✗ Processus en ligne depuis ${UPTIME}s : pm2 n'a pas redémarré vol-histoire"
-                exit 1
-              fi
-              echo "✓ Backend health OK (uptime ${UPTIME}s)"
+              echo "✓ Backend health OK"
               exit 0
             fi
             [ $i -lt 6 ] && sleep 5

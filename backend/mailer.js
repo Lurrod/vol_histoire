@@ -420,6 +420,25 @@ async function sendEmailChangeNotice(to, name) {
   });
 }
 
+// Inscription tentée avec une adresse qui a déjà un compte vérifié. La
+// réponse HTTP reste identique (anti-énumération) : seul le titulaire de la
+// boîte apprend que l'adresse est prise. Aucun jeton : rien à cliquer de
+// sensible, juste les chemins habituels (connexion, mot de passe oublié).
+async function sendAccountExistsNotice(to, name) {
+  await transporter.sendMail({
+    from: FROM,
+    to,
+    subject: "Tentative d'inscription avec votre adresse — Vol d'Histoire",
+    html: buildNoticeTemplate({
+      heading: "Vous avez déjà un compte",
+      name,
+      paragraph: "Quelqu'un — peut-être vous — vient de demander la création d'un compte avec cette adresse email, qui en possède déjà un. Aucun nouveau compte n'a été créé et le vôtre n'a pas été modifié.",
+      cta: { label: 'Se connecter', link: `${BASE_URL}/login` },
+      note: `Mot de passe oublié ? Demandez un nouveau lien sur ${BASE_URL}/forgot-password. Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.`,
+    }),
+  });
+}
+
 function buildNoticeTemplate({ heading, name, paragraph, cta, note }) {
   const esc = escapeHtmlEmail;
   const button = cta
@@ -490,6 +509,7 @@ module.exports = {
   sendPasswordResetEmail,
   sendEmailChangeConfirmation,
   sendEmailChangeNotice,
+  sendAccountExistsNotice,
   sendContactEmail,
   sendWelcomeEmail,
   verifyConnection,

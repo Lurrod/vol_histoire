@@ -21,7 +21,9 @@ async function findForLogin(db, email) {
 
 /** @returns {Promise<{ id: number, email_verified: boolean }|null>} */
 async function findRegistrationState(db, email) {
-  const result = await db.query('SELECT id, email_verified FROM users WHERE email = $1', [email]);
+  // name : celui du TITULAIRE, pour l'avertissement d'inscription en double —
+  // jamais celui saisi dans le formulaire, choisi par n'importe qui.
+  const result = await db.query('SELECT id, name, email_verified FROM users WHERE email = $1', [email]);
   return result.rows[0] || null;
 }
 
