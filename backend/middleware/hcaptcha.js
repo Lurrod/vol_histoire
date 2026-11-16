@@ -7,9 +7,15 @@
  *   HCAPTCHA_SECRET   : clé secrète (sk_xxx, fournie par hCaptcha)
  *   HCAPTCHA_SITEKEY  : clé publique (utilisée côté frontend)
  *
- * Si HCAPTCHA_SECRET n'est pas défini, la vérification est SKIPPÉE
- * (mode développement / pas encore configuré). En CI / test, le secret
- * de test '0x0000000000000000000000000000000000000000' valide tout.
+ * C'est la clé SECRÈTE qui décide, pas la clé publique : dès que
+ * HCAPTCHA_SECRET est posé, un jeton valide est exigé (absent, vide, d'un
+ * autre type qu'une chaîne → refus sans même interroger hCaptcha).
+ * Sans clé secrète :
+ *   - hors production, la vérification est sautée (développement local) ;
+ *   - en production, elle échoue (fermé par défaut) — et server.js refuse de
+ *     démarrer sans les deux clés (captchaConfigErrors).
+ * En CI / test, le secret de test '0x0000000000000000000000000000000000000000'
+ * valide tout.
  *
  * Usage :
  *   const verifyHcaptcha = require('./middleware/hcaptcha');
@@ -18,11 +24,26 @@
 
 const HCAPTCHA_VERIFY_URL = 'https://api.hcaptcha.com/siteverify';
 
+/**
+ * Variables hCaptcha manquantes au démarrage. En production, les deux clés
+ * vont ensemble : sans la secrète, tout serait refusé ; sans la publique, le
+ * navigateur n'enverrait jamais de jeton et les formulaires seraient bloqués.
+ * @param {Record<string, string|undefined>} env
+ * @returns {string[]} noms des variables manquantes (vide si rien à signaler)
+ */
+function captchaConfigErrors(env) {
+  if (env.NODE_ENV !== 'production') return [];
+  return ['HCAPTCHA_SECRET', 'HCAPTCHA_SITEKEY'].filter((name) => !env[name]);
+}
+
 async function verify(token, remoteIp) {
   const secret = process.env.HCAPTCHA_SECRET;
 
-  // Mode dev / non configuré : on laisse passer
-  if (!secret) return { ok: true, skipped: true };
+  if (!secret) {
+    // Production sans clé : on refuse plutôt que de tout laisser passer.
+    if (process.env.NODE_ENV === 'production') return { ok: false, reason: 'not-configured' };
+    return { ok: true, skipped: true }; // développement local
+  }
 
   // Token absent : reject
   if (!token || typeof token !== 'string') {
@@ -33,6 +54,9 @@ async function verify(token, remoteIp) {
   params.set('secret', secret);
   params.set('response', token);
   if (remoteIp) params.set('remoteip', remoteIp);
+  // Lie le jeton à la clé publique de CE site : un jeton émis pour une autre
+  // clé du même compte hCaptcha est refusé (paramètre recommandé par hCaptcha).
+  if (process.env.HCAPTCHA_SITEKEY) params.set('sitekey', process.env.HCAPTCHA_SITEKEY);
 
   try {
     const res = await fetch(HCAPTCHA_VERIFY_URL, {
@@ -56,7 +80,8 @@ async function verify(token, remoteIp) {
  * Renvoie 400 si invalide. Passe au next() si OK ou skippé.
  */
 function verifyHcaptcha(req, res, next) {
-  const token = req.body['h-captcha-response'] || req.body.captcha;
+  const body = req.body || {};
+  const token = body['h-captcha-response'] || body.captcha;
   verify(token, req.ip).then(result => {
     if (!result.ok) {
       return res.status(400).json({
@@ -70,3 +95,4 @@ function verifyHcaptcha(req, res, next) {
 
 module.exports = verifyHcaptcha;
 module.exports.verify = verify;
+module.exports.captchaConfigErrors = captchaConfigErrors;

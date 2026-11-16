@@ -16,7 +16,7 @@ const { langMiddleware } = require('./i18n');
 const observability = require('./middleware/observability');
 const createMonitoringRouter = require('./routes/monitoring');
 const { buildHtmlCache } = require('./middleware/serveHtml');
-const { blockPrivateStatic } = require('./utils/static-guard');
+const { createPrivateStaticGuard } = require('./utils/static-guard');
 const { rejectNulBytes } = require('./middleware/input-guards');
 const { createCspReportRouter } = require('./middleware/csp-report');
 
@@ -151,6 +151,14 @@ app.use(cors({
 }));
 
 app.use(express.json({ limit: '100kb' }));
+// Express 5 laisse req.body à undefined quand la requête n'a pas de corps
+// (Express 4 posait {}). Toute route qui déstructure req.body levait alors une
+// TypeError → 500 : /login, /register, /contact, /auth/verify-email… Corps
+// vide = objet vide, et la validation de chaque route répond 400.
+app.use((req, res, next) => {
+  if (req.body === undefined) req.body = {};
+  next();
+});
 app.use(cookieParser());
 
 // Observabilité : Request ID + access log + métriques HTTP
@@ -388,6 +396,10 @@ function canonicalPageRedirect(req, res, next) {
 app.use(canonicalPageRedirect);
 
 const STATIC_OPTS = {
+  // Pas de 301 « répertoire → répertoire/ » : canonicalPageRedirect retire le
+  // slash final, les deux se renvoyaient la balle (/css/ ↔ /css) à l'infini.
+  // Un répertoire n'a rien à servir (pas d'index) : il finit en 404.
+  redirect: false,
   setHeaders: (res, filePath, _stat) => {
     const ext = path.extname(filePath).toLowerCase();
     const base = path.basename(filePath).toLowerCase();
@@ -427,7 +439,7 @@ const STATIC_OPTS = {
 // app.get('/') passe par sendCachedHtml() qui nonce les <style> à l'exécution.
 // frontend/ contient aussi les outils de dev (node_modules, tests, package.json) :
 // on les filtre avant express.static.
-app.use(blockPrivateStatic);
+app.use(createPrivateStaticGuard(sendNotFound));
 // .well-known/ commence par un point : express.static l'ignore par défaut (dotfiles).
 app.use('/.well-known', express.static(path.join(__dirname, '../frontend/.well-known'), STATIC_OPTS));
 app.use(express.static(path.join(__dirname, '../frontend/'), { ...STATIC_OPTS, index: false }));
@@ -497,6 +509,22 @@ function sendCachedHtml(res, filePath) {
     })
     .catch(() => res.status(404).send('Page non trouvée'));
 }
+// Réponse 404 unique, deux formats seulement : JSON sous /api, page 404 du
+// site partout ailleurs (fichiers de dev bloqués, ressources absentes, méthodes
+// non routées). Les pages par défaut d'Express (« Cannot GET /api/login ») et
+// le « Not Found » en texte brut signalaient la pile et ce qui était caché.
+const API_NOT_FOUND = Object.freeze({ message: 'Ressource introuvable' });
+
+function isApiPath(urlPath) {
+  return urlPath === '/api' || urlPath.startsWith('/api/');
+}
+
+function sendNotFound(req, res) {
+  res.status(404);
+  if (isApiPath(req.baseUrl + req.path)) return res.json(API_NOT_FOUND);
+  return sendCachedHtml(res, path.join(frontendRoot, '404.html'));
+}
+
 app.htmlCache = htmlCache;          // exposé pour le SSR router /details
 app.sendCachedHtml = sendCachedHtml;
 app.injectCspNonce = injectCspNonce; // exposé pour le SSR router /details
@@ -508,8 +536,17 @@ const htmlPages = [
   'contact', 'mentions-legales',
   'politique-confidentialite', 'cgu',
 ];
+// Pages dont l'URL porte un jeton de lien email (?token=) ou une adresse :
+// aucune copie en cache (navigateur, proxy, service worker — sw.js respecte
+// no-store) et aucun Referer, même réduit à l'origine. Leur JS retire en plus
+// le paramètre de l'URL dès sa lecture (takeUrlParams, utils.js).
+const URL_SECRET_PAGES = new Set(['reset-password', 'verify-email', 'check-email']);
 htmlPages.forEach(page => {
   app.get(`/${page}`, (req, res) => {
+    if (URL_SECRET_PAGES.has(page)) {
+      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('Referrer-Policy', 'no-referrer');
+    }
     sendCachedHtml(res, path.join(frontendRoot, `${page}.html`));
   });
 });
@@ -590,15 +627,20 @@ app.use('/api', createContactRouter(() => pool, { contactLimiter, mailer }));
 const createSitemapRouter = require('./routes/sitemap');
 app.use('/', createSitemapRouter(() => pool));
 
-// Health check
+// Health check. Pas d'uptime : public, il donnait la date du dernier
+// redémarrage. Le déploiement vérifie le redémarrage par le PID pm2.
 app.get('/api/health', async (req, res) => {
   try {
     await pool.query('SELECT 1');
-    res.json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() });
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
   } catch {
     res.status(503).json({ status: 'error', message: 'Database unreachable' });
   }
 });
+
+// Toute autre URL sous /api : 404 JSON, quelle que soit la méthode. Monté
+// après le dernier routeur d'API, avant le catch-all des pages HTML.
+app.use('/api', sendNotFound);
 
 // -----------------------------------------------------------------------------
 // Clean URLs : /hangar → hangar.html, /a-propos → a-propos.html, etc.
@@ -630,7 +672,7 @@ try {
 // app.use((req,res,next)=>...) en dernière position joue le même rôle de catch-all
 // HTML pour les URLs propres sans extension.
 app.use(async (req, res, next) => {
-  if (req.method !== 'GET') return next();
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
   // Ignorer les requêtes API et les fichiers avec extension
   if (req.path.startsWith('/api/') || path.extname(req.path)) {
     return next();
@@ -638,16 +680,9 @@ app.use(async (req, res, next) => {
 
   // URLs propres masquées (fragment cookie-consent etc.) : 404 immédiat sans
   // tomber sur le fichier .html, qui reste atteignable uniquement via /xxx.html.
-  if (HIDDEN_CLEAN_URLS.has(req.path)) {
-    const notFoundFile = path.join(frontendDir, '404.html');
-    res.status(404);
-    return sendCachedHtml(res, notFoundFile);
-  }
-
   // /404 est une vraie page d'erreur : statut 404, jamais un 200 indexable.
-  if (req.path === '/404') {
-    res.status(404);
-    return sendCachedHtml(res, path.join(frontendDir, '404.html'));
+  if (HIDDEN_CLEAN_URLS.has(req.path) || req.path === '/404') {
+    return sendNotFound(req, res);
   }
 
   // Vérification rapide via le Set pré-construit
@@ -661,17 +696,13 @@ app.use(async (req, res, next) => {
     await fsPromises.access(htmlFile, fs.constants.F_OK);
     return sendCachedHtml(res, htmlFile);
   } catch {
-    // 404 personnalisé
-    const notFoundFile = path.join(frontendDir, '404.html');
-    try {
-      await fsPromises.access(notFoundFile, fs.constants.F_OK);
-      res.status(404);
-      return sendCachedHtml(res, notFoundFile);
-    } catch {
-      res.status(404).send('Page non trouvée');
-    }
+    return sendNotFound(req, res);
   }
 });
+
+// Ce qu'aucune route n'a servi (fichier absent, méthode non routée) : la page
+// 404 du site plutôt que « Cannot POST /x » d'Express.
+app.use(sendNotFound);
 
 // -----------------------------------------------------------------------------
 // Gestionnaire d'erreurs global

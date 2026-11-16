@@ -30,6 +30,28 @@
   window.addEventListener('error', captureBeforeLoad);
   window.addEventListener('unhandledrejection', captureBeforeLoad);
 
+  // Paramètres d'URL jamais transmis à Sentry : jetons des liens reçus par
+  // email et adresse. Les pages les retirent de l'URL dès leur lecture ; ce
+  // filtre couvre ce qui aurait été capté avant (requête, fil d'Ariane).
+  var SECRET_PARAM = /([?&](?:token|email)=)[^&#]*/gi;
+  function scrubUrl(value) {
+    return typeof value === 'string' ? value.replace(SECRET_PARAM, '$1%5BFiltered%5D') : value;
+  }
+  function scrubQuery(value) {
+    return typeof value === 'string' ? scrubUrl('?' + value).slice(1) : value;
+  }
+  function scrubEvent(event) {
+    if (event.request) {
+      event.request.url = scrubUrl(event.request.url);
+      event.request.query_string = scrubQuery(event.request.query_string);
+    }
+    (event.breadcrumbs || []).forEach(function (b) {
+      if (!b || !b.data) return;
+      ['url', 'from', 'to'].forEach(function (k) { b.data[k] = scrubUrl(b.data[k]); });
+    });
+    return event;
+  }
+
   function initSentry() {
     if (typeof window.Sentry === 'undefined') return;
 
@@ -57,7 +79,7 @@
               return /extension:\/\//.test(f.filename || '');
             })) return null;
           }
-          return event;
+          return scrubEvent(event);
         },
       });
 

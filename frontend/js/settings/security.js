@@ -8,7 +8,7 @@
   /** Exigences de isValidPassword() (backend/validators.js), par id d'élément. */
   function passwordRequirements(password) {
     return {
-      'req-length': password.length >= 8,
+      'req-length': password.length >= PASSWORD_MIN_LENGTH && password.length <= PASSWORD_MAX_LENGTH,
       'req-upper': /[A-Z]/.test(password),
       'req-lower': /[a-z]/.test(password),
       'req-number': /[0-9]/.test(password),
@@ -16,7 +16,7 @@
   }
 
   function meetsRequirements(password) {
-    return Object.values(passwordRequirements(password)).every(Boolean);
+    return isValidPassword(password);
   }
 
   /** Libellé et couleur de la jauge pour un mot de passe et son score. */

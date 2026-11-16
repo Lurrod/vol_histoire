@@ -45,6 +45,7 @@ const mockPool = {
 jest.mock('../mailer', () => ({
   sendVerificationEmail: jest.fn().mockResolvedValue(undefined),
   sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
+  sendAccountExistsNotice: jest.fn().mockResolvedValue(undefined),
   verifyConnection: jest.fn().mockResolvedValue(undefined),
 }));
 

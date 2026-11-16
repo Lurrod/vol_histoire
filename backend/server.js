@@ -16,6 +16,14 @@ if (process.env.REFRESH_SECRET.length < 32) {
   logger.error('REFRESH_SECRET doit faire au moins 32 caractères');
   process.exit(1);
 }
+// En production, le captcha n'est jamais facultatif : sans la clé secrète,
+// inscription, contact et mot de passe oublié seraient refusés ; sans la
+// clé publique, le navigateur n'enverrait aucun jeton.
+const captchaMissing = require('./middleware/hcaptcha').captchaConfigErrors(process.env);
+if (captchaMissing.length > 0) {
+  logger.error('hCaptcha non configuré en production', { missing: captchaMissing.join(', ') });
+  process.exit(1);
+}
 
 const app = require('./app');
 const { resolveListenHost } = require('./utils/network');

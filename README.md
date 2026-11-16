@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.14.1-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.14.2-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-24-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/tests-2120-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
@@ -132,7 +132,7 @@ vol_histoire/
 │   │   └── [page].js              Point d'entree court par page
 │   ├── locales/                   fr.json, en.json (parite 100%)
 │   ├── partials/                  header.html, footer.html (inclus par serveHtml au demarrage)
-│   ├── __tests__/                 70 suites Jest + jsdom (couverture mesuree sur tout js/**)
+│   ├── __tests__/                 72 suites Jest + jsdom (couverture mesuree sur tout js/**)
 │   └── *.html                     19 pages
 │
 ├── e2e/                           Tests Playwright (21 specs)
@@ -290,10 +290,10 @@ La documentation API Swagger est sur `http://localhost:3000/api/docs` (mode dev 
 
 ## Tests
 
-Le projet dispose de **959 tests backend**, **1 469 tests frontend** et **21 specs E2E** :
+Le projet dispose de **1 030 tests backend**, **1 518 tests frontend** et **21 specs E2E** :
 
 ```bash
-# Backend — 869 tests (routes, validators, SSR, mailer, logger…) ; la suite
+# Backend — 940 tests (routes, validators, SSR, mailer, logger…) ; la suite
 # d'integration (90 tests sur vraie base) est sautee sans IT_DATABASE_URL
 cd backend && npm test
 
@@ -315,10 +315,10 @@ cd e2e && npx playwright test
 
 | Suite | Tests | Outil |
 |-------|-------|-------|
-| Backend (routes, unitaires) | 869 | Jest + Supertest |
+| Backend (routes, unitaires) | 940 | Jest + Supertest |
 | Backend integration (vraie base) | 90 | Jest + PostgreSQL |
 | Backend charge | inclus | autocannon |
-| Frontend unit + DOM | 1 469 | Jest + jsdom |
+| Frontend unit + DOM | 1 518 | Jest + jsdom |
 | E2E | 136 scenarios (21 specs) | Playwright |
 
 Couverture : backend 96,0 % des lignes (seuil 80), frontend 99,8 % des lignes et 90,0 % des branches sur tout `js/**` (seuils globaux 95/85/95/95 ; plancher par fichier : 80 % des lignes, instructions et fonctions, 60 % des branches).
@@ -346,7 +346,7 @@ Les bundles sont versionnés et déployés tels quels : **toute modification de 
 1. Un seul déploiement à la fois (`concurrency: deploy-production`, jamais annulé en cours de route).
 2. Le run vérifie qu'il porte toujours la tête de `main` ; sinon il s'arrête sans rien faire, le run du commit plus récent déploiera.
 3. Sur le serveur : le commit en ligne est noté hors du dépôt (avec un journal des déploiements), puis `git reset --hard <commit testé>`, `npm ci --omit=dev` et `pm2 restart vol-histoire`. **Jamais `pm2 restart all`** : le serveur héberge d'autres applications.
-4. Smoke tests : `/api/health` (base joignable, processus redémarré depuis moins de 10 min), `/api/config` (la version servie doit être celle de `backend/package.json` du commit déployé), `/`, `/api/airplanes`.
+4. Smoke tests : `/api/health` (base joignable ; le redémarrage est vérifié pendant le déploiement, par le PID pm2), `/api/config` (la version servie doit être celle de `backend/package.json` du commit déployé), `/`, `/api/airplanes`.
 5. Si le déploiement ou un smoke test échoue : **retour arrière automatique** au commit noté à l'étape 3, nouveau contrôle de santé, et le job reste rouge.
 
 Retour arrière manuel (problème découvert plus tard), sur le serveur :

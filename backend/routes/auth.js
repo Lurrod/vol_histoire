@@ -93,7 +93,12 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     res.status(201).json({ message: 'Compte créé. Vérifiez votre boîte email pour activer votre compte.' });
 
     try {
-      if (existing && existing.email_verified) return;
+      // Adresse déjà inscrite et vérifiée : aucun compte ni jeton, mais le
+      // titulaire est prévenu (avec son propre nom, pas celui du formulaire).
+      if (existing && existing.email_verified) {
+        await mailer.sendAccountExistsNotice(email, existing.name);
+        return;
+      }
 
       let userId;
       if (existing) {
@@ -124,7 +129,11 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
   const LOCKOUT_MAX_ATTEMPTS = 10;
   const LOCKOUT_DURATION_MIN = 15;
 
-  router.post('/login', loginLimiter, asyncHandler(async (req, res) => {
+  // Trois barrages : limiteur par IP (20 requêtes / 15 min, posé en premier
+  // pour compter aussi les envois sans jeton), hCaptcha invisible (bourrage
+  // d'identifiants automatisé, réparti sur de nombreuses IP), puis verrou par
+  // compte (LOCKOUT_MAX_ATTEMPTS échecs → LOCKOUT_DURATION_MIN minutes).
+  router.post('/login', loginLimiter, verifyHcaptcha, asyncHandler(async (req, res) => {
     const { password } = req.body;
     const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : req.body.email;
 
@@ -150,25 +159,22 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-    if (!userData || !validPassword) {
-      // Incrément du compteur d'échecs si le compte existe (atomique en SQL,
-      // voir usersRepo.recordFailedLogin). Au seuil : verrouillage du compte
-      // pour LOCKOUT_DURATION_MIN minutes. On ne révèle pas au client qu'un
-      // compte existe : 400 générique dans tous les cas.
-      if (userData) {
+    // Compte inconnu, mot de passe faux ou compte NON ACTIVÉ : même 400
+    // générique. Un 403 EMAIL_NOT_VERIFIED, même réservé au bon mot de passe,
+    // était un oracle combiné à l'inscription : s'inscrire sur une adresse avec
+    // P puis se connecter avec P répondait 403 si l'adresse était libre (le
+    // compte venait d'être créé avec P), 400 si elle existait déjà. Le mot de
+    // passe actif se choisit de toute façon à l'activation (/auth/verify-email).
+    if (!userData || !validPassword || !userData.email_verified) {
+      // Incrément du compteur d'échecs si le compte existe et que le mot de
+      // passe est faux (atomique en SQL, voir usersRepo.recordFailedLogin).
+      // Au seuil : verrouillage du compte pour LOCKOUT_DURATION_MIN minutes.
+      if (userData && !validPassword) {
         await usersRepo.recordFailedLogin(getPool(), userData.id, {
           maxAttempts: LOCKOUT_MAX_ATTEMPTS, lockMinutes: LOCKOUT_DURATION_MIN,
         });
       }
       return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
-    }
-
-    // Bloquer la connexion si l'email n'est pas vérifié
-    if (!userData.email_verified) {
-      return res.status(403).json({
-        message: 'Votre email n\'est pas encore vérifié. Consultez votre boîte mail.',
-        code: 'EMAIL_NOT_VERIFIED',
-      });
     }
 
     // Login réussi : reset compteur + lockout

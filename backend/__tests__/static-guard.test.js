@@ -4,7 +4,7 @@
  * express.static sert tout frontend/ : les fichiers de dev (node_modules,
  * tests, manifestes npm, docs, coverage) ne doivent jamais être publics.
  */
-const { isPrivateStaticPath, blockPrivateStatic } = require('../utils/static-guard');
+const { isPrivateStaticPath, createPrivateStaticGuard } = require('../utils/static-guard');
 
 describe('isPrivateStaticPath', () => {
   test.each([
@@ -54,23 +54,25 @@ describe('isPrivateStaticPath', () => {
   });
 });
 
-describe('blockPrivateStatic', () => {
+describe('createPrivateStaticGuard', () => {
   function run(path) {
-    const res = { sendStatus: jest.fn() };
+    const sendNotFound = jest.fn();
     const next = jest.fn();
-    blockPrivateStatic({ path }, res, next);
-    return { res, next };
+    const req = { path };
+    const res = {};
+    createPrivateStaticGuard(sendNotFound)(req, res, next);
+    return { req, res, sendNotFound, next };
   }
 
-  test('répond 404 sans appeler next pour un chemin privé', () => {
-    const { res, next } = run('/package.json');
-    expect(res.sendStatus).toHaveBeenCalledWith(404);
+  test('délègue à la réponse 404 du site sans appeler next pour un chemin privé', () => {
+    const { req, res, sendNotFound, next } = run('/package.json');
+    expect(sendNotFound).toHaveBeenCalledWith(req, res);
     expect(next).not.toHaveBeenCalled();
   });
 
   test('appelle next pour un chemin public', () => {
-    const { res, next } = run('/hangar.html');
+    const { sendNotFound, next } = run('/hangar.html');
     expect(next).toHaveBeenCalledTimes(1);
-    expect(res.sendStatus).not.toHaveBeenCalled();
+    expect(sendNotFound).not.toHaveBeenCalled();
   });
 });

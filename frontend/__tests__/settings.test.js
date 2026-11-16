@@ -81,6 +81,9 @@ function installGlobals() {
     clearFieldError: utils.clearFieldError,
     isValidEmail: utils.isValidEmail,
     calculatePasswordStrength: utils.calculatePasswordStrength,
+    isValidPassword: utils.isValidPassword,
+    PASSWORD_MIN_LENGTH: utils.PASSWORD_MIN_LENGTH,
+    PASSWORD_MAX_LENGTH: utils.PASSWORD_MAX_LENGTH,
     setupPasswordToggle: jest.fn(),
   });
   toasts = [];
@@ -389,6 +392,9 @@ describe('VH.settings.security', () => {
     expect(security.strengthLabel('', 0).key).toBe('settings.password_strength');
     expect(security.strengthLabel('x', 50).key).toBe('settings.strength_medium');
     expect(security.meetsRequirements('Abcdefg1')).toBe(true);
+    // « Entre 8 et 128 caractères » s'affichait, mais la case passait au vert au-delà
+    expect(security.meetsRequirements('Aa1' + 'x'.repeat(126))).toBe(false);
+    expect(security.passwordRequirements('Aa1' + 'x'.repeat(126))['req-length']).toBe(false);
     expect(security.meetsRequirements('Abcdefgh')).toBe(false);
   });
 

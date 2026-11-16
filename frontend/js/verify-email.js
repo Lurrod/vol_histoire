@@ -4,9 +4,9 @@
 //     activé, pour qu'une pré-inscription de son adresse par un tiers échoue) ;
 //   - /verify-email?type=email&token=… confirmation d'un changement d'adresse.
 document.addEventListener('DOMContentLoaded', async () => {
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
-  const isEmailChange = params.get('type') === 'email';
+  // Jeton lu puis retiré de l'URL aussitôt (historique, GTM, Sentry) : utils.js
+  const { token } = takeUrlParams(['token']);
+  const isEmailChange = new URLSearchParams(window.location.search).get('type') === 'email';
 
   const show = (id) => {
     ['state-loading', 'state-form', 'state-success', 'state-error'].forEach(s => {
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const password = pwInput.value;
-    if (password.length < 8 || password.length > 128 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+    if (!isValidPassword(password)) {
       setFormError(i18n.t('verify_email.error_password_weak'));
       return;
     }

@@ -24,9 +24,11 @@ afterEach(() => {
 // =============================================================================
 describe('check-email.js', () => {
   function load(search) {
+    sessionStorage.clear(); // l'adresse d'un test précédent y serait mémorisée
     window.history.replaceState(null, '', `/check-email${search}`);
     document.body.innerHTML = mainOf('check-email.html');
     global.i18n = { t: (k) => k };
+    global.takeUrlParams = require('../js/utils').takeUrlParams;
     global.auth = { fetchWithTimeout: jest.fn(() => Promise.resolve({ ok: true })) };
     jest.isolateModules(() => { require('../js/check-email'); });
   }

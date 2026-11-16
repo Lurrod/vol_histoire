@@ -1,6 +1,6 @@
 (function() {
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
+  // Lu puis retiré de l'URL aussitôt (historique, GTM, Sentry) : utils.js
+  const { token } = takeUrlParams(['token']);
 
   // Vérifier la présence du token
   if (!token) {
@@ -28,16 +28,10 @@
     return value && value !== key ? value : fallback;
   }
 
-  // Indicateur de force
+  // Indicateur de force : même score qu'à l'inscription et dans les
+  // paramètres (calculatePasswordStrength, utils.js). Indicatif seulement.
   pwInput.addEventListener('input', () => {
-    const pw = pwInput.value;
-    let strength = 0;
-    if (pw.length >= 8) strength += 25;
-    if (/[a-z]/.test(pw)) strength += 20;
-    if (/[A-Z]/.test(pw)) strength += 25;
-    if (/[0-9]/.test(pw)) strength += 20;
-    if (pw.length >= 12) strength += 10;
-    strength = Math.min(strength, 100);
+    const strength = calculatePasswordStrength(pwInput.value);
     strengthFill.style.width = strength + '%';
     if (strength < 40) {
       strengthFill.style.background = '#e74c3c';
@@ -89,8 +83,9 @@
       showError('Les mots de passe ne correspondent pas.');
       return;
     }
-    if (password.length < 8 || !/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
-      showError('Mot de passe invalide : 8 caractères min, 1 majuscule, 1 minuscule, 1 chiffre.');
+    if (!isValidPassword(password)) {
+      showError(tr('reset_password.error_password_weak',
+        'Mot de passe invalide : 8 à 128 caractères, avec au moins 1 majuscule, 1 minuscule et 1 chiffre.'));
       return;
     }
 

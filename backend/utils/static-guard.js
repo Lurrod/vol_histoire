@@ -4,7 +4,9 @@
  * express.static expose tout le dossier frontend/, qui contient aussi les
  * outils de dev (node_modules de Jest, tests, manifestes npm, docs, coverage).
  * Rien de secret, mais ça révèle les versions exactes des dépendances et le
- * code des tests. Le filtre passe avant express.static et répond 404.
+ * code des tests. Le filtre passe avant express.static et répond 404 avec la
+ * même page que n'importe quelle URL absente : un format à part (« Not Found »
+ * en texte brut) signalait justement qu'il y avait là quelque chose à cacher.
  */
 
 const PRIVATE_DIRS = new Set(['node_modules', '__tests__', 'coverage']);
@@ -25,9 +27,15 @@ function isPrivateStaticPath(urlPath) {
     || basename.endsWith('.md');
 }
 
-function blockPrivateStatic(req, res, next) {
-  if (isPrivateStaticPath(req.path)) return res.sendStatus(404);
-  return next();
+/**
+ * @param {(req: object, res: object) => void} sendNotFound réponse 404 du site
+ * @returns {Function} middleware Express
+ */
+function createPrivateStaticGuard(sendNotFound) {
+  return function blockPrivateStatic(req, res, next) {
+    if (isPrivateStaticPath(req.path)) return sendNotFound(req, res);
+    return next();
+  };
 }
 
-module.exports = { isPrivateStaticPath, blockPrivateStatic };
+module.exports = { isPrivateStaticPath, createPrivateStaticGuard };

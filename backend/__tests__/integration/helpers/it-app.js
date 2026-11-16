@@ -19,6 +19,7 @@ jest.mock('../../../mailer', () => ({
   sendContactEmail: jest.fn().mockResolvedValue(undefined),
   sendEmailChangeConfirmation: jest.fn().mockResolvedValue(undefined),
   sendEmailChangeNotice: jest.fn().mockResolvedValue(undefined),
+  sendAccountExistsNotice: jest.fn().mockResolvedValue(undefined),
   sendWelcomeEmail: jest.fn().mockResolvedValue(undefined),
   verifyConnection: jest.fn().mockResolvedValue(undefined),
 }));

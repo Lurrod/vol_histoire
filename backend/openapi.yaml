@@ -15,9 +15,11 @@ info:
     URLs de filtres pour rester valides indépendamment de la langue d'affichage).
 
     ## Anti-spam
-    Les routes `/register` et `/auth/forgot-password` acceptent un token
-    hCaptcha dans le body (`h-captcha-response`). Si `HCAPTCHA_SECRET`
-    n'est pas configuré côté serveur, la vérification est skippée (mode dev).
+    Les routes `/register`, `/login`, `/contact` et `/auth/forgot-password`
+    exigent un jeton hCaptcha dans le body (`h-captcha-response`) dès que
+    `HCAPTCHA_SECRET` est configuré : jeton absent ou refusé → 400
+    `CAPTCHA_FAILED`. Sans clé secrète, la vérification est sautée hors
+    production ; en production, le serveur refuse de démarrer sans les deux clés.
 
     ## Cache & versioning
     Toutes les pages HTML sont servies avec un query string `?v=<version>`
@@ -33,7 +35,7 @@ info:
     - **415** : jeu de caractères ou encodage du corps non pris en charge.
     Les caractères de contrôle d'un paramètre `search` sont remplacés par une
     espace.
-  version: 4.14.1
+  version: 4.14.2
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -488,11 +490,16 @@ paths:
                 'h-captcha-response':
                   type: string
                   description: |
-                    Token hCaptcha (optionnel). Vérifié côté serveur si
-                    `HCAPTCHA_SECRET` est configuré, sinon ignoré.
+                    Jeton hCaptcha, exigé dès que `HCAPTCHA_SECRET` est
+                    configuré (toujours le cas en production).
       responses:
         '201':
-          description: Compte créé
+          description: |
+            Réponse identique que l'adresse soit libre, en attente de
+            vérification ou déjà inscrite (anti-énumération), envoyée avant
+            tout envoi d'email. Adresse libre ou non vérifiée : lien
+            d'activation. Adresse déjà vérifiée : aucun compte créé, le
+            titulaire reçoit un avertissement (« Vous avez déjà un compte »).
           content:
             application/json:
               schema:
@@ -516,6 +523,11 @@ paths:
       description: |
         Retourne un access token JWT (15 min) dans le body et un refresh token
         en cookie HttpOnly SameSite=Strict (7 jours).
+
+        Protections, dans l'ordre : limiteur par IP (20 requêtes / 15 min,
+        succès compris), hCaptcha invisible, puis verrou par compte (10 échecs
+        → 15 min, réponse identique à un mot de passe faux pour ne pas révéler
+        l'existence du compte).
       requestBody:
         required: true
         content:
@@ -529,6 +541,11 @@ paths:
                   format: email
                 password:
                   type: string
+                'h-captcha-response':
+                  type: string
+                  description: |
+                    Jeton hCaptcha, exigé dès que `HCAPTCHA_SECRET` est
+                    configuré (toujours le cas en production).
       responses:
         '200':
           description: Connexion réussie
@@ -548,9 +565,10 @@ paths:
                     type: string
                     description: Access token JWT
         '400':
-          description: Email ou mot de passe incorrect
-        '403':
-          description: Email non vérifié (code EMAIL_NOT_VERIFIED)
+          description: |
+            Réponse unique pour : compte inconnu, mot de passe incorrect,
+            compte verrouillé, compte non encore activé (anti-énumération :
+            aucun code ne distingue ces cas). Captcha invalide : code CAPTCHA_FAILED.
         '429':
           description: Rate limit (20 req / 15 min)
 
@@ -1661,7 +1679,6 @@ paths:
                 type: object
                 properties:
                   status: { type: string, example: ok }
-                  uptime: { type: number, description: 'Uptime serveur en secondes' }
                   timestamp: { type: string, format: date-time }
         '503':
           description: Base de données injoignable
@@ -1912,7 +1929,6 @@ paths:
                 type: object
                 properties:
                   status: { type: string, example: ok }
-                  uptime: { type: number, description: Uptime du process en secondes }
 
   /ready:
     get:
