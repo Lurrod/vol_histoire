@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.14.2-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.15.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-24-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/tests-2120-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>Encyclopedie interactive de l'aviation militaire depuis 1945</strong><br>
-  <em>434 appareils &middot; 33 nations &middot; 61 conflits &middot; 200+ systemes d'armes</em>
+  <em>554 appareils &middot; 34 nations &middot; 61 conflits &middot; 200+ systemes d'armes</em>
 </p>
 
 <p align="center">
@@ -87,11 +87,11 @@ vol_histoire/
 │   │   └── load.test.js           Tests de charge (autocannon)
 │   └── db_backup/
 │       ├── db.sql                 Schema complet (19 tables + triggers)
-│       └── *.sql                  434 fichiers avions (INSERT + enrichissement complet)
+│       └── *.sql                  554 fichiers avions (INSERT + enrichissement complet)
 │
 ├── frontend/                      Vanilla HTML / CSS / JS (pas de framework)
 │   ├── assets/
-│   │   └── airplanes/             434 appareils en tri-format (AVIF + WebP + JPG)
+│   │   └── airplanes/             554 appareils en tri-format (AVIF + WebP + JPG)
 │   ├── css/
 │   │   ├── tokens.css             Design tokens (source unique de verite)
 │   │   ├── base.css               Reset, container, typographie
@@ -227,9 +227,9 @@ createdb vol_histoire
 # 1. Schema complet (19 tables, triggers, index, FTS)
 psql -U vol_user -d vol_histoire -f backend/db_backup/db.sql
 
-# 2. Importer les 434 avions (chaque fichier contient INSERT + enrichissement)
+# 2. Importer les 554 avions (chaque fichier contient INSERT + enrichissement)
 #    L'ordre alphabetique compte : zz_backfill_relations.sql passe en dernier et
-#    pose les liens predecesseur / successeur / rival, qui exigent que les 434
+#    pose les liens predecesseur / successeur / rival, qui exigent que les 554
 #    fiches soient deja inserees.
 for f in backend/db_backup/*.sql; do
   [ "$f" != "backend/db_backup/db.sql" ] && psql -U vol_user -d vol_histoire -f "$f"
@@ -421,7 +421,7 @@ Puis faire un revert sur `main`, sinon le prochain push redéploie la version fa
 | **CI/CD** | GitHub Actions |
 | **Typographie** | DM Sans + Barlow Condensed (woff2 self-hosted) |
 | **Icones** | 159 icones Font Awesome self-hosted (script `build-icons.py`) |
-| **Images** | 434 appareils en tri-format AVIF + WebP + JPG, servis via `<picture>` (pas de CDN tiers) |
+| **Images** | 554 appareils en tri-format AVIF + WebP + JPG, servis via `<picture>` (pas de CDN tiers) |
 
 ---
 

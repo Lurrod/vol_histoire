@@ -35,6 +35,7 @@ describe('licenceUrl : texte canonique de chaque licence présente en base', () 
     ['CC0', 'https://creativecommons.org/publicdomain/zero/1.0/'],
     ['KOGL Type 1', 'https://www.kogl.or.kr/info/licenseType1.do'],
     ['OGL v1.0', 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/1/'],
+    ['GFDL 1.2', 'https://www.gnu.org/licenses/old-licenses/fdl-1.2.html'],
   ])('%s → %s', (licence, url) => {
     expect(photoCredit.licenceUrl(licence)).toBe(url);
   });
@@ -50,6 +51,7 @@ describe('licenceUrl : texte canonique de chaque licence présente en base', () 
     expect(photoCredit.requiresAttribution('CC BY-SA 3.0 au')).toBe(true);
     expect(photoCredit.requiresAttribution('KOGL Type 1')).toBe(true);
     expect(photoCredit.requiresAttribution('OGL v1.0')).toBe(true);
+    expect(photoCredit.requiresAttribution('GFDL 1.2')).toBe(true);
     expect(photoCredit.requiresAttribution('CC0')).toBe(false);
     expect(photoCredit.requiresAttribution('Public domain')).toBe(false);
   });

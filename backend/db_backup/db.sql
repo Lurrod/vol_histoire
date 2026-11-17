@@ -194,7 +194,7 @@ ALTER TABLE airplanes
     AND (combat_radius   IS NULL OR combat_radius   > 0)),
   ADD CONSTRAINT chk_airplanes_rayon       CHECK (combat_radius IS NULL OR max_range IS NULL OR combat_radius <= max_range),
   ADD CONSTRAINT chk_airplanes_facteur_g   CHECK ((g_limit_pos IS NULL OR g_limit_pos > 0) AND (g_limit_neg IS NULL OR g_limit_neg < 0)),
-  ADD CONSTRAINT chk_airplanes_equipage    CHECK (crew IS NULL OR crew BETWEEN 1 AND 35),
+  ADD CONSTRAINT chk_airplanes_equipage    CHECK (crew IS NULL OR crew BETWEEN 1 AND 120),
   ADD CONSTRAINT chk_airplanes_moteurs     CHECK (engine_count IS NULL OR engine_count BETWEEN 1 AND 10),
   ADD CONSTRAINT chk_airplanes_poussee     CHECK (
         (thrust_dry IS NULL OR thrust_dry > 0) AND (thrust_wet IS NULL OR thrust_wet > 0)
@@ -359,7 +359,8 @@ INSERT INTO countries (name, name_en, code) VALUES
 ('Canada', 'Canada', 'CAN'),
 ('Roumanie', 'Romania', 'ROU'),
 ('Australie', 'Australia', 'AUS'),
-('Égypte', 'Egypt', 'EGY');
+('Égypte', 'Egypt', 'EGY'),
+('Émirats arabes unis', 'United Arab Emirates', 'ARE');
 
 INSERT INTO wars (name, name_en, date_start, date_end, country_id, description, description_en) VALUES
 ('Guerre du Vietnam', 'Vietnam War', '1955-11-01', '1975-04-30', (SELECT id FROM countries WHERE code = 'VNM'), 'Conflit prolongé entre le Nord-Vietnam communiste et le Sud-Vietnam soutenu par les États-Unis.', 'Prolonged conflict between communist North Vietnam and US-backed South Vietnam.'),
@@ -577,7 +578,26 @@ INSERT INTO manufacturer (name, name_en, country_id, code) VALUES
 ('Britten-Norman', 'Britten-Norman', (SELECT id FROM countries WHERE code = 'GBR'), 'BN'),
 ('Martin (Glenn L. Martin Company)', 'Martin (Glenn L. Martin Company)', (SELECT id FROM countries WHERE code = 'USA'), 'MAR'),
 ('CASC (China Aerospace Science and Technology Corporation)', 'CASC (China Aerospace Science and Technology Corporation)', (SELECT id FROM countries WHERE code = 'CHN'), 'CASC'),
-('René Leduc', 'René Leduc', (SELECT id FROM countries WHERE code = 'FRA'), 'LED');
+('René Leduc', 'René Leduc', (SELECT id FROM countries WHERE code = 'FRA'), 'LED'),
+-- Lots 29 à 38
+('Blackburn Aircraft', 'Blackburn Aircraft', (SELECT id FROM countries WHERE code = 'GBR'), 'BLK'),
+('Armstrong Whitworth', 'Armstrong Whitworth', (SELECT id FROM countries WHERE code = 'GBR'), 'AW'),
+('Bristol Aeroplane Company', 'Bristol Aeroplane Company', (SELECT id FROM countries WHERE code = 'GBR'), 'BRI'),
+('Morane-Saulnier', 'Morane-Saulnier', (SELECT id FROM countries WHERE code = 'FRA'), 'MS'),
+('Max Holste', 'Max Holste', (SELECT id FROM countries WHERE code = 'FRA'), 'MH'),
+('Sagem (Safran)', 'Sagem (Safran)', (SELECT id FROM countries WHERE code = 'FRA'), 'SAF'),
+('Neiva', 'Neiva', (SELECT id FROM countries WHERE code = 'BRA'), 'NEI'),
+('Calidus', 'Calidus', (SELECT id FROM countries WHERE code = 'ARE'), 'CAL'),
+('AAI Corporation', 'AAI Corporation', (SELECT id FROM countries WHERE code = 'USA'), 'AAI'),
+('Helio Aircraft', 'Helio Aircraft', (SELECT id FROM countries WHERE code = 'USA'), 'HLO'),
+('Piper Aircraft', 'Piper Aircraft', (SELECT id FROM countries WHERE code = 'USA'), 'PIP'),
+('Textron AirLand', 'Textron AirLand', (SELECT id FROM countries WHERE code = 'USA'), 'TXT'),
+('L3Harris Technologies', 'L3Harris Technologies', (SELECT id FROM countries WHERE code = 'USA'), 'L3H'),
+('Kronchtadt', 'Kronshtadt', (SELECT id FROM countries WHERE code = 'RUS'), 'KRO'),
+('ADE (Aeronautical Development Establishment, DRDO)', 'ADE (Aeronautical Development Establishment, DRDO)', (SELECT id FROM countries WHERE code = 'IND'), 'ADE'),
+('Avia', 'Avia', (SELECT id FROM countries WHERE code = 'CSK'), 'AVIA'),
+('Ikarus', 'Ikarus', (SELECT id FROM countries WHERE code = 'YUG'), 'IKA'),
+('Harbin Aircraft Manufacturing Corporation', 'Harbin Aircraft Manufacturing Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'HAMC');
 
 INSERT INTO generation (generation, description, description_en) VALUES
 (1, 'Première génération : Avions à réaction subsoniques des années 1940-1950', 'First generation: Subsonic jet aircraft from the 1940s–1950s'),
@@ -963,6 +983,24 @@ INSERT INTO tech (name, name_en, description, description_en) VALUES
 ('Moteur à pistons en étoile', 'Radial piston engine', 'Motorisation à cylindres disposés en étoile, longue endurance à basse altitude', 'Engine with radially arranged cylinders, long endurance at low altitude'),
 ('Rotors basculants', 'Tiltrotors', 'Rotors montés en bout d''aile dans des nacelles qui pivotent de la verticale à l''horizontale : décollage vertical comme un hélicoptère, croisière comme un avion à hélices', 'Wingtip rotors in nacelles that pivot from vertical to horizontal: vertical take-off like a helicopter, cruise like a propeller aircraft'),
 ('Aile volante', 'Flying wing', 'Voilure sans fuselage ni empennage horizontal, qui porte à elle seule l''équipage, les moteurs et la charge', 'Wing with no fuselage or horizontal tail, carrying crew, engines and payload on its own');
+-- >>> Lots 29 à 38 : référentiel ajouté (généré par .lots/tools/referentiel.py)
+INSERT INTO tech (name, name_en, description, description_en) VALUES
+('Aile jointe', 'Joined wing', 'Voilure en tandem dont l''aile arrière rejoint l''aile avant ; plus rigide qu''une aile classique de grand allongement, elle doit améliorer la finesse et simplifier les commandes de vol.', 'Tandem wing layout in which the rear wing joins the front wing; stiffer than a conventional high-aspect-ratio wing, it is meant to improve the lift-to-drag ratio and simplify flight controls.'),
+('Aile soufflée', 'Blown wing', 'Aile entièrement balayée par le souffle d''hélices interconnectées, associée à des volets à fort braquage pour décoller et atterrir sur de très courtes distances', 'Wing fully washed by the slipstream of interconnected propellers, combined with large-deflection flaps for very short take-offs and landings'),
+('Antenne filaire traînante', 'Trailing wire antenna', 'Antenne filaire de plusieurs kilomètres déroulée derrière l''avion en vol pour émettre en très basse fréquence (VLF) vers les sous-marins en plongée', 'Wire antenna several kilometres long, reeled out behind the aircraft in flight to transmit on very low frequency (VLF) to submerged submarines'),
+('Coque d''hydravion', 'Flying-boat hull', 'Fuselage conçu comme une coque de bateau, avec redan, pour décoller et amerrir directement sur l''eau.', 'Fuselage shaped as a boat hull, with a step, to take off from and land directly on water.'),
+('Corps portant', 'Lifting body', 'Configuration sans ailes dont la portance vient de la forme du fuselage lui-même, étudiée pour le retour de l''espace et l''atterrissage en vol plané (X-24, HL-10, M2-F2).', 'Wingless configuration in which lift comes from the shape of the fuselage itself, studied for return from space and gliding landings (X-24, HL-10, M2-F2).'),
+('Durcissement contre l''impulsion électromagnétique', 'Electromagnetic pulse hardening', 'Blindage des câblages et des équipements de bord pour qu''ils survivent à l''impulsion électromagnétique d''une explosion nucléaire', 'Shielding of on-board wiring and equipment so that they survive the electromagnetic pulse of a nuclear explosion'),
+('Détecteur d''anomalie magnétique', 'Magnetic anomaly detector', 'Capteur, souvent logé dans une perche de queue, qui repère la perturbation du champ magnétique terrestre causée par la coque d''un sous-marin en plongée.', 'Sensor, often housed in a tail boom, that detects the disturbance of the Earth''s magnetic field caused by the hull of a submerged submarine.'),
+('Radôme rotatif', 'Rotodome', 'Disque tournant monté sur mâts au-dessus du fuselage, qui abrite l''antenne d''un radar de guet aérien et lui donne une couverture sur 360°', 'Rotating disc mounted on struts above the fuselage, housing the antenna of an airborne early warning radar and giving it 360-degree coverage'),
+('Soufflante de sustentation', 'Lift fan', 'Soufflante verticale contrarotative logée dans le fuselage et entraînée par un arbre prélevant la puissance du réacteur principal, pour le décollage court et l''atterrissage vertical (X-35B, F-35B).', 'Vertical contra-rotating fan housed in the fuselage and driven by a shaft taking power from the main engine, for short take-off and vertical landing (X-35B, F-35B).'),
+('Soute à bombes rotative', 'Rotating bomb bay', 'Trappe de soute qui tourne sur elle-même et sur laquelle les bombes sont accrochées, présentée retournée pour le largage. Signature de Martin (XB-51, B-57, P6M).', 'Bomb-bay door that rotates on its own axis with the bombs mounted on it, turned over for release. A Martin signature (XB-51, B-57, P6M).'),
+('Système d''atterrissage automatique', 'Automatic landing system', 'Pilote automatique redondant couplé à l''ILS, à l''automanette et à la sonde radioaltimétrique, capable de poser l''avion sans visibilité', 'Redundant autopilot coupled to the ILS, autothrottle and radio altimeter, able to land the aircraft in zero visibility');
+INSERT INTO armement (name, name_en, description, description_en) VALUES
+('AIM-47 Falcon', NULL, 'Missile air-air à longue portée de Hughes (GAR-9), développé pour les intercepteurs Mach 3 et emporté en soute par le YF-12A ; agrandi, il a donné l''AIM-54 Phoenix.', 'Hughes long-range air-to-air missile (GAR-9), developed for Mach 3 interceptors and carried internally by the YF-12A; enlarged, it became the AIM-54 Phoenix.'),
+('GBU-44/B Viper Strike', NULL, 'Munition guidée légère de Northrop Grumman, emportée par les versions armées MQ-5A/B du drone Hunter.', 'Light guided munition by Northrop Grumman, carried by the armed MQ-5A/B versions of the Hunter drone.'),
+('MG 151/20', NULL, 'Canon automatique allemand de 20 mm de la Seconde Guerre mondiale, monté sur les chasseurs dérivés du Bf 109 et les chasseurs yougoslaves d''après-guerre', 'German 20 mm Second World War automatic cannon, fitted to post-war Bf 109 derivatives and Yugoslav fighters');
+-- <<< Lots 29 à 38
 
 -- =============================================================================
 -- timeline_events — chronologie éditoriale du ciel militaire (1945 → aujourd'hui).
