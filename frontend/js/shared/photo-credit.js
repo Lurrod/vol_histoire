@@ -24,6 +24,9 @@
   // Open Government Licence (Royaume-Uni) : photos de la Couronne (MOD, RAF).
   const OGL1_URL = 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/1/';
   const OGL1_RE = /^OGL v?1(.0)?$/i;
+  // GNU FDL 1.2 : le texte de la licence doit accompagner l'œuvre ; le lien en tient lieu.
+  const GFDL12_URL = 'https://www.gnu.org/licenses/old-licenses/fdl-1.2.html';
+  const GFDL12_RE = /^GFDL 1\.2$/i;
 
   function normalize(licence) {
     return typeof licence === 'string' ? licence.trim() : '';
@@ -45,6 +48,7 @@
     if (/^CC0( 1\.0)?$/i.test(value)) return CC0_URL;
     if (/^KOGL Type 1$/i.test(value)) return KOGL1_URL;
     if (OGL1_RE.test(value)) return OGL1_URL;
+    if (GFDL12_RE.test(value)) return GFDL12_URL;
     const m = CC_RE.exec(value);
     if (!m) return null;
     const port = m[3] ? `${m[3].toLowerCase()}/` : '';
@@ -54,7 +58,7 @@
   /** true si la licence impose l'attribution (donc la mention des modifications). */
   function requiresAttribution(licence) {
     const value = normalize(licence);
-    return CC_RE.test(value) || /^KOGL Type 1$/i.test(value) || OGL1_RE.test(value);
+    return CC_RE.test(value) || /^KOGL Type 1$/i.test(value) || OGL1_RE.test(value) || GFDL12_RE.test(value);
   }
 
   /**

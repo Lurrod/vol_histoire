@@ -11,7 +11,7 @@
 window.VH = window.VH || {};
 window.VH.shared = window.VH.shared || {};
 window.VH.shared.ALPHA3_TO_ALPHA2 = {
-  AFG: 'af', ARG: 'ar', AUS: 'au', BRA: 'br', CAN: 'ca',
+  AFG: 'af', ARE: 'ae', ARG: 'ar', AUS: 'au', BRA: 'br', CAN: 'ca',
   CHE: 'ch', CHL: 'cl', CHN: 'cn', CSK: 'cz', DEU: 'de',
   DZA: 'dz', EGY: 'eg', ESP: 'es', FIN: 'fi', FLK: 'fk',
   FRA: 'fr', GBR: 'gb', IDN: 'id', IND: 'in', IRN: 'ir',
