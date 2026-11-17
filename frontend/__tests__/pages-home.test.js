@@ -8,6 +8,7 @@ global.escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
 }[c]));
 
 require('../js/shared/picture');
+require('../js/shared/motion');
 window.VH.shared.buildDetailsPath = (id, name) => `/details/${String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${id}`;
 require('../js/home/text');
 const suggest = require('../js/home/search-suggest');
@@ -309,13 +310,23 @@ describe('search-suggest — interactions', () => {
     expect(key(input, 'Enter').defaultPrevented).toBe(false);
   });
 
-  test('Échap pendant le fondu de fermeture : pas de double minuterie', async () => {
+  test('Échap pendant le fondu de fermeture : une seule sortie animée', async () => {
     const { input, panel } = mountSearch();
     await type(input, 'mirage');
+    // Sortie simulée : jsdom ne calcule aucune durée.
+    let finish = null;
+    const exit = jest.spyOn(window.VH.motion, 'exit').mockImplementation((el, done) => {
+      el.classList.add('is-closing');
+      finish = done;
+      return () => {};
+    });
     key(input, 'Escape');
     expect(panel.classList.contains('is-closing')).toBe(true);
     input.dispatchEvent(new Event('blur'));
     jest.advanceTimersByTime(150);
+    expect(exit).toHaveBeenCalledTimes(1);
+    finish();
+    exit.mockRestore();
     expect(panel.hidden).toBe(true);
   });
 

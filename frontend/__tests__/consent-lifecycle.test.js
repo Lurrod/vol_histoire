@@ -16,6 +16,9 @@
  * règles de domaine des cookies (un cookie posé sur .titouan-borde.com n'est
  * effaçable qu'avec ce même attribut domain).
  */
+// VH.motion : durées de sortie lues sur le CSS (inexistantes sous jsdom : rappel immédiat).
+require('../js/shared/motion');
+
 global.safeSetHTML = (el, html) => { el.innerHTML = html; };
 
 const {

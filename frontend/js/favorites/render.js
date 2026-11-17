@@ -6,8 +6,6 @@
   window.VH.favorites = window.VH.favorites || {};
 
   const DAY_MS = 1000 * 60 * 60 * 24;
-  // Durée de la transition .is-removing (favorites.css).
-  const CARD_EXIT_MS = 300;
 
   function formatRelativeDate(dateString, now = new Date()) {
     if (!dateString) return '';
@@ -45,7 +43,8 @@
     const text = count === 0 ? i18n.t('favorites.results_none') :
                  count === 1 ? i18n.t('favorites.results_one') :
                  i18n.t('favorites.results', { count });
-    document.getElementById('results-count').textContent = text;
+    // Le nouveau texte se pose (vh-text-swap) quand le nombre change.
+    VH.motion.swapText(document.getElementById('results-count'), text);
   }
 
   function cardHtml(aircraft) {
@@ -113,10 +112,10 @@
   function collapseCard(state, card, hadFocus = Boolean(card && card.contains(document.activeElement))) {
     if (!card) return;
     const neighbour = card.nextElementSibling || card.previousElementSibling;
-    card.classList.add('is-removing');
     card.setAttribute('aria-hidden', 'true');
     card.inert = true;
-    setTimeout(() => {
+    // .is-removing (favorites.css) : la durée de la transition est mesurée.
+    window.VH.motion.exit(card, () => {
       if (!card.isConnected) return; // déjà remplacée par un nouveau rendu
       if (state.filtered.length === 0) { renderFavorites(state); return; }
       card.classList.add('is-removed');
@@ -126,11 +125,10 @@
           !neighbour.classList.contains('is-removing')) {
         neighbour.querySelector('.aircraft-card-link')?.focus();
       }
-    }, CARD_EXIT_MS);
+    }, { className: 'is-removing' });
   }
 
   const api = {
-    CARD_EXIT_MS,
     formatRelativeDate,
     renderSkeletons,
     updateResultsCount,

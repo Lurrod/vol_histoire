@@ -91,7 +91,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   height: 5px;
   background: var(--hud-cyan);
   border-radius: 50%;
-  animation: dotBlink 3s ease-in-out infinite;
+  animation: dotBlink 3s var(--ease-in-out) infinite;
   box-shadow: 0 0 6px var(--hud-cyan);
 }
 .page-login .dot-1 { top: 30%; left: 60%; animation-delay: 0s; }
@@ -133,11 +133,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   z-index: 3;
   text-align: center;
   padding: 3rem;
-  animation: fadeUp 1s ease 0.3s both;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  animation: vh-enter var(--dur-slower) var(--ease-out) calc(var(--stagger-step) * 6) both;
 }
 
 .page-login .visual-badge {
@@ -293,7 +289,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+  transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
 }
 .page-login .form-tab i, .page-login .form-tab .icon {
   font-size: 0.9rem;
@@ -314,15 +310,15 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 
 .page-login .form-slide {
   display: none;
-  animation: slideIn 0.5s var(--ease);
+  animation: slideIn var(--dur-slower) var(--ease-out);
 }
 .page-login .form-slide.active {
   display: block;
 }
 /* Panneau sortant : glisse vers la gauche avant d'être masqué par login.js
-   (250 ms, cf. SLIDE_OUT_MS). */
+   (durée mesurée par VH.motion.exit). */
 .page-login .form-slide.active.is-leaving {
-  animation: slideOut 0.25s var(--ease) forwards;
+  animation: slideOut var(--dur-fast) var(--ease-in) forwards;
   pointer-events: none;
 }
 .page-login .form-slide:focus:not(:focus-visible) {
@@ -413,7 +409,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   color: var(--text-primary);
   caret-color: var(--secondary);
   background: rgba(255, 255, 255, 0.03);
-  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
 .page-login .form-group input:hover {
   border-color: rgba(200, 169, 110, 0.32);
@@ -443,7 +439,8 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   -webkit-text-fill-color: var(--text-primary);
   -webkit-box-shadow: 0 0 0 1000px var(--night-mid) inset;
   caret-color: var(--secondary);
-  transition: background-color 9999s ease-out 0s;
+  /* Astuce autoremplissage : durée volontairement démesurée, pas un mouvement. */
+  transition: background-color 9999s var(--ease-out) 0s;
 }
 
 /* Password wrapper */
@@ -463,7 +460,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   color: var(--text-secondary);
   cursor: pointer;
   font-size: 1rem;
-  transition: var(--transition-fast);
+  transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
   padding: 0.5rem;
   display: flex;
   align-items: center;
@@ -490,7 +487,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   height: 100%;
   width: 0;
   border-radius: 3px;
-  transition: width 0.3s ease, background 0.3s ease;
+  transition: width var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
 }
 .page-login .strength-text {
   font-size: var(--text-xs);
@@ -537,7 +534,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   height: 20px;
   border: 2px solid var(--border);
   border-radius: 5px;
-  transition: var(--transition-fast);
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
   flex-shrink: 0;
 }
 .page-login .custom-check i, .page-login .custom-check .icon {
@@ -545,7 +542,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   color: var(--white);
   opacity: 0;
   transform: scale(0.5);
-  transition: var(--transition-fast);
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 .page-login .checkbox-wrapper input:checked + .custom-check {
   background: var(--secondary);
@@ -572,7 +569,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   color: var(--secondary);
   text-decoration: none;
   font-weight: 600;
-  transition: var(--transition-fast);
+  transition: color var(--dur-fast) var(--ease-out);
 }
 .page-login .forgot-password:hover { color: var(--secondary-dark); }
 
@@ -589,7 +586,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   text-decoration: underline;
   text-decoration-color: rgba(200, 169, 110, 0.35);
   text-underline-offset: 2px;
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  transition: color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out);
 }
 .page-login .form-rgpd-notice a:hover,
 .page-login .form-rgpd-notice a:focus-visible {
@@ -611,7 +608,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: var(--transition);
+  transition: background-color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out), scale var(--dur-instant) var(--ease-out);
   background: var(--night-mid);
   color: var(--white);
   margin-top: 0.5rem;
@@ -620,7 +617,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   background: var(--primary);
 }
 .page-login .btn-submit i, .page-login .btn-submit .icon {
-  transition: transform 0.3s ease;
+  transition: transform var(--dur-base) var(--ease-out);
 }
 .page-login .btn-submit:hover:not(:disabled) i,
 .page-login .btn-submit:hover:not(:disabled) .icon {
@@ -662,7 +659,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  transition: var(--transition-fast);
+  transition: background-color var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out);
   font-family: 'DM Sans', sans-serif;
 }
 .page-login .switch-form:hover {
@@ -671,7 +668,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 }
 .page-login .switch-form i, .page-login .switch-form .icon {
   font-size: 0.7rem;
-  transition: transform 0.2s ease;
+  transition: transform var(--dur-base) var(--ease-out);
 }
 .page-login .switch-form:hover i, .page-login .switch-form:hover .icon { transform: translateX(3px); }
 
@@ -740,7 +737,6 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   /* hamburger/login-icon touch responsive → shared.css */
   .page-login .toggle-password { min-width: 48px; min-height: 48px; }
   .page-login .switch-form { min-height: 48px; }
-  .page-login .btn-submit:active { transform: scale(0.98); }
 }
 
 /* Loading (@keyframes spin → shared.css, dédupliqué) */
@@ -751,7 +747,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: var(--white);
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  animation: spin 0.6s linear infinite; /* boucle */
 }
 
 /* Accessibility */
@@ -810,7 +806,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.2s;
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
 }
 .ev-resend-btn:hover:not(:disabled),
 .ev-resend-btn:focus-visible {

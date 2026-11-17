@@ -7,6 +7,8 @@
  * le retire, et le focus revient au bouton. Échap referme.
  */
 
+const { loadMotion } = require('./helpers/motion-env');
+
 let filters;
 let data;
 let mount;
@@ -27,6 +29,7 @@ function boot({ mountResult = true, withMap = true, withActive = true } = {}) {
   mount = jest.fn((root, opts) => { onSelect = opts.onSelect; return Promise.resolve(mountResult); });
   window.VH = { hangar: { filters, data } };
   if (withMap) window.VH.nationsMap = { mount };
+  loadMotion(['.nations-map-panel']);
   require('../js/hangar/nations-map-filter');
   state = { filters: { country: null }, currentPage: 4 };
   window.VH.hangar.nationsMapFilter.init(state);

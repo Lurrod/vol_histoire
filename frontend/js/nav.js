@@ -60,12 +60,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // .hidden est posé après l'animation de fermeture ; une réouverture dans
   // l'intervalle doit annuler ce masquage différé.
   // Inversement, une fermeture juste après l'ouverture annule le .show différé.
-  let hideDropdownTimer = null;
+  // hideDropdownCancel : annulation renvoyée par VH.motion.exit (la durée de
+  // fermeture vient du CSS, plus d'un délai recopié ici).
+  let hideDropdownCancel = null;
   let showDropdownTimer = null;
+
+  function cancelHideDropdown() {
+    if (hideDropdownCancel) hideDropdownCancel();
+    hideDropdownCancel = null;
+  }
 
   function openDropdown() {
     if (!userDropdown) return;
-    clearTimeout(hideDropdownTimer);
+    cancelHideDropdown();
     userDropdown.classList.remove('hidden');
     showDropdownTimer = setTimeout(() => userDropdown.classList.add('show'), 10);
     setUserExpanded(true);
@@ -76,8 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(showDropdownTimer);
     userDropdown.classList.remove('show');
     setUserExpanded(false);
-    clearTimeout(hideDropdownTimer);
-    hideDropdownTimer = setTimeout(() => userDropdown.classList.add('hidden'), 300);
+    cancelHideDropdown();
+    hideDropdownCancel = window.VH.motion.exit(userDropdown, () => {
+      hideDropdownCancel = null;
+      userDropdown.classList.add('hidden');
+    });
   }
 
   function updateAuthUI() {

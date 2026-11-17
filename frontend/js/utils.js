@@ -108,8 +108,6 @@ function _safeReport(level, message, error) {
 // Durées d'affichage par défaut : une erreur se lit plus longuement.
 const TOAST_DURATION_DEFAULT = 3000;
 const TOAST_DURATION_ERROR = 6000;
-// Durée de l'animation de sortie (keyframes toastOut, shared-base.css).
-const TOAST_EXIT_MS = 300;
 
 /** Libellé traduit si i18n est chargé, sinon repli français. */
 function _toastLabel(key, fallback) {
@@ -161,8 +159,9 @@ function showToast(message, type = 'info', duration) {
     if (dismissed) return;
     dismissed = true;
     clearTimeout(timer);
-    toast.classList.add('fade-out');
-    setTimeout(() => toast.remove(), TOAST_EXIT_MS);
+    // Sortie animée par .fade-out (keyframes toastOut, portée par le toast
+    // lui-même) ; la durée est lue sur le CSS par VH.motion.
+    window.VH.motion.exit(toast, () => toast.remove(), { className: 'fade-out' });
   }
 
   function start() {

@@ -22,9 +22,8 @@
     /* Dépliage animé (fondu + glissement, voir hangar.css) : `.hidden` n'est
      * posée qu'après la transition de fermeture, comme pour les listes de
      * filtres. L'état logique est donc suivi à part de la classe. */
-    const CLOSE_MS = 250;
     let opened = false;
-    let hideTimer = null;
+    let cancelHide = null; // annulation de VH.motion.exit en cours
 
     function isOpen() { return opened; }
 
@@ -50,8 +49,7 @@
 
     function open() {
       VH.hangar.filters.closeAllDropdowns();
-      clearTimeout(hideTimer);
-      hideTimer = null;
+      if (cancelHide) { cancelHide(); cancelHide = null; }
       opened = true;
       panel.classList.remove('hidden');
       // Lecture de mise en page : le navigateur prend acte de l'état replié
@@ -71,11 +69,14 @@
       panel.classList.remove('is-open');
       btn.setAttribute('aria-expanded', 'false');
       btn.classList.remove('active');
-      clearTimeout(hideTimer);
-      hideTimer = setTimeout(() => {
-        hideTimer = null;
+      if (cancelHide) cancelHide();
+      let done = false;
+      const cancel = window.VH.motion.exit(panel, () => {
+        done = true;
+        cancelHide = null;
         if (!opened) panel.classList.add('hidden');
-      }, CLOSE_MS);
+      });
+      if (!done) cancelHide = cancel;
     }
 
     btn.addEventListener('click', (e) => {

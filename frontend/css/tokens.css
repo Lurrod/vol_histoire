@@ -185,54 +185,85 @@
   --focus-ring:  0 0 0 2px var(--hud-cyan);
 
   /* ============================================================
-     TRANSITIONS — base partagée (transitions-dev, ease-out propre)
-     Repointée sur la courbe transitions-dev cubic-bezier(0.22,1,0.36,1)
-     pour harmoniser les ~106 transitions qui utilisent ces tokens.
+     MOUVEMENT — système unique (v4.16.0)
+     Toute transition et toute animation du site s'écrivent avec ces
+     tokens : aucune durée ni courbe en dur dans les feuilles, et jamais
+     `transition: all` (on énumère les propriétés animées).
+
+     Durées — choisir selon ce qui bouge, pas selon l'élément :
+       instant  retour d'appui (:active), coche, bascule de couleur au clic
+       fast     survol et focus : couleur, fond, bordure, opacité ;
+                toute fermeture (une sortie est plus courte qu'une entrée)
+       base     changement d'état d'un composant : déplacement, ombre,
+                ouverture d'une liste ou d'une infobulle
+       slow     surfaces : modale, feuille mobile, panneau, barre
+       slower   entrée de contenu, révélation, célébration
+
+     Courbes — aucune ne dépasse sa valeur d'arrivée (pas de rebond) :
+       out      ce qui entre ou réagit (défaut)
+       in       ce qui sort
+       in-out   ce qui va d'un point à un autre sans entrer ni sortir,
+                et les boucles (pulsations, indicateurs)
+       linear   rotations continues et défilements seulement
      ============================================================ */
-  --ease:           cubic-bezier(0.22, 1, 0.36, 1);
-  --transition-fast: all 0.15s var(--ease);
-  --transition:      all 0.25s var(--ease);
-  --transition-slow: all 0.45s var(--ease);
+  --dur-instant: 100ms;
+  --dur-fast:    160ms;
+  --dur-base:    240ms;
+  --dur-slow:    360ms;
+  --dur-slower:  520ms;
+  --stagger-step: 50ms;   /* décalage entre éléments d'une même entrée */
+
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in:     cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease:        var(--ease-out);   /* alias historique */
+
+  /* Amplitudes partagées */
+  --enter-distance: 12px;  /* montée d'une entrée (fondu + translation) */
+  --hover-lift:     -3px;  /* soulèvement d'une carte au survol */
+  --press-scale:    0.97;  /* enfoncement d'un bouton à l'appui */
+
 
   /* ============================================================
      TRANSITIONS-DEV — bloc d'install universel, ADAPTÉ à l'identité
      vol_histoire (charcoal+champagne, minimaliste). Valeurs ramenées
-     vers plus de sobriété que les défauts du skill : flou réduit,
-     overshoot atténué (« refinement not reinvention »). Chaque snippet
-     t-* lit ces noms sémantiques — ne pas dupliquer ce bloc.
+     vers plus de sobriété que les défauts du skill : flou réduit, et
+     depuis v4.16.0 aucun dépassement — toutes les courbes pointent sur
+     l'échelle MOUVEMENT ci-dessus. Chaque snippet t-* lit ces noms
+     sémantiques — ne pas dupliquer ce bloc.
      ============================================================ */
   /* Number pop-in (digits) — distance & flou réduits */
-  --digit-dur: 460ms;
+  --digit-dur: var(--dur-slower);
   --digit-distance: 6px;
   --digit-stagger: 60ms;
   --digit-blur: 1px;
-  --digit-ease: cubic-bezier(0.34, 1.22, 0.64, 1); /* overshoot atténué (def. 1.45) */
+  --digit-ease: var(--ease-out);
   --digit-dir-x: 0;
   --digit-dir-y: 1;
   /* Menu dropdown */
-  --dropdown-open-dur: 250ms;
-  --dropdown-close-dur: 150ms;
+  --dropdown-open-dur: var(--dur-base);
+  --dropdown-close-dur: var(--dur-fast);
   --dropdown-pre-scale: 0.97;
-  --dropdown-ease: var(--ease);
+  --dropdown-ease: var(--ease-out);
   /* Modal open / close */
-  --modal-open-dur: 250ms;
-  --modal-close-dur: 150ms;
+  --modal-open-dur: var(--dur-base);
+  --modal-close-dur: var(--dur-fast);
   --modal-scale: 0.96;
   --modal-scale-close: 0.96;
-  --modal-ease: var(--ease);
+  --modal-ease: var(--ease-out);
   /* Panel reveal */
-  --panel-open-dur: 380ms;
-  --panel-close-dur: 320ms;
+  --panel-open-dur: var(--dur-slow);
+  --panel-close-dur: var(--dur-base);
   --panel-blur: 1px;
-  --panel-ease: var(--ease);
+  --panel-ease: var(--ease-out);
   /* Icon swap — scale de départ moins extrême */
-  --icon-swap-dur: 200ms;
+  --icon-swap-dur: var(--dur-base);
   --icon-swap-blur: 1.5px;
   --icon-swap-start-scale: 0.4;
-  --icon-swap-ease: ease-in-out;
+  --icon-swap-ease: var(--ease-in-out);
   /* Success check — rotation & bob plus discrets */
-  --check-opacity-dur: 520ms;
-  --check-rotate-dur: 520ms;
+  --check-opacity-dur: var(--dur-slower);
+  --check-rotate-dur: var(--dur-slower);
   --check-rotate-from: 45deg;        /* def. 80deg */
   --check-bob-dur: 440ms;
   --check-y-amount: 24px;            /* def. 40px */
@@ -240,11 +271,11 @@
   --check-blur-from: 6px;            /* def. 10px */
   --check-path-dur: 540ms;
   --check-path-delay: 80ms;
-  --check-ease-out: var(--ease);
-  --check-ease-opacity: var(--ease);
-  --check-ease-rotate: var(--ease);
-  --check-ease-bob: cubic-bezier(0.34, 1.2, 0.64, 1); /* atténué (def. 1.35) */
-  --check-ease-path: var(--ease);
+  --check-ease-out: var(--ease-out);
+  --check-ease-opacity: var(--ease-out);
+  --check-ease-rotate: var(--ease-out);
+  --check-ease-bob: var(--ease-out);
+  --check-ease-path: var(--ease-out);
   /* Error state shake */
   --shake-distance: 6px;
   --shake-overshoot: 3px;           /* def. 4px */

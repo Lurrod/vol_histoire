@@ -9,7 +9,6 @@
   root.VH.settings = root.VH.settings || {};
 
   const SEARCH_DEBOUNCE_MS = 300;
-  const MODAL_ANIMATION_MS = 300;
 
   // Contexte du panneau, créé par init() : état de pagination + recherche
   // côté serveur, éléments du DOM, utilisateur en cours d'édition.
@@ -161,6 +160,8 @@
   // ------------------------------------------------------------------
   // Modale d'édition
   // ------------------------------------------------------------------
+  let cancelCloseModal = null;
+
   function openEditUserModal(user) {
     const { editUserModal, editUserName, editUserEmail, editUserRole } = ctx.els;
     ctx.editingUserId = user.id;
@@ -168,14 +169,26 @@
     editUserEmail.value = user.email;
     editUserRole.value = user.role_id;
     document.getElementById('edit-user-modal-title').textContent = i18n.t('settings.edit_user_title', { name: user.name });
+    // Réouverture pendant une sortie : on annule la fermeture en cours.
+    if (cancelCloseModal) { cancelCloseModal(); cancelCloseModal = null; }
     editUserModal.classList.remove('hidden');
     setTimeout(() => editUserModal.classList.add('show'), 10);
   }
 
   function closeEditUserModal() {
     const { editUserModal } = ctx.els;
-    editUserModal.classList.remove('show');
-    setTimeout(() => editUserModal.classList.add('hidden'), MODAL_ANIMATION_MS);
+    // Déjà en sortie (double clic, Enregistrer puis Annuler) : rien à relancer.
+    if (cancelCloseModal) return;
+    // .is-closing garde la modale visible le temps de la sortie (settings.css) ;
+    // VH.motion.exit attend la durée réelle puis masque.
+    let finished = false;
+    const cancel = window.VH.motion.exit(editUserModal, () => {
+      finished = true;
+      editUserModal.classList.remove('show');
+      editUserModal.classList.add('hidden');
+      cancelCloseModal = null;
+    }, { measure: editUserModal.querySelector('.logout-modal-container') });
+    if (!finished) cancelCloseModal = cancel;
   }
 
   function validateEditUser(name, email) {

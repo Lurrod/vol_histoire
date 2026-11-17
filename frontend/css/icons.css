@@ -24,7 +24,7 @@
 
   /* Animation spin (équivalent .fa-spin) */
   .icon-spin {
-    animation: icon-spin 1s linear infinite;
+    animation: icon-spin 1s linear infinite; /* rotation continue : vitesse propre */
   }
   @keyframes icon-spin {
     to { transform: rotate(360deg); }

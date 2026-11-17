@@ -14,23 +14,23 @@ document.addEventListener('DOMContentLoaded', function () {
   messageEl?.addEventListener('input', () => clearFieldError(messageEl));
 
   // Le message de succès concerne l'envoi précédent : il s'efface en fondu
-  // dès que l'utilisateur reprend la saisie (durée alignée sur contact.css).
-  const SUCCESS_FADE_MS = 200;
-  let successHideTimer = null;
+  // dès que l'utilisateur reprend la saisie (VH.motion.exit attend la durée
+  // réelle de la transition définie dans contact.css).
+  let cancelHide = null;
 
   function showSuccess() {
-    clearTimeout(successHideTimer);
+    if (cancelHide) { cancelHide(); cancelHide = null; }
     successMsg.classList.remove('is-hiding');
     successMsg.classList.add('visible');
   }
 
   function hideSuccess() {
     if (!successMsg?.classList.contains('visible') || successMsg.classList.contains('is-hiding')) return;
-    successMsg.classList.add('is-hiding');
-    successHideTimer = setTimeout(() => {
-      successMsg.classList.remove('visible', 'is-hiding');
+    cancelHide = window.VH.motion.exit(successMsg, () => {
+      successMsg.classList.remove('visible');
       successMsg.querySelector('.t-success-check')?.setAttribute('data-state', 'out');
-    }, SUCCESS_FADE_MS);
+      cancelHide = null;
+    }, { className: 'is-hiding' });
   }
 
   form.addEventListener('input', hideSuccess);

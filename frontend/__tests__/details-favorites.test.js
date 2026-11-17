@@ -27,6 +27,7 @@ function boot({ token = 'jeton', authFetch } = {}) {
     authFetch: authFetch || jest.fn(() => jsonResponse({})),
   };
   window.VH = {};
+  require('../js/shared/motion');
   require('../js/details/favorites');
   fav = window.VH.details.favorites;
 }

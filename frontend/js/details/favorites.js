@@ -61,9 +61,7 @@
         updateFavoriteButton(state);
         if (state.isFavorite) {
           // Petit « pop » du cœur à l'ajout (classe retirée en fin d'animation)
-          btn.classList.remove('is-popping');
-          void btn.offsetWidth;
-          btn.classList.add('is-popping');
+          window.VH.motion.replay(btn, 'is-popping');
           btn.addEventListener('animationend', () => btn.classList.remove('is-popping'), { once: true });
         }
         showToast(

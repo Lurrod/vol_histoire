@@ -46,14 +46,7 @@
   /* nav/dropdown touch responsive → shared.css */
 }
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .page-home *, .page-home *::before, .page-home *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
+/* Mouvements réduits : garde-fou global de shared-utilities.css. */
 
 /* Print styles */
 @media print {

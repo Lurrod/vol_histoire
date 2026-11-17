@@ -28,6 +28,7 @@ function boot(search = '', cardsHtml = card(1) + card(2)) {
   global.i18n = { t: (k) => ({ 'hangar.compare_label': 'Comparer', 'hangar.compare_max': 'Trois au plus' }[k] || k) };
   global.showToast = jest.fn();
   window.VH = { shared: {}, hangar: {} };
+  require('../js/shared/motion');
   store = require('../js/shared/compare');
   require('../js/hangar/compare');
   state = { compareIds: [] };

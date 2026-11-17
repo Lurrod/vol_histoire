@@ -16,7 +16,7 @@ body.page-timeline.tl-has-cinematic::before {
   opacity: 0.10;
   z-index: 0;
   pointer-events: none;
-  transition: background 1.4s var(--ease), opacity 1.4s var(--ease);
+  transition: background var(--dur-slower) var(--ease-out), opacity var(--dur-slower) var(--ease-out);
   mix-blend-mode: screen;
 }
 
@@ -53,7 +53,7 @@ body.page-timeline.tl-has-cinematic::before {
   justify-content: center;
   background: var(--night);
   z-index: var(--z-hud);
-  transition: opacity 0.5s var(--ease);
+  transition: opacity var(--dur-fast) var(--ease-in);
 }
 .page-timeline .tl-loading.gone {
   opacity: 0;
@@ -65,7 +65,7 @@ body.page-timeline.tl-has-cinematic::before {
   border: 2px solid var(--gold-a15);
   border-top-color: var(--hud-cyan);
   border-radius: 50%;
-  animation: tl-spin 1s linear infinite;
+  animation: tl-spin 1s linear infinite; /* boucle */
 }
 @keyframes tl-spin { to { transform: rotate(360deg); } }
 
@@ -121,9 +121,8 @@ body.page-timeline.tl-has-cinematic::before {
   font-size: var(--text-xs);
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  transform: rotate(-2deg);
   opacity: 0;
-  animation: tl-fade-up 0.9s var(--ease) 0.4s forwards;
+  animation: vh-enter var(--dur-slower) var(--ease-out) calc(var(--stagger-step) * 8) forwards;
 }
 .page-timeline .tl-stamp-line { color: var(--text-muted); font-size: var(--text-xs); }
 .page-timeline .tl-stamp-num  { color: var(--hud-cyan); font-weight: 700; }
@@ -159,8 +158,7 @@ body.page-timeline.tl-has-cinematic::before {
 .page-timeline .tl-title-line-1, .page-timeline .tl-title-line-2 {
   display: block;
   opacity: 0;
-  transform: translateY(24px);
-  animation: tl-fade-up 1s var(--ease) forwards;
+  animation: vh-enter var(--dur-slower) var(--ease-out) forwards;
 }
 .page-timeline .tl-title-line-1 {
   color: var(--hud-cyan);
@@ -168,13 +166,10 @@ body.page-timeline.tl-has-cinematic::before {
   font-weight: 400;
   letter-spacing: 0.05em;
   margin-bottom: 0.3rem;
-  animation-delay: 0.1s;
+  animation-delay: calc(var(--stagger-step) * 2);
 }
 .page-timeline .tl-title-line-2 {
-  animation-delay: 0.25s;
-}
-@keyframes tl-fade-up {
-  to { opacity: 1; transform: translateY(0); }
+  animation-delay: calc(var(--stagger-step) * 5);
 }
 
 .page-timeline .tl-lede {
@@ -184,7 +179,7 @@ body.page-timeline.tl-has-cinematic::before {
   font-size: clamp(1rem, 1.5vw, 1.15rem);
   line-height: 1.7;
   opacity: 0;
-  animation: tl-fade-up 1s var(--ease) 0.5s forwards;
+  animation: vh-enter var(--dur-slower) var(--ease-out) calc(var(--stagger-step) * 10) forwards;
 }
 .page-timeline .tl-intro-stats {
   display: flex;
@@ -192,7 +187,7 @@ body.page-timeline.tl-has-cinematic::before {
   justify-content: center;
   margin-bottom: 4rem;
   opacity: 0;
-  animation: tl-fade-up 1s var(--ease) 0.7s forwards;
+  animation: vh-enter var(--dur-slower) var(--ease-out) calc(var(--stagger-step) * 14) forwards;
 }
 .page-timeline .tl-stat {
   display: flex;
@@ -228,7 +223,8 @@ body.page-timeline.tl-has-cinematic::before {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   opacity: 0;
-  animation: tl-fade-up 1s var(--ease) 1s forwards, tl-bounce 2.2s var(--ease) 1.8s infinite;
+  /* Indice « défiler » : seule boucle d'appel conservée (tl-bounce), en ease-in-out. */
+  animation: vh-enter var(--dur-slower) var(--ease-out) calc(var(--stagger-step) * 20) forwards, tl-bounce 2.2s var(--ease-in-out) 1.8s infinite;
 }
 .page-timeline .tl-scroll-hint i, .page-timeline .tl-scroll-hint .icon {
   font-size: 0.85rem;
@@ -256,7 +252,7 @@ body.page-timeline.tl-has-cinematic::before {
   z-index: -2;
   background: radial-gradient(ellipse at 20% 20%, var(--era-color, var(--hud-cyan)) 0%, transparent 45%);
   opacity: 0;
-  transition: opacity 1s var(--ease);
+  transition: opacity var(--dur-slower) var(--ease-out);
   pointer-events: none;
 }
 .page-timeline .tl-chapter.in-view .tl-chapter-tint { opacity: 0.12; }
@@ -300,7 +296,7 @@ body.page-timeline.tl-has-cinematic::before {
   position: relative;
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 1.2s var(--ease), transform 1.2s var(--ease);
+  transition: opacity var(--dur-slower) var(--ease-out), transform var(--dur-slower) var(--ease-out);
 }
 .page-timeline .tl-title-card.reveal .tl-title-card-inner {
   opacity: 1;
@@ -391,7 +387,7 @@ body.page-timeline.tl-has-cinematic::before {
   padding: 0 2rem;
   opacity: 0;
   transform: translateY(24px);
-  transition: opacity 1s var(--ease), transform 1s var(--ease);
+  transition: opacity var(--dur-slower) var(--ease-out), transform var(--dur-slower) var(--ease-out);
 }
 .page-timeline .tl-narrative.reveal {
   opacity: 1;
@@ -466,13 +462,9 @@ body.page-timeline.tl-has-cinematic::before {
   grid-template-columns: 7rem 1fr;
   gap: 2.5rem;
   opacity: 0;
-  transform: translateY(24px);
 }
 .page-timeline .tl-event.reveal {
-  animation: tl-event-in 0.8s var(--ease) forwards;
-}
-@keyframes tl-event-in {
-  to { opacity: 1; transform: translateY(0); }
+  animation: vh-enter var(--dur-slower) var(--ease-out) forwards;
 }
 .page-timeline .tl-event::before {
   content: "";
@@ -531,7 +523,7 @@ body.page-timeline.tl-has-cinematic::before {
   padding: 1.5rem 1.75rem;
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+  transition: border-color var(--dur-fast) var(--ease-out);
 }
 .page-timeline .tl-event:hover .tl-event-body {
   border-color: var(--era-color, var(--hud-cyan));
@@ -572,7 +564,7 @@ body.page-timeline.tl-has-cinematic::before {
   border-radius: var(--r-md);
   text-decoration: none;
   color: inherit;
-  transition: var(--transition-fast);
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
 .page-timeline .tl-event-plane:hover,
 .page-timeline .tl-event-plane:focus-visible {
@@ -640,21 +632,17 @@ body.page-timeline.tl-has-cinematic::before {
   border-radius: var(--r-lg);
   overflow: hidden;
   cursor: pointer;
-  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+  transition: border-color var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out);
   opacity: 0;
   /* L'entrée anime la propriété indépendante `translate` : une animation
      `forwards` sur `transform` figeait la valeur finale et écrasait le
      soulèvement au survol, qui reste porté par `transform`. */
-  translate: 0 30px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   text-decoration: none;
 }
 .page-timeline .tl-plane-card.reveal {
-  animation: tl-card-in 0.8s var(--ease) forwards;
-}
-@keyframes tl-card-in {
-  to { opacity: 1; translate: 0 0; }
+  animation: vh-enter var(--dur-slower) var(--ease-out) forwards;
 }
 .page-timeline .tl-plane-card:hover,
 .page-timeline .tl-plane-card:focus-visible {
@@ -679,7 +667,7 @@ body.page-timeline.tl-has-cinematic::before {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s var(--ease);
+  transition: transform var(--dur-slow) var(--ease-out);
   display: block;
 }
 .page-timeline .tl-plane-img::after {
@@ -780,7 +768,7 @@ body.page-timeline.tl-has-cinematic::before {
   text-transform: uppercase;
   letter-spacing: 0.15em;
   text-decoration: none;
-  transition: var(--transition);
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
   border-radius: 2px;
 }
 .page-timeline .tl-cta:hover {
@@ -799,7 +787,7 @@ body.page-timeline.tl-has-cinematic::before {
   width: 0;
   background: linear-gradient(90deg, var(--hud-cyan), var(--blue));
   z-index: calc(var(--z-header) + 1);
-  transition: width 0.08s linear;
+  transition: width var(--dur-instant) linear; /* suit le défilement */
   pointer-events: none;
 }
 
@@ -819,7 +807,7 @@ body.page-timeline.tl-has-cinematic::before {
   z-index: var(--z-raised);
   opacity: 0;
   transform: translateY(-8px);
-  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+  transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
   pointer-events: none;
 }
 .page-timeline .tl-year-hud.visible {
@@ -852,7 +840,7 @@ body.page-timeline.tl-has-cinematic::before {
   gap: 0.4rem;
   z-index: var(--z-raised);
   opacity: 0;
-  transition: opacity 0.4s var(--ease);
+  transition: opacity var(--dur-base) var(--ease-out);
 }
 .page-timeline .tl-minimap.visible { opacity: 1; }
 .page-timeline .tl-mm-btn {
@@ -872,14 +860,14 @@ body.page-timeline.tl-has-cinematic::before {
   letter-spacing: 0.1em;
   opacity: 0;
   transform: translateX(6px);
-  transition: var(--transition-fast);
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
   white-space: nowrap;
 }
 .page-timeline .tl-mm-tick {
   width: 22px;
   height: 1px;
   background: var(--text-faint);
-  transition: var(--transition-fast);
+  transition: width var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
   flex-shrink: 0;
 }
 /* Au clavier, le libellé de la décennie apparaît comme au survol. */

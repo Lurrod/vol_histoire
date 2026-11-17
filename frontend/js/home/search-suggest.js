@@ -16,8 +16,6 @@
   root.VH.home = root.VH.home || {};
 
   const MAX_SUGGESTIONS = 6;
-  // Durée du fondu de fermeture du panneau (home-landing.css, .is-closing).
-  const CLOSE_FADE_MS = 150;
   const PAGE_SIZE = 100; // plafond serveur de ?limit
 
   /* ---------- Logique pure ---------- */
@@ -131,20 +129,17 @@
     let targets = [];
     let active = -1;
     let timer = null;
-    let closeTimer = null;
-
-    function reducedMotion() {
-      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    }
+    let cancelExit = null; // annulation de la sortie animée en cours
+    let closing = false;
 
     function isClosed() {
-      return panel.hidden || panel.classList.contains('is-closing');
+      return panel.hidden || closing;
     }
 
     // Masquage effectif, une fois le fondu de fermeture terminé.
     function finishClose() {
-      clearTimeout(closeTimer);
-      closeTimer = null;
+      closing = false;
+      cancelExit = null;
       panel.classList.remove('is-closing');
       panel.hidden = true;
       list.innerHTML = '';
@@ -158,10 +153,12 @@
       input.removeAttribute('aria-activedescendant');
       targets = [];
       active = -1;
-      if (panel.hidden || reducedMotion()) { finishClose(); return; }
-      if (panel.classList.contains('is-closing')) return;
-      panel.classList.add('is-closing');
-      closeTimer = setTimeout(finishClose, CLOSE_FADE_MS);
+      if (panel.hidden) { finishClose(); return; }
+      if (closing) return;
+      closing = true;
+      // La durée vient du CSS ; mouvements réduits : finishClose aussitôt.
+      const cancel = window.VH.motion.exit(panel, finishClose);
+      if (closing) cancelExit = cancel;
     }
 
     function setActive(i) {
@@ -182,8 +179,9 @@
       const shown = results.slice(0, MAX_SUGGESTIONS);
       targets = shown.map((a) => VH.shared.buildDetailsPath(a.id, a.name));
       // Une frappe pendant le fondu de fermeture rouvre le panneau.
-      clearTimeout(closeTimer);
-      closeTimer = null;
+      if (cancelExit) cancelExit();
+      cancelExit = null;
+      closing = false;
       panel.classList.remove('is-closing');
       list.innerHTML = shown.map(optionHtml).join('');
       // Un listbox vide est masqué : seul le message « aucun appareil » reste.

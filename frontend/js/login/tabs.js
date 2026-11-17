@@ -2,20 +2,14 @@
  *
  * Onglets ARIA (flèches, Début / Fin, activation automatique) et boutons
  * « Créer un compte » / « Se connecter » des pieds de panneau. Le panneau
- * sortant glisse (slideOut, login.css) avant d'être masqué, sauf si le
- * visiteur demande moins d'animations.
+ * sortant glisse (slideOut, login.css) avant d'être masqué ; VH.motion.exit
+ * attend la durée réelle de l'animation (aucune durée recopiée ici) et
+ * enchaîne aussitôt si le visiteur demande moins d'animations.
  */
 (function () {
   const root = typeof window !== 'undefined' ? window : globalThis;
   root.VH = root.VH || {};
   root.VH.login = root.VH.login || {};
-
-  // Durée de slideOut (login.css) : le panneau sortant glisse avant d'être masqué.
-  const SLIDE_OUT_MS = 250;
-
-  function prefersReducedMotion() {
-    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }
 
   function resetForms(ctx) {
     ctx.els.loginForm.reset();
@@ -75,16 +69,18 @@
     const outgoing = [loginSlide, registerSlide].find(p => p && p !== panel && p.classList.contains('active'));
     const swap = () => showPanel(ctx, panel, focusInput);
 
-    if (!outgoing || prefersReducedMotion()) {
+    if (!outgoing) {
       swap();
       return;
     }
 
     // Sortie animée (slideOut) puis entrée du nouveau panneau (slideIn).
+    // exit() peut rappeler aussitôt (mouvements réduits) : dans ce cas la
+    // bascule est déjà faite et il ne reste rien à annuler.
+    let swapped = false;
     outgoing.inert = true;
-    outgoing.classList.add('is-leaving');
-    const timer = setTimeout(swap, SLIDE_OUT_MS);
-    ctx.state.pendingSwap = () => { clearTimeout(timer); swap(); };
+    const cancel = VH.motion.exit(outgoing, () => { swapped = true; swap(); }, { className: 'is-leaving' });
+    if (!swapped) ctx.state.pendingSwap = () => { cancel(); swap(); };
   }
 
   // Navigation clavier dans la tablist (ArrowLeft/ArrowRight, Home/End).
@@ -124,7 +120,7 @@
     tabs.forEach(tab => tab.addEventListener('keydown', (e) => onTabKeydown(ctx, e, tabs)));
   }
 
-  VH.login.tabs = { SLIDE_OUT_MS, prefersReducedMotion, resetForms, activateTab, onTabKeydown, setupFormSwitching };
+  VH.login.tabs = { resetForms, activateTab, onTabKeydown, setupFormSwitching };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = VH.login.tabs;

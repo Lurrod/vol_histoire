@@ -11,9 +11,8 @@
     'type-filter-btn': 'type-dropdown',
   };
   const OPEN_DELAY_MS = 10;
-  const CLOSE_MS = 300;
 
-  // Minuteurs de masquage en attente, par id de liste.
+  // Annulations (VH.motion.exit) des masquages en attente, par id de liste.
   const dropdownTimeouts = new Map();
 
   function closeAllDropdowns() {
@@ -23,19 +22,21 @@
       const btnId = dropdown.id.replace('-dropdown', '-filter-btn');
       document.getElementById(btnId)?.setAttribute('aria-expanded', 'false');
       const id = dropdown.id;
-      if (dropdownTimeouts.has(id)) clearTimeout(dropdownTimeouts.get(id));
-      const timeout = setTimeout(() => {
+      if (dropdownTimeouts.has(id)) dropdownTimeouts.get(id)();
+      let done = false;
+      const cancel = window.VH.motion.exit(dropdown, () => {
+        done = true;
         dropdown.classList.add('hidden');
         dropdownTimeouts.delete(id);
-      }, CLOSE_MS);
-      dropdownTimeouts.set(id, timeout);
+      });
+      if (!done) dropdownTimeouts.set(id, cancel);
     });
   }
 
   function openDropdown(btn, dropdown) {
     // Annuler le timeout hidden programmé par closeAllDropdowns
     if (dropdownTimeouts.has(dropdown.id)) {
-      clearTimeout(dropdownTimeouts.get(dropdown.id));
+      dropdownTimeouts.get(dropdown.id)();
       dropdownTimeouts.delete(dropdown.id);
     }
     dropdown.classList.remove('hidden');

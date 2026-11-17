@@ -34,12 +34,9 @@
     const modalClose = document.querySelector('.modal-close');
 
     const submitBtn = document.getElementById('submit-btn');
-    // Doit couvrir la durée de l'animation de sortie (--modal-close-dur, 150 ms).
-    const CLOSE_MS = 180;
-
     let _focusTrap = null;
     let _previousFocus = null;
-    let _closeTimer = null;
+    let _cancelExit = null; // annulation de VH.motion.exit en cours
     let _submitting = false;
     // Vrai quand les référentiels et la liste des appareils sont chargés.
     let _ready = false;
@@ -105,15 +102,14 @@
     // Fin de fermeture : retrait du DOM visuel, puis remise à zéro du formulaire
     // (après l'animation, pour ne pas voir les champs se vider en sortant).
     function finishClose() {
-      clearTimeout(_closeTimer);
-      _closeTimer = null;
+      _cancelExit = null;
       modal?.classList.remove('is-closing');
       modalForm?.reset();
     }
 
     function openModal() {
       if (!modal) return;
-      if (_closeTimer) finishClose();
+      if (_cancelExit) { _cancelExit(); finishClose(); }
       const form = ensureForm();
       setReady(false);
       prepareForm(form, ++_openTicket);
@@ -130,10 +126,12 @@
       modal.classList.remove('show');
       document.body.classList.remove('modal-open');
       _previousFocus?.focus();
-      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) { finishClose(); return; }
-      modal.classList.add('is-closing');
-      _closeTimer = setTimeout(finishClose, CLOSE_MS);
+      // La sortie est portée par le voile et le conteneur, pas par .modal.
+      let done = false;
+      const cancel = window.VH.motion.exit(modal, () => { done = true; finishClose(); }, {
+        measure: Array.from(modal.querySelectorAll('.modal-backdrop, .modal-container')),
+      });
+      if (!done) _cancelExit = cancel;
     }
 
     addBtn?.addEventListener('click', openModal);

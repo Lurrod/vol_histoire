@@ -23,7 +23,13 @@ function loadContact() {
     if (type === 'DOMContentLoaded') { domReady.push(fn); return undefined; }
     return window.EventTarget.prototype.addEventListener.call(this, type, fn, opts);
   });
-  jest.isolateModules(() => { require('../js/contact'); });
+  jest.isolateModules(() => { require('../js/shared/motion'); require('../js/contact'); });
+  // jsdom ne calcule aucune durée : on simule la sortie de 200 ms de contact.css.
+  window.VH.motion.exit = (el, done, opts) => {
+    el.classList.add(opts.className);
+    const timer = setTimeout(() => { el.classList.remove(opts.className); done(); }, 200);
+    return () => { clearTimeout(timer); el.classList.remove(opts.className); };
+  };
   addSpy.mockRestore();
   domReady.forEach((fn) => fn());
 }

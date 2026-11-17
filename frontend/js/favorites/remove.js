@@ -6,11 +6,10 @@
   window.VH.favorites = window.VH.favorites || {};
 
   const UNDO_DELAY_MS = 5000;
-  const TOAST_EXIT_MS = 300;
 
   function dismissToast(toast) {
-    toast.classList.add('fade-out');
-    setTimeout(() => toast.remove(), TOAST_EXIT_MS);
+    // .fade-out porte l'animation de sortie (shared-base.css) ; sa durée est mesurée.
+    window.VH.motion.exit(toast, () => toast.remove(), { className: 'fade-out' });
   }
 
   function showUndoToast(message, onUndo) {

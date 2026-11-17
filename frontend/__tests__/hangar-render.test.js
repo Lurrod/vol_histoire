@@ -11,6 +11,7 @@ global.escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
 global.i18n = { t: (key, p) => (p ? `${key}:${JSON.stringify(p)}` : key) };
 global.animateNumber = jest.fn();
 
+require('../js/shared/motion');
 const filters = require('../js/hangar/filters');
 const render = require('../js/hangar/render');
 

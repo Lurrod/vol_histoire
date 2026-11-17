@@ -104,40 +104,41 @@
     updateProgress();
   }
 
+  // Apparition des sections au défilement. L'état masqué est une classe
+  // (.is-pending, details.css) et non des styles en ligne : la transition
+  // en ligne `all 0.5s ease` d'avant écrasait celle du survol (bordure,
+  // ombre). Sans IntersectionObserver, les sections restent simplement
+  // visibles.
   function setupSectionAnimations() {
+    if (!('IntersectionObserver' in window)) return;
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
+          entry.target.classList.remove('is-pending');
           observer.unobserve(entry.target);
         }
       });
     }, { threshold: 0.1 });
     document.querySelectorAll('.content-section').forEach(section => {
-      section.style.opacity = '0';
-      section.style.transform = 'translateY(20px)';
-      section.style.transition = 'all 0.5s ease';
+      section.classList.add('is-pending');
       observer.observe(section);
     });
   }
 
+  function revealAllSections() {
+    document.querySelectorAll('.content-section.is-pending')
+      .forEach(s => s.classList.remove('is-pending'));
+  }
+
   function setupPdfExport() {
     document.getElementById('pdf-btn')?.addEventListener('click', () => {
-      const sections = document.querySelectorAll('.content-section');
-      sections.forEach(s => { s.style.opacity = '1'; s.style.transform = 'none'; s.style.transition = 'none'; });
+      revealAllSections();
+      // Deux images : laisser le navigateur peindre les sections révélées.
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          window.print();
-          sections.forEach(s => { s.style.transition = 'all 0.5s ease'; });
-        });
+        requestAnimationFrame(() => window.print());
       });
     });
-    window.addEventListener('beforeprint', () => {
-      document.querySelectorAll('.content-section').forEach(s => {
-        s.style.opacity = '1'; s.style.transform = 'none'; s.style.transition = 'none';
-      });
-    });
+    window.addEventListener('beforeprint', revealAllSections);
   }
 
   // ── Pagination PDF : table des matières automatique ───────────────

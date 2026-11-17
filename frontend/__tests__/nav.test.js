@@ -4,6 +4,9 @@
  */
 
 // Mock auth global
+// VH.motion : durées de sortie lues sur le CSS (inexistantes sous jsdom : rappel immédiat).
+require('../js/shared/motion');
+
 global.auth = {
   getToken: jest.fn().mockReturnValue(null),
   getPayload: jest.fn().mockReturnValue(null),

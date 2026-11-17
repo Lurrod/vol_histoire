@@ -52,7 +52,7 @@
   stroke-width: 0.5;
   stroke-linejoin: round;
   cursor: pointer;
-  transition: fill 0.2s ease, stroke 0.2s ease;
+  transition: fill var(--dur-fast) var(--ease-out), stroke var(--dur-fast) var(--ease-out);
 }
 
 .wm-tier-1 { fill: rgba(200, 169, 110, 0.16); }
@@ -81,7 +81,7 @@
   box-shadow: var(--shadow);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.15s ease;
+  transition: opacity var(--dur-fast) var(--ease-out);
   white-space: nowrap;
   display: flex;
   flex-direction: column;
@@ -132,7 +132,7 @@
   color: var(--text-light);
   text-decoration: none;
   font-size: 0.8rem;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
 
 .nm-chip:hover { border-color: var(--border-cyan-md); background: rgba(200, 169, 110, 0.06); }

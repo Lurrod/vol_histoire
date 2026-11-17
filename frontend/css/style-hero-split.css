@@ -32,7 +32,7 @@
      mobile. Partir d'opacity 0 (avec 0,2 s de délai) retardait sa première
      peinture visible de 0,5 à 1 s (« element render delay » Lighthouse,
      LCP 3,3 s). Le texte est lisible dès la première image. */
-  animation: heroSplitSlideRight 0.95s cubic-bezier(0.25, 0.8, 0.25, 1) 0.2s both;
+  animation: heroSplitSlideRight var(--dur-slower) var(--ease-out) calc(var(--stagger-step) * 4) both;
 }
 .page-home .hero-split-title {
   font-family: 'Barlow Condensed', sans-serif;
@@ -50,7 +50,8 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: heroGradientShimmer 1.6s cubic-bezier(0.25, 0.8, 0.25, 1) 0.7s both;
+  /* Balayage décoratif unique : volontairement plus lent que --dur-slower. */
+  animation: heroGradientShimmer calc(var(--dur-slower) * 3) var(--ease-out) calc(var(--stagger-step) * 14) both;
 }
 @keyframes heroGradientShimmer {
   0%   { background-position: 100% 0; }
@@ -80,7 +81,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  animation: heroSplitFadeLeft 1.05s cubic-bezier(0.25, 0.8, 0.25, 1) 0.4s both;
+  animation: heroSplitFadeLeft var(--dur-slower) var(--ease-out) calc(var(--stagger-step) * 8) both;
   min-width: 0;
 }
 .page-home .hero-aside-stack {
@@ -101,14 +102,6 @@
   box-shadow:
     0 8px 28px -16px rgba(0, 0, 0, 0.7),
     inset 0 1px 0 var(--white-a06);
-}
-.page-home .hero-aside-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; bottom: 0;
-  width: 3px;
-  background: linear-gradient(180deg, var(--hud-cyan), transparent 80%);
-  opacity: 0.65;
 }
 .page-home .hero-aside-header {
   display: flex;
@@ -160,10 +153,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease,
-              border-color 0.2s ease,
-              color 0.2s ease,
-              transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  transition: background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              transform var(--dur-slow) var(--ease-out);
   font-size: 0.75rem;
 }
 .page-home .hero-aside-reroll:hover,
@@ -190,7 +183,7 @@
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.5px;
-  transition: gap 0.25s ease, color 0.2s ease;
+  transition: gap var(--dur-base) var(--ease-out), color var(--dur-fast) var(--ease-out);
 }
 .page-home .hero-aside-link:hover,
 .page-home .hero-aside-link:focus-visible {
@@ -199,7 +192,7 @@
 }
 .page-home .hero-aside-link i, .page-home .hero-aside-link .icon {
   font-size: 0.78rem;
-  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  transition: transform var(--dur-base) var(--ease-out);
 }
 .page-home .hero-aside-link:hover i, .page-home .hero-aside-link:hover .icon { transform: translateX(3px); }
 
@@ -215,7 +208,7 @@
    fondu. Une animation portée par .hero-fact-body seule ne se rejouerait pas :
    elle n'a lieu qu'au premier affichage. */
 .page-home .hero-fact-body.is-fading-in {
-  animation: heroFactFadeIn 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.05) both;
+  animation: vh-enter var(--dur-slower) var(--ease-out) both;
 }
 .page-home .hero-fact-body strong { color: var(--hud-cyan); font-weight: 700; }
 .page-home .hero-fact-year {
@@ -239,10 +232,6 @@
   letter-spacing: 0.8px;
   white-space: nowrap;
 }
-@keyframes heroFactFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
 
 /* ---------- Widget 2 : Devine l'avion ---------- */
 .page-home .hero-quiz-stage {
@@ -262,8 +251,8 @@
   display: block;
   filter: blur(18px) brightness(0.55) contrast(1.1) saturate(0.7);
   transform: scale(1.08); /* compense la zone floue qui dépasse les bords */
-  transition: filter 0.65s var(--ease),
-              transform 0.65s var(--ease);
+  transition: filter var(--dur-slower) var(--ease-out),
+              transform var(--dur-slower) var(--ease-out);
 }
 .page-home .hero-quiz-card.is-revealed .hero-quiz-image {
   filter: blur(0) brightness(1) contrast(1) saturate(1);
@@ -280,7 +269,7 @@
   opacity: 0.45;
   letter-spacing: 1px;
   text-shadow: 0 0 14px rgba(232, 201, 138, 0.6);
-  transition: opacity 0.4s ease;
+  transition: opacity var(--dur-base) var(--ease-out);
 }
 .page-home .hero-quiz-card.is-revealed .hero-quiz-badge { opacity: 0; }
 .page-home .hero-quiz-options {
@@ -298,10 +287,10 @@
   font-weight: 600;
   letter-spacing: 0.3px;
   cursor: pointer;
-  transition: background 0.2s ease,
-              border-color 0.2s ease,
-              color 0.2s ease,
-              transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  transition: background-color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              transform var(--dur-base) var(--ease-out), scale var(--dur-instant) var(--ease-out);
   font-family: 'DM Sans', sans-serif;
   text-align: center;
   line-height: 1.2;
@@ -318,11 +307,15 @@
   outline-offset: 2px;
 }
 .page-home .hero-quiz-option.is-correct {
+  --confirm-ring: rgba(91, 184, 116, 0.5);
+  animation: vh-confirm var(--dur-slower) var(--ease-out);
   background: rgba(91, 184, 116, 0.16);
   border-color: rgba(91, 184, 116, 0.55);
   color: #b7e3c1;
 }
 .page-home .hero-quiz-option.is-wrong {
+  /* Même secousse que les champs en erreur (t-input-shake, shared-base). */
+  animation: t-input-shake var(--shake-total) linear;
   background: rgba(192, 57, 43, 0.14);
   border-color: rgba(192, 57, 43, 0.45);
   color: #efb3a8;

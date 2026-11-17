@@ -10,6 +10,7 @@
  * `open`, comme le navigateur.
  */
 
+const { loadMotion, EXIT_MS } = require('./helpers/motion-env');
 const proto = window.HTMLDialogElement.prototype;
 const native = { showModal: proto.showModal, close: proto.close };
 
@@ -57,6 +58,7 @@ function load({ withI18n = true, search = '' } = {}) {
   else delete global.i18n;
   global.showToast = jest.fn();
   window.VH = { shared: { picture: { pictureHtml: (src, o) => `<img class="pic" src="${src}" alt="${o.alt}">` } } };
+  loadMotion(['.compare-bar.is-leaving', '.cmp-col-head.is-removing']);
   compare = require('../js/shared/compare');
 }
 
@@ -258,6 +260,50 @@ describe('ouverture de la modale', () => {
     expect(dlg().open).toBe(false);
   });
 
+  describe('fermeture animée de la modale', () => {
+    async function openAnimated() {
+      load();
+      loadMotion(['.compare-bar.is-leaving', '.cmp-col-head.is-removing', '.compare-modal.is-closing']);
+      global.fetch = api();
+      compare.init({ urlSync: false });
+      compare.toggle(1);
+      document.getElementById('compare-view').click();
+      await flush();
+      jest.useFakeTimers();
+    }
+
+    test('bouton Fermer : fondu (.is-closing) puis dialog.close()', async () => {
+      await openAnimated();
+      dlg().querySelector('.compare-modal-close').click();
+      expect(dlg().classList.contains('is-closing')).toBe(true);
+      expect(dlg().open).toBe(true);
+      // Un second clic pendant la sortie ne relance rien.
+      dlg().querySelector('.compare-modal-close').click();
+      jest.advanceTimersByTime(EXIT_MS + 40);
+      expect(dlg().open).toBe(false);
+      expect(dlg().classList.contains('is-closing')).toBe(false);
+    });
+
+    test('Échap : la fermeture native est empêchée et passe par la sortie animée', async () => {
+      await openAnimated();
+      const ev = new window.Event('cancel', { cancelable: true });
+      dlg().dispatchEvent(ev);
+      expect(ev.defaultPrevented).toBe(true);
+      expect(dlg().classList.contains('is-closing')).toBe(true);
+      jest.advanceTimersByTime(EXIT_MS + 40);
+      expect(dlg().open).toBe(false);
+    });
+
+    test('réouverture pendant la sortie : la modale reste ouverte', async () => {
+      await openAnimated();
+      dlg().querySelector('.compare-modal-close').click();
+      document.getElementById('compare-view').click();
+      expect(dlg().classList.contains('is-closing')).toBe(false);
+      jest.advanceTimersByTime(EXIT_MS + 40);
+      expect(dlg().open).toBe(true);
+    });
+  });
+
   test('ensureUi est idempotent', () => {
     load();
     compare.ensureUi();
@@ -307,16 +353,6 @@ describe('barre flottante — cas limites', () => {
     const bar = document.getElementById('compare-bar');
     expect(bar.classList.contains('hidden')).toBe(true);
     expect(bar.classList.contains('is-leaving')).toBe(false);
-  });
-
-  test('matchMedia en erreur : on retombe sur l\'animation', () => {
-    jest.useFakeTimers();
-    load();
-    window.matchMedia = () => { throw new Error('x'); };
-    compare.init({ urlSync: false });
-    compare.toggle(1);
-    compare.clear();
-    expect(document.getElementById('compare-bar').classList.contains('is-leaving')).toBe(true);
   });
 
   test('compteur au pluriel traduit', () => {

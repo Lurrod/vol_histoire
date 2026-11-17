@@ -68,9 +68,22 @@ function installGlobals() {
   global.auth = auth;
 }
 
+// jsdom ne calcule aucune durée : exit() rappelle aussitôt. Pour exercer la
+// sortie animée, on la remplace par une version qui attend 250 ms.
+const SLIDE_OUT_MS = 250;
+function simulateAnimatedExit() {
+  window.VH.motion.exit = (el, done, opts) => {
+    const cls = (opts && opts.className) || 'is-closing';
+    el.classList.add(cls);
+    const timer = setTimeout(() => { el.classList.remove(cls); done(); }, SLIDE_OUT_MS);
+    return () => { clearTimeout(timer); el.classList.remove(cls); };
+  };
+}
+
 function loadModules() {
   jest.resetModules();
   window.VH = {};
+  require('../js/shared/motion');
   require('../js/login/state');
   require('../js/login/strength');
   require('../js/login/tabs');
@@ -204,13 +217,13 @@ describe('VH.login.tabs', () => {
 
   test('sortie animée : le panneau sortant glisse puis la bascule se fait', () => {
     jest.useFakeTimers();
-    window.matchMedia = jest.fn(() => ({ matches: false }));
     const { login, ctx } = setup();
+    simulateAnimatedExit();
     login.tabs.activateTab(ctx, ctx.els.tabRegister, { focusInput: false });
     expect(ctx.els.loginSlide.classList.contains('is-leaving')).toBe(true);
     expect(ctx.els.loginSlide.inert).toBe(true);
     expect(ctx.els.registerSlide.classList.contains('active')).toBe(false);
-    jest.advanceTimersByTime(login.tabs.SLIDE_OUT_MS);
+    jest.advanceTimersByTime(SLIDE_OUT_MS);
     expect(ctx.els.registerSlide.classList.contains('active')).toBe(true);
     expect(ctx.els.loginSlide.classList.contains('is-leaving')).toBe(false);
     expect(ctx.state.pendingSwap).toBeNull();
@@ -218,14 +231,14 @@ describe('VH.login.tabs', () => {
 
   test('une bascule en cours se termine dès la suivante', () => {
     jest.useFakeTimers();
-    window.matchMedia = jest.fn(() => ({ matches: false }));
     const { login, ctx } = setup();
+    simulateAnimatedExit();
     login.tabs.activateTab(ctx, ctx.els.tabRegister);
     expect(typeof ctx.state.pendingSwap).toBe('function');
     login.tabs.activateTab(ctx, ctx.els.tabLogin);
     // la première bascule a été achevée : inscription affichée puis sortie animée
     expect(ctx.els.registerSlide.classList.contains('is-leaving')).toBe(true);
-    jest.advanceTimersByTime(login.tabs.SLIDE_OUT_MS);
+    jest.advanceTimersByTime(SLIDE_OUT_MS);
     expect(ctx.els.loginSlide.classList.contains('active')).toBe(true);
   });
 
@@ -235,12 +248,6 @@ describe('VH.login.tabs', () => {
     ctx.els.tabRegister.setAttribute('aria-controls', 'nope');
     login.tabs.activateTab(ctx, ctx.els.tabRegister);
     expect(ctx.els.tabRegister.getAttribute('aria-selected')).toBe('false');
-  });
-
-  test('prefersReducedMotion sans matchMedia : false', () => {
-    const { login } = setup();
-    delete window.matchMedia;
-    expect(login.tabs.prefersReducedMotion()).toBe(false);
   });
 });
 
