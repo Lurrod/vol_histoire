@@ -5079,6 +5079,11 @@ UPDATE airplanes SET image_credit = 'Ministério da Defesa (Brasil)', image_lice
 UPDATE airplanes SET image_credit = 'Vadim Savitsky, Ministry of Defence of the Russian Federation', image_licence = 'CC BY 4.0'
  WHERE name = 'Tu-160'
    AND (image_credit, image_licence) IS DISTINCT FROM ('Vadim Savitsky, Ministry of Defence of the Russian Federation', 'CC BY 4.0');
+-- Guerre d'Irak : la description anglaise de db.sql s'arrêtait à « overthrow
+-- Saddam Hussein » (la production avait déjà le texte complet).
+UPDATE wars SET description_en = 'Conflict in Iraq led by a US-led coalition to overthrow Saddam Hussein''s regime.'
+ WHERE name = 'Guerre d''Irak'
+   AND description_en IS DISTINCT FROM 'Conflict in Iraq led by a US-led coalition to overthrow Saddam Hussein''s regime.';
 
 -- ═══ 7. Contraintes de cohérence ═════════════════════════════════════════
 --

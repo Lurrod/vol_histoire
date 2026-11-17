@@ -4884,12 +4884,12 @@ WHERE name = 'Iliouchine Il-102'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Antonov An-24'),
   rival_id       = NULL
 WHERE name = 'Iliouchine Il-14'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, NULL);
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Antonov An-24'), NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5358,15 +5358,6 @@ WHERE name = 'F2Y Sea Dart'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Saunders-Roe SR.A/1'));
-
-UPDATE airplanes SET
-  predecessor_id = NULL,
-  successor_id   = (SELECT id FROM airplanes WHERE name = 'Antonov An-24'),
-  rival_id       = NULL
-WHERE name = 'Iliouchine Il-14'
-  AND (predecessor_id, successor_id, rival_id)
-      IS DISTINCT FROM
-      (NULL, (SELECT id FROM airplanes WHERE name = 'Antonov An-24'), NULL);
 -- <<< Lots 29 à 38
 
 -- ── Rattachement aux conflits ──────────────────────────────────────────────
