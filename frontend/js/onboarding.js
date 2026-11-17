@@ -136,10 +136,9 @@
       var isFirst = current === 0;
       var fast = reducedMotion();
 
-      // Transition out
-      content.classList.add('ob-fade-out');
-
-      setTimeout(function () {
+      // Corps du changement d'étape : appelé une fois la sortie terminée
+      // (aussitôt pour l'affichage initial ou en mouvements réduits).
+      function swapStep() {
         // Lu au dernier moment : le bouton cliqué a encore le focus ici.
         var hadFocus = focusedAction();
 
@@ -193,11 +192,19 @@
 
         content.classList.remove('ob-fade-out');
         content.classList.add('ob-fade-in');
+        // Durée de l'entrée lue sur le CSS (--dur-slower), pas recopiée ici.
         setTimeout(function () {
           content.classList.remove('ob-fade-in');
           transitioning = false;
-        }, fast ? 0 : 400);
-      }, direction && !fast ? 250 : 0);
+        }, fast ? 0 : window.VH.motion.exitDuration(content));
+      }
+
+      if (direction) {
+        // Sortie du contenu précédent, durée mesurée par le navigateur.
+        window.VH.motion.exit(content, swapStep, { className: 'ob-fade-out' });
+      } else {
+        swapStep();
+      }
     }
 
     function close() {
@@ -208,7 +215,7 @@
       if (previousFocus && typeof previousFocus.focus === 'function' && document.contains(previousFocus)) {
         previousFocus.focus();
       }
-      setTimeout(function () { overlay.remove(); }, reducedMotion() ? 0 : 600);
+      window.VH.motion.exit(overlay, function () { overlay.remove(); }, { className: 'ob-exit' });
     }
 
     // Keyboard

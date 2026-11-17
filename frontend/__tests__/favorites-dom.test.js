@@ -4,6 +4,8 @@
  * avec annulation, chargement, retour arrière et démarrage de la page.
  */
 
+const { loadMotion } = require('./helpers/motion-env');
+
 global.escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 }[c]));
@@ -56,6 +58,7 @@ const FAVS = [
 function loadModules() {
   jest.resetModules();
   document.body.innerHTML = PAGE_HTML;
+  loadMotion(['.filter-dropdown', '.aircraft-card.is-removing', '.toast.fade-out']);
   const F = {
     filters: require('../js/favorites/filters'),
     url: require('../js/favorites/url'),

@@ -4,6 +4,9 @@
  * trapFocus, setNumberPopIn
  */
 
+// VH.motion : durées de sortie lues sur le CSS (inexistantes sous jsdom : rappel immédiat).
+require('../js/shared/motion');
+
 const { escapeHtml, safeSetHTML, trapFocus, setNumberPopIn, showToast, animateNumber, setupPasswordToggle, setFieldError, clearFieldError, isValidEmail, calculatePasswordStrength } = require('../js/utils');
 
 beforeEach(() => {
@@ -122,14 +125,21 @@ describe('showToast', () => {
     expect(span.innerHTML).not.toContain('<script>');
   });
 
-  test('le toast reçoit fade-out après le duration', () => {
+  // Sous jsdom, aucune durée n'est calculée : VH.motion.exit rappelle aussitôt,
+  // le toast quitte donc le DOM dès que la sortie est demandée.
+  test('la sortie passe par VH.motion.exit avec la classe fade-out après le duration', () => {
     jest.useFakeTimers();
+    const exit = jest.spyOn(window.VH.motion, 'exit');
     showToast('Fade test', 'info', 1000);
-
-    jest.advanceTimersByTime(1000);
     const toast = document.querySelector('.toast');
-    expect(toast.classList.contains('fade-out')).toBe(true);
 
+    jest.advanceTimersByTime(999);
+    expect(exit).not.toHaveBeenCalled();
+    jest.advanceTimersByTime(1);
+    expect(exit).toHaveBeenCalledWith(toast, expect.any(Function), { className: 'fade-out' });
+    expect(toast.isConnected).toBe(false);
+
+    exit.mockRestore();
     jest.useRealTimers();
   });
 
@@ -143,8 +153,6 @@ describe('showToast', () => {
     expect(btn.getAttribute('aria-label')).toBeTruthy();
 
     btn.click();
-    expect(document.querySelector('.toast').classList.contains('fade-out')).toBe(true);
-    jest.advanceTimersByTime(300);
     expect(document.querySelector('.toast')).toBeNull();
     jest.useRealTimers();
   });
@@ -156,11 +164,11 @@ describe('showToast', () => {
     const [info, err] = document.querySelectorAll('.toast');
 
     jest.advanceTimersByTime(3000);
-    expect(info.classList.contains('fade-out')).toBe(true);
-    expect(err.classList.contains('fade-out')).toBe(false);
+    expect(info.isConnected).toBe(false);
+    expect(err.isConnected).toBe(true);
 
     jest.advanceTimersByTime(3000);
-    expect(err.classList.contains('fade-out')).toBe(true);
+    expect(err.isConnected).toBe(false);
     jest.useRealTimers();
   });
 
@@ -177,13 +185,13 @@ describe('showToast', () => {
     jest.advanceTimersByTime(500);
     toast.dispatchEvent(new Event('mouseenter'));
     jest.advanceTimersByTime(5000);
-    expect(toast.classList.contains('fade-out')).toBe(false);
+    expect(toast.isConnected).toBe(true);
 
     toast.dispatchEvent(new Event('mouseleave'));
     jest.advanceTimersByTime(999);
-    expect(toast.classList.contains('fade-out')).toBe(false);
+    expect(toast.isConnected).toBe(true);
     jest.advanceTimersByTime(1);
-    expect(toast.classList.contains('fade-out')).toBe(true);
+    expect(toast.isConnected).toBe(false);
     jest.useRealTimers();
   });
 
@@ -195,11 +203,11 @@ describe('showToast', () => {
 
     btn.focus();
     jest.advanceTimersByTime(5000);
-    expect(toast.classList.contains('fade-out')).toBe(false);
+    expect(toast.isConnected).toBe(true);
 
     btn.blur();
     jest.advanceTimersByTime(1000);
-    expect(toast.classList.contains('fade-out')).toBe(true);
+    expect(toast.isConnected).toBe(false);
     jest.useRealTimers();
   });
 });

@@ -6,6 +6,9 @@
  * tant que l'utilisateur n'a pas accordé la finalité « analytics ». Le bandeau
  * est le vrai fragment cookie-consent.html, servi par un fetch simulé.
  */
+// VH.motion : durées de sortie lues sur le CSS (inexistantes sous jsdom : rappel immédiat).
+require('../js/shared/motion');
+
 const fs = require('fs');
 const path = require('path');
 const DOMPurify = require('../js/vendor/purify.min.js');
@@ -330,6 +333,34 @@ describe('CookieConsent — chargement du fragment cookie-consent.html', () => {
 // =============================================================================
 // Modale de paramétrage
 // =============================================================================
+describe('CookieConsent — réserve sous le pied de page', () => {
+  const html = document.documentElement;
+  const sizeBanner = (h) => {
+    document.getElementById('cookie-banner').getBoundingClientRect = () => ({ top: 700, bottom: 700 + h, left: 0, right: 1000, width: 1000, height: h });
+  };
+
+  afterEach(() => html.classList.remove('has-cookie-banner'));
+
+  test('bandeau rendu : la réserve est posée, puis retirée à la fermeture', async () => {
+    setupPage({ inlineBanner: true });
+    const cc = await createConsent();
+    sizeBanner(140);
+    cc.showBanner();
+    expect(html.classList.contains('has-cookie-banner')).toBe(true);
+    cc.hideBanner();
+    expect(html.classList.contains('has-cookie-banner')).toBe(false);
+  });
+
+  test('bandeau masqué par un bloqueur (hauteur nulle) : aucune réserve', async () => {
+    setupPage({ inlineBanner: true });
+    const cc = await createConsent();
+    sizeBanner(0);
+    cc.showBanner();
+    expect(document.getElementById('cookie-banner').classList.contains('show')).toBe(true);
+    expect(html.classList.contains('has-cookie-banner')).toBe(false);
+  });
+});
+
 describe('CookieConsent — modale de paramétrage', () => {
   let cc;
   beforeEach(async () => {
@@ -382,6 +413,26 @@ describe('CookieConsent — modale de paramétrage', () => {
     cc.openModal();
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
     expect(close).not.toHaveBeenCalled();
+  });
+
+  test('double fermeture puis réouverture rapide : la modale rouverte reste visible', () => {
+    // jsdom ne calcule aucune durée : on simule une sortie de 300 ms.
+    const saved = window.VH.motion.exit;
+    let exits = 0;
+    window.VH.motion.exit = (el, done) => {
+      exits += 1;
+      const timer = setTimeout(done, 300);
+      return () => clearTimeout(timer);
+    };
+    cc.openModal();
+    cc.closeModal();
+    cc.closeModal(); // Échap + clic sur le voile, ou double clic
+    expect(exits).toBe(1);
+    cc.openModal();
+    jest.advanceTimersByTime(400);
+    expect(modal().classList.contains('show')).toBe(true);
+    expect(modal().classList.contains('hidden')).toBe(false);
+    window.VH.motion.exit = saved;
   });
 
   test('le fond assombri ferme la modale', () => {

@@ -97,31 +97,28 @@
       if (!editModal.classList.contains('show') || editModal.classList.contains('is-closing')) return;
       _focusTrap?.destroy();
       _focusTrap = null;
-      // Animation de sortie, puis masquage (repli par minuterie si
-      // animationend ne se déclenche pas).
-      editModal.classList.add('is-closing');
-      let done = false;
-      let timer = null;
-      const finish = () => {
-        if (done) return;
-        done = true;
+      // Animation de sortie (durée mesurée par le navigateur), puis masquage.
+      // Le conteneur et le fond portent l'animation : on les mesure aussi.
+      let finished = false;
+      const cancelExit = window.VH.motion.exit(editModal, () => {
+        finished = true;
         _cancelPendingClose = null;
-        clearTimeout(timer);
-        editModal.removeEventListener('animationend', finish);
         // Modale retirée du DOM entre-temps : la page n'est plus la sienne.
         if (!editModal.isConnected) return;
-        editModal.classList.remove('show', 'is-closing');
+        editModal.classList.remove('show');
         document.body.style.overflow = '';
-      };
-      editModal.addEventListener('animationend', finish, { once: true });
-      timer = setTimeout(finish, 320);
-      _cancelPendingClose = () => {
-        done = true;
-        _cancelPendingClose = null;
-        clearTimeout(timer);
-        editModal.removeEventListener('animationend', finish);
-        editModal.classList.remove('is-closing');
-      };
+      }, {
+        measure: [
+          editModal.querySelector('.modal-container'),
+          editModal.querySelector('.modal-backdrop')
+        ]
+      });
+      if (!finished) {
+        _cancelPendingClose = () => {
+          _cancelPendingClose = null;
+          cancelExit();
+        };
+      }
       _previousFocus?.focus();
     }
     VH.details.admin.closeEditModal = closeEditModal;

@@ -11,7 +11,9 @@ global.escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
 }[c]));
 global.i18n = { t: (key) => key };
 
+const { loadMotion } = require('./helpers/motion-env');
 const filters = require('../js/hangar/filters');
+loadMotion(['.filter-dropdown']);
 
 const KEYS = ['country', 'generation', 'type', 'war', 'mission'];
 

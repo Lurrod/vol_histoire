@@ -29,6 +29,7 @@ const BUNDLES = {
     'i18n.js',
     'auth.js',
     'utils.js',
+    'shared/motion.js',
     'nav.js',
     'cookies.js',
     'shared/alpha3.js',

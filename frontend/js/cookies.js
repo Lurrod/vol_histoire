@@ -17,6 +17,19 @@ const BANNER_FOCUS_MARGIN = 16;
  * @param {Element} [header] en-tête fixe : le haut de l'élément ne passe pas dessous
  * @returns {number}
  */
+/**
+ * Le bandeau est-il réellement rendu ? `.show` ne suffit pas : un bloqueur
+ * de bandeaux cookies le masque par une feuille d'extension (invisible pour
+ * la page), et la réserve posée sous le pied de page restait alors vide.
+ *
+ * @param {Element|null} banner #cookie-banner
+ * @returns {boolean}
+ */
+function bannerShown(banner) {
+  if (!banner || !banner.classList.contains('show')) return false;
+  return banner.getBoundingClientRect().height > 0;
+}
+
 function bannerOverlap(target, banner, header) {
   if (!banner || !banner.classList.contains('show')) return 0;
   if (!target || typeof target.getBoundingClientRect !== 'function' || banner.contains(target)) return 0;
@@ -350,11 +363,38 @@ class CookieConsent {
   showBanner() {
     const banner = document.getElementById('cookie-banner');
     if (banner) {
+      // Réaffichage pendant une fermeture : annule le masquage différé.
+      if (this._cancelBannerExit) { this._cancelBannerExit(); this._cancelBannerExit = null; }
       banner.classList.remove('hidden');
       // Trigger reflow for animation
       banner.offsetHeight;
       banner.classList.add('show');
       this.guardFocus(banner);
+      this.watchBannerReserve(banner);
+    }
+  }
+
+  /**
+   * Réserve sous le pied de page (cookies.css, html.has-cookie-banner) :
+   * posée seulement si le bandeau est vraiment rendu. Un ResizeObserver la
+   * tient à jour si une extension le masque après coup (hauteur → 0).
+   */
+  watchBannerReserve(banner) {
+    const sync = () => {
+      document.documentElement.classList.toggle('has-cookie-banner', bannerShown(banner));
+    };
+    sync();
+    if (!this._bannerObserver && typeof ResizeObserver === 'function') {
+      this._bannerObserver = new ResizeObserver(sync);
+      this._bannerObserver.observe(banner);
+    }
+  }
+
+  releaseBannerReserve() {
+    document.documentElement.classList.remove('has-cookie-banner');
+    if (this._bannerObserver) {
+      this._bannerObserver.disconnect();
+      this._bannerObserver = null;
     }
   }
 
@@ -389,11 +429,15 @@ class CookieConsent {
   hideBanner() {
     const banner = document.getElementById('cookie-banner');
     this.releaseFocusGuard();
+    this.releaseBannerReserve();
     if (banner) {
       banner.classList.remove('show');
-      setTimeout(() => {
+      // Le bandeau redescend par transition (retrait de .show) ; .hidden
+      // n'est posé qu'une fois la durée réelle écoulée (VH.motion).
+      this._cancelBannerExit = window.VH.motion.exit(banner, () => {
+        this._cancelBannerExit = null;
         banner.classList.add('hidden');
-      }, 400);
+      });
     }
   }
 
@@ -427,6 +471,8 @@ class CookieConsent {
         analyticsToggle.checked = this.preferences.analytics;
       }
 
+      // Réouverture pendant une fermeture : annule le masquage différé.
+      if (this._cancelModalExit) { this._cancelModalExit(); this._cancelModalExit = null; }
       modal.classList.remove('hidden');
       // Trigger reflow for animation
       modal.offsetHeight;
@@ -444,16 +490,23 @@ class CookieConsent {
 
   closeModal() {
     const modal = document.getElementById('cookie-modal');
-    if (modal) {
+    // Déjà en sortie (Échap + clic sur le voile, double clic) : une seconde
+    // minuterie, orpheline, masquerait la modale si on la rouvrait aussitôt.
+    if (modal && !this._cancelModalExit) {
       if (this._focusTrap) {
         this._focusTrap.destroy();
         this._focusTrap = null;
       }
       modal.classList.remove('show');
       document.body.classList.remove('cookie-modal-open');
-      setTimeout(() => {
+      // Fondu de la modale + conteneur qui se réduit : on mesure les deux.
+      let finished = false;
+      const cancel = window.VH.motion.exit(modal, () => {
+        finished = true;
+        this._cancelModalExit = null;
         modal.classList.add('hidden');
-      }, 300);
+      }, { measure: modal.querySelector('.cookie-modal-container') });
+      if (!finished) this._cancelModalExit = cancel;
       // Restaure le focus sur l'élément qui a ouvert la modal
       // (ex. bouton « Paramétrer » de la bannière).
       if (this._previousFocus && typeof this._previousFocus.focus === 'function') {
@@ -617,8 +670,7 @@ class CookieConsent {
 
     // Sortie animée par .fade-out (keyframes toastOut), puis retrait.
     setTimeout(() => {
-      toast.classList.add('fade-out');
-      setTimeout(() => toast.remove(), 300);
+      window.VH.motion.exit(toast, () => toast.remove(), { className: 'fade-out' });
     }, 3000);
   }
 
@@ -699,6 +751,7 @@ window.VH.consent = {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     CookieConsent,
+    bannerShown,
     bannerOverlap,
     isConsentExpired,
     readConsentRecord,

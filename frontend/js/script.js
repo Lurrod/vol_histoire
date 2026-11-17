@@ -19,5 +19,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   })();
 
   home.pageEffects.ensureHeroAsideOrder();
-  home.pageEffects.revealBody();
 });

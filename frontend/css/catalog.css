@@ -141,7 +141,7 @@ body:is(.page-hangar, .page-favorites) {
   mask: url("data:image/svg+xml;
   utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z'/></svg>") center/contain no-repeat;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 :is(.page-hangar, .page-favorites) .search-box input::-webkit-search-cancel-button:hover {
   background-color: var(--hud-cyan);
@@ -167,7 +167,7 @@ body:is(.page-hangar, .page-favorites) {
   font-family: 'DM Sans', sans-serif;
   font-weight: 500;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
   color: rgba(255,255,255,0.65);
   white-space: nowrap;
 }
@@ -193,7 +193,7 @@ body:is(.page-hangar, .page-favorites) {
 :is(.page-hangar,
 .page-favorites) .filter-btn .icon-chevron-down {
   font-size: 0.65rem;
-  transition: transform 0.2s var(--ease);
+  transition: transform var(--dur-base) var(--ease-out);
 }
 :is(.page-hangar,
 .page-favorites) .filter-btn[aria-expanded="true"] .fa-chevron-down,
@@ -209,6 +209,8 @@ body:is(.page-hangar, .page-favorites) {
   opacity: 1;
   transform: translateY(0);
   pointer-events: all;
+  /* Ouverture ; la fermeture (fast + ease-in) est portée par l'état de base. */
+  transition: opacity var(--dropdown-open-dur) var(--dropdown-ease), transform var(--dropdown-open-dur) var(--dropdown-ease);
 }
 :is(.page-hangar, .page-favorites) .filter-dropdown-header {
   display: flex;
@@ -239,7 +241,7 @@ body:is(.page-hangar, .page-favorites) {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
   color: var(--text-ghost);
 }
 :is(.page-hangar, .page-favorites) .close-dropdown:hover {
@@ -258,7 +260,7 @@ body:is(.page-hangar, .page-favorites) {
   border: 1px solid var(--white-a07);
   border-radius: 8px;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
   text-align: center;
   font-weight: 500;
   font-size: 0.85rem;
@@ -281,13 +283,20 @@ body:is(.page-hangar, .page-favorites) {
   color: var(--white);
 }
 :is(.page-hangar, .page-favorites) .filter-option:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 :is(.page-hangar, .page-favorites) .filter-option.selected {
   background: rgba(200,169,110,0.1);
   border-color: rgba(200,169,110,0.35);
   color: var(--hud-cyan);
 }
+/* Compteur de résultats : le nouveau texte se pose (hangar/render.js,
+   favorites/render.js rejouent .is-swapping quand il change). */
+:is(.page-hangar, .page-favorites) #results-count { display: inline-block; }
+:is(.page-hangar, .page-favorites) #results-count.is-swapping {
+  animation: vh-text-swap var(--dur-base) var(--ease-out);
+}
+
 :is(.page-hangar, .page-favorites) .active-filters {
   display: flex;
   gap: 0.75rem;
@@ -323,7 +332,7 @@ body:is(.page-hangar, .page-favorites) {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: background-color var(--dur-fast) var(--ease-out);
   color: var(--hud-cyan);
   font-size: 0.6rem;
 }
@@ -339,7 +348,7 @@ body:is(.page-hangar, .page-favorites) {
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
 }
 :is(.page-hangar, .page-favorites) .clear-all-filters:hover {
   background: rgba(231,76,60,0.15);
@@ -350,7 +359,7 @@ body:is(.page-hangar, .page-favorites) {
   color: var(--white);
 }
 :is(.page-hangar, .page-favorites) .aircraft-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(var(--hover-lift));
   background: var(--white-a07);
   border-color: rgba(200,169,110,0.28);
   box-shadow: 0 12px 32px rgba(0,0,0,0.35), 0 0 30px var(--gold-a08);
@@ -365,7 +374,7 @@ body:is(.page-hangar, .page-favorites) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: var(--transition);
+  transition: transform var(--dur-base) var(--ease-out);
 }
 :is(.page-hangar, .page-favorites) .aircraft-card:hover .aircraft-image img {
   transform: scale(1.08);

@@ -72,7 +72,7 @@
   inset: 0;
   border-radius: 50%;
   background: conic-gradient(from 0deg, transparent 0deg, var(--gold-a15) 40deg, transparent 80deg);
-  animation: radarSpin 4s linear infinite;
+  animation: radarSpin 4s linear infinite; /* boucle : vitesse propre */
 }
 
 /* @keyframes radarSpin → shared.css (dédupliqué) */
@@ -155,7 +155,7 @@
 }
 
 /* BUTTONS */
-.page-favorites .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.75rem; border-radius: 8px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; border: none; transition: var(--transition); }
+.page-favorites .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.75rem; border-radius: 8px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; border: none; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); }
 .page-favorites .btn-primary { background: var(--hud-cyan); color: var(--night); border: 1px solid transparent; font-weight: 700; }
 .page-favorites .btn-primary:hover { background: #D4B87E; }
 .page-favorites .btn-secondary { background: var(--white-a04); color: rgba(255,255,255,0.7); border: 1px solid var(--white-a12); }
@@ -167,7 +167,7 @@
 .page-favorites .favorites-section { padding: 5rem 0 7rem; }
 .page-favorites .favorites-toolbar { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
 .page-favorites .search-box { position: relative; flex: 1; min-width: 250px; max-width: 500px; }
-.page-favorites .search-box input { width: 100%; padding: 0.875rem 1rem 0.875rem 3rem; border: 1px solid var(--border-field); border-radius: 12px; font-family: inherit; font-size: 1rem; color: var(--white); background: rgba(255,255,255,0.03); transition: var(--transition); }
+.page-favorites .search-box input { width: 100%; padding: 0.875rem 1rem 0.875rem 3rem; border: 1px solid var(--border-field); border-radius: 12px; font-family: inherit; font-size: 1rem; color: var(--white); background: rgba(255,255,255,0.03); transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out); }
 
 /* Filter buttons */
 /* .has-value : un filtre est appliqué (posée par syncFilterUi, favorites.js). */
@@ -182,24 +182,24 @@
   border-radius: 12px; box-shadow: 0 20px 56px rgba(0,0,0,0.55), 0 0 0 1px var(--white-a02) inset;
   max-height: 400px; overflow-y: auto; z-index: var(--z-panel);
   opacity: 0; transform: translateY(-8px);
-  transition: var(--transition); pointer-events: none;
+  transition: opacity var(--dropdown-close-dur) var(--ease-in), transform var(--dropdown-close-dur) var(--ease-in); pointer-events: none;
 }
 /* Options en <button> : atteignables au clavier, réinitialisées au style des cases. */
 
 /* Active Filters */
-.page-favorites .sort-select { padding: 0.875rem 2.5rem 0.875rem 1.25rem; border: 1px solid var(--border-field); border-radius: 12px; font-family: inherit; font-size: 0.95rem; color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.03) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat right 1rem center; appearance: none; cursor: pointer; transition: var(--transition); }
+.page-favorites .sort-select { padding: 0.875rem 2.5rem 0.875rem 1.25rem; border: 1px solid var(--border-field); border-radius: 12px; font-family: inherit; font-size: 0.95rem; color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.03) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat right 1rem center; appearance: none; cursor: pointer; transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out); }
 .page-favorites .sort-select:hover { border-color: rgba(255,255,255,0.18); background-color: var(--white-a06); color: var(--white); }
 .page-favorites .sort-select:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px var(--white-a12); }
 .page-favorites .results-bar { margin-bottom: 2rem; font-size: 0.95rem; color: var(--text-ghost); font-weight: 500; }
 
 /* AIRCRAFT GRID & CARDS */
 .page-favorites .aircraft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 4rem; }
-.page-favorites .aircraft-card { background: var(--white-a04); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.09); transition: var(--transition); cursor: pointer; position: relative; }
+.page-favorites .aircraft-card { background: var(--white-a04); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.09); transition: transform var(--dur-base) var(--ease-out), background-color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out), scale var(--dur-instant) var(--ease-out); cursor: pointer; position: relative; }
 .page-favorites .country-flag { width: 24px; height: auto; border-radius: 3px; display: block; flex-shrink: 0; }
 .page-favorites .aircraft-description { color: var(--text-ghost); line-height: 1.7; margin-bottom: 1.25rem; font-size: 0.95rem; }
 
 /* Favorite remove button */
-.page-favorites .favorite-remove { position: absolute; top: 1rem; right: 1rem; z-index: 10; width: 40px; height: 40px; border-radius: 50%; background: rgba(231,76,60,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(231,76,60,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 0.9rem; transition: var(--transition); opacity: 0; }
+.page-favorites .favorite-remove { position: absolute; top: 1rem; right: 1rem; z-index: 10; width: 40px; height: 40px; border-radius: 50%; background: rgba(231,76,60,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(231,76,60,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 0.9rem; transition: opacity var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out), scale var(--dur-instant) var(--ease-out); opacity: 0; }
 /* Visible au survol, mais aussi au clavier : sans cela, un bouton atteint à
    la tabulation restait invisible. */
 .page-favorites .aircraft-card:hover .favorite-remove,
@@ -212,14 +212,17 @@
 /* Retrait d'un favori : la carte s'efface (et ne capte plus aucun clic),
    puis sort du flux — la grille se resserre. Elle revient par un nouveau
    rendu si l'on annule. */
-.page-favorites .aircraft-card.is-removing { opacity: 0; transform: scale(0.92); pointer-events: none; }
+/* Sortie : fast + ease-in (favorites/render.js mesure cette durée). */
+.page-favorites .aircraft-card.is-removing {
+  opacity: 0; transform: scale(0.92); pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-in), transform var(--dur-fast) var(--ease-in);
+}
 .page-favorites .aircraft-card.is-removed { display: none; }
 
 /* Résultats : léger fondu à chaque rendu (filtre, tri, recherche). Opacité
    seule, et `backwards` : le survol garde la main sur transform. */
 .page-favorites #favorites-container > .aircraft-card,
-.page-favorites #favorites-container > .empty-state { animation: favFadeIn 0.25s var(--ease) backwards; }
-@keyframes favFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.page-favorites #favorites-container > .empty-state { animation: vh-fade-in var(--dur-base) var(--ease-out) backwards; }
 
 /* Favorited date */
 .page-favorites .favorited-date { font-size: 0.8rem; color: var(--text-ghost); margin-top: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
@@ -301,11 +304,9 @@
   .page-favorites .btn { min-height: 44px; }
   /* .nav-links li a → shared.css */
   .page-favorites .aircraft-card:hover { transform: none; }
-  .page-favorites .aircraft-card:active { transform: scale(0.98); }
   .page-favorites .favorite-remove { opacity: 1; }
 }
 
-@media (prefers-reduced-motion: reduce) { .page-favorites *, .page-favorites *::before, .page-favorites *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
 @media (prefers-reduced-motion: reduce) {
   .page-favorites #favorites-container > .aircraft-card,
   .page-favorites #favorites-container > .empty-state { animation: none; }

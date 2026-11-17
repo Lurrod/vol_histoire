@@ -14,11 +14,17 @@ global.escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
 global.i18n = { t: (key) => key };
 global.showToast = jest.fn();
 
+const { loadMotion } = require('./helpers/motion-env');
+require('../js/shared/motion');
 const compare = require('../js/shared/compare');
+
+// jsdom ne charge aucune feuille : on déclare les durées de sortie du CSS.
+const declareExits = () => loadMotion(['.compare-bar.is-leaving', '.cmp-col-head.is-removing']);
 
 function resetPage(search = '') {
   document.body.innerHTML = '';
   localStorage.clear();
+  declareExits();
   window.history.replaceState(null, '', '/hangar' + search);
   compare.clear();
 }

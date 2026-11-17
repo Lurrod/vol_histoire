@@ -21,28 +21,20 @@
   gap: 0.75rem;
   align-items: center;
   z-index: var(--z-sticky);
-  animation: compareBarUp 0.25s var(--ease);
+  animation: vh-enter var(--dur-slow) var(--ease-out);
 }
 .compare-bar.hidden { display: none; }
 /* Sortie : jouée avant que .hidden ne retire la barre (js/shared/compare.js). */
-.compare-bar.is-leaving { animation: compareBarDown 0.2s var(--ease) forwards; pointer-events: none; }
+.compare-bar.is-leaving { animation: vh-exit var(--dur-fast) var(--ease-in) forwards; pointer-events: none; }
 /* inline-block : un <span> en ligne ne se met pas à l'échelle. */
 .compare-bar #compare-count { color: var(--hud-cyan); font-weight: 600; font-size: 0.85rem; display: inline-block; }
-.compare-bar #compare-count.is-bumped { animation: compareCountPulse 0.35s var(--ease); }
+.compare-bar #compare-count.is-bumped { animation: compareCountPulse var(--dur-base) var(--ease-out); }
 /* Lien copié : confirmation sur le bouton, en plus du toast. */
 .compare-bar #compare-share.is-copied { background: rgba(200,169,110,0.14); border-color: var(--hud-cyan); color: var(--hud-cyan); }
-@keyframes compareBarUp {
-  from { transform: translate(-50%, 20px); opacity: 0; }
-  to   { transform: translate(-50%, 0);    opacity: 1; }
-}
-@keyframes compareBarDown {
-  from { transform: translate(-50%, 0);    opacity: 1; }
-  to   { transform: translate(-50%, 20px); opacity: 0; }
-}
+/* Monotone : la pastille se pose à sa taille, sans dépasser. */
 @keyframes compareCountPulse {
-  0%   { transform: scale(1); }
-  40%  { transform: scale(1.18); }
-  100% { transform: scale(1); }
+  from { transform: scale(0.82); opacity: 0.55; }
+  to   { transform: scale(1);    opacity: 1; }
 }
 
 /* Compare modal — forcer le display par défaut (certains resets cassent <dialog>) */
@@ -64,12 +56,23 @@
   position: fixed;
   inset: 0;
   margin: auto;
-  animation: modalSlideIn 0.3s ease;
+  animation: modalSlideIn var(--modal-open-dur) var(--modal-ease);
 }
 .compare-modal[open] { display: flex; }
 .compare-modal::backdrop {
   background: rgba(0,0,0,0.8);
   backdrop-filter: blur(6px);
+  /* Repli en dur : ::backdrop n'hérite des propriétés de :root que dans
+     les navigateurs récents (Chrome 122, Firefox 120, Safari 17.4). */
+  animation: vh-fade-in var(--modal-open-dur, 240ms) var(--modal-ease, ease-out);
+}
+/* Sortie (VH.motion.exit dans shared/compare.js, puis dialog.close()). */
+.compare-modal.is-closing {
+  animation: vh-fade-out var(--modal-close-dur) var(--ease-in) forwards;
+  pointer-events: none;
+}
+.compare-modal.is-closing::backdrop {
+  animation: vh-fade-out var(--modal-close-dur, 160ms) var(--ease-in, ease-in) forwards;
 }
 
 /* Header band — mirror .modal-header */
@@ -103,7 +106,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out);
   color: var(--text-ghost);
   font-size: 1.5rem;
   position: static;
@@ -171,7 +174,7 @@
   background: var(--night-soft);
   border: 1px solid var(--border-subtle);
   border-radius: var(--r-lg);
-  transition: var(--transition-fast);
+  transition: border-color var(--dur-fast) var(--ease-out);
 }
 .cmp-col-head:hover {
   border-color: var(--border-cyan-md);
@@ -192,7 +195,7 @@
   justify-content: center;
   font-size: 0.65rem;
   z-index: 2;
-  transition: var(--transition-fast);
+  transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
 }
 .cmp-remove:hover {
   color: var(--accent);
@@ -290,7 +293,7 @@
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--border-subtle);
   align-items: center;
-  transition: background 0.15s var(--ease);
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 .cmp-row:last-child { border-bottom: none; }
 .cmp-row:hover { background: rgba(200,169,110,0.02); }
@@ -308,7 +311,6 @@
   letter-spacing: 0.02em;
   padding: 0.35rem 0.5rem;
   border-radius: var(--r-sm);
-  transition: var(--transition-fast);
 }
 .cmp-cell.cmp-best {
   color: var(--hud-cyan);
@@ -344,7 +346,7 @@
 .cmp-bar-fill {
   height: 100%;
   border-radius: 2px;
-  transition: width 0.6s var(--ease);
+  transition: width var(--dur-slower) var(--ease-out);
 }
 .cmp-cell-perf.cmp-best .cmp-bar-fill {
   box-shadow: 0 0 6px rgba(200,169,110,0.3);
@@ -385,13 +387,12 @@
 .cmp-cell.is-removing {
   opacity: 0;
   transform: scale(0.96);
-  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  transition: opacity var(--dur-fast) var(--ease-in), transform var(--dur-fast) var(--ease-in);
   pointer-events: none;
 }
 .cmp-remove:disabled { cursor: default; opacity: 0.5; }
 .cmp-remove:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
-#compare-modal-body.cmp-enter > * { animation: cmpFadeIn 0.2s var(--ease) backwards; }
-@keyframes cmpFadeIn { from { opacity: 0; } to { opacity: 1; } }
+#compare-modal-body.cmp-enter > * { animation: vh-fade-in var(--dur-fast) var(--ease-out) backwards; }
 
 /* Mouvement réduit : la barre, le compteur, la modale et le retrait de
    colonne passent sans animation (le JS saute aussi ses délais). */

@@ -66,28 +66,26 @@
      * (glissement vers le bas, voile qui s'efface) puis ferme réellement le
      * <dialog> une fois l'animation jouée — même principe que les listes
      * déroulantes, masquées après leur transition. */
-    const CLOSE_MS = 220;
-    let closeTimer = null;
-    const reduceMotion = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    let cancelExit = null; // annulation de VH.motion.exit en cours
 
     function finishClose() {
-      clearTimeout(closeTimer);
-      closeTimer = null;
+      cancelExit = null;
       dlg.classList.remove('is-closing');
       if (dlg.open) dlg.close();
     }
 
     function openSheet() {
-      if (closeTimer) finishClose();
+      // Réouverture pendant la sortie : on l'interrompt, la feuille reste ouverte.
+      if (cancelExit) { cancelExit(); cancelExit = null; return; }
       if (dlg.open) return;
       try { dlg.showModal(); } catch { dlg.setAttribute('open', ''); }
     }
 
     function closeSheet() {
-      if (!dlg.open || closeTimer) return;
-      if (reduceMotion()) { finishClose(); return; }
-      dlg.classList.add('is-closing');
-      closeTimer = setTimeout(finishClose, CLOSE_MS);
+      if (!dlg.open || cancelExit) return;
+      let done = false;
+      const cancel = window.VH.motion.exit(dlg, () => { done = true; finishClose(); });
+      if (!done) cancelExit = cancel;
     }
 
     // Échap : le navigateur fermerait le <dialog> sans animation.

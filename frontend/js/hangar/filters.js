@@ -252,7 +252,7 @@
         }
         closeAllDropdowns(dropdownId);
         if (dropdownTimeouts.has(dropdownId)) {
-          clearTimeout(dropdownTimeouts.get(dropdownId));
+          dropdownTimeouts.get(dropdownId)();
           dropdownTimeouts.delete(dropdownId);
         }
         dropdown.classList.remove('hidden');
@@ -280,12 +280,15 @@
       // Synchroniser aria-expanded sur le bouton associé
       const btnId = dropdown.id.replace('-dropdown', '-filter-btn');
       document.getElementById(btnId)?.setAttribute('aria-expanded', 'false');
-      if (dropdownTimeouts.has(dropdown.id)) clearTimeout(dropdownTimeouts.get(dropdown.id));
-      const timeoutId = setTimeout(() => {
+      if (dropdownTimeouts.has(dropdown.id)) dropdownTimeouts.get(dropdown.id)();
+      // Masquée une fois la transition de fermeture jouée (durée mesurée).
+      let done = false;
+      const cancel = window.VH.motion.exit(dropdown, () => {
+        done = true;
         dropdown.classList.add('hidden');
         dropdownTimeouts.delete(dropdown.id);
-      }, 300);
-      dropdownTimeouts.set(dropdown.id, timeoutId);
+      });
+      if (!done) dropdownTimeouts.set(dropdown.id, cancel);
     });
   }
 

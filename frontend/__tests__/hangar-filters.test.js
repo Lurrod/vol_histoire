@@ -13,7 +13,9 @@ global.escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
 global.i18n = { t: (key) => key };
 global.animateNumber = jest.fn();
 
+const { loadMotion } = require('./helpers/motion-env');
 const filters = require('../js/hangar/filters');
+loadMotion(['.filter-dropdown']);
 const render = require('../js/hangar/render');
 
 const KEYS = ['country', 'generation', 'type', 'war', 'mission'];

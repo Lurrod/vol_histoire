@@ -337,61 +337,50 @@ describe('setupScrollProgress', () => {
 });
 
 describe('setupSectionAnimations', () => {
-  test('sections masquées puis révélées à l\'entrée dans le viewport, observées une seule fois', () => {
+  test('sections masquées par classe puis révélées en entrant dans le viewport, observées une seule fois', () => {
     boot({ html: '<section class="content-section" id="a"></section><section class="content-section" id="b"></section>' });
     ui.setupSectionAnimations();
     const a = document.getElementById('a');
     const b = document.getElementById('b');
-    expect(a.style.opacity).toBe('0');
-    expect(a.style.transform).toBe('translateY(20px)');
+    expect(a.classList.contains('is-pending')).toBe(true);
+    // Plus aucun style en ligne : la transition du survol (details.css) reste active.
+    expect(a.getAttribute('style')).toBeNull();
     const io = FakeIO.instances[0];
     expect(io.options).toEqual({ threshold: 0.1 });
     expect(io.observed).toEqual([a, b]);
     io.fire([{ isIntersecting: true, target: a }, { isIntersecting: false, target: b }]);
-    expect(a.style.opacity).toBe('1');
-    expect(a.style.transform).toBe('translateY(0)');
-    expect(b.style.opacity).toBe('0');
+    expect(a.classList.contains('is-pending')).toBe(false);
+    expect(b.classList.contains('is-pending')).toBe(true);
     expect(io.observed).toEqual([b]);
   });
 
-  // Robustesse (ui.js:212) : contrairement à setupMiniBarVisibility, aucune
-  // garde `'IntersectionObserver' in window`. Sans l'API, l'appel lève, et
-  // comme details.js l'appelle juste après le chargement de la fiche, la
-  // suite de l'initialisation (mini-barre, écouteurs langChanged, Échap)
-  // n'est jamais posée. Tous les navigateurs ciblés ont l'API : risque faible.
-  test.skip('ROBUSTESSE : sans IntersectionObserver, les sections restent visibles et rien ne lève', () => {
+  test('sans IntersectionObserver, les sections restent visibles et rien ne lève', () => {
     boot({ html: '<section class="content-section"></section>', withIO: false });
     expect(() => ui.setupSectionAnimations()).not.toThrow();
-    expect(document.querySelector('.content-section').style.opacity).not.toBe('0');
+    expect(document.querySelector('.content-section').classList.contains('is-pending')).toBe(false);
   });
 });
 
 describe('setupPdfExport', () => {
-  test('clic : sections forcées visibles, impression après deux frames, transition rétablie', () => {
-    boot({ html: '<button id="pdf-btn">PDF</button><section class="content-section"></section>' });
+  test('clic : sections révélées, impression après deux frames', () => {
+    boot({ html: '<button id="pdf-btn">PDF</button><section class="content-section is-pending"></section>' });
     window.print = jest.fn();
     ui.setupPdfExport();
     const s = document.querySelector('.content-section');
-    s.style.opacity = '0';
     document.getElementById('pdf-btn').click();
-    expect(s.style.opacity).toBe('1');
-    expect(s.style.transform).toBe('none');
+    expect(s.classList.contains('is-pending')).toBe(false);
     expect(window.print).not.toHaveBeenCalled();
     rafQueue.shift()();
     expect(window.print).not.toHaveBeenCalled();
     flushRaf();
     expect(window.print).toHaveBeenCalledTimes(1);
-    expect(s.style.transition).toBe('all 0.5s ease');
   });
 
   test('impression depuis le navigateur (Ctrl+P) : beforeprint révèle les sections', () => {
-    boot({ html: '<section class="content-section"></section>' });
+    boot({ html: '<section class="content-section is-pending"></section>' });
     ui.setupPdfExport();
     const s = document.querySelector('.content-section');
-    s.style.opacity = '0';
-    s.style.transform = 'translateY(20px)';
     window.dispatchEvent(new Event('beforeprint'));
-    expect(s.style.opacity).toBe('1');
-    expect(s.style.transform).toBe('none');
+    expect(s.classList.contains('is-pending')).toBe(false);
   });
 });

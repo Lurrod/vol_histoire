@@ -23,7 +23,7 @@
   font-size: 1rem;
   text-decoration: none;
   border-radius: 0 0 8px 8px;
-  transition: top 0.2s ease;
+  transition: top var(--dur-fast) var(--ease-out);
 }
 
 .skip-link:focus {
@@ -92,7 +92,10 @@
     padding-block: var(--sp-4);
     z-index: var(--z-header);
     border-bottom: 1px solid var(--gold-a08);
-    transition: var(--transition);
+    transition:
+      padding-block var(--dur-base) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out),
+      border-bottom-color var(--dur-fast) var(--ease-out);
   }
 
   body > header.scrolled {
@@ -203,7 +206,7 @@
     display: flex;
     align-items: center;
     gap: var(--sp-2);
-    transition: var(--transition-fast);
+    transition: transform var(--dur-base) var(--ease-out);
     text-decoration: none;
   }
 
@@ -252,7 +255,9 @@
     font-weight: 500;
     padding: var(--sp-2) var(--sp-4);
     border-radius: var(--r-xl);
-    transition: var(--transition-fast);
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
     display: flex;
     align-items: center;
     gap: var(--sp-2);
@@ -285,7 +290,10 @@
     height: 3px;
     background: var(--white);
     border-radius: var(--r-sm);
-    transition: var(--transition-fast);
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      opacity var(--dur-base) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
   }
 
   /* Survol : les barres passent à l'or de la charte. */
@@ -314,7 +322,11 @@
     width: 38px;
     height: 38px;
     border-radius: var(--r-full);
-    transition: var(--transition-fast);
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
     color: var(--white);
     font-size: var(--text-xl);
   }
@@ -412,7 +424,10 @@
     align-items: center;
     padding: 0.875rem var(--sp-5);
     color: rgba(255, 255, 255, 0.80);
-    transition: var(--transition-fast);
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      padding-inline-start var(--dur-fast) var(--ease-out);
     gap: var(--sp-3);
   }
 
@@ -460,7 +475,11 @@
     align-items: center;
     justify-content: center;
     border-radius: var(--r-xl);
-    transition: var(--transition);
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
     font-size: var(--text-md);
   }
 
@@ -546,7 +565,9 @@
     border-radius: 7px;
     font-size: var(--text-sm);
     letter-spacing: 0.02em;
-    transition: background 0.18s, color 0.18s;
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -587,7 +608,13 @@
     font-weight: 600;
     font-size: var(--text-base);
     cursor: pointer;
-    transition: var(--transition);
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      transform var(--dur-base) var(--ease-out),
+      opacity var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
     white-space: nowrap;
     position: relative;
     overflow: hidden;
@@ -684,7 +711,9 @@
     border-radius: var(--r-md);
     font-size: var(--text-sm);
     font-weight: 600;
-    transition: var(--transition-fast);
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
   }
 
   .btn-edit:hover {
@@ -700,7 +729,9 @@
     border-radius: var(--r-md);
     font-size: var(--text-sm);
     font-weight: 600;
-    transition: var(--transition-fast);
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
   }
 
   .btn-delete:hover {
@@ -777,7 +808,10 @@
     font-size: var(--text-base);
     color: var(--white);
     background: rgba(255, 255, 255, 0.03);
-    transition: var(--transition-fast);
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
   }
 
   .form-group input::placeholder, .form-group textarea::placeholder {
@@ -883,7 +917,10 @@
     justify-content: center;
     color: var(--text-muted);
     font-size: var(--text-2xl);
-    transition: var(--transition-fast);
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
   }
 
   .modal-close:hover {
@@ -928,7 +965,7 @@
     align-items: center;
     gap: 0.875rem;
     font-weight: 600;
-    animation: toastIn 0.3s var(--ease);
+    animation: toastIn var(--dur-base) var(--ease-out);
   }
 
   @keyframes toastIn {
@@ -937,7 +974,7 @@
   }
 
   .toast.fade-out {
-    animation: toastOut 0.3s var(--ease) forwards;
+    animation: toastOut var(--dur-fast) var(--ease-in) forwards;
   }
 
   @keyframes toastOut {
@@ -1092,7 +1129,9 @@
     color: inherit;
     opacity: 0.7;
     cursor: pointer;
-    transition: opacity 0.15s, background-color 0.15s;
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
   }
   .toast .toast-close i,
   .toast .toast-close .icon { font-size: var(--text-base); }
@@ -1128,7 +1167,9 @@
     font: inherit;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.15s, color 0.15s;
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
   }
   .toast .sw-update-reload:hover { background: transparent; color: var(--hud-cyan); }
   .toast .sw-update-reload:focus-visible {
@@ -1206,7 +1247,9 @@
     border: 1px solid var(--white-a06);
     border-radius: var(--r-md);
     color: var(--text-secondary);
-    transition: var(--transition-fast);
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
   }
   .offline-visited a:hover,
   .offline-visited a:focus-visible {
@@ -1263,7 +1306,7 @@
       var(--white-a08) 50%,
       var(--white-a04) 75%);
     background-size: 600px 100%;
-    animation: shimmer 1.4s infinite;
+    animation: shimmer 1.4s var(--ease-in-out) infinite; /* boucle : vitesse propre */
   }
 
   .skeleton-content {
@@ -1281,7 +1324,7 @@
       var(--white-a08) 50%,
       var(--white-a04) 75%);
     background-size: 600px 100%;
-    animation: shimmer 1.4s infinite;
+    animation: shimmer 1.4s var(--ease-in-out) infinite; /* boucle : vitesse propre */
   }
 
   .skeleton-line.short  { width: 55%; }
@@ -1388,7 +1431,7 @@
     min-height: 24px;
     color: var(--text-ghost);
     font-size: var(--text-base);
-    transition: var(--transition-fast);
+    transition: color var(--dur-fast) var(--ease-out);
   }
 
   .footer-section ul li a:hover {
@@ -1528,9 +1571,55 @@
   /* ============================================================
      ANIMATIONS COMMUNES
      ============================================================ */
+  /* Entrées et sorties partagées (v4.16.0). Les variantes locales
+     (fadeUp 30 px, fadeIn 20 px, favFadeIn, cmpFadeIn, hangarFadeIn…)
+     se ramènent à ces quatre-là : une seule amplitude, --enter-distance.
+     `translate` plutôt que `transform` : l'entrée ne bloque pas un
+     transform posé ensuite par :hover (cf. note v4.13.1 de la frise). */
+  @keyframes vh-enter {
+    from { opacity: 0; translate: 0 var(--enter-distance); }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  @keyframes vh-exit {
+    from { opacity: 1; translate: 0 0; }
+    to   { opacity: 0; translate: 0 calc(var(--enter-distance) / 2); }
+  }
+
+  @keyframes vh-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes vh-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+
+  /* Pop monotone : l'élément se pose à sa taille, sans la dépasser
+     (coche du comparateur, pastille, icône qui vient d'apparaître). */
+  @keyframes vh-pop {
+    from { opacity: 0.4; scale: 0.8; }
+    to   { opacity: 1;   scale: 1; }
+  }
+
+  /* Confirmation : un anneau part du bord et s'efface. L'élément lui-même
+     ne bouge pas. Couleur réglable par --confirm-ring. */
+  @keyframes vh-confirm {
+    from { box-shadow: 0 0 0 0 var(--confirm-ring, rgba(200, 169, 110, 0.45)); }
+    to   { box-shadow: 0 0 0 10px transparent; }
+  }
+
+  /* Remplacement d'un texte sur place (compteur de résultats…). */
+  @keyframes vh-text-swap {
+    from { opacity: 0; translate: 0 4px; filter: blur(2px); }
+    to   { opacity: 1; translate: 0 0;   filter: blur(0); }
+  }
+
+  /* Historique (hero de l'accueil) : même mouvement que vh-enter. */
   @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; translate: 0 var(--enter-distance); }
+    to   { opacity: 1; translate: 0 0; }
   }
 
   @keyframes spin {
@@ -1552,7 +1641,30 @@
     border: 2px solid var(--gold-a20);
     border-top-color: var(--hud-cyan);
     border-radius: var(--r-full);
-    animation: spin 0.6s linear infinite;
+    animation: spin 0.6s linear infinite; /* rotation continue : vitesse, pas durée d'échelle */
+  }
+
+  /* ============================================================
+     RETOUR D'APPUI (v4.16.0) — un seul comportement pour tout le site,
+     souris comme tactile (avant : translateY(1px) ici, scale(0.98) en
+     mobile seulement ailleurs, rien du tout sur la plupart des boutons).
+     Propriété `scale` et non `transform` : elle se compose avec le
+     soulèvement du survol au lieu de l'annuler. Les éléments listés
+     portent `scale var(--dur-instant)` dans leur transition ; :where()
+     laisse toute règle de page reprendre la main.
+     ============================================================ */
+  :where(.btn, .filter-btn, .fs-tab, .ob-btn, .share-btn, .view-btn,
+         .prev-page-btn, .next-page-btn, .pagination button, .clear-all-filters,
+         .hero-quiz-option, .cmp-remove, .tl-mm-btn, .rp-submit, .form-tab,
+         .favorite-remove, .ev-resend-btn, .btn-submit, .logout-modal-btn,
+         .hero-search-btn, .tl-cta, .sidebar-link, .toast-undo-btn,
+         .hero-suggest-all, .remove-filter-btn):active:not(:disabled, [aria-disabled="true"]) {
+    scale: var(--press-scale);
+  }
+  /* Les cartes sont grandes : un enfoncement plus léger suffit. */
+  :where(.aircraft-card, .conflict-card, .related-card, .war-card,
+         .stat-card, .gen-tile):active {
+    scale: 0.99;
   }
 
 } /* fin @layer components */
@@ -1583,7 +1695,7 @@
   gap: 0.5rem;
   color: var(--text-ghost);
   text-decoration: none;
-  transition: var(--transition-fast, 0.2s);
+  transition: color var(--dur-fast) var(--ease-out);
 }
 .breadcrumb a:hover,
 .breadcrumb a:focus-visible {

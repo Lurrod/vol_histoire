@@ -101,6 +101,8 @@ describe('shared/airplane-options', () => {
   });
 });
 
+const { loadMotion, EXIT_MS } = require('./helpers/motion-env');
+
 describe('hangar/admin — formulaire de création', () => {
   const REFERENTIALS = {
     countries: [{ id: 1, name: 'France' }],
@@ -116,9 +118,10 @@ describe('hangar/admin — formulaire de création', () => {
   }
 
   let authFetch;
-  function bootHangar(fetchImpl, { role = 1 } = {}) {
+  function bootHangar(fetchImpl, { role = 1, exitCss = [] } = {}) {
     jest.resetModules();
     window.VH = { hangar: { data: { loadAircraft: jest.fn() } } };
+    loadMotion(exitCss);
     setupGlobals(fetchImpl);
     authFetch = jest.fn(() => jsonResponse({ id: 999 }));
     global.auth.authFetch = authFetch;
@@ -240,5 +243,21 @@ describe('hangar/admin — formulaire de création', () => {
     await open();
     modal.querySelector('.modal-backdrop').click();
     expect(modal.classList.contains('show')).toBe(false);
+  });
+
+  test('fermeture animée : is-closing pendant la sortie du voile, réouverture annule', async () => {
+    // La sortie est portée par le voile (enfant de .modal) : il est mesuré.
+    bootHangar(router(catalogue(5)), { exitCss: ['.modal-backdrop'] });
+    window.matchMedia = () => ({ matches: false });
+    await open();
+    const modal = document.getElementById('aircraft-modal');
+    document.getElementById('cancel-btn').click();
+    expect(modal.classList.contains('is-closing')).toBe(true);
+    await open(); // rouvrir pendant la sortie : la fermeture est annulée
+    expect(modal.classList.contains('is-closing')).toBe(false);
+    expect(modal.classList.contains('show')).toBe(true);
+    document.getElementById('cancel-btn').click();
+    await new Promise((r) => setTimeout(r, EXIT_MS + 120));
+    expect(modal.classList.contains('is-closing')).toBe(false);
   });
 });

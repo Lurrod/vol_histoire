@@ -10,6 +10,9 @@
  */
 
 // Stubs globals attendus par cookies.js
+// VH.motion : durées de sortie lues sur le CSS (inexistantes sous jsdom : rappel immédiat).
+require('../js/shared/motion');
+
 global.safeSetHTML = (el, html) => { el.innerHTML = html; };
 
 const { CookieConsent } = require('../js/cookies');
@@ -178,9 +181,13 @@ describe('CookieConsent — toast', () => {
     const toast = document.querySelector('#toast-container .toast');
     expect(toast).not.toBeNull();
     expect(document.getElementById('toast-container').getAttribute('style')).toBeNull();
-    jest.advanceTimersByTime(3000);
-    expect(toast.classList.contains('fade-out')).toBe(true);
     expect(toast.getAttribute('style')).toBeNull();
+    // Sortie par VH.motion.exit (classe fade-out) : sous jsdom, retrait aussitôt.
+    const exit = jest.spyOn(window.VH.motion, 'exit');
+    jest.advanceTimersByTime(3000);
+    expect(exit).toHaveBeenCalledWith(toast, expect.any(Function), { className: 'fade-out' });
+    expect(toast.isConnected).toBe(false);
+    exit.mockRestore();
     jest.useRealTimers();
   });
 });
@@ -189,6 +196,33 @@ describe('CookieConsent — toast', () => {
 // WCAG 2.2 — 2.4.11 : le focus ne doit pas rester caché sous le bandeau.
 // jsdom ne calcule aucune mise en page : les rectangles sont simulés.
 // ─────────────────────────────────────────────────────────────────────────────
+// Réserve sous le pied de page (cookies.css) : elle ne suit que le bandeau
+// réellement affiché. Un bloqueur de bandeaux cookies masque #cookie-banner
+// par une feuille d'extension : .show reste posée, mais rien n'est rendu —
+// la réserve laissait alors 168 px de vide sous le pied de page.
+describe('bannerShown — bandeau réellement rendu', () => {
+  const { bannerShown } = require('../js/cookies');
+  const make = (cls, height) => {
+    const b = document.createElement('aside');
+    b.className = cls;
+    b.getBoundingClientRect = () => ({ top: 0, bottom: height, left: 0, right: 100, width: 100, height });
+    return b;
+  };
+
+  test('affiché : classe .show et hauteur non nulle', () => {
+    expect(bannerShown(make('cookie-banner show', 140))).toBe(true);
+  });
+
+  test('masqué par une extension : .show posée mais hauteur nulle', () => {
+    expect(bannerShown(make('cookie-banner show', 0))).toBe(false);
+  });
+
+  test('sans .show, ou absent : non affiché', () => {
+    expect(bannerShown(make('cookie-banner', 140))).toBe(false);
+    expect(bannerShown(null)).toBe(false);
+  });
+});
+
 describe('bannerOverlap — focus caché par le bandeau', () => {
   const { bannerOverlap } = require('../js/cookies');
   const rect = (top, bottom, left = 0, right = 200) => ({

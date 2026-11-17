@@ -12,6 +12,7 @@ global.escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
 }[c]));
 
 require('../js/shared/picture');
+require('../js/shared/motion');
 window.VH.shared.buildDetailsPath = (id, name) => `/details/${String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${id}`;
 require('../js/home/text');
 const suggest = require('../js/home/search-suggest');
@@ -96,11 +97,9 @@ describe('search-suggest — combobox', () => {
     const { input, panel } = mountSearch();
     await type(input, 'mig');
     key(input, 'Escape');
-    // État ARIA fermé tout de suite, panneau masqué après le fondu.
+    // jsdom ne calcule aucune durée : VH.motion.exit rappelle aussitôt.
     expect(input.getAttribute('aria-expanded')).toBe('false');
     expect(input.hasAttribute('aria-activedescendant')).toBe(false);
-    expect(panel.classList.contains('is-closing')).toBe(true);
-    jest.advanceTimersByTime(150);
     expect(panel.hidden).toBe(true);
     expect(panel.classList.contains('is-closing')).toBe(false);
   });
@@ -108,10 +107,17 @@ describe('search-suggest — combobox', () => {
   test('une frappe pendant le fondu de fermeture rouvre la liste', async () => {
     const { input, panel } = mountSearch();
     await type(input, 'raf');
+    // Sortie animée simulée : la classe reste posée jusqu'à l'annulation.
+    const cancel = jest.fn(() => panel.classList.remove('is-closing'));
+    const exit = jest.spyOn(window.VH.motion, 'exit').mockImplementation((el) => {
+      el.classList.add('is-closing');
+      return cancel;
+    });
     key(input, 'Escape');
     expect(panel.classList.contains('is-closing')).toBe(true);
     await type(input, 'rafa');
-    jest.advanceTimersByTime(300);
+    expect(cancel).toHaveBeenCalled();
+    exit.mockRestore();
     expect(panel.hidden).toBe(false);
     expect(panel.classList.contains('is-closing')).toBe(false);
     expect(input.getAttribute('aria-expanded')).toBe('true');
@@ -141,12 +147,11 @@ describe('search-suggest — combobox', () => {
   test('champ vidé : la liste se ferme', async () => {
     const { input, panel } = mountSearch();
     await type(input, 'raf');
-    // Champ vide : pas d'index à attendre, anti-rebond (120 ms) puis fondu (150 ms).
+    // Champ vide : pas d'index à attendre, anti-rebond (120 ms) puis fermeture.
     input.value = '';
     input.dispatchEvent(new Event('input'));
     jest.advanceTimersByTime(120);
     expect(input.getAttribute('aria-expanded')).toBe('false');
-    jest.advanceTimersByTime(150);
     expect(panel.hidden).toBe(true);
   });
 

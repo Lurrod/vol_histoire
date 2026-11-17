@@ -151,7 +151,12 @@
     document.getElementById('compare-view').addEventListener('click', open);
     document.getElementById('compare-share').addEventListener('click', shareLink);
     dlg.querySelectorAll('.compare-modal-close').forEach((btn) => {
-      btn.addEventListener('click', () => dlg.close());
+      btn.addEventListener('click', closeModal);
+    });
+    // Échap : le <dialog> fermerait d'un coup ; on passe par la sortie animée.
+    dlg.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      closeModal();
     });
 
     watchConsentBanner(bar);
@@ -176,40 +181,46 @@
       .observe(banner, { attributes: true, attributeFilter: ['class'] });
   }
 
-  function prefersReducedMotion() {
-    try {
-      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    } catch { return false; }
-  }
-
-  /* La barre entre en glissant (compareBarUp) ; elle sortait d'un coup.
+  /* La barre entre en glissant (vh-enter) ; elle sortait d'un coup.
    * .is-leaving joue la sortie, puis .hidden la retire du rendu. */
-  const BAR_LEAVE_MS = 200;
-  let barLeaveTimer = null;
+  let cancelBarLeave = null;
   let lastCount = 0;
 
   function showBar(bar) {
-    clearTimeout(barLeaveTimer);
-    barLeaveTimer = null;
+    if (cancelBarLeave) { cancelBarLeave(); cancelBarLeave = null; }
     bar.classList.remove('is-leaving', 'hidden');
   }
 
   function hideBar(bar) {
     if (bar.classList.contains('hidden') || bar.classList.contains('is-leaving')) return;
-    if (prefersReducedMotion()) { bar.classList.add('hidden'); return; }
-    bar.classList.add('is-leaving');
-    barLeaveTimer = setTimeout(() => {
-      barLeaveTimer = null;
-      bar.classList.remove('is-leaving');
+    let finished = false;
+    const cancel = VH.motion.exit(bar, () => {
+      finished = true;
+      cancelBarLeave = null;
       bar.classList.add('hidden');
-    }, BAR_LEAVE_MS);
+    }, { className: 'is-leaving' });
+    if (!finished) cancelBarLeave = cancel;
+  }
+
+  /* La modale se fermait d'un coup (dialog.close()). .is-closing joue le
+   * fondu de la boîte et du voile (compare.css), puis on la ferme. */
+  let cancelModalClose = null;
+
+  function closeModal() {
+    const dlg = document.getElementById('compare-modal');
+    if (!dlg || !dlg.open || cancelModalClose) return;
+    let finished = false;
+    const cancel = VH.motion.exit(dlg, () => {
+      finished = true;
+      cancelModalClose = null;
+      dlg.close();
+    }, { className: 'is-closing' });
+    if (!finished) cancelModalClose = cancel;
   }
 
   // Petite pulsation du compteur quand la sélection change, barre déjà visible.
   function bumpCount(cnt) {
-    cnt.classList.remove('is-bumped');
-    void cnt.offsetWidth; // relance l'animation si elle tournait encore
-    cnt.classList.add('is-bumped');
+    VH.motion.replay(cnt, 'is-bumped');
   }
 
   function renderBar() {
@@ -225,10 +236,7 @@
       if (n > 0 && lastCount > 0 && n !== lastCount) bumpCount(cnt);
     }
     lastCount = n;
-    if (n === 0) {
-      const dlg = document.getElementById('compare-modal');
-      if (dlg && dlg.open) dlg.close();
-    }
+    if (n === 0) closeModal();
   }
 
   /* Confirmation sur le bouton lui-même, en plus du toast : coche + « Lien
@@ -362,6 +370,8 @@
     const dlg = document.getElementById('compare-modal');
     const body = document.getElementById('compare-modal-body');
     body.innerHTML = '<div class="cmp-loading"><i class="fas fa-circle-notch fa-spin"></i> ' + escapeHtml(t('common.loading', 'Chargement')) + '</div>';
+    // Réouverture pendant la sortie : on l'interrompt, la modale reste ouverte.
+    if (cancelModalClose) { cancelModalClose(); cancelModalClose = null; }
     if (!dlg.open) dlg.showModal();
 
     try {
@@ -374,7 +384,7 @@
         ids = sanitize(items.map((a) => a.id));
         commit();
       }
-      if (items.length === 0) { dlg.close(); return; }
+      if (items.length === 0) { closeModal(); return; }
 
       renderModal(body, items);
     } catch {
@@ -484,13 +494,11 @@
    * mémoire. Avant, open() remettait le spinner et refaisait 3 × 3 requêtes.
    * La colonne s'efface (en-tête + cellules, .is-removing), puis la grille se
    * recompose sur n − 1 à partir des données chargées. */
-  const COLUMN_EXIT_MS = 220;
-
   function removeColumn(body, items, id) {
     if (body.dataset.removing === 'true') return; // un retrait à la fois
     body.dataset.removing = 'true';
     body.querySelectorAll('.cmp-remove').forEach((b) => { b.disabled = true; });
-    body.querySelectorAll('[data-cmp-id="' + id + '"]').forEach((el) => el.classList.add('is-removing'));
+    const parts = Array.from(body.querySelectorAll('[data-cmp-id="' + id + '"]'));
 
     const finish = () => {
       delete body.dataset.removing;
@@ -504,8 +512,10 @@
       void body.offsetWidth; // relance le fondu de recomposition
       body.classList.add('cmp-enter');
     };
-    if (prefersReducedMotion()) finish();
-    else setTimeout(finish, COLUMN_EXIT_MS);
+    // Le premier élément porte la minuterie (durée mesurée) ; les autres
+    // reçoivent la même classe et s'effacent en même temps.
+    parts.slice(1).forEach((el) => el.classList.add('is-removing'));
+    VH.motion.exit(parts[0], finish, { className: 'is-removing' });
   }
 
   // Export conditionnel pour les tests unitaires (Node.js / jsdom)

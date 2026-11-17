@@ -95,8 +95,8 @@
     const text = count === 0 ? i18n.t('hangar.results_none') :
                  count === 1 ? i18n.t('hangar.results_one') :
                  i18n.t('hangar.results', { count });
-    const el = document.getElementById('results-count');
-    if (el) el.textContent = text;
+    // Le nouveau texte se pose (vh-text-swap) quand le nombre change.
+    VH.motion.swapText(document.getElementById('results-count'), text);
   }
 
   /* Pendant un chargement, la pagination ne doit plus rien déclencher : un

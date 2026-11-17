@@ -3,6 +3,9 @@
  * déclenchement différé, textes de repli et navigation entre étapes.
  * (Icône et focus sont couverts par onboarding.test.js.)
  */
+// VH.motion : durées de sortie lues sur le CSS (inexistantes sous jsdom : rappel immédiat).
+require('../js/shared/motion');
+
 const { escapeHtml } = require('../js/utils');
 
 const STORAGE_KEY = 'vh-onboarding-done';
@@ -154,10 +157,13 @@ describe('textes et navigation', () => {
   test('« Passer » ferme dès la première étape', () => {
     loadOnboarding().createTour();
     jest.advanceTimersByTime(20);
+    const exit = jest.spyOn(window.VH.motion, 'exit');
+    const ov = overlay();
     document.querySelector('.ob-skip').click();
-    expect(overlay().classList.contains('ob-exit')).toBe(true);
-    jest.advanceTimersByTime(600);
+    // Sortie par VH.motion.exit (classe ob-exit) ; sous jsdom, retrait aussitôt.
+    expect(exit).toHaveBeenCalledWith(ov, expect.any(Function), { className: 'ob-exit' });
     expect(overlay()).toBeNull();
+    exit.mockRestore();
     expect(localStorage.getItem(STORAGE_KEY)).toBe('1');
   });
 

@@ -10,6 +10,8 @@
  * en posant / retirant l'attribut `open`, ce que fait le navigateur.
  */
 
+const { loadMotion } = require('./helpers/motion-env');
+
 global.escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 }[c]));
@@ -53,6 +55,7 @@ function boot({ withButtons = true } = {}) {
     updateActiveFilters: jest.fn(),
   };
   window.VH = { hangar: { filters } };
+  loadMotion(['.filter-sheet.is-closing']);
   require('../js/hangar/mobile-sheet');
   state = makeState();
   window.VH.hangar.mobileSheet.init(state);

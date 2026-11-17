@@ -11,6 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { loadMotion } = require('./helpers/motion-env');
 
 const API_CAP = 100;
 const CATALOGUE_SIZE = 300;
@@ -73,6 +74,9 @@ function loadModalHtml() {
 }
 
 const flush = () => new Promise((r) => setTimeout(r, 0));
+// Durée de sortie déclarée au CSS de test (200 ms) + marge de VH.motion.exit.
+const exitDone = () => new Promise((r) => setTimeout(r, 280));
+
 async function settle() {
   for (let i = 0; i < 10; i++) await flush();
 }
@@ -101,6 +105,7 @@ function boot({ fetchOverrides, lang = 'fr', aircraftData = AIRCRAFT_FR } = {}) 
   };
   window.VH = { details: { data: { loadAircraftDetails: jest.fn(() => Promise.resolve()) } } };
 
+  loadMotion(['.modal.is-closing .modal-container']);
   require('../js/shared/airplane-options');
   require('../js/shared/airplane-fields');
   require('../js/shared/airplane-form');
@@ -323,19 +328,10 @@ describe('details/admin — ouverture, fermeture et focus de la modale', () => {
     expect(destroy).toHaveBeenCalled();
     expect(modal().classList.contains('is-closing')).toBe(true);
     expect(document.activeElement).toBe(editBtn());
-    modal().dispatchEvent(new Event('animationend'));
+    await exitDone();
     expect(modal().classList.contains('show')).toBe(false);
     expect(modal().classList.contains('is-closing')).toBe(false);
     expect(document.body.style.overflow).toBe('');
-  });
-
-  test('fermeture sans animationend : repli par minuterie (320 ms)', async () => {
-    boot();
-    await openModal();
-    window.VH.details.admin.closeEditModal();
-    expect(modal().classList.contains('show')).toBe(true);
-    await new Promise((r) => setTimeout(r, 330));
-    expect(modal().classList.contains('show')).toBe(false);
   });
 
   test('rouvrir pendant l’animation de fermeture : la modale reste ouverte', async () => {
@@ -344,7 +340,7 @@ describe('details/admin — ouverture, fermeture et focus de la modale', () => {
     window.VH.details.admin.closeEditModal();
     await openModal();
     // La minuterie de repli de la fermeture précédente ne doit plus agir.
-    await new Promise((r) => setTimeout(r, 330));
+    await exitDone();
     expect(modal().classList.contains('show')).toBe(true);
     expect(modal().classList.contains('is-closing')).toBe(false);
     expect(document.body.style.overflow).toBe('hidden');
@@ -357,7 +353,7 @@ describe('details/admin — ouverture, fermeture et focus de la modale', () => {
     // Page remplacée avant la fin de l'animation (ou test suivant).
     modal().remove();
     document.body.style.overflow = 'hidden';
-    await new Promise((r) => setTimeout(r, 330));
+    await exitDone();
     expect(document.body.style.overflow).toBe('hidden');
   });
 
@@ -382,13 +378,13 @@ describe('details/admin — ouverture, fermeture et focus de la modale', () => {
       () => modal().dispatchEvent(new window.MouseEvent('click', { bubbles: true })),
     ]) {
       await openModal();
-      modal().dispatchEvent(new Event('animationend'));
+      await exitDone();
       expect(modal().classList.contains('show')).toBe(true);
       document.getElementById('edit-form').click();
       expect(modal().classList.contains('is-closing')).toBe(false);
       close();
       expect(modal().classList.contains('is-closing')).toBe(true);
-      modal().dispatchEvent(new Event('animationend'));
+      await exitDone();
     }
   });
 
@@ -406,7 +402,7 @@ describe('details/admin — ouverture, fermeture et focus de la modale', () => {
     });
     await openModal();
     window.VH.details.admin.closeEditModal();
-    modal().dispatchEvent(new Event('animationend'));
+    await exitDone();
     await openModal();
     expect(submitButton().disabled).toBe(false);
     // Le premier chargement échoue APRÈS la réouverture : il est ignoré.

@@ -19,7 +19,7 @@
   background: rgba(200, 169, 110, 0.04);
   border: 1px solid rgba(200, 169, 110, 0.1);
   border-radius: 12px;
-  transition: border-color 0.2s;
+  transition: border-color var(--dur-fast) var(--ease-out);
 }
 
 .contact-card:hover {
@@ -60,7 +60,7 @@
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
 .contact-card a:hover {
@@ -126,7 +126,7 @@
   color: var(--white);
   font-family: 'DM Sans', sans-serif;
   font-size: 0.9rem;
-  transition: border-color 0.2s;
+  transition: border-color var(--dur-fast) var(--ease-out);
 }
 
 .form-group select {
@@ -200,7 +200,7 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: opacity var(--dur-fast) var(--ease-out);
   font-family: 'DM Sans', sans-serif;
 }
 
@@ -243,7 +243,7 @@
   text-decoration: underline;
   text-decoration-color: rgba(200, 169, 110, 0.35);
   text-underline-offset: 2px;
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  transition: color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out);
 }
 
 .form-rgpd-notice a:hover,
@@ -267,24 +267,19 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  animation: contact-success-in 0.3s var(--ease, ease);
+  animation: vh-enter var(--dur-base) var(--ease-out);
 }
 
 /* Effacement quand l'utilisateur reprend la saisie (contact.js retire
-   .visible après 200 ms). */
+   .visible une fois la sortie terminée, via VH.motion.exit). */
 .form-success-msg.visible.is-hiding {
   opacity: 0;
   transform: translateY(-4px);
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity var(--dur-fast) var(--ease-in), transform var(--dur-fast) var(--ease-in);
   animation: none;
 }
 
 .form-success-msg[hidden] { display: none; }
-
-@keyframes contact-success-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .form-success-msg.visible { animation: none; }

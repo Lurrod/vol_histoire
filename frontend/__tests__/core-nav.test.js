@@ -8,6 +8,9 @@
  * précédente ne réagisse aux événements suivants.
  */
 
+// VH.motion : durées de sortie lues sur le CSS (inexistantes sous jsdom : rappel immédiat).
+require('../js/shared/motion');
+
 const HEADER = `
   <header>
     <nav>
@@ -123,8 +126,10 @@ describe('menu mobile', () => {
     expect(document.querySelector('.nav-links').classList.contains('show')).toBe(true);
     jest.advanceTimersByTime(1);
     expect(document.querySelector('.nav-links').classList.contains('show')).toBe(false);
-    expect(window.matchMedia).toHaveBeenCalledTimes(1);
-    expect(window.matchMedia).toHaveBeenCalledWith('(min-width: 64em)');
+    // VH.motion.exit interroge aussi matchMedia (mouvements réduits) : on ne
+    // compte que la requête du palier burger.
+    const burger = window.matchMedia.mock.calls.filter(([q]) => q === '(min-width: 64em)');
+    expect(burger).toHaveLength(1);
   });
 
   test('redimensionnement sous 1024 px : le menu reste ouvert', () => {

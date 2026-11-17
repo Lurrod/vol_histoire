@@ -4,6 +4,9 @@
  * focus conservé au changement d'étape, piège à focus et fermeture.
  */
 
+// VH.motion : durées de sortie lues sur le CSS (inexistantes sous jsdom : rappel immédiat).
+require('../js/shared/motion');
+
 const { escapeHtml, trapFocus } = require('../js/utils');
 
 global.escapeHtml = escapeHtml;

@@ -37,7 +37,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-field);
   border-radius: 8px;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
 .page-home .hero-search-input::placeholder { color: var(--text-placeholder); }
 /* Croix d'effacement : même glyphe et mêmes teintes que la recherche du hangar
@@ -52,7 +52,7 @@
   -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z'/></svg>") center/contain no-repeat;
           mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M18.3 5.71a1 1 0 0 0-1.41 0L12 10.59 7.11 5.7A1 1 0 0 0 5.7 7.11L10.59 12 5.7 16.89a1 1 0 1 0 1.41 1.41L12 13.41l4.89 4.89a1 1 0 0 0 1.41-1.41L13.41 12l4.89-4.89a1 1 0 0 0 0-1.4z'/></svg>") center/contain no-repeat;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 .page-home .hero-search-input::-webkit-search-cancel-button:hover {
   background-color: var(--hud-cyan);
@@ -90,24 +90,21 @@
 .page-home .hero-suggest[hidden],
 .page-home .hero-suggest-list[hidden] { display: none; }
 /* Ouverture : fondu court en sortant de [hidden]. Fermeture : search-suggest.js
-   pose .is-closing, puis [hidden] après 150 ms (CLOSE_FADE_MS). */
+   passe par VH.motion.exit, qui pose .is-closing le temps de la transition. */
 .page-home .hero-suggest:not([hidden]) {
-  animation: hero-suggest-in 160ms var(--ease, ease-out);
+  animation: hero-suggest-in var(--dur-base) var(--ease-out);
   transform-origin: top center;
 }
 .page-home .hero-suggest.is-closing {
+  animation: none; /* sinon VH.motion.exit attend aussi les 240 ms de l'entrée */
   opacity: 0;
   transform: translateY(-4px);
   pointer-events: none;
-  transition: opacity 150ms ease-in, transform 150ms ease-in;
+  transition: opacity var(--dur-fast) var(--ease-in), transform var(--dur-fast) var(--ease-in);
 }
 @keyframes hero-suggest-in {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .page-home .hero-suggest:not([hidden]) { animation: none; }
-  .page-home .hero-suggest.is-closing { transition: none; }
 }
 .page-home .hero-suggest-list {
   margin: 0;
@@ -185,7 +182,7 @@
 }
 .page-home .hero-browse-link:hover,
 .page-home .hero-browse-link:focus-visible { color: var(--hud-cyan); }
-.page-home .hero-browse-link i, .page-home .hero-browse-link .icon { transition: transform 0.3s ease; }
+.page-home .hero-browse-link i, .page-home .hero-browse-link .icon { transition: transform var(--dur-base) var(--ease-out); }
 .page-home .hero-browse-link:hover i, .page-home .hero-browse-link:hover .icon { transform: translateX(4px); }
 
 /* ---------- Sections ---------- */
@@ -216,7 +213,7 @@
   background: rgba(20, 20, 20, 0.6);
   color: var(--text-primary);
   text-decoration: none;
-  transition: border-color 0.3s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: border-color var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out), scale var(--dur-instant) var(--ease-out);
 }
 .page-home .gen-tile picture {
   display: block;
@@ -229,7 +226,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform var(--dur-slow) var(--ease-out);
 }
 .page-home .gen-tile-body {
   display: flex;
@@ -326,7 +323,7 @@
   border-radius: 8px;
   color: var(--text-primary);
   text-decoration: none;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
 .page-home .mission-type:hover,
 .page-home .mission-type:focus-visible {
@@ -392,7 +389,7 @@
   background: rgba(20, 20, 20, 0.6);
   color: var(--text-primary);
   text-decoration: none;
-  transition: border-color 0.2s ease;
+  transition: border-color var(--dur-fast) var(--ease-out);
 }
 .page-home .home-end-fav:hover,
 .page-home .home-end-fav:focus-visible { border-color: var(--border-cyan-md); }
@@ -454,3 +451,9 @@
   .page-home .gen-tile:hover,
   .page-home .gen-tile:hover img { transform: none; }
 }
+
+/* Fondu des images encore en chargement (js/home/page-effects.js). Une
+   animation, pas une transition : l'image du quiz garde sa transition
+   propre (flou, échelle) intacte. */
+.page-home img.is-loading { opacity: 0; }
+.page-home img.is-loaded { animation: vh-fade-in var(--dur-slower) var(--ease-out); }

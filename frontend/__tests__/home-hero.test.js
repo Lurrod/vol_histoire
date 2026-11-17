@@ -359,15 +359,30 @@ describe('VH.home.pageEffects', () => {
     expect(window.Element.prototype.scrollIntoView).not.toHaveBeenCalled();
   });
 
-  test('fondu des images au chargement', () => {
-    jest.useFakeTimers();
+  test('fondu des images : seulement celles encore en chargement, par classe', () => {
     const { pageEffects } = loadModules();
-    pageEffects.fadeInImages();
     const img = document.getElementById('photo');
+    Object.defineProperty(img, 'complete', { value: false, configurable: true });
+    const cached = document.createElement('img');
+    Object.defineProperty(cached, 'complete', { value: true });
+    document.body.appendChild(cached);
+    pageEffects.fadeInImages();
+    expect(img.classList.contains('is-loading')).toBe(true);
+    expect(cached.className).toBe('');
     img.dispatchEvent(new window.Event('load'));
-    expect(img.style.opacity).toBe('0');
-    jest.advanceTimersByTime(10);
-    expect(img.style.opacity).toBe('1');
+    expect(img.classList.contains('is-loading')).toBe(false);
+    expect(img.classList.contains('is-loaded')).toBe(true);
+    expect(img.getAttribute('style')).toBeNull();
+  });
+
+  test('fondu des images : une erreur de chargement rend son état normal à l\'image', () => {
+    const { pageEffects } = loadModules();
+    const img = document.getElementById('photo');
+    Object.defineProperty(img, 'complete', { value: false, configurable: true });
+    pageEffects.fadeInImages();
+    img.dispatchEvent(new window.Event('error'));
+    expect(img.classList.contains('is-loading')).toBe(false);
+    expect(img.classList.contains('is-loaded')).toBe(false);
   });
 
   test('ordre des widgets : « Ce jour-là » remis avant le quiz', () => {
@@ -381,14 +396,7 @@ describe('VH.home.pageEffects', () => {
     expect(() => pageEffects.ensureHeroAsideOrder()).not.toThrow();
   });
 
-  test('apparition en fondu du corps de page', () => {
-    jest.useFakeTimers();
-    const { pageEffects } = loadModules();
-    pageEffects.revealBody();
-    expect(document.body.style.opacity).toBe('0');
-    jest.advanceTimersByTime(100);
-    expect(document.body.style.opacity).toBe('1');
-  });
+
 });
 
 describe('script.js — point d\'entrée de l\'accueil', () => {

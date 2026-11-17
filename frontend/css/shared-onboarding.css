@@ -13,12 +13,12 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transition: opacity var(--dur-slower) var(--ease-out);
 }
 .ob.ob-active { opacity: 1; }
 .ob.ob-exit {
   opacity: 0;
-  transition: opacity 0.5s ease;
+  transition: opacity var(--dur-fast) var(--ease-in);
 }
 
 /* ── Scan-lines ────────────────────────────────────────────── */
@@ -101,14 +101,12 @@
 .ob-content.ob-fade-out {
   opacity: 0;
   transform: translateY(-12px);
-  transition: opacity 0.2s, transform 0.2s;
+  transition:
+    opacity var(--dur-fast) var(--ease-in),
+    transform var(--dur-fast) var(--ease-in);
 }
 .ob-content.ob-fade-in {
-  animation: ob-enter 0.4s ease forwards;
-}
-@keyframes ob-enter {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  animation: vh-enter var(--dur-slower) var(--ease-out) forwards;
 }
 
 /* ── Counter (top right feel) ──────────────────────────────── */
@@ -147,7 +145,7 @@
   height: 6px;
   border-radius: 50%;
   background: var(--hud-cyan, #C8A96E);
-  animation: ob-pulse 2s infinite;
+  animation: ob-pulse 2s var(--ease-in-out) infinite; /* boucle : vitesse propre */
 }
 @keyframes ob-pulse {
   0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(200,169,110,0.4); }
@@ -173,7 +171,7 @@
   inset: -6px;
   border-radius: 50%;
   border: 1px dashed var(--gold-a12);
-  animation: ob-rotate 20s linear infinite;
+  animation: ob-rotate 20s linear infinite; /* rotation continue */
 }
 @keyframes ob-rotate {
   to { transform: rotate(360deg); }
@@ -217,7 +215,7 @@
   height: 3px;
   border-radius: 2px;
   background: var(--white-a08);
-  transition: all 0.4s ease;
+  transition: background-color var(--dur-slow) var(--ease-out);
   position: relative;
   overflow: hidden;
 }
@@ -232,7 +230,7 @@
   position: absolute;
   inset: 0;
   background: var(--hud-cyan, #C8A96E);
-  animation: ob-fill 0.6s ease forwards;
+  animation: ob-fill var(--dur-slower) var(--ease-out) forwards;
   border-radius: 2px;
 }
 @keyframes ob-fill {
@@ -256,7 +254,11 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: transparent;
   color: var(--text-ghost);
-  transition: all 0.25s;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;

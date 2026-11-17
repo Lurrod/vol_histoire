@@ -10,7 +10,7 @@
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.875rem;
-  transition: var(--transition);
+  transition: color var(--dur-fast) var(--ease-out);
 }
 .cookie-settings-link:hover { color: var(--secondary); }
 .cookie-settings-link i, .cookie-settings-link .icon { font-size: 1rem; }
@@ -27,7 +27,8 @@
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
   z-index: var(--z-overlay);
   transform: translateY(100%);
-  transition: transform 0.4s var(--ease);
+  /* Fermeture : le bandeau redescend (l'ouverture est portée par slideUp). */
+  transition: transform var(--dur-fast) var(--ease-in);
   border-top: 3px solid var(--secondary);
 }
 
@@ -67,11 +68,14 @@
   overscroll-behavior: contain;
 }
 
-html:has(#cookie-banner.show) {
+/* Classe posée par cookies.js (watchBannerReserve) seulement si le bandeau
+   est vraiment rendu : avec `:has(#cookie-banner.show)`, un bandeau masqué
+   par un bloqueur laissait 168 px de vide sous le pied de page. */
+html.has-cookie-banner {
   scroll-padding-bottom: calc(var(--cookie-banner-max) + var(--sp-4));
 }
 
-body:has(#cookie-banner.show) {
+html.has-cookie-banner body {
   padding-bottom: var(--cookie-banner-max);
 }
 
@@ -95,7 +99,7 @@ body:has(#cookie-banner.show) {
   font-size: 2.5rem;
   color: var(--warning);
   flex-shrink: 0;
-  animation: bounce 2s infinite;
+  animation: bounce 2s var(--ease-in-out) infinite; /* indice en boucle : vitesse propre */
 }
 
 @keyframes bounce {
@@ -144,12 +148,14 @@ body:has(#cookie-banner.show) {
   justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  /* Fermeture : fondu court ; l'ouverture est portée par .show. */
+  transition: opacity var(--modal-close-dur) var(--ease-in);
 }
 
 .cookie-modal.show {
   opacity: 1;
   pointer-events: all;
+  transition: opacity var(--modal-open-dur) var(--modal-ease);
 }
 
 .cookie-modal.hidden {
@@ -178,11 +184,12 @@ body:has(#cookie-banner.show) {
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   transform: scale(0.9);
-  transition: transform 0.3s ease;
+  transition: transform var(--modal-close-dur) var(--ease-in);
 }
 
 .cookie-modal.show .cookie-modal-container {
   transform: scale(1);
+  transition: transform var(--modal-open-dur) var(--modal-ease);
 }
 
 .cookie-modal-header {
@@ -218,7 +225,9 @@ body:has(#cookie-banner.show) {
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 8px;
-  transition: all 0.2s;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -258,7 +267,7 @@ body:has(#cookie-banner.show) {
   border: 1px solid var(--white-a08);
   border-radius: 12px;
   overflow: hidden;
-  transition: all 0.2s;
+  transition: border-color var(--dur-fast) var(--ease-out);
 }
 
 .cookie-category:hover {
@@ -271,7 +280,7 @@ body:has(#cookie-banner.show) {
   justify-content: space-between;
   padding: 1.5rem;
   background: var(--white-a02);
-  transition: background-color 0.2s;
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 
 /* Seules les catégories réglables invitent au clic : l'en-tête bascule alors
@@ -374,7 +383,7 @@ body.cookie-modal-open {
   border-radius: 50px;
   position: relative;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 
 .cookie-toggle label.toggle-disabled {
@@ -390,7 +399,7 @@ body.cookie-modal-open {
   height: 22px;
   background: rgba(255, 255, 255, 0.85);
   border-radius: 50%;
-  transition: all 0.2s;
+  transition: transform var(--dur-base) var(--ease-out);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -500,7 +509,7 @@ body.cookie-modal-open {
   text-decoration: none;
   font-weight: 600;
   border-bottom: 1px solid transparent;
-  transition: all 0.2s;
+  transition: border-bottom-color var(--dur-fast) var(--ease-out);
 }
 
 .cookie-info-box a:hover {
@@ -638,7 +647,7 @@ body.cookie-modal-open {
 }
 
 .cookie-banner.show {
-  animation: slideUp 0.4s var(--ease);
+  animation: slideUp var(--dur-slow) var(--ease-out);
 }
 
 /* ============================================================

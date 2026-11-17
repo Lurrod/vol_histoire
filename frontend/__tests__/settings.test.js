@@ -108,6 +108,7 @@ function loadModules() {
   // window.VH.consent (cookies.js, chargé avant settings.min.js dans app.min.js)
   global.safeSetHTML = utils.safeSetHTML;
   require('../js/cookies');
+  require('../js/shared/motion');
   ['ui', 'tabs', 'account', 'profile', 'security', 'danger-zone', 'admin', 'dashboard', 'cookies', 'data-export']
     .forEach((m) => require(`../js/settings/${m}`));
   return window.VH.settings;
@@ -619,6 +620,66 @@ describe('VH.settings.admin', () => {
     jest.advanceTimersByTime(300);
     expect(document.getElementById('edit-user-modal').classList.contains('hidden')).toBe(true);
     document.querySelector('.logout-modal-backdrop').click();
+  });
+
+  test('fermeture animée de la modale, annulée par une réouverture', () => {
+    const S = setup();
+    const modal = document.getElementById('edit-user-modal');
+    // jsdom ne calcule aucune durée : on simule une sortie de 300 ms.
+    window.VH.motion.exit = (el, done, _opts) => {
+      const timer = setTimeout(() => done(), 300);
+      return () => clearTimeout(timer);
+    };
+    jest.useFakeTimers();
+    S.admin.openEditUserModal(USERS[1]);
+    jest.advanceTimersByTime(10);
+    expect(modal.classList.contains('show')).toBe(true);
+    document.getElementById('edit-user-cancel').click();
+    expect(modal.classList.contains('hidden')).toBe(false);
+    // réouverture pendant la sortie : la fermeture est annulée
+    S.admin.openEditUserModal(USERS[1]);
+    jest.advanceTimersByTime(400);
+    expect(modal.classList.contains('hidden')).toBe(false);
+    document.getElementById('edit-user-cancel').click();
+    jest.advanceTimersByTime(300);
+    expect(modal.classList.contains('hidden')).toBe(true);
+    expect(modal.classList.contains('show')).toBe(false);
+  });
+
+  test('double fermeture puis réouverture rapide : aucune minuterie orpheline ne masque la modale', () => {
+    const S = setup();
+    const modal = document.getElementById('edit-user-modal');
+    let exits = 0;
+    window.VH.motion.exit = (el, done, _opts) => {
+      exits += 1;
+      const timer = setTimeout(() => done(), 300);
+      return () => clearTimeout(timer);
+    };
+    jest.useFakeTimers();
+    S.admin.openEditUserModal(USERS[1]);
+    jest.advanceTimersByTime(10);
+    document.getElementById('edit-user-cancel').click();
+    document.getElementById('edit-user-cancel').click(); // double clic
+    expect(exits).toBe(1);
+    S.admin.openEditUserModal(USERS[1]);
+    jest.advanceTimersByTime(400);
+    expect(modal.classList.contains('hidden')).toBe(false);
+    expect(modal.classList.contains('show')).toBe(true);
+  });
+
+  test('mouvements réduits (sortie immédiate) : la fermeture suivante n\'est pas bloquée', () => {
+    const S = setup();
+    const modal = document.getElementById('edit-user-modal');
+    window.VH.motion.exit = (el, done) => { done(); return () => {}; };
+    jest.useFakeTimers();
+    S.admin.openEditUserModal(USERS[1]);
+    jest.advanceTimersByTime(10);
+    document.getElementById('edit-user-cancel').click();
+    expect(modal.classList.contains('hidden')).toBe(true);
+    S.admin.openEditUserModal(USERS[1]);
+    jest.advanceTimersByTime(10);
+    document.getElementById('edit-user-cancel').click();
+    expect(modal.classList.contains('hidden')).toBe(true);
   });
 
   test('suppression : confirmation refusée, acceptée, refus serveur, réseau', async () => {
