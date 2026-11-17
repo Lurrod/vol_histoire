@@ -290,7 +290,9 @@ function isValidEmail(email) {
 function trapFocus(container, options = {}) {
   if (!container) return { destroy() {} };
 
-  const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  // .cselect-native : le <select> masqué d'une liste personnalisée
+  // (shared/custom-select.js) ; c'est son déclencheur [tabindex=0] qui compte.
+  const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]):not(.cselect-native), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
   const onEscape = typeof options.onEscape === 'function' ? options.onEscape : null;
 
   function handler(e) {
@@ -370,7 +372,10 @@ function setFieldError(inputEl, message) {
     errEl.id = inputEl.id + '-error';
     errEl.className = 'form-error';
     errEl.setAttribute('role', 'alert');
-    inputEl.parentNode.insertBefore(errEl, inputEl.nextSibling);
+    // Un <select> amélioré vit dans son enveloppe .cselect : le message va
+    // après elle, sous le champ visible.
+    const anchor = (inputEl.closest && inputEl.closest('.cselect')) || inputEl;
+    anchor.parentNode.insertBefore(errEl, anchor.nextSibling);
   }
   if (!ids.includes(errEl.id)) _setDescribedByIds(inputEl, [errEl.id, ...ids]);
 
@@ -380,16 +385,19 @@ function setFieldError(inputEl, message) {
   // propre (retrait → reflow → ré-ajout). Les durées sont lues sur les
   // tokens CSS (--shake-dur-a/-b) pour rester synchronisées. Le respect de
   // prefers-reduced-motion est assuré par le guard CSS de .is-shaking.
-  inputEl.classList.remove('is-shaking');
-  void inputEl.offsetWidth; // force reflow
-  inputEl.classList.add('is-shaking');
+  // Un <select> amélioré est masqué : c'est son déclencheur qui tremble.
+  const wrapEl = inputEl.closest && inputEl.closest('.cselect');
+  const shakeEl = (wrapEl && wrapEl.querySelector('.cselect-trigger')) || inputEl;
+  shakeEl.classList.remove('is-shaking');
+  void shakeEl.offsetWidth; // force reflow
+  shakeEl.classList.add('is-shaking');
   const cs = window.getComputedStyle(document.documentElement);
   const ms = (name, fb) => {
     const v = parseFloat(cs.getPropertyValue(name));
     return Number.isFinite(v) ? v : fb;
   };
   const shakeMs = ms('--shake-dur-a', 80) * 2 + ms('--shake-dur-b', 60) * 2;
-  setTimeout(() => inputEl.classList.remove('is-shaking'), shakeMs + 20);
+  setTimeout(() => shakeEl.classList.remove('is-shaking'), shakeMs + 20);
 }
 
 /**

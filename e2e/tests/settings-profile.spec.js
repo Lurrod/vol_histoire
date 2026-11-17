@@ -3,6 +3,23 @@
 const { test, expect } = require('../helpers/fixtures');
 const { loginViaApi } = require('../helpers/auth');
 
+// Les onglets ne sont câblés qu'après `await auth.init()` (settings.js) : sous
+// la charge de la suite complète, un clic trop précoce est perdu et la section
+// reste cachée. On reclique jusqu'à la voir, au lieu d'espérer un délai fixe.
+async function openSection(page, name) {
+  await expect(async () => {
+    await page.click(`[data-section="${name}"]`);
+    await expect(page.locator(`#${name}`)).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 15000 });
+}
+
+// Le profil (nom, email) arrive après l'API : lire le champ avant serait lire
+// un champ vide.
+async function profileLoaded(page) {
+  await openSection(page, 'profile');
+  await expect(page.locator('#name')).not.toHaveValue('', { timeout: 15000 });
+}
+
 test.describe('Settings — Profil & Sécurité', () => {
   test.beforeEach(async ({ page }) => {
     await loginViaApi(page, 'user@test.local', 'Testuser1');
@@ -12,8 +29,7 @@ test.describe('Settings — Profil & Sécurité', () => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
     // Section dashboard est active par défaut → switch vers profil
-    await page.click('[data-section="profile"]');
-    await expect(page.locator('#profile')).toBeVisible({ timeout: 8000 });
+    await profileLoaded(page);
 
     const nameInput = page.locator('#name');
     await expect(nameInput).toBeVisible({ timeout: 8000 });
@@ -29,8 +45,7 @@ test.describe('Settings — Profil & Sécurité', () => {
   test('modifier le nom et sauvegarder affiche un toast de succès', async ({ page }) => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
-    await page.click('[data-section="profile"]');
-    await expect(page.locator('#profile')).toBeVisible({ timeout: 8000 });
+    await profileLoaded(page);
 
     const nameInput = page.locator('#name');
     await expect(nameInput).toBeVisible({ timeout: 8000 });
@@ -60,8 +75,7 @@ test.describe('Settings — Profil & Sécurité', () => {
   test('le bouton réinitialiser restaure les valeurs du profil', async ({ page }) => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
-    await page.click('[data-section="profile"]');
-    await expect(page.locator('#profile')).toBeVisible({ timeout: 8000 });
+    await profileLoaded(page);
 
     const nameInput = page.locator('#name');
     await expect(nameInput).toBeVisible({ timeout: 8000 });
@@ -87,17 +101,8 @@ test.describe('Settings — Profil & Sécurité', () => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
 
-    // Naviguer vers la section sécurité via le sidebar.
-    // activateTab() ne se câble qu'après `await auth.init()` dans settings.js
-    // (DOMContentLoaded async) — sous charge workers parallèles, 3s peut être
-    // court. On s'aligne sur les 8s des autres tests du fichier (profile).
-    const securityLink = page.locator('[data-section="security"]');
-    await expect(securityLink).toBeVisible({ timeout: 8000 });
-    await securityLink.click();
-
-    // Le panneau sécurité doit être visible (hidden retiré par activateTab)
-    const passwordSection = page.locator('#security');
-    await expect(passwordSection).toBeVisible({ timeout: 8000 });
+    // Le panneau sécurité doit devenir visible (hidden retiré par activateTab)
+    await openSection(page, 'security');
   });
 
   test('changement de mot de passe — validation champs vides', async ({ page }) => {
@@ -105,11 +110,7 @@ test.describe('Settings — Profil & Sécurité', () => {
     await page.waitForLoadState('networkidle');
 
     // Naviguer vers sécurité
-    const securityLink = page.locator('[data-section="security"]');
-    if (await securityLink.isVisible()) {
-      await securityLink.click();
-      await page.waitForTimeout(300);
-    }
+    await openSection(page, 'security');
 
     // Chercher le bouton de soumission du formulaire sécurité
     const securitySubmit = page.locator('#security-form button[type="submit"], #change-password-btn').first();
@@ -130,13 +131,7 @@ test.describe('Settings — Profil & Sécurité', () => {
     await page.waitForLoadState('networkidle');
 
     // Naviguer vers la section danger
-    const dangerLink = page.locator('[data-section="danger"]');
-    if (await dangerLink.isVisible()) {
-      await dangerLink.click();
-      await page.waitForTimeout(300);
-
-      const deleteBtn = page.locator('#delete-account-btn');
-      await expect(deleteBtn).toBeVisible({ timeout: 3000 });
-    }
+    await openSection(page, 'danger');
+    await expect(page.locator('#delete-account-btn')).toBeVisible();
   });
 });

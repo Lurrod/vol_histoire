@@ -23,11 +23,12 @@ test.describe('Search & Filters — Hangar', () => {
     const searchTerm = firstName.split(' ')[0]; // Premier mot du nom
 
     await searchInput.fill(searchTerm);
-    await page.waitForTimeout(600); // debounce
-
+    // Attendre la réponse filtrée, pas une durée : sous charge, 600 ms de
+    // debounce ne suffisaient pas et le compte tombait pendant le chargement.
+    await expect.poll(() => page.locator('.aircraft-card').count(), { timeout: 10000 })
+      .toBeGreaterThanOrEqual(1);
     const countAfter = await page.locator('.aircraft-card').count();
     expect(countAfter).toBeLessThanOrEqual(countBefore);
-    expect(countAfter).toBeGreaterThanOrEqual(1);
   });
 
   test('recherche sans résultat affiche un état vide', async ({ page }) => {
@@ -106,6 +107,47 @@ test.describe('Search & Filters — Hangar', () => {
     const names = await page.locator('.aircraft-card h3').allTextContents();
     const sorted = [...names].sort((a, b) => a.localeCompare(b));
     expect(names).toEqual(sorted);
+  });
+
+  test('liste de tri personnalisée : souris puis clavier, le <select> natif suit', async ({ page }) => {
+    const trigger = page.locator('.cselect-trigger').first();
+    await expect(trigger).toHaveAttribute('role', 'combobox');
+
+    // Souris : ouvrir, choisir « Ordre alphabétique »
+    await trigger.click();
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    await page.locator('.cselect-option', { hasText: /alphab/i }).click();
+    await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#sort-select')).toHaveValue('alphabetical');
+    await expect(trigger.locator('.cselect-value')).toHaveText(/alphab/i);
+    await page.waitForTimeout(300);
+    const names = await page.locator('.aircraft-card h3').allTextContents();
+    expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b)));
+
+    // Clavier : Flèche bas ouvre sur l'option choisie, Début, Entrée choisit
+    await trigger.focus();
+    await page.keyboard.press('ArrowDown');
+    await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Home');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#sort-select')).toHaveValue('default');
+    await expect(trigger).toBeFocused();
+  });
+
+  test('les stats du hero glissent vers la nouvelle valeur (compteur odomètre)', async ({ page }) => {
+    const stat = page.locator('#total-aircraft');
+    await expect(stat.locator('.t-roll-cols')).toHaveAttribute('aria-hidden', 'true');
+    const before = await stat.locator('.sr-only').textContent();
+
+    await page.locator('#country-filter-btn').click();
+    await page.locator('#country-dropdown .filter-option:not(.filter-option-empty)').first().click();
+
+    await expect(stat.locator('.sr-only')).not.toHaveText(before);
+    const value = await stat.locator('.sr-only').textContent();
+    // Les colonnes affichent exactement la valeur lisible, chiffre par chiffre.
+    await expect.poll(async () =>
+      (await stat.locator('.t-roll-col:not(.is-leaving)').evaluateAll(cols => cols.map(c => c.dataset.d).join('')))
+    ).toBe(value.replace(/\D/g, ''));
   });
 
   test('la pagination est présente si plus de 6 avions', async ({ page }) => {

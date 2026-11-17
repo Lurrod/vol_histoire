@@ -30,6 +30,8 @@ const BUNDLES = {
     'auth.js',
     'utils.js',
     'shared/motion.js',
+    'shared/rolling-number.js',
+    'shared/custom-select.js',
     'nav.js',
     'cookies.js',
     'shared/alpha3.js',

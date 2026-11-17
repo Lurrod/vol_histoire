@@ -107,12 +107,15 @@ test.describe('Admin — Gestion des utilisateurs', () => {
     await adminLink.click();
     await page.waitForTimeout(1000);
 
-    // Trouver un utilisateur non-admin à modifier
-    const userCards = page.locator('.user-card');
-    await expect(userCards.first()).toBeVisible({ timeout: 8000 });
-
-    // Chercher un utilisateur qui n'est pas admin (pas de badge-admin)
-    const nonAdminEdit = page.locator('.user-card:not(:has(.badge-admin)) .btn-edit').first();
+    // Compte dédié, utilisé par aucune autre spec : changer un rôle révoque
+    // les jetons du compte (token_version). Prendre « le premier non-admin »
+    // visait user@test.local, connecté au même moment par settings-profile,
+    // dont les requêtes tombaient alors en 401 (profil jamais chargé).
+    const TARGET = 'zoe.bernard@test.local';
+    await page.locator('#user-filter').fill(TARGET);
+    const targetCard = page.locator('.user-card', { hasText: TARGET });
+    await expect(targetCard).toBeVisible({ timeout: 8000 });
+    const nonAdminEdit = targetCard.locator('.btn-edit');
 
     if (await nonAdminEdit.isVisible()) {
       await nonAdminEdit.click();
@@ -138,7 +141,7 @@ test.describe('Admin — Gestion des utilisateurs', () => {
 
       // Restaurer le rôle original
       await page.waitForTimeout(1000);
-      const editBtnAgain = page.locator('.user-card:not(:has(.badge-admin)) .btn-edit').first();
+      const editBtnAgain = page.locator('.user-card', { hasText: TARGET }).locator('.btn-edit');
       if (await editBtnAgain.isVisible()) {
         await editBtnAgain.click();
         await expect(modal).toBeVisible({ timeout: 3000 });

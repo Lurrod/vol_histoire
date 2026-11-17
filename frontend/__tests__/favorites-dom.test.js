@@ -338,7 +338,7 @@ describe('remove', () => {
     expect(card.classList.contains('is-removed')).toBe(true);
     await jest.advanceTimersByTimeAsync(4700);
     expect(auth.authFetch).toHaveBeenCalledWith('/api/favorites/1', { method: 'DELETE' });
-    expect(document.getElementById('total-favorites').textContent).toBe('2');
+    expect(document.getElementById('total-favorites').querySelector('.sr-only').textContent).toBe('2');
     jest.advanceTimersByTime(300);
     expect(document.querySelector('.toast')).toBeNull();
   });
@@ -460,8 +460,8 @@ describe('data', () => {
     expect(auth.authFetch).toHaveBeenCalledWith('/api/favorites');
     expect(document.querySelectorAll('.aircraft-card')).toHaveLength(3);
     expect(document.querySelectorAll('#type-options .filter-option')).toHaveLength(2);
-    expect(document.getElementById('total-countries').textContent).toBe('2');
-    expect(document.getElementById('total-generations').textContent).toBe('3');
+    expect(document.getElementById('total-countries').querySelector('.sr-only').textContent).toBe('2');
+    expect(document.getElementById('total-generations').querySelector('.sr-only').textContent).toBe('3');
   });
 
   test('réponse non tableau : liste vide', async () => {

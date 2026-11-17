@@ -36,6 +36,15 @@ describe('bascule grille / liste', () => {
     expect(document.getElementById('view-list').getAttribute('aria-label')).toBe('Vue liste');
   });
 
+  test('tri amélioré (VH.customSelect) : le groupe se place avant son enveloppe .cselect', () => {
+    jest.resetModules();
+    document.body.innerHTML = '<div class="toolbar-right"><div class="cselect"><select id="sort-select"></select></div></div><div id="airplanes-container"></div>';
+    window.VH = { hangar: { filters: { saveFiltersToSession: jest.fn() } } };
+    require('../js/hangar/view-toggle');
+    expect(() => window.VH.hangar.viewToggle.init({ view: 'grid' })).not.toThrow();
+    expect(document.getElementById('view-toggle').nextElementSibling.className).toBe('cselect');
+  });
+
   test('vue initiale grille : classes et aria-pressed cohérents', () => {
     boot('grid');
     expect(container().classList.contains('aircraft-grid')).toBe(true);

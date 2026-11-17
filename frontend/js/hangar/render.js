@@ -85,9 +85,12 @@
   // (déjà filtrés en BDD aux entités utilisées) pour countries / generations.
   function updateStats(state) {
     const total = Number.isFinite(state.total) ? state.total : state.aircraft.length;
-    animateNumber(document.getElementById('total-aircraft'), total);
-    animateNumber(document.getElementById('total-countries'), (state.countries || []).length);
-    animateNumber(document.getElementById('total-generations'), (state.generations || []).length);
+    // Compteur « odomètre » : la valeur glisse de l'ancienne à la nouvelle
+    // au lieu de recompter depuis zéro à chaque filtre.
+    const roll = VH.rollingNumber.set;
+    roll(document.getElementById('total-aircraft'), total);
+    roll(document.getElementById('total-countries'), (state.countries || []).length);
+    roll(document.getElementById('total-generations'), (state.generations || []).length);
   }
 
   function updateResultsCount(state) {

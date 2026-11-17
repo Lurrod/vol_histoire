@@ -12,6 +12,7 @@ global.i18n = { t: (key, p) => (p ? `${key}:${JSON.stringify(p)}` : key) };
 global.animateNumber = jest.fn();
 
 require('../js/shared/motion');
+require('../js/shared/rolling-number');
 const filters = require('../js/hangar/filters');
 const render = require('../js/hangar/render');
 
@@ -167,17 +168,20 @@ describe('compteurs', () => {
     expect(el.textContent).toBe('hangar.results:{"count":2}');
   });
 
+  // Valeur lisible du compteur « odomètre » (VH.rollingNumber).
+  const stat = (id) => document.getElementById(id).querySelector('.sr-only').textContent;
+
   test('statistiques : total global, nombre de pays et de générations du référentiel', () => {
     render.updateStats(makeState({ total: 434 }));
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-aircraft'), 434);
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-countries'), 3);
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-generations'), 2);
+    expect(stat('total-aircraft')).toBe('434');
+    expect(stat('total-countries')).toBe('3');
+    expect(stat('total-generations')).toBe('2');
   });
 
   test('statistiques sans total ni référentiel', () => {
     render.updateStats(makeState({ total: undefined, aircraft: [{}], countries: undefined, generations: undefined }));
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-aircraft'), 1);
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-countries'), 0);
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-generations'), 0);
+    expect(stat('total-aircraft')).toBe('1');
+    expect(stat('total-countries')).toBe('0');
+    expect(stat('total-generations')).toBe('0');
   });
 });
