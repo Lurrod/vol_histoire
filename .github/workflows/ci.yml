@@ -146,8 +146,16 @@ jobs:
 
       # DOMPurify et @sentry/browser sont des devDependencies du frontend, mais
       # ils sont livrés aux navigateurs (js/vendor/) : arbre complet, seuil high.
-      - name: Security audit — frontend (high)
-        run: cd frontend && npm audit --audit-level=high
+      # Même règle que le backend : seuil « high » sur ce qui est livré
+      # (DOMPurify et @sentry/browser, recopiés dans js/vendor/), « critical »
+      # sur l'arbre complet. Les outils de test (Jest et ses dépendances,
+      # jamais livrés) portent un avis « high » sans version corrigée
+      # (picomatch, GHSA-fc5q-39xc-vjpf, toutes versions) : il bloquait tout.
+      - name: Security audit — frontend shipped (high)
+        run: cd frontend && npm audit --omit=dev --audit-level=high
+
+      - name: Security audit — frontend full tree (critical)
+        run: cd frontend && npm audit --audit-level=critical
 
       # Seuils de couverture dans frontend/jest.config.json (95/85/95/95 global,
       # plancher de 80 % par fichier) : la commande échoue s'ils ne sont pas tenus.

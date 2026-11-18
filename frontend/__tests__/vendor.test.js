@@ -2,7 +2,7 @@
  * Tests — bibliothèques de frontend/js/vendor/ (JS-009).
  *
  * vendor/ est produit par scripts/build-js.js depuis frontend/node_modules
- * (dompurify et @sentry/browser en devDependencies). On charge les fichiers
+ * (dompurify et @sentry/browser en dependencies). On charge les fichiers
  * RÉELLEMENT servis, comme le ferait un <script>, et on vérifie qu'ils
  * fonctionnent avec le code qui les consomme : safeSetHTML (utils.js) et
  * sentry-init.js (window.Sentry.init / captureException).

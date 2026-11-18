@@ -244,8 +244,10 @@ function writeAirplaneFields() {
 
 /* DOMPurify et @sentry/browser étaient recopiés à la main dans vendor/ :
  * aucun package.json ne les déclarait, npm audit et npm outdated ne les
- * voyaient pas (JS-009). Ils sont désormais en devDependencies de
- * frontend/package.json et vendor/ est produit ici depuis node_modules.
+ * voyaient pas (JS-009). Ils sont désormais en dependencies de
+ * frontend/package.json (ce sont les seules bibliothèques livrées : l'audit
+ * de production les vise, ci.yml) et vendor/ est produit ici depuis
+ * node_modules.
  * Les pages chargent toujours js/vendor/purify.min.js (<script defer>) et
  * sentry-init.js charge js/vendor/sentry.min.js à la demande : chemins
  * inchangés. Prérequis : `cd frontend && npm install`. */
