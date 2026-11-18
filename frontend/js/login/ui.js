@@ -20,12 +20,12 @@
 
       const data = await res.json();
 
-      // Compteurs animés (animateNumber, utils.js)
-      animateNumber(elAirplanes, data.airplanes);
-      animateNumber(elCountries, data.countries);
+      // Compteurs animés (VH.rollingNumber, odomètre)
+      VH.rollingNumber.set(elAirplanes, data.airplanes);
+      VH.rollingNumber.set(elCountries, data.countries);
 
       if (data.earliest_year && data.latest_year) {
-        animateNumber(elYears, data.latest_year - data.earliest_year);
+        VH.rollingNumber.set(elYears, data.latest_year - data.earliest_year);
         elYearsLabel.textContent = i18n.t('login.years_label');
       }
     } catch {

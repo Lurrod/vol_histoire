@@ -211,29 +211,41 @@ function animateNumber(el, target, duration = 1400) {
   requestAnimationFrame(step);
 }
 
+const PASSWORD_EYE_SVG =
+  '<svg class="pw-eye" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+  '<path class="pw-eye-lower" d="M2.5 12C5 16.5 8.5 18 12 18s7-1.5 9.5-6"/>' +
+  '<circle class="pw-eye-pupil" cx="12" cy="12" r="2.6"/>' +
+  '<path class="pw-eye-lid" d="M2.5 12C5 7.5 8.5 6 12 6s7 1.5 9.5 6"/>' +
+  // Cils sous la paupière fermée : sans eux, l'œil fermé n'était qu'un arc.
+  '<path class="pw-eye-lashes" d="M12 18.1v2.7M7.3 17l-1.1 2.3M16.7 17l1.1 2.3M4.2 14.9l-1.6 1.8M19.8 14.9l1.6 1.8"/>' +
+  '</svg>';
+
 /**
  * Configure le toggle de visibilité d'un ou plusieurs champs mot de passe
  * (le second sert aux champs de confirmation qui suivent le premier).
  *
- * L'icône est remplacée, jamais modifiée : icons.js convertit chaque
- * `<i class="fas fa-…">` en `<svg class="icon icon-…">` au chargement, et un
- * changement de classe sur ce SVG ne redessine rien. Le nouveau `<i>` inséré
- * est converti à son tour par le MutationObserver d'icons.js.
+ * L'œil est un SVG dessiné, posé une seule fois à la place de l'icône Font
+ * Awesome (ou du <svg class="icon"> qu'icons.js en a fait). Mot de passe
+ * masqué = paupière fermée ; visible = paupière ouverte, pupille apparente.
+ * L'état se lit sur aria-pressed ; shared-base.css anime les pièces.
  */
 function setupPasswordToggle(buttonEl, inputEl, ...linkedInputs) {
   if (!buttonEl || !inputEl) return;
   buttonEl.setAttribute('aria-pressed', 'false');
+  // Œil dessiné (une seule fois) : la paupière supérieure et la pupille sont
+  // animées par shared-base.css selon aria-pressed. Remplace l'icône
+  // Font Awesome, qu'icons.js aurait déjà convertie en <svg class="icon">.
+  if (!buttonEl.querySelector('.pw-eye')) {
+    const eye = document.createElement('span');
+    eye.innerHTML = PASSWORD_EYE_SVG;
+    const current = buttonEl.querySelector('svg.icon, i');
+    if (current) current.replaceWith(eye.firstChild);
+    else buttonEl.appendChild(eye.firstChild);
+  }
   buttonEl.addEventListener('click', () => {
     const visible = inputEl.type === 'password';
     [inputEl, ...linkedInputs].forEach((el) => { if (el) el.type = visible ? 'text' : 'password'; });
     buttonEl.setAttribute('aria-pressed', String(visible));
-
-    const icon = document.createElement('i');
-    icon.className = `fas ${visible ? 'fa-eye' : 'fa-eye-slash'}`;
-    icon.setAttribute('aria-hidden', 'true');
-    const current = buttonEl.querySelector('svg.icon, i');
-    if (current) current.replaceWith(icon);
-    else buttonEl.appendChild(icon);
   });
 }
 
@@ -290,7 +302,9 @@ function isValidEmail(email) {
 function trapFocus(container, options = {}) {
   if (!container) return { destroy() {} };
 
-  const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  // .cselect-native : le <select> masqué d'une liste personnalisée
+  // (shared/custom-select.js) ; c'est son déclencheur [tabindex=0] qui compte.
+  const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]):not(.cselect-native), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
   const onEscape = typeof options.onEscape === 'function' ? options.onEscape : null;
 
   function handler(e) {
@@ -370,7 +384,10 @@ function setFieldError(inputEl, message) {
     errEl.id = inputEl.id + '-error';
     errEl.className = 'form-error';
     errEl.setAttribute('role', 'alert');
-    inputEl.parentNode.insertBefore(errEl, inputEl.nextSibling);
+    // Un <select> amélioré vit dans son enveloppe .cselect : le message va
+    // après elle, sous le champ visible.
+    const anchor = (inputEl.closest && inputEl.closest('.cselect')) || inputEl;
+    anchor.parentNode.insertBefore(errEl, anchor.nextSibling);
   }
   if (!ids.includes(errEl.id)) _setDescribedByIds(inputEl, [errEl.id, ...ids]);
 
@@ -380,16 +397,19 @@ function setFieldError(inputEl, message) {
   // propre (retrait → reflow → ré-ajout). Les durées sont lues sur les
   // tokens CSS (--shake-dur-a/-b) pour rester synchronisées. Le respect de
   // prefers-reduced-motion est assuré par le guard CSS de .is-shaking.
-  inputEl.classList.remove('is-shaking');
-  void inputEl.offsetWidth; // force reflow
-  inputEl.classList.add('is-shaking');
+  // Un <select> amélioré est masqué : c'est son déclencheur qui tremble.
+  const wrapEl = inputEl.closest && inputEl.closest('.cselect');
+  const shakeEl = (wrapEl && wrapEl.querySelector('.cselect-trigger')) || inputEl;
+  shakeEl.classList.remove('is-shaking');
+  void shakeEl.offsetWidth; // force reflow
+  shakeEl.classList.add('is-shaking');
   const cs = window.getComputedStyle(document.documentElement);
   const ms = (name, fb) => {
     const v = parseFloat(cs.getPropertyValue(name));
     return Number.isFinite(v) ? v : fb;
   };
   const shakeMs = ms('--shake-dur-a', 80) * 2 + ms('--shake-dur-b', 60) * 2;
-  setTimeout(() => inputEl.classList.remove('is-shaking'), shakeMs + 20);
+  setTimeout(() => shakeEl.classList.remove('is-shaking'), shakeMs + 20);
 }
 
 /**

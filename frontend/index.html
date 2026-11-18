@@ -87,6 +87,7 @@
           <span data-i18n="home.hero_split_title_l2">militaire,</span><br>
           <span class="gradient-text" data-i18n="home.hero_split_title_l3">une fiche à la fois.</span>
         </h1>
+        <p class="hero-split-lead" data-i18n="home.hero_lead">Du chasseur au ravitailleur, les avions militaires de 1945 à aujourd'hui : caractéristiques, histoire, conflits et filiation.</p>
         <div class="hero-split-meta">
           <span><strong id="hero-split-stat-airplanes">554</strong> <span data-i18n="home.hero_split_meta_aircraft">appareils</span></span>
           <span class="hero-split-dot" aria-hidden="true">·</span>
@@ -115,13 +116,17 @@
         </a>
       </div>
 
-      <!-- Colonne droite — 2 widgets stackés (Ce jour-là + Devine l'avion du jour) -->
+      <!-- Colonne droite : l'appareil du jour en grande photo (éphéméride,
+           repli sur un fait éditorial) — js/home/hero-today.js -->
       <div class="hero-split-right">
-        <aside class="hero-aside-stack" aria-label="Découvertes" data-i18n-aria="home.hero_aside_label">
-
-          <!-- Widget 1 : Ce jour-là (éphéméride, repli sur un fait éditorial) -->
-          <article class="hero-aside-card hero-fact-card" id="hero-fact-card">
-            <header class="hero-aside-header">
+        <figure class="hero-today hero-fact-card" id="hero-fact-card">
+          <div class="hero-today-media" id="hero-today-media">
+            <!-- Pixel transparent au départ : applySourcesTo() pose la photo
+                 de l'appareil du jour (élément LCP sur ordinateur). -->
+            <picture><source type="image/avif" srcset=""><source type="image/webp" srcset=""><img id="hero-today-image" class="hero-today-image" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="1600" height="1067" fetchpriority="high" decoding="async"></picture>
+          </div>
+          <figcaption class="hero-today-caption">
+            <span class="hero-today-head">
               <span class="hero-aside-label">
                 <i class="fas fa-calendar-days" aria-hidden="true"></i>
                 <span id="hero-fact-label" data-i18n="home.hero_today_label">Ce jour-là</span>
@@ -129,47 +134,15 @@
               <button type="button" class="hero-aside-reroll" id="hero-fact-reroll" aria-label="Voir l'événement suivant" data-i18n-aria="home.hero_today_next_aria">
                 <i class="fas fa-sync-alt" aria-hidden="true"></i>
               </button>
-            </header>
-            <p class="hero-fact-body" id="hero-fact-body" data-i18n="home.hero_fact_loading">
-              Tirage en cours…
-            </p>
+            </span>
+            <span class="hero-fact-body" id="hero-fact-body" data-i18n="home.hero_fact_loading">Tirage en cours…</span>
             <a href="#" class="hero-aside-link" id="hero-fact-link">
               <span data-i18n="home.hero_fact_link">Voir la fiche</span>
               <i class="fas fa-arrow-right" aria-hidden="true"></i>
             </a>
-          </article>
-
-          <!-- Widget 2 : Devine l'avion -->
-          <article class="hero-aside-card hero-quiz-card" id="hero-quiz-card">
-            <header class="hero-aside-header">
-              <span class="hero-aside-label">
-                <i class="fas fa-question-circle" aria-hidden="true"></i>
-                <span data-i18n="home.hero_quiz_label">Devine l'avion</span>
-              </span>
-              <span class="hero-aside-tag" id="hero-quiz-daily-tag" data-i18n="home.hero_quiz_daily_tag" hidden>Du jour</span>
-              <button type="button" class="hero-aside-reroll" id="hero-quiz-reroll" aria-label="Changer d'avion" data-i18n-aria="home.hero_quiz_reroll_aria">
-                <i class="fas fa-sync-alt" aria-hidden="true"></i>
-              </button>
-            </header>
-            <div class="hero-quiz-stage">
-              <!-- <picture> : applySourcesTo() y pose les srcset AVIF / WebP de
-                   l'appareil du jour. Pas de photo initiale (pixel transparent) :
-                   elle était téléchargée pour rien avant d'être remplacée. -->
-              <picture class="hero-quiz-picture"><source type="image/avif" srcset=""><source type="image/webp" srcset=""><img class="hero-quiz-image" id="hero-quiz-image" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Silhouette à deviner" data-i18n-alt="home.hero_quiz_image_alt" width="640" height="280" fetchpriority="high" decoding="async"></picture>
-              <span class="hero-quiz-badge" id="hero-quiz-badge" aria-hidden="true">?</span>
-            </div>
-            <div class="hero-quiz-options" id="hero-quiz-options" role="group" aria-label="Trois propositions de réponse" data-i18n-aria="home.hero_quiz_options_aria">
-              <button type="button" class="hero-quiz-option">—</button>
-              <button type="button" class="hero-quiz-option">—</button>
-              <button type="button" class="hero-quiz-option">—</button>
-            </div>
-            <a href="#" class="hero-aside-link hero-quiz-link" id="hero-quiz-link" hidden>
-              <span id="hero-quiz-link-label" data-i18n="home.hero_quiz_link_default">Voir la fiche</span>
-              <i class="fas fa-arrow-right" aria-hidden="true"></i>
-            </a>
-          </article>
-
-        </aside>
+          </figcaption>
+        </figure>
+        <p class="hero-today-credit" id="hero-today-credit" hidden></p>
       </div>
     </div>
   </section>
@@ -232,6 +205,58 @@
     </div>
   </section>
 
+  <!-- UNE FICHE, TROIS GESTES -->
+  <section class="home-section home-steps" aria-labelledby="steps-title">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge"><i class="fas fa-route"></i> <span data-i18n="home.landing.steps_badge">Mode d'emploi</span></span>
+        <h2 id="steps-title" data-i18n="home.landing.steps_title">Une fiche, trois gestes</h2>
+        <p data-i18n="home.landing.steps_desc">Du nom d'un avion à sa place dans l'histoire, en quelques secondes.</p>
+      </div>
+      <ol class="home-steps-list">
+        <li class="home-step">
+          <div class="home-step-visual" aria-hidden="true">
+            <div class="step-search">
+              <span class="step-search-field"><i class="fas fa-search"></i><span>mira</span><span class="step-caret"></span></span>
+              <span class="step-search-item is-active">Mirage III</span>
+              <span class="step-search-item">Mirage 2000</span>
+              <span class="step-search-item">Mirage F1</span>
+            </div>
+          </div>
+          <h3><span class="home-step-num">1</span><span data-i18n="home.landing.step1_title">Chercher</span></h3>
+          <p data-i18n="home.landing.step1_text">Quelques lettres suffisent, ou filtrez le hangar par pays, génération, mission ou conflit.</p>
+        </li>
+        <li class="home-step">
+          <div class="home-step-visual" aria-hidden="true">
+            <div class="step-sheet">
+              <span class="step-sheet-name">Rafale</span>
+              <span class="step-sheet-row"><span data-i18n="home.landing.step_v_speed">Vitesse max</span><strong>2 450 km/h</strong></span>
+              <span class="step-sheet-row"><span data-i18n="home.landing.step_v_first_flight">Premier vol</span><strong data-i18n="home.landing.step_v_date">4 juillet 1986</strong></span>
+              <span class="step-sheet-row"><span data-i18n="home.landing.step_v_wars">Conflits</span><strong>5</strong></span>
+            </div>
+          </div>
+          <h3><span class="home-step-num">2</span><span data-i18n="home.landing.step2_title">Lire</span></h3>
+          <p data-i18n="home.landing.step2_text">Caractéristiques, dates clés, récit, conflits et filiation, sur une seule page.</p>
+        </li>
+        <li class="home-step">
+          <div class="home-step-visual" aria-hidden="true">
+            <div class="step-compare">
+              <span class="step-compare-row"><span class="step-check"><i class="fas fa-check"></i></span>Rafale</span>
+              <span class="step-compare-row"><span class="step-check"><i class="fas fa-check"></i></span>F-22 Raptor</span>
+              <span class="step-compare-foot"><span data-i18n="home.landing.step_v_selected">2 sélectionnés</span><i class="fas fa-heart"></i></span>
+            </div>
+          </div>
+          <h3><span class="home-step-num">3</span><span data-i18n="home.landing.step3_title">Comparer et garder</span></h3>
+          <p data-i18n="home.landing.step3_text">Mettez trois appareils côte à côte, ou gardez-les en favoris avec un compte gratuit.</p>
+        </li>
+      </ol>
+      <a href="/hangar" class="hero-browse-link home-steps-cta">
+        <span data-i18n="home.landing.steps_cta">Ouvrir le hangar</span>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </section>
+
   <!-- PAR TYPE DE MISSION -->
   <section class="home-section home-section-missions" aria-labelledby="missions-title">
     <div class="container">
@@ -267,6 +292,45 @@
       </div>
       <p class="nations-map-note" data-i18n="home.nations_map_note">Les entités disparues sont figurées par leurs frontières actuelles : la Tchécoslovaquie par la Tchéquie et la Slovaquie, la Yougoslavie par ses six républiques, l'URSS par la Russie.</p>
       <p class="nations-map-status" id="nations-map-status" role="status"></p>
+    </div>
+  </section>
+
+  <!-- DEVINE L'AVION — js/home/hero-quiz.js -->
+  <section class="home-section home-quiz" aria-labelledby="quiz-title">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge"><i class="fas fa-question-circle"></i> <span data-i18n="home.landing.quiz_badge">Jeu du jour</span></span>
+        <h2 id="quiz-title" data-i18n="home.landing.quiz_title">Devine l'avion</h2>
+        <p data-i18n="home.landing.quiz_desc">Une photo floutée, trois noms. Le même appareil pour tout le monde aujourd'hui.</p>
+      </div>
+      <article class="hero-aside-card hero-quiz-card" id="hero-quiz-card">
+        <header class="hero-aside-header">
+          <span class="hero-aside-label">
+            <i class="fas fa-question-circle" aria-hidden="true"></i>
+            <span data-i18n="home.hero_quiz_label">Devine l'avion</span>
+          </span>
+          <span class="hero-aside-tag" id="hero-quiz-daily-tag" data-i18n="home.hero_quiz_daily_tag" hidden>Du jour</span>
+          <button type="button" class="hero-aside-reroll" id="hero-quiz-reroll" aria-label="Changer d'avion" data-i18n-aria="home.hero_quiz_reroll_aria">
+            <i class="fas fa-sync-alt" aria-hidden="true"></i>
+          </button>
+        </header>
+        <div class="hero-quiz-stage">
+          <!-- <picture> : applySourcesTo() y pose les srcset AVIF / WebP de
+               l'appareil du jour. Pas de photo initiale (pixel transparent) :
+               elle était téléchargée pour rien avant d'être remplacée. -->
+          <picture class="hero-quiz-picture"><source type="image/avif" srcset=""><source type="image/webp" srcset=""><img class="hero-quiz-image" id="hero-quiz-image" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Silhouette à deviner" data-i18n-alt="home.hero_quiz_image_alt" width="640" height="280" loading="lazy" decoding="async"></picture>
+          <span class="hero-quiz-badge" id="hero-quiz-badge" aria-hidden="true">?</span>
+        </div>
+        <div class="hero-quiz-options" id="hero-quiz-options" role="group" aria-label="Trois propositions de réponse" data-i18n-aria="home.hero_quiz_options_aria">
+          <button type="button" class="hero-quiz-option">—</button>
+          <button type="button" class="hero-quiz-option">—</button>
+          <button type="button" class="hero-quiz-option">—</button>
+        </div>
+        <a href="#" class="hero-aside-link hero-quiz-link" id="hero-quiz-link" hidden>
+          <span id="hero-quiz-link-label" data-i18n="home.hero_quiz_link_default">Voir la fiche</span>
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </a>
+      </article>
     </div>
   </section>
 

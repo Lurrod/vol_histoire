@@ -39,12 +39,15 @@
     return auth.authFetch(`/api/favorites/${airplaneId}`, { method: 'DELETE' });
   }
 
-  /* animateNumber → utils.js */
+  /* Compteurs : VH.rollingNumber (shared/rolling-number.js) */
   function updateStats(state) {
     const stats = VH.favorites.filters.computeStats(state.favorites);
-    animateNumber(document.getElementById('total-favorites'), stats.total);
-    animateNumber(document.getElementById('total-countries'), stats.countries);
-    animateNumber(document.getElementById('total-generations'), stats.generations);
+    // Compteur « odomètre » : la valeur glisse de l'ancienne à la nouvelle
+    // (retrait d'un favori, filtre) au lieu de recompter depuis zéro.
+    const roll = VH.rollingNumber.set;
+    roll(document.getElementById('total-favorites'), stats.total);
+    roll(document.getElementById('total-countries'), stats.countries);
+    roll(document.getElementById('total-generations'), stats.generations);
   }
 
   const api = { loadFavorites, deleteFavorite, updateStats };

@@ -30,6 +30,9 @@ const BUNDLES = {
     'auth.js',
     'utils.js',
     'shared/motion.js',
+    'shared/rolling-number.js',
+    'shared/custom-select.js',
+    'shared/confirm-action.js',
     'nav.js',
     'cookies.js',
     'shared/alpha3.js',
@@ -62,6 +65,7 @@ const BUNDLES = {
     'home/hero-quiz.js',
     'home/hero-stats.js',
     'home/page-effects.js',
+    'shared/photo-credit.js',
     'script.js',
     'onboarding.js',
     'nations-map.js',
@@ -89,6 +93,7 @@ const BUNDLES = {
     'details/markdown.js',
     'details/data.js',
     'shared/photo-credit.js',
+    'details/key-dates.js',
     'details/render.js',
     'details/radar.js',
     'details/favorites.js',
@@ -108,6 +113,8 @@ const BUNDLES = {
     'login/strength.js',
     'login/tabs.js',
     'login/ui.js',
+    'shared/photo-credit.js',
+    'login/visual.js',
     'login/forms.js',
     'login.js',
   ],
@@ -154,6 +161,7 @@ const BUNDLES = {
     'favorites/data.js',
     'favorites/dropdowns.js',
     'favorites/toolbar.js',
+    'favorites/gate.js',
     'favorites.js',
   ],
 
@@ -236,8 +244,10 @@ function writeAirplaneFields() {
 
 /* DOMPurify et @sentry/browser étaient recopiés à la main dans vendor/ :
  * aucun package.json ne les déclarait, npm audit et npm outdated ne les
- * voyaient pas (JS-009). Ils sont désormais en devDependencies de
- * frontend/package.json et vendor/ est produit ici depuis node_modules.
+ * voyaient pas (JS-009). Ils sont désormais en dependencies de
+ * frontend/package.json (ce sont les seules bibliothèques livrées : l'audit
+ * de production les vise, ci.yml) et vendor/ est produit ici depuis
+ * node_modules.
  * Les pages chargent toujours js/vendor/purify.min.js (<script defer>) et
  * sentry-init.js charge js/vendor/sentry.min.js à la demande : chemins
  * inchangés. Prérequis : `cd frontend && npm install`. */

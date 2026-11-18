@@ -110,7 +110,10 @@ function boot({ fetchOverrides, lang = 'fr', aircraftData = AIRCRAFT_FR } = {}) 
   require('../js/shared/airplane-fields');
   require('../js/shared/airplane-form');
   const admin = require('../js/details/admin');
-  const state = { aircraftId: aircraftData.id, aircraftData: { ...aircraftData }, userRole: 1 };
+  // aircraftData: null → fiche pas encore chargée (identifiant connu par l'URL).
+  const state = aircraftData
+    ? { aircraftId: aircraftData.id, aircraftData: { ...aircraftData }, userRole: 1 }
+    : { aircraftId: 7, aircraftData: null, userRole: 1 };
   admin.setup(state);
   return state;
 }
@@ -498,19 +501,56 @@ describe('details/admin — suppression', () => {
 
   const deleteBtn = () => document.getElementById('delete-btn');
 
-  test('confirmation refusée : aucune requête', async () => {
+  const yes = () => document.querySelector('.det-del .cfm-yes');
+  const no = () => document.querySelector('.det-del .cfm-no');
+  const wrap = () => document.querySelector('.det-del');
+
+  test('poubelle dessinée dans le bouton, enveloppée par la confirmation sur place', () => {
     boot();
-    global.confirm = jest.fn(() => false);
+    expect(deleteBtn().querySelector('svg.det-bin')).not.toBeNull();
+    expect(deleteBtn().querySelector('i')).toBeNull();
+    expect(wrap().dataset.state).toBe('idle');
+    expect(deleteBtn().getAttribute('aria-expanded')).toBe('false');
+    expect(yes().getAttribute('aria-label')).toBe('details.delete_confirm');
+    expect(no().getAttribute('aria-label')).toBe('details.delete_keep');
+    // Le nom de la fiche est lu à l'ouverture (il n'existe pas encore quand
+    // l'administration s'installe).
+    deleteBtn().click();
+    const panel = wrap().querySelector('.cfm-panel');
+    expect(panel.getAttribute('aria-label')).toBe('common.confirm_delete "MiG-29" ?');
+  });
+
+  test("fiche pas encore chargée à l'installation : aucune erreur, libellé sans nom", () => {
+    expect(() => boot({ aircraftData: null })).not.toThrow();
+    expect(wrap()).not.toBeNull();
+    deleteBtn().click();
+    expect(wrap().querySelector('.cfm-panel').getAttribute('aria-label')).toBe('common.confirm_delete "" ?');
+  });
+
+  test('un clic ouvre la confirmation : aucune requête, aucune fenêtre', async () => {
+    boot();
+    global.confirm = jest.fn();
     deleteBtn().click();
     await settle();
-    expect(global.confirm).toHaveBeenCalledWith('common.confirm_delete "MiG-29" ?');
+    expect(wrap().dataset.state).toBe('confirm');
+    expect(global.confirm).not.toHaveBeenCalled();
+    expect(authFetch).not.toHaveBeenCalled();
+  });
+
+  test('conserver : retour au repos, aucune requête', async () => {
+    boot();
+    deleteBtn().click();
+    no().click();
+    await settle();
+    expect(wrap().dataset.state).toBe('idle');
     expect(authFetch).not.toHaveBeenCalled();
   });
 
   test('confirmée : DELETE, bouton bloqué, toast, redirection vers le hangar après 1,5 s', async () => {
     boot();
-    global.confirm = jest.fn(() => true);
     deleteBtn().click();
+    yes().click();
+    expect(wrap().dataset.state).toBe('done');
     expect(deleteBtn().disabled).toBe(true);
     expect(deleteBtn().getAttribute('aria-busy')).toBe('true');
     await settle();
@@ -522,22 +562,23 @@ describe('details/admin — suppression', () => {
     expect(navigated()).toBe(true);
   });
 
-  test('échec : toast d\'erreur, bouton réactivé, pas de redirection', async () => {
+  test('échec : toast d\'erreur, bouton réactivé, contrôle remis au repos, pas de redirection', async () => {
     boot();
-    global.confirm = jest.fn(() => true);
     authFetch.mockImplementation(() => jsonResponse({}, false, 403));
     deleteBtn().click();
+    yes().click();
     await settle();
     expect(global.showToast).toHaveBeenCalledWith('common.delete_error', 'error');
     expect(deleteBtn().disabled).toBe(false);
     expect(deleteBtn().hasAttribute('aria-busy')).toBe(false);
+    expect(wrap().dataset.state).toBe('idle');
   });
 
   test('échec sans message : repli sur le texte traduit', async () => {
     boot();
-    global.confirm = jest.fn(() => true);
     authFetch.mockImplementation(() => Promise.reject(new Error('')));
     deleteBtn().click();
+    yes().click();
     await settle();
     expect(global.showToast).toHaveBeenCalledWith('common.delete_error', 'error');
   });

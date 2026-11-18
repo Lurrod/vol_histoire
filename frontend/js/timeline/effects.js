@@ -105,19 +105,12 @@
     return 1 - Math.pow(1 - t, 3);
   }
 
-  function animateCounter(el, target, duration = 1500) {
+  /* Compteur « odomètre » : les chiffres entrent depuis le vide puis
+   * glissent jusqu'à la valeur (VH.rollingNumber). Mouvements réduits : le
+   * garde-fou global ramène la transition à ~0, la valeur s'affiche d'un coup. */
+  function animateCounter(el, target) {
     if (!el) return;
-    if (VH.timeline.util.prefersReducedMotion()) {
-      el.textContent = String(target);
-      return;
-    }
-    const start = performance.now();
-    function frame(now) {
-      const t = Math.min(1, (now - start) / duration);
-      el.textContent = Math.round(target * easeOutCubic(t));
-      if (t < 1) requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
+    VH.rollingNumber.set(el, target);
   }
 
   const api = {

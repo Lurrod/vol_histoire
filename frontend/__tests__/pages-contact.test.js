@@ -142,9 +142,57 @@ describe('contact.js — envoi', () => {
     expect(btn.textContent).toContain('contact.form_sending');
     release({ ok: true, status: 200 });
     await flush();
-    expect(btn.disabled).toBe(false);
+    // Pendant la coche (« envoyé »), pas de second envoi possible.
+    expect(btn.disabled).toBe(true);
     expect(btn.hasAttribute('aria-busy')).toBe(false);
-    expect(btn.innerHTML).toBe(original);
+    expect(btn.innerHTML.replace(' data-state="done"', '')).toBe(original.replace(' data-state="idle"', ''));
+    await new Promise((r) => setTimeout(r, 1900));
+    expect(btn.disabled).toBe(false);
+    expect(btn.dataset.state).toBe('idle');
+  });
+
+  test('échec de l’envoi : bouton réactivé aussitôt, avion reposé', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({ ok: false, status: 500, json: () => Promise.resolve({}) }));
+    loadContact();
+    const btn = document.querySelector('.btn-send');
+    fill();
+    await submit();
+    await flush();
+    expect(btn.disabled).toBe(false);
+    expect(btn.dataset.state).toBe('idle');
+  });
+
+  test('avion : decolle pendant l’envoi (data-state), libellé « Envoi… », puis coche et retour au repos', async () => {
+    let release;
+    global.fetch = jest.fn(() => new Promise((r) => { release = r; }));
+    loadContact();
+    const btn = document.querySelector('.btn-send');
+    const label = btn.querySelector('span');
+    const labelBefore = label.textContent;
+    expect(btn.querySelector('svg.send-icon').getAttribute('aria-hidden')).toBe('true');
+    expect(btn.querySelector('i')).toBeNull();
+    expect(btn.dataset.state).toBe('idle');
+    fill();
+    await submit();
+    expect(btn.dataset.state).toBe('sending');
+    expect(label.textContent).toBe('contact.form_sending');
+    jest.useFakeTimers();
+    release({ ok: true, status: 200 });
+    await flush();
+    expect(btn.dataset.state).toBe('done');
+    expect(label.textContent).toBe(labelBefore);
+    expect(label.getAttribute('data-i18n')).toBe('contact.form_submit');
+    jest.advanceTimersByTime(1900);
+    expect(btn.dataset.state).toBe('idle');
+    jest.useRealTimers();
+  });
+
+  test('avion : echec serveur, il revient se poser aussitot (idle)', async () => {
+    global.fetch = jest.fn(() => Promise.resolve({ ok: false, status: 500 }));
+    loadContact();
+    fill();
+    await submit();
+    expect(document.querySelector('.btn-send').dataset.state).toBe('idle');
   });
 
   test('429 : message du serveur affiché', async () => {

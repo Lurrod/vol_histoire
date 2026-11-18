@@ -16,6 +16,7 @@ window.VH = {
   },
 };
 
+require('./helpers/motion-env').loadMotion();
 require('../js/timeline/util');
 require('../js/timeline/era');
 require('../js/timeline/data');
@@ -162,7 +163,7 @@ describe('render', () => {
     btns[1].click();
     expect(btns[1].classList.contains('active')).toBe(true);
     expect(btns[0].classList.contains('active')).toBe(false);
-    expect(document.getElementById('tl-year-hud-num').textContent).toBe('1990s');
+    expect(document.getElementById('tl-year-hud-num').querySelector('.sr-only').textContent).toBe('1990s');
     expect(document.getElementById('tl-year-hud-label').textContent).toBe('timeline.era_1990_label2');
     expect(window.scrollTo).toHaveBeenCalledTimes(1);
   });
@@ -209,7 +210,7 @@ describe('observers', () => {
     observers.observeChapters();
     const c1990 = document.getElementById('ch-1990');
     expect(c1990.classList.contains('in-view')).toBe(true);
-    expect(document.getElementById('tl-year-hud-num').textContent).toBe('1990s');
+    expect(document.getElementById('tl-year-hud-num').querySelector('.sr-only').textContent).toBe('1990s');
     expect(document.querySelector('[data-target="ch-1990"]').classList.contains('active')).toBe(true);
     expect(document.querySelector('[data-target="ch-1950"]').classList.contains('active')).toBe(false);
   });
@@ -330,9 +331,9 @@ describe('timeline.js — démarrage', () => {
     expect(document.body.classList.contains('tl-has-cinematic')).toBe(true);
     expect(document.querySelectorAll('.tl-chapter')).toHaveLength(3);
     expect(document.querySelectorAll('.tl-mm-btn')).toHaveLength(3);
-    expect(document.getElementById('tl-stat-events').textContent).toBe('2');
-    expect(document.getElementById('tl-stat-aircraft').textContent).toBe('2');
-    expect(document.getElementById('tl-stat-decades').textContent).toBe('3');
+    expect(document.getElementById('tl-stat-events').querySelector('.sr-only').textContent).toBe('2');
+    expect(document.getElementById('tl-stat-aircraft').querySelector('.sr-only').textContent).toBe('2');
+    expect(document.getElementById('tl-stat-decades').querySelector('.sr-only').textContent).toBe('3');
     const hide = window.requestAnimationFrame.mock.calls.at(-1)[0];
     hide();
     expect(document.getElementById('tl-loading').classList.contains('gone')).toBe(true);

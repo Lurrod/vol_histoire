@@ -71,12 +71,16 @@
 /* Classe posée par cookies.js (watchBannerReserve) seulement si le bandeau
    est vraiment rendu : avec `:has(#cookie-banner.show)`, un bandeau masqué
    par un bloqueur laissait 168 px de vide sous le pied de page. */
-html.has-cookie-banner {
-  scroll-padding-bottom: calc(var(--cookie-banner-max) + var(--sp-4));
-}
+/* Écran seulement : à l'impression le bandeau n'est pas rendu, et ses
+   168 px de réserve ajoutaient une page blanche en fin de PDF. */
+@media screen {
+  html.has-cookie-banner {
+    scroll-padding-bottom: calc(var(--cookie-banner-max) + var(--sp-4));
+  }
 
-html.has-cookie-banner body {
-  padding-bottom: var(--cookie-banner-max);
+  html.has-cookie-banner body {
+    padding-bottom: var(--cookie-banner-max);
+  }
 }
 
 .cookie-banner-content {
@@ -224,7 +228,7 @@ html.has-cookie-banner body {
   color: var(--text-ghost);
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 8px;
+  border-radius: 12px;
   transition:
     background-color var(--dur-fast) var(--ease-out),
     color var(--dur-fast) var(--ease-out);
@@ -252,7 +256,7 @@ html.has-cookie-banner body {
   padding: 1rem 1.5rem;
   background: rgba(200, 169, 110, 0.06);
   border-left: 4px solid var(--hud-cyan, #C8A96E);
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .cookie-intro p {
@@ -484,7 +488,7 @@ body.cookie-modal-open {
   margin-top: 2rem;
   background: rgba(184, 134, 11, 0.08);
   border-left: 4px solid var(--warning, #B8860B);
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .cookie-info-box > i, .cookie-info-box > .icon {

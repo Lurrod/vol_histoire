@@ -3634,6 +3634,7 @@ describe('GET /api/hero/discoveries', () => {
         {
           airplane_id: 3, airplane_name: 'Jaguar', airplane_name_en: 'Jaguar',
           kind: 'first_flight', day_gap: 0, event_date: '1968-09-08', year: 1968,
+          image_url: '/assets/airplanes/jaguar.jpg', image_credit: 'SAC Tim Laurence', image_licence: 'OGL v1.0',
         },
       ],
     });
@@ -3650,6 +3651,8 @@ describe('GET /api/hero/discoveries', () => {
     expect(res.body.ephemeris[0]).toMatchObject({
       kind: 'first_flight', day_gap: 0, event_date: '1968-09-08',
       year: 1968, airplane_id: 3, airplane_name: 'Jaguar',
+      // Photo de l'appareil du jour (grande image du haut de l'accueil) et son crédit.
+      image_url: '/assets/airplanes/jaguar.jpg', image_credit: 'SAC Tim Laurence', image_licence: 'OGL v1.0',
     });
     expect(res.body.facts[0]).toMatchObject({
       year: 1961, title_fr: 'Mach 2', airplane_id: 7, airplane_name: 'Mirage III',

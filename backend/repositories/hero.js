@@ -56,16 +56,21 @@ const EPHEMERIS_SQL = `
            LEAST(ABS(raw_gap), 366 - ABS(raw_gap)) AS day_gap
       FROM gaps
   )
-  SELECT id AS airplane_id,
-         name AS airplane_name,
-         name_en AS airplane_name_en,
-         kind,
-         day_gap,
-         to_char(event_date, 'YYYY-MM-DD') AS event_date,
-         EXTRACT(YEAR FROM event_date)::int AS year
-    FROM scored
-   WHERE day_gap <= $2
-   ORDER BY day_gap, event_date
+  -- Photo et crédit : l'appareil du jour est la grande image de l'accueil.
+  SELECT s.id AS airplane_id,
+         s.name AS airplane_name,
+         s.name_en AS airplane_name_en,
+         s.kind,
+         s.day_gap,
+         to_char(s.event_date, 'YYYY-MM-DD') AS event_date,
+         EXTRACT(YEAR FROM s.event_date)::int AS year,
+         a.image_url,
+         a.image_credit,
+         a.image_licence
+    FROM scored s
+    JOIN airplanes a ON a.id = s.id
+   WHERE s.day_gap <= $2
+   ORDER BY s.day_gap, s.event_date
    LIMIT $3
 `;
 

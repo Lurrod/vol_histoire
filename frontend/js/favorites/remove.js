@@ -60,12 +60,14 @@
     }
   }
 
+  /** @returns {boolean} true si le retrait a démarré (sinon le contrôle de
+   *  confirmation doit revenir au repos plutôt que rester sur sa coche). */
   function removeWithUndo(state, btn) {
     // Retrait déjà en attente : pas de second toast ni de second DELETE.
-    if (btn.disabled) return;
+    if (btn.disabled) return false;
     const airplaneId = parseInt(btn.dataset.airplaneId, 10);
     const removed = state.favorites.find(a => a.id === airplaneId);
-    if (!removed) return;
+    if (!removed) return false;
     // Relevé AVANT disabled : le navigateur retire aussitôt le focus d'un
     // bouton désactivé, et le report vers la carte voisine n'aurait plus lieu.
     const card = btn.closest('.aircraft-card');
@@ -90,9 +92,29 @@
     setTimeout(() => {
       if (!undone) commitRemoval(state, airplaneId, restore);
     }, UNDO_DELAY_MS);
+    return true;
   }
 
-  const api = { UNDO_DELAY_MS, showUndoToast, removeWithUndo };
+  /* Retrait en deux temps, sur place (v4.17.0) : confirmation partagée
+   * (shared/confirm-action.js). La poubelle de la carte ouvre « confirmer /
+   * garder » vers la gauche, couvercle soulevé (favorites.css) ; à la
+   * confirmation, la coche se trace à la place de la poubelle, puis le
+   * retrait avec annulation (removeWithUndo) suit. */
+  function armRemoveButton(btn, onConfirm) {
+    return window.VH.confirmAction.arm(btn, {
+      onConfirm,
+      side: 'left',
+      className: 'fav-del',
+      measure: '.fav-bin-check',
+      labels: {
+        group: i18n.t('favorites.remove_confirm_group'),
+        confirm: i18n.t('favorites.remove_confirm'),
+        cancel: i18n.t('favorites.remove_keep'),
+      },
+    });
+  }
+
+  const api = { UNDO_DELAY_MS, showUndoToast, removeWithUndo, armRemoveButton };
   window.VH.favorites.remove = api;
 
   // Export conditionnel pour les tests unitaires (Node.js / jsdom)

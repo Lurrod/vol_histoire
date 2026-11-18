@@ -1,5 +1,7 @@
 /* ======================================================================
-   v4.3.4 — HERO SPLIT (40/60) — éditorial gauche + 2 widgets stackés droite
+   HERO SPLIT (40/60) — éditorial à gauche (titre, phrase, chiffres,
+   recherche : une seule action), l'appareil du jour en grande photo à droite.
+   Le quiz a sa propre section plus bas (home-landing.css).
    Casse volontairement le rythme vertical du reste de la landing :
    le hero est le seul bloc qui se lit gauche→droite.
    ====================================================================== */
@@ -41,7 +43,16 @@
   line-height: 0.98;
   letter-spacing: -0.02em;
   color: var(--white);
-  margin: 0 0 2rem;
+  margin: 0 0 1.25rem;
+}
+/* La phrase qui dit ce qu'est le site, sous le titre. */
+.page-home .hero-split-lead {
+  margin: 0 0 1.5rem;
+  max-width: 34rem;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
+  text-wrap: pretty;
 }
 .page-home .hero-split-title .gradient-text {
   background: linear-gradient(135deg, #E8C98A 0%, var(--hud-cyan) 50%, rgba(255,255,255,0.9) 100%);
@@ -76,7 +87,7 @@
 }
 .page-home .hero-split-dot { opacity: 0.4; }
 
-/* ---------- Colonne droite (widgets stackés) ---------- */
+/* ---------- Colonne droite : l'appareil du jour ---------- */
 .page-home .hero-split-right {
   position: relative;
   display: flex;
@@ -84,12 +95,65 @@
   animation: heroSplitFadeLeft var(--dur-slower) var(--ease-out) calc(var(--stagger-step) * 8) both;
   min-width: 0;
 }
-.page-home .hero-aside-stack {
+/* La photo couvre le cadre ; la légende (« Ce jour-là », la phrase, le lien)
+   est posée en bas sur un voile sombre. Elle entre en fondu une fois chargée
+   (.is-loaded, hero-today.js) ; sans photo, le cadre garde son fond. */
+.page-home .hero-today {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--white-a08);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--night-mid);
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.8);
+}
+.page-home .hero-today-media {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--dur-slower) var(--ease-out);
+}
+.page-home .hero-today-media.is-loaded { opacity: 1; }
+.page-home .hero-today-media picture,
+.page-home .hero-today-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.page-home .hero-today-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(13, 13, 13, 0.92) 0%, rgba(13, 13, 13, 0.55) 30%, transparent 58%);
+}
+.page-home .hero-today-caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  width: 100%;
+  gap: 0.6rem;
+  padding: 1.5rem 1.75rem 1.6rem;
 }
+.page-home .hero-today-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.page-home .hero-today .hero-fact-body {
+  display: block;
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: var(--white);
+}
+.page-home .hero-today-credit {
+  margin: 0.6rem 0 0;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: right;
+}
+.page-home .hero-today-credit[hidden] { display: none; }
+.page-home .hero-today-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
 .page-home .hero-aside-card {
   position: relative;
   background: var(--white-a04);
@@ -282,7 +346,7 @@
   background: var(--white-a07);
   border: 1px solid rgba(255, 255, 255, 0.14);
   color: rgba(255, 255, 255, 0.78);
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.3px;
@@ -351,17 +415,17 @@
     margin-left: auto;
     margin-right: auto;
   }
-  .page-home .hero-aside-stack {
-    max-width: 540px;
-    margin: 0 auto;
-  }
-  .page-home .hero-quiz-stage { aspect-ratio: 16 / 8; }
+  .page-home .hero-split-lead { margin-left: auto; margin-right: auto; }
+  .page-home .hero-split-right { width: 100%; max-width: 640px; margin: 0 auto; }
 }
 @media (max-width: 30em) {
   .page-home .hero-split-grid { padding: calc(var(--header-h) + 2rem) 1rem 2rem; gap: 2rem; }
   .page-home .hero-aside-card { padding: 1rem 1.1rem; }
   .page-home .hero-quiz-options { grid-template-columns: 1fr; }
-  .page-home .hero-fact-body { font-size: 0.9rem; }
+  .page-home .hero-split-lead { font-size: 1rem; }
+  .page-home .hero-today { aspect-ratio: 4 / 3.4; }
+  .page-home .hero-today-caption { padding: 1rem 1.1rem 1.1rem; }
+  .page-home .hero-today .hero-fact-body { font-size: 1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -372,6 +436,7 @@
   .page-home .hero-aside-reroll,
   .page-home .hero-aside-link i,
   .page-home .hero-quiz-image,
+  .page-home .hero-today-media,
   .page-home .hero-aside-link .icon {
     animation: none !important;
     transition: none !important;

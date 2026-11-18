@@ -136,17 +136,73 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 .page-settings .user-info-name { font-weight: 600; font-size: 1rem; color: var(--white); }
 .page-settings .user-info-email { font-size: 0.85rem; color: var(--text-ghost); }
 .page-settings .user-actions { display: flex; gap: 0.5rem; }
-.page-settings .user-actions button { padding: 0.5rem 1rem; border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); font-family: 'DM Sans', sans-serif; }
+.page-settings .user-actions button { padding: 0.5rem 1rem; border: none; border-radius: 12px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out); font-family: 'DM Sans', sans-serif; }
 .page-settings .btn-edit { background: var(--gold-a08); color: var(--hud-cyan); border: 1px solid var(--gold-a15); }
 .page-settings .btn-edit:hover { background: var(--gold-a15); border-color: var(--hud-cyan); }
 .page-settings .btn-delete { background: rgba(231,76,60,0.08); color: var(--accent-text); border: 1px solid rgba(231,76,60,0.15); }
 .page-settings .btn-delete:hover { background: rgba(231,76,60,0.15); border-color: var(--accent); }
+
+/* Suppression d'un utilisateur en deux temps, sur place (admin.js +
+   shared/confirm-action.js). .adm-del enveloppe la poubelle (.btn-delete) et
+   son panneau « supprimer / garder » ; data-state : idle → confirm → done.
+   Le panneau s'ouvre vers la gauche, le couvercle se soulève ; à la
+   confirmation, couvercle et cuve s'effacent et une coche se trace. */
+.page-settings .adm-del { flex-shrink: 0; }
+.page-settings .adm-del .btn-delete { display: grid; place-items: center; padding: 0.5rem 0.75rem; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
+.page-settings .adm-del[data-state="confirm"] .btn-delete { background: rgba(231,76,60,0.15); border-color: var(--accent); color: #ff8a7a; }
+.page-settings .adm-del[data-state="done"] .btn-delete { background: rgba(231,76,60,0.15); border-color: var(--accent); color: #ff8a7a; pointer-events: none; }
+.page-settings .adm-del .btn-delete:focus-visible,
+.page-settings .adm-del .cfm-yes:focus-visible,
+.page-settings .adm-del .cfm-no:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 1px; }
+
+/* Les boutons du panneau reprennent le style de .cfm-yes / .cfm-no, que la
+   règle générique « .user-actions button » écraserait. */
+.page-settings .user-actions .adm-del .cfm-yes,
+.page-settings .user-actions .adm-del .cfm-no {
+  padding: 0 0.65rem;
+  border: 1px solid var(--white-a08);
+  border-radius: 12px;
+  background: var(--white-a04);
+  font-size: 0.8rem;
+}
+.page-settings .user-actions .adm-del .cfm-yes { color: #ff8a7a; border-color: rgba(231,76,60,0.32); background: rgba(231,76,60,0.08); }
+.page-settings .user-actions .adm-del .cfm-yes:hover { background: rgba(231,76,60,0.22); color: var(--white); }
+.page-settings .user-actions .adm-del .cfm-no:hover { background: var(--white-a08); color: var(--white); }
+
+/* La poubelle : trois tracés animés séparément. */
+.page-settings .adm-bin {
+  width: 18px; height: 18px; overflow: visible;
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.page-settings .adm-bin-lid {
+  transform-box: view-box;
+  transform-origin: 4.5px 7px;
+  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+.page-settings .adm-bin-can { transition: opacity var(--dur-fast) var(--ease-out); }
+/* Anticipation au survol, couvercle ouvert pendant la confirmation. */
+.page-settings .btn-delete:hover .adm-bin-lid { transform: translateY(-0.8px) rotate(-7deg); }
+.page-settings .adm-del[data-state="confirm"] .adm-bin-lid { transform: translate(-0.4px, -2.4px) rotate(-24deg); }
+.page-settings .adm-bin-check {
+  stroke-dasharray: 17;
+  stroke-dashoffset: 17;
+  opacity: 0;
+}
+.page-settings .adm-del[data-state="done"] .adm-bin-lid,
+.page-settings .adm-del[data-state="done"] .adm-bin-can { opacity: 0; }
+.page-settings .adm-del[data-state="done"] .adm-bin-check {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant),
+              opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
+}
 .page-settings .role-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-left: 0.5rem; vertical-align: middle; }
 
 /* Pagination utilisateurs — alignée sur le style hangar */
 .page-settings #user-pagination { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1rem; }
 .page-settings #user-pagination:empty { display: none; }
-.page-settings #user-pagination button { padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border: 1px solid var(--white-a08); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out); color: rgba(255,255,255,0.7); }
+.page-settings #user-pagination button { padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border: 1px solid var(--white-a08); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out); color: rgba(255,255,255,0.7); }
 .page-settings #user-pagination button:hover:not(:disabled) { border-color: rgba(255,255,255,0.2); background: var(--white-a07); color: var(--white); }
 .page-settings #user-pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
 .page-settings #user-pagination .page-info { padding: 0.75rem 1.25rem; font-weight: 600; color: var(--text-ghost); }
@@ -214,9 +270,9 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 .page-settings .details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
 .page-settings .detail-item { display: flex; align-items: center; gap: 0.75rem; color: var(--text-ghost); font-size: 0.85rem; }
 .page-settings .detail-item i, .page-settings .detail-item .icon { color: var(--hud-cyan); font-size: 0.9rem; }
-.page-settings .duration-info { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--white-a02); border-radius: 8px; color: var(--text-ghost); font-size: 0.85rem; margin-bottom: 1rem; }
+.page-settings .duration-info { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--white-a02); border-radius: 12px; color: var(--text-ghost); font-size: 0.85rem; margin-bottom: 1rem; }
 .page-settings .duration-info i, .page-settings .duration-info .icon { color: var(--hud-cyan); }
-.page-settings .info-note { display: flex; align-items: start; gap: 0.75rem; padding: 1rem; background: rgba(255,171,0,0.04); border-left: 2px solid rgba(255,171,0,0.3); border-radius: 8px; color: rgba(255,255,255,0.55); font-size: 0.85rem; line-height: 1.5; }
+.page-settings .info-note { display: flex; align-items: start; gap: 0.75rem; padding: 1rem; background: rgba(255,171,0,0.04); border-left: 2px solid rgba(255,171,0,0.3); border-radius: 12px; color: rgba(255,255,255,0.55); font-size: 0.85rem; line-height: 1.5; }
 .page-settings .info-note i, .page-settings .info-note .icon { color: var(--hud-amber); font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
 .page-settings .privacy-actions { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
 .page-settings .data-export-box { padding: 1.5rem 2rem; margin-bottom: 2rem; background: var(--white-a02); border: 1px solid var(--white-a07); border-radius: 12px; }
@@ -228,7 +284,7 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 .page-settings .info-box-header h4 { color: var(--white); font-size: 1.05rem; font-weight: 600; margin: 0; }
 .page-settings .privacy-info-box > p { color: var(--text-ghost); line-height: 1.6; margin-bottom: 1.5rem; }
 .page-settings .info-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
-.page-settings .info-link { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--white-a02); border: 1px solid var(--white-a07); border-radius: 8px; color: var(--white); text-decoration: none; transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out); }
+.page-settings .info-link { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--white-a02); border: 1px solid var(--white-a07); border-radius: 12px; color: var(--white); text-decoration: none; transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out); }
 .page-settings .info-link:hover { border-color: rgba(255,255,255,0.14); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
 .page-settings .info-link i:first-child, .page-settings .info-link .icon:first-child { color: var(--hud-cyan); font-size: 1.15rem; }
 .page-settings .info-link span { flex: 1; font-weight: 500; }
@@ -337,6 +393,7 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
   .page-settings .user-info-name { font-size: 0.95rem; }
   .page-settings .user-info-email { font-size: 0.8rem; }
   .page-settings .user-actions button { padding: 0.5rem 0.875rem; font-size: 0.8rem; }
+  .page-settings .adm-del .cfm-text { display: none; }
   .page-settings #user-pagination { margin: 2rem 0 0.5rem; gap: 0.5rem; flex-wrap: wrap; }
   .page-settings #user-pagination button { padding: 0.65rem 1rem; font-size: 0.9rem; min-height: 44px; flex: 1; min-width: 100px; }
   .page-settings #user-pagination .page-info { padding: 0.65rem 1rem; font-size: 0.85rem; width: 100%; text-align: center; order: 3; }
@@ -417,7 +474,7 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 }
 .page-settings .db-kpi:hover { border-color: var(--gold-a20); background: rgba(200,169,110,0.04); }
 .page-settings .db-kpi-icon { font-size: 1.3rem; color: var(--hud-cyan, #C8A96E); margin-bottom: 0.5rem; opacity: 0.8; }
-.page-settings .db-kpi-val { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--white); line-height: 1; margin-bottom: 0.35rem; }
+.page-settings .db-kpi-val { --roll-h: 1em; font-family: 'DM Sans', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--white); line-height: 1; margin-bottom: 0.35rem; }
 .page-settings .db-kpi-label { font-size: var(--text-xs); color: var(--text-ghost); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; }
 
 /* Charts grid */

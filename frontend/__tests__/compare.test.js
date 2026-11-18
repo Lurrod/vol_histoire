@@ -162,13 +162,85 @@ describe('compare — barre flottante', () => {
     expect(bar.classList.contains('is-leaving')).toBe(false);
   });
 
-  test('le compteur pulse quand la sélection change, barre déjà visible', () => {
+  test('le compteur fait défiler le nombre sans toucher au libellé', () => {
     compare.init({ urlSync: false });
     const cnt = document.getElementById('compare-count');
     compare.toggle(1);
-    expect(cnt.classList.contains('is-bumped')).toBe(false);
+    const num = cnt.querySelector('.cmp-count-num');
+    expect(num.querySelector('.sr-only').textContent).toBe('1');
+    const post = cnt.querySelector('.cmp-count-post');
+    const col = num.querySelector('.t-roll-col');
     compare.toggle(2);
-    expect(cnt.classList.contains('is-bumped')).toBe(true);
+    // Même colonne, même libellé : la bande glisse au lieu d'être recréée.
+    expect(num.querySelector('.t-roll-col')).toBe(col);
+    expect(col.dataset.d).toBe('2');
+    expect(cnt.querySelector('.cmp-count-post')).toBe(post);
+    expect(cnt.classList.contains('is-bumped')).toBe(false);
+  });
+
+  test('« Effacer » demande confirmation sur place avant de vider', () => {
+    compare.init({ urlSync: false });
+    [1, 2, 3].forEach(id => compare.toggle(id));
+    const trigger = document.getElementById('compare-clear');
+    const wrap = trigger.closest('.cfm');
+    expect(wrap.classList.contains('cmp-clear')).toBe(true);
+    trigger.click();
+    expect(wrap.dataset.state).toBe('confirm');
+    expect(compare.getIds()).toEqual([1, 2, 3]);
+    wrap.querySelector('.cfm-no').click();
+    expect(wrap.dataset.state).toBe('idle');
+    expect(compare.getIds()).toEqual([1, 2, 3]);
+
+    trigger.click();
+    wrap.querySelector('.cfm-yes').click();
+    expect(compare.getIds()).toEqual([]);
+    // Remis au repos : la barre réutilisée peut redemander confirmation.
+    expect(wrap.dataset.state).toBe('idle');
+  });
+
+  test('morphing « Effacer » : largeur de l\'emplacement posée à l\'ouverture, rendue à auto au repos', async () => {
+    compare.init({ urlSync: false });
+    compare.toggle(4);
+    const trigger = document.getElementById('compare-clear');
+    const wrap = trigger.closest('.cfm');
+    Object.defineProperty(trigger, 'offsetWidth', { configurable: true, get: () => 76 });
+    Object.defineProperty(wrap.querySelector('.cfm-panel'), 'scrollWidth', { configurable: true, get: () => 180 });
+    trigger.click();
+    await Promise.resolve(); // MutationObserver
+    expect(wrap.style.width).toBe('180px');
+    wrap.querySelector('.cfm-no').click();
+    await Promise.resolve();
+    expect(wrap.style.width).toBe('76px');
+    const end = new window.Event('transitionend', { bubbles: true });
+    Object.defineProperty(end, 'propertyName', { value: 'width' });
+    wrap.dispatchEvent(end);
+    expect(wrap.style.width).toBe('');
+  });
+
+  test('remise au repos pendant que la barre est cachée : aucune largeur figée à 0', async () => {
+    compare.init({ urlSync: false });
+    compare.toggle(4);
+    compare.toggle(4); // sélection vidée : barre cachée, reset() du contrôle
+    await Promise.resolve();
+    const wrap = document.getElementById('compare-clear').closest('.cfm');
+    expect(wrap.style.width).toBe('');
+    compare.toggle(5);
+    await Promise.resolve();
+    expect(wrap.style.width).toBe('');
+  });
+
+  test('« Effacer ? » ouvert puis sélection vidée ailleurs : le panneau revient au repos', () => {
+    compare.init({ urlSync: false });
+    compare.toggle(4);
+    const trigger = document.getElementById('compare-clear');
+    const wrap = trigger.closest('.cfm');
+    trigger.click();
+    expect(wrap.dataset.state).toBe('confirm');
+    compare.toggle(4); // dernière case décochée depuis une carte
+    expect(compare.getIds()).toEqual([]);
+    expect(wrap.dataset.state).toBe('idle');
+    compare.toggle(5);
+    expect(wrap.dataset.state).toBe('idle'); // la barre revient fermée
   });
 
   test('« Copier le lien » affiche une confirmation puis revient à son libellé', async () => {
@@ -183,11 +255,14 @@ describe('compare — barre flottante', () => {
     await Promise.resolve();
     expect(writeText).toHaveBeenCalledWith(expect.stringContaining('/hangar?compare=9'));
     expect(btn.classList.contains('is-copied')).toBe(true);
-    expect(btn.querySelector('i.fa-check, .icon-check')).not.toBeNull();
+    // Maillon et coche sont deux tracés du même SVG, permutés par .is-copied.
+    expect(btn.querySelector('svg.cmp-share-ico .cmp-link')).not.toBeNull();
+    expect(btn.querySelector('svg.cmp-share-ico .cmp-check')).not.toBeNull();
+    expect(btn.querySelector('.cmp-share-label').textContent).toBe('Lien copié');
 
     jest.advanceTimersByTime(2000);
     expect(btn.classList.contains('is-copied')).toBe(false);
-    expect(btn.querySelector('i, .icon')).toBeNull();
+    expect(btn.querySelector('.cmp-share-label').textContent).toBe('Copier le lien');
   });
 });
 

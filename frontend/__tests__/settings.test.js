@@ -5,6 +5,7 @@
  */
 
 const utils = require('../js/utils');
+const { loadMotion } = require('./helpers/motion-env');
 // DOMPurify réel (devDependency) : safeSetHTML l'utilise comme en production.
 global.DOMPurify = require('dompurify');
 
@@ -102,6 +103,9 @@ function installGlobals() {
   global.auth = auth;
 }
 
+/** Valeur lisible d'un compteur « odomètre » (le .sr-only porte le nombre). */
+const rolled = (id) => document.getElementById(id).querySelector('.sr-only').textContent;
+
 function loadModules() {
   jest.resetModules();
   window.VH = {};
@@ -109,6 +113,8 @@ function loadModules() {
   global.safeSetHTML = utils.safeSetHTML;
   require('../js/cookies');
   require('../js/shared/motion');
+  // Odomètre et confirmation sur place (modules partagés d'app.min.js).
+  loadMotion(['.t-roll-col.is-leaving', '.adm-bin-check']);
   ['ui', 'tabs', 'account', 'profile', 'security', 'danger-zone', 'admin', 'dashboard', 'cookies', 'data-export']
     .forEach((m) => require(`../js/settings/${m}`));
   return window.VH.settings;
@@ -515,7 +521,7 @@ describe('VH.settings.admin', () => {
     await S.admin.loadUsers();
     expect(auth.authFetch).toHaveBeenLastCalledWith('/api/users?page=1&limit=8');
     expect(document.querySelectorAll('.user-card')).toHaveLength(3);
-    expect(document.getElementById('total-users').textContent).toBe('19');
+    expect(rolled('total-users')).toBe('19');
     expect(document.querySelector('.prev-page-btn').disabled).toBe(true);
     document.querySelector('.next-page-btn').click();
     await tick();
@@ -542,7 +548,7 @@ describe('VH.settings.admin', () => {
     expect(document.getElementById('user-pagination').innerHTML).toBe('');
     auth.authFetch.mockResolvedValue(jsonResponse(200, { data: 'pas un tableau' }));
     await S.admin.loadUsers();
-    expect(document.getElementById('total-users').textContent).toBe('0');
+    expect(rolled('total-users')).toBe('0');
   });
 
   test('401 : session effacée ; 500 et réseau : message dans la liste', async () => {
@@ -682,19 +688,66 @@ describe('VH.settings.admin', () => {
     expect(modal.classList.contains('hidden')).toBe(true);
   });
 
-  test('suppression : confirmation refusée, acceptée, refus serveur, réseau', async () => {
+  test('suppression : confirmation sur place, succès, refus serveur, réseau', async () => {
+    jest.useFakeTimers();
     const S = setup();
-    window.confirm = jest.fn(() => false);
-    await S.admin.deleteUser(2);
+    await S.admin.loadUsers();
+    const trigger = () => document.querySelector('.btn-delete');
+    const wrapper = () => document.querySelector('.adm-del');
+    // La poubelle est dessinée en SVG, nommée, et enveloppée d'un panneau inerte.
+    expect(trigger().querySelector('svg.adm-bin .adm-bin-lid')).not.toBeNull();
+    expect(trigger().getAttribute('aria-label')).toBe('t:settings.delete_user');
+    expect(wrapper().dataset.state).toBe('idle');
+    expect(wrapper().querySelector('.cfm-yes .cfm-text').textContent).toBe('t:settings.delete_user_confirm');
+    expect(wrapper().querySelector('.cfm-panel').getAttribute('aria-label')).toBe('t:settings.delete_user_group');
+
+    // Ouvrir puis annuler : aucune requête.
+    auth.authFetch.mockClear();
+    trigger().click();
+    expect(wrapper().dataset.state).toBe('confirm');
+    wrapper().querySelector('.cfm-no').click();
+    expect(wrapper().dataset.state).toBe('idle');
     expect(auth.authFetch).not.toHaveBeenCalled();
-    window.confirm = jest.fn(() => true);
+
+    // Confirmer : coche tracée, puis DELETE.
+    auth.authFetch.mockResolvedValueOnce(jsonResponse(200, {}));
+    trigger().click();
+    wrapper().querySelector('.cfm-yes').click();
+    expect(wrapper().dataset.state).toBe('done');
+    jest.advanceTimersByTime(400);
+    await Promise.resolve();
+    expect(auth.authFetch).toHaveBeenCalledWith(expect.stringMatching(/\/users\/\d+$/), { method: 'DELETE' });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(toasts).toContainEqual(['success', 't:settings.toast_user_deleted']);
+
+    // Refus serveur : message du serveur, bouton remis au repos.
+    await S.admin.loadUsers();
+    auth.authFetch.mockResolvedValueOnce(jsonResponse(403, { message: 'Interdit' }));
+    trigger().click();
+    wrapper().querySelector('.cfm-yes').click();
+    jest.advanceTimersByTime(400);
+    for (let i = 0; i < 6; i++) await Promise.resolve();
+    expect(toasts).toContainEqual(['error', 'Interdit']);
+    expect(wrapper().dataset.state).toBe('idle');
+
+    // Réseau.
+    auth.authFetch.mockRejectedValueOnce(new Error('réseau'));
+    trigger().click();
+    wrapper().querySelector('.cfm-yes').click();
+    jest.advanceTimersByTime(400);
+    for (let i = 0; i < 6; i++) await Promise.resolve();
+    expect(toasts).toContainEqual(['error', 't:settings.toast_network_error']);
+    expect(wrapper().dataset.state).toBe('idle');
+  });
+
+  test('deleteUser sans confirmation attachée : requête directe', async () => {
+    const S = setup();
     auth.authFetch.mockResolvedValueOnce(jsonResponse(200, {}));
     await S.admin.deleteUser(2);
     expect(auth.authFetch).toHaveBeenCalledWith('/api/users/2', { method: 'DELETE' });
-    expect(toasts).toContainEqual(['success', 't:settings.toast_user_deleted']);
     auth.authFetch.mockResolvedValueOnce(jsonResponse(403, { message: 'Interdit' }));
     await S.admin.deleteUser(2);
-    expect(toasts).toContainEqual(['error', 'Interdit']);
     auth.authFetch.mockRejectedValueOnce(new Error('réseau'));
     await S.admin.deleteUser(2);
     expect(toasts).toContainEqual(['error', 't:settings.toast_network_error']);
@@ -737,7 +790,8 @@ describe('VH.settings.dashboard', () => {
     expect(document.getElementById('db-avatar').textContent).toBe('C');
     expect(document.getElementById('db-role-badge').className).toBe('db-role-badge role-editor');
     jest.advanceTimersByTime(1000);
-    expect(document.getElementById('db-total-fav').textContent).toBe('4');
+    expect(rolled('db-total-fav')).toBe('4');
+    expect(rolled('db-total-countries')).toBe('3');
     const rows = document.querySelectorAll('#db-country-bars .db-bar-row');
     expect(rows[0].querySelector('.db-bar-label').textContent).toBe('États-Unis');
     expect(rows[0].querySelector('.db-bar-fill').style.width).toBe('100%');

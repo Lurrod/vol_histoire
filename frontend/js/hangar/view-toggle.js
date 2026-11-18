@@ -18,7 +18,9 @@
       wrap.innerHTML =
         '<button id="view-grid" class="view-btn" aria-pressed="true" aria-label="Vue grille"><i class="fas fa-th"></i></button>' +
         '<button id="view-list" class="view-btn" aria-pressed="false" aria-label="Vue liste"><i class="fas fa-list"></i></button>';
-      toolbar.insertBefore(wrap, sortSel);
+      // Le tri amélioré vit dans son enveloppe .cselect (shared/custom-select.js).
+      const anchor = sortSel.closest('.cselect') || sortSel;
+      anchor.parentNode.insertBefore(wrap, anchor);
     }
 
     function applyView() {

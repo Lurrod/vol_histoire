@@ -135,9 +135,8 @@ app.use((req, res, next) => {
 // -----------------------------------------------------------------------------
 // Sécurité : CORS restreint
 // -----------------------------------------------------------------------------
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',')
-  : ['http://localhost:3000', 'https://vol-histoire.titouan-borde.com'];
+// Liste en production ; en local, localhost ET 127.0.0.1 (utils/origins.js).
+const allowedOrigins = require('./utils/origins').allowedOrigins(process.env);
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -346,6 +345,7 @@ app.use('/api', createMonitoringRouter(() => pool));
 // Cache headers : 30 jours sur fonts (immutable), 1 an sur les fichiers dont
 // l'URL porte un ?v= (le bump de version suffit à invalider), 1 jour sur le
 // reste, pas de cache sur HTML (rendu dynamique potentiel + invalidation rapide).
+const { versionedAssetCache } = require('./utils/asset-cache');
 const IMAGE_EXTS = new Set(['.svg', '.png', '.jpg', '.jpeg', '.webp', '.avif', '.ico']);
 
 function isVersionedRequest(req) {
@@ -420,15 +420,16 @@ const STATIC_OPTS = {
       res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
     } else if (ext === '.css' || ext === '.js') {
       // Les CSS et JS sont servis avec ?v=<version> : le contenu d'une URL
-      // donnée ne change jamais, donc un an de cache immuable.
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      // donnée ne change jamais, donc un an de cache immuable — sauf en
+      // développement, où la version ne bouge pas (utils/asset-cache.js).
+      res.setHeader('Cache-Control', versionedAssetCache(process.env));
     } else if (IMAGE_EXTS.has(ext)) {
       // Images : une URL versionnée (?v=, posé par shared/picture.js et le
       // SSR des fiches) change à chaque release, donc un an immuable. Sans
       // version (og:image, JSON-LD, favicons, logos), une photo peut être
       // remplacée sous le même nom : une journée, revalidée en arrière-plan.
       res.setHeader('Cache-Control', isVersionedRequest(res.req)
-        ? 'public, max-age=31536000, immutable'
+        ? versionedAssetCache(process.env)
         : 'public, max-age=86400, s-maxage=604800, stale-while-revalidate=604800');
     }
   },
@@ -462,8 +463,10 @@ const pkgVersion = (() => {
   catch { return 'dev'; }
 })();
 const frontendRoot = path.join(__dirname, '../frontend');
-const htmlCache = buildHtmlCache(frontendRoot, pkgVersion);
-logger.info && logger.info('HTML cache initialisé', { count: htmlCache.count, version: pkgVersion });
+// En développement, ?v= change à chaque démarrage (utils/asset-cache.js).
+const pageAssetVersion = require('./utils/asset-cache').currentAssetVersion();
+const htmlCache = buildHtmlCache(frontendRoot, pageAssetVersion);
+logger.info && logger.info('HTML cache initialisé', { count: htmlCache.count, version: pageAssetVersion });
 // Marqueur <!-- @include x --> sans fragment frontend/partials/x.html : la
 // page est servie avec le marqueur, l'oubli doit se voir au démarrage.
 htmlCache.warnings.forEach(w => logger.warn && logger.warn('Inclusion HTML non résolue', { detail: w }));
@@ -564,7 +567,9 @@ app.get('/api/config', (req, res) => {
   res.set('Cache-Control', 'public, max-age=300');
   res.json({
     version: pkgVersion,
-    hcaptchaSitekey: process.env.HCAPTCHA_SITEKEY || null,
+    // Clé effective : vide en développement (captcha désactivé, pas de
+    // widget) — middleware/hcaptcha.js, captchaKeys.
+    hcaptchaSitekey: require('./middleware/hcaptcha').captchaKeys(process.env).sitekey || null,
   });
 });
 

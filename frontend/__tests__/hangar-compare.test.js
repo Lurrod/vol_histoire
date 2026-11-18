@@ -21,6 +21,8 @@ function card(id, withCheck = true) {
   return `<article class="aircraft-card" data-id="${id}"><h3><a href="/details/a-${id}">A${id}</a></h3>${check}</article>`;
 }
 
+const { loadMotion } = require('./helpers/motion-env');
+
 function boot(search = '', cardsHtml = card(1) + card(2)) {
   jest.resetModules();
   window.history.replaceState(null, '', `/hangar${search}`);
@@ -29,6 +31,7 @@ function boot(search = '', cardsHtml = card(1) + card(2)) {
   global.showToast = jest.fn();
   window.VH = { shared: {}, hangar: {} };
   require('../js/shared/motion');
+  loadMotion(); // odomètre + confirmation sur place de la barre
   store = require('../js/shared/compare');
   require('../js/hangar/compare');
   state = { compareIds: [] };

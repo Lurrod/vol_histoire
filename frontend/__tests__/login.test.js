@@ -33,7 +33,7 @@ const LOGIN_DOM = `
       </form>
       <button type="button" class="switch-form" id="switch-to-login">Se connecter</button>
     </div>
-    <span id="stat-airplanes"></span><span id="stat-years"></span><span id="stat-years-label"></span><span id="stat-countries"></span>
+    <div class="auth-visual"><div class="auth-photo-media"></div></div><span id="stat-airplanes"></span><span id="stat-years"></span><span id="stat-years-label"></span><span id="stat-countries"></span>
   </section>`;
 
 function jsonResponse(status, body) {
@@ -53,7 +53,6 @@ function installGlobals() {
     calculatePasswordStrength: utils.calculatePasswordStrength,
     isValidPassword: utils.isValidPassword,
     setupPasswordToggle: jest.fn(),
-    animateNumber: jest.fn((el, n) => { el.textContent = String(n); }),
   });
   toasts = [];
   global.showToast = jest.fn((msg, type) => toasts.push([type, msg]));
@@ -83,11 +82,12 @@ function simulateAnimatedExit() {
 function loadModules() {
   jest.resetModules();
   window.VH = {};
-  require('../js/shared/motion');
+  require('./helpers/motion-env').loadMotion();
   require('../js/login/state');
   require('../js/login/strength');
   require('../js/login/tabs');
   require('../js/login/ui');
+  require('../js/login/visual');
   require('../js/login/forms');
   // jsdom ne navigue pas : on relève les redirections demandées.
   window.VH.login.forms.navigate = jest.fn((url) => navigations.push(url));
@@ -256,8 +256,8 @@ describe('VH.login.ui', () => {
     const { ui } = loadModules();
     auth.fetchWithTimeout.mockResolvedValue(jsonResponse(200, { airplanes: 434, countries: 33, earliest_year: 1945, latest_year: 2026 }));
     await ui.fetchStats();
-    expect(document.getElementById('stat-airplanes').textContent).toBe('434');
-    expect(document.getElementById('stat-years').textContent).toBe('81');
+    expect(document.getElementById('stat-airplanes').querySelector('.sr-only').textContent).toBe('434');
+    expect(document.getElementById('stat-years').querySelector('.sr-only').textContent).toBe('81');
     expect(document.getElementById('stat-years-label').textContent).toBe('t:login.years_label');
   });
 
@@ -532,6 +532,8 @@ describe('login.js — point d\'entrée', () => {
     expect(auth.init).toHaveBeenCalledTimes(1);
     expect(global.setupPasswordToggle).toHaveBeenCalledTimes(2);
     expect(auth.fetchWithTimeout).toHaveBeenCalledWith('/api/stats');
+    // Panneau gauche : la photo est cherchée dans le catalogue public.
+    expect(auth.fetchWithTimeout).toHaveBeenCalledWith(expect.stringMatching(/^\/api\/airplanes\?search=/));
     document.getElementById('switch-to-register').click();
     expect(document.getElementById('register-slide').classList.contains('active')).toBe(true);
     submit(document.getElementById('register-form'));

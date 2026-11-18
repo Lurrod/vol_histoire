@@ -101,6 +101,13 @@ describe('shared/card — carte « block link »', () => {
     const btn = article.querySelector('.favorite-remove');
     expect(btn.dataset.airplaneId).toBe('30');
     expect(btn.getAttribute('title')).toBe('Retirer des favoris');
+    expect(btn.getAttribute('aria-label')).toBe('Retirer des favoris');
+    expect(btn.getAttribute('type')).toBe('button');
+    // Poubelle en trois tracés animés séparément (favorites.css)
+    ['.fav-bin-lid', '.fav-bin-can', '.fav-bin-check'].forEach((sel) => {
+      expect(btn.querySelector(`svg.fav-bin ${sel}`)).not.toBeNull();
+    });
+    expect(btn.querySelector('svg').getAttribute('aria-hidden')).toBe('true');
     expect(article.querySelector('.favorited-date')).not.toBeNull();
     expect(article.querySelector('.aircraft-description')).toBeNull();
   });

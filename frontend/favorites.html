@@ -85,26 +85,26 @@
     <div class="container">
       <div class="auth-gate-content">
         <div class="auth-gate-visual">
-          <div class="gate-radar">
-            <div class="radar-ring"></div>
-            <div class="radar-ring r2"></div>
-            <div class="radar-sweep"></div>
-            <div class="radar-center"></div>
+          <div class="gate-showcase" aria-hidden="true">
+            <div class="gate-card"><span class="gate-card-heart"><i class="fas fa-heart"></i></span></div>
+            <div class="gate-card"><span class="gate-card-heart"><i class="fas fa-heart"></i></span></div>
+            <div class="gate-card"><span class="gate-card-heart"><i class="fas fa-heart"></i></span></div>
           </div>
         </div>
         <div class="auth-gate-info">
-          <div class="gate-badge"><i class="fas fa-shield-halved"></i> <span data-i18n="favorites.restricted">Accès Restreint</span></div>
-          <h2 data-i18n="favorites.auth_required">Identification Requise</h2>
-          <p data-i18n="favorites.auth_desc">Cette zone nécessite une authentification opérateur. Connectez-vous pour accéder à votre collection de favoris et sauvegarder vos appareils préférés.</p>
-          <div class="gate-features">
-            <div class="gate-feature"><i class="fas fa-check-circle"></i><span data-i18n="favorites.auth_feat_1">Sauvegardez vos avions préférés</span></div>
-            <div class="gate-feature"><i class="fas fa-check-circle"></i><span data-i18n="favorites.auth_feat_2">Accès instantané à votre collection</span></div>
-            <div class="gate-feature"><i class="fas fa-check-circle"></i><span data-i18n="favorites.auth_feat_3">Synchronisation multi-appareils</span></div>
-          </div>
+          <p class="gate-badge"><i class="fas fa-heart"></i> <span data-i18n="favorites.restricted">Vos favoris</span></p>
+          <h2 data-i18n="favorites.auth_required">Gardez vos appareils sous la main</h2>
+          <p data-i18n="favorites.auth_desc">Connectez-vous pour retrouver ici les appareils marqués d'un cœur sur leur fiche.</p>
+          <ul class="gate-features">
+            <li class="gate-feature"><i class="fas fa-heart"></i><span data-i18n="favorites.auth_feat_1">Un cœur sur chaque fiche pour la garder</span></li>
+            <li class="gate-feature"><i class="fas fa-sliders-h"></i><span data-i18n="favorites.auth_feat_2">Recherche, filtres et tri dans votre sélection</span></li>
+            <li class="gate-feature"><i class="fas fa-check-circle"></i><span data-i18n="favorites.auth_feat_3">La même sélection sur tous vos écrans</span></li>
+          </ul>
           <div class="gate-actions">
-            <a href="/login" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> <span data-i18n="favorites.login_btn">S'identifier</span></a>
+            <a href="/login" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> <span data-i18n="favorites.login_btn">Se connecter</span></a>
             <a href="/login#register" class="btn btn-ghost"><i class="fas fa-user-plus"></i> <span data-i18n="favorites.register_btn">Créer un compte</span></a>
           </div>
+          <a href="/hangar" class="gate-browse"><span data-i18n="favorites.gate_browse">Ou parcourir le hangar sans compte</span> <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
     </div>

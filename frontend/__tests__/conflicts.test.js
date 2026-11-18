@@ -34,7 +34,7 @@ describe('renderWars — carte cliquable vers la page du conflit', () => {
 
   test('conflit en cours : « auj. » au lieu de « ? »', () => {
     render.renderWars([{ name: 'Ukraine', slug: 'u', description: 'd', date_start: '2022-02-24', date_end: null }]);
-    expect(document.getElementById('wars-list').innerHTML).toContain('2022 - details.war_ongoing');
+    expect(document.getElementById('wars-list').innerHTML).toContain('2022 – details.war_ongoing');
   });
 });
 

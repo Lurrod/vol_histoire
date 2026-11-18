@@ -265,25 +265,31 @@ describe('setupPasswordToggle', () => {
     setupPasswordToggle(button, input);
     expect(button.getAttribute('aria-pressed')).toBe('false');
 
-    // Premier clic → text, icône œil ouvert
+    // Œil dessiné posé une seule fois, à la place de l'icône Font Awesome.
+    expect(button.querySelector('i')).toBeNull();
+    const eye = button.querySelector('svg.pw-eye');
+    expect(eye).not.toBeNull();
+    expect(eye.getAttribute('aria-hidden')).toBe('true');
+    // Paupière, pupille et cils (lisibles œil fermé) : trois pièces animées.
+    ['.pw-eye-lid', '.pw-eye-pupil', '.pw-eye-lashes'].forEach((sel) => {
+      expect(eye.querySelector(sel)).not.toBeNull();
+    });
+
+    // Premier clic → text, état « visible » porté par aria-pressed
     button.click();
     expect(input.type).toBe('text');
     expect(button.getAttribute('aria-pressed')).toBe('true');
-    expect(button.querySelectorAll('i')).toHaveLength(1);
-    expect(button.querySelector('i').classList.contains('fa-eye')).toBe(true);
-    expect(button.querySelector('i').classList.contains('fa-eye-slash')).toBe(false);
+    expect(button.querySelector('svg.pw-eye')).toBe(eye);
 
-    // Deuxième clic → password, icône œil barré
+    // Deuxième clic → password, paupière refermée
     button.click();
     expect(input.type).toBe('password');
     expect(button.getAttribute('aria-pressed')).toBe('false');
-    expect(button.querySelectorAll('i')).toHaveLength(1);
-    expect(button.querySelector('i').classList.contains('fa-eye-slash')).toBe(true);
+    expect(button.querySelectorAll('svg')).toHaveLength(1);
   });
 
   // Régression : icons.js remplace le <i> par un <svg class="icon …"> au
-  // chargement. L'ancien code cherchait un <i>, obtenait null et levait une
-  // TypeError : le champ basculait, l'icône jamais.
+  // chargement ; l'œil dessiné doit aussi remplacer cette version.
   test('remplace une icône déjà convertie en SVG par icons.js', () => {
     const button = document.createElement('button');
     button.innerHTML = '<svg class="icon icon-eye-slash" aria-hidden="true"></svg>';
@@ -294,8 +300,17 @@ describe('setupPasswordToggle', () => {
     expect(() => button.click()).not.toThrow();
 
     expect(input.type).toBe('text');
-    expect(button.querySelector('svg')).toBeNull();
-    expect(button.querySelector('i.fa-eye')).not.toBeNull();
+    expect(button.querySelector('svg.icon')).toBeNull();
+    expect(button.querySelectorAll('svg.pw-eye')).toHaveLength(1);
+  });
+
+  test('bouton vide : l\'œil est ajouté ; second appel : pas de doublon', () => {
+    const button = document.createElement('button');
+    const input = document.createElement('input');
+    setupPasswordToggle(button, input);
+    expect(button.querySelectorAll('svg.pw-eye')).toHaveLength(1);
+    setupPasswordToggle(button, input);
+    expect(button.querySelectorAll('svg.pw-eye')).toHaveLength(1);
   });
 
   test('bascule aussi les champs liés (confirmation)', () => {
@@ -358,6 +373,27 @@ describe('calculatePasswordStrength', () => {
 describe('setFieldError', () => {
   test('ne crash pas si inputEl est null', () => {
     expect(() => setFieldError(null, 'erreur')).not.toThrow();
+  });
+
+  test("select amélioré : la secousse s'applique au déclencheur visible, pas au natif masqué", () => {
+    const group = document.createElement('div');
+    group.innerHTML = '<div class="cselect"><select id="sh-sel"></select><div class="cselect-trigger"></div></div>';
+    document.body.appendChild(group);
+    setFieldError(document.getElementById('sh-sel'), 'Choix requis');
+    expect(group.querySelector('.cselect-trigger').classList.contains('is-shaking')).toBe(true);
+    expect(document.getElementById('sh-sel').classList.contains('is-shaking')).toBe(false);
+    group.remove();
+  });
+
+  test("select amélioré (VH.customSelect) : le message se place après l'enveloppe .cselect", () => {
+    const group = document.createElement('div');
+    group.innerHTML = '<div class="cselect"><select id="role-sel"></select><div class="cselect-trigger"></div></div>';
+    document.body.appendChild(group);
+    setFieldError(document.getElementById('role-sel'), 'Choix requis');
+    const err = document.getElementById('role-sel-error');
+    expect(err.previousElementSibling.className).toBe('cselect');
+    expect(err.parentElement).toBe(group);
+    group.remove();
   });
 
   test('ajoute aria-invalid et crée un span.form-error', () => {
@@ -578,6 +614,21 @@ describe('trapFocus', () => {
     document.getElementById('a').focus();
     conteneur.dispatchEvent(tab({ shiftKey: true }));
     expect(document.activeElement.id).toBe('c');
+    piege.destroy();
+  });
+
+  test("select amélioré en tête de modale : le premier focusable est son déclencheur, pas le natif masqué", () => {
+    conteneur.innerHTML = '<div class="cselect"><select class="cselect-native" tabindex="-1"><option>x</option></select>'
+      + '<div class="cselect-trigger" role="combobox" tabindex="0" id="t"></div></div><button id="z">Z</button>';
+    conteneur.querySelectorAll('select, [role="combobox"], button').forEach((el) => {
+      Object.defineProperty(el, 'offsetParent', { get: () => conteneur, configurable: true });
+    });
+    const piege = trapFocus(conteneur);
+    // Maj+Tab depuis le déclencheur (vrai premier élément) reboucle : avec le
+    // natif masqué compté comme « premier », le focus s'échappait de la modale.
+    document.getElementById('t').focus();
+    conteneur.dispatchEvent(tab({ shiftKey: true }));
+    expect(document.activeElement.id).toBe('z');
     piege.destroy();
   });
 

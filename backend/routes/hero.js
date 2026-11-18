@@ -14,7 +14,7 @@
  *
  * Cache applicatif (Redis si dispo, mémoire sinon) — TTL 10 min, **clé par
  * jour** : sans ça un cache posé à 23h55 servirait l'éphéméride de la veille.
- * Invalidation manuelle via router.invalidateCache() ou clé vdh:hero:v2:<jour>
+ * Invalidation manuelle via router.invalidateCache() ou clé vdh:hero:v3:<jour>
  * (déclenchée par les routes airplanes quand une fiche change).
  */
 const express = require('express');
@@ -24,7 +24,9 @@ const { todayInParis } = require('../utils/day');
 const logger = require('../logger');
 const heroRepo = require('../repositories/hero');
 
-const CACHE_PREFIX = 'vdh:hero:v2';
+// v3 : l'éphéméride porte la photo de l'appareil (accueil v4.17) — l'ancienne
+// clé servirait encore 10 minutes une réponse sans image.
+const CACHE_PREFIX = 'vdh:hero:v3';
 const CACHE_TTL_S = 10 * 60; // 10 minutes
 
 // Fenêtre de repli quand la date du jour ne porte aucun anniversaire.
@@ -92,6 +94,9 @@ module.exports = function createHeroRouter(getPool) {
         airplane_id: r.airplane_id,
         airplane_name: r.airplane_name,
         airplane_name_en: r.airplane_name_en,
+        image_url: r.image_url,
+        image_credit: r.image_credit,
+        image_licence: r.image_licence,
       })),
     };
 

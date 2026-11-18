@@ -30,8 +30,10 @@ const { isValidDbId } = require('../middleware/input-guards');
 const FRONTEND_DIR = path.join(__dirname, '../../frontend');
 const LOCAL_IMAGE_RE = /^\/assets\/airplanes\/([^/?#]+)\.(jpe?g|png)(\?.*)?$/i;
 
+// Même ?v= que les pages en cache (en développement : change à chaque
+// démarrage, utils/asset-cache.js).
 function readVersion() {
-  try { return require('../package.json').version || 'dev'; } catch { return 'dev'; }
+  return require('../utils/asset-cache').currentAssetVersion();
 }
 
 /**

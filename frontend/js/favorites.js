@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     authGate?.classList.remove('hidden');
     favoritesContent?.classList.add('hidden');
     document.querySelector('.page-hero')?.classList.add('hidden');
+    // Panneau de gauche : aperçu de collection tiré du catalogue.
+    F.gate.load(authGate?.querySelector('.gate-showcase'));
     return;
   }
 

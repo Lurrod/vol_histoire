@@ -12,6 +12,7 @@ global.i18n = { t: (key, p) => (p ? `${key}:${JSON.stringify(p)}` : key) };
 global.animateNumber = jest.fn();
 
 require('../js/shared/motion');
+require('../js/shared/rolling-number');
 const filters = require('../js/hangar/filters');
 const render = require('../js/hangar/render');
 
@@ -80,7 +81,7 @@ describe('pagination', () => {
   test('libellés traduits et bornes : précédent désactivé en page 1, suivant en dernière page', () => {
     render.renderPagination(makeState({ total: 13, currentPage: 1 }));
     const c = document.getElementById('pagination-container');
-    expect(c.querySelector('.page-info').textContent).toBe('hangar.page_info:{"current":1,"total":3}');
+    expect(c.querySelector('.page-info .sr-only').textContent).toBe('hangar.page_info:{"current":1,"total":3}');
     expect(c.querySelector('.prev-page-btn').disabled).toBe(true);
     expect(c.querySelector('.next-page-btn').disabled).toBe(false);
     expect(c.querySelector('.prev-page-btn').textContent).toContain('hangar.prev_page');
@@ -88,6 +89,24 @@ describe('pagination', () => {
 
     render.renderPagination(makeState({ total: 13, currentPage: 3 }));
     expect(c.querySelector('.next-page-btn').disabled).toBe(true);
+    expect(c.querySelector('.prev-page-btn').disabled).toBe(false);
+  });
+
+  test("le compteur de page persiste d'un rendu à l'autre (le chiffre qui change tourne)", async () => {
+    render.renderPagination(makeState({ total: 20, currentPage: 1 }));
+    const c = document.getElementById('pagination-container');
+    const info = c.querySelector('.page-info');
+    // Jamais détaché : retiré puis réinséré, il perdrait son style de départ
+    // et le chiffre sauterait au lieu de glisser.
+    const removed = [];
+    const mo = new MutationObserver(rs => rs.forEach(r => removed.push(...r.removedNodes)));
+    mo.observe(c, { childList: true });
+    render.renderPagination(makeState({ total: 20, currentPage: 2 }));
+    await Promise.resolve();
+    mo.disconnect();
+    expect(removed).not.toContain(info);
+    expect(c.querySelector('.page-info')).toBe(info);
+    expect(info.querySelector('.sr-only').textContent).toBe('hangar.page_info:{"current":2,"total":4}');
     expect(c.querySelector('.prev-page-btn').disabled).toBe(false);
   });
 
@@ -167,17 +186,20 @@ describe('compteurs', () => {
     expect(el.textContent).toBe('hangar.results:{"count":2}');
   });
 
+  // Valeur lisible du compteur « odomètre » (VH.rollingNumber).
+  const stat = (id) => document.getElementById(id).querySelector('.sr-only').textContent;
+
   test('statistiques : total global, nombre de pays et de générations du référentiel', () => {
     render.updateStats(makeState({ total: 434 }));
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-aircraft'), 434);
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-countries'), 3);
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-generations'), 2);
+    expect(stat('total-aircraft')).toBe('434');
+    expect(stat('total-countries')).toBe('3');
+    expect(stat('total-generations')).toBe('2');
   });
 
   test('statistiques sans total ni référentiel', () => {
     render.updateStats(makeState({ total: undefined, aircraft: [{}], countries: undefined, generations: undefined }));
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-aircraft'), 1);
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-countries'), 0);
-    expect(global.animateNumber).toHaveBeenCalledWith(document.getElementById('total-generations'), 0);
+    expect(stat('total-aircraft')).toBe('1');
+    expect(stat('total-countries')).toBe('0');
+    expect(stat('total-generations')).toBe('0');
   });
 });

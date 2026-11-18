@@ -34,6 +34,7 @@ function boot(lang = 'fr', dict = {}) {
   require('../js/shared/picture');
   require('../js/details/data');
   require('../js/details/markdown');
+  require('../js/details/key-dates');
   render = require('../js/details/render');
 }
 
@@ -488,7 +489,7 @@ describe('renderWars — liens vers les conflits', () => {
   test('conflit sans fin mais avec début : « en cours »', () => {
     boot();
     render.renderWars([{ name: 'Ukraine', description: 'd', date_start: '2022-02-24', date_end: null }]);
-    expect(document.querySelector('.war-period span').textContent).toBe('2022 - details.war_ongoing');
+    expect(document.querySelector('.war-period span').textContent).toBe('2022 – details.war_ongoing');
   });
 
   test('sans description : texte de repli ; sans slug : titre non cliquable', () => {

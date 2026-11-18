@@ -121,6 +121,14 @@
     return (out === key && fallback) ? fallback : out;
   }
 
+  /* Maillon de chaîne + coche : deux groupes que compare.css fait permuter à la
+   * copie du lien (le maillon se replie, la coche se trace). */
+  const LINK_SVG =
+    '<svg class="cmp-share-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    '<g class="cmp-link"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/>' +
+    '<path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></g>' +
+    '<path class="cmp-check" d="M5.5 12.5l4.2 4.2 8.8-9"/></svg>';
+
   function ensureUi() {
     if (document.getElementById('compare-bar')) return;
 
@@ -130,7 +138,8 @@
     bar.className = 'compare-bar hidden';
     bar.innerHTML =
       '<span id="compare-count"></span>' +
-      '<button type="button" id="compare-share" class="btn btn-secondary btn-sm">' + escapeHtml(t('hangar.compare_share', 'Copier le lien')) + '</button>' +
+      '<button type="button" id="compare-share" class="btn btn-secondary btn-sm">' + LINK_SVG +
+        '<span class="cmp-share-label">' + escapeHtml(t('hangar.compare_share', 'Copier le lien')) + '</span></button>' +
       '<button type="button" id="compare-clear" class="btn btn-secondary btn-sm">' + escapeHtml(t('hangar.compare_clear', 'Effacer')) + '</button>' +
       '<button type="button" id="compare-view" class="btn btn-primary btn-sm">' + escapeHtml(t('hangar.compare_view', 'Comparer')) + '</button>';
     document.body.appendChild(bar);
@@ -147,7 +156,7 @@
       '<div id="compare-modal-body"></div>';
     document.body.appendChild(dlg);
 
-    document.getElementById('compare-clear').addEventListener('click', clear);
+    armClear(document.getElementById('compare-clear'));
     document.getElementById('compare-view').addEventListener('click', open);
     document.getElementById('compare-share').addEventListener('click', shareLink);
     dlg.querySelectorAll('.compare-modal-close').forEach((btn) => {
@@ -184,7 +193,6 @@
   /* La barre entre en glissant (vh-enter) ; elle sortait d'un coup.
    * .is-leaving joue la sortie, puis .hidden la retire du rendu. */
   let cancelBarLeave = null;
-  let lastCount = 0;
 
   function showBar(bar) {
     if (cancelBarLeave) { cancelBarLeave(); cancelBarLeave = null; }
@@ -218,9 +226,47 @@
     if (!finished) cancelModalClose = cancel;
   }
 
-  // Petite pulsation du compteur quand la sélection change, barre déjà visible.
-  function bumpCount(cnt) {
-    VH.motion.replay(cnt, 'is-bumped');
+  /* « Effacer » vide jusqu'à trois appareils d'un clic : le bouton se
+   * transforme sur place, depuis son centre, en « ✓ Effacer · ✗ Garder »
+   * (option morph de VH.confirmAction, compare.css). Une fois vidée, la confirmation revient au repos : la barre est
+   * réutilisée à la prochaine sélection. */
+  let clearControl = null;
+
+  function armClear(btn) {
+    const control = VH.confirmAction.arm(btn, {
+      showText: true,
+      morph: true,
+      className: 'cmp-clear',
+      // Évalués à l'ouverture : la langue peut ne pas être chargée à l'armement.
+      labels: {
+        group: () => t('hangar.compare_clear_group', 'Effacer la sélection ?'),
+        confirm: () => t('hangar.compare_clear_confirm', 'Effacer'),
+        cancel: () => t('hangar.compare_clear_keep', 'Garder'),
+      },
+      onConfirm: () => {
+        clear();
+        control.reset();
+      },
+    });
+    if (control) clearControl = control;
+  }
+
+  /* Compteur « N sélectionnés » : seul le nombre défile (odomètre), le libellé
+   * autour reste du texte ordinaire. Le nombre est repéré dans le texte
+   * traduit ; sans lui (traduction de repli), tout le texte passe par
+   * l'odomètre. */
+  function paintCount(cnt, n, text) {
+    if (!cnt.firstElementChild) {
+      cnt.innerHTML = '<span class="cmp-count-pre"></span><span class="cmp-count-num"></span>' +
+        '<span class="cmp-count-post"></span>';
+    }
+    const at = text.indexOf(String(n));
+    const [pre, mid, post] = at < 0
+      ? ['', text, '']
+      : [text.slice(0, at), String(n), text.slice(at + String(n).length)];
+    cnt.querySelector('.cmp-count-pre').textContent = pre;
+    cnt.querySelector('.cmp-count-post').textContent = post;
+    VH.rollingNumber.setText(cnt.querySelector('.cmp-count-num'), mid);
   }
 
   function renderBar() {
@@ -232,30 +278,40 @@
     const cnt = document.getElementById('compare-count');
     if (cnt) {
       const key = n > 1 ? 'hangar.compare_selected_many' : 'hangar.compare_selected_one';
-      cnt.textContent = t(key, String(n) + ' ✓', { n });
-      if (n > 0 && lastCount > 0 && n !== lastCount) bumpCount(cnt);
+      paintCount(cnt, n, t(key, String(n) + ' ✓', { n }));
     }
-    lastCount = n;
-    if (n === 0) closeModal();
+    if (n === 0) {
+      closeModal();
+      // Sélection vidée ailleurs (case décochée, colonne retirée) pendant que
+      // « Effacer ? » était ouvert : le panneau ne doit pas réapparaître
+      // ouvert avec la prochaine sélection.
+      if (clearControl) clearControl.reset();
+    }
   }
 
-  /* Confirmation sur le bouton lui-même, en plus du toast : coche + « Lien
-   * copié » pendant un instant, puis retour au libellé. Le nouvel <i> est
-   * converti en SVG par icons.js (il ne réagit qu'aux insertions). */
+  /* Confirmation sur le bouton lui-même, en plus du toast : le maillon se
+   * replie et la coche se trace (compare.css, .is-copied), le libellé devient
+   * « Lien copié » un instant, puis tout revient au repos. */
   const COPIED_MS = 1800;
   let copiedTimer = null;
+
+  // Fondu du libellé (vh-text-swap) : rejoué dès le premier changement.
+  function setShareLabel(label, text) {
+    label.textContent = text;
+    VH.motion.replay(label, 'is-swapping');
+  }
 
   function flashCopied() {
     const btn = document.getElementById('compare-share');
     if (!btn) return;
+    const label = btn.querySelector('.cmp-share-label');
     clearTimeout(copiedTimer);
     btn.classList.add('is-copied');
-    btn.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> ' +
-      escapeHtml(t('hangar.compare_link_copied', 'Lien copié'));
+    setShareLabel(label, t('hangar.compare_link_copied', 'Lien copié'));
     copiedTimer = setTimeout(() => {
       copiedTimer = null;
       btn.classList.remove('is-copied');
-      btn.textContent = t('hangar.compare_share', 'Copier le lien');
+      setShareLabel(label, t('hangar.compare_share', 'Copier le lien'));
     }, COPIED_MS);
   }
 
