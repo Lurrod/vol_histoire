@@ -706,12 +706,12 @@ WHERE name = 'Boeing X-32'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Boeing Phantom Ray'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'X-47B')
 WHERE name = 'Boeing X-45'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'X-47B'));
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Boeing Phantom Ray'), (SELECT id FROM airplanes WHERE name = 'X-47B'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -940,22 +940,22 @@ WHERE name = 'D-558-2 Skyrocket'
       ((SELECT id FROM airplanes WHERE name = 'D-558-1 Skystreak'), (SELECT id FROM airplanes WHERE name = 'X-15'), (SELECT id FROM airplanes WHERE name = 'X-3 Stiletto'));
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Auster AOP.9'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Antonov An-2')
 WHERE name = 'DHC-2 Beaver'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Antonov An-2'));
+      ((SELECT id FROM airplanes WHERE name = 'Auster AOP.9'), NULL, (SELECT id FROM airplanes WHERE name = 'Antonov An-2'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Short C-23 Sherpa'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'C-123 Provider')
 WHERE name = 'DHC-4 Caribou'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'C-123 Provider'));
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Short C-23 Sherpa'), (SELECT id FROM airplanes WHERE name = 'C-123 Provider'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'DHC-4 Caribou'),
@@ -1546,14 +1546,13 @@ WHERE name = 'F-82 Twin Mustang'
        (SELECT id FROM airplanes WHERE name = 'Yak-23'));
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'F-84 Thunderjet'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'F-105 Thunderchief'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'MiG-15')
 WHERE name = 'F-84F Thunderstreak'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, (SELECT id FROM airplanes WHERE name = 'F-105 Thunderchief'),
-       (SELECT id FROM airplanes WHERE name = 'MiG-15'));
+      ((SELECT id FROM airplanes WHERE name = 'F-84 Thunderjet'), (SELECT id FROM airplanes WHERE name = 'F-105 Thunderchief'), (SELECT id FROM airplanes WHERE name = 'MiG-15'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'F-80 Shooting Star'),
@@ -1847,12 +1846,12 @@ WHERE name = 'Fuji T-7'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Beechcraft MQM-107 Streaker'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Ryan Firebee')
 WHERE name = 'GAF Jindivik'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Ryan Firebee'));
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Beechcraft MQM-107 Streaker'), (SELECT id FROM airplanes WHERE name = 'Ryan Firebee'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -3038,13 +3037,13 @@ WHERE name = 'P-8 Poseidon'
        (SELECT id FROM airplanes WHERE name = 'Kawasaki P-1'));
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Saab MFI-17 Supporter'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-7')
 WHERE name = 'PAC Super Mushshak'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Pilatus PC-7'));
+      ((SELECT id FROM airplanes WHERE name = 'Saab MFI-17 Supporter'), NULL, (SELECT id FROM airplanes WHERE name = 'Pilatus PC-7'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-9'),
@@ -3118,14 +3117,13 @@ WHERE name = 'Panavia Tornado Italien'
        (SELECT id FROM airplanes WHERE name = 'Su-24'));
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Pilatus P-3'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-9'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'PZL-130 Orlik')
 WHERE name = 'Pilatus PC-7'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, (SELECT id FROM airplanes WHERE name = 'Pilatus PC-9'),
-       (SELECT id FROM airplanes WHERE name = 'PZL-130 Orlik'));
+      ((SELECT id FROM airplanes WHERE name = 'Pilatus P-3'), (SELECT id FROM airplanes WHERE name = 'Pilatus PC-9'), (SELECT id FROM airplanes WHERE name = 'PZL-130 Orlik'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -3361,12 +3359,12 @@ WHERE name = 'Saunders-Roe SR.53'
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'DHC-1 Chipmunk'),
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Grob G 115'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'SOCATA TB-30 Epsilon')
 WHERE name = 'Scottish Aviation Bulldog'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      ((SELECT id FROM airplanes WHERE name = 'DHC-1 Chipmunk'), NULL, (SELECT id FROM airplanes WHERE name = 'SOCATA TB-30 Epsilon'));
+      ((SELECT id FROM airplanes WHERE name = 'DHC-1 Chipmunk'), (SELECT id FROM airplanes WHERE name = 'Grob G 115'), (SELECT id FROM airplanes WHERE name = 'SOCATA TB-30 Epsilon'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'de Havilland Sea Venom'),
@@ -4071,14 +4069,13 @@ WHERE name = 'X-31'
        (SELECT id FROM airplanes WHERE name = 'X-29'));
 
 UPDATE airplanes SET
-  predecessor_id = NULL,
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Northrop Grumman X-47A Pegasus'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'MQ-25 Stingray'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'nEUROn')
 WHERE name = 'X-47B'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, (SELECT id FROM airplanes WHERE name = 'MQ-25 Stingray'),
-       (SELECT id FROM airplanes WHERE name = 'nEUROn'));
+      ((SELECT id FROM airplanes WHERE name = 'Northrop Grumman X-47A Pegasus'), (SELECT id FROM airplanes WHERE name = 'MQ-25 Stingray'), (SELECT id FROM airplanes WHERE name = 'nEUROn'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'B-58 Hustler'),
@@ -4266,7 +4263,16 @@ WHERE name = 'Étendard IV'
       ((SELECT id FROM airplanes WHERE name = 'F4U Corsair'),
        (SELECT id FROM airplanes WHERE name = 'Super Étendard'), NULL);
 
--- >>> Lots 29 à 43 : nouvelles fiches (généré par .lots/tools/zz.py)
+-- >>> Lots 29 à 53 : nouvelles fiches (généré par .lots/tools/zz.py)
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'AAI Aerosonde'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4287,6 +4293,42 @@ WHERE name = 'AIDC T-CH-1 Chung Hsing'
       (NULL, NULL, NULL);
 
 UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'ShinMaywa US-2')
+WHERE name = 'AVIC AG600'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'ShinMaywa US-2'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Fiat G.91')
+WHERE name = 'Aerfer Sagittario 2'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Fiat G.91'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Fiat G.91'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'AMX International AMX'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'F-5 Freedom Fighter')
+WHERE name = 'Aeritalia G.91Y'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Fiat G.91'), (SELECT id FROM airplanes WHERE name = 'AMX International AMX'), (SELECT id FROM airplanes WHERE name = 'F-5 Freedom Fighter'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'SIAI-Marchetti SM.1019')
+WHERE name = 'Aermacchi AM.3 Bosbok'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'SIAI-Marchetti SM.1019'));
+
+UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Aermacchi MB-339'),
   successor_id   = NULL,
   rival_id       = NULL
@@ -4298,11 +4340,83 @@ WHERE name = 'Aermacchi M-345'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Dornier Do 27')
+WHERE name = 'Aero L-60 Brigadýr'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Dornier Do 27'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'AeroVironment RQ-14 Dragon Eye'),
+  successor_id   = NULL,
   rival_id       = NULL
 WHERE name = 'AeroVironment RQ-11 Raven'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'AeroVironment RQ-14 Dragon Eye'), NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'AeroVironment RQ-11 Raven'),
+  rival_id       = NULL
+WHERE name = 'AeroVironment RQ-14 Dragon Eye'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'AeroVironment RQ-11 Raven'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'AeroVironment RQ-20 Puma'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
       (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'AeroVironment Switchblade'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Fokker S.11 Instructor'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Aerotec T-23 Uirapuru'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Fokker S.11 Instructor'), NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Airbus A330 MRTT'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Boeing KC-767')
+WHERE name = 'Airbus A310 MRTT'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Airbus A330 MRTT'), (SELECT id FROM airplanes WHERE name = 'Boeing KC-767'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Antonov An-14'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Antonov An-32'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Embraer KC-390 Millennium')
+WHERE name = 'Antonov An-178'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Antonov An-32'), NULL, (SELECT id FROM airplanes WHERE name = 'Embraer KC-390 Millennium'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Iliouchine Il-14'),
@@ -4351,6 +4465,15 @@ WHERE name = 'Armstrong Whitworth AW.660 Argosy'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'DHC-2 Beaver'),
+  rival_id       = NULL
+WHERE name = 'Auster AOP.9'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'DHC-2 Beaver'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = NULL
 WHERE name = 'Avia S-199'
@@ -4361,11 +4484,20 @@ WHERE name = 'Avia S-199'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Avro Vulcan'),
-  rival_id       = NULL
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Boulton Paul P.111')
 WHERE name = 'Avro 707'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, (SELECT id FROM airplanes WHERE name = 'Avro Vulcan'), NULL);
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Avro Vulcan'), (SELECT id FROM airplanes WHERE name = 'Boulton Paul P.111'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Avro Canada VZ-9 Avrocar'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4415,11 +4547,38 @@ WHERE name = 'BAC Strikemaster'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Bartini-Beriev VVA-14'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Beechcraft U-21 Ute'),
+  successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Embraer EMB 121 Xingu')
 WHERE name = 'Beechcraft C-12 Huron'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Embraer EMB 121 Xingu'));
+      ((SELECT id FROM airplanes WHERE name = 'Beechcraft U-21 Ute'), NULL, (SELECT id FROM airplanes WHERE name = 'Embraer EMB 121 Xingu'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'MQ-9 Reaper'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Pilatus U-28A Draco')
+WHERE name = 'Beechcraft MC-12W Liberty'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'MQ-9 Reaper'), (SELECT id FROM airplanes WHERE name = 'Pilatus U-28A Draco'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Kratos BQM-167 Skeeter'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Northrop BQM-74 Chukar')
+WHERE name = 'Beechcraft MQM-107 Streaker'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Kratos BQM-167 Skeeter'), (SELECT id FROM airplanes WHERE name = 'Northrop BQM-74 Chukar'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'S-2 Tracker'),
@@ -4429,6 +4588,24 @@ WHERE name = 'Beechcraft T-44 Pegasus'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       ((SELECT id FROM airplanes WHERE name = 'S-2 Tracker'), NULL, (SELECT id FROM airplanes WHERE name = 'Embraer EMB 121 Xingu'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Beechcraft C-12 Huron'),
+  rival_id       = NULL
+WHERE name = 'Beechcraft U-21 Ute'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Beechcraft C-12 Huron'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Bell LLRV'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Bell X-1'),
@@ -4447,6 +4624,15 @@ WHERE name = 'Bell X-5'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Bell XV-15'),
+  rival_id       = NULL
+WHERE name = 'Bell XV-3'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Bell XV-15'), NULL);
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Beriev A-50'),
@@ -4483,6 +4669,33 @@ WHERE name = 'Blackburn Beverley'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'C-119 Flying Boxcar'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Boeing X-45'),
+  rival_id       = NULL
+WHERE name = 'Boeing Bird of Prey'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Boeing X-45'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Boeing VC-137'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Boeing C-32'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Boeing VC-137'), NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'McDonnell Douglas C-9'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Boeing C-40 Clipper'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'McDonnell Douglas C-9'), NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Boeing EC-135'),
@@ -4539,6 +4752,24 @@ WHERE name = 'Boeing Insitu ScanEagle'
       (NULL, NULL, NULL);
 
 UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'KC-46 Pegasus'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Airbus A330 MRTT')
+WHERE name = 'Boeing KC-767'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'KC-46 Pegasus'), (SELECT id FROM airplanes WHERE name = 'Airbus A330 MRTT'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Boeing X-45'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'X-47B')
+WHERE name = 'Boeing Phantom Ray'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Boeing X-45'), NULL, (SELECT id FROM airplanes WHERE name = 'X-47B'));
+
+UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'B-47 Stratojet'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Iliouchine Il-20')
@@ -4549,12 +4780,21 @@ WHERE name = 'Boeing RC-135'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Boeing VC-25'),
   rival_id       = NULL
+WHERE name = 'Boeing VC-137'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Boeing VC-25'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Boeing VC-137'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Iliouchine Il-96-300PU')
 WHERE name = 'Boeing VC-25'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, NULL);
+      ((SELECT id FROM airplanes WHERE name = 'Boeing VC-137'), NULL, (SELECT id FROM airplanes WHERE name = 'Iliouchine Il-96-300PU'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4577,11 +4817,47 @@ WHERE name = 'Boeing YC-14'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Teledyne Ryan YQM-98 Compass Cope')
+WHERE name = 'Boeing YQM-94 Compass Cope'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Teledyne Ryan YQM-98 Compass Cope'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Bombardier E-11A'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Avro 707')
+WHERE name = 'Boulton Paul P.111'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Avro 707'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'DHC-5 Buffalo')
 WHERE name = 'Breguet 941'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'DHC-5 Buffalo'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Transall C-160'),
+  rival_id       = NULL
+WHERE name = 'Breguet Deux-Ponts'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Transall C-160'), NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4591,6 +4867,33 @@ WHERE name = 'Bristol 188'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Vickers VC10'),
+  rival_id       = NULL
+WHERE name = 'Bristol Britannia'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Vickers VC10'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Hawker Siddeley Andover'),
+  rival_id       = NULL
+WHERE name = 'Bristol Freighter'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Hawker Siddeley Andover'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Eurofighter Typhoon Anglais'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Rafale A')
+WHERE name = 'British Aerospace EAP'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Eurofighter Typhoon Anglais'), (SELECT id FROM airplanes WHERE name = 'Rafale A'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4612,12 +4915,21 @@ WHERE name = 'CAIG Wing Loong'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'CASA C-207 Azor'),
   rival_id       = NULL
 WHERE name = 'CASA 2.111'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, NULL);
+      (NULL, (SELECT id FROM airplanes WHERE name = 'CASA C-207 Azor'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'CASA 2.111'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'CASA C-207 Azor'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'CASA 2.111'), NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4656,6 +4968,24 @@ WHERE name = 'Canadair CL-215'
       (NULL, NULL, NULL);
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Radioplane MQM-57 Falconer'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Canadair CL-89'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Radioplane MQM-57 Falconer'), NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'de Havilland Vampire'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'F-104 Starfighter'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Folland Gnat')
+WHERE name = 'Canadair Sabre'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'de Havilland Vampire'), (SELECT id FROM airplanes WHERE name = 'F-104 Starfighter'), (SELECT id FROM airplanes WHERE name = 'Folland Gnat'));
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'L3Harris OA-1K Skyraider II')
@@ -4684,12 +5014,12 @@ WHERE name = 'Cessna O-2 Skymaster'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Slingsby T67 Firefly'),
   rival_id       = NULL
 WHERE name = 'Cessna T-41 Mescalero'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, NULL);
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Slingsby T67 Firefly'), NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4699,6 +5029,15 @@ WHERE name = 'Convair C-131 Samaritan'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, (SELECT id FROM airplanes WHERE name = 'McDonnell Douglas C-9'), (SELECT id FROM airplanes WHERE name = 'Iliouchine Il-12'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'OV-10 Bronco')
+WHERE name = 'Convair Model 48 Charger'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'OV-10 Bronco'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Martin JRM Mars'),
@@ -4717,6 +5056,15 @@ WHERE name = 'Convair XB-46'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'B-45 Tornado'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Lockheed R6V Constitution')
+WHERE name = 'Convair XC-99'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Lockheed R6V Constitution'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4765,6 +5113,24 @@ WHERE name = 'DHC-1 Chipmunk'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'DHC-6 Twin Otter'),
+  rival_id       = NULL
+WHERE name = 'DHC-3 Otter'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'DHC-6 Twin Otter'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'DHC-3 Otter'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Short C-23 Sherpa'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'CASA C-212 Aviocar')
+WHERE name = 'DHC-6 Twin Otter'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'DHC-3 Otter'), (SELECT id FROM airplanes WHERE name = 'Short C-23 Sherpa'), (SELECT id FROM airplanes WHERE name = 'CASA C-212 Aviocar'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'IAI Heron')
 WHERE name = 'DRDO TAPAS-BH-201'
@@ -4782,6 +5148,15 @@ WHERE name = 'Dassault HU-25 Guardian'
       (NULL, NULL, NULL);
 
 UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Doak VZ-4'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Dornier Do 28 Skyservant'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'CASA C-212 Aviocar')
@@ -4789,6 +5164,15 @@ WHERE name = 'Dornier 228'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       ((SELECT id FROM airplanes WHERE name = 'Dornier Do 28 Skyservant'), NULL, (SELECT id FROM airplanes WHERE name = 'CASA C-212 Aviocar'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Dornier C-146A Wolfhound'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4811,11 +5195,11 @@ WHERE name = 'Douglas A2D Skyshark'
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Douglas C-54 Skymaster'),
   successor_id   = NULL,
-  rival_id       = NULL
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Lockheed C-121 Constellation')
 WHERE name = 'Douglas C-118 Liftmaster'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      ((SELECT id FROM airplanes WHERE name = 'Douglas C-54 Skymaster'), NULL, NULL);
+      ((SELECT id FROM airplanes WHERE name = 'Douglas C-54 Skymaster'), NULL, (SELECT id FROM airplanes WHERE name = 'Lockheed C-121 Constellation'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Douglas C-54 Skymaster'),
@@ -4872,13 +5256,40 @@ WHERE name = 'E-8 Joint STARS'
       (NULL, NULL, NULL);
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'EC-130H Compass Call'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'EA-37B Compass Call'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'EC-130H Compass Call'), NULL, NULL);
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'nEUROn')
+WHERE name = 'EADS Barracuda'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'nEUROn'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'RQ-5 Hunter'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'MQ-9 Reaper'),
+  rival_id       = NULL
+WHERE name = 'EADS Harfang'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'RQ-5 Hunter'), (SELECT id FROM airplanes WHERE name = 'MQ-9 Reaper'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'EA-37B Compass Call'),
   rival_id       = NULL
 WHERE name = 'EC-130H Compass Call'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, NULL);
+      (NULL, (SELECT id FROM airplanes WHERE name = 'EA-37B Compass Call'), NULL);
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'B-66 Destroyer'),
@@ -4890,6 +5301,15 @@ WHERE name = 'EF-111 Raven'
       ((SELECT id FROM airplanes WHERE name = 'B-66 Destroyer'), NULL, (SELECT id FROM airplanes WHERE name = 'Su-24'));
 
 UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Embraer EMB 111 Bandeirulha'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Dassault MD 315 Flamant'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Beechcraft T-44 Pegasus')
@@ -4897,6 +5317,24 @@ WHERE name = 'Embraer EMB 121 Xingu'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       ((SELECT id FROM airplanes WHERE name = 'Dassault MD 315 Flamant'), NULL, (SELECT id FROM airplanes WHERE name = 'Beechcraft T-44 Pegasus'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'F-84F Thunderstreak'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'MiG-15')
+WHERE name = 'F-84 Thunderjet'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'F-84F Thunderstreak'), (SELECT id FROM airplanes WHERE name = 'MiG-15'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Yak-25')
+WHERE name = 'F-86D Sabre'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Yak-25'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'F4D Skyray'),
@@ -4927,12 +5365,21 @@ WHERE name = 'F7F Tigercat'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'FJ-4 Fury'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'F9F Cougar')
+WHERE name = 'FJ-2/-3 Fury'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'FJ-4 Fury'), (SELECT id FROM airplanes WHERE name = 'F9F Cougar'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'FJ-2/-3 Fury'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Supermarine Scimitar')
 WHERE name = 'FJ-4 Fury'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Supermarine Scimitar'));
+      ((SELECT id FROM airplanes WHERE name = 'FJ-2/-3 Fury'), NULL, (SELECT id FROM airplanes WHERE name = 'Supermarine Scimitar'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4973,11 +5420,29 @@ WHERE name = 'Fairchild T-46'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Fiat G.59'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'T-33 Shooting Star')
 WHERE name = 'Fiat G.80'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'T-33 Shooting Star'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Aerotec T-23 Uirapuru'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'DHC-1 Chipmunk')
+WHERE name = 'Fokker S.11 Instructor'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Aerotec T-23 Uirapuru'), (SELECT id FROM airplanes WHERE name = 'DHC-1 Chipmunk'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -4987,6 +5452,24 @@ WHERE name = 'Fuji T-1'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, (SELECT id FROM airplanes WHERE name = 'Kawasaki T-4'), (SELECT id FROM airplanes WHERE name = 'T-33 Shooting Star'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Fuji T-5'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Scottish Aviation Bulldog'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Slingsby T67 Firefly')
+WHERE name = 'Grob G 115'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Scottish Aviation Bulldog'), NULL, (SELECT id FROM airplanes WHERE name = 'Slingsby T67 Firefly'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'SOCATA TB-30 Epsilon'),
@@ -5016,6 +5499,15 @@ WHERE name = 'Gulfstream C-20'
       ((SELECT id FROM airplanes WHERE name = 'Lockheed C-140 JetStar'), NULL, NULL);
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Boeing VC-137'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Gulfstream C-37A'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Boeing VC-137'), NULL, NULL);
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-7'),
   rival_id       = NULL
@@ -5023,6 +5515,15 @@ WHERE name = 'HAL HPT-32 Deepak'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, (SELECT id FROM airplanes WHERE name = 'Pilatus PC-7'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Handley Page HP.115'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Avro York'),
@@ -5079,6 +5580,15 @@ WHERE name = 'Hispano HA-1112 Buchón'
       (NULL, NULL, NULL);
 
 UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Hunting H.126'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'IAI Heron'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'MQ-9 Reaper')
@@ -5107,12 +5617,39 @@ WHERE name = 'IAI Harpy'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'IAI Searcher'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Tadiran Mastiff')
+WHERE name = 'IAI Scout'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'IAI Searcher'), (SELECT id FROM airplanes WHERE name = 'Tadiran Mastiff'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'IAI Scout'),
   successor_id   = (SELECT id FROM airplanes WHERE name = 'IAI Heron'),
   rival_id       = NULL
 WHERE name = 'IAI Searcher'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, (SELECT id FROM airplanes WHERE name = 'IAI Heron'), NULL);
+      ((SELECT id FROM airplanes WHERE name = 'IAI Scout'), (SELECT id FROM airplanes WHERE name = 'IAI Heron'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Yak-52'),
+  rival_id       = NULL
+WHERE name = 'IAR-823'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Yak-52'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'MiG-17'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Soko J-22 Orao')
+WHERE name = 'IAR-93 Vultur'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'MiG-17'), NULL, (SELECT id FROM airplanes WHERE name = 'Soko J-22 Orao'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5162,11 +5699,56 @@ WHERE name = 'Iliouchine Il-14'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Iliouchine Il-22'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Boeing E-4')
 WHERE name = 'Iliouchine Il-80'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Boeing E-4'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Boeing VC-25')
+WHERE name = 'Iliouchine Il-96-300PU'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Boeing VC-25'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Vertol VZ-2')
+WHERE name = 'Kaman K-16B'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Vertol VZ-2'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'P-2 Neptune'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'P-3 Orion'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Breguet Atlantique')
+WHERE name = 'Kawasaki P-2J'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'P-2 Neptune'), (SELECT id FROM airplanes WHERE name = 'P-3 Orion'), (SELECT id FROM airplanes WHERE name = 'Breguet Atlantique'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Beechcraft MQM-107 Streaker'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Kratos BQM-167 Skeeter'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Beechcraft MQM-107 Streaker'), NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5187,6 +5769,15 @@ WHERE name = 'L3Harris OA-1K Skyraider II'
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Embraer EMB-314 Super Tucano'));
 
 UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'MiG-15'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'F-82 Twin Mustang')
+WHERE name = 'La-11'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'MiG-15'), (SELECT id FROM airplanes WHERE name = 'F-82 Twin Mustang'));
+
+UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'North American T-39 Sabreliner'),
   successor_id   = NULL,
   rival_id       = NULL
@@ -5194,6 +5785,15 @@ WHERE name = 'Learjet C-21'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       ((SELECT id FROM airplanes WHERE name = 'North American T-39 Sabreliner'), NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Douglas C-118 Liftmaster')
+WHERE name = 'Lockheed C-121 Constellation'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Douglas C-118 Liftmaster'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5215,12 +5815,66 @@ WHERE name = 'Lockheed EP-3'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'F-117 Nighthawk'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Northrop Tacit Blue')
+WHERE name = 'Lockheed Have Blue'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'F-117 Nighthawk'), (SELECT id FROM airplanes WHERE name = 'Northrop Tacit Blue'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'RQ-4 Global Hawk')
+WHERE name = 'Lockheed Martin RQ-3 DarkStar'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'RQ-4 Global Hawk'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'F-35 Lightning II'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Boeing X-32')
 WHERE name = 'Lockheed Martin X-35'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, (SELECT id FROM airplanes WHERE name = 'F-35 Lightning II'), (SELECT id FROM airplanes WHERE name = 'Boeing X-32'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Lockheed Martin X-55'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Convair XC-99')
+WHERE name = 'Lockheed R6V Constitution'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Convair XC-99'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'T-33 Shooting Star'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'T-2 Buckeye'),
+  rival_id       = NULL
+WHERE name = 'Lockheed T2V SeaStar'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'T-33 Shooting Star'), (SELECT id FROM airplanes WHERE name = 'T-2 Buckeye'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Handley Page Victor'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Airbus A330 MRTT'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'KC-10 Extender')
+WHERE name = 'Lockheed TriStar (RAF)'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Handley Page Victor'), (SELECT id FROM airplanes WHERE name = 'Airbus A330 MRTT'), (SELECT id FROM airplanes WHERE name = 'KC-10 Extender'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5279,11 +5933,11 @@ WHERE name = 'Martin JRM Mars'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
-  rival_id       = NULL
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Northrop HL-10')
 WHERE name = 'Martin Marietta X-24'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, NULL);
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Northrop HL-10'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5341,9 +5995,18 @@ WHERE name = 'Max Holste Broussard'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Boeing C-40 Clipper'),
   rival_id       = NULL
 WHERE name = 'McDonnell Douglas C-9'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Boeing C-40 Clipper'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'McDonnell Douglas X-36'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, NULL);
@@ -5376,6 +6039,15 @@ WHERE name = 'McDonnell XF-88 Voodoo'
       (NULL, (SELECT id FROM airplanes WHERE name = 'F-101 Voodoo'), (SELECT id FROM airplanes WHERE name = 'Lockheed XF-90'));
 
 UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Martin Marietta X-24')
+WHERE name = 'MiG-105'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Martin Marietta X-24'));
+
+UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Aero L-39 Albatros'),
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Yak-130')
@@ -5383,6 +6055,24 @@ WHERE name = 'Mikoyan MiG-AT'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       ((SELECT id FROM airplanes WHERE name = 'Aero L-39 Albatros'), NULL, (SELECT id FROM airplanes WHERE name = 'Yak-130'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Mirage III'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Mirage F1'),
+  rival_id       = NULL
+WHERE name = 'Mirage F2'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM airplanes WHERE name = 'Mirage F1'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Mitsubishi LR-1'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5410,6 +6100,51 @@ WHERE name = 'Myasishchev VM-T Atlant'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, (SELECT id FROM airplanes WHERE name = 'Antonov An-225 Mriya'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Ouragan'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Mystère IV'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'MiG-15')
+WHERE name = 'Mystère II'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Ouragan'), (SELECT id FROM airplanes WHERE name = 'Mystère IV'), (SELECT id FROM airplanes WHERE name = 'MiG-15'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'NAMC YS-11'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'NASA AD-1'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Northrop M2-F2'),
+  rival_id       = NULL
+WHERE name = 'NASA M2-F1'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Northrop M2-F2'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Neiva Regente'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5468,6 +6203,60 @@ WHERE name = 'North American YF-93'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Beechcraft MQM-107 Streaker')
+WHERE name = 'Northrop BQM-74 Chukar'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Beechcraft MQM-107 Streaker'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'F7F Tigercat')
+WHERE name = 'Northrop F-15 Reporter'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'F7F Tigercat'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'X-47B'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Boeing X-45')
+WHERE name = 'Northrop Grumman X-47A Pegasus'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'X-47B'), (SELECT id FROM airplanes WHERE name = 'Boeing X-45'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Martin Marietta X-24')
+WHERE name = 'Northrop HL-10'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Martin Marietta X-24'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'NASA M2-F1'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Northrop HL-10')
+WHERE name = 'Northrop M2-F2'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'NASA M2-F1'), NULL, (SELECT id FROM airplanes WHERE name = 'Northrop HL-10'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Northrop X-21'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
   rival_id       = NULL
 WHERE name = 'Northrop X-4 Bantam'
   AND (predecessor_id, successor_id, rival_id)
@@ -5482,6 +6271,15 @@ WHERE name = 'Northrop YA-9'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'A-10 Thunderbolt II'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Northrop YC-125 Raider'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Martin PBM Mariner'),
@@ -5512,6 +6310,24 @@ WHERE name = 'PZL TS-8 Bies'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Aero L-60 Brigadýr')
+WHERE name = 'PZL-104 Wilga'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Aero L-60 Brigadýr'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Hawker Siddeley Andover'),
+  rival_id       = NULL
+WHERE name = 'Percival Pembroke'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Hawker Siddeley Andover'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Jet Provost'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'T-34 Mentor')
 WHERE name = 'Percival Provost'
@@ -5539,12 +6355,30 @@ WHERE name = 'Piaggio P.166'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Pilatus PC-7'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'T-34 Mentor')
+WHERE name = 'Pilatus P-3'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Pilatus PC-7'), (SELECT id FROM airplanes WHERE name = 'T-34 Mentor'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Antonov An-2')
 WHERE name = 'Pilatus PC-6 Porter'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Antonov An-2'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Beechcraft MC-12W Liberty')
+WHERE name = 'Pilatus U-28A Draco'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Beechcraft MC-12W Liberty'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5593,12 +6427,30 @@ WHERE name = 'RQ-7 Shadow'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Canadair CL-89'),
   rival_id       = NULL
 WHERE name = 'Radioplane MQM-57 Falconer'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, NULL);
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Canadair CL-89'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Rafale'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'British Aerospace EAP')
+WHERE name = 'Rafale A'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Rafale'), (SELECT id FROM airplanes WHERE name = 'British Aerospace EAP'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'E-8 Joint STARS')
+WHERE name = 'Raytheon Sentinel R1'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'E-8 Joint STARS'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5631,7 +6483,52 @@ UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = NULL
+WHERE name = 'Rockwell HiMAT'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Short SC.1'),
+  rival_id       = NULL
+WHERE name = 'Rolls-Royce Thrust Measuring Rig'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Short SC.1'), NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Teledyne Ryan YQM-98 Compass Cope'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Lockheed D-21')
+WHERE name = 'Ryan AQM-91 Firefly'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Teledyne Ryan YQM-98 Compass Cope'), (SELECT id FROM airplanes WHERE name = 'Lockheed D-21'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Ryan VZ-3 Vertiplane'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
 WHERE name = 'Ryan XV-5 Vertifan'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Ryan XV-8 Fleep'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, NULL);
@@ -5646,6 +6543,24 @@ WHERE name = 'SIAI-Marchetti S.211'
       (NULL, (SELECT id FROM airplanes WHERE name = 'Pilatus PC-21'), (SELECT id FROM airplanes WHERE name = 'CASA C-101 Aviojet'));
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Cessna O-1 Bird Dog'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Aermacchi AM.3 Bosbok')
+WHERE name = 'SIAI-Marchetti SM.1019'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Cessna O-1 Bird Dog'), NULL, (SELECT id FROM airplanes WHERE name = 'Aermacchi AM.3 Bosbok'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Saab 35 Draken'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Boulton Paul P.111')
+WHERE name = 'Saab 210'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Saab 35 Draken'), (SELECT id FROM airplanes WHERE name = 'Boulton Paul P.111'));
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Scottish Aviation Bulldog'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'DHC-1 Chipmunk')
@@ -5657,11 +6572,29 @@ WHERE name = 'Saab 91 Safir'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Scottish Aviation Bulldog')
+WHERE name = 'Saab MFI-17 Supporter'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Scottish Aviation Bulldog'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Sagem Sperwer'),
+  successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Elbit Hermes 450')
 WHERE name = 'Safran Patroller'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Elbit Hermes 450'));
+      ((SELECT id FROM airplanes WHERE name = 'Sagem Sperwer'), NULL, (SELECT id FROM airplanes WHERE name = 'Elbit Hermes 450'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Safran Patroller'),
+  rival_id       = NULL
+WHERE name = 'Sagem Sperwer'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Safran Patroller'), NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5671,6 +6604,15 @@ WHERE name = 'Saunders-Roe SR.A/1'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'F2Y Sea Dart'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Helio U-10 Courier')
+WHERE name = 'Scottish Aviation Pioneer'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Helio U-10 Courier'));
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5709,6 +6651,24 @@ WHERE name = 'Short Belfast'
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Douglas C-133 Cargomaster'));
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'DHC-4 Caribou'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'CASA C-212 Aviocar')
+WHERE name = 'Short C-23 Sherpa'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'DHC-4 Caribou'), NULL, (SELECT id FROM airplanes WHERE name = 'CASA C-212 Aviocar'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'CASA C-212 Aviocar'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'DHC-6 Twin Otter')
+WHERE name = 'Short SC.7 Skyvan'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'CASA C-212 Aviocar'), (SELECT id FROM airplanes WHERE name = 'DHC-6 Twin Otter'));
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Fairey Gannet')
@@ -5716,6 +6676,15 @@ WHERE name = 'Short Seamew'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Fairey Gannet'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Cessna T-41 Mescalero'),
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Grob G 120'),
+  rival_id       = NULL
+WHERE name = 'Slingsby T67 Firefly'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Cessna T-41 Mescalero'), (SELECT id FROM airplanes WHERE name = 'Grob G 120'), NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5755,6 +6724,24 @@ WHERE name = 'T-45 Goshawk'
 
 UPDATE airplanes SET
   predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'IAI Searcher'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'IAI Scout')
+WHERE name = 'Tadiran Mastiff'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'IAI Searcher'), (SELECT id FROM airplanes WHERE name = 'IAI Scout'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Ryan AQM-91 Firefly'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Boeing YQM-94 Compass Cope')
+WHERE name = 'Teledyne Ryan YQM-98 Compass Cope'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Ryan AQM-91 Firefly'), NULL, (SELECT id FROM airplanes WHERE name = 'Boeing YQM-94 Compass Cope'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
   successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Embraer EMB-314 Super Tucano')
 WHERE name = 'Textron AirLand Scorpion'
@@ -5774,11 +6761,47 @@ WHERE name = 'Tupolev Tu-126'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Tupolev Tu-134UBL'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Iliouchine Il-20'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Boeing RC-135')
+WHERE name = 'Tupolev Tu-214R'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Iliouchine Il-20'), NULL, (SELECT id FROM airplanes WHERE name = 'Boeing RC-135'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'UTVA 75'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
   rival_id       = (SELECT id FROM airplanes WHERE name = 'SF.260')
 WHERE name = 'Valmet L-90 Redigo'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'SF.260'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Vertol VZ-2'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5826,6 +6849,15 @@ WHERE name = 'Yak-11'
       (NULL, (SELECT id FROM airplanes WHERE name = 'PZL TS-8 Bies'), NULL);
 
 UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Yak-52'),
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Yak-152'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Yak-52'), NULL, NULL);
+
+UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = (SELECT id FROM airplanes WHERE name = 'Yak-52'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'DHC-1 Chipmunk')
@@ -5836,12 +6868,12 @@ WHERE name = 'Yak-18'
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Yak-18'),
-  successor_id   = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Yak-152'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Nanchang CJ-6')
 WHERE name = 'Yak-52'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      ((SELECT id FROM airplanes WHERE name = 'Yak-18'), NULL, (SELECT id FROM airplanes WHERE name = 'Nanchang CJ-6'));
+      ((SELECT id FROM airplanes WHERE name = 'Yak-18'), (SELECT id FROM airplanes WHERE name = 'Yak-152'), (SELECT id FROM airplanes WHERE name = 'Nanchang CJ-6'));
 
 UPDATE airplanes SET
   predecessor_id = (SELECT id FROM airplanes WHERE name = 'Yak-25'),
@@ -5855,11 +6887,56 @@ WHERE name = 'Yakovlev Yak-27'
 UPDATE airplanes SET
   predecessor_id = NULL,
   successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'Yakovlev Yak-40'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'MiG-25'),
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Avro Canada CF-105 Arrow')
+WHERE name = 'Ye-152'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, (SELECT id FROM airplanes WHERE name = 'MiG-25'), (SELECT id FROM airplanes WHERE name = 'Avro Canada CF-105 Arrow'));
+
+UPDATE airplanes SET
+  predecessor_id = (SELECT id FROM airplanes WHERE name = 'Zlín Z 26 Trenér'),
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'Yak-52')
+WHERE name = 'Zlín Z 142'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      ((SELECT id FROM airplanes WHERE name = 'Zlín Z 26 Trenér'), NULL, (SELECT id FROM airplanes WHERE name = 'Yak-52'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = (SELECT id FROM airplanes WHERE name = 'Zlín Z 142'),
   rival_id       = (SELECT id FROM airplanes WHERE name = 'Yak-18')
 WHERE name = 'Zlín Z 26 Trenér'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
-      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Yak-18'));
+      (NULL, (SELECT id FROM airplanes WHERE name = 'Zlín Z 142'), (SELECT id FROM airplanes WHERE name = 'Yak-18'));
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'de Havilland Comet'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = NULL
+WHERE name = 'de Havilland Devon'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, NULL);
 
 UPDATE airplanes SET
   predecessor_id = NULL,
@@ -5887,7 +6964,16 @@ WHERE name = 'F2Y Sea Dart'
   AND (predecessor_id, successor_id, rival_id)
       IS DISTINCT FROM
       (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'Saunders-Roe SR.A/1'));
--- <<< Lots 29 à 43
+
+UPDATE airplanes SET
+  predecessor_id = NULL,
+  successor_id   = NULL,
+  rival_id       = (SELECT id FROM airplanes WHERE name = 'EADS Barracuda')
+WHERE name = 'nEUROn'
+  AND (predecessor_id, successor_id, rival_id)
+      IS DISTINCT FROM
+      (NULL, NULL, (SELECT id FROM airplanes WHERE name = 'EADS Barracuda'));
+-- <<< Lots 29 à 53
 
 -- ── Rattachement aux conflits ──────────────────────────────────────────────
 

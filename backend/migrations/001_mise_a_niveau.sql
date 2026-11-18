@@ -1856,6 +1856,61 @@ WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'INS');
 INSERT INTO manufacturer (name, name_en, country_id, code)
 SELECT 'AeroVironment', 'AeroVironment', (SELECT id FROM countries WHERE code = 'USA'), 'AV'
 WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'AV');
+-- Lots 44 à 53
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Hiller Aircraft', 'Hiller Aircraft', (SELECT id FROM countries WHERE code = 'USA'), 'HIL'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'HIL');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Vertol Aircraft', 'Vertol Aircraft', (SELECT id FROM countries WHERE code = 'USA'), 'VER'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'VER');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Doak Aircraft', 'Doak Aircraft', (SELECT id FROM countries WHERE code = 'USA'), 'DOA'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'DOA');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Ames Industrial Corporation', 'Ames Industrial Corporation', (SELECT id FROM countries WHERE code = 'USA'), 'AMI'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'AMI');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Tadiran', 'Tadiran', (SELECT id FROM countries WHERE code = 'ISR'), 'TAD'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'TAD');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Bombardier Aéronautique', 'Bombardier Aerospace', (SELECT id FROM countries WHERE code = 'CAN'), 'BOM'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'BOM');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Raytheon', 'Raytheon', (SELECT id FROM countries WHERE code = 'USA'), 'RAY'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'RAY');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'NAMC (Nihon Aircraft Manufacturing Corporation)', 'NAMC (Nihon Aircraft Manufacturing Corporation)', (SELECT id FROM countries WHERE code = 'JPN'), 'NIH'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'NIH');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Auster Aircraft', 'Auster Aircraft', (SELECT id FROM countries WHERE code = 'GBR'), 'AUST'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'AUST');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Slingsby Aviation', 'Slingsby Aviation', (SELECT id FROM countries WHERE code = 'GBR'), 'SLI'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'SLI');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Aerotec', 'Aerotec', (SELECT id FROM countries WHERE code = 'BRA'), 'AET'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'AET');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'UTVA', 'UTVA', (SELECT id FROM countries WHERE code = 'YUG'), 'UTVA'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'UTVA');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Boulton Paul', 'Boulton Paul', (SELECT id FROM countries WHERE code = 'GBR'), 'BP'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'BP');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Aerfer', 'Aerfer', (SELECT id FROM countries WHERE code = 'ITA'), 'AERF'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'AERF');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'AVIC (Aviation Industry Corporation of China)', 'AVIC (Aviation Industry Corporation of China)', (SELECT id FROM countries WHERE code = 'CHN'), 'AVIC'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'AVIC');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Kaman Aircraft', 'Kaman Aircraft', (SELECT id FROM countries WHERE code = 'USA'), 'KAM'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'KAM');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'NASA', 'NASA', (SELECT id FROM countries WHERE code = 'USA'), 'NASA'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'NASA');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Rolls-Royce', 'Rolls-Royce', (SELECT id FROM countries WHERE code = 'GBR'), 'RR'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'RR');
 INSERT INTO armement (name, name_en, description, description_en)
 SELECT 'Canon M102 105 mm', NULL, 'Obusier de 105 mm tirant en dérive depuis le flanc gauche de l''appareil', 'Side-firing 105 mm howitzer mounted on the left side of the aircraft'
 WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'Canon M102 105 mm');
@@ -1895,16 +1950,25 @@ WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Rotors basculants');
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Aile volante', 'Flying wing', 'Voilure sans fuselage ni empennage horizontal, qui porte à elle seule l''équipage, les moteurs et la charge', 'Wing with no fuselage or horizontal tail, carrying crew, engines and payload on its own'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Aile volante');
--- >>> Lots 29 à 43 : référentiel ajouté (généré par .lots/tools/referentiel.py)
+-- >>> Lots 29 à 53 : référentiel ajouté (généré par .lots/tools/referentiel.py)
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Aile jointe', 'Joined wing', 'Voilure en tandem dont l''aile arrière rejoint l''aile avant ; plus rigide qu''une aile classique de grand allongement, elle doit améliorer la finesse et simplifier les commandes de vol.', 'Tandem wing layout in which the rear wing joins the front wing; stiffer than a conventional high-aspect-ratio wing, it is meant to improve the lift-to-drag ratio and simplify flight controls.'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Aile jointe');
 INSERT INTO tech (name, name_en, description, description_en)
+SELECT 'Aile oblique', 'Oblique wing', 'Aile d''un seul tenant qui pivote autour d''un axe central, une extrémité avançant tandis que l''autre recule, pour réduire la traînée à grande vitesse', 'One-piece wing pivoting about a central axis, one tip moving forward as the other moves back, to reduce drag at high speed'
+WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Aile oblique');
+INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Aile soufflée', 'Blown wing', 'Aile entièrement balayée par le souffle d''hélices interconnectées, associée à des volets à fort braquage pour décoller et atterrir sur de très courtes distances', 'Wing fully washed by the slipstream of interconnected propellers, combined with large-deflection flaps for very short take-offs and landings'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Aile soufflée');
 INSERT INTO tech (name, name_en, description, description_en)
+SELECT 'Aile souple Rogallo', 'Rogallo flexible wing', 'Aile delta en toile tendue sur une armature légère, conçue par Francis Rogallo ; souvent repliable, elle préfigure le deltaplane.', 'Fabric delta wing stretched over a light frame, devised by Francis Rogallo; often foldable, it foreshadowed the hang glider.'
+WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Aile souple Rogallo');
+INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Antenne filaire traînante', 'Trailing wire antenna', 'Antenne filaire de plusieurs kilomètres déroulée derrière l''avion en vol pour émettre en très basse fréquence (VLF) vers les sous-marins en plongée', 'Wire antenna several kilometres long, reeled out behind the aircraft in flight to transmit on very low frequency (VLF) to submerged submarines'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Antenne filaire traînante');
+INSERT INTO tech (name, name_en, description, description_en)
+SELECT 'Aspiration de la couche limite', 'Boundary-layer suction', 'Contrôle actif de l''écoulement laminaire : une petite partie de la couche limite est aspirée à travers des fentes, des perforations ou un revêtement poreux de l''aile pour réduire la traînée de frottement (X-21).', 'Active laminar flow control: a small part of the boundary layer is sucked away through slots, perforations or a porous wing skin to reduce skin-friction drag (X-21).'
+WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Aspiration de la couche limite');
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Coque d''hydravion', 'Flying-boat hull', 'Fuselage conçu comme une coque de bateau, avec redan, pour décoller et amerrir directement sur l''eau.', 'Fuselage shaped as a boat hull, with a step, to take off from and land directly on water.'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Coque d''hydravion');
@@ -1917,6 +1981,9 @@ WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Durcissement contre l''impuls
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Détecteur d''anomalie magnétique', 'Magnetic anomaly detector', 'Capteur, souvent logé dans une perche de queue, qui repère la perturbation du champ magnétique terrestre causée par la coque d''un sous-marin en plongée.', 'Sensor, often housed in a tail boom, that detects the disturbance of the Earth''s magnetic field caused by the hull of a submerged submarine.'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Détecteur d''anomalie magnétique');
+INSERT INTO tech (name, name_en, description, description_en)
+SELECT 'Hypersustentation ADAC', 'STOL high-lift devices', 'Becs de bord d''attaque et grands volets à fente ou de type Fowler permettant de décoller et d''atterrir sur quelques dizaines de mètres, depuis des terrains sommaires.', 'Leading-edge slats and large slotted or Fowler flaps allowing take-off and landing within a few dozen metres from rough strips.'
+WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Hypersustentation ADAC');
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Lancement par catapulte et récupération par crochet', 'Catapult launch and hook recovery', 'Drone lancé par une catapulte pneumatique et récupéré en vol : un crochet en bout d''aile saisit un filin tendu le long d''un mât, ce qui dispense de toute piste, à terre comme sur un navire', 'Drone launched by a pneumatic catapult and recovered in flight: a wingtip hook catches a rope stretched along a pole, removing the need for any runway, on land or aboard ship'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Lancement par catapulte et récupération par crochet');
@@ -1939,6 +2006,9 @@ INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Système d''écopage', 'Water scooping system', 'Écopes rétractables sous la coque d''un hydravion qui remplissent ses soutes d''eau en quelques secondes, en frôlant la surface d''un lac ou de la mer sans s''arrêter', 'Retractable scoops under a flying boat''s hull that fill its tanks with water in a few seconds while skimming the surface of a lake or the sea without stopping'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Système d''écopage');
 INSERT INTO tech (name, name_en, description, description_en)
+SELECT 'Vol en effet de sol', 'Ground-effect flight', 'Vol à très faible hauteur au-dessus de l''eau ou du sol, où le coussin d''air comprimé sous l''aile accroît la portance et réduit la traînée (ékranoplanes, VVA-14).', 'Flight very close to the water or ground, where the cushion of air compressed under the wing increases lift and reduces drag (ekranoplans, VVA-14).'
+WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Vol en effet de sol');
+INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Volets soufflés par les réacteurs', 'Jet-blown flaps', 'Volets à fort braquage balayés par le jet des réacteurs, soufflé sur l''extrados (effet Coandă) ou sous l''aile, qui rabat la poussée vers le sol pour décoller et atterrir court avec un avion de transport à réaction', 'Large-deflection flaps washed by the engine exhaust, blown over the upper surface (Coandă effect) or under the wing, turning thrust downwards for short take-offs and landings by a jet transport'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Volets soufflés par les réacteurs');
 INSERT INTO armement (name, name_en, description, description_en)
@@ -1953,7 +2023,7 @@ WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'Laser chimique oxygène-i
 INSERT INTO armement (name, name_en, description, description_en)
 SELECT 'MG 151/20', NULL, 'Canon automatique allemand de 20 mm de la Seconde Guerre mondiale, monté sur les chasseurs dérivés du Bf 109 et les chasseurs yougoslaves d''après-guerre', 'German 20 mm Second World War automatic cannon, fitted to post-war Bf 109 derivatives and Yugoslav fighters'
 WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'MG 151/20');
--- <<< Lots 29 à 43
+-- <<< Lots 29 à 53
 
 -- ═══ 3. Niveau de furtivité ══════════════════════════════════════════════
 --
