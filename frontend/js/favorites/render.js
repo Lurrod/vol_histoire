@@ -60,10 +60,13 @@
    * (.aircraft-card-link, étendu à toute la carte en CSS) : seul le bouton de
    * retrait demande un gestionnaire. */
   function bindCards(container, state) {
+    // Retrait en deux temps : la poubelle ouvre « confirmer / garder »,
+    // la confirmation lance le retrait avec annulation (remove.js).
     container.querySelectorAll('.favorite-remove').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        VH.favorites.remove.removeWithUndo(state, btn);
+      const control = VH.favorites.remove.armRemoveButton(btn, () => {
+        // Retrait non démarré (déjà en attente, favori introuvable) : la
+        // poubelle revient au repos au lieu de rester bloquée sur sa coche.
+        if (!VH.favorites.remove.removeWithUndo(state, btn) && control) control.reset();
       });
     });
   }

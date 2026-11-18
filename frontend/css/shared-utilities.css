@@ -72,6 +72,15 @@
     outline: 2px solid var(--hud-cyan);
     outline-offset: 2px;
   }
+  /* Connexion / inscription : les champs portent leur propre indicateur,
+     conforme (bordure dorée doublée vers l'intérieur, 2 px, contraste
+     > 3:1 — login.css). L'anneau ci-dessus, décalé de 2 px vers
+     l'extérieur, s'y ajoutait et se faisait rogner par le panneau. */
+  /* Même sélecteur que la règle globale, préfixé : sans ses :not(), moins
+     spécifique, l'exception perdait. */
+  .page-login .form-group input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus-visible {
+    outline: none;
+  }
 
   /* Accessibility : screen reader only */
   .sr-only {

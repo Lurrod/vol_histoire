@@ -63,10 +63,11 @@ describe('scriptVersion / swUrl', () => {
 
 describe('canRegister', () => {
   const nav = { serviceWorker: {} };
-  test('HTTPS ou boucle locale uniquement', () => {
+  test('HTTPS uniquement, jamais en local (développement)', () => {
     expect(sw.canRegister(nav, { protocol: 'https:', hostname: 'a.fr' })).toBe(true);
-    expect(sw.canRegister(nav, { protocol: 'http:', hostname: 'localhost' })).toBe(true);
-    expect(sw.canRegister(nav, { protocol: 'http:', hostname: '127.0.0.1' })).toBe(true);
+    expect(sw.canRegister(nav, { protocol: 'http:', hostname: 'localhost' })).toBe(false);
+    expect(sw.canRegister(nav, { protocol: 'http:', hostname: '127.0.0.1' })).toBe(false);
+    expect(sw.canRegister(nav, { protocol: 'https:', hostname: 'localhost' })).toBe(false);
     expect(sw.canRegister(nav, { protocol: 'http:', hostname: 'a.fr' })).toBe(false);
   });
   test('sans API service worker ou en économie de données : non', () => {
@@ -198,6 +199,30 @@ describe('init', () => {
     expect(ctx.location.reload).toHaveBeenCalledTimes(1);
   });
 
+  test('en local : aucun enregistrement, l\'ancien service worker et ses caches sont retirés', async () => {
+    const unregister = jest.fn(() => Promise.resolve(true));
+    const swApi = fakeServiceWorker();
+    swApi.getRegistrations = jest.fn(() => Promise.resolve([{ unregister }, { unregister }]));
+    const store = {
+      keys: jest.fn(() => Promise.resolve(['vh-static-4.17.0', 'vh-pages-4.17.0', 'autre-appli'])),
+      delete: jest.fn(() => Promise.resolve(true)),
+    };
+    const ctx = makeCtx({
+      navigator: { serviceWorker: swApi },
+      location: { protocol: 'http:', hostname: 'localhost', href: 'http://localhost:3000/', reload: jest.fn() },
+      caches: store,
+    });
+    await expect(sw.init(ctx)).resolves.toBeNull();
+    expect(swApi.register).not.toHaveBeenCalled();
+    expect(unregister).toHaveBeenCalledTimes(2);
+    expect(store.delete.mock.calls.map(c => c[0])).toEqual(['vh-static-4.17.0', 'vh-pages-4.17.0']);
+  });
+
+  test('en local sans API de cache ni d\'inscriptions : rien ne lève', async () => {
+    const ctx = makeCtx({ location: { protocol: 'http:', hostname: '127.0.0.1', href: 'http://127.0.0.1/' } });
+    await expect(sw.init(ctx)).resolves.toBeNull();
+  });
+
   test('échec d\'enregistrement silencieux', async () => {
     const ctx = makeCtx({
       navigator: { serviceWorker: fakeServiceWorker({ register: jest.fn(() => Promise.reject(new Error('x'))) }) },
@@ -210,13 +235,13 @@ describe('boot', () => {
   function fakeWin() {
     const win = new EventTarget();
     win.navigator = { serviceWorker: fakeServiceWorker() };
-    win.location = { protocol: 'http:', hostname: 'localhost', href: 'http://localhost/', reload: jest.fn() };
+    win.location = { protocol: 'https:', hostname: 'a.fr', href: 'https://a.fr/', reload: jest.fn() };
     return win;
   }
 
   test('page déjà chargée : enregistre tout de suite, avec la version du script', () => {
     const win = fakeWin();
-    const doc = { readyState: 'complete', currentScript: { src: 'http://localhost/js/sw-register.js?v=9.9.9' } };
+    const doc = { readyState: 'complete', currentScript: { src: 'https://a.fr/js/sw-register.js?v=9.9.9' } };
     const ctx = sw.boot(win, doc);
     expect(ctx.scriptSrc).toContain('v=9.9.9');
     expect(win.navigator.serviceWorker.register).toHaveBeenCalledWith('/sw.js?v=9.9.9', { scope: '/' });

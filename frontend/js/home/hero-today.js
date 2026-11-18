@@ -35,7 +35,35 @@
     return { name, sentence };
   }
 
-  function init(ephemeris, facts, dayKey) {
+  /* Grande photo du haut de l'accueil : l'appareil de l'anniversaire affiché
+   * (v4.17). Elle entre en fondu une fois chargée ; sans photo connue, le
+   * cadre reste vide (.is-empty) plutôt que d'afficher une image cassée. */
+  function setPhoto(plane, name) {
+    const media = document.getElementById('hero-today-media');
+    const img = document.getElementById('hero-today-image');
+    const credit = document.getElementById('hero-today-credit');
+    if (!media || !img) return;
+    const url = plane && plane.image_url;
+    media.classList.toggle('is-empty', !url);
+    if (credit) { credit.textContent = ''; credit.hidden = true; }
+    if (!url) return;
+
+    media.classList.remove('is-loaded');
+    img.addEventListener('load', () => media.classList.add('is-loaded'), { once: true });
+    img.setAttribute('alt', name || '');
+    const picture = VH.shared && VH.shared.picture;
+    if (picture) picture.applySourcesTo(img, url);
+    else img.setAttribute('src', url);
+    if (img.complete && img.naturalWidth > 0) media.classList.add('is-loaded');
+
+    const photoCredit = VH.shared && VH.shared.photoCredit;
+    if (credit && photoCredit) {
+      const shown = photoCredit.fillCredit(credit, { author: plane.image_credit, licence: plane.image_licence }, (k) => i18n.t(k));
+      credit.hidden = !shown;
+    }
+  }
+
+  function init(ephemeris, facts, dayKey, aircraft = []) {
     const body   = document.getElementById('hero-fact-body');
     const link   = document.getElementById('hero-fact-link');
     const label  = document.getElementById('hero-fact-label');
@@ -83,14 +111,18 @@
       if (selection.exact) setLabel('home.hero_today_label', 'Ce jour-là', 'On this day');
       else                 setLabel('home.hero_today_label_week', 'Cette semaine-là', 'That week');
 
-      setBody(dailyApi.formatEventDate(entry.event_date, lang), sentence);
+      setBody(dailyApi ? dailyApi.formatEventDate(entry.event_date, lang) : '', sentence);
       if (link) link.setAttribute('href', airplaneHref(entry.airplane_id, name));
+      setPhoto(entry, name);
     }
 
     function renderFact() {
       const { name, sentence } = factSentence(fact, getHeroLang());
       setLabel('home.hero_fact_label', 'Saviez-vous ?', 'Did you know?');
       setBody(fact.year ? String(fact.year) : '', sentence);
+      // Le fait éditorial n'a pas de photo : celle de son appareil, s'il est
+      // dans la liste du quiz.
+      setPhoto((aircraft || []).find(a => a && a.name === fact.airplane_name) || null, name);
 
       if (link) {
         link.setAttribute('href', fact.airplane_id
@@ -126,7 +158,7 @@
     render();
   }
 
-  VH.home.heroToday = { entrySentence, factSentence, init };
+  VH.home.heroToday = { entrySentence, factSentence, init, setPhoto };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = VH.home.heroToday;

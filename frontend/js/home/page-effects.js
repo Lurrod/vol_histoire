@@ -42,22 +42,7 @@
     });
   }
 
-  // Garde-fou défensif : si le HTML servi depuis un cache SW est dans le
-  // mauvais ordre (Quiz avant Fact), on rétablit Fact-en-premier au runtime.
-  // Sans effet si l'ordre du DOM est déjà correct.
-  function ensureHeroAsideOrder() {
-    const fact = document.getElementById('hero-fact-card');
-    const quiz = document.getElementById('hero-quiz-card');
-    if (!fact || !quiz) return;
-    // compareDocumentPosition retourne DOCUMENT_POSITION_FOLLOWING (4) si
-    // l'argument vient APRÈS this. Si quiz vient avant fact, on déplace fact.
-    const pos = fact.compareDocumentPosition(quiz);
-    if (!(pos & Node.DOCUMENT_POSITION_FOLLOWING)) {
-      quiz.parentNode.insertBefore(fact, quiz);
-    }
-  }
-
-  VH.home.pageEffects = { smoothAnchors, fadeInImages, ensureHeroAsideOrder };
+  VH.home.pageEffects = { smoothAnchors, fadeInImages };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = VH.home.pageEffects;

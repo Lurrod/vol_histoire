@@ -236,7 +236,7 @@ body:is(.page-hangar, .page-favorites) {
   border: none;
   width: 28px;
   height: 28px;
-  border-radius: 8px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -258,7 +258,7 @@ body:is(.page-hangar, .page-favorites) {
   padding: 0.7rem 1rem;
   background: rgba(255,255,255,0.03);
   border: 1px solid var(--white-a07);
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
   text-align: center;

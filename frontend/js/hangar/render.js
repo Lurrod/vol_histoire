@@ -47,15 +47,27 @@
     container.removeAttribute('aria-busy');
     if (total === 0) { container.innerHTML = ''; return; }
 
-    container.innerHTML = `
-      <button class="prev-page-btn" ${state.currentPage <= 1 ? 'disabled' : ''}>
+    // Le compteur de page reste DANS le DOM d'un rendu à l'autre : seuls les
+    // boutons sont remplacés. Détaché puis réinséré, il perdrait son style de
+    // départ et le chiffre sauterait au lieu de glisser (VH.rollingNumber).
+    const prevHtml = `<button class="prev-page-btn" ${state.currentPage <= 1 ? 'disabled' : ''}>
         <i class="fas fa-chevron-left"></i> ${i18n.t('hangar.prev_page')}
-      </button>
-      <span class="page-info">${i18n.t('hangar.page_info', { current: state.currentPage, total: totalPages })}</span>
-      <button class="next-page-btn" ${state.currentPage >= totalPages ? 'disabled' : ''}>
+      </button>`;
+    const nextHtml = `<button class="next-page-btn" ${state.currentPage >= totalPages ? 'disabled' : ''}>
         ${i18n.t('hangar.next_page')} <i class="fas fa-chevron-right"></i>
-      </button>
-    `;
+      </button>`;
+    let info = container.querySelector('.page-info');
+    if (info) {
+      const fresh = document.createElement('div');
+      fresh.innerHTML = prevHtml + nextHtml;
+      const [prev, next] = fresh.children;
+      container.querySelector('.prev-page-btn')?.replaceWith(prev);
+      container.querySelector('.next-page-btn')?.replaceWith(next);
+    } else {
+      container.innerHTML = `${prevHtml}<span class="page-info"></span>${nextHtml}`;
+      info = container.querySelector('.page-info');
+    }
+    VH.rollingNumber.setText(info, i18n.t('hangar.page_info', { current: state.currentPage, total: totalPages }));
     container.querySelector('.prev-page-btn')?.addEventListener('click', () => changePage(state, state.currentPage - 1));
     container.querySelector('.next-page-btn')?.addEventListener('click', () => changePage(state, state.currentPage + 1));
   }

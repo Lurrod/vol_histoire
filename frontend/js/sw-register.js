@@ -14,6 +14,7 @@
   'use strict';
 
   var LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
+  var CACHE_PREFIX = 'vh-'; // préfixe des caches de sw.js
   var FALLBACK = {
     fr: { message: 'Nouvelle version disponible', reload: 'Recharger', close: 'Fermer' },
     en: { message: 'New version available', reload: 'Reload', close: 'Close' },
@@ -36,10 +37,16 @@
     return version ? '/sw.js?v=' + encodeURIComponent(version) : '/sw.js';
   }
 
-  /** Le contexte permet-il un service worker ? */
+  function isLocal(loc) {
+    return Boolean(loc) && LOCAL_HOSTS.indexOf(loc.hostname) !== -1;
+  }
+
+  /** Le contexte permet-il un service worker ? HTTPS seulement, et jamais
+   *  en local : en développement, la version (`?v=`) ne bouge pas d'une
+   *  modification à l'autre et le cache du SW servait l'ancien CSS/JS. */
   function canRegister(nav, loc) {
     if (!nav || !('serviceWorker' in nav)) return false;
-    if (loc.protocol !== 'https:' && LOCAL_HOSTS.indexOf(loc.hostname) === -1) return false;
+    if (loc.protocol !== 'https:' || isLocal(loc)) return false;
     // Respecte Save-Data (ex. Chrome Mobile en mode économie de données).
     return !(nav.connection && nav.connection.saveData);
   }
@@ -136,8 +143,32 @@
     });
   }
 
+  /** En local : retire le service worker installé avant cette règle et vide
+   *  ses caches (les siens seulement, préfixe vh-). */
+  function cleanupLocal(ctx) {
+    var sw = ctx.navigator && ctx.navigator.serviceWorker;
+    var store = ctx.caches || (ctx.window && ctx.window.caches);
+    var jobs = [];
+    if (sw && typeof sw.getRegistrations === 'function') {
+      jobs.push(sw.getRegistrations().then(function (regs) {
+        return Promise.all(regs.map(function (r) { return r.unregister(); }));
+      }));
+    }
+    if (store && typeof store.keys === 'function') {
+      jobs.push(store.keys().then(function (keys) {
+        return Promise.all(keys
+          .filter(function (k) { return k.indexOf(CACHE_PREFIX) === 0; })
+          .map(function (k) { return store.delete(k); }));
+      }));
+    }
+    return Promise.all(jobs)
+      .catch(function () { /* silencieux : rien d'essentiel */ })
+      .then(function () { return null; });
+  }
+
   /** Point d'entrée ; renvoie la promesse d'enregistrement (ou null). */
   function init(ctx) {
+    if (isLocal(ctx.location)) return cleanupLocal(ctx);
     if (!canRegister(ctx.navigator, ctx.location)) return null;
     ctx.state = ctx.state || { reloadRequested: false };
     var sw = ctx.navigator.serviceWorker;
@@ -181,7 +212,7 @@
   var api = {
     scriptVersion: scriptVersion, swUrl: swUrl, canRegister: canRegister,
     label: label, showUpdateNotice: showUpdateNotice,
-    watchRegistration: watchRegistration, init: init, boot: boot,
+    watchRegistration: watchRegistration, init: init, boot: boot, cleanupLocal: cleanupLocal,
   };
 
   if (typeof module !== 'undefined' && module.exports) {

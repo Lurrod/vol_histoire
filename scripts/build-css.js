@@ -161,8 +161,27 @@ function protectParenPlus(css) {
 // focalisé) devenait « .page-login:focus-visible » (le body lui-même, jamais
 // focalisé) et la règle mourait sans erreur. Dans une déclaration, l'espace
 // avant « : » n'existe pas dans nos sources : rien n'est perdu en poids.
+// Les chaînes ('…' ou "…") sont mises de côté avant compactage puis
+// restituées telles quelles : le compactage retirait l'espace finale de
+// content: ' : ' et changeait l'espace insécable en espace (\s de
+// JavaScript l'attrape), ce qui collait les libellés du PDF de la fiche.
+const STRING_RE = /'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"/g;
+
+function protectStrings(css, store) {
+  return css.replace(STRING_RE, (m) => {
+    store.push(m);
+    return '\u0000STR' + (store.length - 1) + '\u0000';
+  });
+}
+
+function restoreStrings(css, store) {
+  return css.replace(/\u0000STR(\d+)\u0000/g, (_, i) => store[Number(i)]);
+}
+
 function minify(css) {
-  return protectParenPlus(css.replace(/\/\*[\s\S]*?\*\//g, ''))
+  const strings = [];
+  const safe = protectStrings(css.replace(/\/\*[\s\S]*?\*\//g, ''), strings);
+  const compact = protectParenPlus(safe)
     .replace(/\s+/g, ' ')
     .replace(/\s*([{};,>+~])\s*/g, '$1')
     .replace(/:\s+/g, ':')
@@ -170,6 +189,7 @@ function minify(css) {
     .replace(/;}/g, '}')
     .replace(/}@/g, '}\n@')
     .split(PLUS_TOKEN).join(' + ');
+  return restoreStrings(compact, strings);
 }
 
 // ── Contrôles post-minification ───────────────────────────────────────

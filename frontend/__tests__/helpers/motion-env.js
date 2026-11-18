@@ -6,6 +6,7 @@ const EXIT_MS = 200;
 
 let motionApi = null;
 let rollingApi = null;
+let confirmApi = null;
 
 /** Branche le vrai module sur window.VH (à rappeler si un test remplace
  *  window.VH) et déclare des durées de sortie pour `selectors`. */
@@ -22,6 +23,12 @@ function loadMotion(selectors = []) {
     rollingApi = window.VH.rollingNumber;
   }
   window.VH.rollingNumber = rollingApi;
+  // Confirmation sur place (favoris, admin, comparateur) : même principe.
+  if (!confirmApi) {
+    require('../../js/shared/confirm-action');
+    confirmApi = window.VH.confirmAction;
+  }
+  window.VH.confirmAction = confirmApi;
   const rules = selectors.map(s => `${s}{transition-duration:${EXIT_MS}ms}`).join('');
   let style = document.getElementById('test-motion-css');
   if (!style) {

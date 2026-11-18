@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const submitBtn = form.querySelector('.btn-send');
   const successMsg = document.getElementById('contact-success');
+  // Avion du bouton (contact.css) : data-state idle → sending → done.
+  const sendLabel = submitBtn?.querySelector('span');
+  let sendResetTimer = null;
+  const SEND_DONE_MS = 1800;
 
   const emailEl = document.getElementById('contact-email');
   const messageEl = document.getElementById('contact-message');
@@ -65,10 +69,18 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Loading state
-    const originalHTML = submitBtn.innerHTML;
+    // L'avion décolle (CSS) ; le libellé passe à « Envoi… » le temps de la requête.
+    const labelText = sendLabel ? sendLabel.textContent : '';
+    const labelKey = sendLabel ? sendLabel.getAttribute('data-i18n') : null;
+    clearTimeout(sendResetTimer);
+    let sent = false;
     submitBtn.disabled = true;
     submitBtn.setAttribute('aria-busy', 'true');
-    submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> <span>' + i18n.t('contact.form_sending') + '</span>';
+    submitBtn.dataset.state = 'sending';
+    if (sendLabel) {
+      sendLabel.removeAttribute('data-i18n');
+      sendLabel.textContent = i18n.t('contact.form_sending');
+    }
 
     try {
       // Token hCaptcha (invisible). Null si HCAPTCHA_SITEKEY non configuré
@@ -83,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       if (response.ok) {
+        sent = true;
         // form.reset() ne déclenche ni input ni change : le message reste
         // affiché jusqu'à la prochaine saisie.
         form.reset();
@@ -106,9 +119,26 @@ document.addEventListener('DOMContentLoaded', function () {
     } catch {
       showToast(i18n.t('contact.form_error_send'), 'error');
     } finally {
-      submitBtn.disabled = false;
       submitBtn.removeAttribute('aria-busy');
-      submitBtn.innerHTML = originalHTML;
+      if (sendLabel) {
+        if (labelKey) sendLabel.setAttribute('data-i18n', labelKey);
+        // Relu dans la langue courante (elle a pu changer pendant la
+        // requête) ; traduction absente → texte d'origine, jamais la clé.
+        const translated = labelKey ? i18n.t(labelKey) : '';
+        sendLabel.textContent = translated && translated !== labelKey ? translated : labelText;
+      }
+      // Succès : la coche se trace puis l'avion se repose — le bouton reste
+      // désactivé pendant la coche (pas de second envoi sur un bouton qui
+      // affiche « envoyé ») ; échec : l'avion revient se poser aussitôt.
+      submitBtn.dataset.state = sent ? 'done' : 'idle';
+      if (sent) {
+        sendResetTimer = setTimeout(() => {
+          submitBtn.dataset.state = 'idle';
+          submitBtn.disabled = false;
+        }, SEND_DONE_MS);
+      } else {
+        submitBtn.disabled = false;
+      }
     }
   });
 });

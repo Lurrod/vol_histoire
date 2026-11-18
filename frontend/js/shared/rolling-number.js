@@ -60,10 +60,21 @@
     el.classList.add('t-roll');
     var sr = document.createElement('span');
     sr.className = 'sr-only';
+    // Étai : un « 0 » invisible et sans largeur, premier élément du flux.
+    // Les colonnes rognent leur contenu, et une boîte qui rogne expose son
+    // bord inférieur comme ligne de base : sans étai, le nombre s'alignait
+    // sur le libellé voisin (.data-row, align-items: baseline) par ce bord
+    // et remontait de la hauteur des jambages. L'étai fournit la vraie ligne
+    // de base du texte au conteneur.
+    var strut = document.createElement('span');
+    strut.className = 't-roll-strut';
+    strut.setAttribute('aria-hidden', 'true');
+    strut.textContent = '0';
     var cols = document.createElement('span');
     cols.className = 't-roll-cols';
     cols.setAttribute('aria-hidden', 'true');
     el.appendChild(sr);
+    el.appendChild(strut);
     el.appendChild(cols);
   }
 
@@ -85,9 +96,47 @@
    */
   function set(el, value, lang) {
     if (!el || typeof value !== 'number' || !Number.isFinite(value)) return;
-    if (!el.classList.contains('t-roll')) init(el);
+    render(el, format(value, currentLang(lang)));
+  }
 
-    var text = format(value, currentLang(lang));
+  /**
+   * Texte libre : seuls les chiffres défilent, les autres caractères sont
+   * posés tels quels (« 1950s », « Page 2 / 10 », « 2 sélectionnés »).
+   * @param {Element|null} el @param {string} text
+   */
+  function setText(el, text) {
+    if (!el || typeof text !== 'string') return;
+    render(el, text);
+  }
+
+  // Largeur réelle de chaque chiffre, dans la police et l'espacement du
+  // compteur (DM Sans au hangar, Barlow Condensed espacé à la frise…), posée
+  // en --roll-w0…9 (CSSOM, autorisé par la CSP). Les largeurs codées en dur
+  // ne valaient que pour une police : ailleurs les chiffres s'écartaient.
+  // Remesuré à chaque mise à jour : la police peut arriver après le premier
+  // affichage. Mesure nulle (police absente, jsdom) → repli CSS.
+  function measureDigits(el) {
+    var probe = document.createElement('span');
+    probe.className = 't-roll-probe';
+    probe.setAttribute('aria-hidden', 'true');
+    var spans = [];
+    for (var i = 0; i <= 9; i++) {
+      var s = document.createElement('span');
+      s.textContent = String(i);
+      probe.appendChild(s);
+      spans.push(s);
+    }
+    el.appendChild(probe);
+    spans.forEach(function (span, d) {
+      var w = span.getBoundingClientRect().width;
+      if (w > 0) el.style.setProperty('--roll-w' + d, (Math.round(w * 100) / 100) + 'px');
+    });
+    probe.remove();
+  }
+
+  function render(el, text) {
+    if (!el.classList.contains('t-roll')) init(el);
+    measureDigits(el);
     var sr = el.querySelector('.sr-only');
     if (sr.textContent === text) return;
     sr.textContent = text;
@@ -147,7 +196,7 @@
     }
   }
 
-  window.VH.rollingNumber = { set: set };
+  window.VH.rollingNumber = { set: set, setText: setText };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = window.VH.rollingNumber;

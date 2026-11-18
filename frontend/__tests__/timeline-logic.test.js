@@ -12,6 +12,7 @@ global.escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
 global.i18n = { currentLang: 'fr', t: (key) => key };
 window.i18n = global.i18n;
 
+require('./helpers/motion-env').loadMotion();
 const util = require('../js/timeline/util');
 const era = require('../js/timeline/era');
 const data = require('../js/timeline/data');
@@ -131,7 +132,7 @@ describe('era', () => {
       <section class="tl-chapter" data-decade="1990"></section>`;
     const decade = era.showActiveEra(document.querySelector('.tl-chapter'));
     expect(decade).toBe(1990);
-    expect(document.getElementById('tl-year-hud-num').textContent).toBe('1990s');
+    expect(document.getElementById('tl-year-hud-num').querySelector('.sr-only').textContent).toBe('1990s');
     expect(document.getElementById('tl-year-hud-label').textContent).toBe('timeline.era_1990_label2');
     expect(document.body.style.getPropertyValue('--tl-active-era')).toBe('#8f75f5');
     era.clearActiveEra();
@@ -271,24 +272,12 @@ describe('effects — logique', () => {
     expect(effects.easeOutCubic(0.5)).toBeCloseTo(0.875);
   });
 
-  test('animateCounter : valeur finale directe en mouvement réduit', () => {
-    setReducedMotion(true);
+  test('animateCounter : odomètre, valeur lisible posée et élément absent toléré', () => {
     const el = document.createElement('span');
     effects.animateCounter(el, 42);
-    expect(el.textContent).toBe('42');
+    expect(el.classList.contains('t-roll')).toBe(true);
+    expect(el.querySelector('.sr-only').textContent).toBe('42');
+    expect(el.querySelectorAll('.t-roll-col')).toHaveLength(2);
     expect(() => effects.animateCounter(null, 1)).not.toThrow();
-  });
-
-  test('animateCounter : interpolation jusqu\'à la cible', () => {
-    const frames = [];
-    global.requestAnimationFrame = jest.fn(cb => frames.push(cb));
-    jest.spyOn(window.performance, 'now').mockReturnValue(0);
-    const el = document.createElement('span');
-    effects.animateCounter(el, 100, 1000);
-    frames.shift()(500);
-    expect(el.textContent).toBe('88');
-    frames.shift()(1000);
-    expect(el.textContent).toBe('100');
-    expect(frames).toHaveLength(0);
   });
 });

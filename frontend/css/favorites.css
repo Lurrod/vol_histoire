@@ -26,65 +26,98 @@
   overflow: hidden;
 }
 
-/* Left panel: Radar animation */
+/* Panneau de gauche : un aperçu de collection — trois vraies fiches du
+   catalogue posées en éventail, chacune marquée d'un cœur (favorites/gate.js).
+   Elles entrent une à une quand les données sont là (.is-ready). */
 .page-favorites .auth-gate-visual {
-  background: var(--night);
+  background:
+    radial-gradient(120% 90% at 50% 100%, var(--gold-a08), transparent 70%),
+    var(--night);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3rem;
+  padding: 3rem 2rem;
   position: relative;
   overflow: hidden;
-  min-height: 380px;
+  min-height: 400px;
 }
 
-.page-favorites .auth-gate-visual::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(200,169,110,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200,169,110,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.5;
-}
-
-.page-favorites .gate-radar {
+.page-favorites .gate-showcase {
+  --card-w: 13rem;
+  --spread: 4.4rem;
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  height: 19rem;
 }
 
-.page-favorites .radar-ring {
+.page-favorites .gate-card {
   position: absolute;
-  inset: 0;
-  border: 1px solid var(--gold-a15);
-  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  width: var(--card-w);
+  display: flex;
+  flex-direction: column;
+  background: var(--night-mid);
+  border: 1px solid var(--white-a12);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  scale: 0.96;
+  transition: opacity var(--dur-slow) var(--ease-out), scale var(--dur-slow) var(--ease-out);
+}
+/* Éventail : deux cartes inclinées derrière, la troisième au centre, devant. */
+.page-favorites .gate-card:nth-child(1) { translate: calc(-50% - var(--spread)) -44%; rotate: -8deg; }
+.page-favorites .gate-card:nth-child(2) { translate: calc(-50% + var(--spread)) -46%; rotate: 7deg; }
+.page-favorites .gate-card:nth-child(3) { translate: -50% -56%; z-index: 1; }
+.page-favorites .gate-showcase.is-ready .gate-card { opacity: 1; scale: 1; }
+.page-favorites .gate-showcase.is-ready .gate-card:nth-child(2) { transition-delay: var(--stagger-step); }
+.page-favorites .gate-showcase.is-ready .gate-card:nth-child(3) { transition-delay: calc(var(--stagger-step) * 2); }
+/* Cartes de derrière plus sombres : la profondeur se lit d'un coup d'œil. */
+.page-favorites .gate-card:not(:nth-child(3))::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(13, 13, 13, 0.35);
+  pointer-events: none;
 }
 
-.page-favorites .radar-ring.r2 {
-  inset: 25%;
-  border-color: var(--gold-a20);
+.page-favorites .gate-card-photo {
+  display: block;
+  aspect-ratio: 16 / 10;
+  background: var(--white-a04);
 }
+.page-favorites .gate-card-photo picture,
+.page-favorites .gate-card-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.page-favorites .gate-card-body {
+  display: flex; flex-direction: column; gap: 0.15rem;
+  padding: 0.7rem 0.85rem 0.8rem;
+}
+.page-favorites .gate-card-name {
+  font-size: 0.85rem; font-weight: 700; color: var(--white);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.page-favorites .gate-card-meta { font-size: 0.72rem; color: var(--text-ghost); }
 
-.page-favorites .radar-sweep {
+/* Cartes de derrière : photo seule, leur texte se lirait coupé et de biais. */
+.page-favorites .gate-card:not(:nth-child(3)) .gate-card-body > * { visibility: hidden; }
+
+/* Cadre vide (catalogue injoignable) : la forme seule, le cœur au centre. */
+.page-favorites .gate-card:not(.is-filled) { aspect-ratio: 4 / 3.4; }
+
+.page-favorites .gate-card-heart {
   position: absolute;
-  inset: 0;
+  top: 0.5rem; right: 0.5rem;
+  display: grid; place-items: center;
+  width: 1.75rem; height: 1.75rem;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, transparent 0deg, var(--gold-a15) 40deg, transparent 80deg);
-  animation: radarSpin 4s linear infinite; /* boucle : vitesse propre */
+  background: rgba(13, 13, 13, 0.72);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  color: var(--hud-cyan);
+  font-size: 0.75rem;
 }
-
-/* @keyframes radarSpin → shared.css (dédupliqué) */
-
-.page-favorites .radar-center {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 8px; height: 8px;
-  background: var(--hud-cyan);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 12px rgba(200,169,110,0.6);
+.page-favorites .gate-card:not(.is-filled) .gate-card-heart {
+  top: 50%; right: 50%; translate: 50% -50%;
+  width: 2.5rem; height: 2.5rem; font-size: 1rem;
+  background: var(--gold-a08);
 }
 
 /* Right panel: Info */
@@ -95,21 +128,17 @@
   justify-content: center;
 }
 
-.page-favorites .gate-badge {
+/* Sélecteur doublé : sinon `.auth-gate-info p` (texte gris) l'emporte. */
+.page-favorites .auth-gate-info .gate-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255,171,0,0.08);
-  color: var(--hud-amber);
-  padding: 0.4rem 1rem;
-  border-radius: 50px;
+  margin: 0 0 1.25rem;
+  color: var(--hud-cyan);
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  border: 1px solid rgba(255,171,0,0.2);
-  margin-bottom: 1.5rem;
-  width: fit-content;
+  letter-spacing: 0.14em;
 }
 
 .page-favorites .auth-gate-info h2 {
@@ -132,15 +161,17 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-bottom: 2rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
 }
 
 .page-favorites .gate-feature {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.6);
+  font-size: 0.92rem;
+  color: rgba(255,255,255,0.72);
 }
 
 .page-favorites .gate-feature i, .page-favorites .gate-feature .icon {
@@ -154,8 +185,26 @@
   flex-wrap: wrap;
 }
 
+/* Sortie discrète pour qui ne veut pas de compte. */
+.page-favorites .gate-browse {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.5rem;
+  width: fit-content;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-ghost);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.page-favorites .gate-browse .icon { font-size: 0.75rem; transition: translate var(--dur-base) var(--ease-out); }
+.page-favorites .gate-browse:hover,
+.page-favorites .gate-browse:focus-visible { color: var(--hud-cyan); }
+.page-favorites .gate-browse:hover .icon { translate: 3px 0; }
+
 /* BUTTONS */
-.page-favorites .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.75rem; border-radius: 8px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; border: none; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); }
+.page-favorites .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.75rem; border-radius: 12px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; border: none; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); }
 .page-favorites .btn-primary { background: var(--hud-cyan); color: var(--night); border: 1px solid transparent; font-weight: 700; }
 .page-favorites .btn-primary:hover { background: #D4B87E; }
 .page-favorites .btn-secondary { background: var(--white-a04); color: rgba(255,255,255,0.7); border: 1px solid var(--white-a12); }
@@ -198,16 +247,114 @@
 .page-favorites .country-flag { width: 24px; height: auto; border-radius: 3px; display: block; flex-shrink: 0; }
 .page-favorites .aircraft-description { color: var(--text-ghost); line-height: 1.7; margin-bottom: 1.25rem; font-size: 0.95rem; }
 
-/* Favorite remove button */
-.page-favorites .favorite-remove { position: absolute; top: 1rem; right: 1rem; z-index: 10; width: 40px; height: 40px; border-radius: 50%; background: rgba(231,76,60,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(231,76,60,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 0.9rem; transition: opacity var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out), scale var(--dur-instant) var(--ease-out); opacity: 0; }
-/* Visible au survol, mais aussi au clavier : sans cela, un bouton atteint à
-   la tabulation restait invisible. */
-.page-favorites .aircraft-card:hover .favorite-remove,
-.page-favorites .aircraft-card:focus-within .favorite-remove,
-.page-favorites .favorite-remove:focus-visible { opacity: 1; }
-.page-favorites .favorite-remove:hover { background: var(--accent); transform: scale(1.15); box-shadow: 0 0 20px rgba(231,76,60,0.4); }
-.page-favorites .favorite-remove:focus-visible { outline: 2px solid var(--white); outline-offset: 2px; }
-.page-favorites .favorite-remove:disabled { cursor: default; transform: none; }
+/* ============================================================
+   Retrait d'un favori en deux temps (v4.17.0, favorites/remove.js)
+   .fav-del enveloppe la poubelle (.favorite-remove) et son panneau
+   « confirmer / garder ». data-state : idle → confirm → done.
+   La pastille s'allonge vers la gauche (ancrée en haut à droite de la
+   carte), le couvercle se soulève ; à la confirmation, couvercle et cuve
+   s'effacent et une coche se trace avant que la carte ne parte.
+   ============================================================ */
+.page-favorites .fav-del {
+  position: absolute; top: 1rem; right: 1rem; z-index: 10;
+  display: flex; flex-direction: row-reverse; align-items: center;
+  padding: 3px;
+  border-radius: 12px;
+  /* Fond presque opaque, le même que la pastille du cœur de la fiche
+     (details.css, .det-fav) : semi-transparent, il prenait la teinte de la
+     photo et la poubelle n'avait pas les mêmes rouge et gris d'une page à
+     l'autre. */
+  background: rgba(22, 22, 24, 0.94);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--white-a12);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+/* Visible au survol, au clavier, et tant que le panneau est engagé. */
+.page-favorites .aircraft-card:hover .fav-del,
+.page-favorites .aircraft-card:focus-within .fav-del,
+.page-favorites .fav-del:not([data-state="idle"]) { opacity: 1; }
+.page-favorites .fav-del[data-state="confirm"] { border-color: rgba(231, 76, 60, 0.35); }
+
+.page-favorites .favorite-remove,
+.page-favorites .fav-del .cfm-yes,
+.page-favorites .fav-del .cfm-no {
+  display: grid; place-items: center;
+  width: 34px; height: 34px; flex-shrink: 0;
+  padding: 0; border: 0; border-radius: 9px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+              scale var(--dur-instant) var(--ease-out);
+}
+.page-favorites .favorite-remove:hover,
+.page-favorites .fav-del[data-state="confirm"] .favorite-remove { background: rgba(231, 76, 60, 0.16); color: #ff8a7a; }
+.page-favorites .favorite-remove:focus-visible,
+.page-favorites .fav-del .cfm-yes:focus-visible,
+.page-favorites .fav-del .cfm-no:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 1px; }
+.page-favorites .favorite-remove:disabled { cursor: default; }
+
+/* La poubelle : trois tracés animés séparément. */
+.page-favorites .fav-bin {
+  width: 18px; height: 18px; overflow: visible;
+  fill: none; stroke: currentColor; stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+/* Charnière à DROITE : le panneau s'ouvre à gauche, le couvercle se soulève
+   du même côté (sur la fiche, panneau à droite, charnière à gauche). */
+.page-favorites .fav-bin-lid {
+  transform-box: view-box;
+  transform-origin: 19.5px 7px;
+  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+.page-favorites .fav-bin-can { transition: opacity var(--dur-fast) var(--ease-out); }
+/* Anticipation au survol, couvercle ouvert pendant la confirmation. */
+.page-favorites .favorite-remove:hover .fav-bin-lid { transform: translateY(-0.8px) rotate(7deg); }
+.page-favorites .fav-del[data-state="confirm"] .fav-bin-lid { transform: translate(0.4px, -2.4px) rotate(24deg); }
+.page-favorites .fav-bin-check {
+  stroke-dasharray: 17;
+  stroke-dashoffset: 17;
+  opacity: 0;
+}
+.page-favorites .fav-del[data-state="done"] .favorite-remove { color: #ff8a7a; }
+.page-favorites .fav-del[data-state="done"] .fav-bin-lid,
+.page-favorites .fav-del[data-state="done"] .fav-bin-can { opacity: 0; }
+.page-favorites .fav-del[data-state="done"] .fav-bin-check {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant),
+              opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
+}
+
+/* Le panneau s'ouvre vers la gauche ; ses boutons arrivent en léger décalé. */
+.page-favorites .fav-del .cfm-panel {
+  display: flex; gap: 2px;
+  max-width: 0; overflow: hidden;
+  opacity: 0;
+  transition: max-width var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in),
+              margin var(--dur-fast) var(--ease-in);
+}
+.page-favorites .fav-del[data-state="confirm"] .cfm-panel {
+  max-width: 5rem; margin-right: 2px; opacity: 1;
+  transition: max-width var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out),
+              margin var(--dur-base) var(--ease-out);
+}
+.page-favorites .fav-del .cfm-panel button { translate: 6px 0; opacity: 0; transition: translate var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); }
+.page-favorites .fav-del[data-state="confirm"] .cfm-panel button {
+  translate: 0 0; opacity: 1;
+  transition: translate var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out),
+              background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+              scale var(--dur-instant) var(--ease-out);
+}
+/* La confirmation (à gauche, row-reverse) arrive juste après la croix. */
+.page-favorites .fav-del[data-state="confirm"] .cfm-yes { transition-delay: var(--stagger-step), var(--stagger-step), 0s, 0s, 0s; }
+.page-favorites .fav-del .cfm-yes { color: #ff8a7a; }
+.page-favorites .fav-del .cfm-yes:hover { background: rgba(231, 76, 60, 0.22); color: var(--white); }
+.page-favorites .fav-del .cfm-no:hover { background: var(--white-a08); color: var(--white); }
+.page-favorites .fav-del .cfm-panel .icon,
+.page-favorites .fav-del .cfm-panel i { font-size: 0.85rem; }
 
 /* Retrait d'un favori : la carte s'efface (et ne capte plus aucun clic),
    puis sort du flux — la grille se resserre. Elle revient par un nouveau
@@ -250,8 +397,8 @@
   .page-favorites .filter-group { position: static; }
   .page-favorites .filter-dropdown { left: 0; right: auto; max-width: 100%; }
   .page-favorites .auth-gate-content { grid-template-columns: 1fr; }
-  .page-favorites .auth-gate-visual { min-height: 240px; padding: 2.5rem; }
-  .page-favorites .gate-radar { width: 160px; height: 160px; }
+  .page-favorites .auth-gate-visual { min-height: 0; padding: 2rem 1.5rem 1.5rem; }
+  .page-favorites .gate-showcase { --card-w: 10rem; --spread: 3.4rem; height: 13.5rem; }
 }
 
 @media (max-width: 48em) {
@@ -275,7 +422,7 @@
   .page-favorites .sort-select { width: 100%; min-height: 44px; }
   .page-favorites .filter-dropdown { left: 0; right: 0; min-width: auto; }
   .page-favorites .results-bar { margin-bottom: 1.5rem; }
-  .page-favorites .favorite-remove { opacity: 1; }
+  .page-favorites .fav-del { opacity: 1; }
   .page-favorites .auth-gate-info { padding: 2.5rem 2rem; }
   .page-favorites .auth-gate-info h2 { font-size: 1.5rem; }
 }
@@ -292,8 +439,8 @@
   .page-favorites .active-filters { gap: 0.5rem; margin-bottom: 1.25rem; }
   .page-favorites .results-bar { margin-bottom: 1rem; font-size: 0.85rem; }
   .page-favorites .auth-gate-content { margin: 0; border-radius: 16px; }
-  .page-favorites .auth-gate-visual { min-height: 200px; padding: 2rem; }
-  .page-favorites .gate-radar { width: 130px; height: 130px; }
+  .page-favorites .gate-showcase { --card-w: 8.75rem; --spread: 2.9rem; height: 12rem; }
+  .page-favorites .gate-card-body { padding: 0.55rem 0.65rem 0.6rem; }
   .page-favorites .auth-gate-info { padding: 2rem 1.5rem; }
   .page-favorites .auth-gate-info h2 { font-size: 1.3rem; }
   .page-favorites .gate-actions { flex-direction: column; }
@@ -304,7 +451,7 @@
   .page-favorites .btn { min-height: 44px; }
   /* .nav-links li a → shared.css */
   .page-favorites .aircraft-card:hover { transform: none; }
-  .page-favorites .favorite-remove { opacity: 1; }
+  .page-favorites .fav-del { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

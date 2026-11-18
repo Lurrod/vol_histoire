@@ -3,14 +3,6 @@
   window.VH = window.VH || {};
   window.VH.details = window.VH.details || {};
 
-  function formatDate(dateString) {
-    if (!dateString) return i18n.t('details.not_specified');
-    const date = new Date(dateString);
-    return date.toLocaleDateString(i18n.currentLang === 'en' ? 'en-GB' : 'fr-FR', {
-      year: 'numeric', month: 'long', day: 'numeric'
-    });
-  }
-
   function renderAircraftDetails(state) {
     const a = state.aircraftData;
 
@@ -54,9 +46,8 @@
     document.getElementById('stat-status').textContent = a.status || i18n.t('details.not_specified');
     document.getElementById('aircraft-description').textContent = a.description || i18n.t('details.no_description');
 
-    document.getElementById('date-concept').querySelector('.timeline-date').textContent = formatDate(a.date_concept);
-    document.getElementById('date-first-fly').querySelector('.timeline-date').textContent = formatDate(a.date_first_fly);
-    document.getElementById('date-operational').querySelector('.timeline-date').textContent = formatDate(a.date_operationel);
+    // Dates clés : précision réelle de chaque date et écart entre jalons.
+    VH.details.keyDates.render(a);
 
     // Description : support markdown si présence de ## / ** / - ou render plain sinon
     const descEl = document.getElementById('aircraft-description');
@@ -390,10 +381,12 @@
       const title = war.slug
         ? `<a class="war-link" href="/conflits/${encodeURIComponent(war.slug)}">${escapeHtml(war.name)}</a>`
         : escapeHtml(war.name);
+      // Période en surtitre, puis le nom : les cartes se lisent comme une
+      // chronologie sans trait ni pastille (grille, details.css).
       return `
         <div class="war-card${war.slug ? ' war-card-linked' : ''}">
+          <div class="war-period"><span>${startYear} – ${endYear}</span></div>
           <h3>${title}</h3>
-          <div class="war-period"><i class="fas fa-calendar-days"></i><span>${startYear} - ${endYear}</span></div>
           <p>${escapeHtml(war.description) || i18n.t('details.no_desc_available')}</p>
           ${war.slug ? `<span class="war-more" aria-hidden="true">${i18n.t('details.war_see_aircraft')} <i class="fas fa-arrow-right"></i></span>` : ''}
         </div>

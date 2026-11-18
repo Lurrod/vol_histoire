@@ -26,8 +26,10 @@ const FRONTEND_DIR = path.join(__dirname, '../../frontend');
 const MAX_DESC = 160;
 const LIST_URL = `${SITE_URL}/conflits`;
 
+// Même ?v= que les pages en cache (en développement : change à chaque
+// démarrage, utils/asset-cache.js).
 function readVersion() {
-  try { return require('../package.json').version || 'dev'; } catch { return 'dev'; }
+  return require('../utils/asset-cache').currentAssetVersion();
 }
 
 // Fil d'Ariane : chaque maillon vise la version de la page dans la langue

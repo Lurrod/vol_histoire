@@ -3,9 +3,26 @@
   window.VH = window.VH || {};
   window.VH.details = window.VH.details || {};
 
+  // Lien dessiné : à la copie, les deux maillons s'effacent et une coche se
+  // trace à leur place (details.css, état .flash), puis tout revient.
+  const LINK_SVG =
+    '<svg class="copy-link-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+    + '<g class="copy-link-chain"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/>'
+    + '<path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></g>'
+    + '<path class="copy-link-check" pathLength="20" d="M5.5 12.5l4.2 4.2L18.5 7.5"/>'
+    + '</svg>';
+
   function setupShareBar(state) {
     const bar = document.querySelector('.share-bar');
     if (!bar) return;
+
+    const copyBtn = bar.querySelector('[data-share="copy"]');
+    if (copyBtn && !copyBtn.querySelector('.copy-link-icon')) {
+      const holder = document.createElement('span');
+      holder.innerHTML = LINK_SVG;
+      const old = copyBtn.querySelector('svg.icon, i');
+      if (old) old.replaceWith(holder.firstChild); else copyBtn.prepend(holder.firstChild);
+    }
 
     function getShareData() {
       const a = state.aircraftData;

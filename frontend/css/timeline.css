@@ -821,6 +821,7 @@ body.page-timeline.tl-has-cinematic::before {
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0.03em;
+  --roll-h: 1em; /* odomètre : même hauteur de ligne que le HUD d'origine */
 }
 .page-timeline .tl-year-hud-lbl {
   color: var(--text-muted);

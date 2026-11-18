@@ -27,7 +27,7 @@ window.VH = {
 
 const PAGE_HTML = `
   <section class="page-hero"></section>
-  <section id="auth-gate" class="hidden"></section>
+  <section id="auth-gate" class="hidden"><div class="gate-showcase"><div class="gate-card"></div><div class="gate-card"></div><div class="gate-card"></div></div></section>
   <section id="favorites-content" class="hidden">
     <input id="search-input">
     <select id="sort-select">
@@ -67,6 +67,7 @@ function loadModules() {
     data: require('../js/favorites/data'),
     dropdowns: require('../js/favorites/dropdowns'),
     toolbar: require('../js/favorites/toolbar'),
+    gate: require('../js/favorites/gate'),
   };
   return F;
 }
@@ -163,6 +164,8 @@ describe('render', () => {
     const bubbled = jest.fn();
     document.addEventListener('click', bubbled);
     document.querySelector('.favorite-remove').click();
+    expect(remove).not.toHaveBeenCalled(); // la poubelle ouvre la confirmation
+    document.querySelector('.cfm-yes').click();
     document.removeEventListener('click', bubbled);
     expect(remove).toHaveBeenCalledWith(state, document.querySelector('.favorite-remove'));
     expect(bubbled).not.toHaveBeenCalled();
@@ -318,12 +321,19 @@ describe('remove', () => {
     return { F, state };
   }
   const removeBtn = (id) => document.querySelector(`.favorite-remove[data-airplane-id="${id}"]`);
+  // Retrait en deux temps (armRemoveButton) : la poubelle ouvre le panneau,
+  // la coche confirme. Sous jsdom, aucune durée : le retrait suit aussitôt.
+  const confirmRemove = (id) => {
+    const bin = removeBtn(id);
+    bin.click();
+    bin.closest('.fav-del').querySelector('.cfm-yes').click();
+  };
 
   test('retrait optimiste, puis DELETE après 5 s', async () => {
     jest.useFakeTimers();
     const { state } = setup();
     auth.authFetch.mockImplementation(() => Promise.resolve({ ok: true }));
-    removeBtn(1).click();
+    confirmRemove(1);
     expect(state.favorites.map(a => a.id)).toEqual([2, 3]);
     expect(document.getElementById('results-count').textContent).toBe('favorites.results:{"count":2}');
     const card = removeBtn(1).closest('.aircraft-card');
@@ -331,7 +341,7 @@ describe('remove', () => {
     expect(card.getAttribute('aria-hidden')).toBe('true');
     expect(document.querySelector('.toast .toast-msg').textContent).toBe('favorites.removed');
 
-    removeBtn(1).click(); // déjà en attente : ignoré
+    confirmRemove(1); // déjà en attente : ignoré
     expect(document.querySelectorAll('.toast')).toHaveLength(1);
 
     jest.advanceTimersByTime(300);
@@ -346,7 +356,7 @@ describe('remove', () => {
   test('« Annuler » restaure l\'appareil et aucun DELETE ne part', async () => {
     jest.useFakeTimers();
     const { state } = setup();
-    removeBtn(3).click();
+    confirmRemove(3);
     document.querySelector('.toast-undo-btn').click();
     expect(state.favorites.map(a => a.id).sort()).toEqual([1, 2, 3]);
     expect(document.querySelectorAll('.aircraft-card')).toHaveLength(3);
@@ -358,7 +368,7 @@ describe('remove', () => {
     jest.useFakeTimers();
     const { state } = setup();
     auth.authFetch.mockImplementation(() => Promise.resolve({ ok: false }));
-    removeBtn(2).click();
+    confirmRemove(2);
     await jest.advanceTimersByTimeAsync(5000);
     expect(state.favorites.some(a => a.id === 2)).toBe(true);
     expect(showToast).toHaveBeenCalledWith('common.error', 'error');
@@ -369,7 +379,7 @@ describe('remove', () => {
     const { F, state } = setup();
     state.search = 'rafale';
     F.render.applyFiltersAndRender(state);
-    removeBtn(1).click();
+    confirmRemove(1);
     jest.advanceTimersByTime(300);
     expect(document.querySelector('#favorites-container .empty-state')).not.toBeNull();
   });
@@ -378,7 +388,7 @@ describe('remove', () => {
     jest.useFakeTimers();
     setup();
     const card = removeBtn(1).closest('.aircraft-card');
-    removeBtn(1).click();
+    confirmRemove(1);
     expect(card.inert).toBe(true);
     expect(card.hasAttribute('tabindex')).toBe(false);
   });
@@ -387,7 +397,7 @@ describe('remove', () => {
     jest.useFakeTimers();
     setup();
     removeBtn(2).focus();
-    removeBtn(2).click();
+    confirmRemove(2);
     jest.advanceTimersByTime(300);
     expect(document.activeElement.classList.contains('aircraft-card-link')).toBe(true);
     expect(document.activeElement.closest('.aircraft-card').dataset.id).toBe('1');
@@ -406,6 +416,7 @@ describe('remove', () => {
     });
     btn.focus();
     btn.click();
+    btn.closest('.fav-del').querySelector('.cfm-yes').click();
     expect(document.activeElement).not.toBe(btn); // focus perdu, comme dans Chrome
     jest.advanceTimersByTime(300);
     expect(document.activeElement.classList.contains('aircraft-card-link')).toBe(true);
@@ -414,10 +425,12 @@ describe('remove', () => {
 
   test('focus hors de la carte retirée : on n\'y touche pas', () => {
     jest.useFakeTimers();
-    setup();
+    const { F, state } = setup();
     const input = document.getElementById('search-input');
     input.focus();
-    removeBtn(2).click();
+    // Le parcours à la souris met le focus dans la carte (poubelle, coche) :
+    // ce cas ne survient que par un appel direct du retrait.
+    F.remove.removeWithUndo(state, removeBtn(2));
     jest.advanceTimersByTime(300);
     expect(document.activeElement).toBe(input);
   });
@@ -426,9 +439,20 @@ describe('remove', () => {
     const { F, state } = setup();
     const btn = document.createElement('button');
     btn.dataset.airplaneId = '999';
-    F.remove.removeWithUndo(state, btn);
+    expect(F.remove.removeWithUndo(state, btn)).toBe(false);
     expect(btn.disabled).toBe(false);
     expect(() => F.render.collapseCard(state, null)).not.toThrow();
+  });
+
+  test('retrait confirmé mais non démarré : la poubelle revient au repos (pas de coche bloquée)', () => {
+    const { state } = setup();
+    // Le favori a disparu de l'état entre-temps (rechargement, autre onglet).
+    state.favorites = state.favorites.filter(a => a.id !== 2);
+    confirmRemove(2);
+    const ctl = removeBtn(2).closest('.fav-del');
+    expect(ctl.dataset.state).toBe('idle');
+    removeBtn(2).click();
+    expect(ctl.dataset.state).toBe('confirm'); // utilisable à nouveau
   });
 
   test('carte remplacée avant la fin de la transition : rien à faire', () => {
@@ -516,6 +540,7 @@ describe('favorites.js — démarrage', () => {
       getToken: () => token,
       getPayload: () => payload,
       authFetch: jest.fn(() => okJson(FAVS)),
+      fetchWithTimeout: jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ data: FAVS }) })),
       clearSession: jest.fn(),
     };
     const spy = jest.spyOn(document, 'addEventListener');
@@ -531,6 +556,10 @@ describe('favorites.js — démarrage', () => {
     expect(document.getElementById('favorites-content').classList.contains('hidden')).toBe(true);
     expect(document.querySelector('.page-hero').classList.contains('hidden')).toBe(true);
     expect(auth.authFetch).not.toHaveBeenCalled();
+    // Aperçu de collection : catalogue public (sans jeton), cadres remplis.
+    expect(auth.fetchWithTimeout).toHaveBeenCalledWith(expect.stringMatching(/^\/api\/airplanes\?/));
+    await new Promise((r) => setTimeout(r, 0));
+    expect(document.querySelector('.gate-showcase').classList.contains('is-ready')).toBe(true);
   });
 
   test('connecté : état de l\'URL appliqué au premier rendu', async () => {

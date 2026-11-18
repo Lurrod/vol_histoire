@@ -49,33 +49,14 @@
   <main id="main-content">
   <section class="auth-section">
 
-    <!-- Left: Immersive Aviation Panel -->
+    <!-- Gauche : une photo en vol (login/visual.js), le nom du site, les chiffres du catalogue -->
     <div class="auth-visual">
       <div class="visual-bg"></div>
-      <div class="visual-noise"></div>
+      <div class="auth-photo-media" aria-hidden="true"></div>
 
-      <!-- Animated grid -->
-      <div class="hud-grid"></div>
-
-      <!-- Radar -->
-      <div class="radar-container">
-        <div class="radar-ring"></div>
-        <div class="radar-ring ring-2"></div>
-        <div class="radar-ring ring-3"></div>
-        <div class="radar-sweep"></div>
-        <div class="radar-center"></div>
-        <div class="radar-dot dot-1"></div>
-        <div class="radar-dot dot-2"></div>
-        <div class="radar-dot dot-3"></div>
-      </div>
-
-      <!-- Content -->
       <div class="visual-content">
-        <div class="visual-badge">
-          <i class="fas fa-jet-fighter"></i>
-        </div>
-        <p class="visual-title">Vol d'Histoire</p>
-        <p class="visual-subtitle" data-i18n="login.tagline_full">Base de données de l'aviation militaire</p>
+        <p class="visual-eyebrow">Vol d'Histoire</p>
+        <p class="visual-title" data-i18n="login.visual_title">L'aviation militaire, de 1945 à aujourd'hui</p>
 
         <div class="visual-stats">
           <div class="stat-item">
@@ -94,18 +75,11 @@
           </div>
         </div>
 
-        <div class="visual-tagline">
-          <span class="tagline-line"></span>
-          <span class="tagline-text" data-i18n="login.tagline">Accès opérateur requis</span>
-          <span class="tagline-line"></span>
-        </div>
+        <p class="auth-photo-caption" hidden>
+          <a class="auth-photo-link" href="/hangar"><span class="auth-photo-name"></span><span class="auth-photo-country"></span><i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+          <span class="auth-photo-credit"></span>
+        </p>
       </div>
-
-      <!-- HUD corners -->
-      <div class="hud-corner hud-tl"></div>
-      <div class="hud-corner hud-tr"></div>
-      <div class="hud-corner hud-bl"></div>
-      <div class="hud-corner hud-br"></div>
     </div>
 
     <!-- Right: Form Panel -->
@@ -236,7 +210,7 @@
               <p class="form-rgpd-notice" data-i18n-html="login.register_rgpd_notice">Voir la <a href="/politique-confidentialite">politique de confidentialité</a>.</p>
             </form>
 
-            <div class="form-footer">
+            <div class="form-footer form-footer--inline">
               <p data-i18n="login.has_account">Vous avez déjà un compte ?</p>
               <button type="button" class="switch-form" id="switch-to-login">
                 <span data-i18n="login.login_link">Se connecter</span>

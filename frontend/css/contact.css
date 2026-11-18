@@ -121,7 +121,7 @@
 .form-group textarea {
   background: var(--white-a04);
   border: 1px solid var(--border-field);
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 0.75rem 1rem;
   color: var(--white);
   font-family: 'DM Sans', sans-serif;
@@ -198,7 +198,7 @@
   font-weight: 600;
   font-size: 0.9rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
   transition: opacity var(--dur-fast) var(--ease-out);
   font-family: 'DM Sans', sans-serif;
@@ -215,6 +215,45 @@
 }
 .btn-send:disabled:hover {
   opacity: 0.5;
+}
+
+/* Avion du bouton « Envoyer » : décolle en diagonale pendant l'envoi,
+   la coche se trace au succès, il revient se poser sinon. Sans rebond. */
+.btn-send { position: relative; overflow: hidden; }
+.send-icon {
+  width: 1.25rem; height: 1.25rem; flex-shrink: 0; overflow: visible;
+  fill: none; stroke: currentColor; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.send-plane {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  transition: transform var(--dur-slow) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+}
+.send-trail { opacity: 0; }
+.send-check {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  opacity: 0;
+  transition: opacity var(--dur-instant) var(--ease-in);
+}
+.btn-send[data-state="sending"] .send-plane,
+.btn-send[data-state="done"] .send-plane {
+  transform: translate(15px, -15px) rotate(-24deg);
+  opacity: 0;
+  transition: transform var(--dur-slow) var(--ease-in), opacity var(--dur-base) var(--ease-in) var(--dur-fast);
+}
+.btn-send[data-state="sending"] .send-trail { animation: send-trail var(--dur-slow) var(--ease-out) both; }
+.btn-send[data-state="done"] .send-check {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-base),
+              opacity var(--dur-instant) var(--ease-out) var(--dur-base);
+}
+/* Traînée : apparaît derrière l'avion puis s'efface (monotone, sans dépassement). */
+@keyframes send-trail {
+  from { opacity: 0.7; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-5px); }
 }
 
 .form-data-note {
@@ -258,7 +297,7 @@
   padding: 1rem 1.5rem;
   background: rgba(200, 169, 110, 0.06);
   border-left: 3px solid rgba(200, 169, 110, 0.4);
-  border-radius: 8px;
+  border-radius: 12px;
   color: var(--hud-cyan);
   font-size: 0.9rem;
 }

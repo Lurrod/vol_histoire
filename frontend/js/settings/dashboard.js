@@ -96,10 +96,10 @@
 
     const stats = computeStats(favorites, i18n.currentLang);
 
-    animateCounter('db-total-fav',       stats.total);
-    animateCounter('db-total-countries', stats.countries);
-    animateCounter('db-total-gen',       stats.generations);
-    animateCounter('db-total-types',     stats.types);
+    setCounter('db-total-fav',       stats.total);
+    setCounter('db-total-countries', stats.countries);
+    setCounter('db-total-gen',       stats.generations);
+    setCounter('db-total-types',     stats.types);
 
     renderBars('db-country-bars', stats.byCountry, 6);        // top 6
     renderBars('db-gen-bars', stats.byGeneration, 5, false); // ordre des générations
@@ -133,16 +133,10 @@
     }));
   }
 
-  function animateCounter(id, target) {
+  /** Compteur « odomètre » : seuls les chiffres qui changent glissent. */
+  function setCounter(id, value) {
     const el = document.getElementById(id);
-    if (!el || target === 0) { if (el) el.textContent = 0; return; }
-    let current = 0;
-    const step = Math.max(1, Math.ceil(target / 30));
-    const timer = setInterval(() => {
-      current = Math.min(current + step, target);
-      el.textContent = current;
-      if (current >= target) clearInterval(timer);
-    }, 24);
+    if (el) window.VH.rollingNumber.set(el, value);
   }
 
   function init(state) {

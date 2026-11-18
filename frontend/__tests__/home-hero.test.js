@@ -5,6 +5,7 @@
  */
 
 const utils = require('../js/utils');
+const { loadMotion } = require('./helpers/motion-env');
 
 const HERO_DOM = `
   <a href="#cible" id="ancre">Aller</a><a href="#" id="vide">Vide</a>
@@ -21,12 +22,14 @@ const HERO_DOM = `
       <a id="hero-quiz-link" href="#" hidden><span id="hero-quiz-link-label"></span></a>
       <button id="hero-quiz-reroll">Autre</button>
     </div>
-    <div id="hero-fact-card">
+    <figure class="hero-today" id="hero-fact-card">
+      <div class="hero-today-media" id="hero-today-media"><img id="hero-today-image" alt=""></div>
+      <p id="hero-today-credit" hidden></p>
       <span id="hero-fact-label">Saviez-vous ?</span>
       <p id="hero-fact-body" data-i18n="home.hero_fact_loading">Tirage en cours…</p>
       <a id="hero-fact-link" href="#">Voir</a>
       <button id="hero-fact-reroll">Autre</button>
-    </div>
+    </figure>
   </div>
   <section id="cible"></section>
   <img id="photo" src="x.jpg" alt="">`;
@@ -48,6 +51,7 @@ let auth;
 function loadModules({ withDaily = true } = {}) {
   jest.resetModules();
   window.VH = {};
+  loadMotion();
   if (withDaily) require('../js/home/hero-daily');
   require('../js/home/hero-helpers');
   require('../js/home/hero-data');
@@ -62,7 +66,6 @@ beforeEach(() => {
   document.body.innerHTML = HERO_DOM;
   document.documentElement.lang = 'fr';
   global.escapeHtml = utils.escapeHtml;
-  global.setNumberPopIn = jest.fn((el, v) => { el.textContent = String(v); });
   global.i18n = { getLang: () => 'fr', t: jest.fn((k) => k) }; // clés absentes : repli littéral
   auth = {
     init: jest.fn(() => Promise.resolve(null)),
@@ -229,6 +232,52 @@ describe('VH.home.heroToday', () => {
   });
 });
 
+describe("VH.home.heroToday — photo de l'appareil du jour", () => {
+  const ENTRIES = [
+    { kind: 'first_flight', airplane_id: 9, airplane_name: 'C-2 Greyhound', event_date: '1964-11-18', day_gap: 0,
+      image_url: '/assets/airplanes/c2.jpg', image_credit: 'US Navy', image_licence: 'Public domain' },
+    { kind: 'service', airplane_id: 4, airplane_name: 'F/A-18 Hornet', event_date: '1978-11-18', day_gap: 0,
+      image_url: '/assets/airplanes/fa18.jpg', image_credit: null, image_licence: null },
+  ];
+  const media = () => document.getElementById('hero-today-media');
+  const img = () => document.getElementById('hero-today-image');
+
+  test("la photo suit l'anniversaire affiché, avec un texte alternatif et le crédit", () => {
+    const { heroToday } = loadModules();
+    require('../js/shared/photo-credit');
+    heroToday.init(ENTRIES, [], '2026-11-18');
+    expect(img().getAttribute('src')).toContain('c2');
+    expect(img().getAttribute('alt')).toBe('C-2 Greyhound');
+    const credit = document.getElementById('hero-today-credit');
+    expect(credit.hidden).toBe(false);
+    expect(credit.textContent).toContain('US Navy');
+    document.getElementById('hero-fact-reroll').click();
+    expect(img().getAttribute('src')).toContain('fa18');
+    expect(credit.hidden).toBe(true); // aucun crédit documenté : rien à afficher
+  });
+
+  test("fondu : la photo n'est montrée qu'une fois chargée", () => {
+    const { heroToday } = loadModules();
+    heroToday.init(ENTRIES, [], '2026-11-18');
+    expect(media().classList.contains('is-loaded')).toBe(false);
+    img().dispatchEvent(new Event('load'));
+    expect(media().classList.contains('is-loaded')).toBe(true);
+  });
+
+  test('fait de repli : la photo vient de la liste des appareils, par le nom', () => {
+    const { heroToday } = loadModules();
+    heroToday.init([], [{ year: 1976, title_fr: 'F-15 Eagle', airplane_name: 'F-22 Raptor' }], '2026-11-10', AIRCRAFT);
+    expect(img().getAttribute('src')).toContain('f22');
+  });
+
+  test('aucune photo connue : cadre vide, sans image cassée', () => {
+    const { heroToday } = loadModules();
+    heroToday.init([{ ...ENTRIES[0], image_url: null }], [], '2026-11-18');
+    expect(media().classList.contains('is-empty')).toBe(true);
+  });
+});
+
+
 describe('VH.home.heroQuiz', () => {
   test('appareil du jour : propositions, étiquette « du jour », image', () => {
     const { heroQuiz } = loadModules();
@@ -304,9 +353,9 @@ describe('VH.home.heroStats', () => {
     const { heroStats } = loadModules();
     auth.fetchWithTimeout.mockResolvedValue(jsonResponse(200, { airplanes: 434, countries: 'x', generations: 6 }));
     await heroStats.fetchHeroStats();
-    expect(document.getElementById('hero-split-stat-airplanes').textContent).toBe('434');
+    expect(document.getElementById('hero-split-stat-airplanes').querySelector('.sr-only').textContent).toBe('434');
     expect(document.getElementById('hero-split-stat-countries').textContent).toBe('30');
-    expect(document.getElementById('hero-split-stat-generations').textContent).toBe('6');
+    expect(document.getElementById('hero-split-stat-generations').querySelector('.sr-only').textContent).toBe('6');
   });
 
   test('API en erreur : valeurs du HTML conservées ; aucun compteur : aucun appel', async () => {
@@ -384,19 +433,6 @@ describe('VH.home.pageEffects', () => {
     expect(img.classList.contains('is-loading')).toBe(false);
     expect(img.classList.contains('is-loaded')).toBe(false);
   });
-
-  test('ordre des widgets : « Ce jour-là » remis avant le quiz', () => {
-    const { pageEffects } = loadModules();
-    pageEffects.ensureHeroAsideOrder();
-    const aside = document.querySelector('.hero-aside');
-    expect(aside.firstElementChild.id).toBe('hero-fact-card');
-    pageEffects.ensureHeroAsideOrder(); // déjà dans l'ordre : inchangé
-    expect(aside.firstElementChild.id).toBe('hero-fact-card');
-    document.getElementById('hero-quiz-card').remove();
-    expect(() => pageEffects.ensureHeroAsideOrder()).not.toThrow();
-  });
-
-
 });
 
 describe('script.js — point d\'entrée de l\'accueil', () => {
@@ -414,7 +450,6 @@ describe('script.js — point d\'entrée de l\'accueil', () => {
     expect(auth.fetchWithTimeout).toHaveBeenCalledTimes(1);
     expect(auth.fetchWithTimeout).toHaveBeenCalledWith('/api/hero/discoveries');
     expect(window.IntersectionObserver).toHaveBeenCalledTimes(1);
-    expect(document.querySelector('.hero-aside').firstElementChild.id).toBe('hero-fact-card');
     expect(document.getElementById('hero-fact-label').textContent).toBe('Saviez-vous ?');
     expect(document.querySelector('.hero-quiz-option').textContent).not.toBe('');
   });

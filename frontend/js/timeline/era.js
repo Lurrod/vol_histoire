@@ -33,7 +33,7 @@
     const era = getEra(decade);
     const yearNum = document.getElementById('tl-year-hud-num');
     const yearLbl = document.getElementById('tl-year-hud-label');
-    if (yearNum) yearNum.textContent = decade + 's';
+    if (yearNum) VH.rollingNumber.setText(yearNum, decade + 's');
     if (yearLbl) yearLbl.textContent = era.label || '';
     document.body.style.setProperty('--tl-active-era', eraColor(section));
     return decade;

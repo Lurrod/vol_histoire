@@ -25,6 +25,22 @@
 const HCAPTCHA_VERIFY_URL = 'https://api.hcaptcha.com/siteverify';
 
 /**
+ * Clés effectives. En développement (ni production ni test), le captcha est
+ * DÉSACTIVÉ : pas de widget (/api/config ne publie pas de clé) et
+ * vérification sautée — hCaptcha refuse de toute façon localhost et
+ * 127.0.0.1 avec de vraies clés (« Please use a valid host »), et le .env
+ * local porte celles de production. Production et tests automatisés : clés
+ * telles que configurées (les suites Jest posent les leurs et simulent
+ * siteverify).
+ * @param {Record<string, string|undefined>} env
+ * @returns {{ secret: string, sitekey: string }}
+ */
+function captchaKeys(env) {
+  if (env.NODE_ENV !== 'production' && env.NODE_ENV !== 'test') return { secret: '', sitekey: '' };
+  return { secret: env.HCAPTCHA_SECRET || '', sitekey: env.HCAPTCHA_SITEKEY || '' };
+}
+
+/**
  * Variables hCaptcha manquantes au démarrage. En production, les deux clés
  * vont ensemble : sans la secrète, tout serait refusé ; sans la publique, le
  * navigateur n'enverrait jamais de jeton et les formulaires seraient bloqués.
@@ -37,7 +53,7 @@ function captchaConfigErrors(env) {
 }
 
 async function verify(token, remoteIp) {
-  const secret = process.env.HCAPTCHA_SECRET;
+  const { secret, sitekey } = captchaKeys(process.env);
 
   if (!secret) {
     // Production sans clé : on refuse plutôt que de tout laisser passer.
@@ -56,7 +72,7 @@ async function verify(token, remoteIp) {
   if (remoteIp) params.set('remoteip', remoteIp);
   // Lie le jeton à la clé publique de CE site : un jeton émis pour une autre
   // clé du même compte hCaptcha est refusé (paramètre recommandé par hCaptcha).
-  if (process.env.HCAPTCHA_SITEKEY) params.set('sitekey', process.env.HCAPTCHA_SITEKEY);
+  if (sitekey) params.set('sitekey', sitekey);
 
   try {
     const res = await fetch(HCAPTCHA_VERIFY_URL, {
@@ -96,3 +112,4 @@ function verifyHcaptcha(req, res, next) {
 module.exports = verifyHcaptcha;
 module.exports.verify = verify;
 module.exports.captchaConfigErrors = captchaConfigErrors;
+module.exports.captchaKeys = captchaKeys;

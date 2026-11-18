@@ -94,7 +94,7 @@
 
 /* Pagination */
 .page-hangar .pagination { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin: 6rem 0 5rem; }
-.page-hangar .pagination button { padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border: 1px solid var(--white-a08); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); color: rgba(255,255,255,0.7); }
+.page-hangar .pagination button { padding: 0.75rem 1.25rem; background: rgba(255,255,255,0.03); border: 1px solid var(--white-a08); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); color: rgba(255,255,255,0.7); }
 .page-hangar .pagination button:hover:not(:disabled) { border-color: rgba(255,255,255,0.2); background: var(--white-a07); color: var(--white); }
 .page-hangar .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
 .page-hangar .pagination .page-info { padding: 0.75rem 1.25rem; font-weight: 600; color: var(--text-ghost); transition: opacity var(--dur-fast) var(--ease-out); }
@@ -141,7 +141,7 @@ body.page-hangar.modal-open { overflow: hidden; }
 .page-hangar .form-group label { font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
 .page-hangar .form-group input, .page-hangar .form-group select, .page-hangar .form-group textarea {
   padding: 0.875rem 1rem; border: 1px solid var(--border-field);
-  border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+  border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
   transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out); background: rgba(255,255,255,0.03); color: var(--white);
 }
 .page-hangar .form-group input::placeholder, .page-hangar .form-group textarea::placeholder { color: var(--text-placeholder); }
@@ -152,7 +152,7 @@ body.page-hangar.modal-open { overflow: hidden; }
 .page-hangar .modal-footer { display: flex; justify-content: flex-end; gap: 1rem; padding: 1.75rem 2rem; border-top: 1px solid var(--white-a07); }
 
 /* Buttons */
-.page-hangar .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; padding: 0.875rem 1.75rem; border: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); font-family: 'DM Sans', sans-serif; white-space: nowrap; }
+.page-hangar .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; padding: 0.875rem 1.75rem; border: none; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); font-family: 'DM Sans', sans-serif; white-space: nowrap; }
 .page-hangar .btn-primary { background: var(--hud-cyan); color: var(--night); border: 1px solid transparent; font-weight: 700; }
 .page-hangar .btn-primary:hover { background: #D4B87E; }
 .page-hangar .btn-secondary { background: var(--white-a04); color: rgba(255,255,255,0.7); border: 1px solid var(--white-a12); }
@@ -229,7 +229,7 @@ body.page-hangar.modal-open { overflow: hidden; }
   /* Une seule ligne : précédent · page · suivant. */
   .page-hangar .pagination { margin: 2.5rem 0 3rem; gap: 0.35rem; }
   .page-hangar .pagination button { padding: 0.65rem 0.75rem; font-size: 0.85rem; white-space: nowrap; }
-  .page-hangar .pagination .page-info { padding: 0.5rem 0.25rem; font-size: 0.85rem; white-space: nowrap; flex: 1; text-align: center; }
+  .page-hangar .pagination .page-info { padding: 0.5rem 0.25rem; font-size: 0.85rem; white-space: nowrap; flex: 1; text-align: center; justify-content: center; }
   .page-hangar .modal { padding: 0; align-items: flex-end; }
   .page-hangar .modal-container { max-height: 90vh; border-radius: 16px 16px 0 0; margin: 0; width: 100%; }
   .page-hangar .modal-header { padding: 1.25rem 1rem; }
@@ -368,9 +368,11 @@ body.page-hangar.modal-open { overflow: hidden; }
   letter-spacing: 0;
 }
 .page-hangar .aircraft-list .compare-check span { display: none; }
-.page-hangar .aircraft-list .compare-check input { width: 24px; height: 24px; margin: 0; }
 .page-hangar .aircraft-list .compare-check:hover { background: rgba(200,169,110,0.06); border-left-color: rgba(200,169,110,0.35); }
-.page-hangar .aircraft-list .compare-check:has(input:checked) { background: rgba(200,169,110,0.1); border-left-color: rgba(200,169,110,0.4); }
+/* Cochée : colonne teintée, case pleine (or, coche sombre), ligne cerclée. */
+.page-hangar .aircraft-list .compare-check:has(input:checked) { background: rgba(200,169,110,0.16); border-left-color: rgba(200,169,110,0.5); }
+.page-hangar .aircraft-list .compare-check input:checked { background-color: var(--hud-cyan); border-color: var(--hud-cyan); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.3' fill='none' stroke='%230D0D0D' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.page-hangar .aircraft-list .aircraft-card:has(.compare-check input:checked) { border-color: rgba(200,169,110,0.45); }
 
 @media (max-width: 48em) {
   .page-hangar .aircraft-list .aircraft-card { grid-template-columns: 96px 1fr 44px; min-height: 96px; }
@@ -378,33 +380,49 @@ body.page-hangar.modal-open { overflow: hidden; }
   .page-hangar .aircraft-list .aircraft-content { padding: 0.75rem 0.9rem; gap: 0.3rem; }
   .page-hangar .aircraft-list .aircraft-name-row h3 { font-size: 0.95rem; }
   .page-hangar .aircraft-list .aircraft-specs { display: none; }
-  .page-hangar .aircraft-list .compare-check input { width: 24px; height: 24px; }
 }
 
-/* Compare checkbox on cards */
+/* Encoche « Comparer » (vue grille) : pastille compacte en verre sombre ;
+   cochée, elle passe en or plein (texte sombre), lisible sur toute photo.
+   La cible est l'étiquette entière (28 px de haut ≥ 24 px, WCAG 2.5.8) :
+   la case peut rester petite. */
 .page-hangar .aircraft-card { position: relative; }
 .page-hangar .compare-check {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: rgba(13,13,13,0.85);
+  top: 0.65rem;
+  right: 0.65rem;
+  min-height: 28px;
+  padding: 0 0.6rem 0 0.45rem;
+  background: rgba(13,13,13,0.72);
   backdrop-filter: blur(8px);
-  padding: 0.35rem 0.6rem;
-  border-radius: var(--r-md);
-  font-size: var(--text-xs);
-  color: var(--text-primary);
+  border: 1px solid var(--white-a12);
+  border-radius: 6px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.88);
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   z-index: 3;
   cursor: pointer;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: 1px solid var(--white-a08);
+  letter-spacing: 0.08em;
 }
-/* 18px par defaut chez le navigateur : sous le minimum de 24x24 du critere
-   WCAG 2.5.8. La case du comparateur est une cible frequente sur mobile. */
-.page-hangar .compare-check input { cursor: pointer; accent-color: var(--hud-cyan); width: 24px; height: 24px; }
+/* Case dessinée (la case native, en accent-color, n'avait pas de contraste
+   coché/non coché suffisant sur une photo). */
+.page-hangar .compare-check input {
+  appearance: none; -webkit-appearance: none;
+  flex-shrink: 0;
+  width: 15px; height: 15px; margin: 0;
+  border: 1.5px solid rgba(255,255,255,0.6);
+  border-radius: 4px;
+  background: transparent no-repeat center / 12px 12px;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.page-hangar .aircraft-list .compare-check input { width: 18px; height: 18px; background-size: 14px 14px; }
+.page-hangar .aircraft-grid .compare-check:has(input:checked) { background: var(--hud-cyan); border-color: var(--hud-cyan); color: var(--night); }
+.page-hangar .aircraft-grid .compare-check input:checked { background-color: var(--night); border-color: var(--night); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.6 8.4l2.9 2.9 5.9-6.3' fill='none' stroke='%23C8A96E' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
 /* La coche se pose (pop monotone) au moment où on l'ajoute. */
 .page-hangar .compare-check input:checked { animation: vh-pop var(--dur-base) var(--ease-out); }
 .page-hangar .compare-check:hover { border-color: var(--hud-cyan); }
@@ -507,7 +525,6 @@ body.page-hangar.modal-open { overflow: hidden; }
 /* Vue grille : une carte cochée pour la comparaison se distingue (la vue
    liste a déjà son équivalent sur l'encoche de droite). */
 .page-hangar .aircraft-grid .compare-check { transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
-.page-hangar .aircraft-grid .compare-check:has(input:checked) { background: rgba(200,169,110,0.18); border-color: rgba(200,169,110,0.55); color: var(--hud-cyan); }
 .page-hangar .aircraft-grid .aircraft-card:has(.compare-check input:checked) { border-color: rgba(200,169,110,0.45); box-shadow: 0 0 0 1px rgba(200,169,110,0.25), 0 12px 32px rgba(0,0,0,0.25); }
 .page-hangar .compare-check:has(input:focus-visible) { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
 

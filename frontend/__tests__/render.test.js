@@ -75,13 +75,13 @@ describe('renderWars()', () => {
   test('extrait l\'annee de debut et de fin depuis les dates', () => {
     render.renderWars([{ name: 'Vietnam', description: 'd', date_start: '1965-03-08', date_end: '1975-04-30' }]);
     const html = document.getElementById('wars-list').innerHTML;
-    expect(html).toContain('1965 - 1975');
+    expect(html).toContain('1965 – 1975');
   });
 
   test('utilise "?" quand date_start ou date_end manquent', () => {
     render.renderWars([{ name: 'X', description: 'd', date_start: null, date_end: null }]);
     const html = document.getElementById('wars-list').innerHTML;
-    expect(html).toContain('? - ?');
+    expect(html).toContain('? – ?');
   });
 });
 

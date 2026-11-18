@@ -5,6 +5,15 @@
   window.VH = window.VH || {};
   window.VH.details = window.VH.details || {};
 
+  // Poubelle dessinée (comme celle des cartes de favoris) : couvercle, cuve et
+  // coche sont animés séparément par details.css.
+  const BIN_SVG =
+    '<svg class="det-bin" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+    + '<g class="det-bin-lid"><path d="M4.5 7h15"/><path d="M9.5 7V5.2c0-.7.5-1.2 1.2-1.2h2.6c.7 0 1.2.5 1.2 1.2V7"/></g>'
+    + '<g class="det-bin-can"><path d="M6.5 7.5l.9 11.2c.1 1 .9 1.8 1.9 1.8h5.4c1 0 1.8-.8 1.9-1.8l.9-11.2"/><path d="M10.2 11v5.5M13.8 11v5.5"/></g>'
+    + '<path class="det-bin-check" pathLength="20" d="M6.5 12.5l3.6 3.6 7.4-7.6"/>'
+    + '</svg>';
+
   function setup(state) {
     const editBtn = document.getElementById('edit-btn');
     const deleteBtn = document.getElementById('delete-btn');
@@ -163,8 +172,9 @@
       }
     });
 
-    deleteBtn?.addEventListener('click', async () => {
-      if (!confirm(i18n.t('common.confirm_delete') + ` "${state.aircraftData.name}" ?`)) return;
+    // Suppression en deux temps, sur place : la poubelle ouvre « confirmer /
+    // conserver » ; à la confirmation la coche se trace, puis la requête part.
+    async function deleteAircraft(control) {
       deleteBtn.disabled = true;
       deleteBtn.setAttribute('aria-busy', 'true');
       try {
@@ -176,8 +186,35 @@
         showToast(error.message || i18n.t('common.delete_error'), 'error');
         deleteBtn.disabled = false;
         deleteBtn.removeAttribute('aria-busy');
+        if (control) control.reset();
+        // Désactivé pendant la requête, le bouton avait perdu le focus.
+        deleteBtn.focus();
       }
-    });
+    }
+
+    if (deleteBtn) {
+      const icon = deleteBtn.querySelector('svg.icon, i');
+      const holder = document.createElement('span');
+      holder.innerHTML = BIN_SVG;
+      if (icon) icon.replaceWith(holder.firstChild); else deleteBtn.prepend(holder.firstChild);
+      const control = window.VH.confirmAction.arm(deleteBtn, {
+        onConfirm: () => deleteAircraft(control),
+        // « Supprimer » se transforme sur place, depuis son centre, en
+        // « ✓ Supprimer · ✗ Garder » (comme « Effacer » du comparateur).
+        morph: true,
+        showText: true,
+        side: 'right',
+        className: 'det-del',
+        measure: '.det-bin-check',
+        labels: {
+          // Évalué à l'ouverture : la fiche n'est pas encore chargée quand
+          // l'administration s'installe (state.aircraftData encore nul).
+          group: () => i18n.t('common.confirm_delete') + ` "${(state.aircraftData && state.aircraftData.name) || ''}" ?`,
+          confirm: () => i18n.t('details.delete_confirm'),
+          cancel: () => i18n.t('details.delete_keep'),
+        },
+      });
+    }
   }
 
   VH.details.admin = { setup, closeEditModal: () => {} };

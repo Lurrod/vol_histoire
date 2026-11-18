@@ -120,12 +120,21 @@ describe('sw-register.js', () => {
     Object.defineProperty(window.navigator, 'connection', { configurable: true, value: saveData ? { saveData: true } : undefined });
   }
 
-  function run({ readyState = 'complete' } = {}) {
+  // jsdom tourne sur http://localhost, où le service worker n'est plus
+  // enregistré (développement) : la page est simulée sur le site en HTTPS.
+  const SITE = { protocol: 'https:', hostname: 'vol-histoire.titouan-borde.com', href: 'https://vol-histoire.titouan-borde.com/' };
+
+  function run({ readyState = 'complete', location = SITE } = {}) {
     Object.defineProperty(document, 'readyState', { configurable: true, get: () => readyState });
+    const win = {
+      navigator: window.navigator,
+      location,
+      addEventListener: (...args) => window.addEventListener(...args),
+    };
     try {
       // Sous Jest le module s'exporte au lieu de démarrer : boot() est ce que
       // le navigateur exécute (voir aussi __tests__/sw-register.test.js).
-      jest.isolateModules(() => { require('../js/sw-register').boot(window, document); });
+      jest.isolateModules(() => { require('../js/sw-register').boot(win, document); });
     } finally {
       delete document.readyState;
     }
@@ -138,10 +147,16 @@ describe('sw-register.js', () => {
     if (desc.connection) Object.defineProperty(window.navigator, 'connection', desc.connection);
   });
 
-  test('page chargée, sur localhost : enregistre /sw.js à la racine', () => {
+  test('page chargée, en HTTPS : enregistre /sw.js à la racine', () => {
     setNavigator();
     run();
     expect(register).toHaveBeenCalledWith('/sw.js', { scope: '/' });
+  });
+
+  test('sur localhost (développement) : aucun service worker', () => {
+    setNavigator();
+    run({ location: { protocol: 'http:', hostname: 'localhost', href: 'http://localhost:3000/' } });
+    expect(register).not.toHaveBeenCalled();
   });
 
   test('page en cours de chargement : attend l’événement load (une fois)', () => {

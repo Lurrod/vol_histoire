@@ -62,6 +62,11 @@ function load({ withI18n = true, search = '' } = {}) {
   compare = require('../js/shared/compare');
 }
 
+/** Texte lisible du compteur : libellé avant, nombre (.sr-only de l'odomètre), libellé après. */
+const countText = () => {
+  const c = document.getElementById('compare-count');
+  return ['.cmp-count-pre', '.cmp-count-num .sr-only', '.cmp-count-post'].map(q => c.querySelector(q).textContent).join('');
+};
 const flush = async () => { for (let i = 0; i < 6; i++) await Promise.resolve(); };
 const dlg = () => document.getElementById('compare-modal');
 const body = () => document.getElementById('compare-modal-body');
@@ -255,6 +260,7 @@ describe('ouverture de la modale', () => {
     document.getElementById('compare-view').click();
     await flush();
     document.getElementById('compare-clear').click();
+    document.querySelector('.cmp-clear .cfm-yes').click();
     expect(compare.getIds()).toEqual([]);
     // Sélection vidée : la modale ouverte se referme
     expect(dlg().open).toBe(false);
@@ -359,7 +365,7 @@ describe('barre flottante — cas limites', () => {
     load();
     compare.init({ urlSync: false });
     [1, 2].forEach(id => compare.toggle(id));
-    expect(document.getElementById('compare-count').textContent).toBe('2 sélectionnés');
+    expect(countText()).toBe('2 sélectionnés');
   });
 
   test('sans i18n : libellés de repli lisibles, jamais de clé brute', () => {
@@ -368,7 +374,7 @@ describe('barre flottante — cas limites', () => {
     compare.toggle(1);
     expect(document.getElementById('compare-view').textContent).toBe('Comparer');
     expect(document.getElementById('compare-share').textContent).toBe('Copier le lien');
-    expect(document.getElementById('compare-count').textContent).toBe('1 ✓');
+    expect(countText()).toBe('1 ✓');
   });
 
   test('traduction manquante (clé renvoyée) : repli lisible', () => {

@@ -11,12 +11,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   home.pageEffects.fadeInImages();
   home.heroStats.observe();
 
-  // Un seul appel API pour les deux widgets du hero, sur le même jeu de données.
+  // Un seul appel API pour la photo du jour et le quiz, sur le même jeu de données.
   (async () => {
     const { facts, aircraft, ephemeris, day } = await home.heroData.fetchHeroDiscoveries();
-    home.heroToday.init(ephemeris, facts, day);
+    home.heroToday.init(ephemeris, facts, day, aircraft);
     home.heroQuiz.init(aircraft, day);
   })();
-
-  home.pageEffects.ensureHeroAsideOrder();
 });

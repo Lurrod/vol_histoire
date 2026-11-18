@@ -26,15 +26,55 @@
 .compare-bar.hidden { display: none; }
 /* Sortie : jouée avant que .hidden ne retire la barre (js/shared/compare.js). */
 .compare-bar.is-leaving { animation: vh-exit var(--dur-fast) var(--ease-in) forwards; pointer-events: none; }
-/* inline-block : un <span> en ligne ne se met pas à l'échelle. */
-.compare-bar #compare-count { color: var(--hud-cyan); font-weight: 600; font-size: 0.85rem; display: inline-block; }
-.compare-bar #compare-count.is-bumped { animation: compareCountPulse var(--dur-base) var(--ease-out); }
-/* Lien copié : confirmation sur le bouton, en plus du toast. */
+/* Compteur : seul le nombre défile (odomètre, shared-base.css) ; il est suivi
+   de son libellé. DM Sans gras 0.85rem : l'odomètre prend la hauteur d'une ligne. */
+.compare-bar #compare-count { color: var(--hud-cyan); font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: baseline; --roll-h: 1.2em; white-space: pre; }
+
+/* « Copier le lien » : maillon de chaîne qui se replie, coche qui se trace. */
+.compare-bar #compare-share { display: inline-flex; align-items: center; gap: 0.45rem; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
 .compare-bar #compare-share.is-copied { background: rgba(200,169,110,0.14); border-color: var(--hud-cyan); color: var(--hud-cyan); }
-/* Monotone : la pastille se pose à sa taille, sans dépasser. */
-@keyframes compareCountPulse {
-  from { transform: scale(0.82); opacity: 0.55; }
-  to   { transform: scale(1);    opacity: 1; }
+.compare-bar .cmp-share-ico {
+  width: 16px; height: 16px; flex-shrink: 0; overflow: visible;
+  fill: none; stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.compare-bar .cmp-link {
+  transform-box: view-box;
+  transform-origin: 12px 12px;
+  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+/* Au survol, les deux maillons se resserrent d'un cheveu. */
+.compare-bar #compare-share:hover .cmp-link { transform: scale(0.92); }
+.compare-bar .cmp-check {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  opacity: 0;
+}
+.compare-bar #compare-share.is-copied .cmp-link { transform: scale(0.5); opacity: 0; }
+.compare-bar #compare-share.is-copied .cmp-check {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant),
+              opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
+}
+.compare-bar .cmp-share-label { display: inline-block; }
+.compare-bar .cmp-share-label.is-swapping { animation: vh-text-swap var(--dur-base) var(--ease-out); }
+
+/* « Effacer » : morphing générique (.cfm-morph, shared-base.css). La
+   feuille de page reprend la transition du bouton, qu'elle complète par ses
+   couleurs (une transition déclarée ici remplace celle de shared-base). */
+.compare-bar .cmp-clear { align-items: center; }
+.compare-bar .cmp-clear #compare-clear {
+  transition: opacity var(--dur-fast) var(--ease-out) var(--dur-instant),
+              scale var(--dur-base) var(--ease-out),
+              visibility 0s linear 0s,
+              border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+              background-color var(--dur-fast) var(--ease-out);
+}
+.compare-bar .cmp-clear[data-state="confirm"] #compare-clear {
+  transition: opacity var(--dur-instant) var(--ease-in),
+              scale var(--dur-base) var(--ease-in-out),
+              visibility 0s linear var(--dur-base);
 }
 
 /* Compare modal — forcer le display par défaut (certains resets cassent <dialog>) */
@@ -399,7 +439,7 @@
 @media (prefers-reduced-motion: reduce) {
   .compare-bar,
   .compare-bar.is-leaving,
-  .compare-bar #compare-count.is-bumped,
+  .compare-bar .cmp-share-label.is-swapping,
   .compare-modal,
   #compare-modal-body.cmp-enter > * { animation: none; }
   .cmp-col-head,

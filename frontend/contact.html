@@ -165,8 +165,12 @@
               <span id="contact-message-error" class="form-error" role="alert"></span>
             </div>
             <div class="form-submit-row">
-              <button type="submit" class="btn-send">
-                <i class="fas fa-paper-plane"></i>
+              <button type="submit" class="btn-send" data-state="idle">
+                <svg class="send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <g class="send-trail"><path d="M0.5 9h3"/><path d="M0.5 15h3"/></g>
+                  <g class="send-plane"><path d="M3.5 12h16.5"/><path d="M10.5 12L7 5.5h2.4L16 12"/><path d="M10.5 12L7 18.5h2.4L16 12"/><path d="M5 12L3.5 9.2h2L8 12"/><path d="M5 12l-1.5 2.8h2L8 12"/></g>
+                  <path class="send-check" pathLength="20" d="M5.5 12.5l4.2 4.2L18.5 7.5"/>
+                </svg>
                 <span data-i18n="contact.form_submit">Envoyer le message</span>
               </button>
               <span class="form-data-note">

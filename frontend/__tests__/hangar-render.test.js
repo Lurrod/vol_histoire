@@ -81,7 +81,7 @@ describe('pagination', () => {
   test('libellés traduits et bornes : précédent désactivé en page 1, suivant en dernière page', () => {
     render.renderPagination(makeState({ total: 13, currentPage: 1 }));
     const c = document.getElementById('pagination-container');
-    expect(c.querySelector('.page-info').textContent).toBe('hangar.page_info:{"current":1,"total":3}');
+    expect(c.querySelector('.page-info .sr-only').textContent).toBe('hangar.page_info:{"current":1,"total":3}');
     expect(c.querySelector('.prev-page-btn').disabled).toBe(true);
     expect(c.querySelector('.next-page-btn').disabled).toBe(false);
     expect(c.querySelector('.prev-page-btn').textContent).toContain('hangar.prev_page');
@@ -89,6 +89,24 @@ describe('pagination', () => {
 
     render.renderPagination(makeState({ total: 13, currentPage: 3 }));
     expect(c.querySelector('.next-page-btn').disabled).toBe(true);
+    expect(c.querySelector('.prev-page-btn').disabled).toBe(false);
+  });
+
+  test("le compteur de page persiste d'un rendu à l'autre (le chiffre qui change tourne)", async () => {
+    render.renderPagination(makeState({ total: 20, currentPage: 1 }));
+    const c = document.getElementById('pagination-container');
+    const info = c.querySelector('.page-info');
+    // Jamais détaché : retiré puis réinséré, il perdrait son style de départ
+    // et le chiffre sauterait au lieu de glisser.
+    const removed = [];
+    const mo = new MutationObserver(rs => rs.forEach(r => removed.push(...r.removedNodes)));
+    mo.observe(c, { childList: true });
+    render.renderPagination(makeState({ total: 20, currentPage: 2 }));
+    await Promise.resolve();
+    mo.disconnect();
+    expect(removed).not.toContain(info);
+    expect(c.querySelector('.page-info')).toBe(info);
+    expect(info.querySelector('.sr-only').textContent).toBe('hangar.page_info:{"current":2,"total":4}');
     expect(c.querySelector('.prev-page-btn').disabled).toBe(false);
   });
 

@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Pas de redirection si une session existe : on peut vouloir se reconnecter
   // avec un autre compte depuis cette page. Navigation, déconnexion → nav.js.
   VH.login.ui.fetchStats();
+  VH.login.visual.load(document.querySelector('.auth-visual'));
 
   VH.login.forms.bindForms(ctx);
 });

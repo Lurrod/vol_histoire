@@ -30,11 +30,15 @@ test.describe('Timeline — Journal de Bord', () => {
     await expect(statAircraft).toBeAttached();
     await expect(statDecades).toBeAttached();
 
-    await page.waitForTimeout(2000); // attend la fin de l'animation de compteurs
-
-    expect(Number(await statEvents.textContent())).toBeGreaterThan(0);
-    expect(Number(await statAircraft.textContent())).toBeGreaterThan(0);
-    expect(Number(await statDecades.textContent())).toBeGreaterThan(0);
+    // Compteurs « odomètre » : la valeur lisible est dans .sr-only, posée dès
+    // le départ de l'animation (les colonnes de chiffres sont aria-hidden).
+    const value = async (stat) => {
+      await expect(stat.locator('.sr-only')).toHaveText(/^\d+$/, { timeout: 8000 });
+      return Number(await stat.locator('.sr-only').textContent());
+    };
+    expect(await value(statEvents)).toBeGreaterThan(0);
+    expect(await value(statAircraft)).toBeGreaterThan(0);
+    expect(await value(statDecades)).toBeGreaterThan(0);
   });
 
   /* ------------------------------ CHAPITRES ----------------------------- */
@@ -155,8 +159,9 @@ test.describe('Timeline — Journal de Bord', () => {
     await page.waitForTimeout(600);
 
     await expect(hud).toHaveClass(/visible/);
-    const num = await page.locator('#tl-year-hud-num').textContent();
-    expect(num).toMatch(/^\d{4}s$/); // ex: "1940s"
+    // Compteur « odomètre » : la valeur lisible est dans .sr-only (les
+    // colonnes de chiffres sont aria-hidden).
+    await expect(page.locator('#tl-year-hud-num .sr-only')).toHaveText(/^\d{4}s$/); // ex: "1940s"
   });
 
   test('navigation clavier — ArrowDown scrolle vers le chapitre suivant', async ({ page }) => {

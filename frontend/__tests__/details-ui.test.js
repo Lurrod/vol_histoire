@@ -115,7 +115,7 @@ describe('setupShareBar — intents', () => {
 
   test('clic sur l\'icône d\'un bouton : délégué au bouton parent', async () => {
     navigator.clipboard = { writeText: jest.fn(() => Promise.resolve()) };
-    document.querySelector('[data-share="copy"] i').click();
+    document.querySelector('[data-share="copy"] svg').dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
     await flush();
     expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
   });

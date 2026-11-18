@@ -1,7 +1,6 @@
 /* Accueil — compteurs du hero (appareils, nations, générations) lus dans
  * /api/stats quand le bloc devient visible. Sans réponse, les valeurs du
  * HTML servi restent en place. */
-/* global setNumberPopIn */
 (function () {
   const root = typeof window !== 'undefined' ? window : globalThis;
   root.VH = root.VH || {};
@@ -19,10 +18,10 @@
       if (!res.ok) throw new Error('API stats error');
       const data = await res.json();
 
-      // setNumberPopIn (utils.js) : animation d'entrée des chiffres
-      if (elAirplanes   && Number.isFinite(data.airplanes))   setNumberPopIn(elAirplanes,   data.airplanes);
-      if (elCountries   && Number.isFinite(data.countries))   setNumberPopIn(elCountries,   data.countries);
-      if (elGenerations && Number.isFinite(data.generations)) setNumberPopIn(elGenerations, data.generations);
+      // Compteur odomètre (VH.rollingNumber) : les chiffres entrent un à un.
+      if (elAirplanes   && Number.isFinite(data.airplanes))   VH.rollingNumber.set(elAirplanes,   data.airplanes);
+      if (elCountries   && Number.isFinite(data.countries))   VH.rollingNumber.set(elCountries,   data.countries);
+      if (elGenerations && Number.isFinite(data.generations)) VH.rollingNumber.set(elGenerations, data.generations);
     } catch {
       // Stats API indisponible — on conserve les valeurs du HTML SSR.
     }
