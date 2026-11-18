@@ -14,6 +14,8 @@ function stubModules() {
     setupDropdowns: jest.fn(),
     setupSearchAndSort: jest.fn(),
     restoreFiltersFromSession: jest.fn(),
+    urlDescribesFilters: jest.fn(() => /[?&](country|gen|type|war|mission|decade|q)=/.test(window.location.search)),
+    resetUrlState: jest.fn(),
     readStateFromUrl: jest.fn((state) => {
       const p = new window.URLSearchParams(window.location.search);
       if (p.has('q')) state.filters.search = p.get('q');
@@ -118,7 +120,7 @@ describe('hangar.js — rôles, langue, clavier, geste', () => {
     const state = data.loadAircraft.mock.calls[0][0];
     expect(state.itemsPerPage).toBe(6);
     expect(state.view).toBe('list');
-    expect(state.filters).toEqual({ country: null, generation: null, type: null, war: null, mission: null, search: '' });
+    expect(state.filters).toEqual({ country: null, generation: null, type: null, war: null, mission: null, decade: null, search: '' });
     localStorage.removeItem('vh_hangar_view');
   });
 

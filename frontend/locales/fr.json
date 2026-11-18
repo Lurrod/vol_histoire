@@ -356,7 +356,8 @@
     "admin_engine_type_en": "Type (anglais)",
     "admin_variants_en": "Variantes en anglais (texte libre / markdown)",
     "admin_generation_option": "{n}e génération",
-    "photo_modified": "image modifiée (redimensionnement, conversion)"
+    "photo_modified": "image modifiée (redimensionnement, conversion)",
+    "hero_first_flight": "1er vol en {year}"
   },
   "hangar": {
     "title": "Hangar - Collection d'Aviation Militaire | Vol d'Histoire",
@@ -464,7 +465,8 @@
     "compare_share": "Copier le lien",
     "compare_link_copied": "Lien de comparaison copié",
     "map_toggle": "Carte",
-    "map_hint": "Cliquez un pays pour filtrer la collection. Les entités disparues sont figurées par leurs frontières actuelles."
+    "map_hint": "Cliquez un pays pour filtrer la collection. Les entités disparues sont figurées par leurs frontières actuelles.",
+    "filter_decade": "Années {decade}"
   },
   "favorites": {
     "title": "Mes Favoris | Vol d'Histoire",
@@ -631,7 +633,27 @@
     "era_1990_narrative": "Le ciel redevient unipolaire. Desert Storm fait la démonstration mondiale d'une supériorité occidentale absolue, l'URSS s'éteint, l'OTAN bombarde la Serbie sans mandat ONU. Le F-22 Raptor décolle. Pendant dix ans, l'Occident ne doute plus du ciel — et Oussama Ben Laden prépare la réplique.",
     "era_2000_narrative": "Le 11 Septembre rouvre tout. Afghanistan, Irak, Liban, Géorgie : l'aviation militaire devient un service permanent, déployé partout, tout le temps. Le Raptor entre en alerte, le Rafale atteint sa maturité, et, discrètement, la Russie rapatrie ses Sukhoi pour les remettre au combat. L'ère du ciel vide touche à sa fin.",
     "era_2010_narrative": "La Chine vole furtif, la Russie bombarde la Syrie, les drones turcs réécrivent la guerre du Haut-Karabagh, et la Crimée bascule en quelques jours sans une seule déclaration. Le F-35 entre en service par centaines. Pour la première fois depuis 1991, trois puissances aériennes de grande envergure coexistent — et s'observent.",
-    "era_2020_narrative": "La guerre de haute intensité est de retour en Europe. En Ukraine, aucun des deux camps ne parvient à gagner la supériorité aérienne — un scénario jugé impossible pendant trente ans. Un drone tue Soleimani à Bagdad, les F-16 occidentaux entrent en Ukraine, les programmes NGAD, FCAS et Tempest posent le cadre des années 2040. Le pilote unique s'apprête à partager le ciel avec ses drones."
+    "era_2020_narrative": "La guerre de haute intensité est de retour en Europe. En Ukraine, aucun des deux camps ne parvient à gagner la supériorité aérienne — un scénario jugé impossible pendant trente ans. Un drone tue Soleimani à Bagdad, les F-16 occidentaux entrent en Ukraine, les programmes NGAD, FCAS et Tempest posent le cadre des années 2040. Le pilote unique s'apprête à partager le ciel avec ses drones.",
+    "stat_wars_lbl": "conflits",
+    "ruler_aria": "Naviguer par décennie",
+    "ruler_jump": "Aller aux années {decade}",
+    "lens_toggle": "Filtrer",
+    "lens_aria": "Filtrer la frise",
+    "lens_nation_label": "Nation",
+    "lens_type_label": "Type d'appareil",
+    "lens_all_nations": "Toutes les nations",
+    "lens_all_types": "Tous les types",
+    "lens_reset": "Tout afficher",
+    "lens_status": "{lens} : {n} appareils sur la frise",
+    "lens_empty_decade": "Aucun appareil ({lens}) dans cette décennie.",
+    "tag_cancelled": "Annulé",
+    "tag_in_development": "En développement",
+    "tag_first_flight": "1er vol",
+    "runway_label": "Année par année",
+    "hangar_link": "Voir ces {n} appareils dans le hangar",
+    "chapter_conflicts_label": "Conflits qui éclatent",
+    "conflict_aircraft_one": "{n} appareil engagé",
+    "conflict_aircraft_other": "{n} appareils engagés"
   },
   "login": {
     "title": "Connexion | Vol d'Histoire",

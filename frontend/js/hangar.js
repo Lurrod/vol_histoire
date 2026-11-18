@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     total: 0,
     currentPage: 1,
     itemsPerPage: 6,
-    filters: { country: null, generation: null, type: null, war: null, mission: null, search: '' },
+    filters: { country: null, generation: null, type: null, war: null, mission: null, decade: null, search: '' },
     sort: 'default',
     countries: [],
     generations: [],
@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Restauration session → URL (URL prioritaire) — appliquées AVANT le premier
   // loadAircraft pour éviter un double appel /api/airplanes au boot.
   VH.hangar.filters.restoreFiltersFromSession(state);
+  if (VH.hangar.filters.urlDescribesFilters()) VH.hangar.filters.resetUrlState(state);
   VH.hangar.filters.readStateFromUrl(state);
   const searchInput = document.getElementById('search-input');
   const sortSelect = document.getElementById('sort-select');

@@ -89,7 +89,17 @@ function cleanSearch(raw, maxLength = 100) {
   return cleaned.length <= maxLength ? cleaned : '';
 }
 
+/**
+ * Décennie de la frise : 1940, 1950 … 2020 (chaîne ou nombre).
+ * @param {string|number} value
+ * @returns {boolean}
+ */
+function isValidDecade(value) {
+  return /^(19[4-9]0|20[0-2]0)$/.test(String(value));
+}
+
 module.exports = {
+  isValidDecade,
   INT4_MAX,
   isValidDbId,
   idParam,

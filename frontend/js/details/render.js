@@ -3,6 +3,25 @@
   window.VH = window.VH || {};
   window.VH.details = window.VH.details || {};
 
+  /* Sans mise en service (prototype, projet annulé : 123 fiches), l'année du
+   * hero restait un squelette de chargement. On donne l'année du premier vol,
+   * ou l'on retire l'élément s'il n'y a aucune date. Une année déjà écrite
+   * (rendu serveur) est conservée. */
+  function renderHeroFirstFlight(a) {
+    const year = document.getElementById('hero-year');
+    if (!year) return;
+    const pending = year.querySelector('.skeleton-inline-meta') || ['', '-'].includes(year.textContent.trim());
+    if (!pending) return;
+    if (a.date_first_fly) {
+      const y = new Date(a.date_first_fly).getFullYear();
+      const label = i18n.t('details.hero_first_flight', { year: y });
+      year.textContent = label === 'details.hero_first_flight' ? `1er vol en ${y}` : label;
+    } else {
+      const item = year.closest('.meta-item');
+      if (item) item.hidden = true;
+    }
+  }
+
   function renderAircraftDetails(state) {
     const a = state.aircraftData;
 
@@ -34,6 +53,8 @@
     document.getElementById('hero-manufacturer').textContent = a.manufacturer_name || i18n.t('details.not_specified');
     if (a.date_operationel) {
       document.getElementById('hero-year').textContent = new Date(a.date_operationel).getFullYear();
+    } else {
+      renderHeroFirstFlight(a);
     }
 
     renderHeroImage(a);

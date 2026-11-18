@@ -1,6 +1,7 @@
-/* Frise — métadonnées d'ère (textes i18n) et ère active (HUD + teinte).
+/* Frise — métadonnées d'ère (textes i18n) et ère active (libellé de la
+ * règle + teinte).
  *
- * Les couleurs d'ère ne vivent plus ici : timeline.css les porte en
+ * Les couleurs d'ère ne vivent pas ici : timeline.css les porte en
  * --era-color sur `.tl-chapter[data-decade="…"]`. La teinte ambiante du
  * <body> (--tl-active-era) relit donc la couleur calculée du chapitre, pour
  * que la feuille de style reste l'unique source. */
@@ -12,10 +13,11 @@
   const FALLBACK_COLOR = 'var(--hud-cyan)';
 
   function getEra(decade) {
+    const t = VH.timeline.util.t;
     return {
-      label: i18n.t(`timeline.era_${decade}_label2`),
-      title: i18n.t(`timeline.era_${decade}_title2`),
-      narrative: i18n.t(`timeline.era_${decade}_narrative`),
+      label: t(`timeline.era_${decade}_label2`, ''),
+      title: t(`timeline.era_${decade}_title2`, ''),
+      narrative: t(`timeline.era_${decade}_narrative`, ''),
     };
   }
 
@@ -26,21 +28,25 @@
     return value || FALLBACK_COLOR;
   }
 
-  /* Reporte le chapitre sur le HUD (décennie + libellé) et la teinte
-   * ambiante. Renvoie la décennie affichée. */
+  /* Reporte le chapitre sur la règle (libellé d'époque) et la teinte
+   * ambiante. Renvoie la décennie du chapitre. */
   function showActiveEra(section) {
     const decade = Number(section.dataset.decade);
-    const era = getEra(decade);
-    const yearNum = document.getElementById('tl-year-hud-num');
-    const yearLbl = document.getElementById('tl-year-hud-label');
-    if (yearNum) VH.rollingNumber.setText(yearNum, decade + 's');
-    if (yearLbl) yearLbl.textContent = era.label || '';
-    document.body.style.setProperty('--tl-active-era', eraColor(section));
+    const label = document.getElementById('tl-bar-era');
+    if (label) label.textContent = getEra(decade).label || '';
+    const color = eraColor(section);
+    document.body.style.setProperty('--tl-active-era', color);
+    const bar = document.getElementById('tl-bar');
+    if (bar) bar.style.setProperty('--era-color', color);
     return decade;
   }
 
   function clearActiveEra() {
     document.body.style.removeProperty('--tl-active-era');
+    const label = document.getElementById('tl-bar-era');
+    if (label) label.textContent = '';
+    const bar = document.getElementById('tl-bar');
+    if (bar) bar.style.removeProperty('--era-color');
   }
 
   const api = { FALLBACK_COLOR, getEra, eraColor, showActiveEra, clearActiveEra };

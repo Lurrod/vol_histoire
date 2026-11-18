@@ -1655,15 +1655,16 @@
      ============================================================ */
   :where(.btn, .filter-btn, .fs-tab, .ob-btn, .share-btn, .view-btn,
          .prev-page-btn, .next-page-btn, .pagination button, .clear-all-filters,
-         .hero-quiz-option, .cmp-remove, .tl-mm-btn, .rp-submit, .form-tab,
+         .hero-quiz-option, .cmp-remove, .tl-tick, .rp-submit, .form-tab,
          .favorite-remove, .ev-resend-btn, .btn-submit, .logout-modal-btn,
          .hero-search-btn, .tl-cta, .sidebar-link, .toast-undo-btn,
-         .hero-suggest-all, .remove-filter-btn):active:not(:disabled, [aria-disabled="true"]) {
+         .hero-suggest-all, .remove-filter-btn, .tl-lens-toggle, .tl-lens-reset,
+         .tl-chip, .tl-hangar-link):active:not(:disabled, [aria-disabled="true"]) {
     scale: var(--press-scale);
   }
   /* Les cartes sont grandes : un enfoncement plus léger suffit. */
   :where(.aircraft-card, .conflict-card, .related-card, .war-card,
-         .stat-card, .gen-tile):active {
+         .stat-card, .gen-tile, .tl-plane-card, .tl-conflict-link):active {
     scale: 0.99;
   }
 

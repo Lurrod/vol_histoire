@@ -356,7 +356,8 @@
     "admin_engine_type_en": "Type (English)",
     "admin_variants_en": "Variants in English (markdown supported)",
     "admin_generation_option": "Generation {n}",
-    "photo_modified": "image modified (resized, converted)"
+    "photo_modified": "image modified (resized, converted)",
+    "hero_first_flight": "First flight {year}"
   },
   "hangar": {
     "title": "Hangar - Military Aviation Collection | Vol d'Histoire",
@@ -464,7 +465,8 @@
     "compare_share": "Copy link",
     "compare_link_copied": "Comparison link copied",
     "map_toggle": "Map",
-    "map_hint": "Click a country to filter the collection. Former states are shown with present-day borders."
+    "map_hint": "Click a country to filter the collection. Former states are shown with present-day borders.",
+    "filter_decade": "{decade}s"
   },
   "favorites": {
     "title": "My Favorites | Vol d'Histoire",
@@ -631,7 +633,27 @@
     "era_1990_narrative": "The sky becomes unipolar. Desert Storm delivers a global demonstration of absolute Western superiority, the USSR fades out, NATO bombs Serbia without a UN mandate. The F-22 Raptor lifts off. For ten years, the West stops doubting the sky — and Osama bin Laden prepares the counterstroke.",
     "era_2000_narrative": "9/11 reopens everything. Afghanistan, Iraq, Lebanon, Georgia — military aviation becomes a permanent service, deployed everywhere, all the time. The Raptor goes on alert, the Rafale reaches maturity, and, quietly, Russia brings its Sukhois back home for a return match. The era of the empty sky is drawing to a close.",
     "era_2010_narrative": "China flies stealth, Russia bombs Syria, Turkish drones rewrite war in Nagorno-Karabakh, and Crimea flips in days without a single declaration. The F-35 enters service by the hundreds. For the first time since 1991, three large-scale air powers coexist — and watch each other.",
-    "era_2020_narrative": "High-intensity war returns to Europe. In Ukraine, neither side manages to secure air superiority — a scenario judged impossible for thirty years. A drone kills Soleimani in Baghdad, Western F-16s enter Ukrainian service, and the NGAD, FCAS and Tempest programs frame the 2040s. The lone pilot is about to share the sky with his drones."
+    "era_2020_narrative": "High-intensity war returns to Europe. In Ukraine, neither side manages to secure air superiority — a scenario judged impossible for thirty years. A drone kills Soleimani in Baghdad, Western F-16s enter Ukrainian service, and the NGAD, FCAS and Tempest programs frame the 2040s. The lone pilot is about to share the sky with his drones.",
+    "stat_wars_lbl": "conflicts",
+    "ruler_aria": "Browse by decade",
+    "ruler_jump": "Go to the {decade}s",
+    "lens_toggle": "Filter",
+    "lens_aria": "Filter the timeline",
+    "lens_nation_label": "Nation",
+    "lens_type_label": "Aircraft type",
+    "lens_all_nations": "All nations",
+    "lens_all_types": "All types",
+    "lens_reset": "Show all",
+    "lens_status": "{lens}: {n} aircraft on the timeline",
+    "lens_empty_decade": "No aircraft ({lens}) in this decade.",
+    "tag_cancelled": "Cancelled",
+    "tag_in_development": "In development",
+    "tag_first_flight": "First flight",
+    "runway_label": "Year by year",
+    "hangar_link": "See these {n} aircraft in the hangar",
+    "chapter_conflicts_label": "Conflicts that break out",
+    "conflict_aircraft_one": "{n} aircraft committed",
+    "conflict_aircraft_other": "{n} aircraft committed"
   },
   "login": {
     "title": "Login | Vol d'Histoire",

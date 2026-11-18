@@ -159,6 +159,25 @@ describe('renderAircraftDetails — en-tête et statistiques', () => {
     expect($('#date-first-fly .timeline-date').textContent).toBe('4 July 1986');
   });
 
+  test('sans mise en service : année du premier vol à la place du squelette', () => {
+    boot();
+    document.getElementById('hero-year').innerHTML = '<span class="skeleton-inline-meta"></span>';
+    render.renderAircraftDetails({ aircraftId: '30', aircraftData: { ...RAFALE, date_operationel: null, date_first_fly: '1976-08-09' } });
+    expect(text('hero-year')).toMatch(/1976/);
+  });
+
+  test('sans aucune date : l\'élément de l\'année est retiré', () => {
+    boot();
+    const year = document.getElementById('hero-year');
+    year.textContent = '-';
+    const item = document.createElement('div');
+    item.className = 'meta-item';
+    year.replaceWith(item);
+    item.appendChild(year);
+    render.renderAircraftDetails({ aircraftId: '30', aircraftData: { ...RAFALE, date_operationel: null, date_first_fly: null } });
+    expect(item.hidden).toBe(true);
+  });
+
   test('sans date opérationnelle : l\'année du hero n\'est pas écrasée', () => {
     boot();
     document.getElementById('hero-year').textContent = 'SSR';

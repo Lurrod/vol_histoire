@@ -532,6 +532,38 @@ app.htmlCache = htmlCache;          // exposé pour le SSR router /details
 app.sendCachedHtml = sendCachedHtml;
 app.injectCspNonce = injectCspNonce; // exposé pour le SSR router /details
 
+// /timeline : la page en cache reçoit le texte des chapitres (récits,
+// événements, conflits, appareils), rendu par le serveur dans la langue de la
+// requête — sans lui, un robot qui n'exécute pas de script n'en voyait que la
+// couverture. Échec de la base ou du rendu : la page part sans chapitres, le
+// script les charge comme avant.
+const timelinePayload = require('./utils/timeline-payload');
+const timelineSsr = require('./utils/timeline-ssr');
+// Le HTML rendu est gardé par langue tant que la charge utile (en cache 30 min)
+// ne change pas : seule l'injection du nonce reste faite à chaque requête.
+const timelineSsrMemo = new Map();
+app.get('/timeline', async (req, res, next) => {
+  const cached = htmlCache.get(path.join(frontendRoot, 'timeline.html'), req.lang);
+  if (cached === null) return next();
+  let html = cached;
+  try {
+    const { json } = await timelinePayload.loadPayloadJson(pool);
+    const lang = req.lang === 'en' ? 'en' : 'fr';
+    const memo = timelineSsrMemo.get(lang);
+    if (memo && memo.json === json && memo.page === cached) {
+      html = memo.html;
+    } else {
+      html = timelineSsr.injectChapters(cached, JSON.parse(json), lang);
+      timelineSsrMemo.set(lang, { json, page: cached, html });
+    }
+  } catch (err) {
+    logger.warn('timeline : rendu serveur des chapitres impossible', { error: err.message });
+  }
+  res.vary('Accept-Language');
+  res.set('Content-Type', 'text/html; charset=utf-8');
+  res.send(injectCspNonce(html, res.locals.cspNonce));
+});
+
 // Routes HTML sans extension (utile en dev local — en prod c'est Apache/.htaccess qui gère)
 const htmlPages = [
   'verify-email', 'forgot-password', 'reset-password', 'check-email',

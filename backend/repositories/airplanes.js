@@ -44,7 +44,7 @@ const SORT_SQL = Object.freeze({
  * Conditions WHERE de la liste du hangar (filtres combinés en AND).
  * @returns {{ conditions: string[], params: Array, tsquerySql: string|null }}
  */
-function buildListFilters({ country, generation, type, war, mission, search }) {
+function buildListFilters({ country, generation, type, war, mission, decade, search }) {
   const params = [];
   const conditions = [];
 
@@ -71,6 +71,14 @@ function buildListFilters({ country, generation, type, war, mission, search }) {
         WHERE am.id_airplane = a.id AND m.name = $${params.length})`);
   }
 
+  // Décennie : année de mise en service, à défaut du premier vol — la même
+  // règle que la frise, pour que « Voir les appareils des années 1950 »
+  // retrouve exactement ceux de son chapitre.
+  if (decade) {
+    params.push(Number(decade));
+    conditions.push(`EXTRACT(YEAR FROM COALESCE(a.date_operationel, a.date_first_fly))::int / 10 * 10 = $${params.length}`);
+  }
+
   // Plein texte sur search_vector (tsvector généré côté base).
   // websearch_to_tsquery accepte "F-16 chasseur", "rafale -mirage", "\"exact phrase\"" ;
   // on y ajoute en OU la variante « préfixe » (dernier mot incomplet : « mira »
@@ -93,7 +101,7 @@ function buildListFilters({ country, generation, type, war, mission, search }) {
 /**
  * Page de la liste du hangar et total avant pagination (deux requêtes, comptage
  * d'abord). Les valeurs de filtre doivent avoir été validées par l'appelant.
- * @param {object} filters { country, generation, type, war, mission, search, sort, limit, offset }
+ * @param {object} filters { country, generation, type, war, mission, decade, search, sort, limit, offset }
  * @returns {Promise<{ total: number, rows: object[] }>}
  */
 async function findPage(db, filters) {

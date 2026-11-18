@@ -1,5 +1,6 @@
 const express = require('express');
 const facetsRepo = require('../repositories/facets');
+const { isValidDecade } = require('../middleware/input-guards');
 
 // Compteurs par valeur de filtre pour le hangar (logique de comptage :
 // voir repositories/facets.js).
@@ -14,12 +15,17 @@ module.exports = function createFacetsRouter(getPool) {
       if (generation && !/^[1-9]\d{0,8}$/.test(generation)) {
         return res.status(400).json({ message: 'Paramètre generation invalide' });
       }
+      const decade = (req.query.decade || '').toString();
+      if (decade && !isValidDecade(decade)) {
+        return res.status(400).json({ message: 'Paramètre decade invalide' });
+      }
       const filters = {
         country: req.query.country || '',
         generation: req.query.generation || '',
         type: req.query.type || '',
         war: req.query.war || '',
         mission: req.query.mission || '',
+        decade,
       };
 
       const groups = await facetsRepo.countAll(getPool(), filters);

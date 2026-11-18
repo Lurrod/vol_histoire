@@ -41,6 +41,7 @@
       if (state.filters.type)       params.set('type', state.filters.type);
       if (state.filters.war)        params.set('war', state.filters.war);
       if (state.filters.mission)    params.set('mission', state.filters.mission);
+      if (state.filters.decade)     params.set('decade', String(state.filters.decade));
       if (state.filters.search)     params.set('search', state.filters.search);
 
       const response = await auth.fetchWithTimeout(`/api/airplanes?${params}`);
@@ -78,6 +79,7 @@
     if (state.filters.type)       p.set('type', state.filters.type);
     if (state.filters.war)        p.set('war', state.filters.war);
     if (state.filters.mission)    p.set('mission', state.filters.mission);
+    if (state.filters.decade)     p.set('decade', String(state.filters.decade));
     try {
       const res = await fetch('/api/airplanes/facets?' + p.toString());
       if (!res.ok) return;

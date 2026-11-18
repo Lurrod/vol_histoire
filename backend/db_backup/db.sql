@@ -597,7 +597,17 @@ INSERT INTO manufacturer (name, name_en, country_id, code) VALUES
 ('ADE (Aeronautical Development Establishment, DRDO)', 'ADE (Aeronautical Development Establishment, DRDO)', (SELECT id FROM countries WHERE code = 'IND'), 'ADE'),
 ('Avia', 'Avia', (SELECT id FROM countries WHERE code = 'CSK'), 'AVIA'),
 ('Ikarus', 'Ikarus', (SELECT id FROM countries WHERE code = 'YUG'), 'IKA'),
-('Harbin Aircraft Manufacturing Corporation', 'Harbin Aircraft Manufacturing Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'HAMC');
+('Harbin Aircraft Manufacturing Corporation', 'Harbin Aircraft Manufacturing Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'HAMC'),
+-- Lots 39 à 43
+('Curtiss-Wright', 'Curtiss-Wright', (SELECT id FROM countries WHERE code = 'USA'), 'CW'),
+('Learjet', 'Learjet', (SELECT id FROM countries WHERE code = 'USA'), 'LJ'),
+('Gulfstream Aerospace', 'Gulfstream Aerospace', (SELECT id FROM countries WHERE code = 'USA'), 'GUL'),
+('Zlín', 'Zlín', (SELECT id FROM countries WHERE code = 'CSK'), 'ZLIN'),
+('Piaggio Aero', 'Piaggio Aero', (SELECT id FROM countries WHERE code = 'ITA'), 'PIA'),
+('Rhein-Flugzeugbau (RFB)', 'Rhein-Flugzeugbau (RFB)', (SELECT id FROM countries WHERE code = 'DEU'), 'RFB'),
+('Grob Aircraft', 'Grob Aircraft', (SELECT id FROM countries WHERE code = 'DEU'), 'GROB'),
+('Insitu', 'Insitu', (SELECT id FROM countries WHERE code = 'USA'), 'INS'),
+('AeroVironment', 'AeroVironment', (SELECT id FROM countries WHERE code = 'USA'), 'AV');
 
 INSERT INTO generation (generation, description, description_en) VALUES
 (1, 'Première génération : Avions à réaction subsoniques des années 1940-1950', 'First generation: Subsonic jet aircraft from the 1940s–1950s'),
@@ -983,7 +993,7 @@ INSERT INTO tech (name, name_en, description, description_en) VALUES
 ('Moteur à pistons en étoile', 'Radial piston engine', 'Motorisation à cylindres disposés en étoile, longue endurance à basse altitude', 'Engine with radially arranged cylinders, long endurance at low altitude'),
 ('Rotors basculants', 'Tiltrotors', 'Rotors montés en bout d''aile dans des nacelles qui pivotent de la verticale à l''horizontale : décollage vertical comme un hélicoptère, croisière comme un avion à hélices', 'Wingtip rotors in nacelles that pivot from vertical to horizontal: vertical take-off like a helicopter, cruise like a propeller aircraft'),
 ('Aile volante', 'Flying wing', 'Voilure sans fuselage ni empennage horizontal, qui porte à elle seule l''équipage, les moteurs et la charge', 'Wing with no fuselage or horizontal tail, carrying crew, engines and payload on its own');
--- >>> Lots 29 à 38 : référentiel ajouté (généré par .lots/tools/referentiel.py)
+-- >>> Lots 29 à 43 : référentiel ajouté (généré par .lots/tools/referentiel.py)
 INSERT INTO tech (name, name_en, description, description_en) VALUES
 ('Aile jointe', 'Joined wing', 'Voilure en tandem dont l''aile arrière rejoint l''aile avant ; plus rigide qu''une aile classique de grand allongement, elle doit améliorer la finesse et simplifier les commandes de vol.', 'Tandem wing layout in which the rear wing joins the front wing; stiffer than a conventional high-aspect-ratio wing, it is meant to improve the lift-to-drag ratio and simplify flight controls.'),
 ('Aile soufflée', 'Blown wing', 'Aile entièrement balayée par le souffle d''hélices interconnectées, associée à des volets à fort braquage pour décoller et atterrir sur de très courtes distances', 'Wing fully washed by the slipstream of interconnected propellers, combined with large-deflection flaps for very short take-offs and landings'),
@@ -992,15 +1002,20 @@ INSERT INTO tech (name, name_en, description, description_en) VALUES
 ('Corps portant', 'Lifting body', 'Configuration sans ailes dont la portance vient de la forme du fuselage lui-même, étudiée pour le retour de l''espace et l''atterrissage en vol plané (X-24, HL-10, M2-F2).', 'Wingless configuration in which lift comes from the shape of the fuselage itself, studied for return from space and gliding landings (X-24, HL-10, M2-F2).'),
 ('Durcissement contre l''impulsion électromagnétique', 'Electromagnetic pulse hardening', 'Blindage des câblages et des équipements de bord pour qu''ils survivent à l''impulsion électromagnétique d''une explosion nucléaire', 'Shielding of on-board wiring and equipment so that they survive the electromagnetic pulse of a nuclear explosion'),
 ('Détecteur d''anomalie magnétique', 'Magnetic anomaly detector', 'Capteur, souvent logé dans une perche de queue, qui repère la perturbation du champ magnétique terrestre causée par la coque d''un sous-marin en plongée.', 'Sensor, often housed in a tail boom, that detects the disturbance of the Earth''s magnetic field caused by the hull of a submerged submarine.'),
+('Lancement par catapulte et récupération par crochet', 'Catapult launch and hook recovery', 'Drone lancé par une catapulte pneumatique et récupéré en vol : un crochet en bout d''aile saisit un filin tendu le long d''un mât, ce qui dispense de toute piste, à terre comme sur un navire', 'Drone launched by a pneumatic catapult and recovered in flight: a wingtip hook catches a rope stretched along a pole, removing the need for any runway, on land or aboard ship'),
 ('Radôme rotatif', 'Rotodome', 'Disque tournant monté sur mâts au-dessus du fuselage, qui abrite l''antenne d''un radar de guet aérien et lui donne une couverture sur 360°', 'Rotating disc mounted on struts above the fuselage, housing the antenna of an airborne early warning radar and giving it 360-degree coverage'),
+('Soufflante carénée', 'Ducted fan', 'Hélice multipale tournant dans un carénage intégré au fuselage, entraînée par un moteur à pistons ou une turbine : elle donne un comportement proche de celui d''un réacteur pour une consommation d''avion à hélice.', 'A multi-bladed fan turning inside a duct built into the fuselage, driven by a piston engine or turboshaft: it gives jet-like handling for the fuel consumption of a propeller aircraft.'),
 ('Soufflante de sustentation', 'Lift fan', 'Soufflante verticale contrarotative logée dans le fuselage et entraînée par un arbre prélevant la puissance du réacteur principal, pour le décollage court et l''atterrissage vertical (X-35B, F-35B).', 'Vertical contra-rotating fan housed in the fuselage and driven by a shaft taking power from the main engine, for short take-off and vertical landing (X-35B, F-35B).'),
 ('Soute à bombes rotative', 'Rotating bomb bay', 'Trappe de soute qui tourne sur elle-même et sur laquelle les bombes sont accrochées, présentée retournée pour le largage. Signature de Martin (XB-51, B-57, P6M).', 'Bomb-bay door that rotates on its own axis with the bombs mounted on it, turned over for release. A Martin signature (XB-51, B-57, P6M).'),
-('Système d''atterrissage automatique', 'Automatic landing system', 'Pilote automatique redondant couplé à l''ILS, à l''automanette et à la sonde radioaltimétrique, capable de poser l''avion sans visibilité', 'Redundant autopilot coupled to the ILS, autothrottle and radio altimeter, able to land the aircraft in zero visibility');
+('Système d''atterrissage automatique', 'Automatic landing system', 'Pilote automatique redondant couplé à l''ILS, à l''automanette et à la sonde radioaltimétrique, capable de poser l''avion sans visibilité', 'Redundant autopilot coupled to the ILS, autothrottle and radio altimeter, able to land the aircraft in zero visibility'),
+('Système d''écopage', 'Water scooping system', 'Écopes rétractables sous la coque d''un hydravion qui remplissent ses soutes d''eau en quelques secondes, en frôlant la surface d''un lac ou de la mer sans s''arrêter', 'Retractable scoops under a flying boat''s hull that fill its tanks with water in a few seconds while skimming the surface of a lake or the sea without stopping'),
+('Volets soufflés par les réacteurs', 'Jet-blown flaps', 'Volets à fort braquage balayés par le jet des réacteurs, soufflé sur l''extrados (effet Coandă) ou sous l''aile, qui rabat la poussée vers le sol pour décoller et atterrir court avec un avion de transport à réaction', 'Large-deflection flaps washed by the engine exhaust, blown over the upper surface (Coandă effect) or under the wing, turning thrust downwards for short take-offs and landings by a jet transport');
 INSERT INTO armement (name, name_en, description, description_en) VALUES
 ('AIM-47 Falcon', NULL, 'Missile air-air à longue portée de Hughes (GAR-9), développé pour les intercepteurs Mach 3 et emporté en soute par le YF-12A ; agrandi, il a donné l''AIM-54 Phoenix.', 'Hughes long-range air-to-air missile (GAR-9), developed for Mach 3 interceptors and carried internally by the YF-12A; enlarged, it became the AIM-54 Phoenix.'),
 ('GBU-44/B Viper Strike', NULL, 'Munition guidée légère de Northrop Grumman, emportée par les versions armées MQ-5A/B du drone Hunter.', 'Light guided munition by Northrop Grumman, carried by the armed MQ-5A/B versions of the Hunter drone.'),
+('Laser chimique oxygène-iode (COIL)', 'Chemical oxygen iodine laser (COIL)', 'Laser de haute énergie, de la classe du mégawatt, alimenté par une réaction chimique entre oxygène et iode ; tiré quelques secondes, il chauffe l''enveloppe d''un missile jusqu''à la rupture', 'Megawatt-class high-energy laser powered by a chemical reaction between oxygen and iodine; fired for a few seconds, it heats a missile''s skin until it fails'),
 ('MG 151/20', NULL, 'Canon automatique allemand de 20 mm de la Seconde Guerre mondiale, monté sur les chasseurs dérivés du Bf 109 et les chasseurs yougoslaves d''après-guerre', 'German 20 mm Second World War automatic cannon, fitted to post-war Bf 109 derivatives and Yugoslav fighters');
--- <<< Lots 29 à 38
+-- <<< Lots 29 à 43
 
 -- =============================================================================
 -- timeline_events — chronologie éditoriale du ciel militaire (1945 → aujourd'hui).

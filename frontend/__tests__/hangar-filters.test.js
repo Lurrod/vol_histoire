@@ -123,6 +123,30 @@ describe('filtres du hangar — état visuel', () => {
   });
 });
 
+describe('URL du hangar et session', () => {
+  test('urlDescribesFilters : un filtre ou une recherche dans l\'URL, pas la vue ni la page', () => {
+    expect(filters.urlDescribesFilters('?decade=1950')).toBe(true);
+    expect(filters.urlDescribesFilters('?q=mira')).toBe(true);
+    expect(filters.urlDescribesFilters('?country=France&page=2')).toBe(true);
+    expect(filters.urlDescribesFilters('?view=list&page=3&compare=1,2')).toBe(false);
+    expect(filters.urlDescribesFilters('')).toBe(false);
+  });
+
+  test('lien de la frise : la session ne se mélange pas au filtre de l\'URL', () => {
+    const state = { filters: { country: null, generation: null, type: 'Chasseur', war: null, mission: null, decade: null, search: 'x' }, sort: 'name', currentPage: 3 };
+    filters.resetUrlState(state);
+    window.history.replaceState(null, '', '/hangar?decade=1950');
+    filters.readStateFromUrl(state);
+    expect(state.filters).toMatchObject({ type: null, decade: 1950, search: '' });
+    expect(state.currentPage).toBe(1);
+    window.history.replaceState(null, '', '/hangar?decade=1955');
+    const other = { filters: { decade: null }, currentPage: 1 };
+    filters.readStateFromUrl(other);
+    expect(other.filters.decade).toBeNull(); // décennie hors de la frise ignorée
+    window.history.replaceState(null, '', '/hangar');
+  });
+});
+
 describe('pagination du hangar', () => {
   test('verrouillée pendant le chargement, réactivée au rendu suivant', () => {
     const state = makeState({ total: 30, currentPage: 2 });

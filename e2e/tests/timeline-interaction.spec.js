@@ -1,34 +1,31 @@
 // e2e/tests/timeline-interaction.spec.js
-// Parcours critique : timeline « Le Journal de Bord » (v4.3.0)
-// - Hero couverture : stamp + 3 stats animés
-// - Chapitres par décennie : title card + narratif + événements + grille avions
-// - Navigation : minimap, clavier, HUD décennie, progress bar
+// Parcours critique : frise « Le Journal de Bord »
+// - Couverture : 3 compteurs (événements, appareils, conflits)
+// - Chapitres par décennie : title card + récit + événements + conflits +
+//   appareils marquants + piste année par année + lien vers le hangar
+// - Règle des années : année courante, un bouton par décennie, filtres
+// - Rendu serveur : le texte des chapitres existe sans JavaScript
 
 const { test, expect } = require('../helpers/fixtures');
 
 test.describe('Timeline — Journal de Bord', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/timeline');
-    // Attendre que le loader disparaisse et que les chapitres soient injectés
-    await page.waitForSelector('.tl-chapter', { timeout: 15000 });
+    // Le serveur rend déjà les chapitres (.tl-chapter--ssr) : attendre la
+    // version interactive qui les remplace.
+    await page.waitForSelector('.tl-chapter:not(.tl-chapter--ssr)', { timeout: 15000 });
   });
 
   /* ------------------------- HERO / COUVERTURE -------------------------- */
 
-  test('la couverture affiche le tampon « Dossier · VH · 01 »', async ({ page }) => {
-    const stamp = page.locator('.tl-intro-stamp');
-    await expect(stamp).toBeVisible();
-    await expect(stamp).toContainText(/VH/);
-  });
-
-  test('les 3 stats d\'intro s\'animent (événements + appareils + décennies > 0)', async ({ page }) => {
+  test('les 3 stats d\'intro s\'animent (événements + appareils > 0, conflits ≥ 0)', async ({ page }) => {
     const statEvents = page.locator('#tl-stat-events');
     const statAircraft = page.locator('#tl-stat-aircraft');
-    const statDecades = page.locator('#tl-stat-decades');
+    const statWars = page.locator('#tl-stat-wars');
 
     await expect(statEvents).toBeAttached();
     await expect(statAircraft).toBeAttached();
-    await expect(statDecades).toBeAttached();
+    await expect(statWars).toBeAttached();
 
     // Compteurs « odomètre » : la valeur lisible est dans .sr-only, posée dès
     // le départ de l'animation (les colonnes de chiffres sont aria-hidden).
@@ -38,7 +35,7 @@ test.describe('Timeline — Journal de Bord', () => {
     };
     expect(await value(statEvents)).toBeGreaterThan(0);
     expect(await value(statAircraft)).toBeGreaterThan(0);
-    expect(await value(statDecades)).toBeGreaterThan(0);
+    expect(await value(statWars)).toBeGreaterThanOrEqual(0);
   });
 
   /* ------------------------------ CHAPITRES ----------------------------- */
@@ -129,39 +126,16 @@ test.describe('Timeline — Journal de Bord', () => {
 
   /* ------------------------------ HUD / NAV ----------------------------- */
 
-  test('la minimap apparaît après avoir quitté la couverture', async ({ page }) => {
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight + 200));
-    await page.waitForTimeout(500);
-
-    const minimap = page.locator('#tl-minimap');
-    await expect(minimap).toBeAttached();
-    const buttons = minimap.locator('.tl-mm-btn');
-    expect(await buttons.count()).toBeGreaterThanOrEqual(1);
-  });
-
-  test('la barre de progression scroll existe et change de largeur au scroll', async ({ page }) => {
-    const progress = page.locator('#tl-progress');
-    await expect(progress).toBeAttached();
-
-    await page.evaluate(() => window.scrollBy(0, 2000));
-    await page.waitForTimeout(300);
-
-    const width = await progress.evaluate(el => el.style.width);
-    expect(width).toMatch(/\d+(\.\d+)?%/); // ex: "12.5%"
-    expect(parseFloat(width)).toBeGreaterThan(0);
-  });
-
-  test('le HUD décennie fixe apparaît après la couverture', async ({ page }) => {
-    const hud = page.locator('#tl-year-hud');
-    await expect(hud).toBeAttached();
-
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight + 400));
+  test('la règle des années colle sous l\'en-tête et affiche l\'année courante', async ({ page }) => {
+    await page.evaluate(() => window.scrollTo({ top: document.getElementById('tl-chapters').offsetTop + 400, behavior: 'instant' }));
     await page.waitForTimeout(600);
 
-    await expect(hud).toHaveClass(/visible/);
-    // Compteur « odomètre » : la valeur lisible est dans .sr-only (les
-    // colonnes de chiffres sont aria-hidden).
-    await expect(page.locator('#tl-year-hud-num .sr-only')).toHaveText(/^\d{4}s$/); // ex: "1940s"
+    const bar = page.locator('#tl-bar');
+    const box = await bar.boundingBox();
+    expect(box.y).toBeLessThan(140); // collée sous l'en-tête, pas défilée hors écran
+    // Odomètre : la valeur lisible est dans .sr-only.
+    await expect(page.locator('#tl-bar-year .sr-only')).toHaveText(/^(19[4-9]\d|20[0-2]\d)$/);
+    expect(await page.locator('#tl-ruler .tl-tick').count()).toBeGreaterThanOrEqual(1);
   });
 
   test('navigation clavier — ArrowDown scrolle vers le chapitre suivant', async ({ page }) => {
@@ -175,29 +149,52 @@ test.describe('Timeline — Journal de Bord', () => {
     expect(newTop).toBeLessThan(firstTop);
   });
 
-  test('clic minimap → bouton actif + scroll vers le chapitre ciblé', async ({ page }) => {
-    await page.evaluate(() => window.scrollBy(0, window.innerHeight + 200));
-    await page.waitForTimeout(500);
+  test('clic sur une décennie de la règle → décennie active + chapitre ciblé à l\'écran', async ({ page }) => {
+    const ticks = page.locator('#tl-ruler .tl-tick');
+    const count = await ticks.count();
+    if (count < 2) test.skip(true, 'Moins de 2 décennies disponibles — impossible de tester le saut');
 
-    const buttons = page.locator('#tl-minimap .tl-mm-btn');
-    const count = await buttons.count();
-    if (count < 2) test.skip(true, 'Moins de 2 décennies disponibles — impossible de tester le switch');
+    const target = ticks.nth(count - 1);
+    const targetId = await target.getAttribute('data-target');
+    await target.click();
+    await page.waitForTimeout(1200);
 
-    // Bouton cible = dernier bouton (garantit un saut visible)
-    const targetBtn = buttons.nth(count - 1);
-    const targetId = await targetBtn.getAttribute('data-target');
-    await targetBtn.click();
-    await page.waitForTimeout(900);
-
-    // Feedback immédiat : classe .active sur le bouton cliqué
-    await expect(targetBtn).toHaveClass(/active/);
-    const activeCount = await page.locator('#tl-minimap .tl-mm-btn.active').count();
-    expect(activeCount).toBe(1);
-
-    // Le chapitre ciblé est désormais proche du haut (ancre ≈ 35% viewport)
+    await expect(target).toHaveAttribute('aria-current', 'true');
+    expect(await page.locator('#tl-ruler .tl-tick.active').count()).toBe(1);
     const vh = await page.evaluate(() => window.innerHeight);
     const top = await page.locator('#' + targetId).evaluate(el => el.getBoundingClientRect().top);
     expect(top).toBeLessThan(vh);
+  });
+
+  test('filtre par nation : URL partageable, frise filtrée, retour à tout afficher', async ({ page }) => {
+    const nations = await page.locator('#tl-lens-nation option').evaluateAll(opts => opts.map(o => o.value).filter(Boolean));
+    if (nations.length < 2) test.skip(true, 'Une seule nation dans le jeu de données');
+    const total = await page.locator('.tl-plane-card, .tl-chip').count();
+
+    // Le <select> natif reste la source de vérité (masqué sous la liste personnalisée).
+    await page.evaluate(v => {
+      const sel = document.getElementById('tl-lens-nation');
+      sel.value = v;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+    }, nations[0]);
+    await expect(page).toHaveURL(new RegExp('nation=' + encodeURIComponent(nations[0]).replace(/%20/g, '(\\+|%20)')));
+    const filtered = await page.locator('.tl-plane-card, .tl-chip').count();
+    expect(filtered).toBeLessThan(total);
+    await expect(page.locator('#tl-lens-reset')).toBeVisible();
+
+    await page.locator('#tl-lens-reset').click();
+    await expect(page).not.toHaveURL(/nation=/);
+    expect(await page.locator('.tl-plane-card, .tl-chip').count()).toBe(total);
+  });
+
+  test('lien « Voir ces appareils dans le hangar » → hangar filtré sur la décennie', async ({ page }) => {
+    const link = page.locator('.tl-hangar-link').first();
+    const href = await link.getAttribute('href');
+    expect(href).toMatch(/^\/hangar\?decade=(19[4-9]0|20[0-2]0)$/);
+    await link.scrollIntoViewIfNeeded();
+    await link.click();
+    await page.waitForURL(/\/hangar\?decade=/);
+    await expect(page.locator('.active-filter')).toContainText(/Années|s$/);
   });
 
   /* ------------------------------ API ---------------------------------- */
@@ -207,8 +204,22 @@ test.describe('Timeline — Journal de Bord', () => {
     expect(res.status()).toBe(200);
     const body = await res.json();
     expect(Array.isArray(body.decades)).toBe(true);
+    expect(Array.isArray(body.wars)).toBe(true);
     expect(body.decades.length).toBe(9); // 1940 → 2020
     const withEvents = body.decades.filter(d => (d.events?.length || 0) > 0);
     expect(withEvents.length).toBeGreaterThan(0);
+  });
+});
+
+test.describe('Timeline — rendu serveur', () => {
+  test('sans JavaScript, la page contient le texte des chapitres', async ({ browser }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto('/timeline');
+    const chapters = page.locator('.tl-chapter--ssr');
+    expect(await chapters.count()).toBeGreaterThanOrEqual(1);
+    await expect(chapters.first().locator('.tl-narrative-text')).not.toBeEmpty();
+    expect(await page.locator('.tl-chapter--ssr a.tl-chip').count()).toBeGreaterThanOrEqual(1);
+    await ctx.close();
   });
 });

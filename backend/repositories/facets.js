@@ -45,12 +45,16 @@ function buildConditions(filters, exclude) {
     conds.push(`EXISTS (SELECT 1 FROM airplane_missions fm JOIN missions fmn ON fmn.id = fm.id_mission
         WHERE fm.id_airplane = a.id AND fmn.name = $${params.length})`);
   }
+  if (filters.decade) {
+    params.push(Number(filters.decade));
+    conds.push(`EXTRACT(YEAR FROM COALESCE(a.date_operationel, a.date_first_fly))::int / 10 * 10 = $${params.length}`);
+  }
   return { params, where: conds.length ? ' WHERE ' + conds.join(' AND ') : '' };
 }
 
 /**
  * Lignes { k, n } de chaque groupe, en parallèle.
- * @param {{ country?: string, generation?: string, type?: string, war?: string, mission?: string }} filters
+ * @param {{ country?: string, generation?: string, type?: string, war?: string, mission?: string, decade?: string }} filters
  */
 async function countAll(db, filters) {
   const ctryQ = buildConditions(filters, 'country');

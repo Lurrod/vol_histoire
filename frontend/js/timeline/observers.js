@@ -1,6 +1,7 @@
-/* Frise — observateurs de défilement : chapitre actif (HUD, minimap, teinte),
- * entrée des chapitres, apparition du HUD après la couverture, révélation
- * échelonnée des cartes et du narratif. */
+/* Frise — observateurs : année courante pendant le défilement (règle,
+ * teinte), entrée des chapitres, révélation échelonnée des cartes et du récit.
+ * Le suivi du défilement est posé une seule fois ; les observateurs de
+ * révélation sont remplacés à chaque nouveau rendu (filtre, langue). */
 (function () {
   window.VH = window.VH || {};
   window.VH.timeline = window.VH.timeline || {};
@@ -10,6 +11,10 @@
   // Décalage d'animation : 80 ms par rang, cycle de 6 cartes.
   const STAGGER_MS = 80;
   const STAGGER_CYCLE = 6;
+
+  let tracking = false;
+  let revealObservers = [];
+  let activeDecade = null;
 
   /* Chapitre qui chevauche l'ancre et dont le centre en est le plus proche. */
   function findDominant(sections, anchor) {
@@ -28,84 +33,88 @@
     return dominant;
   }
 
+  /* Part du chapitre déjà passée sous l'ancre (0 → 1). */
+  function chapterFraction(section, anchor) {
+    const rect = section.getBoundingClientRect();
+    if (rect.height <= 0) return 0;
+    return Math.max(0, Math.min(1, (anchor - rect.top) / rect.height));
+  }
+
   function staggerDelay(card) {
     const siblings = Array.from(card.parentElement.children);
     return (siblings.indexOf(card) % STAGGER_CYCLE) * STAGGER_MS;
   }
 
-  function trackActiveChapter() {
-    const mmButtons = document.querySelectorAll('.tl-mm-btn');
-    function updateActive() {
-      const anchor = window.innerHeight * ANCHOR_RATIO;
-      const dominant = findDominant(document.querySelectorAll('.tl-chapter'), anchor);
-      if (!dominant) return;
-      dominant.classList.add('in-view');
-      const decade = VH.timeline.era.showActiveEra(dominant);
-      mmButtons.forEach(b => b.classList.toggle('active', b.dataset.target === `ch-${decade}`));
+  /* Année et décennie sous l'ancre ; avant le premier chapitre : 1945. */
+  function update() {
+    const T = VH.timeline;
+    const anchor = window.innerHeight * ANCHOR_RATIO;
+    const sections = document.querySelectorAll('.tl-chapter');
+    const dominant = findDominant(sections, anchor);
+    const end = T.util.currentYear();
+    if (!dominant) {
+      const first = sections[0];
+      if (first && first.getBoundingClientRect().top > anchor) {
+        if (activeDecade !== null) T.era.clearActiveEra();
+        activeDecade = null;
+        T.ruler.setYear(T.util.START_YEAR, null);
+      }
+      return;
     }
-    VH.timeline.util.onScrollFrame(updateActive);
-    updateActive();
+    dominant.classList.add('in-view');
+    const decade = Number(dominant.dataset.decade);
+    if (decade !== activeDecade) {
+      activeDecade = decade;
+      T.era.showActiveEra(dominant);
+    }
+    T.ruler.setYear(T.ruler.yearInChapter(decade, chapterFraction(dominant, anchor), end), decade);
   }
 
-  // Chapter in-view pour animation (backdrop / tint)
-  function observeChapterEntry() {
+  function trackActiveChapter() {
+    activeDecade = null;
+    if (!tracking) {
+      tracking = true;
+      VH.timeline.util.onScrollFrame(update);
+    }
+    update();
+  }
+
+  function observe(selector, options, onEnter) {
     const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('in-view');
-      });
-    }, { threshold: 0.05 });
-    document.querySelectorAll('.tl-chapter').forEach(c => io.observe(c));
-  }
-
-  // Affichage HUD + minimap après la couverture
-  function observeIntro() {
-    const yearHud = document.getElementById('tl-year-hud');
-    const intro = document.getElementById('tl-intro');
-    if (!intro || !yearHud) return;
-    new IntersectionObserver(entries => {
-      const past = !entries[0].isIntersecting;
-      yearHud.classList.toggle('visible', past);
-      const mm = document.getElementById('tl-minimap');
-      if (mm) mm.classList.toggle('visible', past);
-      if (!past) VH.timeline.era.clearActiveEra();
-    }, { threshold: 0 }).observe(intro);
-  }
-
-  // Reveal staggered des cartes + événements
-  function observeCardReveal() {
-    const cardObs = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
         if (!entry.isIntersecting) return;
-        const card = entry.target;
-        card.style.animationDelay = `${staggerDelay(card)}ms`;
-        card.classList.add('reveal');
-        cardObs.unobserve(card);
+        onEnter(entry.target);
+        io.unobserve(entry.target);
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    document.querySelectorAll('.tl-plane-card, .tl-event').forEach(c => cardObs.observe(c));
+    }, options);
+    document.querySelectorAll(selector).forEach(el => io.observe(el));
+    revealObservers.push(io);
   }
 
-  // Narrative fade-in
-  function observeNarrative() {
-    const narrObs = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('reveal');
-        narrObs.unobserve(entry.target);
-      });
-    }, { threshold: 0.25 });
-    document.querySelectorAll('.tl-narrative, .tl-title-card').forEach(el => narrObs.observe(el));
+  function observeReveals() {
+    revealObservers.forEach(io => io.disconnect());
+    revealObservers = [];
+    observe('.tl-chapter', { threshold: 0.05 }, el => el.classList.add('in-view'));
+    observe('.tl-plane-card, .tl-event', { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }, card => {
+      card.style.animationDelay = `${staggerDelay(card)}ms`;
+      card.classList.add('reveal');
+    });
+    observe('.tl-narrative, .tl-title-card', { threshold: 0.25 }, el => el.classList.add('reveal'));
   }
 
   function observeChapters() {
     trackActiveChapter();
-    observeChapterEntry();
-    observeIntro();
-    observeCardReveal();
-    observeNarrative();
+    observeReveals();
   }
 
-  const api = { ANCHOR_RATIO, findDominant, staggerDelay, observeChapters };
+  function _reset() {
+    tracking = false;
+    activeDecade = null;
+    revealObservers.forEach(io => io.disconnect());
+    revealObservers = [];
+  }
+
+  const api = { ANCHOR_RATIO, findDominant, chapterFraction, staggerDelay, update, observeChapters, _reset };
   window.VH.timeline.observers = api;
 
   // Export conditionnel pour les tests unitaires (Node.js / jsdom)

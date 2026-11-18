@@ -87,6 +87,35 @@ describeIt('Intégration SQL — contenus', () => {
       const in2000 = res.body.decades.find((d) => d.decade === 2000).aircraft.map((a) => a.name);
       expect(in2000).toContain('Rafale');
     });
+
+    test('conflits datés avec slug et appareils ; le filtre decade du hangar retrouve le chapitre', async () => {
+      const res = await api().get('/api/timeline?force=1');
+      expect(res.body.wars.length).toBeGreaterThan(0);
+      res.body.wars.forEach((w) => {
+        expect(w.slug).toMatch(/^[a-z0-9-]+$/);
+        expect(w.aircraft_ids.length).toBeGreaterThan(0);
+        expect(w.era_decade).toBe(Math.floor(w.start_year / 10) * 10);
+      });
+      const all = res.body.decades.flatMap((d) => d.aircraft);
+      all.forEach((a) => expect(['service', 'first_flight']).toContain(a.year_source));
+      // Dates en texte : un DATE lu en objet Date se décalait d'un jour selon le fuseau.
+      res.body.decades.flatMap((d) => d.events).forEach((e) => {
+        if (e.event_date) expect(e.event_date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      });
+      // Même règle (mise en service, à défaut premier vol) des deux côtés.
+      for (const d of res.body.decades.filter((x) => x.aircraft.length > 0)) {
+        const hangar = await api().get(`/api/airplanes?decade=${d.decade}&limit=1`);
+        expect(hangar.status).toBe(200);
+        expect(hangar.body.total).toBe(d.aircraft.length);
+      }
+    });
+
+    test('GET /timeline : chapitres rendus par le serveur', async () => {
+      const res = await api().get('/timeline');
+      expect(res.status).toBe(200);
+      expect(res.text).toContain('tl-chapter--ssr');
+      expect(res.text).toMatch(/href="\/details\/[a-z0-9-]+-\d+"/);
+    });
   });
 
   describe('GET /api/wars', () => {

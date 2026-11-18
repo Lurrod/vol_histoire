@@ -64,6 +64,7 @@
   <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/core.min.css">
   <link rel="stylesheet" href="css/timeline.min.css">
+  <noscript><style>.page-timeline .tl-loading { display: none; }</style></noscript>
   </head>
 <body class="page-timeline">
 <a href="#main-content" class="skip-link">Aller au contenu</a>
@@ -75,16 +76,9 @@
 <!-- Journal de Bord — timeline documentaire -->
 <main id="main-content" class="tl-cinematic">
 
-  <!-- Champ de particules d'ambiance -->
-  <canvas id="tl-particles" class="tl-particles" aria-hidden="true"></canvas>
-
   <!-- Couverture du dossier -->
   <section class="tl-intro" id="tl-intro">
     <div class="tl-intro-bg" aria-hidden="true"></div>
-    <div class="tl-intro-stamp" aria-hidden="true">
-      <span class="tl-stamp-line">Dossier</span>
-      <span class="tl-stamp-num">VH · 01</span>
-    </div>
     <div class="tl-intro-inner">
       <span class="tl-eyebrow" data-i18n="timeline.dossier_eyebrow">Le Journal de Bord</span>
       <h1 class="tl-title">
@@ -106,8 +100,8 @@
           <span class="tl-stat-lbl" data-i18n="timeline.stat_aircraft_lbl">appareils</span>
         </div>
         <div class="tl-stat">
-          <span class="tl-stat-num" id="tl-stat-decades">0</span>
-          <span class="tl-stat-lbl" data-i18n="timeline.stat_decades_lbl">décennies</span>
+          <span class="tl-stat-num" id="tl-stat-wars">0</span>
+          <span class="tl-stat-lbl" data-i18n="timeline.stat_wars_lbl">conflits</span>
         </div>
       </div>
       <div class="tl-scroll-hint" aria-hidden="true">
@@ -117,8 +111,41 @@
     </div>
   </section>
 
-  <!-- Chapitres injectés par JS : 1 title-card + 1 chapter par décennie -->
-  <div id="tl-chapters" class="tl-chapters" aria-live="polite"></div>
+  <!-- Règle des années : fixe sous l'en-tête une fois la couverture passée.
+       Année courante, axe 1945 → aujourd'hui (conflits en bandes, un bouton
+       par décennie) et filtres « par nation » / « par type ». -->
+  <div id="tl-bar" class="tl-bar">
+    <div class="tl-bar-inner">
+      <div class="tl-bar-now" aria-hidden="true">
+        <span id="tl-bar-year" class="tl-bar-year">1945</span>
+        <span id="tl-bar-era" class="tl-bar-era"></span>
+      </div>
+      <nav id="tl-ruler" class="tl-ruler" aria-label="Naviguer par décennie" data-i18n-aria="timeline.ruler_aria"></nav>
+      <button type="button" id="tl-lens-toggle" class="tl-lens-toggle" aria-expanded="false" aria-controls="tl-lens">
+        <i class="fas fa-filter" aria-hidden="true"></i>
+        <span data-i18n="timeline.lens_toggle">Filtrer</span>
+      </button>
+      <div id="tl-lens" class="tl-lens" role="group" aria-label="Filtrer la frise" data-i18n-aria="timeline.lens_aria">
+        <label class="sr-only" for="tl-lens-nation" data-i18n="timeline.lens_nation_label">Nation</label>
+        <select id="tl-lens-nation" class="tl-lens-select">
+          <option value="" data-i18n="timeline.lens_all_nations">Toutes les nations</option>
+        </select>
+        <label class="sr-only" for="tl-lens-type" data-i18n="timeline.lens_type_label">Type d'appareil</label>
+        <select id="tl-lens-type" class="tl-lens-select">
+          <option value="" data-i18n="timeline.lens_all_types">Tous les types</option>
+        </select>
+        <button type="button" id="tl-lens-reset" class="tl-lens-reset" hidden>
+          <i class="fas fa-times" aria-hidden="true"></i>
+          <span data-i18n="timeline.lens_reset">Tout afficher</span>
+        </button>
+      </div>
+    </div>
+    <p id="tl-lens-status" class="sr-only" role="status" aria-live="polite"></p>
+  </div>
+
+  <!-- Chapitres : rendus par le serveur (texte lisible sans JavaScript),
+       puis remplacés par la version interactive. -->
+  <div id="tl-chapters" class="tl-chapters"><!-- @tl-chapters --></div>
 
   <!-- Générique de fin -->
   <section class="tl-outro" id="tl-outro" aria-labelledby="tl-outro-title">
@@ -132,16 +159,6 @@
       </a>
     </div>
   </section>
-
-  <!-- HUD fixe -->
-  <div id="tl-year-hud" class="tl-year-hud" aria-hidden="true">
-    <span id="tl-year-hud-num">1945</span>
-    <span id="tl-year-hud-label" class="tl-year-hud-lbl"></span>
-  </div>
-
-  <nav id="tl-minimap" class="tl-minimap" aria-label="Naviguer par décennie"></nav>
-
-  <div id="tl-progress" class="tl-progress" aria-hidden="true"></div>
 
   <!-- État de chargement -->
   <div id="tl-loading" class="tl-loading" role="status" aria-live="polite">
