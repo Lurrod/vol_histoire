@@ -1828,6 +1828,34 @@ WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'IKA');
 INSERT INTO manufacturer (name, name_en, country_id, code)
 SELECT 'Harbin Aircraft Manufacturing Corporation', 'Harbin Aircraft Manufacturing Corporation', (SELECT id FROM countries WHERE code = 'CHN'), 'HAMC'
 WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'HAMC');
+-- Lots 39 à 43
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Curtiss-Wright', 'Curtiss-Wright', (SELECT id FROM countries WHERE code = 'USA'), 'CW'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'CW');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Learjet', 'Learjet', (SELECT id FROM countries WHERE code = 'USA'), 'LJ'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'LJ');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Gulfstream Aerospace', 'Gulfstream Aerospace', (SELECT id FROM countries WHERE code = 'USA'), 'GUL'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'GUL');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Zlín', 'Zlín', (SELECT id FROM countries WHERE code = 'CSK'), 'ZLIN'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'ZLIN');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Piaggio Aero', 'Piaggio Aero', (SELECT id FROM countries WHERE code = 'ITA'), 'PIA'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'PIA');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Rhein-Flugzeugbau (RFB)', 'Rhein-Flugzeugbau (RFB)', (SELECT id FROM countries WHERE code = 'DEU'), 'RFB'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'RFB');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Grob Aircraft', 'Grob Aircraft', (SELECT id FROM countries WHERE code = 'DEU'), 'GROB'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'GROB');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Insitu', 'Insitu', (SELECT id FROM countries WHERE code = 'USA'), 'INS'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'INS');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'AeroVironment', 'AeroVironment', (SELECT id FROM countries WHERE code = 'USA'), 'AV'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'AV');
 INSERT INTO armement (name, name_en, description, description_en)
 SELECT 'Canon M102 105 mm', NULL, 'Obusier de 105 mm tirant en dérive depuis le flanc gauche de l''appareil', 'Side-firing 105 mm howitzer mounted on the left side of the aircraft'
 WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'Canon M102 105 mm');
@@ -1867,7 +1895,7 @@ WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Rotors basculants');
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Aile volante', 'Flying wing', 'Voilure sans fuselage ni empennage horizontal, qui porte à elle seule l''équipage, les moteurs et la charge', 'Wing with no fuselage or horizontal tail, carrying crew, engines and payload on its own'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Aile volante');
--- >>> Lots 29 à 38 : référentiel ajouté (généré par .lots/tools/referentiel.py)
+-- >>> Lots 29 à 43 : référentiel ajouté (généré par .lots/tools/referentiel.py)
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Aile jointe', 'Joined wing', 'Voilure en tandem dont l''aile arrière rejoint l''aile avant ; plus rigide qu''une aile classique de grand allongement, elle doit améliorer la finesse et simplifier les commandes de vol.', 'Tandem wing layout in which the rear wing joins the front wing; stiffer than a conventional high-aspect-ratio wing, it is meant to improve the lift-to-drag ratio and simplify flight controls.'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Aile jointe');
@@ -1890,8 +1918,14 @@ INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Détecteur d''anomalie magnétique', 'Magnetic anomaly detector', 'Capteur, souvent logé dans une perche de queue, qui repère la perturbation du champ magnétique terrestre causée par la coque d''un sous-marin en plongée.', 'Sensor, often housed in a tail boom, that detects the disturbance of the Earth''s magnetic field caused by the hull of a submerged submarine.'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Détecteur d''anomalie magnétique');
 INSERT INTO tech (name, name_en, description, description_en)
+SELECT 'Lancement par catapulte et récupération par crochet', 'Catapult launch and hook recovery', 'Drone lancé par une catapulte pneumatique et récupéré en vol : un crochet en bout d''aile saisit un filin tendu le long d''un mât, ce qui dispense de toute piste, à terre comme sur un navire', 'Drone launched by a pneumatic catapult and recovered in flight: a wingtip hook catches a rope stretched along a pole, removing the need for any runway, on land or aboard ship'
+WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Lancement par catapulte et récupération par crochet');
+INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Radôme rotatif', 'Rotodome', 'Disque tournant monté sur mâts au-dessus du fuselage, qui abrite l''antenne d''un radar de guet aérien et lui donne une couverture sur 360°', 'Rotating disc mounted on struts above the fuselage, housing the antenna of an airborne early warning radar and giving it 360-degree coverage'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Radôme rotatif');
+INSERT INTO tech (name, name_en, description, description_en)
+SELECT 'Soufflante carénée', 'Ducted fan', 'Hélice multipale tournant dans un carénage intégré au fuselage, entraînée par un moteur à pistons ou une turbine : elle donne un comportement proche de celui d''un réacteur pour une consommation d''avion à hélice.', 'A multi-bladed fan turning inside a duct built into the fuselage, driven by a piston engine or turboshaft: it gives jet-like handling for the fuel consumption of a propeller aircraft.'
+WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Soufflante carénée');
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Soufflante de sustentation', 'Lift fan', 'Soufflante verticale contrarotative logée dans le fuselage et entraînée par un arbre prélevant la puissance du réacteur principal, pour le décollage court et l''atterrissage vertical (X-35B, F-35B).', 'Vertical contra-rotating fan housed in the fuselage and driven by a shaft taking power from the main engine, for short take-off and vertical landing (X-35B, F-35B).'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Soufflante de sustentation');
@@ -1901,6 +1935,12 @@ WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Soute à bombes rotative');
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Système d''atterrissage automatique', 'Automatic landing system', 'Pilote automatique redondant couplé à l''ILS, à l''automanette et à la sonde radioaltimétrique, capable de poser l''avion sans visibilité', 'Redundant autopilot coupled to the ILS, autothrottle and radio altimeter, able to land the aircraft in zero visibility'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Système d''atterrissage automatique');
+INSERT INTO tech (name, name_en, description, description_en)
+SELECT 'Système d''écopage', 'Water scooping system', 'Écopes rétractables sous la coque d''un hydravion qui remplissent ses soutes d''eau en quelques secondes, en frôlant la surface d''un lac ou de la mer sans s''arrêter', 'Retractable scoops under a flying boat''s hull that fill its tanks with water in a few seconds while skimming the surface of a lake or the sea without stopping'
+WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Système d''écopage');
+INSERT INTO tech (name, name_en, description, description_en)
+SELECT 'Volets soufflés par les réacteurs', 'Jet-blown flaps', 'Volets à fort braquage balayés par le jet des réacteurs, soufflé sur l''extrados (effet Coandă) ou sous l''aile, qui rabat la poussée vers le sol pour décoller et atterrir court avec un avion de transport à réaction', 'Large-deflection flaps washed by the engine exhaust, blown over the upper surface (Coandă effect) or under the wing, turning thrust downwards for short take-offs and landings by a jet transport'
+WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Volets soufflés par les réacteurs');
 INSERT INTO armement (name, name_en, description, description_en)
 SELECT 'AIM-47 Falcon', NULL, 'Missile air-air à longue portée de Hughes (GAR-9), développé pour les intercepteurs Mach 3 et emporté en soute par le YF-12A ; agrandi, il a donné l''AIM-54 Phoenix.', 'Hughes long-range air-to-air missile (GAR-9), developed for Mach 3 interceptors and carried internally by the YF-12A; enlarged, it became the AIM-54 Phoenix.'
 WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'AIM-47 Falcon');
@@ -1908,9 +1948,12 @@ INSERT INTO armement (name, name_en, description, description_en)
 SELECT 'GBU-44/B Viper Strike', NULL, 'Munition guidée légère de Northrop Grumman, emportée par les versions armées MQ-5A/B du drone Hunter.', 'Light guided munition by Northrop Grumman, carried by the armed MQ-5A/B versions of the Hunter drone.'
 WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'GBU-44/B Viper Strike');
 INSERT INTO armement (name, name_en, description, description_en)
+SELECT 'Laser chimique oxygène-iode (COIL)', 'Chemical oxygen iodine laser (COIL)', 'Laser de haute énergie, de la classe du mégawatt, alimenté par une réaction chimique entre oxygène et iode ; tiré quelques secondes, il chauffe l''enveloppe d''un missile jusqu''à la rupture', 'Megawatt-class high-energy laser powered by a chemical reaction between oxygen and iodine; fired for a few seconds, it heats a missile''s skin until it fails'
+WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'Laser chimique oxygène-iode (COIL)');
+INSERT INTO armement (name, name_en, description, description_en)
 SELECT 'MG 151/20', NULL, 'Canon automatique allemand de 20 mm de la Seconde Guerre mondiale, monté sur les chasseurs dérivés du Bf 109 et les chasseurs yougoslaves d''après-guerre', 'German 20 mm Second World War automatic cannon, fitted to post-war Bf 109 derivatives and Yugoslav fighters'
 WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'MG 151/20');
--- <<< Lots 29 à 38
+-- <<< Lots 29 à 43
 
 -- ═══ 3. Niveau de furtivité ══════════════════════════════════════════════
 --
