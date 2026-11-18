@@ -35,7 +35,7 @@ info:
     - **415** : jeu de caractères ou encodage du corps non pris en charge.
     Les caractères de contrôle d'un paramètre `search` sont remplacés par une
     espace.
-  version: 4.18.0
+  version: 4.19.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -999,6 +999,15 @@ paths:
           description: >
             Filtrer par mission (nom canonique français, ex. `Interception`).
             400 si la mission est inconnue.
+        - name: decade
+          in: query
+          schema:
+            type: integer
+            enum: [1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020]
+          description: >
+            Filtrer par décennie de l'année de mise en service, à défaut du
+            premier vol — la règle de la frise (liens « Voir ces appareils dans
+            le hangar »). 400 hors de ces valeurs.
         - name: search
           in: query
           schema:
@@ -1095,6 +1104,10 @@ paths:
           name: mission
           schema: { type: string }
           description: Filtre mission canonique FR (ex `Interception`)
+        - in: query
+          name: decade
+          schema: { type: integer, enum: [1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020] }
+          description: Décennie de mise en service (à défaut, du premier vol). 400 sinon.
       responses:
         '200':
           description: Compteurs de facettes
@@ -1410,8 +1423,10 @@ paths:
       tags: [Content]
       summary: Frise chronologique par décennie (1940 → 2020)
       description: >
-        Événements éditoriaux (table `timeline_events`, textes FR et EN) et
-        appareils mis en service dans chaque décennie. Réponse mise en cache
+        Événements éditoriaux (table `timeline_events`, textes FR et EN),
+        appareils de chaque décennie (placés à leur mise en service, à défaut
+        à leur premier vol : prototypes et projets annulés) et conflits datés
+        auxquels au moins un appareil est rattaché. Réponse mise en cache
         30 minutes (Redis, sinon mémoire) ; l'en-tête `X-Cache` vaut `HIT`
         ou `MISS`. `?force=1` ignore le cache et le recalcule.
       parameters:
@@ -1462,18 +1477,44 @@ paths:
                                   little_description_en: { type: string, nullable: true }
                         aircraft:
                           type: array
-                          description: Appareils dont la mise en service tombe dans la décennie.
+                          description: >
+                            Appareils dont la mise en service (à défaut le
+                            premier vol) tombe dans la décennie.
                           items:
                             type: object
                             properties:
                               id: { type: integer }
                               name: { type: string }
                               name_en: { type: string, nullable: true }
-                              image_url: { type: string }
-                              date_operationel: { type: string, format: date }
-                              country_name: { type: string }
+                              image_url: { type: string, nullable: true }
+                              year: { type: integer, example: 1958 }
+                              year_source:
+                                type: string
+                                enum: [service, first_flight]
+                                description: '`first_flight` : pas de mise en service connue (prototype, projet annulé).'
+                              status: { type: string, nullable: true, example: Annulé }
+                              units_built: { type: integer, nullable: true }
+                              country_name: { type: string, description: Nom FR canonique }
+                              country_name_en: { type: string, nullable: true }
                               generation: { type: integer, nullable: true }
-                              type_name: { type: string }
+                              type_name: { type: string, description: Nom FR canonique }
+                              type_name_en: { type: string, nullable: true }
+                  wars:
+                    type: array
+                    description: >
+                      Conflits datés auxquels au moins un appareil est rattaché,
+                      rangés dans la décennie de leur début.
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        slug: { type: string, example: guerre-de-coree, description: 'Page /conflits/<slug>' }
+                        name: { type: string }
+                        name_en: { type: string, nullable: true }
+                        start_year: { type: integer }
+                        end_year: { type: integer, nullable: true, description: null pour un conflit en cours }
+                        era_decade: { type: integer }
+                        aircraft_ids: { type: array, items: { type: integer } }
 
   /contact:
     post:
