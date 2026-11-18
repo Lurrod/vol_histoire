@@ -6,7 +6,7 @@
 
   const SESSION_KEY = 'hangar_filters';
   const dropdownTimeouts = new Map();
-  const FILTER_KEYS = ['country', 'generation', 'type', 'war', 'mission'];
+  const FILTER_KEYS = ['country', 'generation', 'type', 'war', 'mission', 'decade'];
 
   function populateFilterOptions(state) {
     const countryOptions = document.getElementById('country-options');
@@ -124,6 +124,13 @@
       const m = (state.missions || []).find(x => (x.name_fr || x.name) === state.filters.mission);
       filters.push({ type: 'mission', label: m ? m.name : state.filters.mission });
     }
+    // Décennie : posée par les liens de la frise (/hangar?decade=1950), sans
+    // liste déroulante dédiée.
+    if (state.filters.decade) {
+      const decade = String(state.filters.decade);
+      const label = i18n.t('hangar.filter_decade', { decade });
+      filters.push({ type: 'decade', label: label === 'hangar.filter_decade' ? `Années ${decade}` : label });
+    }
     if (filters.length === 0) {
       container.classList.add('hidden');
       container.innerHTML = '';
@@ -159,6 +166,7 @@
     state.filters.type = null;
     state.filters.war = null;
     state.filters.mission = null;
+    state.filters.decade = null;
     state.filters.search = '';
     state.currentPage = 1;
     saveFiltersToSession(state);
@@ -183,6 +191,7 @@
     if (state.filters.type)       p.set('type', state.filters.type);
     if (state.filters.war)        p.set('war', state.filters.war);
     if (state.filters.mission)    p.set('mission', state.filters.mission);
+    if (state.filters.decade)     p.set('decade', String(state.filters.decade));
     if (state.filters.search)     p.set('q', state.filters.search);
     if (state.sort && state.sort !== 'default') p.set('sort', state.sort);
     if (state.view === 'list')    p.set('view', 'list');
@@ -203,10 +212,19 @@
     if (p.has('type'))    state.filters.type = p.get('type');
     if (p.has('war'))     state.filters.war = p.get('war');
     if (p.has('mission')) state.filters.mission = p.get('mission');
+    if (p.has('decade') && /^(19[4-9]0|20[0-2]0)$/.test(p.get('decade'))) state.filters.decade = Number(p.get('decade'));
     if (p.has('q'))       state.filters.search = p.get('q');
     if (p.has('sort'))    state.sort = p.get('sort');
     if (p.has('view'))    state.view = p.get('view') === 'list' ? 'list' : 'grid';
     if (p.has('page'))    state.currentPage = Math.max(1, Number(p.get('page')) || 1);
+  }
+
+  /* L'URL décrit-elle au moins un filtre ou une recherche ? Elle fait alors
+   * foi au démarrage : sans cela, un lien de la frise (/hangar?decade=1950)
+   * se combinait aux filtres et à la page restés en session. */
+  function urlDescribesFilters(search = location.search) {
+    const p = new URLSearchParams(search);
+    return ['country', 'gen', 'type', 'war', 'mission', 'decade', 'q'].some(k => p.has(k));
   }
 
   /* Remet à zéro ce que l'URL décrit (filtres, recherche, tri, page), avant
@@ -329,7 +347,7 @@
   VH.hangar.filters = {
     populateFilterOptions, applyFiltersAndRender, updateActiveFilters,
     saveFiltersToSession, readStateFromUrl, restoreFiltersFromSession,
-    writeStateToUrl,
+    writeStateToUrl, urlDescribesFilters, resetUrlState,
     setupDropdowns, setupSearchAndSort, closeAllDropdowns,
     removeFilter, clearAllFilters, syncFilterUi,
   };

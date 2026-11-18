@@ -14,6 +14,13 @@
     return Object.prototype.hasOwnProperty.call(KEY_ACTIONS, key) ? KEY_ACTIONS[key] : null;
   }
 
+  /* Une touche reçue par un contrôle lui appartient : flèches d'une liste
+   * déroulante, Espace d'un bouton ou d'un lien, saisie d'un champ. */
+  function isInteractive(target) {
+    return Boolean(target && target.closest &&
+      target.closest('a, button, input, select, textarea, [contenteditable], [role="combobox"], [role="listbox"], [role="option"]'));
+  }
+
   /* Index du dernier chapitre dont le haut est passé sous scrollY. */
   function chapterIndexAt(ids, scrollY) {
     for (let i = ids.length - 1; i >= 0; i--) {
@@ -34,7 +41,8 @@
     const ids = decades.map(c => c.decade);
     const currentIdx = () => chapterIndexAt(ids, window.pageYOffset + window.innerHeight / 2);
     window.addEventListener('keydown', e => {
-      if (e.target.matches('input, textarea, [contenteditable]')) return;
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      if (isInteractive(e.target)) return;
       const action = keyAction(e.key);
       if (!action) return;
       e.preventDefault();
@@ -45,7 +53,7 @@
     });
   }
 
-  const api = { keyAction, chapterIndexAt, jumpTo, initKeyboard };
+  const api = { keyAction, isInteractive, chapterIndexAt, jumpTo, initKeyboard };
   window.VH.timeline.keyboard = api;
 
   // Export conditionnel pour les tests unitaires (Node.js / jsdom)

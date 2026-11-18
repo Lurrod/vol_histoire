@@ -3546,7 +3546,10 @@ describe('GET /api/timeline', () => {
           image_url: 'f14.jpg',
           little_description: 'Intercepteur naval',
           little_description_en: 'Naval interceptor',
-          date_operationel: '1974-09-22',
+          status: 'Retiré',
+          units_built: 712,
+          year: 1974,
+          year_source: 'service',
           era_decade: 1970,
           country_name: 'États-Unis',
           country_name_en: 'United States',
@@ -3557,9 +3560,22 @@ describe('GET /api/timeline', () => {
       ],
     });
 
+    // Requête 3 : conflits datés, avec les appareils rattachés
+    mockPool.query.mockResolvedValueOnce({
+      rows: [
+        { id: 4, name: 'Guerre de Corée', name_en: 'Korean War', date_start: '1950-06-25', date_end: '1953-07-27', aircraft_ids: [12, 10] },
+        { id: 5, name: 'Guerre de 1914', name_en: null, date_start: '1914-08-01', date_end: null, aircraft_ids: [] },
+      ],
+    });
+
     const res = await request(app).get('/api/timeline');
     expect(res.status).toBe(200);
     expect(res.headers['x-cache']).toBe('MISS');
+    // Conflit hors des décennies couvertes : écarté ; slug dérivé du nom.
+    expect(res.body.wars).toEqual([{
+      id: 4, slug: 'guerre-de-coree', name: 'Guerre de Corée', name_en: 'Korean War',
+      start_year: 1950, end_year: 1953, era_decade: 1950, aircraft_ids: [12, 10],
+    }]);
     expect(Array.isArray(res.body.decades)).toBe(true);
     expect(res.body.decades.length).toBe(9); // 1940 → 2020
     const d40 = res.body.decades.find(d => d.decade === 1940);
@@ -3569,12 +3585,13 @@ describe('GET /api/timeline', () => {
     expect(d60.events[0].airplane).toBeNull();
     const d70 = res.body.decades.find(d => d.decade === 1970);
     expect(d70.aircraft.length).toBe(1);
-    expect(d70.aircraft[0].name).toBe('F-14 Tomcat');
+    expect(d70.aircraft[0]).toMatchObject({ name: 'F-14 Tomcat', year: 1974, year_source: 'service', units_built: 712 });
   });
 
   test('X-Cache HIT au second appel sans ?force=1', async () => {
     mockPool.query.mockResolvedValueOnce({ rows: [] });
     mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] }); // conflits
     await request(app).get('/api/timeline'); // premier appel → MISS + warm cache
     const res = await request(app).get('/api/timeline');
     expect(res.status).toBe(200);
@@ -3584,9 +3601,11 @@ describe('GET /api/timeline', () => {
   test('?force=1 bypasse le cache', async () => {
     mockPool.query.mockResolvedValueOnce({ rows: [] });
     mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] }); // conflits
     await request(app).get('/api/timeline');
     mockPool.query.mockResolvedValueOnce({ rows: [] });
     mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] }); // conflits
     const res = await request(app).get('/api/timeline?force=1');
     expect(res.status).toBe(200);
     expect(res.headers['x-cache']).toBe('MISS');
@@ -3595,10 +3614,12 @@ describe('GET /api/timeline', () => {
   test('app.invalidateTimelineCache vide le cache', async () => {
     mockPool.query.mockResolvedValueOnce({ rows: [] });
     mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] }); // conflits
     await request(app).get('/api/timeline');
     await app.invalidateTimelineCache?.();
     mockPool.query.mockResolvedValueOnce({ rows: [] });
     mockPool.query.mockResolvedValueOnce({ rows: [] });
+    mockPool.query.mockResolvedValueOnce({ rows: [] }); // conflits
     const res = await request(app).get('/api/timeline');
     expect(res.headers['x-cache']).toBe('MISS');
   });
@@ -3914,6 +3935,7 @@ describe('GET /api/timeline — cache errors silencieux', () => {
     jest.spyOn(cache, 'get').mockRejectedValueOnce(new Error('redis down'));
     mockPool.query
       .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] });
 
     const res = await request(app).get('/api/timeline');
@@ -3924,6 +3946,7 @@ describe('GET /api/timeline — cache errors silencieux', () => {
   test('cache.set throw → 200 quand même (erreur silencieuse, ligne 150)', async () => {
     jest.spyOn(cache, 'set').mockRejectedValueOnce(new Error('redis write fail'));
     mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] });
 
@@ -4452,7 +4475,8 @@ describe('GET /api/timeline — décennie hors plage ignorée (lignes 100, 124)'
           airplane_little_description_en: null,
         }],
       })
-      .mockResolvedValueOnce({ rows: [] }); // aircraft
+      .mockResolvedValueOnce({ rows: [] }) // aircraft
+      .mockResolvedValueOnce({ rows: [] }); // conflits
 
     const res = await request(app).get('/api/timeline');
     expect(res.status).toBe(200);
@@ -4481,7 +4505,8 @@ describe('GET /api/timeline — décennie hors plage ignorée (lignes 100, 124)'
           type_name: null,
           type_name_en: null,
         }],
-      });
+      })
+      .mockResolvedValueOnce({ rows: [] }); // conflits
 
     const res = await request(app).get('/api/timeline');
     expect(res.status).toBe(200);

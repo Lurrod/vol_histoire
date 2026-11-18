@@ -7,7 +7,7 @@ const { slugify } = require('../utils/url');
 const airplanesRepo = require('../repositories/airplanes');
 const referentialsRepo = require('../repositories/referentials');
 const favoritesRepo = require('../repositories/favorites');
-const { idParam, cleanSearch } = require('../middleware/input-guards');
+const { idParam, cleanSearch, isValidDecade } = require('../middleware/input-guards');
 
 // Vérifie l'existence des clés étrangères d'un avion en une seule requête.
 // Retourne un tableau de messages d'erreur (vide si tout est valide).
@@ -65,6 +65,12 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     // paramètre répété (tableau) compte comme absent. SEC-003.
     const search = cleanSearch(req.query.search);
 
+    // Décennie de la frise (1940 → 2020), même règle que GET /api/timeline.
+    const decade = (req.query.decade || '').toString();
+    if (decade && !isValidDecade(decade)) {
+      return res.status(400).json({ message: 'Paramètre decade invalide' });
+    }
+
     // Validation format (sans DB) — rejette texte, 0, négatif
     if (generation && !/^[1-9]\d*$/.test(generation)) {
       return res.status(400).json({ message: 'Paramètre generation invalide' });
@@ -93,7 +99,7 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     const offset = (page - 1) * limit;
 
     const { total, rows } = await airplanesRepo.findPage(getPool(), {
-      country, generation, type, war, mission, search, sort, limit, offset,
+      country, generation, type, war, mission, decade, search, sort, limit, offset,
     });
     // i18n : noms propres (name, complete_name, country_name) fallback FR ;
     // little_description → "Translation needed" si name_en NULL
