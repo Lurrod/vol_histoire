@@ -50,7 +50,7 @@
 
 /* Print styles */
 @media print {
-  /* header/footer/hamburger/user-menu print → shared.css */
+  /* header/footer/hamburger print → shared.css */
 
   .page-home .hero { min-height: auto; height: auto; }
   .page-home * { background: white !important; color: black !important; box-shadow: none !important; }

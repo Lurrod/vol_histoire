@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.21.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.22.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-24-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/tests-2120-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
@@ -181,7 +181,7 @@ users ─── favorites ───┐
   │  type ────────────┘
   │
   ├── refresh_tokens (JTI, revocation, expiration)
-  └── email_tokens (verification, reset, TTL)
+  └── email_tokens (codes : verification, reset, email ; essais, TTL)
 ```
 
 La table `airplanes` contient 61 colonnes incluant les strates d'enrichissement, et
@@ -373,11 +373,11 @@ Puis faire un revert sur `main`, sinon le prochain push redéploie la version fa
 | **Cookies** | HttpOnly, Secure, SameSite=Strict, Path=/api |
 | **CSRF** | SameSite + Bearer header + CORS whitelist + CSP form-action |
 | **Mots de passe** | bcryptjs cost 12, validation 8-128 chars, 1 maj/min/chiffre |
-| **Email** | Verification obligatoire ; liens a usage unique, valables 30 min (verification) ou 15 min (reinitialisation), stockes haches (SHA-256) ; 3 envois / 15 min |
+| **Email** | Verification obligatoire par **code a 6 chiffres** saisi sur /login (inscription, mot de passe oublie) ou dans les reglages (changement d'adresse) : usage unique, valable 30 min (activation, changement d'adresse) ou 15 min (reinitialisation), 5 essais par code, stocke en empreinte HMAC-SHA256 liee au compte ; 3 envois / 15 min |
 | **Captcha** | hCaptcha invisible sur register, forgot-password, contact |
 | **XSS** | escapeHtml() partout, DOMPurify 3.x pour injection HTML, safeSetHTML() wrapper |
 | **Headers** | CSP nonce (style-src-attr 'none'), HSTS (1 an + preload), COOP same-origin, CORP same-site, X-Frame-Options DENY, Permissions-Policy |
-| **Rate limiting** | Par route, fenetre de 15 min : inscription 10, connexion 20, rafraichissement 30, envoi d'email (verification, mot de passe oublie) 3, liens d'email 5, contact 5, export des donnees 10, global 200 + Redis fallback memoire |
+| **Rate limiting** | Par route, fenetre de 15 min : inscription 10, connexion 20, rafraichissement 30, envoi d'email (verification, mot de passe oublie) 3, saisie d'un code 15, contact 5, export des donnees 10, global 200 + Redis fallback memoire |
 | **SQL** | Requetes parametrees, transactions atomiques, whitelist sort |
 | **SEO redirect** | 301 canonicalisation `/details?id=X` → `/details/<slug>-<id>` |
 
@@ -391,7 +391,7 @@ Puis faire un revert sur `main`, sinon le prochain push redéploie la version fa
 
 | Tag | Routes principales |
 |-----|--------|
-| Auth | register, login, refresh, logout, verify-email, resend-verification, forgot-password, reset-password |
+| Auth | register, login, refresh, logout, check-code, verify-email, resend-verification, forgot-password, reset-password, confirm-email-change |
 | Users | list (admin), get, update (revocation sessions), delete, admin update |
 | Airplanes | list (filtres + tri + recherche FTS), get (+ predecessor/successor/rival), create, update, delete |
 | Airplanes related | armament, tech, missions, wars |

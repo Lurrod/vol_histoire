@@ -271,6 +271,25 @@
   /* Durée totale de l'ouverture (7 rangs de liens au plus) : point de départ des délais de
      fermeture, calculés comme le miroir de ceux d'ouverture. */
   --menu-total: calc(var(--menu-items-delay) + 6 * var(--menu-stagger) + var(--menu-dur));
+  /* Menu « underlay » (bureau, ≥ 64em), d'après l'underlay navigation de
+     Motion Core : la page glisse à gauche de la largeur du panneau, se
+     resserre de 16 px sur chaque bord et s'arrondit ; les liens du panneau
+     apparaissent en cascade dessous. Mêmes temps que l'original (GSAP,
+     0,7 s), même courbe que le menu flottant. La fermeture rejoue la
+     séquence à l'envers autour de --underlay-total. */
+  --underlay-bg: #070707;
+  --underlay-ease: var(--menu-ease);
+  --underlay-dur: 700ms;
+  --underlay-gap: 16px;
+  --underlay-radius: 1rem;
+  --underlay-panel-w: clamp(18rem, 32vw, 24rem);
+  --underlay-icon-dur: 400ms;
+  --underlay-label-dur: 350ms;
+  --underlay-items-delay: 150ms;
+  --underlay-item-dur: 500ms;
+  --underlay-stagger: 45ms;
+  /* Fin du dernier lien (7 rangs au plus, comme le menu flottant). */
+  --underlay-total: calc(var(--underlay-items-delay) + 6 * var(--underlay-stagger) + var(--underlay-item-dur));
   /* Icon swap — scale de départ moins extrême */
   --icon-swap-dur: var(--dur-base);
   --icon-swap-blur: 1.5px;

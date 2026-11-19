@@ -58,7 +58,7 @@ INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
 INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 ((SELECT id FROM airplanes WHERE name = 'P-2 Neptune'), (SELECT id FROM armement WHERE name = 'Mk 46')),
 ((SELECT id FROM airplanes WHERE name = 'P-2 Neptune'), (SELECT id FROM armement WHERE name = 'Bombe lisse 250 kg')),
-((SELECT id FROM airplanes WHERE name = 'P-2 Neptune'), (SELECT id FROM armement WHERE name = 'HVAR 70 mm'));
+((SELECT id FROM airplanes WHERE name = 'P-2 Neptune'), (SELECT id FROM armement WHERE name = 'HVAR 127 mm'));
 
 -- Missions
 INSERT INTO airplane_missions (id_airplane, id_mission) VALUES

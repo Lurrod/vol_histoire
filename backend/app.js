@@ -180,7 +180,11 @@ const LIMITER_DEFS = [
   { key: 'login',         max: 20,  msg: "Trop de tentatives de connexion, réessayez dans 15 minutes." },
   { key: 'global',        max: 200, msg: 'Trop de requêtes, réessayez plus tard.' },
   { key: 'refresh',       max: 30,  msg: 'Trop de tentatives de rafraîchissement, réessayez dans 15 minutes.' },
-  { key: 'resetPassword', max: 5,   msg: 'Trop de tentatives, réessayez dans 15 minutes.' },
+  // Saisie d'un code reçu par email (vérification, activation, nouveau mot de
+  // passe, changement d'adresse) : un parcours réussi en consomme deux, une
+  // faute de frappe un de plus. Chaque code a en outre son propre plafond
+  // d'essais (repositories/email-tokens.js).
+  { key: 'code',          max: 15,  msg: 'Trop de tentatives, réessayez dans 15 minutes.' },
   { key: 'email',         max: 3,   msg: 'Trop de demandes, réessayez dans 15 minutes.' },
   { key: 'contact',       max: 5,   msg: 'Trop de messages envoyés, réessayez dans 15 minutes.' },
   // Une page en défaut peut envoyer plusieurs rapports CSP par chargement.
@@ -212,7 +216,7 @@ const registerLimiter      = (req, res, next) => _impl.register(req, res, next);
 const loginLimiter         = (req, res, next) => _impl.login(req, res, next);
 const globalApiLimiter     = (req, res, next) => _impl.global(req, res, next);
 const refreshLimiter       = (req, res, next) => _impl.refresh(req, res, next);
-const resetPasswordLimiter = (req, res, next) => _impl.resetPassword(req, res, next);
+const codeLimiter          = (req, res, next) => _impl.code(req, res, next);
 const emailLimiter         = (req, res, next) => _impl.email(req, res, next);
 const contactLimiter       = (req, res, next) => _impl.contact(req, res, next);
 const cspReportLimiter     = (req, res, next) => _impl.cspReport(req, res, next);
@@ -566,23 +570,32 @@ app.get('/timeline', async (req, res, next) => {
 
 // Routes HTML sans extension (utile en dev local — en prod c'est Apache/.htaccess qui gère)
 const htmlPages = [
-  'verify-email', 'forgot-password', 'reset-password', 'check-email',
   'hangar', 'timeline', 'favorites', 'login', 'settings',
   'contact', 'mentions-legales',
   'politique-confidentialite', 'cgu',
 ];
-// Pages dont l'URL porte un jeton de lien email (?token=) ou une adresse :
-// aucune copie en cache (navigateur, proxy, service worker — sw.js respecte
-// no-store) et aucun Referer, même réduit à l'origine. Leur JS retire en plus
-// le paramètre de l'URL dès sa lecture (takeUrlParams, utils.js).
-const URL_SECRET_PAGES = new Set(['reset-password', 'verify-email', 'check-email']);
 htmlPages.forEach(page => {
   app.get(`/${page}`, (req, res) => {
-    if (URL_SECRET_PAGES.has(page)) {
-      res.setHeader('Cache-Control', 'no-store');
-      res.setHeader('Referrer-Policy', 'no-referrer');
-    }
     sendCachedHtml(res, path.join(frontendRoot, `${page}.html`));
+  });
+});
+
+// Anciennes pages des liens email (activation, mot de passe oublié, « vérifiez
+// votre boîte ») : tout passe désormais par un code saisi sur /login. Les liens
+// déjà envoyés et les favoris mènent à la connexion ; le jeton éventuel n'est
+// jamais recopié dans la redirection, la réponse n'est pas mise en cache et ne
+// transmet aucun Referer.
+const LEGACY_AUTH_PAGES = {
+  'verify-email': '/login',
+  'check-email': '/login',
+  'reset-password': '/login#mot-de-passe-oublie',
+  'forgot-password': '/login#mot-de-passe-oublie',
+};
+Object.entries(LEGACY_AUTH_PAGES).forEach(([page, target]) => {
+  app.get(`/${page}`, (req, res) => {
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.redirect(301, target);
   });
 });
 app.get('/', (req, res) => {
@@ -606,7 +619,7 @@ app.get('/api/config', (req, res) => {
 });
 
 const createAuthRouter = require('./routes/auth');
-app.use('/api', createAuthRouter(() => pool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, resetPasswordLimiter, mailer }));
+app.use('/api', createAuthRouter(() => pool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, codeLimiter, mailer }));
 
 const createUsersRouter = require('./routes/users');
 app.use('/api', createUsersRouter(() => pool, { mailer, dataExportLimiter }));

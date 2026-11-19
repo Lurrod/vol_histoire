@@ -57,9 +57,10 @@ GRANT USAGE, SELECT ON SEQUENCE refresh_tokens_id_seq TO vol_user;
 CREATE TABLE IF NOT EXISTS email_tokens (
     id          SERIAL PRIMARY KEY,
     user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    token_hash  CHAR(64) NOT NULL UNIQUE,          -- SHA-256 hex du jeton envoyé par email ; le jeton en clair n'est jamais stocké
+    token_hash  CHAR(64) NOT NULL UNIQUE,          -- HMAC-SHA256 hex du code à 6 chiffres envoyé par email (lié au compte et au type) ; le code en clair n'est jamais stocké
     type        VARCHAR(10) NOT NULL CHECK (type IN ('verify', 'reset', 'email')),
     new_email   VARCHAR(255) NULL,                 -- type 'email' : adresse à appliquer après confirmation
+    attempts    SMALLINT NOT NULL DEFAULT 0,       -- essais manqués ; au-delà du plafond, le code est clos
     expires_at  TIMESTAMPTZ NOT NULL,
     used_at     TIMESTAMPTZ,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -299,6 +300,19 @@ CREATE TABLE airplane_tech (
     id_tech INTEGER REFERENCES tech(id) ON DELETE CASCADE,
     PRIMARY KEY (id_airplane, id_tech)
 );
+
+-- Index des clés étrangères non couvertes par une clé primaire : sans eux,
+-- chaque suppression d'un appareil, d'une arme, d'un conflit, d'une mission,
+-- d'une technologie, d'un rôle ou d'un pays parcourt toute la table qui le
+-- référence (ON DELETE CASCADE / SET NULL), et les jointures depuis le
+-- référentiel (« appareils de ce conflit ») ne profitent d'aucun index.
+CREATE INDEX IF NOT EXISTS idx_users_role_id                ON users (role_id);
+CREATE INDEX IF NOT EXISTS idx_favorites_airplane_id        ON favorites (airplane_id);
+CREATE INDEX IF NOT EXISTS idx_wars_country_id              ON wars (country_id);
+CREATE INDEX IF NOT EXISTS idx_airplane_armement_armement   ON airplane_armement (id_armement);
+CREATE INDEX IF NOT EXISTS idx_airplane_wars_wars           ON airplane_wars (id_wars);
+CREATE INDEX IF NOT EXISTS idx_airplane_missions_mission    ON airplane_missions (id_mission);
+CREATE INDEX IF NOT EXISTS idx_airplane_tech_tech           ON airplane_tech (id_tech);
 
 -- Trigger updated_at automatique (partagé par users et airplanes)
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -830,7 +844,9 @@ INSERT INTO armement (name, name_en, description, description_en) VALUES
 ('Bofors 135 mm', NULL, 'Roquettes non guidées, 135 mm', 'Unguided rockets, 135 mm'),
 ('Type 90-1', NULL, 'Roquettes non guidées, 90 mm', 'Unguided rockets, 90 mm'),
 ('HF-16', NULL, 'Roquettes non guidées, 57 mm', 'Unguided rockets, 57 mm'),
-('HVAR 70 mm', NULL, 'Roquettes non guidées, 70 mm', 'Unguided rockets, 70 mm'),
+('HVAR 127 mm', NULL, 'Roquettes non guidées américaines, 127 mm (5 pouces)', 'American unguided rockets, 127 mm (5 in)'),
+('RP-3', NULL, 'Roquettes non guidées britanniques, 76 mm (3 pouces), tête de 60 lb', 'British unguided rockets, 76 mm (3 in), 60 lb warhead'),
+('FFAR 70 mm', NULL, 'Roquettes non guidées, 70 mm (2,75 pouces), en paniers', 'Unguided rockets, 70 mm (2.75 in), podded'),
 ('APR-3', NULL, 'Torpille légère anti-sous-marine, guidage acoustique', 'Lightweight anti-submarine torpedo, acoustic guidance'),
 ('RGB-75', NULL, 'Bouée acoustique pour détection sous-marine', 'Acoustic sonobuoy for underwater detection'),
 ('Shafrir 2', NULL, 'Missile air-air courte portée israélien, guidage infrarouge, 5 km', 'Israeli short-range air-to-air missile, infrared guidance, 5 km'),
@@ -983,10 +999,6 @@ INSERT INTO tech (name, name_en, description, description_en) VALUES
 ('Système de gestion de mission avancé', 'Advanced mission management system', 'Système intégré de navigation, d''attaque et de contre-mesures', 'Integrated navigation, attack and countermeasures system'),
 ('Système de caméra intégré', 'Integrated camera system', 'Caméra gunshot pour enregistrement des combats', 'Gunshot camera for combat recording'),
 ('Liaison de données tactique', 'Tactical data link', 'Système d''échange d''informations avec la flotte', 'Information exchange system with the fleet'),
-('Canon M39', 'M39 cannon', 'Canon de 20 mm à haute cadence de tir', '20 mm high rate-of-fire cannon'),
-('Canon GAU-8 Avenger', 'GAU-8 Avenger cannon', 'Canon rotatif de 30 mm à haute cadence de tir', '30 mm rotary cannon with high rate of fire'),
-('Canon GSh-30-2', 'GSh-30-2 cannon', 'Canon double de 30 mm à haute cadence de tir', '30 mm twin cannon with high rate of fire'),
-('Canon NR-23', 'NR-23 cannon', 'Canon de 23 mm à haute cadence de tir', '23 mm high rate-of-fire cannon'),
 ('Matériaux composites', 'Composite materials', 'Utilisation de carbone et kevlar dans la structure', 'Use of carbon and Kevlar in the structure'),
 ('Blindage en titane', 'Titanium armor', 'Blindage lourd pour protéger le pilote et les systèmes vitaux', 'Heavy armor to protect pilot and vital systems'),
 ('Conception en acier inoxydable', 'Stainless steel design', 'Structure en acier pour résister aux hautes vitesses et températures', 'Steel structure to withstand high speeds and temperatures'),

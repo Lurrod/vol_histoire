@@ -1,7 +1,7 @@
 /* Variables, reset, body et container fournis par tokens.css + base.css */
 body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 
-/* header/nav/hamburger/user-menu/hidden → shared.css */
+/* header/nav/hamburger/hidden → shared.css */
 
 /* ==================== AUTH SECTION — SPLIT SCREEN ==================== */
 .page-login .auth-section {
@@ -641,7 +641,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 
 @media (max-width: 64em) {
   .page-login .container { padding: 0 2rem; }
-  /* hamburger/nav/user-dropdown responsive → shared.css */
+  /* hamburger/nav responsive → shared.css */
   .page-login .auth-section { height: auto; min-height: 100vh; padding-bottom: 1rem; }
 }
 
@@ -673,7 +673,7 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 /* Touch devices */
 @media (hover: none) and (pointer: coarse) {
   .page-login .btn-submit { min-height: 48px; }
-  /* hamburger/login-icon touch responsive → shared.css */
+  /* hamburger touch responsive → shared.css */
   .page-login .toggle-password { min-width: 48px; min-height: 48px; }
   .page-login .switch-form { min-height: 48px; }
 }
@@ -772,28 +772,6 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 .ev-btn-icon { margin-right: 0.3rem; }
 
 /* ============================================================
-   PANNEAU DE SUCCÈS (reset-password)
-   ============================================================ */
-.rp-success {
-  text-align: center;
-  padding: 1rem 0;
-}
-.rp-success-icon {
-  font-size: 2.5rem;
-  color: #34d964;
-  display: block;
-  margin-bottom: 1rem;
-}
-.rp-success h2 {
-  color: #fff;
-  margin: 0 0 0.5rem;
-}
-.rp-success p {
-  color: var(--text-ghost);
-  margin: 0 0 1.5rem;
-}
-
-/* ============================================================
    Mouvement réduit
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
@@ -812,3 +790,62 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
     transform: none;
   }
 }
+
+/* ============================================================
+   ÉTAPES PAR CODE (js/login/flow.js) : mot de passe oublié,
+   code reçu par email, choix du mot de passe. Mêmes panneaux que
+   les onglets ; pendant ces étapes, les onglets s'effacent.
+   ============================================================ */
+.page-login .form-container.is-flow .form-tabs { display: none; }
+
+/* « Retour » : la flèche part vers la gauche (miroir de « Créer un compte »). */
+.page-login .flow-back:hover { transform: translateX(-4px); }
+.page-login .flow-back:hover i,
+.page-login .flow-back:hover .icon { transform: translateX(-3px); }
+
+.page-login .code-email {
+  color: var(--hud-cyan);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.page-login .code-field {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-3);
+  margin-block: var(--sp-2) var(--sp-6);
+}
+
+.page-login .code-hint {
+  margin: 0;
+  max-width: 34ch;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Résultat de la vérification, annoncé aux lecteurs d'écran (role=status). */
+.page-login .code-status {
+  min-height: 1.25rem;
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.page-login .code-status[data-tone="error"] { color: var(--accent-text); }
+.page-login .code-status[data-tone="success"] { color: var(--hud-green-text); }
+
+.page-login .code-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+}
+.page-login .code-actions .switch-form:hover { transform: none; }
+.page-login .code-actions .switch-form:disabled {
+  opacity: 0.55;
+  cursor: default;
+  background: transparent;
+}
+
+.page-login .form-flow .form-footer { margin-top: var(--sp-6); }

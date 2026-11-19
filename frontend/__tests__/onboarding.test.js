@@ -1,6 +1,7 @@
 /**
  * Tests — frontend/js/onboarding.js : visite guidée sur l'accueil.
- * Conditions d'affichage, déclenchement différé, parcours bureau / mobile,
+ * Conditions d'affichage, déclenchement différé, parcours (identique à
+ * toutes les largeurs : les liens sont derrière le bouton Menu),
  * étapes sans cible retirées, navigation (boutons, flèches, Échap),
  * placement du projecteur et de la bulle, focus et mémorisation.
  */
@@ -23,9 +24,9 @@ function load() {
   return mod;
 }
 
-function setMobile(mobile) {
-  window.matchMedia = jest.fn((q) => ({
-    matches: q.includes('63.99em') ? mobile : false,
+function setMatchMedia() {
+  window.matchMedia = jest.fn(() => ({
+    matches: false,
     addEventListener() {}, removeEventListener() {},
   }));
 }
@@ -33,15 +34,9 @@ function setMobile(mobile) {
 const PAGE = `
   <header>
     <button class="hamburger" type="button">Menu</button>
-    <ul class="nav-links">
-      <li><a href="/hangar">Hangar</a></li>
-      <li><a href="/timeline">Chronologie</a></li>
-      <li><a href="/favorites">Favoris</a></li>
-    </ul>
     <button id="lang-toggle" type="button">FR</button>
   </header>
   <form id="hero-search"><input type="search"></form>
-  <strong id="hero-split-stat-airplanes">733</strong>
   <button id="avant" type="button">Avant</button>`;
 
 const root = () => document.querySelector('.ob');
@@ -56,7 +51,7 @@ beforeEach(() => {
   global.trapFocus = jest.fn(trapFocus);
   global.auth = { getToken: jest.fn(() => 'jeton'), getPayload: jest.fn(() => ({ name: 'Jean Dupont' })) };
   global.i18n = { t: jest.fn((k) => k) };
-  setMobile(false);
+  setMatchMedia();
   window.requestAnimationFrame = (fn) => setTimeout(fn, 0);
   window.cancelAnimationFrame = (id) => clearTimeout(id);
   window.Element.prototype.scrollIntoView = jest.fn();
@@ -94,35 +89,18 @@ describe('affichage', () => {
 });
 
 describe('parcours', () => {
-  test('bureau : bienvenue, recherche, Hangar, Chronologie, Favoris ; prénom et compteur réel', () => {
+  test('bienvenue avec prénom, recherche, bouton Menu puis langue', () => {
     const { buildSteps } = load();
     const steps = buildSteps('Jean');
-    expect(steps.map((s) => s.id)).toEqual(['welcome', 'search', 'hangar', 'timeline', 'favorites']);
+    expect(steps.map((s) => s.id)).toEqual(['welcome', 'search', 'menu', 'lang']);
     expect(steps[0].title).toBe('Bienvenue à bord, Jean.');
-    expect(steps[2].text).toMatch(/^733 appareils/);
-  });
-
-  test('compteur en odomètre : la valeur vient du .sr-only, pas des bandes de chiffres', () => {
-    document.getElementById('hero-split-stat-airplanes').innerHTML =
-      '<span class="sr-only">733</span><span aria-hidden="true">0123456789 0123456789 0123456789</span>';
-    const { buildSteps } = load();
-    expect(buildSteps('').find((x) => x.id === 'hangar').text).toMatch(/^733 appareils/);
-  });
-
-  test('mobile : le menu burger et la langue remplacent les liens', () => {
-    setMobile(true);
-    const { buildSteps } = load();
-    expect(buildSteps('').map((s) => s.id)).toEqual(['welcome', 'search', 'menu', 'lang']);
     expect(buildSteps('')[0].title).toBe('Bienvenue à bord.');
   });
 
-  test('une cible absente retire son étape ; sans compteur, texte générique', () => {
+  test('une cible absente retire son étape', () => {
     document.getElementById('hero-search').remove();
-    document.getElementById('hero-split-stat-airplanes').remove();
     const { buildSteps } = load();
-    const steps = buildSteps('');
-    expect(steps.map((s) => s.id)).not.toContain('search');
-    expect(steps.find((s) => s.id === 'hangar').text).toMatch(/^Tout le catalogue/);
+    expect(buildSteps('').map((s) => s.id)).toEqual(['welcome', 'menu', 'lang']);
   });
 
   test('traduction présente : elle remplace le texte de repli, variables comprises', () => {
@@ -133,10 +111,9 @@ describe('parcours', () => {
 });
 
 describe('variables (syntaxe du module i18n : {nom})', () => {
-  test('prénom, nombre et compteur d’étapes sont remplacés, sans accolade restante', () => {
+  test('prénom et compteur d’étapes sont remplacés, sans accolade restante', () => {
     const dict = {
       'onboarding.welcome_title_name': 'Bienvenue à bord, {name}.',
-      'onboarding.hangar_text_count': '{count} appareils.',
       'onboarding.count': 'Étape {n} sur {total}',
     };
     i18n.t.mockImplementation((k, p = {}) => {
@@ -144,10 +121,9 @@ describe('variables (syntaxe du module i18n : {nom})', () => {
       return Object.entries(p).reduce((s, [a, b]) => s.replace(new RegExp(`\{${a}\}`, 'g'), b), dict[k]);
     });
     const { createTour } = load();
-    const tour = createTour();
+    createTour();
     expect(title()).toBe('Bienvenue à bord, Jean.');
-    expect(document.querySelector('.ob-count').textContent).toBe('Étape 1 sur 5');
-    expect(tour.steps.find((s) => s.id === 'hangar').text).toBe('733 appareils.');
+    expect(document.querySelector('.ob-count').textContent).toBe('Étape 1 sur 4');
     expect(document.querySelector('.ob').textContent).not.toMatch(/[{}]/);
   });
 });
@@ -164,13 +140,13 @@ describe('navigation', () => {
     expect(title()).toBe('Cherchez un appareil');
     expect(document.querySelector('.ob-prev').hidden).toBe(false);
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
-    expect(title()).toBe('Le Hangar');
+    expect(title()).toBe('Le menu');
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft' }));
     expect(title()).toBe('Cherchez un appareil');
     document.querySelector('.ob-prev').click();
     document.querySelector('.ob-prev').click(); // déjà au début : sans effet
     expect(title()).toBe('Bienvenue à bord, Jean.');
-    expect(document.querySelector('.ob-count').textContent).toBe('Étape 1 sur 5');
+    expect(document.querySelector('.ob-count').textContent).toBe('Étape 1 sur 4');
   });
 
   test('dernière étape : « C’est parti » ferme et mémorise ; « Passer » masqué', () => {

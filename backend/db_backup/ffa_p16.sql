@@ -56,7 +56,7 @@ INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
 -- Armement
 INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 ((SELECT id FROM airplanes WHERE name = 'FFA P-16'), (SELECT id FROM armement WHERE name = 'ADEN 30 mm')),
-((SELECT id FROM airplanes WHERE name = 'FFA P-16'), (SELECT id FROM armement WHERE name = 'HVAR 70 mm')),
+((SELECT id FROM airplanes WHERE name = 'FFA P-16'), (SELECT id FROM armement WHERE name = 'SNEB 68 mm')),
 ((SELECT id FROM airplanes WHERE name = 'FFA P-16'), (SELECT id FROM armement WHERE name = 'Bombe lisse 250 kg'));
 
 -- Missions

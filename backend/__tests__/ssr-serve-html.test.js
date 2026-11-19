@@ -148,8 +148,8 @@ describe('pages réelles de frontend/', () => {
         expect(current).toEqual([]);
       }
     }
-    expect(page('login')).toContain('class="login-icon active"');
-    expect(page('settings')).toContain('class="dropdown-item active" role="menuitem"');
+    // Plus d'icône compte : la page de connexion ne marque que son lien du menu.
+    expect(page('login')).not.toContain('login-icon');
   });
 
   test('A11Y-008 : les noms de langue portent leur attribut lang', () => {

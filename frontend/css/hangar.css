@@ -258,7 +258,7 @@ body.page-hangar.modal-open { overflow: hidden; }
 /* Touch optimizations */
 @media (hover: none) and (pointer: coarse) {
   .page-hangar .btn { min-height: 44px; }
-  /* .nav-links li a, .dropdown-item → shared.css */
+  /* .nav-links li a → shared.css */
   .page-hangar .aircraft-card:hover { transform: none; }
 }
 

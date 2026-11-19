@@ -131,11 +131,34 @@ describe('captchaConfigErrors : contrôle au démarrage', () => {
 describe('POST sans corps : 400, jamais 500 (Express 5 laisse req.body indéfini)', () => {
   test.each([
     '/api/login',
+    '/api/auth/check-code',
     '/api/auth/verify-email',
     '/api/auth/reset-password',
-    '/api/auth/confirm-email-change',
   ])('%s', async (url) => {
     const res = await request(app).post(url);
     expect(res.status).toBe(400);
+  });
+
+  // Session requise : sans jeton, 403 avant même de lire le corps ; avec un
+  // jeton valide, un corps absent donne 400 (code invalide), jamais 500.
+  test('/api/auth/confirm-email-change', async () => {
+    const jwt = require('jsonwebtoken');
+    const authMiddleware = require('../middleware/auth');
+    authMiddleware.setAuthStateLoader(async (id) => (id === 3 ? { role_id: 3, token_version: 0 } : null));
+    const token = jwt.sign({ id: 3, role: 3 }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // La route ouvre une transaction : client simulé, qui ne doit voir que
+    // BEGIN / COMMIT (le code absent est refusé avant toute lecture).
+    const client = { query: jest.fn().mockResolvedValue({ rows: [] }), release: jest.fn() };
+    mockPool.connect = jest.fn().mockResolvedValue(client);
+    try {
+      expect((await request(app).post('/api/auth/confirm-email-change')).status).toBe(403);
+      const res = await request(app).post('/api/auth/confirm-email-change').set('Authorization', `Bearer ${token}`);
+      expect(res.status).toBe(400);
+      expect(res.body.code).toBe('CODE_INVALID');
+      expect(client.query.mock.calls.some(([sql]) => /email_tokens/.test(sql))).toBe(false);
+    } finally {
+      delete mockPool.connect;
+    }
   });
 });

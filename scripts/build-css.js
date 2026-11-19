@@ -31,6 +31,7 @@ const BUNDLES = {
     'base.css',
     'shared-base.css',
     'shared-responsive.css',
+    'shared-underlay.css',
     'shared-utilities.css',
     'shared-onboarding.css',
     'fonts.css',
@@ -56,8 +57,8 @@ const BUNDLES = {
   'favorites.min.css': ['catalog.css', 'favorites.css'],
   // La page des conflits reprend le bandeau et les cartes de favorites.css.
   'conflicts.min.css': ['catalog.css', 'favorites.css', 'conflicts.css'],
-  'login.min.css': ['login.css'],
-  'settings.min.css': ['settings.css'],
+  'login.min.css': ['otp-input.css', 'login.css'],
+  'settings.min.css': ['otp-input.css', 'settings.css'],
   'legal.min.css': ['legal.css'],
   'contact.min.css': ['contact.css'],
 };
@@ -75,6 +76,7 @@ const BUNDLES = {
 // pouvait rien leur imposer sans !important (cf. garde-fou mouvements réduits).
 const CORE_FILE_LAYERS = {
   'shared-responsive.css': 'shared',
+  'shared-underlay.css': 'shared',
   'shared-onboarding.css': 'shared',
   'cookies.css': 'shared',
 };

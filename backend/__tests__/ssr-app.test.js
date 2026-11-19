@@ -196,22 +196,40 @@ describe('HTML-004 / HTML-007 — icônes et visuel de partage', () => {
   });
 });
 
-describe('Pages à jeton ou adresse dans l’URL — ni cache, ni Referer (audit 2026-11-16)', () => {
+// Les liens email ont laissé place à des codes saisis sur /login : les
+// anciennes pages redirigent (liens déjà envoyés, favoris), sans jamais
+// recopier le jeton, sans cache ni Referer (audit 2026-11-16 conservé).
+describe('Anciennes pages des liens email → /login (codes à 6 chiffres)', () => {
   test.each([
-    '/reset-password?token=abc',
-    '/verify-email?token=abc',
-    '/verify-email?type=email&token=abc',
-    '/check-email',
-    '/reset-password?token=abc&lang=en',
-  ])('%s : no-store + no-referrer', async (url) => {
+    ['/verify-email?token=abc', '/login'],
+    ['/verify-email?type=email&token=abc', '/login'],
+    ['/check-email', '/login'],
+    ['/check-email?email=a%40b.fr', '/login'],
+    ['/reset-password?token=abc', '/login#mot-de-passe-oublie'],
+    ['/reset-password?token=abc&lang=en', '/login#mot-de-passe-oublie'],
+    ['/forgot-password', '/login#mot-de-passe-oublie'],
+  ])('%s → 301 %s, no-store + no-referrer, jeton jamais recopié', async (url, target) => {
     const res = await request(app).get(url);
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(301);
+    expect(res.headers.location).toBe(target);
+    expect(res.headers.location).not.toMatch(/token|email=|abc/);
     expect(res.headers['cache-control']).toBe('no-store');
     expect(res.headers['referrer-policy']).toBe('no-referrer');
   });
 
-  test('les autres pages gardent la politique globale', async () => {
-    const res = await request(app).get('/forgot-password');
+  // Variante .html (jamais envoyée par email) : la redirection canonique du
+  // site retire d'abord « .html », puis la route ci-dessus mène à /login.
+  test('/verify-email.html?token=abc : forme canonique, puis /login sans le jeton', async () => {
+    const first = await request(app).get('/verify-email.html?token=abc');
+    expect(first.status).toBe(301);
+    expect(first.headers.location).toBe('/verify-email?token=abc');
+    const second = await request(app).get(first.headers.location);
+    expect(second.status).toBe(301);
+    expect(second.headers.location).toBe('/login');
+  });
+
+  test('la page de connexion garde la politique globale', async () => {
+    const res = await request(app).get('/login');
     expect(res.status).toBe(200);
     expect(res.headers['cache-control'] || '').not.toMatch(/no-store/);
     expect(res.headers['referrer-policy']).toBe('strict-origin-when-cross-origin');

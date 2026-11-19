@@ -1300,9 +1300,18 @@ WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'Type 90-1');
 INSERT INTO armement (name, name_en, description, description_en)
 SELECT 'HF-16', NULL, 'Roquettes non guidées, 57 mm', 'Unguided rockets, 57 mm'
 WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'HF-16');
+-- HVAR : 127 mm (5 pouces), pas 70 mm. Renommée sur place pour garder ses liaisons.
+UPDATE armement SET name = 'HVAR 127 mm', description = 'Roquettes non guidées américaines, 127 mm (5 pouces)', description_en = 'American unguided rockets, 127 mm (5 in)'
+ WHERE name = 'HVAR 70 mm' AND NOT EXISTS (SELECT 1 FROM armement WHERE name = 'HVAR 127 mm');
 INSERT INTO armement (name, name_en, description, description_en)
-SELECT 'HVAR 70 mm', NULL, 'Roquettes non guidées, 70 mm', 'Unguided rockets, 70 mm'
-WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'HVAR 70 mm');
+SELECT 'HVAR 127 mm', NULL, 'Roquettes non guidées américaines, 127 mm (5 pouces)', 'American unguided rockets, 127 mm (5 in)'
+WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'HVAR 127 mm');
+INSERT INTO armement (name, name_en, description, description_en)
+SELECT 'RP-3', NULL, 'Roquettes non guidées britanniques, 76 mm (3 pouces), tête de 60 lb', 'British unguided rockets, 76 mm (3 in), 60 lb warhead'
+WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'RP-3');
+INSERT INTO armement (name, name_en, description, description_en)
+SELECT 'FFAR 70 mm', NULL, 'Roquettes non guidées, 70 mm (2,75 pouces), en paniers', 'Unguided rockets, 70 mm (2.75 in), podded'
+WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'FFAR 70 mm');
 INSERT INTO armement (name, name_en, description, description_en)
 SELECT 'APR-3', NULL, 'Torpille légère anti-sous-marine, guidage acoustique', 'Lightweight anti-submarine torpedo, acoustic guidance'
 WHERE NOT EXISTS (SELECT 1 FROM armement WHERE name = 'APR-3');
@@ -1698,18 +1707,6 @@ WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Système de caméra intégré
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Liaison de données tactique', 'Tactical data link', 'Système d''échange d''informations avec la flotte', 'Information exchange system with the fleet'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Liaison de données tactique');
-INSERT INTO tech (name, name_en, description, description_en)
-SELECT 'Canon M39', 'M39 cannon', 'Canon de 20 mm à haute cadence de tir', '20 mm high rate-of-fire cannon'
-WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Canon M39');
-INSERT INTO tech (name, name_en, description, description_en)
-SELECT 'Canon GAU-8 Avenger', 'GAU-8 Avenger cannon', 'Canon rotatif de 30 mm à haute cadence de tir', '30 mm rotary cannon with high rate of fire'
-WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Canon GAU-8 Avenger');
-INSERT INTO tech (name, name_en, description, description_en)
-SELECT 'Canon GSh-30-2', 'GSh-30-2 cannon', 'Canon double de 30 mm à haute cadence de tir', '30 mm twin cannon with high rate of fire'
-WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Canon GSh-30-2');
-INSERT INTO tech (name, name_en, description, description_en)
-SELECT 'Canon NR-23', 'NR-23 cannon', 'Canon de 23 mm à haute cadence de tir', '23 mm high rate-of-fire cannon'
-WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Canon NR-23');
 INSERT INTO tech (name, name_en, description, description_en)
 SELECT 'Matériaux composites', 'Composite materials', 'Utilisation de carbone et kevlar dans la structure', 'Use of carbon and Kevlar in the structure'
 WHERE NOT EXISTS (SELECT 1 FROM tech WHERE name = 'Matériaux composites');
@@ -5197,6 +5194,102 @@ UPDATE airplanes SET image_credit = 'Vadim Savitsky, Ministry of Defence of the 
 UPDATE wars SET description_en = 'Conflict in Iraq led by a US-led coalition to overthrow Saddam Hussein''s regime.'
  WHERE name = 'Guerre d''Irak'
    AND description_en IS DISTINCT FROM 'Conflict in Iraq led by a US-led coalition to overthrow Saddam Hussein''s regime.';
+
+-- Canons rangés par erreur dans la table « tech » : chacun existe déjà comme
+-- armement (M39, GAU-8 Avenger, GSh-30-2, NR-23) et l'A-10 comme le Su-25
+-- portent déjà leur canon côté armement. Les liaisons « tech » étaient des
+-- doublons ; on les retire, puis les entrées.
+DELETE FROM airplane_tech l USING tech t
+ WHERE l.id_tech = t.id
+   AND t.name IN ('Canon M39', 'Canon GAU-8 Avenger', 'Canon GSh-30-2', 'Canon NR-23');
+DELETE FROM tech
+ WHERE name IN ('Canon M39', 'Canon GAU-8 Avenger', 'Canon GSh-30-2', 'Canon NR-23');
+
+-- Le Su-25 n'a pas de postcombustion (moteurs R-95Sh / R-195 sans PC ; sa
+-- fiche le dit elle-même).
+DELETE FROM airplane_tech l USING tech t, airplanes a
+ WHERE l.id_tech = t.id AND l.id_airplane = a.id
+   AND t.name = 'Réacteur à postcombustion' AND a.name = 'Su-25';
+
+-- Index des clés étrangères non couvertes par une clé primaire : sans eux,
+-- chaque suppression d'un appareil, d'une arme, d'un conflit, d'une mission,
+-- d'une technologie, d'un rôle ou d'un pays parcourt toute la table qui le
+-- référence (ON DELETE CASCADE / SET NULL), et les jointures depuis le
+-- référentiel (« appareils de ce conflit ») ne profitent d'aucun index.
+CREATE INDEX IF NOT EXISTS idx_users_role_id                ON users (role_id);
+CREATE INDEX IF NOT EXISTS idx_favorites_airplane_id        ON favorites (airplane_id);
+CREATE INDEX IF NOT EXISTS idx_wars_country_id              ON wars (country_id);
+CREATE INDEX IF NOT EXISTS idx_airplane_armement_armement   ON airplane_armement (id_armement);
+CREATE INDEX IF NOT EXISTS idx_airplane_wars_wars           ON airplane_wars (id_wars);
+CREATE INDEX IF NOT EXISTS idx_airplane_missions_mission    ON airplane_missions (id_mission);
+CREATE INDEX IF NOT EXISTS idx_airplane_tech_tech           ON airplane_tech (id_tech);
+
+-- Mirage F1 : le récit raconte les trois conflits auxquels la fiche est
+-- rattachée (Sahara occidental, frontière sud-africaine, Cenepa), versions
+-- contestées comprises. Ajout après la phrase des engagements français.
+UPDATE airplanes SET
+  description = replace(description, 'au Mali (2013).', E'au Mali (2013).\n\nSes clients l''ont aussi mené au feu. Au Maroc, livré à partir de 1978, il est engagé contre le Front Polisario dès octobre 1979, surtout en attaque au sol ; les missiles sol-air sahraouis (SA-7, SA-9 puis SA-6) en abattent une douzaine sur l''ensemble de la guerre du Sahara occidental, selon l''étude de référence de Cooper, Grandolini et Fontanellaz (le Maroc n''a jamais publié de bilan). En Afrique du Sud, les F1CZ d''interception escortent les reconnaissances au-dessus de l''Angola : le major Johan Rankin abat un MiG-21 au canon de 30 mm le 6 novembre 1981 et en revendique un second le 5 octobre 1982, perte que des sources cubaines contestent ; les F1AZ d''attaque frappent les forces angolaises en 1987-1988, et le major Ed Every est tué par un missile SA-13 le 20 février 1988. En Équateur, pendant la guerre du Cenepa, deux F1JA revendiquent le 10 février 1995 la destruction de deux Su-22 péruviens au missile ; le Pérou, qui reconnaît la perte des deux appareils et de leurs pilotes, l''attribue à la DCA équatorienne et à une panne de moteur.'),
+  description_en = replace(description_en, 'in Mali (2013).', E'in Mali (2013).\n\nExport customers took it into combat too. In Morocco, delivered from 1978, it flew against the Polisario Front from October 1979, mostly in ground attack; Sahrawi surface-to-air missiles (SA-7, SA-9 and later SA-6) shot down about a dozen over the whole Western Sahara War, according to the reference study by Cooper, Grandolini and Fontanellaz (Morocco has never published a figure). In South Africa, F1CZ interceptors escorted reconnaissance flights over Angola: Maj. Johan Rankin shot down a MiG-21 with 30 mm cannon on 6 November 1981 and claimed a second on 5 October 1982, a loss Cuban sources dispute; F1AZ strike aircraft attacked Angolan forces in 1987-88, and Maj. Ed Every was killed by an SA-13 missile on 20 February 1988. In Ecuador, during the Cenepa War, two F1JAs claimed two Peruvian Su-22s with missiles on 10 February 1995; Peru, which acknowledges losing both aircraft and their pilots, attributes the losses to Ecuadorian anti-aircraft fire and an engine fire.')
+ WHERE name = 'Mirage F1'
+   AND strpos(description, 'Front Polisario') = 0
+   AND strpos(description, 'au Mali (2013).') > 0;
+
+-- HVAR : l'entrée servait aussi de fourre-tout « roquettes de 70 mm ». Elle
+-- reste aux appareils qui l'ont réellement tirée ; les autres prennent la
+-- roquette attestée (RP-3 britannique, SNEB, Hydra 70, FFAR, HF-16) ou n'en
+-- gardent aucune quand aucune source ne nomme de type.
+DELETE FROM airplane_armement l USING armement x, airplanes a
+ WHERE l.id_armement = x.id AND l.id_airplane = a.id AND x.name = 'HVAR 127 mm'
+   AND a.name IN (
+  'de Havilland Venom',
+  'Fairey Firefly',
+  'Hawker Sea Hawk',
+  'Supermarine Attacker',
+  'de Havilland Vampire',
+  'Westland Wyvern',
+  'Breguet Alizé',
+  'Atlas Impala',
+  'FFA P-16',
+  'Dassault MD 315 Flamant',
+  'Ouragan',
+  'T-28 Trojan',
+  'KAI KT-1 Woongbi',
+  'TAI Hürkuş',
+  'Hispano HA-200 Saeta',
+  'Hongdu K-8 Karakorum',
+  'Britten-Norman Defender',
+  'Pilatus PC-7',
+  'SF.260',
+  'T-33 Shooting Star',
+  'SOCATA TB-30 Epsilon',
+  'PAC Super Mushshak',
+  'Soko G-2 Galeb',
+  'T-34 Mentor'
+);
+INSERT INTO airplane_armement (id_airplane, id_armement)
+SELECT a.id, x.id
+  FROM (VALUES
+  ('Gloster Meteor', 'RP-3'),
+  ('de Havilland Venom', 'RP-3'),
+  ('Fairey Firefly', 'RP-3'),
+  ('Hawker Sea Hawk', 'RP-3'),
+  ('Supermarine Attacker', 'RP-3'),
+  ('de Havilland Vampire', 'RP-3'),
+  ('Westland Wyvern', 'RP-3'),
+  ('Breguet Alizé', 'SNEB 68 mm'),
+  ('Atlas Impala', 'SNEB 68 mm'),
+  ('FFA P-16', 'SNEB 68 mm'),
+  ('Dassault MD 315 Flamant', 'SNEB 68 mm'),
+  ('Ouragan', 'SNEB 68 mm'),
+  ('T-28 Trojan', 'SNEB 68 mm'),
+  ('KAI KT-1 Woongbi', 'Hydra 70'),
+  ('TAI Hürkuş', 'Hydra 70'),
+  ('Hispano HA-200 Saeta', 'FFAR 70 mm'),
+  ('Hongdu K-8 Karakorum', 'HF-16')
+  ) AS v(avion, arme)
+  JOIN airplanes a ON a.name = v.avion
+  JOIN armement x ON x.name = v.arme
+ON CONFLICT DO NOTHING;
 
 -- ═══ 7. Contraintes de cohérence ═════════════════════════════════════════
 --

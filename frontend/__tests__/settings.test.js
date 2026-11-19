@@ -10,7 +10,6 @@ const { loadMotion } = require('./helpers/motion-env');
 global.DOMPurify = require('dompurify');
 
 const SETTINGS_DOM = `
-  <header><span id="user-name">Utilisateur</span><span class="user-role">Membre</span></header>
   <section class="settings-section">
     <nav>
       <a href="#dashboard" class="sidebar-link active" data-section="dashboard" id="tab-dashboard" aria-selected="true" tabindex="0">Dashboard</a>
@@ -33,6 +32,13 @@ const SETTINGS_DOM = `
         <button type="submit">Enregistrer</button>
         <button type="button" id="reset-profile-btn">Annuler</button>
       </form>
+      <section id="email-code-box" hidden>
+        <h3 id="email-code-title">Confirmez</h3>
+        <p><strong id="email-code-target"></strong></p>
+        <div id="email-code-otp"></div>
+        <p id="email-code-status" role="status"></p>
+        <button type="button" id="email-code-cancel">Annuler</button>
+      </section>
     </div>
     <div id="security" class="content-section" hidden>
       <form id="security-form">
@@ -115,6 +121,7 @@ function loadModules() {
   require('../js/shared/motion');
   // Odomètre et confirmation sur place (modules partagés d'app.min.js).
   loadMotion(['.t-roll-col.is-leaving', '.adm-bin-check']);
+  require('../js/shared/otp-input');
   ['ui', 'tabs', 'account', 'profile', 'security', 'danger-zone', 'admin', 'dashboard', 'cookies', 'data-export']
     .forEach((m) => require(`../js/settings/${m}`));
   return window.VH.settings;
@@ -222,8 +229,6 @@ describe('VH.settings.account', () => {
     expect(await account.checkAuth(state)).toBe(true);
     expect(state.currentUser.name).toBe('Chef');
     expect(document.getElementById('name').value).toBe('Chef');
-    expect(document.getElementById('user-name').textContent).toBe('Chef');
-    expect(document.querySelector('.user-role').textContent).toBe('t:common.role_admin');
     expect(document.getElementById('admin-nav-link').classList.contains('hidden')).toBe(false);
   });
 
@@ -235,7 +240,6 @@ describe('VH.settings.account', () => {
     expect(auth.authFetch).toHaveBeenCalledWith('/api/users/1');
     expect(auth.setUserInfo).toHaveBeenCalledWith(state.currentUser);
     expect(document.getElementById('email').value).toBe('ed@x.fr');
-    expect(document.querySelector('.user-role').textContent).toBe('t:common.role_editor');
     expect(document.getElementById('admin-nav-link').classList.contains('hidden')).toBe(true);
   });
 
@@ -252,7 +256,6 @@ describe('VH.settings.account', () => {
     const state2 = { currentUser: null };
     await account.checkAuth(state2);
     expect(state2.currentUser.name).toBe('Utilisateur');
-    expect(document.querySelector('.user-role').textContent).toBe('t:nav.user_role');
   });
 
   test('sans session : un rafraîchissement tenté puis redirection vers /login', async () => {
@@ -273,12 +276,6 @@ describe('VH.settings.account', () => {
     const state = { currentUser: null };
     expect(await account.checkAuth(state)).toBe(true);
     expect(state.currentUser.name).toBe('R');
-  });
-
-  test('updateUserDisplay sans utilisateur : libellé par défaut', () => {
-    const { account } = loadModules();
-    account.updateUserDisplay({ currentUser: null });
-    expect(document.getElementById('user-name').textContent).toBe('t:nav.user_default');
   });
 });
 
@@ -342,6 +339,98 @@ describe('VH.settings.profile', () => {
     expect(document.getElementById('profile-current-password').value).toBe('');
     expect(state.currentUser.email).toBe('chef@x.fr');
     expect(toasts).toContainEqual(['info', 't:settings.toast_email_change_pending']);
+    // Le code se saisit sous le formulaire, pour la nouvelle adresse.
+    expect(document.getElementById('email-code-box').hidden).toBe(false);
+    expect(document.getElementById('email-code-target').textContent).toBe('autre@x.fr');
+    expect(document.querySelectorAll('#email-code-otp .otp-slot')).toHaveLength(6);
+  });
+
+  describe('code du changement d\'adresse', () => {
+    async function pending(S) {
+      document.getElementById('email').value = 'autre@x.fr';
+      document.getElementById('profile-current-password').value = 'Secret1';
+      auth.authFetch.mockResolvedValueOnce(jsonResponse(200, { emailChangePending: true }));
+      submit();
+      await tick();
+      S.profile.navigate = jest.fn();
+      return document.querySelector('#email-code-otp input');
+    }
+    const typeCode = (input, code) => [...code].forEach((k) => input.dispatchEvent(new window.KeyboardEvent('keydown', { key: k, bubbles: true })));
+
+    test('code juste : confirmation, puis déconnexion et retour à la connexion', async () => {
+      const { S } = setup();
+      const input = await pending(S);
+      auth.logout = jest.fn(() => Promise.resolve());
+      jest.useFakeTimers();
+      auth.authFetch.mockResolvedValueOnce(jsonResponse(200, { email: 'autre@x.fr' }));
+      typeCode(input, '123456');
+      await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+      expect(auth.authFetch).toHaveBeenLastCalledWith('/api/auth/confirm-email-change', expect.objectContaining({ method: 'POST' }));
+      expect(JSON.parse(auth.authFetch.mock.calls.at(-1)[1].body)).toEqual({ code: '123456' });
+      expect(document.getElementById('email-code-otp').classList.contains('is-success')).toBe(true);
+      expect(document.getElementById('email-code-status').textContent).toBe('t:settings.email_code_done');
+      jest.advanceTimersByTime(1500);
+      await Promise.resolve(); await Promise.resolve();
+      expect(auth.logout).toHaveBeenCalled();
+      expect(S.profile.navigate).toHaveBeenCalledWith('/login');
+      jest.useRealTimers();
+    });
+
+    test('déconnexion qui échoue (session déjà révoquée) : retour à la connexion quand même', async () => {
+      const { S } = setup();
+      const input = await pending(S);
+      auth.logout = jest.fn(() => Promise.reject(new Error('401')));
+      jest.useFakeTimers();
+      auth.authFetch.mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.reject(new Error('vide')) });
+      typeCode(input, '123456');
+      await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+      jest.advanceTimersByTime(1500);
+      await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+      expect(S.profile.navigate).toHaveBeenCalledWith('/login');
+      jest.useRealTimers();
+    });
+
+    test('code faux, adresse prise, réseau : erreur, champ réactivé', async () => {
+      const { S } = setup();
+      const input = await pending(S);
+      const status = () => document.getElementById('email-code-status').textContent;
+      auth.authFetch.mockResolvedValueOnce(jsonResponse(400, { code: 'CODE_INVALID' }));
+      typeCode(input, '000000');
+      await tick();
+      expect(status()).toBe('t:settings.email_code_invalid');
+      expect(document.getElementById('email-code-otp').classList.contains('is-error')).toBe(true);
+      expect(input.disabled).toBe(false);
+      auth.authFetch.mockResolvedValueOnce(jsonResponse(409, { code: 'EMAIL_TAKEN' }));
+      input.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Backspace', bubbles: true }));
+      expect(status()).toBe('');
+      typeCode(input, '1');
+      await tick();
+      expect(status()).toBe('t:settings.email_code_taken');
+      auth.authFetch.mockRejectedValueOnce(new Error('réseau'));
+      input.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Backspace', bubbles: true }));
+      typeCode(input, '2');
+      await tick();
+      expect(status()).toBe('t:settings.toast_network_error');
+    });
+
+    test('annuler masque le champ ; une nouvelle demande le rouvre, vidé', async () => {
+      const { S } = setup();
+      const input = await pending(S);
+      typeCode(input, '12');
+      document.getElementById('email-code-cancel').click();
+      expect(document.getElementById('email-code-box').hidden).toBe(true);
+      await pending(S);
+      expect(document.getElementById('email-code-box').hidden).toBe(false);
+      expect(document.querySelectorAll('#email-code-otp .otp-slot')).toHaveLength(6);
+      expect(input.value).toBe('');
+    });
+
+    test('sans le bloc du code dans la page : rien ne casse', async () => {
+      document.getElementById('email-code-box').remove();
+      const { S } = setup();
+      await pending(S);
+      expect(toasts).toContainEqual(['info', 't:settings.toast_email_change_pending']);
+    });
   });
 
   test('mot de passe actuel refusé, autre erreur, réseau', async () => {

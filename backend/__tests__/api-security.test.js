@@ -30,7 +30,6 @@ const emailTokensRepo = require('../repositories/email-tokens');
 
 delete process.env.HCAPTCHA_SECRET;
 
-const sha256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
 const makeToken = (payload) => jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 const tokenAdmin = makeToken({ id: 1, role: 1 });
 const tokenMember = makeToken({ id: 3, role: 3 });
@@ -361,37 +360,156 @@ describe('csp-report — normalisation', () => {
 });
 
 // =============================================================================
-// SEC-008 — jetons envoyés par email : seule leur empreinte est stockée
+// SEC-008 — codes envoyés par email : seule leur empreinte est stockée
 // =============================================================================
-describe('SEC-008 — repositories/email-tokens.js', () => {
-  const TOKEN = 'a'.repeat(64);
-  const db = () => ({ query: jest.fn().mockResolvedValue({ rows: [{ id: 1, user_id: 7, new_email: null }], rowCount: 1 }) });
-
-  test('hashToken : SHA-256 hexadécimal', () => {
-    expect(emailTokensRepo.hashToken(TOKEN)).toBe(sha256(TOKEN));
-    expect(emailTokensRepo.hashToken(TOKEN)).toMatch(/^[a-f0-9]{64}$/);
+// Depuis le passage aux codes à 6 chiffres, l'empreinte est un HMAC (clé
+// dérivée de JWT_SECRET) lié au compte et au type : un SHA-256 nu d'un code
+// de 10⁶ valeurs se retrouverait par simple énumération après une fuite.
+describe('SEC-008 — repositories/email-tokens.js (codes)', () => {
+  const CODE = '004217';
+  const expectedHash = (userId, type, code) => {
+    const key = crypto.createHmac('sha256', process.env.JWT_SECRET).update('vh-email-code').digest();
+    return crypto.createHmac('sha256', key).update(`${type}:${userId}:${code}`).digest('hex');
+  };
+  const db = (rows = []) => ({ query: jest.fn().mockResolvedValue({ rows, rowCount: rows.length }) });
+  const openRow = (extra = {}) => ({
+    id: 11, token_hash: emailTokensRepo.hashCode(7, 'reset', CODE), attempts: 0, new_email: null, ...extra,
   });
 
-  test('replaceOpen écrit l\'empreinte dans token_hash, jamais le jeton', async () => {
-    const fake = db();
-    await emailTokensRepo.replaceOpen(fake, { userId: 7, type: 'reset', token: TOKEN, expiresAt: new Date() });
-    const insert = fake.query.mock.calls.find((c) => /INSERT INTO email_tokens/.test(c[0]));
-    expect(insert[0]).toContain('token_hash');
-    expect(insert[1][1]).toBe(sha256(TOKEN));
-    expect(insert[1]).not.toContain(TOKEN);
+  afterEach(() => jest.restoreAllMocks());
+
+  test('constantes : 6 chiffres, 5 essais par code', () => {
+    expect(emailTokensRepo.CODE_LENGTH).toBe(6);
+    expect(emailTokensRepo.MAX_ATTEMPTS).toBe(5);
   });
 
-  test('consume et findOpenReset comparent sur l\'empreinte', async () => {
-    const fake = db();
-    await emailTokensRepo.consume(fake, TOKEN, 'verify');
-    await emailTokensRepo.findOpenReset(fake, TOKEN);
-    for (const [sql, params] of fake.query.mock.calls) {
-      expect(sql).toContain('token_hash = $1');
-      expect(params[0]).toBe(sha256(TOKEN));
+  test('generateCode : toujours 6 chiffres, zéros de tête compris', () => {
+    jest.spyOn(crypto, 'randomInt').mockReturnValueOnce(4217).mockReturnValueOnce(0).mockReturnValueOnce(999999);
+    expect(emailTokensRepo.generateCode()).toBe('004217');
+    expect(emailTokensRepo.generateCode()).toBe('000000');
+    expect(emailTokensRepo.generateCode()).toBe('999999');
+    expect(crypto.randomInt).toHaveBeenCalledWith(0, 1000000);
+  });
+
+  test('generateCode : tirage réel au bon format', () => {
+    for (let i = 0; i < 50; i++) expect(emailTokensRepo.generateCode()).toMatch(/^[0-9]{6}$/);
+  });
+
+  test('isCodeFormat : six chiffres exactement, chaîne uniquement', () => {
+    expect(emailTokensRepo.isCodeFormat('123456')).toBe(true);
+    for (const bad of ['12345', '1234567', '12a456', ' 123456', '', null, undefined, 123456]) {
+      expect(emailTokensRepo.isCodeFormat(bad)).toBe(false);
     }
   });
 
-  test('parcours mot de passe oublié : l\'empreinte en base correspond au jeton envoyé', async () => {
+  test('hashCode : HMAC hexadécimal déterministe, clé dérivée de JWT_SECRET', () => {
+    const h = emailTokensRepo.hashCode(7, 'reset', CODE);
+    expect(h).toMatch(/^[a-f0-9]{64}$/);
+    expect(emailTokensRepo.hashCode(7, 'reset', CODE)).toBe(h);
+    expect(h).toBe(expectedHash(7, 'reset', CODE));
+    // Pas un simple SHA-256 du code
+    expect(h).not.toBe(crypto.createHash('sha256').update(CODE).digest('hex'));
+  });
+
+  test('hashCode : lié au compte, au type et au code', () => {
+    const base = emailTokensRepo.hashCode(7, 'reset', CODE);
+    expect(emailTokensRepo.hashCode(8, 'reset', CODE)).not.toBe(base);
+    expect(emailTokensRepo.hashCode(7, 'verify', CODE)).not.toBe(base);
+    expect(emailTokensRepo.hashCode(7, 'reset', '004218')).not.toBe(base);
+  });
+
+  test('hashCode : change avec le secret, refuse de tourner sans', () => {
+    const saved = process.env.JWT_SECRET;
+    try {
+      const before = emailTokensRepo.hashCode(7, 'reset', CODE);
+      process.env.JWT_SECRET = 'autre-secret';
+      expect(emailTokensRepo.hashCode(7, 'reset', CODE)).not.toBe(before);
+      delete process.env.JWT_SECRET;
+      expect(() => emailTokensRepo.hashCode(7, 'reset', CODE)).toThrow(/JWT_SECRET/);
+    } finally {
+      process.env.JWT_SECRET = saved;
+    }
+  });
+
+  test('replaceOpen : supprime les codes du même compte et du même type, puis stocke l\'empreinte, jamais le code', async () => {
+    const fake = db();
+    const expiresAt = new Date();
+    await emailTokensRepo.replaceOpen(fake, { userId: 7, type: 'email', code: CODE, expiresAt, newEmail: 'n@test.fr' });
+    const [del, insert] = fake.query.mock.calls;
+    expect(del[0]).toBe('DELETE FROM email_tokens WHERE user_id = $1 AND type = $2');
+    expect(del[1]).toEqual([7, 'email']);
+    expect(insert[0]).toMatch(/INSERT INTO email_tokens \(user_id, token_hash, type, expires_at, new_email\)/);
+    expect(insert[1]).toEqual([7, expectedHash(7, 'email', CODE), 'email', expiresAt, 'n@test.fr']);
+    expect(insert[1]).not.toContain(CODE);
+  });
+
+  test('replaceOpen : new_email absent → NULL', async () => {
+    const fake = db();
+    await emailTokensRepo.replaceOpen(fake, { userId: 7, type: 'verify', code: CODE, expiresAt: new Date() });
+    expect(fake.query.mock.calls[1][1][4]).toBeNull();
+  });
+
+  test('closeOpen : clôt les codes ouverts d\'un type', async () => {
+    const fake = db();
+    await emailTokensRepo.closeOpen(fake, 7, 'verify');
+    expect(fake.query.mock.calls[0][0]).toMatch(/UPDATE email_tokens SET used_at = NOW\(\) WHERE user_id = \$1 AND type = \$2 AND used_at IS NULL/);
+    expect(fake.query.mock.calls[0][1]).toEqual([7, 'verify']);
+  });
+
+  test('checkCode : code mal formé → refusé sans requête', async () => {
+    const fake = db([openRow()]);
+    expect(await emailTokensRepo.checkCode(fake, { userId: 7, type: 'reset', code: 'abc' })).toEqual({ ok: false });
+    expect(fake.query).not.toHaveBeenCalled();
+  });
+
+  test('checkCode : aucun code ouvert et non expiré → refusé, rien d\'autre', async () => {
+    const fake = db([]);
+    expect(await emailTokensRepo.checkCode(fake, { userId: 7, type: 'reset', code: CODE })).toEqual({ ok: false });
+    expect(fake.query).toHaveBeenCalledTimes(1);
+    const [sql, params] = fake.query.mock.calls[0];
+    expect(sql).toMatch(/used_at IS NULL AND expires_at > NOW\(\)/);
+    expect(sql).toMatch(/ORDER BY id DESC LIMIT 1/);
+    expect(sql).toMatch(/FOR UPDATE/);
+    expect(params).toEqual([7, 'reset']);
+  });
+
+  test('checkCode : code juste, sans consommer → confirmé, aucune écriture', async () => {
+    const fake = db([openRow({ new_email: 'x@test.fr' })]);
+    expect(await emailTokensRepo.checkCode(fake, { userId: 7, type: 'reset', code: CODE }))
+      .toEqual({ ok: true, new_email: 'x@test.fr' });
+    expect(fake.query).toHaveBeenCalledTimes(1);
+  });
+
+  test('checkCode : code juste, consommé → used_at posé sur cette ligne', async () => {
+    const fake = db([openRow()]);
+    expect((await emailTokensRepo.checkCode(fake, { userId: 7, type: 'reset', code: CODE, consume: true })).ok).toBe(true);
+    expect(fake.query.mock.calls[1]).toEqual(['UPDATE email_tokens SET used_at = NOW() WHERE id = $1', [11]]);
+  });
+
+  test('checkCode : code faux → un essai compté, clôture au plafond (dans la même requête)', async () => {
+    const fake = db([openRow({ attempts: 3 })]);
+    expect(await emailTokensRepo.checkCode(fake, { userId: 7, type: 'reset', code: '999999', consume: true })).toEqual({ ok: false });
+    const [sql, params] = fake.query.mock.calls[1];
+    expect(sql).toMatch(/SET attempts = attempts \+ 1/);
+    expect(sql).toMatch(/used_at = CASE WHEN attempts \+ 1 >= \$2 THEN NOW\(\) ELSE used_at END/);
+    expect(params).toEqual([11, emailTokensRepo.MAX_ATTEMPTS]);
+    // Jamais consommé
+    expect(fake.query.mock.calls.some(([q]) => q === 'UPDATE email_tokens SET used_at = NOW() WHERE id = $1')).toBe(false);
+  });
+
+  test('checkCode : le bon code d\'un autre type ou d\'un autre compte est refusé', async () => {
+    const otherType = db([openRow({ token_hash: emailTokensRepo.hashCode(7, 'verify', CODE) })]);
+    expect((await emailTokensRepo.checkCode(otherType, { userId: 7, type: 'reset', code: CODE })).ok).toBe(false);
+    const otherUser = db([openRow({ token_hash: emailTokensRepo.hashCode(8, 'reset', CODE) })]);
+    expect((await emailTokensRepo.checkCode(otherUser, { userId: 7, type: 'reset', code: CODE })).ok).toBe(false);
+  });
+
+  test('checkCode : empreinte en base corrompue (longueur) → refusée sans lever', async () => {
+    const fake = db([openRow({ token_hash: 'abcd' })]);
+    expect((await emailTokensRepo.checkCode(fake, { userId: 7, type: 'reset', code: CODE })).ok).toBe(false);
+  });
+
+  test('parcours mot de passe oublié : l\'empreinte en base correspond au code envoyé', async () => {
     const mailer = require('../mailer');
     mockPool.connect = jest.fn().mockResolvedValue({ query: mockPool.query, release: jest.fn() });
     mockPool.query.mockImplementation(async (sql) => {
@@ -404,9 +522,10 @@ describe('SEC-008 — repositories/email-tokens.js', () => {
       await new Promise((r) => setTimeout(r, 10));
     }
     const sent = mailer.sendPasswordResetEmail.mock.calls.at(-1)[2];
+    expect(sent).toMatch(/^[0-9]{6}$/);
     const insert = mockPool.query.mock.calls.find((c) => /INSERT INTO email_tokens/.test(c[0]));
-    expect(insert[1][1]).toBe(sha256(sent));
-    expect(insert[1][1]).not.toBe(sent);
+    expect(insert[1][1]).toBe(expectedHash(9, 'reset', sent));
+    expect(insert[1]).not.toContain(sent);
   });
 });
 

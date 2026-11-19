@@ -10,6 +10,7 @@ pas besoin : `db_backup/db.sql` puis les fiches contiennent déjà le résultat.
 | `001_mise_a_niveau.sql` | Schéma, référentiel, furtivité, crédits photo, corrections de contenu, contraintes `CHECK` | oui |
 | `002_securite_sessions.sql` | `users.token_version`, compteur d'échecs de connexion, rotation des refresh tokens (v4.11.1) | oui (additive) |
 | `003_jetons_haches.sql` | `email_tokens.token` → `token_hash` (SHA-256), jetons en cours hachés sur place (v4.14.0) | **non** : à jouer au moment du déploiement du code qui l'attend |
+| `004_codes_email.sql` | Codes à 6 chiffres au lieu des liens : `email_tokens.attempts` (essais manqués), liens encore ouverts clos | oui (additive) : à jouer **avant** le déploiement, le nouveau code lit `attempts` |
 
 En production, les tables appartiennent à `postgres` : jouer les scripts en
 `postgres`, par l'entrée standard (`sudo -u postgres psql -d vol_histoire < fichier.sql`),

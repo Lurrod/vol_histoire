@@ -11,9 +11,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Afficher / masquer les mots de passe (utils.js)
   setupPasswordToggle(document.getElementById('toggle-login-password'), ctx.els.loginPassword);
-  setupPasswordToggle(document.getElementById('toggle-register-password'), ctx.els.registerPassword);
+  // Le bouton du nouveau mot de passe affiche aussi sa confirmation.
+  setupPasswordToggle(document.getElementById('toggle-new-password'), ctx.els.newPassword, ctx.els.confirmPassword);
   VH.login.tabs.setupFormSwitching(ctx);
   VH.login.strength.setupPasswordStrength(ctx);
+  // Mot de passe oublié, code reçu par email, choix du mot de passe.
+  VH.login.flow.setup(ctx);
   // Pas de redirection si une session existe : on peut vouloir se reconnecter
   // avec un autre compte depuis cette page. Navigation, déconnexion → nav.js.
   VH.login.ui.fetchStats();

@@ -8,8 +8,9 @@ test.describe('Navigation inter-pages', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    // Cliquer sur le lien Hangar dans la nav
-    await page.click('a[href="/hangar"]');
+    // Ouvrir le menu (bouton Menu, à toutes les largeurs) puis le lien Hangar
+    await page.click('.hamburger');
+    await page.click('#nav-panel a[href="/hangar"]');
     await page.waitForURL('**/hangar', { timeout: 5000 });
 
     // Attendre les cartes

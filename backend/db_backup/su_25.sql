@@ -46,9 +46,7 @@ INSERT INTO airplanes (
 -- Insertion des technologies
 INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
 ((SELECT id FROM airplanes WHERE name = 'Su-25'), (SELECT id FROM tech WHERE name = 'Blindage en titane')),
-((SELECT id FROM airplanes WHERE name = 'Su-25'), (SELECT id FROM tech WHERE name = 'Canon GSh-30-2')),
 ((SELECT id FROM airplanes WHERE name = 'Su-25'), (SELECT id FROM tech WHERE name = 'Système de navigation et d''attaque intégré')),
-((SELECT id FROM airplanes WHERE name = 'Su-25'), (SELECT id FROM tech WHERE name = 'Réacteur à postcombustion')),
 ((SELECT id FROM airplanes WHERE name = 'Su-25'), (SELECT id FROM tech WHERE name = 'Système de contre-mesures électroniques'));
 
 -- Insertion des armements

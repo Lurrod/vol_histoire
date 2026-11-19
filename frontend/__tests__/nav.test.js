@@ -1,6 +1,6 @@
 /**
  * Tests unitaires — frontend/js/nav.js
- * Navigation partagée : closeMenu, closeDropdown, updateAuthUI
+ * Navigation partagée : closeMenu, updateAuthUI
  */
 
 // Mock auth global
@@ -37,21 +37,6 @@ beforeEach(() => {
             <button type="button" id="lang-toggle" class="lang-btn"></button>
             <ul class="lang-dropdown" id="lang-dropdown"></ul>
           </div>
-          <div class="user-menu">
-            <div class="user-toggle">
-              <a href="/login" id="login-icon"><i class="fas fa-user-circle"></i></a>
-              <div class="user-dropdown hidden">
-                <div class="user-header">
-                  <div class="user-details">
-                    <span id="user-name">Utilisateur</span>
-                    <span class="user-role">Membre</span>
-                  </div>
-                </div>
-                <a href="/settings" id="settings-icon">Paramètres</a>
-                <a href="#" id="logout-icon">Déconnexion</a>
-              </div>
-            </div>
-          </div>
         </div>
       </nav>
     </header>
@@ -87,11 +72,11 @@ function loadNav() {
 // Initialisation
 // =============================================================================
 describe('nav.js initialisation', () => {
-  test('expose window.nav avec closeMenu, closeDropdown, updateAuthUI', () => {
+  test('expose window.nav avec closeMenu et updateAuthUI', () => {
     const nav = loadNav();
     expect(nav).toBeDefined();
     expect(typeof nav.closeMenu).toBe('function');
-    expect(typeof nav.closeDropdown).toBe('function');
+    expect(nav.closeDropdown).toBeUndefined();
     expect(typeof nav.updateAuthUI).toBe('function');
   });
 });
@@ -156,71 +141,11 @@ describe('updateAuthUI', () => {
     nav.updateAuthUI();
     expect(header.classList.contains('is-auth')).toBe(false);
   });
-
-  test('met à jour le nom et le rôle si payload existe', () => {
-    auth.getPayload.mockReturnValue({ name: 'Jean', role: 1 });
-    i18n.t.mockImplementation((key) => {
-      if (key === 'common.role_admin') return 'Administrateur';
-      return key;
-    });
-
-    const nav = loadNav();
-    nav.updateAuthUI();
-
-    expect(document.getElementById('user-name').textContent).toBe('Jean');
-    expect(document.querySelector('.user-role').textContent).toBe('Administrateur');
-  });
-
-  test('affiche éditeur pour role 2', () => {
-    auth.getPayload.mockReturnValue({ name: 'Marie', role: 2 });
-    i18n.t.mockImplementation((key) => {
-      if (key === 'common.role_editor') return 'Éditeur';
-      return key;
-    });
-
-    const nav = loadNav();
-    nav.updateAuthUI();
-
-    expect(document.querySelector('.user-role').textContent).toBe('Éditeur');
-  });
-
-  test('affiche membre par défaut pour role 3', () => {
-    auth.getPayload.mockReturnValue({ name: 'Paul', role: 3 });
-    i18n.t.mockImplementation((key) => {
-      if (key === 'nav.user_role') return 'Membre';
-      return key;
-    });
-
-    const nav = loadNav();
-    nav.updateAuthUI();
-
-    expect(document.querySelector('.user-role').textContent).toBe('Membre');
-  });
 });
 
 // =============================================================================
 // Hamburger toggle
 // =============================================================================
-describe('pastille du menu compte', () => {
-  test('suit l’entrée survolée, rouge sur Déconnexion, s’efface en sortant', () => {
-    loadNav();
-    const dd = document.querySelector('.user-dropdown');
-    const logout = document.getElementById('logout-icon');
-    logout.classList.add('dropdown-item', 'logout');
-    document.getElementById('settings-icon').classList.add('dropdown-item');
-    logout.dispatchEvent(new window.Event('pointerover', { bubbles: true }));
-    expect(dd.style.getPropertyValue('--pf-hl-o')).toBe('1');
-    expect(dd.classList.contains('hl-danger')).toBe(true);
-    const settings = document.getElementById('settings-icon');
-    if (settings) {
-      settings.dispatchEvent(new window.Event('focusin', { bubbles: true }));
-      expect(dd.classList.contains('hl-danger')).toBe(false);
-    }
-    dd.dispatchEvent(new window.Event('pointerleave'));
-    expect(dd.style.getPropertyValue('--pf-hl-o')).toBe('0');
-  });
-});
-
 describe('hamburger click', () => {
   test('toggle la classe show sur nav-links', () => {
     loadNav();
@@ -245,13 +170,31 @@ describe('hamburger click', () => {
     nav.closeMenu();
     expect(header.classList.contains('menu-open')).toBe(false);
   });
+
+  test('bureau : le menu underlay prend la main, le menu flottant ne bouge pas', () => {
+    const underlay = { init: jest.fn(), enabled: jest.fn(() => true), toggle: jest.fn(), close: jest.fn() };
+    window.VH = { ...window.VH, underlayNav: underlay };
+    try {
+      const nav = loadNav();
+      expect(underlay.init).toHaveBeenCalledWith(expect.objectContaining({
+        trigger: document.querySelector('.hamburger'),
+      }));
+      document.querySelector('.hamburger').click();
+      expect(underlay.toggle).toHaveBeenCalledTimes(1);
+      expect(document.querySelector('body > header').classList.contains('menu-open')).toBe(false);
+      nav.closeMenu();
+      expect(underlay.close).toHaveBeenCalled();
+    } finally {
+      delete window.VH.underlayNav;
+    }
+  });
 });
 
 // =============================================================================
 // ESC ferme tout
 // =============================================================================
 describe('ESC key', () => {
-  test('ferme le menu et le dropdown', () => {
+  test('ferme le menu', () => {
     loadNav();
     const navLinks = document.querySelector('.nav-links');
     navLinks.classList.add('show');
@@ -278,88 +221,6 @@ describe('ESC key', () => {
     expect(toggle.classList.contains('open')).toBe(false);
     expect(toggle.getAttribute('aria-expanded')).toBe('false');
     expect(document.activeElement).toBe(toggle);
-  });
-
-  test('ferme le menu compte et remet aria-expanded à false', () => {
-    auth.getToken.mockReturnValue('jeton');
-    loadNav();
-    const icon = document.getElementById('login-icon');
-    icon.click();
-    expect(icon.getAttribute('aria-expanded')).toBe('true');
-
-    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-
-    expect(icon.getAttribute('aria-expanded')).toBe('false');
-    expect(icon.classList.contains('is-open')).toBe(false);
-    auth.getToken.mockReturnValue(null);
-  });
-});
-
-// =============================================================================
-// Menu compte et langue : un seul ouvert à la fois
-// =============================================================================
-describe('menu compte et langue', () => {
-  test('ouvrir le compte referme la liste des langues', () => {
-    auth.getToken.mockReturnValue('jeton');
-    loadNav();
-    const langSwitch = document.querySelector('.lang-switch');
-    const toggle = document.getElementById('lang-toggle');
-    langSwitch.classList.add('open');
-    toggle.setAttribute('aria-expanded', 'true');
-
-    document.getElementById('login-icon').click();
-
-    expect(langSwitch.classList.contains('open')).toBe(false);
-    expect(toggle.getAttribute('aria-expanded')).toBe('false');
-    auth.getToken.mockReturnValue(null);
-  });
-
-  test('ouvrir la liste des langues referme le compte', () => {
-    jest.useFakeTimers();
-    auth.getToken.mockReturnValue('jeton');
-    loadNav();
-    const icon = document.getElementById('login-icon');
-    const dropdown = document.querySelector('.user-dropdown');
-    icon.click();
-    jest.advanceTimersByTime(20);
-    expect(dropdown.classList.contains('show')).toBe(true);
-
-    document.getElementById('lang-toggle').click();
-
-    expect(dropdown.classList.contains('show')).toBe(false);
-    expect(icon.getAttribute('aria-expanded')).toBe('false');
-    jest.advanceTimersByTime(300);
-    expect(dropdown.classList.contains('hidden')).toBe(true);
-    auth.getToken.mockReturnValue(null);
-    jest.useRealTimers();
-  });
-
-  test('une réouverture rapide n’est pas masquée par la fermeture précédente', () => {
-    jest.useFakeTimers();
-    auth.getToken.mockReturnValue('jeton');
-    loadNav();
-    const icon = document.getElementById('login-icon');
-    const dropdown = document.querySelector('.user-dropdown');
-    icon.click();
-    jest.advanceTimersByTime(20);
-    icon.click(); // fermeture
-    jest.advanceTimersByTime(100);
-    icon.click(); // réouverture avant la fin du délai de masquage
-    jest.advanceTimersByTime(400);
-
-    expect(dropdown.classList.contains('hidden')).toBe(false);
-    expect(dropdown.classList.contains('show')).toBe(true);
-    auth.getToken.mockReturnValue(null);
-    jest.useRealTimers();
-  });
-
-  test('connecté, l’icône compte annonce un menu fermé', () => {
-    auth.getPayload.mockReturnValue({ name: 'Jean', role: 3 });
-    loadNav();
-    const icon = document.getElementById('login-icon');
-    expect(icon.getAttribute('aria-haspopup')).toBe('true');
-    expect(icon.getAttribute('aria-expanded')).toBe('false');
-    auth.getPayload.mockReturnValue(null);
   });
 });
 
@@ -409,16 +270,5 @@ describe('menu mobile', () => {
     document.getElementById('lang-toggle').click();
 
     expect(document.querySelector('.nav-links').classList.contains('show')).toBe(false);
-  });
-
-  test('ouvrir le compte (connecté) referme le menu', () => {
-    auth.getToken.mockReturnValue('jeton');
-    loadNav();
-    document.querySelector('.hamburger').click();
-
-    document.querySelector('.user-toggle').click();
-
-    expect(document.querySelector('.nav-links').classList.contains('show')).toBe(false);
-    auth.getToken.mockReturnValue(null);
   });
 });

@@ -59,7 +59,7 @@ INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 ((SELECT id FROM airplanes WHERE name = 'A-1 Skyraider'), (SELECT id FROM armement WHERE name = 'AGM-12 Bullpup')),
 ((SELECT id FROM airplanes WHERE name = 'A-1 Skyraider'), (SELECT id FROM armement WHERE name = 'Mk 82')),
 ((SELECT id FROM airplanes WHERE name = 'A-1 Skyraider'), (SELECT id FROM armement WHERE name = 'Zuni 127 mm')),
-((SELECT id FROM airplanes WHERE name = 'A-1 Skyraider'), (SELECT id FROM armement WHERE name = 'HVAR 70 mm')),
+((SELECT id FROM airplanes WHERE name = 'A-1 Skyraider'), (SELECT id FROM armement WHERE name = 'HVAR 127 mm')),
 ((SELECT id FROM airplanes WHERE name = 'A-1 Skyraider'), (SELECT id FROM armement WHERE name = 'Bombe lisse 500 kg'));
 
 -- Missions

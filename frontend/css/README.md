@@ -26,7 +26,7 @@ node scripts/build-css.js
 | `details.css`   | `/details/:slug` (fiche appareil).                    |
 | `timeline.css`  | `/timeline` (Journal de Bord).                        |
 | `favorites.css` | `/favorites`.                                         |
-| `login.css`     | `/login`, `/check-email`, `/forgot-password`.         |
+| `login.css`     | `/login` (connexion, inscription, étapes par code).   |
 | `settings.css`  | `/settings` (dashboard + admin).                      |
 | `legal.css`     | `/mentions-legales`, `/cgu`, `/politique-confidentialite`, `/contact`. |
 | `contact.css`   | Overrides spécifiques à `/contact`.                   |

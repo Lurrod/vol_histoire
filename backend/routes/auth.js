@@ -22,26 +22,47 @@ const {
   clearRefreshCookie,
   REFRESH_COOKIE_NAME,
   JWT_VERIFY_OPTIONS,
+  authorize,
 } = require('../middleware/auth');
 
-module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, resetPasswordLimiter, mailer }) {
+module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, codeLimiter, mailer }) {
   const router = express.Router();
 
-  const VERIFY_TOKEN_TTL_MS = 30 * 60 * 1000;
-  const RESET_TOKEN_TTL_MS = 15 * 60 * 1000;
+  // Durées de validité des codes envoyés par email (rappelées dans les emails).
+  const VERIFY_CODE_TTL_MS = 30 * 60 * 1000;
+  const RESET_CODE_TTL_MS = 15 * 60 * 1000;
+  const CODE_TYPES = ['verify', 'reset'];
+  const INVALID_CODE = { message: 'Code invalide ou expiré', code: 'CODE_INVALID' };
+  const PASSWORD_RULE = 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)';
 
   /**
-   * Invalide les jetons email ouverts du même type pour l'utilisateur, puis en
-   * crée un nouveau. `newEmail` ne sert qu'au type 'email' (changement d'adresse).
-   * @returns {Promise<string>} le jeton (64 hex)
+   * Remplace le code ouvert du même type pour l'utilisateur par un nouveau.
+   * @returns {Promise<string>} le code à 6 chiffres (en clair, pour l'email)
    */
-  async function issueEmailToken(userId, type, ttlMs, newEmail = null) {
-    const token = crypto.randomBytes(32).toString('hex');
+  async function issueEmailCode(userId, type, ttlMs) {
+    const code = emailTokensRepo.generateCode();
     const expiresAt = new Date(Date.now() + ttlMs);
     await withTransaction(getPool(), (client) =>
-      emailTokensRepo.replaceOpen(client, { userId, type, token, expiresAt, newEmail })
+      emailTokensRepo.replaceOpen(client, { userId, type, code, expiresAt })
     );
-    return token;
+    return code;
+  }
+
+  function normalizeEmail(value) {
+    return typeof value === 'string' ? value.trim().toLowerCase() : null;
+  }
+
+  /**
+   * Compte concerné par un code : 'verify' vise un compte pas encore activé,
+   * 'reset' un compte activé. null sinon (même réponse qu'un code faux).
+   */
+  async function findCodeOwner(email, type) {
+    if (!email || !isValidEmail(email)) return null;
+    const user = await usersRepo.findMailRecipient(getPool(), email);
+    if (!user) return null;
+    if (type === 'verify' && user.email_verified) return null;
+    if (type === 'reset' && !user.email_verified) return null;
+    return user;
   }
 
   /**
@@ -71,7 +92,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
   // Auth: inscription & connexion
   // -----------------------------------------------------------------------------
   router.post('/register', registerLimiter, verifyHcaptcha, asyncHandler(async (req, res) => {
-    const { name, password } = req.body;
+    const { name } = req.body;
     const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : req.body.email;
 
     if (!name || !isValidName(name)) {
@@ -80,17 +101,17 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     if (!email || !isValidEmail(email)) {
       return res.status(400).json({ message: 'Email invalide' });
     }
-    if (!password || !isValidPassword(password)) {
-      return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)' });
-    }
 
+    // Plus de mot de passe à l'inscription : le titulaire de la boîte le
+    // choisit en saisissant son code (POST /auth/verify-email). Le compte
+    // reçoit d'ici là un mot de passe aléatoire que personne ne connaît.
     const existing = await usersRepo.findRegistrationState(getPool(), email);
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12);
 
     // Anti-énumération : réponse identique, envoyée AVANT tout travail qui
     // dépend de l'existence du compte (transaction, envoi SMTP). Sinon le délai
     // de l'envoi trahirait les adresses non inscrites.
-    res.status(201).json({ message: 'Compte créé. Vérifiez votre boîte email pour activer votre compte.' });
+    res.status(201).json({ message: 'Compte créé. Un code d\'activation vient d\'être envoyé par email.' });
 
     try {
       // Adresse déjà inscrite et vérifiée : aucun compte ni jeton, mais le
@@ -102,21 +123,20 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
       let userId;
       if (existing) {
-        // Compte non vérifié déjà présent : le mot de passe actif sera choisi
-        // au moment de la vérification par le titulaire de la boîte (voir
-        // POST /auth/verify-email) ; on envoie simplement un nouveau lien.
+        // Compte non vérifié déjà présent : on envoie simplement un nouveau
+        // code (le précédent est remplacé).
         userId = existing.id;
         await usersRepo.renameUnverified(getPool(), userId, name);
       } else {
         userId = await usersRepo.insert(getPool(), { name, email, passwordHash: hashedPassword, roleId: 3 });
       }
 
-      const verifyToken = await issueEmailToken(userId, 'verify', VERIFY_TOKEN_TTL_MS);
+      const verifyCode = await issueEmailCode(userId, 'verify', VERIFY_CODE_TTL_MS);
       try {
-        await mailer.sendVerificationEmail(email, name, verifyToken);
+        await mailer.sendVerificationEmail(email, name, verifyCode);
       } catch (mailErr) {
         logger.warn('Premier envoi email échoué, retry...', { error: mailErr.message });
-        await mailer.sendVerificationEmail(email, name, verifyToken);
+        await mailer.sendVerificationEmail(email, name, verifyCode);
       }
     } catch (err) {
       logger.error('Erreur inscription (après réponse)', { error: err.message, route: 'POST /register' });
@@ -284,69 +304,78 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
   // Auth : vérification email + mot de passe oublié
   // -----------------------------------------------------------------------------
 
-  // POST /api/auth/verify-email { token, password } — Activer le compte.
-  // Le titulaire de la boîte choisit ici le mot de passe actif : un mot de passe
-  // saisi à l'inscription par quelqu'un d'autre (pré-inscription de l'adresse
-  // d'autrui) n'est donc jamais activé par la vérification.
-  router.post('/auth/verify-email', resetPasswordLimiter, asyncHandler(async (req, res) => {
-    const { token, password } = req.body;
-    if (!token || typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) {
-      return res.status(400).json({ message: 'Token invalide' });
+  // POST /api/auth/check-code { email, type, code } — Étape « code » de la
+  // page de connexion, avant le choix du mot de passe : le code est vérifié
+  // sans être consommé. Un code faux compte un essai (plafond par code).
+  // Réponse identique pour un compte inconnu, un code expiré ou faux.
+  router.post('/auth/check-code', codeLimiter, asyncHandler(async (req, res) => {
+    const { type, code } = req.body;
+    if (!CODE_TYPES.includes(type)) {
+      return res.status(400).json({ message: 'Type de code invalide' });
     }
-    if (!password || !isValidPassword(password)) {
-      return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const userId = await withTransaction(getPool(), async (client) => {
-      const consumed = await emailTokensRepo.consume(client, token, 'verify');
-      if (!consumed) return null;
-      await usersRepo.activateWithPassword(client, consumed.user_id, hashedPassword);
-      await emailTokensRepo.closeOpen(client, consumed.user_id, 'verify');
-      await refreshTokensRepo.revokeAllForUser(client, consumed.user_id);
-      return consumed.user_id;
-    });
-    if (!userId) {
-      return res.status(400).json({ message: 'Token invalide ou expiré', code: 'TOKEN_INVALID' });
-    }
-
-    // Envoi de l'email de bienvenue (non bloquant)
-    try {
-      const contact = await usersRepo.findContact(getPool(), userId);
-      if (contact) {
-        const { name, email } = contact;
-        mailer.sendWelcomeEmail(email, name).catch(err =>
-          logger.warn('Échec envoi email bienvenue', { error: err.message, userId })
-        );
-      }
-    } catch { /* non bloquant */ }
-
-    res.json({ message: 'Email vérifié avec succès. Vous pouvez maintenant vous connecter.' });
+    const user = await findCodeOwner(normalizeEmail(req.body.email), type);
+    const result = user
+      ? await withTransaction(getPool(), (client) =>
+        emailTokensRepo.checkCode(client, { userId: user.id, type, code }))
+      : { ok: false };
+    if (!result.ok) return res.status(400).json(INVALID_CODE);
+    res.json({ message: 'Code valide' });
   }));
 
-  // POST /api/auth/confirm-email-change { token } — Appliquer un changement
-  // d'adresse demandé depuis les paramètres. Le lien n'est envoyé qu'à la
-  // nouvelle adresse : l'appliquer prouve qu'on la contrôle.
-  router.post('/auth/confirm-email-change', resetPasswordLimiter, async (req, res) => {
-    const { token } = req.body;
-    if (!token || typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) {
-      return res.status(400).json({ message: 'Token invalide' });
+  // POST /api/auth/verify-email { email, code, password } — Activer le compte.
+  // Le titulaire de la boîte choisit ici le mot de passe actif : personne
+  // d'autre ne le connaît, même si un tiers a inscrit son adresse.
+  router.post('/auth/verify-email', codeLimiter, asyncHandler(async (req, res) => {
+    const { code, password } = req.body;
+    if (!password || !isValidPassword(password)) {
+      return res.status(400).json({ message: PASSWORD_RULE });
     }
+    const email = normalizeEmail(req.body.email);
+    const user = await findCodeOwner(email, 'verify');
+    if (!user) return res.status(400).json(INVALID_CODE);
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const activated = await withTransaction(getPool(), async (client) => {
+      const result = await emailTokensRepo.checkCode(client, { userId: user.id, type: 'verify', code, consume: true });
+      if (!result.ok) return false;
+      await usersRepo.activateWithPassword(client, user.id, hashedPassword);
+      await refreshTokensRepo.revokeAllForUser(client, user.id);
+      return true;
+    });
+    if (!activated) return res.status(400).json(INVALID_CODE);
+
+    // Email de bienvenue (non bloquant) : le compte est activé, un échec
+    // d'envoi, immédiat ou différé, ne doit pas changer la réponse.
     try {
-      const changed = await withTransaction(getPool(), async (client) => {
-        const consumed = await emailTokensRepo.consume(client, token, 'email');
-        if (!consumed || !consumed.new_email) return false;
-        await usersRepo.applyEmailChange(client, consumed.user_id, consumed.new_email);
-        await refreshTokensRepo.revokeAllForUser(client, consumed.user_id);
-        return true;
+      mailer.sendWelcomeEmail(email, user.name).catch(err =>
+        logger.warn('Échec envoi email bienvenue', { error: err.message, userId: user.id })
+      );
+    } catch (err) {
+      logger.warn('Échec envoi email bienvenue', { error: err.message, userId: user.id });
+    }
+
+    res.json({ message: 'Compte activé. Vous pouvez maintenant vous connecter.' });
+  }));
+
+  // POST /api/auth/confirm-email-change { code } — Appliquer un changement
+  // d'adresse demandé depuis les paramètres. Le code n'est envoyé qu'à la
+  // nouvelle adresse : le saisir prouve qu'on la contrôle. Session requise :
+  // le code appartient au compte connecté.
+  router.post('/auth/confirm-email-change', codeLimiter, authorize([1, 2, 3]), async (req, res) => {
+    const userId = req.user.id;
+    try {
+      const newEmail = await withTransaction(getPool(), async (client) => {
+        const result = await emailTokensRepo.checkCode(client, { userId, type: 'email', code: req.body.code, consume: true });
+        if (!result.ok || !result.new_email) return null;
+        await usersRepo.applyEmailChange(client, userId, result.new_email);
+        await refreshTokensRepo.revokeAllForUser(client, userId);
+        return result.new_email;
       });
-      if (!changed) {
-        return res.status(400).json({ message: 'Token invalide ou expiré', code: 'TOKEN_INVALID' });
-      }
-      res.json({ message: 'Adresse email modifiée. Reconnectez-vous avec votre nouvelle adresse.' });
+      if (!newEmail) return res.status(400).json(INVALID_CODE);
+      res.json({ message: 'Adresse email modifiée. Reconnectez-vous avec votre nouvelle adresse.', email: newEmail });
     } catch (error) {
-      // Adresse prise entre la demande et la confirmation : seul le titulaire de
-      // la nouvelle boîte voit ce message.
+      // Adresse prise entre la demande et la confirmation : seul le titulaire
+      // de la nouvelle boîte (qui a reçu le code) voit ce message.
       if (error.code === '23505') {
         return res.status(409).json({ message: 'Cette adresse est déjà utilisée par un autre compte', code: 'EMAIL_TAKEN' });
       }
@@ -355,82 +384,70 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     }
   });
 
-  // POST /api/auth/resend-verification — Renvoyer l'email de vérification
+  // POST /api/auth/resend-verification — Renvoyer un code d'activation
   // try/catch manuel : la réponse est envoyée avant le traitement async (sécurité)
   router.post('/auth/resend-verification', emailLimiter, async (req, res) => {
-    const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : null;
+    const email = normalizeEmail(req.body.email);
     if (!email || !isValidEmail(email)) {
       return res.status(400).json({ message: 'Email invalide' });
     }
 
     // Réponse identique quelle que soit l'existence du compte (sécurité)
-    res.json({ message: 'Si un compte non vérifié existe, un email vient d\'être envoyé.' });
+    res.json({ message: 'Si un compte non activé existe, un code vient d\'être envoyé.' });
 
     try {
-      const user = await usersRepo.findMailRecipient(getPool(), email);
-      if (!user || user.email_verified) return;
-
-      const verifyToken = await issueEmailToken(user.id, 'verify', VERIFY_TOKEN_TTL_MS);
-      await mailer.sendVerificationEmail(email, user.name, verifyToken);
+      const user = await findCodeOwner(email, 'verify');
+      if (!user) return;
+      const verifyCode = await issueEmailCode(user.id, 'verify', VERIFY_CODE_TTL_MS);
+      await mailer.sendVerificationEmail(email, user.name, verifyCode);
     } catch (err) {
       logger.error('Erreur resend-verification', { error: err.message, route: 'POST /resend-verification' });
     }
   });
 
-  // POST /api/auth/forgot-password — Demander une réinitialisation
+  // POST /api/auth/forgot-password — Demander un code de réinitialisation
   // try/catch manuel : même pattern que resend-verification
   router.post('/auth/forgot-password', emailLimiter, verifyHcaptcha, async (req, res) => {
-    const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : null;
+    const email = normalizeEmail(req.body.email);
     if (!email || !isValidEmail(email)) {
       return res.status(400).json({ message: 'Email invalide' });
     }
 
     // Réponse identique quelle que soit l'existence du compte (sécurité)
-    res.json({ message: 'Si un compte vérifié existe, un email de réinitialisation vient d\'être envoyé.' });
+    res.json({ message: 'Si un compte existe, un code de réinitialisation vient d\'être envoyé.' });
 
     try {
-      const user = await usersRepo.findMailRecipient(getPool(), email);
-      if (!user || !user.email_verified) return;
-
-      const resetToken = await issueEmailToken(user.id, 'reset', RESET_TOKEN_TTL_MS);
-      await mailer.sendPasswordResetEmail(email, user.name, resetToken);
+      const user = await findCodeOwner(email, 'reset');
+      if (!user) return;
+      const resetCode = await issueEmailCode(user.id, 'reset', RESET_CODE_TTL_MS);
+      await mailer.sendPasswordResetEmail(email, user.name, resetCode);
     } catch (err) {
       logger.error('Erreur forgot-password', { error: err.message, route: 'POST /forgot-password' });
     }
   });
 
-  // POST /api/auth/reset-password — Changer le mot de passe avec le token
-  router.post('/auth/reset-password', resetPasswordLimiter, asyncHandler(async (req, res) => {
-    const { token, password } = req.body;
-
-    if (!token || typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token)) {
-      return res.status(400).json({ message: 'Token invalide' });
-    }
+  // POST /api/auth/reset-password { email, code, password } — Nouveau mot de
+  // passe. Toutes les sessions sont coupées, les access tokens déjà émis
+  // refusés (token_version).
+  router.post('/auth/reset-password', codeLimiter, asyncHandler(async (req, res) => {
+    const { code, password } = req.body;
     if (!password || !isValidPassword(password)) {
-      return res.status(400).json({ message: 'Mot de passe invalide (8-128 caractères, 1 majuscule, 1 minuscule, 1 chiffre)' });
+      return res.status(400).json({ message: PASSWORD_RULE });
     }
+    const user = await findCodeOwner(normalizeEmail(req.body.email), 'reset');
+    if (!user) return res.status(400).json(INVALID_CODE);
 
-    const resetToken = await emailTokensRepo.findOpenReset(getPool(), token);
-    if (!resetToken) {
-      return res.status(400).json({ message: 'Token invalide ou expiré', code: 'TOKEN_INVALID' });
-    }
-
-    const { id: tokenId, user_id: userId } = resetToken;
     const hashedPassword = await bcrypt.hash(password, 12);
-
-    // Transaction : consommer le token (une seule fois), changer le mot de passe,
-    // révoquer les sessions et invalider les access tokens déjà émis.
     const applied = await withTransaction(getPool(), async (client) => {
-      if (!(await emailTokensRepo.markUsed(client, tokenId))) return false;
-      await usersRepo.resetPassword(client, userId, hashedPassword);
-      await refreshTokensRepo.revokeAllForUser(client, userId);
+      const result = await emailTokensRepo.checkCode(client, { userId: user.id, type: 'reset', code, consume: true });
+      if (!result.ok) return false;
+      await usersRepo.resetPassword(client, user.id, hashedPassword);
+      await refreshTokensRepo.revokeAllForUser(client, user.id);
       return true;
     });
-    if (!applied) {
-      return res.status(400).json({ message: 'Token invalide ou expiré', code: 'TOKEN_INVALID' });
-    }
+    if (!applied) return res.status(400).json(INVALID_CODE);
 
-    res.json({ message: 'Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter.' });
+    res.json({ message: 'Mot de passe réinitialisé. Vous pouvez maintenant vous connecter.' });
   }));
 
   return router;

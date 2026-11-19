@@ -1,6 +1,5 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const crypto = require('crypto');
 const { isValidEmail, isValidName, isValidPassword } = require('../validators');
 const {
   authorize,
@@ -20,7 +19,7 @@ const refreshTokensRepo = require('../repositories/refresh-tokens');
 const favoritesRepo = require('../repositories/favorites');
 const { idParam, cleanSearch } = require('../middleware/input-guards');
 
-// Durée de validité du lien de confirmation d'un changement d'adresse
+// Durée de validité du code de confirmation d'un changement d'adresse
 const EMAIL_CHANGE_TTL_MS = 30 * 60 * 1000;
 
 const passThrough = (req, res, next) => next();
@@ -155,7 +154,7 @@ module.exports = function createUsersRouter(getPool, { mailer, dataExportLimiter
 
     const body = {
       message: emailChangePending
-        ? 'Un lien de confirmation a été envoyé à la nouvelle adresse. Elle remplacera l\'actuelle après validation.'
+        ? 'Un code de confirmation a été envoyé à la nouvelle adresse. Elle remplacera l\'actuelle une fois le code saisi.'
         : 'Mise à jour réussie',
       user: { id: updated.id, name: updated.name, email: updated.email, role_id: updated.role_id },
       emailChangePending,
@@ -176,18 +175,19 @@ module.exports = function createUsersRouter(getPool, { mailer, dataExportLimiter
   }));
 
   /**
-   * Prépare un changement d'adresse : jeton 'email' porteur de la nouvelle
-   * adresse, lien envoyé à celle-ci, avertissement envoyé à l'ancienne.
+   * Prépare un changement d'adresse : code 'email' porteur de la nouvelle
+   * adresse, envoyé à celle-ci (il se saisit dans les réglages, voir
+   * POST /auth/confirm-email-change), avertissement envoyé à l'ancienne.
    * Les échecs d'envoi sont journalisés sans changer la réponse.
    */
   async function requestEmailChange(user, newEmail) {
-    const token = crypto.randomBytes(32).toString('hex');
+    const code = emailTokensRepo.generateCode();
     const expiresAt = new Date(Date.now() + EMAIL_CHANGE_TTL_MS);
     await withTransaction(getPool(), (client) =>
-      emailTokensRepo.replaceOpen(client, { userId: user.id, type: 'email', token, expiresAt, newEmail })
+      emailTokensRepo.replaceOpen(client, { userId: user.id, type: 'email', code, expiresAt, newEmail })
     );
     try {
-      await mailer.sendEmailChangeConfirmation(newEmail, user.name, token);
+      await mailer.sendEmailChangeConfirmation(newEmail, user.name, code);
       await mailer.sendEmailChangeNotice(user.email, user.name);
     } catch (err) {
       logger.error('Erreur envoi emails de changement d\'adresse', { error: err.message, userId: user.id });

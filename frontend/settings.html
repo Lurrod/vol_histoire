@@ -157,6 +157,13 @@
                   <div class="form-group" id="profile-current-password-group" hidden><label for="profile-current-password"><i class="fas fa-lock"></i><span data-i18n="settings.label_current_password">Mot de passe actuel</span></label><input type="password" id="profile-current-password" name="currentPassword" autocomplete="current-password"><span class="field-hint"><i class="fas fa-info-circle"></i> <span data-i18n="settings.hint_current_password_email">Requis pour changer d'adresse email. Un lien de confirmation sera envoyé à la nouvelle adresse.</span></span></div>
                   <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fas fa-save"></i><span data-i18n="settings.btn_save_profile">Enregistrer les modifications</span></button><button type="button" class="btn btn-secondary" id="reset-profile-btn"><i class="fas fa-undo"></i><span data-i18n="settings.btn_reset">Réinitialiser</span></button></div>
                 </form>
+                <section class="email-code-box" id="email-code-box" aria-labelledby="email-code-title" hidden>
+                  <h3 id="email-code-title"><i class="fas fa-envelope-open-text"></i><span data-i18n="settings.email_code_title">Confirmez votre nouvelle adresse</span></h3>
+                  <p class="email-code-desc"><span data-i18n="settings.email_code_desc">Saisissez le code à 6 chiffres envoyé à</span> <strong id="email-code-target"></strong></p>
+                  <div id="email-code-otp"></div>
+                  <p class="email-code-status" id="email-code-status" role="status" aria-live="polite"></p>
+                  <button type="button" class="btn btn-secondary" id="email-code-cancel"><i class="fas fa-times"></i><span data-i18n="settings.email_code_cancel">Annuler</span></button>
+                </section>
               </div>
             </div>
 

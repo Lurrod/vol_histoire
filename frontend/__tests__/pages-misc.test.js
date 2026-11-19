@@ -1,6 +1,5 @@
 /**
  * Tests — petites pages et scripts communs :
- *   - js/check-email.js (renvoi du lien de vérification) ;
  *   - js/404.js (route demandée affichée) ;
  *   - js/sw-register.js (enregistrement du service worker) ;
  *   - js/shared/alpha3.js (drapeaux : tous les pays de db.sql couverts) ;
@@ -17,59 +16,6 @@ const $ = (id) => document.getElementById(id);
 afterEach(() => {
   window.history.replaceState(null, '', '/');
   jest.restoreAllMocks();
-});
-
-// =============================================================================
-// check-email.js
-// =============================================================================
-describe('check-email.js', () => {
-  function load(search) {
-    sessionStorage.clear(); // l'adresse d'un test précédent y serait mémorisée
-    window.history.replaceState(null, '', `/check-email${search}`);
-    document.body.innerHTML = mainOf('check-email.html');
-    global.i18n = { t: (k) => k };
-    global.takeUrlParams = require('../js/utils').takeUrlParams;
-    global.auth = { fetchWithTimeout: jest.fn(() => Promise.resolve({ ok: true })) };
-    jest.isolateModules(() => { require('../js/check-email'); });
-  }
-
-  test('affiche l’adresse de l’URL comme texte, jamais comme HTML', () => {
-    load(`?email=${encodeURIComponent('<img src=x onerror=alert(1)>@x.fr')}`);
-    expect($('ce-email').textContent).toBe('<img src=x onerror=alert(1)>@x.fr');
-    expect($('ce-email').querySelector('img')).toBeNull();
-  });
-
-  test('sans adresse : badge par défaut, le bouton ne fait rien', async () => {
-    load('');
-    const before = $('ce-email').textContent;
-    $('ce-resend-btn').click();
-    await flush();
-    expect($('ce-email').textContent).toBe(before);
-    expect(auth.fetchWithTimeout).not.toHaveBeenCalled();
-    expect($('ce-resend-btn').disabled).toBe(false);
-  });
-
-  test('renvoi réussi : appel POST, bouton désactivé et marqué « envoyé »', async () => {
-    load('?email=ada%40test.local');
-    $('ce-resend-btn').click();
-    expect($('ce-resend-btn').disabled).toBe(true);
-    await flush();
-    expect(auth.fetchWithTimeout).toHaveBeenCalledWith('/api/auth/resend-verification', expect.objectContaining({ method: 'POST' }));
-    expect(JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body)).toEqual({ email: 'ada@test.local' });
-    expect($('ce-resend-btn').classList.contains('sent')).toBe(true);
-    expect($('ce-resend-btn').textContent.trim()).toBe('check_email.resent');
-    expect($('ce-resend-btn').disabled).toBe(true); // un seul renvoi par visite
-  });
-
-  test('échec réseau : bouton réactivé pour réessayer', async () => {
-    load('?email=ada%40test.local');
-    auth.fetchWithTimeout.mockRejectedValue(new TypeError('Failed to fetch'));
-    $('ce-resend-btn').click();
-    await flush();
-    expect($('ce-resend-btn').disabled).toBe(false);
-    expect($('ce-resend-btn').classList.contains('sent')).toBe(false);
-    expect($('ce-resend-btn').textContent.trim()).toBe('check_email.resend');
-  });
 });
 
 // =============================================================================

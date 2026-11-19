@@ -36,7 +36,7 @@
   }
 
   function setupPasswordStrength(ctx) {
-    const input = ctx.els.registerPassword;
+    const input = ctx.els.newPassword;
     if (!input) return;
     input.addEventListener('input', () => {
       updatePasswordStrength(calculatePasswordStrength(input.value));

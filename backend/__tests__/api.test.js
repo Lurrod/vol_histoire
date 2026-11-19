@@ -18,6 +18,7 @@ jest.mock('../mailer', () => ({
   sendEmailChangeConfirmation: jest.fn().mockResolvedValue(undefined),
   sendEmailChangeNotice: jest.fn().mockResolvedValue(undefined),
   sendAccountExistsNotice: jest.fn().mockResolvedValue(undefined),
+  sendWelcomeEmail: jest.fn().mockResolvedValue(undefined),
   verifyConnection: jest.fn().mockResolvedValue(undefined),
 }));
 const mailer = require('../mailer');
@@ -101,26 +102,34 @@ afterAll(() => {
 // AUTH — POST /api/register
 // =============================================================================
 describe('POST /api/register', () => {
+  // Plus de mot de passe à l'inscription : il se choisit avec le code reçu
+  // par email (POST /auth/verify-email).
   const validPayload = {
     name: 'Jean Dupont',
     email: 'jean@example.com',
-    password: 'Password123',
   };
+  const REGISTER_MESSAGE = 'Compte créé. Un code d\'activation vient d\'être envoyé par email.';
 
-  test('201 — inscription réussie (email normalisé en minuscules)', async () => {
+  test('201 — inscription réussie (email normalisé en minuscules), code à 6 chiffres envoyé', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [] })                        // utilisateur n'existe pas
       .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Jean Dupont' }] }) // INSERT users RETURNING
+      .mockResolvedValueOnce({ rows: [] })                        // DELETE email_tokens (même compte, même type)
       .mockResolvedValueOnce({ rows: [] });                       // INSERT email_tokens
 
     const res = await request(app).post('/api/register').send({ ...validPayload, email: 'Jean@Example.COM' });
     expect(res.status).toBe(201);
-    expect(res.body.message).toBe('Compte créé. Vérifiez votre boîte email pour activer votre compte.');
+    expect(res.body.message).toBe(REGISTER_MESSAGE);
     // Vérifier que la query INSERT a bien reçu l'email normalisé
     const insertCall = mockPool.query.mock.calls[1];
     expect(insertCall[1][1]).toBe('jean@example.com');
-    // Vérifier que l'email de vérification a bien été envoyé
-    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('jean@example.com', 'Jean Dupont', expect.any(String));
+    // Vérifier que l'email de vérification a bien été envoyé, avec un code
+    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('jean@example.com', 'Jean Dupont', expect.stringMatching(/^[0-9]{6}$/));
+    // Le code part par email, seule son empreinte est stockée
+    const code = mailer.sendVerificationEmail.mock.calls.at(-1)[2];
+    const tokenInsert = mockPool.query.mock.calls.find(c => /INSERT INTO email_tokens/.test(c[0]));
+    expect(tokenInsert[1]).not.toContain(code);
+    expect(tokenInsert[1][1]).toMatch(/^[a-f0-9]{64}$/);
   });
 
   test('201 — email déjà utilisé (anti-énumération : même réponse que le succès)', async () => {
@@ -128,7 +137,7 @@ describe('POST /api/register', () => {
 
     const res = await request(app).post('/api/register').send(validPayload);
     expect(res.status).toBe(201);
-    expect(res.body.message).toBe('Compte créé. Vérifiez votre boîte email pour activer votre compte.');
+    expect(res.body.message).toBe(REGISTER_MESSAGE);
   });
 
   test('400 — nom invalide (trop court)', async () => {
@@ -143,38 +152,20 @@ describe('POST /api/register', () => {
     expect(res.body.message).toBe('Email invalide');
   });
 
-  test('400 — mot de passe trop court (< 8 caractères)', async () => {
-    const res = await request(app).post('/api/register').send({ ...validPayload, password: 'Ab1xxxx' });
-    expect(res.status).toBe(400);
-    expect(res.body.message).toMatch(/Mot de passe invalide/);
-  });
-
-  test('400 — mot de passe sans majuscule', async () => {
-    const res = await request(app).post('/api/register').send({ ...validPayload, password: 'abcdefg1' });
-    expect(res.status).toBe(400);
-    expect(res.body.message).toMatch(/Mot de passe invalide/);
-  });
-
-  test('400 — mot de passe sans minuscule', async () => {
-    const res = await request(app).post('/api/register').send({ ...validPayload, password: 'ABCDEFG1' });
-    expect(res.status).toBe(400);
-    expect(res.body.message).toMatch(/Mot de passe invalide/);
-  });
-
-  test('400 — mot de passe sans chiffre', async () => {
-    const res = await request(app).post('/api/register').send({ ...validPayload, password: 'Abcdefgh' });
-    expect(res.status).toBe(400);
-    expect(res.body.message).toMatch(/Mot de passe invalide/);
-  });
-
-  test('201 — mot de passe de 8 caractères conforme accepté', async () => {
+  test('201 — un mot de passe envoyé est ignoré : le compte reçoit un mot de passe aléatoire inconnu', async () => {
+    const bcrypt = require('bcryptjs');
     mockPool.query
       .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [{ id: 2, name: 'Jean Dupont' }] })
+      .mockResolvedValueOnce({ rows: [] }) // DELETE email_tokens
       .mockResolvedValueOnce({ rows: [] }); // INSERT email_tokens
 
-    const res = await request(app).post('/api/register').send({ ...validPayload, password: 'Abcdef1x' });
+    // Même un mot de passe « faible » ne bloque plus l'inscription.
+    const res = await request(app).post('/api/register').send({ ...validPayload, password: 'abc' });
     expect(res.status).toBe(201);
+    const insertUser = mockPool.query.mock.calls.find(c => /INSERT INTO users/.test(c[0]));
+    const storedHash = insertUser[1][2];
+    expect(await bcrypt.compare('abc', storedHash)).toBe(false);
   });
 
   test('500 — erreur base de données', async () => {
@@ -873,14 +864,14 @@ describe('PUT /api/users/:id', () => {
     expect(res.headers['set-cookie'].find(c => c.startsWith('refreshToken='))).toBeDefined();
   });
 
-  test('200 — changement d\'email : aucune écriture directe, lien envoyé à la nouvelle adresse, ancienne prévenue', async () => {
+  test('200 — changement d\'email : aucune écriture directe, code envoyé à la nouvelle adresse, ancienne prévenue', async () => {
     mailer.sendEmailChangeConfirmation.mockClear();
     mailer.sendEmailChangeNotice.mockClear();
     mockPool.query
       .mockResolvedValueOnce(memberRow())
       .mockResolvedValueOnce({ rows: [{ id: 3, name: 'Member', email: 'member@test.com', role_id: 3, token_version: 0 }] }) // UPDATE name
-      .mockResolvedValueOnce({ rows: [] })   // invalidation des anciens jetons 'email'
-      .mockResolvedValueOnce({ rows: [] });  // INSERT jeton 'email'
+      .mockResolvedValueOnce({ rows: [] })   // DELETE des anciens codes 'email'
+      .mockResolvedValueOnce({ rows: [] });  // INSERT code 'email'
 
     const res = await request(app)
       .put('/api/users/3')
@@ -892,10 +883,16 @@ describe('PUT /api/users/:id', () => {
     expect(res.body.user.email).toBe('member@test.com');
     const sqls = mockPool.query.mock.calls.map(c => c[0]);
     expect(sqls.some(q => /UPDATE users SET .*email = /.test(q))).toBe(false);
+    const purge = mockPool.query.mock.calls.find(c => /DELETE FROM email_tokens/.test(c[0]));
+    expect(purge[1]).toEqual([3, 'email']);
     const insert = mockPool.query.mock.calls.find(c => /INSERT INTO email_tokens/.test(c[0]));
     expect(insert[1][2]).toBe('email');
     expect(insert[1][4]).toBe('nouvelle@test.com');
-    expect(mailer.sendEmailChangeConfirmation).toHaveBeenCalledWith('nouvelle@test.com', 'Member', expect.stringMatching(/^[a-f0-9]{64}$/));
+    expect(mailer.sendEmailChangeConfirmation).toHaveBeenCalledWith('nouvelle@test.com', 'Member', expect.stringMatching(/^[0-9]{6}$/));
+    // Seule l'empreinte du code est stockée, liée au compte et au type
+    const { hashCode } = require('../repositories/email-tokens');
+    const code = mailer.sendEmailChangeConfirmation.mock.calls[0][2];
+    expect(insert[1][1]).toBe(hashCode(3, 'email', code));
     expect(mailer.sendEmailChangeNotice).toHaveBeenCalledWith('member@test.com', 'Member');
   });
 
@@ -2288,63 +2285,194 @@ describe('PUT /api/admin/users/:id', () => {
 });
 
 // =============================================================================
-// AUTH — GET /api/auth/verify-email
+// AUTH — codes à 6 chiffres reçus par email
+// =============================================================================
+// Les codes ne sont jamais stockés en clair : les lignes simulées portent
+// l'empreinte HMAC que calcule le dépôt (repositories/email-tokens.js).
+const emailCodes = require('../repositories/email-tokens');
+const GOOD_CODE = '123456';
+const WRONG_CODE = '654321';
+
+/** Ligne email_tokens ouverte (SELECT … FOR UPDATE) pour un code donné. */
+function codeRow(userId, type, code = GOOD_CODE, extra = {}) {
+  return { rows: [{ id: 50, token_hash: emailCodes.hashCode(userId, type, code), attempts: 0, new_email: null, ...extra }] };
+}
+const unverifiedUser = { rows: [{ id: 7, name: 'Jean', email_verified: false }] };
+const verifiedUser = { rows: [{ id: 7, name: 'Jean', email_verified: true }] };
+const findSql = (re) => mockPool.query.mock.calls.find(c => re.test(c[0]));
+const hasSql = (re) => mockPool.query.mock.calls.some(c => re.test(c[0]));
+
+// =============================================================================
+// AUTH — POST /api/auth/check-code
+// =============================================================================
+describe('POST /api/auth/check-code', () => {
+  test('200 — code juste : confirmé sans être consommé', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(unverifiedUser)
+      .mockResolvedValueOnce(codeRow(7, 'verify'));
+
+    const res = await request(app).post('/api/auth/check-code').send({ email: 'Jean@Test.com', type: 'verify', code: GOOD_CODE });
+    expect(res.status).toBe(200);
+    expect(mockPool.query.mock.calls[0][1]).toEqual(['jean@test.com']);
+    const select = findSql(/FROM email_tokens/);
+    expect(select[0]).toMatch(/FOR UPDATE/);
+    expect(select[1]).toEqual([7, 'verify']);
+    expect(hasSql(/UPDATE email_tokens/)).toBe(false);
+  });
+
+  test('400 — code faux : CODE_INVALID, un essai compté (plafond transmis)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(unverifiedUser)
+      .mockResolvedValueOnce(codeRow(7, 'verify'))
+      .mockResolvedValueOnce({ rows: [] }); // UPDATE attempts
+
+    const res = await request(app).post('/api/auth/check-code').send({ email: 'jean@test.com', type: 'verify', code: WRONG_CODE });
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({ message: 'Code invalide ou expiré', code: 'CODE_INVALID' });
+    const upd = findSql(/SET attempts = attempts \+ 1/);
+    expect(upd[1]).toEqual([50, emailCodes.MAX_ATTEMPTS]);
+    expect(upd[0]).toMatch(/used_at = CASE WHEN attempts \+ 1 >= \$2 THEN NOW\(\)/);
+  });
+
+  test('400 — aucun code ouvert (expiré, consommé, clos) : même réponse', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(verifiedUser)
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).post('/api/auth/check-code').send({ email: 'jean@test.com', type: 'reset', code: GOOD_CODE });
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('CODE_INVALID');
+  });
+
+  test('anti-énumération : compte inconnu, compte déjà activé (verify), compte non activé (reset) → même 400 qu\'un code faux', async () => {
+    const send = (body) => request(app).post('/api/auth/check-code').send(body);
+
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    const unknown = await send({ email: 'inconnu@test.com', type: 'verify', code: GOOD_CODE });
+    mockPool.query.mockResolvedValueOnce(verifiedUser);
+    const alreadyActive = await send({ email: 'jean@test.com', type: 'verify', code: GOOD_CODE });
+    mockPool.query.mockResolvedValueOnce(unverifiedUser);
+    const notActive = await send({ email: 'jean@test.com', type: 'reset', code: GOOD_CODE });
+
+    for (const res of [unknown, alreadyActive, notActive]) {
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ message: 'Code invalide ou expiré', code: 'CODE_INVALID' });
+    }
+    // Aucune de ces requêtes n'a touché aux codes
+    expect(hasSql(/email_tokens/)).toBe(false);
+  });
+
+  test('400 — code mal formé : refusé sans lire ni compter d\'essai', async () => {
+    mockPool.query.mockResolvedValueOnce(unverifiedUser);
+    const res = await request(app).post('/api/auth/check-code').send({ email: 'jean@test.com', type: 'verify', code: '12a456' });
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('CODE_INVALID');
+    expect(hasSql(/email_tokens/)).toBe(false);
+  });
+
+  test('400 — type inconnu (le changement d\'adresse passe par une autre route)', async () => {
+    const res = await request(app).post('/api/auth/check-code').send({ email: 'jean@test.com', type: 'email', code: GOOD_CODE });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe('Type de code invalide');
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+
+  test('400 — email invalide : même réponse qu\'un code faux, aucune requête', async () => {
+    const res = await request(app).post('/api/auth/check-code').send({ email: 'pas-un-email', type: 'verify', code: GOOD_CODE });
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('CODE_INVALID');
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+});
+
+// =============================================================================
+// AUTH — POST /api/auth/verify-email
 // =============================================================================
 describe('POST /api/auth/verify-email', () => {
-  const validToken = 'a'.repeat(64); // 64 chars hex valide
+  beforeEach(() => {
+    mailer.sendWelcomeEmail.mockClear();
+  });
 
-  test('200 — token valide : le mot de passe choisi au clic devient actif, sessions coupées', async () => {
+  test('200 — code juste : consommé, le mot de passe choisi devient actif, sessions coupées', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ user_id: 1, new_email: null }] }) // consommation atomique du token
-      .mockResolvedValueOnce({ rows: [] })   // UPDATE users (mot de passe + vérifié + token_version)
-      .mockResolvedValueOnce({ rows: [] })   // invalidation des autres liens de vérification
-      .mockResolvedValueOnce({ rows: [] })   // révocation des refresh tokens
-      .mockResolvedValueOnce({ rows: [] });  // SELECT (email de bienvenue)
+      .mockResolvedValueOnce(unverifiedUser)          // compte non activé
+      .mockResolvedValueOnce(codeRow(7, 'verify'))    // SELECT … FOR UPDATE
+      .mockResolvedValueOnce({ rows: [] })            // consommation du code
+      .mockResolvedValueOnce({ rows: [] })            // UPDATE users (mot de passe + vérifié + token_version)
+      .mockResolvedValueOnce({ rows: [] });           // révocation des refresh tokens
 
-    const res = await request(app).post('/api/auth/verify-email').send({ token: validToken, password: 'OwnerPass1' });
+    const res = await request(app).post('/api/auth/verify-email').send({ email: 'jean@test.com', code: GOOD_CODE, password: 'OwnerPass1' });
     expect(res.status).toBe(200);
-    expect(res.body.message).toMatch(/vérifié/);
+    expect(res.body.message).toMatch(/activé/);
 
-    const consume = mockPool.query.mock.calls[0];
-    expect(consume[0]).toMatch(/UPDATE email_tokens SET used_at = NOW\(\)[\s\S]*used_at IS NULL[\s\S]*RETURNING/);
-    const upd = mockPool.query.mock.calls.find(c => /UPDATE users[\s\S]*SET password = \$1, email_verified = TRUE/.test(c[0]));
+    const consume = findSql(/UPDATE email_tokens SET used_at = NOW\(\) WHERE id = \$1/);
+    expect(consume[1]).toEqual([50]);
+    const upd = findSql(/UPDATE users[\s\S]*SET password = \$1, email_verified = TRUE/);
     expect(upd).toBeDefined();
     const bcryptjs = require('bcryptjs');
     expect(bcryptjs.compareSync('OwnerPass1', upd[1][0])).toBe(true);
     expect(upd[0]).toMatch(/token_version = token_version \+ 1/);
-    expect(mockPool.query.mock.calls.some(c => /UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = \$1/.test(c[0]))).toBe(true);
+    expect(hasSql(/UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = \$1/)).toBe(true);
+    expect(mailer.sendWelcomeEmail).toHaveBeenCalledWith('jean@test.com', 'Jean');
   });
 
-  test('400 — mot de passe absent ou trop faible', async () => {
-    const res = await request(app).post('/api/auth/verify-email').send({ token: validToken, password: 'weak' });
+  test('200 — l\'échec de l\'email de bienvenue ne bloque pas l\'activation', async () => {
+    mailer.sendWelcomeEmail.mockRejectedValueOnce(new Error('SMTP down'));
+    mockPool.query
+      .mockResolvedValueOnce(unverifiedUser)
+      .mockResolvedValueOnce(codeRow(7, 'verify'))
+      .mockResolvedValue({ rows: [] });
+
+    const res = await request(app).post('/api/auth/verify-email').send({ email: 'jean@test.com', code: GOOD_CODE, password: 'OwnerPass1' });
+    expect(res.status).toBe(200);
+  });
+
+  test('200 — même si l\'envoi de bienvenue lève aussitôt (compte déjà activé)', async () => {
+    mailer.sendWelcomeEmail.mockImplementationOnce(() => { throw new Error('transport absent'); });
+    mockPool.query
+      .mockResolvedValueOnce(unverifiedUser)
+      .mockResolvedValueOnce(codeRow(7, 'verify'))
+      .mockResolvedValue({ rows: [] });
+
+    const res = await request(app).post('/api/auth/verify-email').send({ email: 'jean@test.com', code: GOOD_CODE, password: 'OwnerPass1' });
+    expect(res.status).toBe(200);
+  });
+
+  test('400 — mot de passe absent ou trop faible : vérifié avant toute requête', async () => {
+    let res = await request(app).post('/api/auth/verify-email').send({ email: 'jean@test.com', code: GOOD_CODE, password: 'weak' });
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch(/Mot de passe invalide/);
+    res = await request(app).post('/api/auth/verify-email').send({ email: 'jean@test.com', code: GOOD_CODE });
+    expect(res.status).toBe(400);
     expect(mockPool.query).not.toHaveBeenCalled();
   });
 
-  test('400 — token absent', async () => {
-    const res = await request(app).post('/api/auth/verify-email').send({ password: 'OwnerPass1' });
+  test('400 — code faux : CODE_INVALID, un essai compté, rien n\'est activé', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(unverifiedUser)
+      .mockResolvedValueOnce(codeRow(7, 'verify'))
+      .mockResolvedValueOnce({ rows: [] }); // UPDATE attempts
+
+    const res = await request(app).post('/api/auth/verify-email').send({ email: 'jean@test.com', code: WRONG_CODE, password: 'OwnerPass1' });
     expect(res.status).toBe(400);
-    expect(res.body.message).toBe('Token invalide');
+    expect(res.body.code).toBe('CODE_INVALID');
+    expect(hasSql(/SET attempts = attempts \+ 1/)).toBe(true);
+    expect(hasSql(/UPDATE users/)).toBe(false);
+    expect(mailer.sendWelcomeEmail).not.toHaveBeenCalled();
   });
 
-  test('400 — token format invalide (pas hex)', async () => {
-    const res = await request(app).post('/api/auth/verify-email').send({ token: 'notahextoken', password: 'OwnerPass1' });
+  test('400 — compte inconnu ou déjà activé : CODE_INVALID, aucun code lu', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    let res = await request(app).post('/api/auth/verify-email').send({ email: 'inconnu@test.com', code: GOOD_CODE, password: 'OwnerPass1' });
+    expect(res.body.code).toBe('CODE_INVALID');
+    mockPool.query.mockResolvedValueOnce(verifiedUser);
+    res = await request(app).post('/api/auth/verify-email').send({ email: 'jean@test.com', code: GOOD_CODE, password: 'OwnerPass1' });
     expect(res.status).toBe(400);
-    expect(res.body.message).toBe('Token invalide');
-  });
-
-  test('400 — token déjà utilisé, expiré ou inconnu → TOKEN_INVALID, rien n\'est modifié', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [] }); // UPDATE ... RETURNING : aucune ligne
-
-    const res = await request(app).post('/api/auth/verify-email').send({ token: validToken, password: 'OwnerPass1' });
-    expect(res.status).toBe(400);
-    expect(res.body.code).toBe('TOKEN_INVALID');
-    expect(mockPool.query.mock.calls.some(c => /UPDATE users/.test(c[0]))).toBe(false);
+    expect(res.body.code).toBe('CODE_INVALID');
+    expect(hasSql(/email_tokens/)).toBe(false);
   });
 
   test('l\'ancienne route GET n\'active plus rien', async () => {
-    const res = await request(app).get(`/api/auth/verify-email?token=${validToken}`);
+    const res = await request(app).get(`/api/auth/verify-email?token=${'a'.repeat(64)}`);
     expect(res.status).toBe(404);
     expect(mockPool.query).not.toHaveBeenCalled();
   });
@@ -2352,7 +2480,7 @@ describe('POST /api/auth/verify-email', () => {
   test('500 — erreur base de données', async () => {
     mockPool.query.mockRejectedValueOnce(new Error('DB error'));
 
-    const res = await request(app).post('/api/auth/verify-email').send({ token: validToken, password: 'OwnerPass1' });
+    const res = await request(app).post('/api/auth/verify-email').send({ email: 'jean@test.com', code: GOOD_CODE, password: 'OwnerPass1' });
     expect(res.status).toBe(500);
   });
 });
@@ -2361,41 +2489,82 @@ describe('POST /api/auth/verify-email', () => {
 // AUTH — POST /api/auth/confirm-email-change
 // =============================================================================
 describe('POST /api/auth/confirm-email-change', () => {
-  const validToken = 'b'.repeat(64);
+  const send = (body, token = tokenMember) => {
+    const req = request(app).post('/api/auth/confirm-email-change');
+    return (token ? req.set('Authorization', `Bearer ${token}`) : req).send(body);
+  };
+
+  test('403 — sans session : le code appartient au compte connecté', async () => {
+    const res = await send({ code: GOOD_CODE }, null);
+    expect(res.status).toBe(403);
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
 
   test('200 — applique la nouvelle adresse, coupe sessions et access tokens', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ user_id: 3, new_email: 'nouvelle@test.com' }] })
-      .mockResolvedValueOnce({ rows: [] })
-      .mockResolvedValueOnce({ rows: [] });
+      .mockResolvedValueOnce(codeRow(3, 'email', GOOD_CODE, { new_email: 'nouvelle@test.com' }))
+      .mockResolvedValueOnce({ rows: [] })  // consommation du code
+      .mockResolvedValueOnce({ rows: [] })  // UPDATE users SET email
+      .mockResolvedValueOnce({ rows: [] }); // révocation des refresh tokens
 
-    const res = await request(app).post('/api/auth/confirm-email-change').send({ token: validToken });
+    const res = await send({ code: GOOD_CODE });
     expect(res.status).toBe(200);
-    const upd = mockPool.query.mock.calls.find(c => /UPDATE users SET email = \$1/.test(c[0]));
+    expect(res.body.email).toBe('nouvelle@test.com');
+    // Le code est cherché pour le compte connecté (membre, id 3), type 'email'
+    expect(findSql(/FROM email_tokens/)[1]).toEqual([3, 'email']);
+    const upd = findSql(/UPDATE users SET email = \$1/);
     expect(upd[1]).toEqual(['nouvelle@test.com', 3]);
     expect(upd[0]).toMatch(/token_version = token_version \+ 1/);
-    expect(mockPool.query.mock.calls.some(c => /UPDATE refresh_tokens SET revoked = TRUE/.test(c[0]))).toBe(true);
+    expect(hasSql(/UPDATE refresh_tokens SET revoked = TRUE/)).toBe(true);
   });
 
-  test('400 — token inconnu, expiré ou déjà utilisé', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [] });
-    const res = await request(app).post('/api/auth/confirm-email-change').send({ token: validToken });
+  test('400 — code faux : un essai compté, adresse inchangée', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(codeRow(3, 'email', GOOD_CODE, { new_email: 'nouvelle@test.com' }))
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await send({ code: WRONG_CODE });
     expect(res.status).toBe(400);
-    expect(res.body.code).toBe('TOKEN_INVALID');
+    expect(res.body.code).toBe('CODE_INVALID');
+    expect(hasSql(/SET attempts = attempts \+ 1/)).toBe(true);
+    expect(hasSql(/UPDATE users/)).toBe(false);
+  });
+
+  test('400 — le code d\'un autre compte ne vaut rien ici (empreinte liée au compte)', async () => {
+    // Ligne au nom du membre, mais empreinte calculée pour le compte 1
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 50, token_hash: emailCodes.hashCode(1, 'email', GOOD_CODE), attempts: 0, new_email: 'x@test.com' }] })
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await send({ code: GOOD_CODE });
+    expect(res.status).toBe(400);
+    expect(hasSql(/UPDATE users/)).toBe(false);
+  });
+
+  test('400 — aucun code ouvert, ou code mal formé', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    let res = await send({ code: GOOD_CODE });
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('CODE_INVALID');
+    mockPool.query.mockClear();
+    res = await send({ code: 'zz' });
+    expect(res.status).toBe(400);
+    expect(hasSql(/email_tokens/)).toBe(false);
   });
 
   test('409 — adresse prise entre la demande et la confirmation', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ user_id: 3, new_email: 'admin@test.com' }] })
+      .mockResolvedValueOnce(codeRow(3, 'email', GOOD_CODE, { new_email: 'admin@test.com' }))
+      .mockResolvedValueOnce({ rows: [] })
       .mockRejectedValueOnce(Object.assign(new Error('duplicate key'), { code: '23505' }));
-    const res = await request(app).post('/api/auth/confirm-email-change').send({ token: validToken });
+    const res = await send({ code: GOOD_CODE });
     expect(res.status).toBe(409);
     expect(res.body.code).toBe('EMAIL_TAKEN');
   });
 
-  test('400 — format de token invalide', async () => {
-    const res = await request(app).post('/api/auth/confirm-email-change').send({ token: 'zz' });
-    expect(res.status).toBe(400);
+  test('500 — erreur base de données', async () => {
+    mockPool.query.mockRejectedValueOnce(new Error('DB error'));
+    const res = await send({ code: GOOD_CODE });
+    expect(res.status).toBe(500);
+    expect(res.body.errorId).toBeDefined();
   });
 });
 
@@ -2407,16 +2576,29 @@ describe('POST /api/auth/resend-verification', () => {
     mailer.sendVerificationEmail.mockClear();
   });
 
-  test('200 — email valide → toujours 200 (sécurité)', async () => {
+  test('200 — compte non activé : nouveau code à 6 chiffres, l\'ancien supprimé', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Jean', email_verified: false }] }) // SELECT user
-      .mockResolvedValueOnce({ rows: [] })  // UPDATE anciens tokens
-      .mockResolvedValueOnce({ rows: [] }); // INSERT nouveau token
+      .mockResolvedValueOnce({ rows: [] })  // DELETE anciens codes
+      .mockResolvedValueOnce({ rows: [] }); // INSERT nouveau code
 
     const res = await request(app)
       .post('/api/auth/resend-verification')
       .send({ email: 'jean@test.com' });
     expect(res.status).toBe(200);
+    await new Promise(r => setTimeout(r, 0));
+    expect(findSql(/DELETE FROM email_tokens/)[1]).toEqual([1, 'verify']);
+    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('jean@test.com', 'Jean', expect.stringMatching(/^[0-9]{6}$/));
+  });
+
+  test('200 — compte déjà activé : aucun code (même réponse)', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 1, name: 'Jean', email_verified: true }] });
+    const res = await request(app)
+      .post('/api/auth/resend-verification')
+      .send({ email: 'jean@test.com' });
+    expect(res.status).toBe(200);
+    await new Promise(r => setTimeout(r, 0));
+    expect(mailer.sendVerificationEmail).not.toHaveBeenCalled();
   });
 
   test('200 — email inconnu → toujours 200 (pas de fuite d\'info)', async () => {
@@ -2452,16 +2634,18 @@ describe('POST /api/auth/forgot-password', () => {
     mailer.sendPasswordResetEmail.mockClear();
   });
 
-  test('200 — email vérifié existant → toujours 200', async () => {
+  test('200 — email vérifié existant : code de réinitialisation envoyé', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Jean', email_verified: true }] }) // SELECT user
-      .mockResolvedValueOnce({ rows: [] })  // UPDATE anciens tokens reset
-      .mockResolvedValueOnce({ rows: [] }); // INSERT nouveau token reset
+      .mockResolvedValueOnce({ rows: [] })  // DELETE anciens codes reset
+      .mockResolvedValueOnce({ rows: [] }); // INSERT nouveau code reset
 
     const res = await request(app)
       .post('/api/auth/forgot-password')
       .send({ email: 'jean@test.com' });
     expect(res.status).toBe(200);
+    await new Promise(r => setTimeout(r, 0));
+    expect(mailer.sendPasswordResetEmail).toHaveBeenCalledWith('jean@test.com', 'Jean', expect.stringMatching(/^[0-9]{6}$/));
   });
 
   test('200 — compte non vérifié → toujours 200 (pas d\'email envoyé)', async () => {
@@ -2471,6 +2655,8 @@ describe('POST /api/auth/forgot-password', () => {
       .post('/api/auth/forgot-password')
       .send({ email: 'paul@test.com' });
     expect(res.status).toBe(200);
+    await new Promise(r => setTimeout(r, 0));
+    expect(mailer.sendPasswordResetEmail).not.toHaveBeenCalled();
   });
 
   test('200 — email inconnu → toujours 200', async () => {
@@ -2495,63 +2681,70 @@ describe('POST /api/auth/forgot-password', () => {
 // AUTH — POST /api/auth/reset-password
 // =============================================================================
 describe('POST /api/auth/reset-password', () => {
-  const validToken = 'b'.repeat(64);
   const validPassword = 'NewPass123';
+  const send = (body) => request(app).post('/api/auth/reset-password').send(body);
 
-  test('200 — token valide + mot de passe conforme → réinitialisation réussie', async () => {
+  test('200 — code juste + mot de passe conforme : réinitialisation, code consommé, sessions coupées', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ id: 5, user_id: 1 }] }) // SELECT email_tokens
-      .mockResolvedValueOnce({ rows: [] })                       // UPDATE users SET password
-      .mockResolvedValueOnce({ rows: [] })                       // UPDATE email_tokens used_at
-      .mockResolvedValueOnce({ rows: [] });                      // revokeAllUserRefreshTokens
+      .mockResolvedValueOnce(verifiedUser)          // compte activé
+      .mockResolvedValueOnce(codeRow(7, 'reset'))   // SELECT … FOR UPDATE
+      .mockResolvedValueOnce({ rows: [] })          // consommation du code
+      .mockResolvedValueOnce({ rows: [] })          // UPDATE users SET password
+      .mockResolvedValueOnce({ rows: [] });         // révocation des refresh tokens
 
-    const res = await request(app)
-      .post('/api/auth/reset-password')
-      .send({ token: validToken, password: validPassword });
+    const res = await send({ email: 'jean@test.com', code: GOOD_CODE, password: validPassword });
     expect(res.status).toBe(200);
     expect(res.body.message).toMatch(/réinitialisé/);
+    expect(findSql(/UPDATE email_tokens SET used_at = NOW\(\) WHERE id = \$1/)[1]).toEqual([50]);
+    const upd = findSql(/UPDATE users SET password = \$1/);
+    expect(require('bcryptjs').compareSync(validPassword, upd[1][0])).toBe(true);
+    expect(upd[0]).toMatch(/token_version = token_version \+ 1/);
+    expect(findSql(/UPDATE refresh_tokens/)[1]).toEqual([7]);
   });
 
-  test('400 — token absent', async () => {
-    const res = await request(app)
-      .post('/api/auth/reset-password')
-      .send({ password: validPassword });
-    expect(res.status).toBe(400);
-    expect(res.body.message).toBe('Token invalide');
-  });
-
-  test('400 — token format invalide', async () => {
-    const res = await request(app)
-      .post('/api/auth/reset-password')
-      .send({ token: 'invalid', password: validPassword });
-    expect(res.status).toBe(400);
-    expect(res.body.message).toBe('Token invalide');
-  });
-
-  test('400 — mot de passe invalide (trop court)', async () => {
-    const res = await request(app)
-      .post('/api/auth/reset-password')
-      .send({ token: validToken, password: 'short' });
+  test('400 — mot de passe invalide : vérifié avant le code, aucune requête', async () => {
+    const res = await send({ email: 'jean@test.com', code: 'bad', password: 'short' });
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch(/Mot de passe invalide/);
+    expect(mockPool.query).not.toHaveBeenCalled();
   });
 
-  test('400 — token non trouvé / expiré → TOKEN_INVALID', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [] }); // token non trouvé
+  test('400 — code faux : CODE_INVALID, mot de passe inchangé', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(verifiedUser)
+      .mockResolvedValueOnce(codeRow(7, 'reset'))
+      .mockResolvedValueOnce({ rows: [] }); // UPDATE attempts
 
-    const res = await request(app)
-      .post('/api/auth/reset-password')
-      .send({ token: validToken, password: validPassword });
+    const res = await send({ email: 'jean@test.com', code: WRONG_CODE, password: validPassword });
     expect(res.status).toBe(400);
-    expect(res.body.code).toBe('TOKEN_INVALID');
+    expect(res.body.code).toBe('CODE_INVALID');
+    expect(hasSql(/UPDATE users/)).toBe(false);
+  });
+
+  test('400 — code d\'activation présenté comme code de réinitialisation : refusé (empreinte liée au type)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(verifiedUser)
+      .mockResolvedValueOnce({ rows: [{ id: 50, token_hash: emailCodes.hashCode(7, 'verify', GOOD_CODE), attempts: 0, new_email: null }] })
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await send({ email: 'jean@test.com', code: GOOD_CODE, password: validPassword });
+    expect(res.status).toBe(400);
+    expect(hasSql(/UPDATE users/)).toBe(false);
+  });
+
+  test('400 — compte inconnu ou non activé : CODE_INVALID, aucun code lu', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    let res = await send({ email: 'inconnu@test.com', code: GOOD_CODE, password: validPassword });
+    expect(res.body.code).toBe('CODE_INVALID');
+    mockPool.query.mockResolvedValueOnce(unverifiedUser);
+    res = await send({ email: 'jean@test.com', code: GOOD_CODE, password: validPassword });
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('CODE_INVALID');
+    expect(hasSql(/email_tokens/)).toBe(false);
   });
 
   test('500 — erreur base de données', async () => {
     mockPool.query.mockRejectedValueOnce(new Error('DB error'));
-
-    const res = await request(app)
-      .post('/api/auth/reset-password')
-      .send({ token: validToken, password: validPassword });
+    const res = await send({ email: 'jean@test.com', code: GOOD_CODE, password: validPassword });
     expect(res.status).toBe(500);
   });
 });
@@ -2928,8 +3121,8 @@ describe('POST /api/register — réponse avant le travail, gestion échec maile
     mockPool.query
       .mockResolvedValueOnce({ rows: [] })                // email libre
       .mockResolvedValueOnce({ rows: [{ id: 8 }] })      // INSERT users
-      .mockResolvedValueOnce({ rows: [] })                // invalidation anciens jetons
-      .mockResolvedValueOnce({ rows: [] });               // INSERT jeton
+      .mockResolvedValueOnce({ rows: [] })                // DELETE anciens codes
+      .mockResolvedValueOnce({ rows: [] });               // INSERT code
     t = Date.now();
     const fresh = await request(app).post('/api/register').set('X-Forwarded-For', '10.0.0.5').send(validPayload);
     const tNew = Date.now() - t;
@@ -3008,12 +3201,12 @@ describe('POST /api/register — réponse avant le travail, gestion échec maile
     expect(insertUsersCall).toBeDefined();
   });
 
-  test('201 — compte non vérifié existant : pas de nouveau compte, nouveau lien envoyé', async () => {
+  test('201 — compte non vérifié existant : pas de nouveau compte, nouveau code envoyé', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ id: 42, email_verified: false }] })
       .mockResolvedValueOnce({ rows: [] })   // UPDATE name
-      .mockResolvedValueOnce({ rows: [] })   // invalidation anciens jetons
-      .mockResolvedValueOnce({ rows: [] });  // INSERT jeton
+      .mockResolvedValueOnce({ rows: [] })   // DELETE anciens codes
+      .mockResolvedValueOnce({ rows: [] });  // INSERT code
     mailer.sendVerificationEmail.mockResolvedValue(undefined);
 
     const res = await request(app)
@@ -3025,7 +3218,7 @@ describe('POST /api/register — réponse avant le travail, gestion échec maile
     expect(mockPool.query.mock.calls.some(c => /INSERT INTO users/.test(c[0]))).toBe(false);
     const token = mockPool.query.mock.calls.find(c => /INSERT INTO email_tokens/.test(c[0]));
     expect(token[1][0]).toBe(42);
-    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('marie@example.com', 'Marie Curie', expect.stringMatching(/^[a-f0-9]{64}$/));
+    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('marie@example.com', 'Marie Curie', expect.stringMatching(/^[0-9]{6}$/));
   });
 });
 
@@ -3033,54 +3226,38 @@ describe('POST /api/register — réponse avant le travail, gestion échec maile
 // RESET-PASSWORD — Cas combinés (S2/S3)
 // =============================================================================
 describe('POST /api/auth/reset-password — cas combinés', () => {
-  const validToken = 'c'.repeat(64);
   const validPassword = 'BrandNew123';
+  const send = (body) => request(app).post('/api/auth/reset-password').send(body);
 
-  test('400 — token ET password tous deux invalides → erreur token en premier', async () => {
-    const res = await request(app)
-      .post('/api/auth/reset-password')
-      .send({ token: 'bad', password: 'short' });
-    expect(res.status).toBe(400);
-    expect(res.body.message).toBe('Token invalide');
-  });
-
-  test('400 — token valide format mais password trop court', async () => {
-    const res = await request(app)
-      .post('/api/auth/reset-password')
-      .send({ token: validToken, password: 'Ab1' });
+  test('400 — code ET mot de passe tous deux invalides → erreur de mot de passe en premier (aucune requête)', async () => {
+    const res = await send({ email: 'jean@test.com', code: 'bad', password: 'short' });
     expect(res.status).toBe(400);
     expect(res.body.message).toMatch(/Mot de passe invalide/);
-    // Aucune query SQL ne doit avoir été exécutée (validation avant DB)
     expect(mockPool.query).not.toHaveBeenCalled();
   });
 
   test('500 — échec UPDATE users → rollback transaction', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ id: 7, user_id: 42 }] }) // SELECT email_tokens OK
-      .mockRejectedValueOnce(new Error('UPDATE users failed'));   // UPDATE password KO
+      .mockResolvedValueOnce(verifiedUser)
+      .mockResolvedValueOnce(codeRow(7, 'reset'))
+      .mockResolvedValueOnce({ rows: [] })                       // consommation du code
+      .mockRejectedValueOnce(new Error('UPDATE users failed'));  // UPDATE password KO
 
-    const res = await request(app)
-      .post('/api/auth/reset-password')
-      .send({ token: validToken, password: validPassword });
+    const res = await send({ email: 'jean@test.com', code: GOOD_CODE, password: validPassword });
     expect(res.status).toBe(500);
   });
 
   test('200 — révoque tous les refresh tokens de l\'utilisateur', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ id: 8, user_id: 99 }] })
-      .mockResolvedValueOnce({ rows: [] }) // UPDATE users
+      .mockResolvedValueOnce({ rows: [{ id: 99, name: 'Max', email_verified: true }] })
+      .mockResolvedValueOnce(codeRow(99, 'reset'))
       .mockResolvedValueOnce({ rows: [] }) // UPDATE email_tokens
+      .mockResolvedValueOnce({ rows: [] }) // UPDATE users
       .mockResolvedValueOnce({ rows: [] }); // UPDATE refresh_tokens
 
-    const res = await request(app)
-      .post('/api/auth/reset-password')
-      .send({ token: validToken, password: validPassword });
+    const res = await send({ email: 'max@test.com', code: GOOD_CODE, password: validPassword });
     expect(res.status).toBe(200);
-
-    // Vérifier la révocation des refresh tokens (4ème call)
-    const revokeCall = mockPool.query.mock.calls.find(
-      (c) => typeof c[0] === 'string' && c[0].includes('UPDATE refresh_tokens')
-    );
+    const revokeCall = findSql(/UPDATE refresh_tokens/);
     expect(revokeCall).toBeDefined();
     expect(revokeCall[1]).toEqual([99]);
   });
@@ -4422,22 +4599,17 @@ describe('POST /api/login — lockout au seuil (ligne 138)', () => {
 // AUTH verify-email — envoi email bienvenue si user trouvé (lignes 293-295)
 // =============================================================================
 describe('POST /api/auth/verify-email — email de bienvenue', () => {
-  test('200 — sendWelcomeEmail appelé après activation', async () => {
-    const validToken = 'c'.repeat(64);
+  test('200 — sendWelcomeEmail appelé après activation, avec l\'adresse normalisée', async () => {
+    mailer.sendWelcomeEmail.mockClear();
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ user_id: 1, new_email: null }] })
-      .mockResolvedValueOnce({ rows: [] })
-      .mockResolvedValueOnce({ rows: [] })
-      .mockResolvedValueOnce({ rows: [] })
-      .mockResolvedValueOnce({ rows: [{ name: 'Jean', email: 'jean@test.com' }] });
+      .mockResolvedValueOnce(unverifiedUser)
+      .mockResolvedValueOnce(codeRow(7, 'verify'))
+      .mockResolvedValue({ rows: [] });
 
-    const mailerMod = require('../mailer');
-    mailerMod.sendWelcomeEmail = jest.fn().mockResolvedValue(undefined);
-
-    const res = await request(app).post('/api/auth/verify-email').send({ token: validToken, password: 'OwnerPass1' });
+    const res = await request(app).post('/api/auth/verify-email').send({ email: ' JEAN@test.com ', code: GOOD_CODE, password: 'OwnerPass1' });
     expect(res.status).toBe(200);
     await new Promise(resolve => setTimeout(resolve, 20));
-    expect(mailerMod.sendWelcomeEmail).toHaveBeenCalledWith('jean@test.com', 'Jean');
+    expect(mailer.sendWelcomeEmail).toHaveBeenCalledWith('jean@test.com', 'Jean');
   });
 });
 
@@ -5302,27 +5474,41 @@ describe('Audit sécurité — verrouillage du login', () => {
 });
 
 describe('Audit sécurité — réinitialisation et nettoyage', () => {
-  test('reset-password : token consommé une seule fois, access tokens invalidés, verrou levé', async () => {
+  test('reset-password : code consommé, access tokens invalidés, verrou levé', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ id: 5, user_id: 1 }] })
-      .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email_verified: true }] })
+      .mockResolvedValueOnce(codeRow(1, 'reset'))
+      .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] })
       .mockResolvedValueOnce({ rows: [] });
-    const res = await request(app).post('/api/auth/reset-password').send({ token: 'd'.repeat(64), password: 'NewPass123' });
+    const res = await request(app).post('/api/auth/reset-password').send({ email: 'admin@test.com', code: GOOD_CODE, password: 'NewPass123' });
     expect(res.status).toBe(200);
-    expect(mockPool.query.mock.calls[1][0]).toMatch(/WHERE id = \$1 AND used_at IS NULL/);
-    expect(mockPool.query.mock.calls[2][0]).toMatch(/token_version = token_version \+ 1/);
-    expect(mockPool.query.mock.calls[2][0]).toMatch(/locked_until = NULL/);
+    expect(mockPool.query.mock.calls[1][0]).toMatch(/used_at IS NULL AND expires_at > NOW\(\)[\s\S]*FOR UPDATE/);
+    expect(mockPool.query.mock.calls[2][0]).toMatch(/UPDATE email_tokens SET used_at = NOW\(\) WHERE id = \$1/);
+    expect(mockPool.query.mock.calls[3][0]).toMatch(/token_version = token_version \+ 1/);
+    expect(mockPool.query.mock.calls[3][0]).toMatch(/locked_until = NULL/);
   });
 
-  test('reset-password : token déjà consommé entre-temps → 400, mot de passe inchangé', async () => {
+  test('reset-password : code déjà consommé entre-temps (plus aucune ligne ouverte) → 400, mot de passe inchangé', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [{ id: 5, user_id: 1 }] })
-      .mockResolvedValueOnce({ rows: [], rowCount: 0 });
-    const res = await request(app).post('/api/auth/reset-password').send({ token: 'd'.repeat(64), password: 'NewPass123' });
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email_verified: true }] })
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).post('/api/auth/reset-password').send({ email: 'admin@test.com', code: GOOD_CODE, password: 'NewPass123' });
     expect(res.status).toBe(400);
-    expect(res.body.code).toBe('TOKEN_INVALID');
+    expect(res.body.code).toBe('CODE_INVALID');
     expect(mockPool.query.mock.calls.some(c => /UPDATE users SET password/.test(c[0]))).toBe(false);
+  });
+
+  test('code : le 5e essai manqué clôt le code (même requête, plafond MAX_ATTEMPTS)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email_verified: true }] })
+      .mockResolvedValueOnce(codeRow(1, 'reset', GOOD_CODE, { attempts: 4 }))
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).post('/api/auth/check-code').send({ email: 'admin@test.com', type: 'reset', code: WRONG_CODE });
+    expect(res.status).toBe(400);
+    const upd = mockPool.query.mock.calls[2];
+    expect(upd[0]).toMatch(/used_at = CASE WHEN attempts \+ 1 >= \$2 THEN NOW\(\) ELSE used_at END/);
+    expect(upd[1]).toEqual([50, 5]);
   });
 
   test('nettoyage : les refresh tokens révoqués non expirés sont conservés (détection de rejeu)', async () => {

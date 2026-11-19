@@ -35,7 +35,7 @@ info:
     - **415** : jeu de caractères ou encodage du corps non pris en charge.
     Les caractères de contrôle d'un paramètre `search` sont remplacés par une
     espace.
-  version: 4.21.0
+  version: 4.22.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -473,7 +473,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [name, email, password]
+              required: [name, email]
               properties:
                 name:
                   type: string
@@ -482,11 +482,6 @@ paths:
                 email:
                   type: string
                   format: email
-                password:
-                  type: string
-                  minLength: 8
-                  maxLength: 128
-                  description: "1 majuscule, 1 minuscule, 1 chiffre minimum"
                 'h-captcha-response':
                   type: string
                   description: |
@@ -497,8 +492,9 @@ paths:
           description: |
             Réponse identique que l'adresse soit libre, en attente de
             vérification ou déjà inscrite (anti-énumération), envoyée avant
-            tout envoi d'email. Adresse libre ou non vérifiée : lien
-            d'activation. Adresse déjà vérifiée : aucun compte créé, le
+            tout envoi d'email. Adresse libre ou non vérifiée : code
+            d'activation (6 chiffres, 30 minutes) ; le mot de passe se choisit
+            à l'activation (`POST /auth/verify-email`). Adresse déjà vérifiée : aucun compte créé, le
             titulaire reçoit un avertissement (« Vous avez déjà un compte »).
           content:
             application/json:
@@ -604,66 +600,115 @@ paths:
         '200':
           description: Déconnexion réussie
 
-  /auth/verify-email:
+  /auth/check-code:
     post:
       tags: [Auth]
-      summary: Vérifier l'email et choisir le mot de passe
+      summary: Vérifier un code reçu par email (sans le consommer)
       description: |
-        Le titulaire de la boîte choisit ici le mot de passe actif du compte :
-        celui saisi à l'inscription n'est jamais activé, ce qui neutralise la
-        pré-inscription d'une adresse par un tiers. Lien à usage unique.
+        Étape « code » de la page de connexion, avant le choix du mot de
+        passe. Le code (6 chiffres) n'est pas consommé ; un code faux compte
+        un essai, et au 5e essai manqué le code est clos. Réponse identique
+        pour un compte inconnu, un code expiré ou faux. `verify` vise un compte
+        pas encore activé, `reset` un compte activé.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [token, password]
+              required: [email, type, code]
               properties:
-                token:
+                email:
                   type: string
-                  pattern: '^[a-f0-9]{64}$'
+                  format: email
+                type:
+                  type: string
+                  enum: [verify, reset]
+                code:
+                  type: string
+                  pattern: '^[0-9]{6}$'
+      responses:
+        '200':
+          description: Code valide
+        '400':
+          description: Code invalide ou expiré (code CODE_INVALID), ou type inconnu
+        '429':
+          description: Rate limit (15 req / 15 min)
+
+  /auth/verify-email:
+    post:
+      tags: [Auth]
+      summary: Activer le compte et choisir le mot de passe
+      description: |
+        Le titulaire de la boîte choisit ici le mot de passe du compte (il
+        n'en donne aucun à l'inscription) : la pré-inscription d'une adresse
+        par un tiers ne lui donne aucun accès. Le code est consommé, toutes
+        les sessions sont révoquées, un email de bienvenue part.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, code, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                code:
+                  type: string
+                  pattern: '^[0-9]{6}$'
                 password:
                   type: string
                   minLength: 8
                   maxLength: 128
       responses:
         '200':
-          description: Email vérifié, compte activé
+          description: Compte activé
         '400':
-          description: Token invalide ou expiré (code TOKEN_INVALID), ou mot de passe invalide
+          description: Mot de passe non conforme, ou code invalide ou expiré (code CODE_INVALID)
+        '429':
+          description: Rate limit (15 req / 15 min)
 
   /auth/confirm-email-change:
     post:
       tags: [Auth]
       summary: Confirmer un changement d'adresse email
       description: |
-        Applique la nouvelle adresse demandée via `PUT /users/{id}`. Lien à usage
-        unique envoyé à la nouvelle adresse ; toutes les sessions sont révoquées.
+        Applique la nouvelle adresse demandée via `PUT /users/{id}`, en
+        saisissant le code envoyé à cette adresse (dans les réglages). Session
+        requise : le code appartient au compte connecté. Toutes les sessions
+        sont révoquées.
+      security:
+        - BearerAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [token]
+              required: [code]
               properties:
-                token:
+                code:
                   type: string
-                  pattern: '^[a-f0-9]{64}$'
+                  pattern: '^[0-9]{6}$'
       responses:
         '200':
-          description: Adresse modifiée
+          description: Adresse modifiée (`email` = nouvelle adresse)
         '400':
-          description: Token invalide ou expiré (code TOKEN_INVALID)
+          description: Code invalide ou expiré (code CODE_INVALID)
+        '401':
+          description: Jeton expiré, invalide ou révoqué
+        '403':
+          description: Aucun jeton
         '409':
           description: Adresse prise entre-temps (code EMAIL_TAKEN)
 
   /auth/resend-verification:
     post:
       tags: [Auth]
-      summary: Renvoyer l'email de vérification
-      description: Réponse toujours 200 (pas de fuite d'information).
+      summary: Renvoyer un code d'activation
+      description: Réponse toujours 200 (pas de fuite d'information). Le code précédent est remplacé.
       requestBody:
         required: true
         content:
@@ -677,7 +722,7 @@ paths:
                   format: email
       responses:
         '200':
-          description: Email envoyé (si le compte existe et n'est pas vérifié)
+          description: Code envoyé (si le compte existe et n'est pas activé), valable 30 minutes
         '429':
           description: Rate limit (3 req / 15 min)
 
@@ -686,8 +731,9 @@ paths:
       tags: [Auth]
       summary: Mot de passe oublié
       description: |
-        Réponse toujours 200 (pas de fuite d'information sur l'existence du compte).
-        Protégé par hCaptcha si `HCAPTCHA_SECRET` est configuré côté serveur.
+        Réponse toujours 200 (pas de fuite d'information sur l'existence du
+        compte). Un code valable 15 minutes part si le compte existe et est
+        activé. Protégé par hCaptcha si `HCAPTCHA_SECRET` est configuré.
       requestBody:
         required: true
         content:
@@ -704,7 +750,7 @@ paths:
                   description: Token hCaptcha (vérifié si configuré).
       responses:
         '200':
-          description: Email de réinitialisation envoyé (si le compte existe)
+          description: Code de réinitialisation envoyé (si le compte existe)
         '400':
           description: "Captcha invalide (code: CAPTCHA_FAILED) ou email malformé"
         '429':
@@ -714,17 +760,21 @@ paths:
     post:
       tags: [Auth]
       summary: Réinitialiser le mot de passe
+      description: Le code est consommé, toutes les sessions sont révoquées.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              required: [token, password]
+              required: [email, code, password]
               properties:
-                token:
+                email:
                   type: string
-                  pattern: '^[a-f0-9]{64}$'
+                  format: email
+                code:
+                  type: string
+                  pattern: '^[0-9]{6}$'
                 password:
                   type: string
                   minLength: 8
@@ -733,9 +783,9 @@ paths:
         '200':
           description: Mot de passe réinitialisé
         '400':
-          description: Token invalide ou mot de passe non conforme
+          description: Mot de passe non conforme, ou code invalide ou expiré (code CODE_INVALID)
         '429':
-          description: Rate limit (5 req / 15 min)
+          description: Rate limit (15 req / 15 min)
 
   # ═══════════════════════════════════════════════════════════
   # USERS
@@ -898,7 +948,7 @@ paths:
         '200':
           description: |
             Mise à jour réussie. Un changement d'email n'est pas appliqué tout de
-            suite : un lien de confirmation part vers la nouvelle adresse
+            suite : un code de confirmation part vers la nouvelle adresse
             (`emailChangePending`), avec une réponse identique que l'adresse soit
             libre ou déjà prise. Après un changement de mot de passe, un nouvel
             access token est renvoyé (`token`).

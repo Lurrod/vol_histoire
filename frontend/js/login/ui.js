@@ -1,5 +1,5 @@
 /* Connexion / inscription — compteurs du panneau visuel, état de chargement
- * des boutons, avis « email non vérifié » avec renvoi du lien. */
+ * des boutons, avis « compte non activé » avec envoi d'un code. */
 (function () {
   const root = typeof window !== 'undefined' ? window : globalThis;
   root.VH = root.VH || {};
@@ -61,7 +61,7 @@
     return `<i class="fas ${icon} ev-btn-icon" aria-hidden="true"></i>${escapeHtml(i18n.t(labelKey))}`;
   }
 
-  async function resendVerification(button, email) {
+  async function resendVerification(button, email, ctx) {
     button.disabled = true;
     button.setAttribute('aria-busy', 'true');
     button.innerHTML = resendButtonHtml('fa-circle-notch fa-spin', 'login.resending');
@@ -75,8 +75,12 @@
       button.innerHTML = resendButtonHtml('fa-check', 'login.resent');
       button.classList.add('ev-resend-success');
       // Réponse du serveur identique que le compte existe ou non : message
-      // au conditionnel.
+      // au conditionnel, puis l'étape « code » sur la même page.
       showToast(i18n.t('login.resent_notice'), 'success');
+      if (ctx && VH.login.flow) {
+        document.getElementById('email-not-verified-notice')?.remove();
+        VH.login.flow.startCode(ctx, 'verify', email);
+      }
     } catch {
       button.disabled = false;
       button.removeAttribute('aria-busy');
@@ -110,7 +114,7 @@
     ctx.els.loginForm.insertAdjacentElement('afterend', notice);
 
     const button = document.getElementById('resend-verify-btn');
-    button.addEventListener('click', () => resendVerification(button, email));
+    button.addEventListener('click', () => resendVerification(button, email, ctx));
   }
 
   VH.login.ui = { fetchStats, setButtonLoading, showEmailNotVerifiedNotice, resendVerification };

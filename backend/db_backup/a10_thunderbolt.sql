@@ -45,7 +45,6 @@ INSERT INTO airplanes (
 
 -- Insertion des technologies
 INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
-((SELECT id FROM airplanes WHERE name = 'A-10 Thunderbolt II'), (SELECT id FROM tech WHERE name = 'Canon GAU-8 Avenger')),
 ((SELECT id FROM airplanes WHERE name = 'A-10 Thunderbolt II'), (SELECT id FROM tech WHERE name = 'Blindage en titane')),
 ((SELECT id FROM airplanes WHERE name = 'A-10 Thunderbolt II'), (SELECT id FROM tech WHERE name = 'Système de navigation et d''attaque intégré')),
 ((SELECT id FROM airplanes WHERE name = 'A-10 Thunderbolt II'), (SELECT id FROM tech WHERE name = 'Moteurs à turbofan')),
