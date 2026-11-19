@@ -1,20 +1,37 @@
   <header>
     <nav class="container" aria-label="Navigation principale" data-i18n-aria="nav.primary_label">
-      <div class="logo"><picture><source srcset="/assets/logo/vh-mark-primary-gold.svg" media="(max-width: 480px)"><img src="/assets/logo/vh-lockup-horizontal-mono-gold.svg" alt="Vol d'Histoire" class="logo-lockup" width="152" height="40"></picture></div>
-      <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>
+      <a href="/" class="logo" aria-label="Vol d'Histoire — Accueil" data-i18n-aria="nav.logo_label"><picture><source srcset="/assets/logo/vh-mark-primary-gold.svg" media="(max-width: 480px)"><img src="/assets/logo/vh-lockup-horizontal-gold.svg" alt="Vol d'Histoire" class="logo-lockup" width="182" height="36"></picture></a>
+      <button type="button" class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span class="hamburger-icon" aria-hidden="true"><span class="hamburger-bar"></span><span class="hamburger-bar"></span></span><span class="hamburger-label" aria-hidden="true" data-i18n="nav.menu">Menu</span></button>
+      <div class="nav-panel">
       <ul class="nav-links" id="nav-links">
-        <li><a href="/"{{active:/}}><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a></li>
-        <li><a href="/hangar"{{active:/hangar}}><i class="fas fa-plane"></i> <span data-i18n="nav.hangar">Hangar</span></a></li>
-        <li><a href="/timeline"{{active:/timeline}}><i class="fas fa-timeline"></i> <span data-i18n="nav.timeline">Chronologie</span></a></li>
-        <li><a href="/favorites"{{active:/favorites}}><i class="fas fa-heart"></i> <span data-i18n="nav.favorites">Favoris</span></a></li>
-      </ul>
+        <li class="nav-group">
+          <span class="nav-group-title" id="nav-group-explore" data-i18n="nav.group_explore">Explorer</span>
+          <ul class="nav-group-list" aria-labelledby="nav-group-explore">
+            <li><a href="/"{{active:/}}><i class="fas fa-home"></i> <span class="nav-label" data-i18n="nav.home">Accueil</span></a></li>
+            <li><a href="/hangar"{{active:/hangar}}><i class="fas fa-plane"></i> <span class="nav-label" data-i18n="nav.hangar">Hangar</span></a></li>
+            <li><a href="/timeline"{{active:/timeline}}><i class="fas fa-timeline"></i> <span class="nav-label" data-i18n="nav.timeline">Chronologie</span></a></li>
+            <li class="nav-extra"><a href="/conflits"{{active:/conflits}}><span class="nav-label" data-i18n="nav.conflicts">Conflits</span></a></li>
+          </ul>
+        </li>
+        <li class="nav-group nav-group--muted">
+          <span class="nav-group-title" id="nav-group-space" data-i18n="nav.group_space">Votre espace</span>
+          <ul class="nav-group-list" aria-labelledby="nav-group-space">
+            <li><a href="/favorites"{{active:/favorites}}><i class="fas fa-heart"></i> <span class="nav-label" data-i18n="nav.favorites">Favoris</span></a></li>
+            <li class="nav-extra nav-guest"><a href="/login"{{active:/login}}><span class="nav-label" data-i18n="nav.login">Connexion</span></a></li>
+            <li class="nav-extra nav-auth"><a href="/settings"{{active:/settings}}><span class="nav-label" data-i18n="nav.settings">Paramètres</span></a></li>
+            <li class="nav-extra nav-auth"><a href="#" class="nav-logout"><span class="nav-label" data-i18n="nav.logout">Déconnexion</span></a></li>
+          </ul>
+        </li>
+      </div>
       <div class="nav-actions">
         <div class="lang-switch">
-          <button type="button" id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true"><i class="fas fa-globe"></i><span class="lang-btn-label" data-i18n="nav.language">Langue</span></button>
+          <button type="button" id="lang-toggle" class="lang-btn" aria-label="Changer de langue" aria-expanded="false" aria-haspopup="true" aria-controls="lang-dropdown">
+            <span class="lang-coin" aria-hidden="true"><img class="lang-flag lang-flag--fr" src="/assets/flags/fr.png" alt="" width="22" height="22"><img class="lang-flag lang-flag--en" src="/assets/flags/gb.png" alt="" width="22" height="22"></span>
+            <svg class="lang-chevron" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3 4.5l3 3 3-3"/></svg>
+          </button>
           <ul class="lang-dropdown" id="lang-dropdown" role="menu">
-            <li><button type="button" class="lang-option" data-lang="fr" lang="fr" role="menuitem"><span class="lang-code">FR</span> Français</button></li>
-            <li><button type="button" class="lang-option" data-lang="en" lang="en" role="menuitem"><span class="lang-code">EN</span> English</button></li>
-          </ul>
+            <li><button type="button" class="lang-option" data-lang="fr" lang="fr" role="menuitem"><img class="lang-option-flag" src="/assets/flags/fr.png" alt="" width="20" height="20"> <span class="lang-name">Français</span><svg class="lang-check" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" pathLength="1"/></svg></button></li>
+            <li><button type="button" class="lang-option" data-lang="en" lang="en" role="menuitem"><img class="lang-option-flag" src="/assets/flags/gb.png" alt="" width="20" height="20"> <span class="lang-name">English</span><svg class="lang-check" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3.5 8.5l3 3 6-7" pathLength="1"/></svg></button></li>
         </div>
         <div class="user-menu"><div class="user-toggle">
           <a href="/login" id="login-icon" class="login-icon{{current:login}}" aria-label="Connexion" data-i18n-aria="nav.login"><i class="fas fa-user-circle" aria-hidden="true"></i></a>

@@ -22,7 +22,7 @@
  *   Chaque cache runtime est borné (éviction FIFO : ordre d'insertion).
  */
 
-const CACHE_VERSION = 'v4.20.0';
+const CACHE_VERSION = 'v4.21.0';
 const CACHE_PREFIX = 'vh-';
 
 const LIMITS = {
@@ -79,7 +79,7 @@ function shellAssets(version) {
     '/manifest.webmanifest',
     '/favicon.svg',
     '/assets/logo/favicon.svg',
-    '/assets/logo/vh-lockup-horizontal-mono-gold.svg',
+    '/assets/logo/vh-lockup-horizontal-gold.svg',
     '/assets/logo/vh-mark-primary-gold.svg',
     '/assets/logo/icon-192.png',
     '/assets/logo/icon-512.png',

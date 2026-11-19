@@ -34,9 +34,13 @@ test.describe('Internationalisation fr/en', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
+    // Le rechargement suit l'animation du bouton (durée lue sur le CSS) :
+    // on attend la nouvelle page au lieu d'un délai fixe.
     await page.click('#lang-toggle');
-    await page.click('.lang-option[data-lang="en"]');
-    await page.waitForTimeout(500);
+    await Promise.all([
+      page.waitForEvent('load'),
+      page.click('.lang-option[data-lang="en"]'),
+    ]);
 
     const storedLang = await page.evaluate(() => window.localStorage.getItem('vol-histoire-lang'));
     expect(storedLang).toBe('en');

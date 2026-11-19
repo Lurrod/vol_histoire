@@ -8,64 +8,67 @@
    complète tient sur une ligne ; le burger n'y apporte rien. */
 @media (max-width: 63.99em) {
 
+    /* ── MENU FLOTTANT ─────────────────────────────────────────────
+       D'après le « floating menu » de Motion Core. Fermé : la barre flotte,
+       détachée des bords. Ouverture (classe .menu-open posée par nav.js) :
+       la barre s'élargit et se colle en haut, le panneau se déroule sous la
+       barre, les traits du burger se croisent, puis les liens montent de leur
+       masque en cascade. La fermeture rejoue tout à l'envers : chaque état
+       porte ses propres délais (ouverture dans .menu-open, fermeture dans la
+       règle de base), miroirs l'un de l'autre autour de --menu-total. */
+    body > header {
+      inset-block-start: var(--menu-gap);
+      inset-inline: var(--menu-gap);
+      border: 1px solid var(--gold-a08);
+      border-radius: var(--r-xl);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      transition:
+        inset-block-start var(--menu-dur) var(--menu-ease) calc(var(--menu-total) - var(--menu-dur)),
+        inset-inline      var(--menu-dur) var(--menu-ease) calc(var(--menu-total) - var(--menu-dur)),
+        border-radius     var(--menu-dur) var(--menu-ease) calc(var(--menu-total) - var(--menu-dur)),
+        padding-block var(--dur-base) var(--ease-out),
+        background-color var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out);
+    }
+
+    body > header.menu-open {
+      inset-block-start: 0;
+      inset-inline: 0;
+      border-start-start-radius: 0;
+      border-start-end-radius: 0;
+      background: rgb(13, 13, 13);
+      transition:
+        inset-block-start var(--menu-dur) var(--menu-ease),
+        inset-inline      var(--menu-dur) var(--menu-ease),
+        border-radius     var(--menu-dur) var(--menu-ease),
+        padding-block var(--dur-base) var(--ease-out),
+        background-color var(--dur-fast) var(--ease-out),
+        border-color var(--dur-fast) var(--ease-out);
+    }
+
+    nav { flex-wrap: wrap; }
+
     .hamburger {
       display: flex;
+      order: 3;
+      margin-inline-start: var(--sp-2);
       z-index: calc(var(--z-header) + 1);
     }
 
-    .nav-links {
-      /* transitions-dev (panel reveal) : panneau fixe qui descend sous le
-         header avec fondu + flou. visibility (et non display) pour préserver
-         le retrait du focus tout en autorisant la transition d'ouverture. */
-      display: flex;
-      position: fixed;
-      top: var(--header-h);
-      inset-inline: 0;
-      /* Opaque : à 0.98, le texte de la page restait lisible en filigrane
-         derrière les liens. */
-      background: rgb(13, 13, 13);
-      flex-direction: column;
-      padding: var(--sp-8);
-      border-bottom: 1px solid rgba(200, 169, 110, 0.10);
-      max-height: calc(100vh - var(--header-h));
-      overflow-y: auto;
-      z-index: var(--z-header);
-      visibility: hidden;
-      opacity: 0;
-      transform: translateY(-16px);
-      filter: blur(var(--panel-blur));
-      pointer-events: none;
-      will-change: transform, opacity, filter;
+    /* Traits : ils rejoignent l'axe puis pivotent en croix. */
+    .hamburger-bar {
       transition:
-        opacity    var(--panel-close-dur) var(--panel-ease),
-        transform  var(--panel-close-dur) var(--panel-ease),
-        filter     var(--panel-close-dur) var(--panel-ease),
-        visibility 0s linear var(--panel-close-dur);
+        translate var(--menu-icon-dur) var(--menu-ease) calc(var(--menu-total) - var(--menu-icon-delay) - var(--menu-icon-dur)),
+        rotate    var(--menu-icon-dur) var(--menu-ease) calc(var(--menu-total) - var(--menu-icon-delay) - var(--menu-icon-dur));
     }
-
-    .nav-links.show {
-      visibility: visible;
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
-      pointer-events: auto;
+    .hamburger.active .hamburger-bar {
+      translate: 0 0;
       transition:
-        opacity    var(--panel-open-dur) var(--panel-ease),
-        transform  var(--panel-open-dur) var(--panel-ease),
-        filter     var(--panel-open-dur) var(--panel-ease),
-        visibility 0s linear 0s;
+        translate var(--menu-icon-dur) var(--menu-ease) var(--menu-icon-delay),
+        rotate    var(--menu-icon-dur) var(--menu-ease) var(--menu-icon-delay);
     }
-
-    .nav-links li {
-      width: 100%;
-    }
-
-    .nav-links li a {
-      width: 100%;
-      justify-content: center;
-      padding: var(--sp-4) var(--sp-6);
-      min-height: 44px;
-    }
+    .hamburger.active .hamburger-bar:first-child { rotate: 45deg; }
+    .hamburger.active .hamburger-bar:last-child  { rotate: -45deg; }
 
     /* Langue et compte restent dans la barre, comme sur ordinateur, avec
        les mêmes listes déroulantes : le panneau ne porte que les liens.
@@ -75,38 +78,208 @@
       margin-inline-start: auto;
     }
 
-    .hamburger {
-      order: 3;
-      margin-inline-start: var(--sp-2);
+    /* Panneau : une ligne de grille qui passe de 0fr à 1fr (déroulé jusqu'à
+       la hauteur réelle des liens, sans hauteur codée en dur). */
+    .nav-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      order: 4;
+      flex-basis: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        grid-template-rows var(--menu-dur) var(--menu-ease) calc(var(--menu-total) - var(--menu-panel-delay) - var(--menu-dur)),
+        opacity            var(--menu-dur) var(--menu-ease) calc(var(--menu-total) - var(--menu-panel-delay) - var(--menu-dur)),
+        visibility 0s linear calc(var(--menu-total) - var(--menu-panel-delay));
     }
 
-    /* Voile sous le panneau : la page reste visible mais clairement hors
-       d'atteinte (le défilement est bloqué) ; un toucher referme le menu.
+    header.menu-open .nav-panel {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      visibility: visible;
+      transition:
+        grid-template-rows var(--menu-dur) var(--menu-ease) var(--menu-panel-delay),
+        opacity            var(--menu-dur) var(--menu-ease) var(--menu-panel-delay),
+        visibility 0s linear 0s;
+    }
+
+    /* Contenu du panneau, à la manière du floating menu : des groupes titrés
+       (« Explorer », puis « Votre espace » sur fond atténué), des liens
+       alignés à gauche, sans pastille, soulignés au survol. La liste n'a ni
+       marge ni bordure propres : dans une ligne à 0fr, elles garderaient le
+       panneau entrouvert ; le filet et l'air passent par ses enfants. */
+    .nav-links {
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: start;
+      gap: var(--sp-2);
+      margin: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .nav-links::before,
+    .nav-links::after {
+      content: "";
+      grid-column: 1 / -1;
+    }
+    .nav-links::before {
+      height: 1px;
+      margin-block-start: var(--sp-3);
+      background: var(--gold-a08);
+    }
+    .nav-links::after { height: var(--sp-1); }
+
+    .nav-group {
+      display: flex;
+      flex-direction: column;
+      padding: var(--sp-3) var(--sp-4) var(--sp-2);
+      border-radius: var(--r-lg);
+    }
+
+    .nav-group--muted { background: var(--white-a04); }
+
+    .nav-group-title {
+      display: block;
+      margin-block-end: var(--sp-1);
+      font: 600 var(--text-xs) / 1.4 var(--font-sans);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .nav-group-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-extra { display: block; }
+
+    /* « Votre espace » remplace l'icône de profil de la barre : Connexion
+       sans session, Paramètres et Déconnexion avec (.is-auth, nav.js). */
+    .user-menu { display: none; }
+    .nav-auth,
+    header.is-auth .nav-guest { display: none; }
+    header.is-auth .nav-auth { display: block; }
+
+    /* Chaque lien monte de son propre masque (son li), en cascade d'un
+       groupe à l'autre. */
+    .nav-group-list > li {
+      overflow: hidden;
+      --menu-i: 0;
+    }
+    .nav-group-list > li:nth-child(2) { --menu-i: 1; }
+    .nav-group-list > li:nth-child(3) { --menu-i: 2; }
+    .nav-group-list > li:nth-child(4) { --menu-i: 3; }
+    .nav-group--muted .nav-group-list > li:nth-child(1) { --menu-i: 4; }
+    .nav-group--muted .nav-guest,
+    .nav-group--muted .nav-auth { --menu-i: 5; }
+    .nav-group--muted .nav-auth:last-child { --menu-i: 6; }
+
+    .nav-links li a {
+      justify-content: flex-start;
+      padding: var(--sp-1) 0;
+      min-height: 44px;
+      border-radius: 0;
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      translate: 0 100%;
+      opacity: 0;
+      transition:
+        translate var(--menu-dur) var(--menu-ease) calc((6 - var(--menu-i)) * var(--menu-stagger)),
+        opacity   var(--menu-dur) var(--menu-ease) calc((6 - var(--menu-i)) * var(--menu-stagger)),
+        color var(--dur-fast) var(--ease-out);
+    }
+
+    /* Ouvert, le panneau ne dépasse jamais l'écran (la page est bloquée
+       derrière) : au-delà, il défile. Fermé, il reste en overflow: hidden,
+       condition du déroulé 0fr → 1fr. */
+    header.menu-open .nav-links {
+      max-height: calc(100dvh - var(--header-h) - var(--sp-4));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    header.menu-open .nav-links li a {
+      translate: 0 0;
+      opacity: 1;
+      transition:
+        translate var(--menu-dur) var(--menu-ease) calc(var(--menu-items-delay) + var(--menu-i) * var(--menu-stagger)),
+        opacity   var(--menu-dur) var(--menu-ease) calc(var(--menu-items-delay) + var(--menu-i) * var(--menu-stagger)),
+        color var(--dur-fast) var(--ease-out);
+    }
+
+    /* Les icônes servent la barre du bureau ; dans le panneau, le mot seul. */
+    .nav-links li a .icon,
+    .nav-links li a i { display: none; }
+
+    .nav-links li a:hover {
+      background: none;
+      color: var(--white);
+    }
+
+    .nav-links li a.active { color: var(--hud-cyan); }
+
+    /* Déconnexion en rouge, comme dans le menu compte du bureau (variante
+       claire, lisible en texte sur fond sombre). */
+    .nav-links li a.nav-logout,
+    .nav-links li a.nav-logout:hover { color: var(--accent-text); }
+
+    /* Soulignement : il se déroule de gauche à droite au survol et repart
+       vers la droite en sortant (origine inversée entre les deux états). */
+    .nav-label { position: relative; }
+    .nav-label::after {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      inset-block-end: -2px;
+      height: 1px;
+      background: currentColor;
+      scale: 0 1;
+      transform-origin: right;
+      transition: scale var(--menu-icon-dur) var(--menu-ease);
+    }
+    .nav-links li a:hover .nav-label::after,
+    .nav-links li a:focus-visible .nav-label::after,
+    .nav-links li a.active .nav-label::after {
+      scale: 1 1;
+      transform-origin: left;
+    }
+
+    /* Le masque rognerait l'anneau de focus : il passe à l'intérieur. */
+    .nav-links li a:focus-visible { outline-offset: -2px; }
+
+    /* Voile sur toute la page, sous la barre : un toucher referme le menu.
        Créé par nav.js. */
     .nav-scrim {
       display: block;
       position: fixed;
-      inset: var(--header-h) 0 0 0;
+      inset: 0;
       background: rgba(0, 0, 0, 0.6);
       z-index: calc(var(--z-header) - 1);
       opacity: 0;
       visibility: hidden;
       transition:
-        opacity    var(--panel-close-dur) var(--panel-ease),
-        visibility 0s linear var(--panel-close-dur);
+        opacity    var(--menu-dur) var(--menu-ease) calc(var(--menu-total) - var(--menu-dur)),
+        visibility 0s linear var(--menu-total);
     }
 
     .nav-scrim.show {
       opacity: 1;
       visibility: visible;
       transition:
-        opacity    var(--panel-open-dur) var(--panel-ease),
+        opacity    var(--menu-dur) var(--menu-ease),
         visibility 0s linear 0s;
     }
 
     /* Défilement bloqué tant que le panneau est ouvert (classe posée par
        nav.js : la CSP interdit d'écrire dans element.style). */
     body.nav-open { overflow: hidden; }
+  }
+
+  /* Panneau du menu flottant assez large : les deux groupes côte à côte. */
+  @media (min-width: 30em) and (max-width: 63.99em) {
+    .nav-links { grid-template-columns: 3fr 2fr; }
   }
 
   /* Hero page secondaire : empilement */
@@ -251,8 +424,8 @@
     /* Deux colonnes : « Politique de confidentialité » ne tient pas en trois. */
     .footer-content { grid-template-columns: 1fr 1fr; gap: var(--sp-8) var(--sp-4); }
     .footer-logo    { font-size: var(--text-xl); }
-    .footer-lockup  { height: 2.5rem; }
-    .auth-lockup    { height: 3rem; }
+    .footer-lockup  { height: 2.25rem; }
+    .auth-lockup    { height: 2.5rem; }
   }
 
 /* Champs de saisie à 16 px minimum sous 768 px : en dessous, Safari iOS

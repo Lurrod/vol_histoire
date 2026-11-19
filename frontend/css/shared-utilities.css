@@ -112,7 +112,10 @@
     .nav-links li a { min-height: 48px; }
     .dropdown-item  { min-height: 44px; }
     .hamburger      { min-width: 48px; min-height: 48px; }
-    .login-icon     { width: 48px; height: 48px; }
+    /* Sélecteur de langue au même gabarit que le bouton « Menu » (la pastille
+       d'ouverture de la liste suit la même variable). */
+    .lang-btn, .lang-dropdown { --lang-btn-h: 48px; }
+    .login-icon, .user-menu { --pf-btn: 48px; }
     .modal-close    { min-width: 48px; min-height: 48px; }
   }
 

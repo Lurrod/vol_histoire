@@ -215,8 +215,10 @@
     align-items: center;
   }
 
+  /* Logo sur une ligne (signe, « VOL D'HISTOIRE ») : 2,25 rem de haut, les
+     capitales y font environ 15 px. */
   .logo-lockup {
-    height: 2.5rem;
+    height: 2.25rem;
     width: auto;
     display: block;
   }
@@ -239,6 +241,18 @@
 
   /* Voile du menu mobile : n'existe qu'au palier burger (shared-responsive). */
   .nav-scrim { display: none; }
+
+  /* Enveloppe du panneau mobile : transparente au-delà du palier burger, la
+     liste reste un enfant direct de la barre. */
+  .nav-panel { display: contents; }
+
+  /* Groupes du menu flottant : invisibles dans la barre du bureau, où les
+     liens restent une rangée unique ; titres et liens réservés au panneau
+     (Conflits, Paramètres) n'y apparaissent pas. */
+  .nav-group,
+  .nav-group-list { display: contents; }
+  .nav-group-title,
+  .nav-extra { display: none; }
 
   /* Langue + compte : hors de la liste des liens pour rester dans la barre
      en mobile. Espacements identiques à l'ancienne liste unique. */
@@ -273,40 +287,47 @@
   }
 
   /* Hamburger */
+  /* Deux traits et le mot « Menu » (d'après le floating menu de Motion
+     Core) ; la morphose en croix et ses délais sont dans shared-responsive. */
   .hamburger {
     display: none;
-    flex-direction: column;
-    gap: 5px;
+    align-items: center;
+    gap: var(--sp-1);
     background: transparent;
     border: none;
-    padding: var(--sp-3);
+    border-radius: var(--r-lg);
+    padding: 0 var(--sp-3) 0 var(--sp-1);
     min-width: 44px;
     min-height: 44px;
-  }
-
-  .hamburger span {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background: var(--white);
-    border-radius: var(--r-sm);
+    color: var(--white);
+    font: 500 var(--text-sm) / 1 var(--font-sans);
     transition:
-      transform var(--dur-base) var(--ease-out),
-      opacity var(--dur-base) var(--ease-out),
-      background-color var(--dur-fast) var(--ease-out);
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
   }
 
-  /* Survol : les barres passent à l'or de la charte. */
-  .hamburger:hover span,
-  .hamburger:focus-visible span { background: var(--hud-cyan); }
+  .hamburger-icon {
+    position: relative;
+    display: block;
+    width: 36px;
+    height: 36px;
+  }
 
-  /* Morphose en X : chaque barre extérieure rejoint d'abord le centre de la
-     barre du milieu (hauteur 3px + gap 5px = 8px), puis pivote. La
-     translation précède la rotation pour rester sur l'axe vertical — l'ancien
-     rotate() puis translate(8px, 8px) déplaçait la barre de 11,3px. */
-  .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-  .hamburger.active span:nth-child(2) { opacity: 0; }
-  .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+  .hamburger-bar {
+    position: absolute;
+    inset-inline-start: 7px;
+    inset-block-start: calc(50% - 1px);
+    width: 22px;
+    height: 2px;
+    background: currentColor;
+    border-radius: var(--r-sm);
+  }
+  .hamburger-bar:first-child { translate: 0 -4px; }
+  .hamburger-bar:last-child  { translate: 0 4px; }
+
+  /* Survol : traits et mot passent à l'or de la charte. */
+  .hamburger:hover,
+  .hamburger:focus-visible { color: var(--hud-cyan); background: var(--white-a06); }
 
   /* ============================================================
      USER MENU
@@ -315,74 +336,133 @@
     position: relative;
   }
 
+  /* Même style que les boutons « Menu » et langue : sans fond au repos,
+     voile clair au survol et à l'ouverture, coins arrondis, 44 px. Posée
+     au-dessus du menu : la pastille d'ouverture sort de derrière elle. */
   .login-icon {
+    --pf-btn: 2.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: var(--r-full);
+    width: var(--pf-btn);
+    height: var(--pf-btn);
+    border-radius: var(--r-lg);
+    position: relative;
+    z-index: calc(var(--z-dropdown) + 1);
     transition:
       background-color var(--dur-fast) var(--ease-out),
       color var(--dur-fast) var(--ease-out),
-      box-shadow var(--dur-fast) var(--ease-out),
-      transform var(--dur-base) var(--ease-out);
+      scale var(--dur-instant) var(--ease-out);
     color: var(--white);
     font-size: var(--text-xl);
   }
 
-  .login-icon:hover {
-    background: var(--gold-a12);
-    transform: scale(1.05);
-  }
-
-  /* Menu compte ouvert (classe posée par nav.js avec aria-expanded) :
-     même traitement que le bouton de langue ouvert. */
+  .login-icon:hover,
+  .login-icon:focus-visible,
   .login-icon.is-open {
-    background: var(--gold-a12);
+    background: var(--white-a06);
     color: var(--hud-cyan);
-    box-shadow: inset 0 0 0 1px rgba(200, 169, 110, 0.35);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .login-icon:hover { transform: none; }
+  .login-icon:active { scale: var(--press-scale); }
+
+  /* Menu compte : même ouverture que la liste des langues. Fermé, il n'est
+     qu'une pastille de la taille de l'icône, posée derrière elle (translate
+     vers le haut, clip-path réduit au coin supérieur droit). Ouverture : la
+     pastille glisse et s'agrandit jusqu'au panneau, puis l'en-tête et les
+     entrées arrivent en cascade. Fermeture : le chemin inverse, plus bref
+     (nav.js attend sa durée réelle via VH.motion.exit avant .hidden). */
+  .user-menu {
+    --pf-btn: 2.75rem;
+    --pf-gap: 6px;
+    /* Ombre portée par le parent : le clip-path du menu rognerait une
+       box-shadow. */
+    transition: filter var(--dur-base) var(--ease-out);
   }
+  .user-menu:has(.user-dropdown.show) { filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.5)); }
 
   .user-dropdown {
     position: absolute;
     inset-inline-end: 0;
-    top: calc(100% + var(--sp-4));
+    top: 100%;
+    margin-top: var(--pf-gap);
     background: var(--night-mid);
     border: 1px solid var(--border-cyan);
     border-radius: var(--r-2xl);
-    box-shadow: var(--shadow-xl);
     min-width: 280px;
     overflow: hidden;
-    /* transitions-dev (menu dropdown) : grandit depuis le trigger (avatar,
-       coin haut-droit) ; la fermeture (état au repos) est plus rapide que
-       l'ouverture (.show), durées asymétriques gérées en pur CSS. */
-    transform-origin: top right;
-    transform: scale(var(--dropdown-pre-scale));
+    padding-block-end: var(--sp-2);
     opacity: 0;
-    transition:
-      transform var(--dropdown-close-dur) var(--dropdown-ease),
-      opacity   var(--dropdown-close-dur) var(--dropdown-ease);
     pointer-events: none;
     z-index: var(--z-dropdown);
-    will-change: transform, opacity;
+    translate: 0 calc(-1 * (var(--pf-btn) + var(--pf-gap)));
+    clip-path: inset(0 0 calc(100% - var(--pf-btn)) calc(100% - var(--pf-btn)) round var(--r-lg));
+    transition:
+      clip-path var(--dur-base) var(--ease-in) var(--dur-instant),
+      translate var(--dur-base) var(--ease-in) var(--dur-instant),
+      opacity   var(--dur-fast) var(--ease-in) var(--dur-base);
   }
 
   .user-dropdown.show {
-    transform: scale(1);
     opacity: 1;
     pointer-events: all;
+    translate: 0 0;
+    clip-path: inset(0 0 0 0 round var(--r-2xl));
     transition:
-      transform var(--dropdown-open-dur) var(--dropdown-ease),
-      opacity   var(--dropdown-open-dur) var(--dropdown-ease);
+      clip-path var(--dur-slower) var(--menu-ease),
+      translate var(--dur-slow) var(--menu-ease),
+      opacity   var(--dur-instant) var(--ease-out);
   }
 
+  /* Contenu : chaque bloc monte et apparaît, en cascade, une fois le
+     panneau déplié ; il repart d'un coup à la fermeture. */
+  .user-dropdown > * {
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    translate: 0 10px;
+    transition:
+      opacity var(--dur-fast) var(--ease-in),
+      translate var(--dur-fast) var(--ease-in);
+  }
+  .user-dropdown.show > * {
+    opacity: 1;
+    translate: 0 0;
+    transition:
+      opacity var(--dur-base) var(--ease-out) var(--pf-item-delay, var(--dur-fast)),
+      translate var(--dur-slower) var(--menu-ease) var(--pf-item-delay, var(--dur-fast)),
+      color var(--dur-fast) var(--ease-out);
+  }
+  .user-dropdown > :nth-child(3) { --pf-item-delay: var(--dur-base); }
+  .user-dropdown > :nth-child(n+4) { --pf-item-delay: calc(var(--dur-base) + var(--dur-instant)); }
+
+  /* Pastille de survol, partagée par les entrées (position posée en
+     CSSOM par nav.js : --pf-hl-y, --pf-hl-h). Teinte rouge sur
+     « Déconnexion » (.hl-danger). */
+  .user-dropdown::before {
+    content: "";
+    position: absolute;
+    inset-inline: var(--sp-2);
+    top: 0;
+    height: var(--pf-hl-h, 0px);
+    translate: 0 var(--pf-hl-y, 0px);
+    border-radius: var(--r-lg);
+    background: var(--gold-a08);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      translate var(--dur-base) var(--menu-ease),
+      height var(--dur-base) var(--menu-ease),
+      background-color var(--dur-fast) var(--ease-out),
+      opacity var(--dur-fast) var(--ease-out);
+  }
+  .user-dropdown.show::before { opacity: var(--pf-hl-o, 0); }
+  .user-dropdown.hl-danger::before { background: rgba(231, 76, 60, 0.10); }
+
   @media (prefers-reduced-motion: reduce) {
-    .user-dropdown { transition: none !important; }
+    .user-menu, .user-dropdown, .user-dropdown.show,
+    .user-dropdown > *, .user-dropdown.show > *, .user-dropdown::before,
+    .dropdown-item > * { transition: none !important; }
   }
 
   .user-header {
@@ -415,38 +495,47 @@
     font-weight: 500;
   }
 
-  .dropdown-divider {
-    border-top: 1px solid var(--gold-a08);
-  }
+  /* Avec la pastille de survol, les entrées se séparent par l'air et non
+     par des filets (ils coupaient la pastille) ; l'en-tête garde sa bordure. */
+  .user-dropdown .dropdown-divider { display: none; }
 
   .dropdown-item {
     display: flex;
     align-items: center;
-    padding: 0.875rem var(--sp-5);
+    margin-inline: var(--sp-2);
+    padding: 0.875rem var(--sp-3);
+    border-radius: var(--r-lg);
     color: rgba(255, 255, 255, 0.80);
     transition:
-      background-color var(--dur-fast) var(--ease-out),
-      color var(--dur-fast) var(--ease-out),
-      padding-inline-start var(--dur-fast) var(--ease-out);
+      opacity var(--dur-fast) var(--ease-in),
+      translate var(--dur-fast) var(--ease-in),
+      color var(--dur-fast) var(--ease-out);
     gap: var(--sp-3);
   }
+  .user-dropdown > .dropdown-item { margin-block-start: 2px; }
+  .user-dropdown > .dropdown-item:first-of-type { margin-block-start: var(--sp-2); }
 
-  .dropdown-item:hover {
-    background: var(--gold-a08);
-    padding-inline-start: var(--sp-6);
+  /* Survol : la pastille glisse sous l'entrée, le texte s'éclaire et
+     l'icône comme le libellé se décalent légèrement vers la droite. */
+  .dropdown-item > * {
+    transition: translate var(--dur-base) var(--menu-ease);
+  }
+  .dropdown-item:hover > *,
+  .dropdown-item:focus-visible > * { translate: 4px 0; }
+
+  .dropdown-item:hover,
+  .dropdown-item:focus-visible {
     color: var(--white);
   }
+  .dropdown-item:focus-visible { outline-offset: -2px; }
 
   .dropdown-item.active {
     color: var(--hud-cyan);
   }
 
-  .dropdown-item.logout {
-    color: var(--accent-text);
-  }
-
+  .dropdown-item.logout,
   .dropdown-item.logout:hover {
-    background: rgba(231, 76, 60, 0.10);
+    color: var(--accent-text);
   }
 
   .dropdown-item i, .dropdown-item .icon {
@@ -455,142 +544,259 @@
   }
 
   /* ============================================================
-     LANGUE — LANG SWITCH
+     LANGUE — SÉLECTEUR (même famille que le menu flottant et les icônes
+     à pièces animées). Le drapeau de la langue courante est une pièce :
+     elle se retourne au changement de langue. La liste naît du bouton :
+     une pastille de sa taille glisse et s'agrandit jusqu'au panneau, puis
+     les langues montent de leur masque, et la coche se trace.
      ============================================================ */
   .lang-switch {
     display: flex;
     align-items: center;
     position: relative;
     margin-left: var(--sp-2);
+    /* Ombre du panneau portée par le parent : le clip-path du panneau
+       rognerait une box-shadow. */
+    transition: filter var(--dur-base) var(--ease-out);
   }
+  .lang-switch.open { filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.45)); }
 
+  /* Même style que le bouton « Menu » du menu flottant : sans fond ni
+     bordure au repos, voile clair au survol et à l'ouverture, coins
+     arrondis, 44 px de haut (zone tactile comprise). */
   .lang-btn {
-    background: var(--gold-a08);
-    border: 1px solid var(--gold-a20);
-    color: var(--hud-cyan);
-    width: 2.25rem;
-    height: 2.25rem;
-    padding: 0;
-    display: flex;
+    --lang-btn-w: 3.75rem;
+    --lang-btn-h: 2.75rem;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--r-xl);
+    gap: 6px;
+    width: var(--lang-btn-w);
+    height: var(--lang-btn-h);
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--r-lg);
+    color: var(--white);
+    perspective: 120px;
+    /* Au-dessus de la liste : la pastille d'ouverture sort de derrière le
+       bouton au lieu de le recouvrir. */
+    position: relative;
+    z-index: calc(var(--z-overlay) + 1);
     transition:
       background-color var(--dur-fast) var(--ease-out),
-      border-color var(--dur-fast) var(--ease-out),
-      box-shadow var(--dur-base) var(--ease-out),
-      transform var(--dur-base) var(--ease-out);
-    font-size: var(--text-md);
+      color var(--dur-fast) var(--ease-out),
+      scale var(--dur-instant) var(--ease-out);
   }
 
-  .lang-btn:hover, .lang-btn.open {
-    background: var(--gold-a12);
-    border-color: rgba(200, 169, 110, 0.35);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-    transform: translateY(-1px);
+  .lang-btn:hover, .lang-btn:focus-visible, .lang-btn.open {
+    background: var(--white-a06);
+    color: var(--hud-cyan);
   }
+
+  .lang-btn:active { scale: var(--press-scale); }
+
+  /* Pièce : drapeau français à l'avers, britannique au revers. Elle se
+     retourne quand <html lang> change (posé par le serveur, puis par
+     i18n.js) ; i18n.js relit cette durée pour différer le rechargement. */
+  .lang-coin {
+    position: relative;
+    flex: none;
+    width: 22px;
+    height: 22px;
+    transform-style: preserve-3d;
+    transition:
+      rotate var(--dur-slower) var(--menu-ease),
+      scale var(--dur-base) var(--menu-ease);
+  }
+  html[lang="en"] .lang-coin { rotate: y 180deg; }
+  .lang-btn:hover .lang-coin { scale: 1.08; }
+
+  .lang-flag {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    backface-visibility: hidden;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+  }
+  .lang-flag--en { rotate: y 180deg; }
+
+  /* Changement confirmé : un anneau part du bouton (vh-confirm). */
+  .lang-btn.is-switching { animation: vh-confirm var(--dur-slower) var(--ease-out); }
+
+  .lang-chevron {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.7;
+    transition: rotate var(--dur-base) var(--menu-ease);
+  }
+  .lang-btn.open .lang-chevron { rotate: 180deg; }
 
   .lang-btn-label { display: none; }
 
-  /* Cible tactile : le bouton reste dessiné à 36 px, mais sa zone de
-     toucher est portée à 44 × 44 par un pseudo-élément transparent qui
-     déborde de 4 px de chaque côté (les voisins sont à 8 px : aucun
-     chevauchement). -5 px : l'ancrage absolu part du bord intérieur de la
-     bordure de 1 px. */
-  @media (max-width: 48em), (pointer: coarse) {
-    .lang-btn { position: relative; }
-    .lang-btn::after {
-      content: '';
-      position: absolute;
-      inset: -5px;
-    }
-  }
-
-  /* transitions-dev (menu dropdown) : même mécanique que .user-dropdown —
-     ouverture et fermeture animées, fermeture plus brève. visibility (et non
-     display) retire les options du parcours clavier une fois la fermeture
-     terminée, sans couper l'animation de sortie. */
+  /* Liste. Fermée, elle n'est qu'une pastille de la taille du bouton,
+     posée sur lui (translate vers le haut, clip-path réduit au coin
+     supérieur droit, coins ronds). Ouverture : la pastille glisse sous le
+     bouton et s'élargit jusqu'au panneau. Fermeture : le chemin inverse,
+     plus bref. visibility retire les options du parcours clavier. */
   .lang-dropdown {
+    --lang-btn-w: 3.75rem;
+    --lang-btn-h: 2.75rem;
+    --lang-gap: 4px;
     display: block;
-    visibility: hidden;
-    opacity: 0;
-    transform: scale(var(--dropdown-pre-scale));
-    transform-origin: top right;
-    pointer-events: none;
-    transition:
-      transform  var(--dropdown-close-dur) var(--dropdown-ease),
-      opacity    var(--dropdown-close-dur) var(--dropdown-ease),
-      visibility 0s linear var(--dropdown-close-dur);
     position: absolute;
     top: 100%;
     right: 0;
     left: auto;
     bottom: auto;
-    margin: 8px 0 0 0;
+    margin: var(--lang-gap) 0 0 0;
+    min-width: 11.5rem;
+    padding: var(--sp-1);
     background: var(--night-mid);
     border: 1px solid var(--border-cyan-md);
-    border-radius: 10px;
-    padding: var(--sp-1);
-    min-width: 140px;
+    border-radius: var(--r-xl);
     z-index: var(--z-overlay);
-    box-shadow: var(--shadow-lg), 0 0 0 1px rgba(200, 169, 110, 0.05);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    translate: 0 calc(-1 * (var(--lang-btn-h) + var(--lang-gap)));
+    clip-path: inset(0 0 calc(100% - var(--lang-btn-h)) calc(100% - var(--lang-btn-w)) round var(--r-lg));
+    transition:
+      clip-path  var(--dur-base) var(--ease-in) var(--dur-instant),
+      translate  var(--dur-base) var(--ease-in) var(--dur-instant),
+      opacity    var(--dur-fast) var(--ease-in) var(--dur-base),
+      visibility 0s linear calc(var(--dur-base) + var(--dur-fast));
   }
 
   .lang-switch.open .lang-dropdown {
     visibility: visible;
     opacity: 1;
-    transform: scale(1);
     pointer-events: auto;
+    translate: 0 0;
+    clip-path: inset(0 0 0 0 round var(--r-xl));
     transition:
-      transform  var(--dropdown-open-dur) var(--dropdown-ease),
-      opacity    var(--dropdown-open-dur) var(--dropdown-ease),
+      clip-path  var(--dur-slower) var(--menu-ease),
+      translate  var(--dur-slow) var(--menu-ease),
+      opacity    var(--dur-instant) var(--ease-out),
       visibility 0s linear 0s;
   }
 
   /* L'attribut hidden doit toujours l'emporter sur display: block. */
   .lang-dropdown[hidden] { display: none; }
 
-  @media (prefers-reduced-motion: reduce) {
-    .lang-dropdown,
-    .lang-switch.open .lang-dropdown { transition: none; }
+  /* Pastille de survol : une seule, qui glisse d'une langue à l'autre
+     (position posée en CSSOM par i18n.js : --lang-hl-y, --lang-hl-h).
+     Elle n'apparaît qu'une fois les langues posées. */
+  .lang-dropdown::before {
+    content: "";
+    position: absolute;
+    inset-inline: var(--sp-1);
+    top: 0;
+    height: var(--lang-hl-h, 0px);
+    translate: 0 var(--lang-hl-y, 0px);
+    border-radius: var(--r-lg);
+    background: rgba(200, 169, 110, 0.10);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      translate var(--dur-base) var(--menu-ease),
+      height var(--dur-base) var(--menu-ease),
+      opacity var(--dur-fast) var(--ease-out);
   }
+  .lang-switch.open .lang-dropdown::before {
+    opacity: var(--lang-hl-o, 0);
+    transition:
+      translate var(--dur-base) var(--menu-ease),
+      height var(--dur-base) var(--menu-ease),
+      opacity var(--dur-base) var(--ease-out) var(--dur-slow);
+  }
+
+  /* Chaque langue monte de son propre masque (son li), en cascade. */
+  .lang-dropdown li { position: relative; overflow: hidden; border-radius: var(--r-lg); }
 
   .lang-option {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    padding: 8px 12px;
-    text-align: left;
-    border-radius: 7px;
-    font-size: var(--text-sm);
-    letter-spacing: 0.02em;
-    transition:
-      background-color var(--dur-fast) var(--ease-out),
-      color var(--dur-fast) var(--ease-out);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    border-radius: var(--r-lg);
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
+    text-align: left;
+    translate: 0 110%;
+    transition:
+      translate var(--dur-fast) var(--ease-in),
+      color var(--dur-fast) var(--ease-out);
   }
 
-  .lang-option:hover {
-    background: rgba(200, 169, 110, 0.10);
-    color: var(--hud-cyan);
+  .lang-switch.open .lang-option {
+    translate: 0 0;
+    transition:
+      translate var(--dur-slower) var(--menu-ease) var(--lang-item-delay, var(--dur-fast)),
+      color var(--dur-fast) var(--ease-out);
+  }
+  .lang-dropdown li:nth-child(2) .lang-option { --lang-item-delay: var(--dur-base); }
+
+  .lang-option:hover,
+  .lang-option:focus-visible { color: var(--white); }
+  .lang-option:focus-visible { outline-offset: -2px; }
+
+  .lang-option.active { color: var(--hud-cyan); font-weight: 600; }
+
+  .lang-option-flag {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+  }
+  .lang-option.active .lang-option-flag { box-shadow: 0 0 0 1.5px var(--hud-cyan); }
+
+  /* Coche de la langue courante : tracée une fois la liste dépliée. */
+  .lang-check {
+    width: 14px;
+    height: 14px;
+    margin-inline-start: auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  .lang-switch.open .lang-option.active .lang-check {
+    opacity: 1;
+    stroke-dashoffset: 0;
+    transition:
+      stroke-dashoffset var(--dur-slow) var(--menu-ease) var(--dur-slow),
+      opacity 0s linear var(--dur-slow);
   }
 
-  .lang-option.active {
-    color: var(--hud-cyan);
-    font-weight: 600;
-  }
-
-  .lang-option .lang-code {
-    font-size: var(--text-xs);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    opacity: 0.70;
-    background: rgba(200, 169, 110, 0.10);
-    padding: 1px 5px;
-    border-radius: var(--r-sm);
+  @media (prefers-reduced-motion: reduce) {
+    .lang-switch, .lang-dropdown, .lang-switch.open .lang-dropdown,
+    .lang-option, .lang-switch.open .lang-option,
+    .lang-dropdown::before, .lang-switch.open .lang-dropdown::before,
+    .lang-check, .lang-switch.open .lang-option.active .lang-check,
+    .lang-coin, .lang-chevron { transition: none !important; }
+    .lang-btn.is-switching { animation: none !important; }
   }
 
   /* ============================================================
@@ -1086,11 +1292,17 @@
     .t-digit-group .t-digit { animation: none !important; }
   }
 
-  /* transitions-dev — guard reduced-motion pour le panneau menu mobile
-     (.nav-links, états définis dans shared-responsive.css). En @layer pour
-     que le !important prime sur la règle non-layered de shared-responsive. */
+  /* Mouvements réduits : le menu flottant (shared-responsive.css) s'ouvre et
+     se ferme sans animation. En @layer pour que le !important prime sur les
+     règles de shared-responsive. */
   @media (prefers-reduced-motion: reduce) {
-    .nav-links { transition: none !important; }
+    body > header, .nav-panel, .nav-links li a, .hamburger-bar, .nav-scrim { transition: none !important; }
+  }
+
+  /* Écran très étroit : le mot « Menu » cède la place, les traits restent. */
+  @media (max-width: 22.5em) {
+    .hamburger-label { display: none; }
+    .hamburger { padding-inline-end: var(--sp-1); }
   }
 
   .toast-success {
@@ -1403,14 +1615,14 @@
   .footer-logo i, .footer-logo .icon { color: var(--hud-cyan); }
 
   .footer-lockup {
-    height: 3rem;
+    height: 2.5rem;
     width: auto;
     display: block;
   }
 
   /* Logos des pages d'authentification (login/check-email/forgot-password/reset-password/verify-email) */
   .auth-lockup {
-    height: 3.5rem;
+    height: 2.75rem;
     width: auto;
     display: block;
     margin: 0 auto;

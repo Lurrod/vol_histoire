@@ -151,13 +151,17 @@
     });
   }
 
-  /* Hauteur réelle de l'en-tête (il se resserre au défilement) : la règle se
-   * colle juste dessous. */
+  /* Bas réel de l'en-tête (il se resserre au défilement et, sous 64em, flotte
+   * à quelques pixels du haut) : la règle se colle juste dessous. Menu ouvert,
+   * l'en-tête grandit sous le voile : on garde la valeur précédente. */
   function syncBarTop() {
     const bar = document.getElementById('tl-bar');
     const header = document.querySelector('body > header');
     if (!bar || !header) return;
-    const apply = () => bar.style.setProperty('--tl-bar-top', header.getBoundingClientRect().height + 'px');
+    const apply = () => {
+      if (header.classList.contains('menu-open')) return;
+      bar.style.setProperty('--tl-bar-top', header.getBoundingClientRect().bottom + 'px');
+    };
     apply();
     // border-box : l'en-tête se resserre par son padding, que la boîte de
     // contenu (observée par défaut) ne voit pas.

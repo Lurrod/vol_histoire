@@ -247,7 +247,7 @@ describe('ruler — DOM', () => {
   test('syncBarTop : hauteur réelle de l\'en-tête, suivie par un ResizeObserver en border-box', () => {
     const header = document.querySelector('header');
     let height = 72;
-    header.getBoundingClientRect = () => ({ height });
+    header.getBoundingClientRect = () => ({ bottom: height });
     const observed = [];
     window.ResizeObserver = global.ResizeObserver = class {
       constructor(cb) { this.cb = cb; }
@@ -262,10 +262,18 @@ describe('ruler — DOM', () => {
     height = 56;
     observed[0].cb();
     expect(bar.style.getPropertyValue('--tl-bar-top')).toBe('56px');
+    // Menu flottant ouvert : l'en-tête grandit sous le voile, la règle ne bouge pas.
+    header.classList.add('menu-open');
+    height = 400;
+    observed[0].cb();
+    expect(bar.style.getPropertyValue('--tl-bar-top')).toBe('56px');
+    header.classList.remove('menu-open');
+    observed[0].cb();
+    expect(bar.style.getPropertyValue('--tl-bar-top')).toBe('400px');
   });
 
   test('syncBarTop : sans ResizeObserver, valeur posée une fois ; sans en-tête ou barre, rien', () => {
-    document.querySelector('header').getBoundingClientRect = () => ({ height: 80 });
+    document.querySelector('header').getBoundingClientRect = () => ({ bottom: 80 });
     ruler.syncBarTop();
     expect(document.getElementById('tl-bar').style.getPropertyValue('--tl-bar-top')).toBe('80px');
     document.querySelector('header').remove();

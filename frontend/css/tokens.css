@@ -256,6 +256,21 @@
   --panel-close-dur: var(--dur-base);
   --panel-blur: 1px;
   --panel-ease: var(--ease-out);
+  /* Menu flottant (burger, < 64em), d'après le « floating menu » de Motion
+     Core : la barre s'élargit et se colle en haut, le panneau se déroule,
+     les liens montent de leur masque en cascade ; la fermeture rejoue la
+     séquence à l'envers. Courbe monotone : aucun rebond. */
+  --menu-ease: cubic-bezier(0.625, 0.05, 0, 1);
+  --menu-dur: var(--dur-slower);
+  --menu-icon-dur: var(--dur-slow);
+  --menu-panel-delay: 200ms;
+  --menu-icon-delay: 200ms;
+  --menu-items-delay: 300ms;
+  --menu-stagger: 30ms;
+  --menu-gap: var(--sp-2);
+  /* Durée totale de l'ouverture (7 rangs de liens au plus) : point de départ des délais de
+     fermeture, calculés comme le miroir de ceux d'ouverture. */
+  --menu-total: calc(var(--menu-items-delay) + 6 * var(--menu-stagger) + var(--menu-dur));
   /* Icon swap — scale de départ moins extrême */
   --icon-swap-dur: var(--dur-base);
   --icon-swap-blur: 1.5px;

@@ -212,14 +212,56 @@ const i18n = (() => {
     // pour éviter les reloads inutiles. /conflits recharge aussi : son titre
     // d'onglet et son h1 sont écrits par le serveur dans la langue de l'URL.
     if (previous && previous !== lang) {
+      const switchDur = playSwitch();
       const path = window.location.pathname;
       const needsReload = /^\/$|^\/(hangar|details|favorites|timeline|conflits)/.test(path);
       if (needsReload) {
-        // Petit délai pour que l'event langChanged soit traité par les listeners
-        // et que le localStorage soit bien écrit avant le reload.
-        setTimeout(() => window.location.reload(), 100);
+        // Délai : l'event langChanged est traité, le localStorage écrit, et
+        // le bouton a le temps de montrer le changement (globe qui tourne,
+        // code qui se remplace) avant que la page ne se recharge.
+        setTimeout(() => window.location.reload(), Math.max(100, switchDur));
       }
     }
+  }
+
+  /**
+   * Retour visuel du changement de langue sur le bouton : la pièce-drapeau
+   * se retourne d'elle-même (elle suit <html lang>), un anneau confirme
+   * (.is-switching). Renvoie la durée du retournement en ms, lue sur le CSS
+   * calculé (jamais recopiée ici) ; 0 si le bouton est absent.
+   */
+  function playSwitch() {
+    const btn = document.getElementById('lang-toggle');
+    if (!btn) return 0;
+    btn.classList.remove('is-switching');
+    void btn.offsetWidth; // reflow : l'anneau repart de zéro
+    btn.classList.add('is-switching');
+    btn.addEventListener('animationend', () => btn.classList.remove('is-switching'), { once: true });
+    const coin = btn.querySelector('.lang-coin');
+    const durations = coin ? window.getComputedStyle(coin).transitionDuration.split(',') : [];
+    const ms = Math.max(0, ...durations.map((d) => parseFloat(d) * 1000).filter(Number.isFinite));
+    return ms;
+  }
+
+  /**
+   * Pastille de survol de la liste : une seule, qui glisse vers l'option
+   * visée (pointeur ou clavier). Position posée en CSSOM — la CSP interdit
+   * l'attribut style, pas element.style.setProperty.
+   */
+  function placeHighlight(option) {
+    const list = document.getElementById('lang-dropdown');
+    if (!list || !option || !list.contains(option)) return;
+    // Mesure de mise en page (offsetTop du li), pas getBoundingClientRect :
+    // à l'ouverture, les options sont encore décalées par leur translate
+    // d'entrée, et la pastille se posait une ligne trop bas.
+    const row = option.closest('li') || option;
+    list.style.setProperty('--lang-hl-y', row.offsetTop + 'px');
+    list.style.setProperty('--lang-hl-h', row.offsetHeight + 'px');
+    list.style.setProperty('--lang-hl-o', '1');
+  }
+
+  function highlightActive() {
+    placeHighlight(document.querySelector('.lang-option.active'));
   }
 
   /** Initialize — call once on DOMContentLoaded */
@@ -240,6 +282,7 @@ const i18n = (() => {
         const isOpen = langSwitch && langSwitch.classList.toggle('open');
         btn.classList.toggle('open', !!isOpen);
         btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        if (isOpen) highlightActive();
         return;
       }
 
@@ -259,6 +302,19 @@ const i18n = (() => {
         const toggle = document.getElementById('lang-toggle');
         if (toggle) { toggle.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
       }
+    });
+
+    // La pastille suit le pointeur et le focus clavier ; elle revient sur la
+    // langue courante quand le pointeur quitte la liste.
+    const follow = (e) => {
+      const option = e.target.closest && e.target.closest('.lang-option');
+      if (option) placeHighlight(option);
+    };
+    document.addEventListener('pointerover', follow);
+    document.addEventListener('focusin', follow);
+    document.addEventListener('pointerout', (e) => {
+      const list = document.getElementById('lang-dropdown');
+      if (list && list.contains(e.target) && !list.contains(e.relatedTarget)) highlightActive();
     });
   }
 

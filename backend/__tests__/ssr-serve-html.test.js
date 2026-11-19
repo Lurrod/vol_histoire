@@ -47,11 +47,21 @@ describe('resolveIncludes', () => {
     expect(out).not.toMatch(/class="active"/);
   });
 
-  test('variantes : icône de compte active sur login, logo-lien sur 404', () => {
+  test('variantes : icône de compte active sur login ; Conflits et Paramètres marqués dans le menu', () => {
     expect(resolveIncludes('<!-- @include nav -->', 'login', partials)).toContain('class="login-icon active"');
-    const notFound = resolveIncludes('<!-- @include nav -->', '404', partials);
-    expect(notFound).toContain('<a href="/" class="logo" aria-label="Vol d\'Histoire — Accueil"><picture>');
-    expect(notFound).not.toContain('<div class="logo">');
+    const p = new Map([['nav', '<a href="/conflits"{{active:/conflits}}>C</a><a href="/settings"{{active:/settings}}>P</a>']]);
+    expect(resolveIncludes('<!-- @include nav -->', 'conflits', p)).toContain('<a href="/conflits" class="active" aria-current="page">C</a>');
+    expect(resolveIncludes('<!-- @include nav -->', 'settings', p)).toContain('<a href="/settings" class="active" aria-current="page">P</a>');
+  });
+
+  test('le logo de l\'en-tête réel est un lien vers l\'accueil sur toutes les pages', () => {
+    const header = fs.readFileSync(path.join(__dirname, '..', '..', 'frontend', 'partials', 'header.html'), 'utf8');
+    const real = new Map([['header', header.trimEnd()]]);
+    for (const page of ['index', 'hangar', '404', 'cgu']) {
+      const out = resolveIncludes('<!-- @include header -->', page, real);
+      expect(out).toContain('<a href="/" class="logo" aria-label="Vol d\'Histoire — Accueil"');
+      expect(out).not.toContain('<div class="logo">');
+    }
   });
 
   test('conserve les fins de ligne CRLF de la page', () => {
@@ -111,7 +121,8 @@ describe('rewrite — cache-busting', () => {
 describe('pages réelles de frontend/', () => {
   const cache = buildHtmlCache(FRONTEND, 'test');
   const page = (name) => cache.get(path.join(FRONTEND, `${name}.html`));
-  const NAV_PAGES = { index: '/', hangar: '/hangar', timeline: '/timeline', favorites: '/favorites' };
+  const NAV_PAGES = { index: '/', hangar: '/hangar', timeline: '/timeline', favorites: '/favorites',
+    conflits: '/conflits', settings: '/settings', login: '/login' };
   const HEADER_PAGES = ['404', 'cgu', 'conflits', 'contact', 'details', 'favorites', 'hangar', 'index',
     'login', 'mentions-legales', 'politique-confidentialite', 'settings', 'timeline'];
 
@@ -143,8 +154,8 @@ describe('pages réelles de frontend/', () => {
 
   test('A11Y-008 : les noms de langue portent leur attribut lang', () => {
     const html = page('hangar');
-    expect(html).toMatch(/data-lang="en" lang="en"[^>]*><span class="lang-code">EN<\/span> English/);
-    expect(html).toMatch(/data-lang="fr" lang="fr"[^>]*><span class="lang-code">FR<\/span> Français/);
+    expect(html).toMatch(/data-lang="en" lang="en"[^>]*><img class="lang-option-flag" src="\/assets\/flags\/gb\.png[^"]*" alt="" width="20" height="20"> <span class="lang-name">English<\/span>/);
+    expect(html).toMatch(/data-lang="fr" lang="fr"[^>]*><img class="lang-option-flag" src="\/assets\/flags\/fr\.png[^"]*" alt="" width="20" height="20"> <span class="lang-name">Français<\/span>/);
   });
 
   test('PERF-003 : aucun ?v= codé en dur dans les sources HTML', () => {
