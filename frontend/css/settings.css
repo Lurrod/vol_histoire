@@ -96,6 +96,8 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 .page-settings .btn-danger:hover { background: rgba(231,76,60,0.2); border-color: var(--accent); }
 .page-settings .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
 .page-settings .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+/* Coche « Enregistré » (VH.busyButton) : bloqué le temps de la lire, mais pas grisé. */
+.page-settings .btn[data-bb="done"]:disabled { opacity: 1; cursor: default; }
 
 /* ADMIN */
 .page-settings .admin-tools { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; }
@@ -145,8 +147,9 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 /* Suppression d'un utilisateur en deux temps, sur place (admin.js +
    shared/confirm-action.js). .adm-del enveloppe la poubelle (.btn-delete) et
    son panneau « supprimer / garder » ; data-state : idle → confirm → done.
-   Le panneau s'ouvre vers la gauche, le couvercle se soulève ; à la
-   confirmation, couvercle et cuve s'effacent et une coche se trace. */
+   Le panneau s'ouvre vers la gauche, le couvercle se soulève (charnière à
+   droite) ; à la confirmation, couvercle et cuve s'effacent et une coche
+   se trace. */
 .page-settings .adm-del { flex-shrink: 0; }
 .page-settings .adm-del .btn-delete { display: grid; place-items: center; padding: 0.5rem 0.75rem; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
 .page-settings .adm-del[data-state="confirm"] .btn-delete { background: rgba(231,76,60,0.15); border-color: var(--accent); color: #ff8a7a; }
@@ -169,34 +172,9 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 .page-settings .user-actions .adm-del .cfm-yes:hover { background: rgba(231,76,60,0.22); color: var(--white); }
 .page-settings .user-actions .adm-del .cfm-no:hover { background: var(--white-a08); color: var(--white); }
 
-/* La poubelle : trois tracés animés séparément. */
-.page-settings .adm-bin {
-  width: 18px; height: 18px; overflow: visible;
-  fill: none; stroke: currentColor; stroke-width: 1.8;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.page-settings .adm-bin-lid {
-  transform-box: view-box;
-  transform-origin: 4.5px 7px;
-  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
-}
-.page-settings .adm-bin-can { transition: opacity var(--dur-fast) var(--ease-out); }
-/* Anticipation au survol, couvercle ouvert pendant la confirmation. */
-.page-settings .btn-delete:hover .adm-bin-lid { transform: translateY(-0.8px) rotate(-7deg); }
-.page-settings .adm-del[data-state="confirm"] .adm-bin-lid { transform: translate(-0.4px, -2.4px) rotate(-24deg); }
-.page-settings .adm-bin-check {
-  stroke-dasharray: 17;
-  stroke-dashoffset: 17;
-  opacity: 0;
-}
-.page-settings .adm-del[data-state="done"] .adm-bin-lid,
-.page-settings .adm-del[data-state="done"] .adm-bin-can { opacity: 0; }
-.page-settings .adm-del[data-state="done"] .adm-bin-check {
-  stroke-dashoffset: 0;
-  opacity: 1;
-  transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant),
-              opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
-}
+/* La poubelle (VH.confirmAction.binIcon, shared-base) : panneau à gauche,
+   charnière du couvercle à droite. */
+.page-settings .adm-del .cfm-bin { width: 18px; height: 18px; }
 .page-settings .role-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-left: 0.5rem; vertical-align: middle; }
 
 /* Pagination utilisateurs — alignée sur le style hangar */
@@ -291,8 +269,6 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
 .page-settings .info-link i:last-child, .page-settings .info-link .icon:last-child { color: rgba(255,255,255,0.3); font-size: 0.85rem; }
 
 /* SPINNER */
-.page-settings .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--gold-a20); border-top-color: var(--hud-cyan); border-radius: 50%; animation: spin 0.6s linear infinite; }
-/* @keyframes spin → shared.css (dédupliqué) */
 
 /* LOGOUT MODAL */
 .page-settings .logout-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: var(--z-modal); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity var(--modal-open-dur) var(--modal-ease), visibility var(--modal-open-dur) var(--modal-ease); }

@@ -47,9 +47,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       T.lens.announce(lens, T.data.countTotals(view.decades).aircraft);
     };
 
+    // Changement de filtre : les appareils restés visibles glissent vers
+    // leur nouvelle place, les autres s'effacent (VH.viewMorph).
     lens = T.lens.init(options, lens, next => {
       lens = next;
-      draw();
+      if (VH.viewMorph) VH.viewMorph.swap({ root: document.getElementById('tl-chapters'), update: draw });
+      else draw();
     });
     draw();
 

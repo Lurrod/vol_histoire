@@ -140,7 +140,8 @@
       '<span id="compare-count"></span>' +
       '<button type="button" id="compare-share" class="btn btn-secondary btn-sm">' + LINK_SVG +
         '<span class="cmp-share-label">' + escapeHtml(t('hangar.compare_share', 'Copier le lien')) + '</span></button>' +
-      '<button type="button" id="compare-clear" class="btn btn-secondary btn-sm">' + escapeHtml(t('hangar.compare_clear', 'Effacer')) + '</button>' +
+      '<button type="button" id="compare-clear" class="btn btn-secondary btn-sm"><span class="cmp-clear-label">' +
+        escapeHtml(t('hangar.compare_clear', 'Effacer')) + '</span></button>' +
       '<button type="button" id="compare-view" class="btn btn-primary btn-sm">' + escapeHtml(t('hangar.compare_view', 'Comparer')) + '</button>';
     document.body.appendChild(bar);
 
@@ -226,17 +227,22 @@
     if (!finished) cancelModalClose = cancel;
   }
 
-  /* « Effacer » vide jusqu'à trois appareils d'un clic : le bouton se
-   * transforme sur place, depuis son centre, en « ✓ Effacer · ✗ Garder »
-   * (option morph de VH.confirmAction, compare.css). Une fois vidée, la confirmation revient au repos : la barre est
-   * réutilisée à la prochaine sélection. */
+  /* « Effacer » vide jusqu'à trois appareils d'un clic : même confirmation
+   * que la suppression d'un utilisateur (Paramètres) — le couvercle de la
+   * poubelle se soulève et « ✓ Effacer · ✗ Garder » sort à droite du bouton ;
+   * à la confirmation, la coche se trace puis la sélection est vidée. Une
+   * fois vidée, la confirmation revient au repos : la barre est réutilisée à
+   * la prochaine sélection. */
   let clearControl = null;
 
   function armClear(btn) {
+    if (!btn) return;
+    btn.prepend(VH.confirmAction.binIcon());
     const control = VH.confirmAction.arm(btn, {
       showText: true,
-      morph: true,
+      side: 'right',
       className: 'cmp-clear',
+      measure: '.cfm-bin-check',
       // Évalués à l'ouverture : la langue peut ne pas être chargée à l'armement.
       labels: {
         group: () => t('hangar.compare_clear_group', 'Effacer la sélection ?'),

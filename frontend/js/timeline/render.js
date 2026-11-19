@@ -31,8 +31,8 @@
     const tag = aircraftTag(a);
     const year = Number.isFinite(a.year) ? a.year : '—';
     return `
-      <a class="tl-plane-card${tag ? ' is-proto' : ''}" href="${VH.shared.buildDetailsPath(a.id, a.name)}">
-        <div class="tl-plane-img">
+      <a class="tl-plane-card${tag ? ' is-proto' : ''}" href="${VH.shared.buildDetailsPath(a.id, a.name)}" data-morph-id="${Number(a.id)}">
+        <div class="tl-plane-img" data-morph="photo">
           ${img ? VH.shared.picture.pictureHtml(img, { alt: name, loading: 'lazy', width: '400', height: '225' }) : ''}
           <span class="tl-plane-year">${escapeHtml(String(year))}</span>
           ${gen ? `<span class="tl-plane-gen">${gen}</span>` : ''}
@@ -53,8 +53,8 @@
       ? VH.shared.picture.thumbHtml(a.image_url, { alt: '', loading: 'lazy', width: '48', height: '32' })
       : '';
     return `
-          <li><a class="tl-chip${tag ? ' is-proto' : ''}" href="${VH.shared.buildDetailsPath(a.id, a.name)}">
-            <span class="tl-chip-img" aria-hidden="true">${thumb}</span>
+          <li><a class="tl-chip${tag ? ' is-proto' : ''}" href="${VH.shared.buildDetailsPath(a.id, a.name)}" data-morph-id="${Number(a.id)}">
+            <span class="tl-chip-img" aria-hidden="true" data-morph="photo">${thumb}</span>
             <span class="tl-chip-text">
               <span class="tl-chip-name">${escapeHtml(name)}</span>
               <span class="tl-chip-meta">${escapeHtml(country)}${tag ? ` · <span class="tl-chip-tag">${escapeHtml(tag)}</span>` : ''}</span>

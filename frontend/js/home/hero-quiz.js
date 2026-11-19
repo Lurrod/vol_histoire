@@ -68,14 +68,26 @@
       if (link) link.setAttribute('hidden', '');
     }
 
+    // Coche (bonne réponse) ou croix (choix erroné) tracée dans l'option,
+    // comme les autres confirmations du site. Décorative : la couleur et le
+    // lien « voir la fiche » disent déjà le résultat.
+    const MARKS = {
+      correct: '<path pathLength="20" d="M5.5 12.5l4.2 4.2L18.5 7.5"/>',
+      wrong: '<path pathLength="20" d="M7 7l10 10"/><path pathLength="20" d="M17 7L7 17"/>',
+    };
+    function mark(btn, kind) {
+      btn.insertAdjacentHTML('beforeend',
+        `<svg class="hero-quiz-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${MARKS[kind]}</svg>`);
+    }
+
     function answer(btn) {
       if (!current || btn.disabled) return;
       const correct = btn.dataset.value === current.name;
 
       options.querySelectorAll('.hero-quiz-option').forEach(b => {
         b.disabled = true;
-        if (b.dataset.value === current.name) b.classList.add('is-correct');
-        else if (b === btn && !correct)       b.classList.add('is-wrong');
+        if (b.dataset.value === current.name) { b.classList.add('is-correct'); mark(b, 'correct'); }
+        else if (b === btn && !correct)       { b.classList.add('is-wrong'); mark(b, 'wrong'); }
       });
 
       card.classList.add('is-revealed');

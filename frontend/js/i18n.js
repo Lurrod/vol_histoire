@@ -270,6 +270,9 @@ const i18n = (() => {
     translations = await loadTranslations(currentLang);
     isLoaded = true;
     applyToDOM();
+    // Les modules qui ont posé des libellés avant le chargement (clés brutes)
+    // peuvent les rafraîchir (ex. VH.confirmAction).
+    window.dispatchEvent(new CustomEvent('i18nReady', { detail: { lang: currentLang } }));
 
     // Bind lang toggle button + dropdown
     document.addEventListener('click', (e) => {

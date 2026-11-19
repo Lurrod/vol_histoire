@@ -12,22 +12,14 @@
     return value && value !== key ? value : fallback;
   }
 
-  // Le libellé reste lu par les lecteurs d'écran pendant le chargement
-  // (texte masqué visuellement) et aria-busy signale l'action en cours.
-  function setButtonLoading(button, loading) {
+  /* Attente puis succès sur place (VH.busyButton) : le bouton garde sa
+   * largeur, le libellé cède la place à l'anneau, puis — si opts.done — à
+   * une coche tracée avec opts.label avant de revenir. */
+  function setButtonLoading(button, loading, opts) {
     if (!button) return;
-
-    if (loading) {
-      const label = button.textContent.trim();
-      button.disabled = true;
-      button.setAttribute('aria-busy', 'true');
-      button.dataset.originalHtml = button.innerHTML;
-      button.innerHTML = `<span class="spinner" aria-hidden="true"></span><span class="sr-only">${escapeHtml(label)}</span>`;
-    } else {
-      button.disabled = false;
-      button.removeAttribute('aria-busy');
-      button.innerHTML = button.dataset.originalHtml;
-    }
+    if (loading) VH.busyButton.start(button);
+    else if (opts && opts.done) VH.busyButton.succeed(button, { label: opts.label });
+    else VH.busyButton.stop(button);
   }
 
   /** Défilement doux, sauf si l'utilisateur demande moins d'animations. */

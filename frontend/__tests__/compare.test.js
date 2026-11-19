@@ -198,35 +198,15 @@ describe('compare — barre flottante', () => {
     expect(wrap.dataset.state).toBe('idle');
   });
 
-  test('morphing « Effacer » : largeur de l\'emplacement posée à l\'ouverture, rendue à auto au repos', async () => {
+  test('« Effacer » porte la poubelle partagée, panneau à droite', () => {
     compare.init({ urlSync: false });
     compare.toggle(4);
     const trigger = document.getElementById('compare-clear');
+    expect(trigger.querySelector('svg.cfm-bin .cfm-bin-lid')).not.toBeNull();
+    expect(trigger.textContent).toBe('Effacer');
     const wrap = trigger.closest('.cfm');
-    Object.defineProperty(trigger, 'offsetWidth', { configurable: true, get: () => 76 });
-    Object.defineProperty(wrap.querySelector('.cfm-panel'), 'scrollWidth', { configurable: true, get: () => 180 });
-    trigger.click();
-    await Promise.resolve(); // MutationObserver
-    expect(wrap.style.width).toBe('180px');
-    wrap.querySelector('.cfm-no').click();
-    await Promise.resolve();
-    expect(wrap.style.width).toBe('76px');
-    const end = new window.Event('transitionend', { bubbles: true });
-    Object.defineProperty(end, 'propertyName', { value: 'width' });
-    wrap.dispatchEvent(end);
-    expect(wrap.style.width).toBe('');
-  });
-
-  test('remise au repos pendant que la barre est cachée : aucune largeur figée à 0', async () => {
-    compare.init({ urlSync: false });
-    compare.toggle(4);
-    compare.toggle(4); // sélection vidée : barre cachée, reset() du contrôle
-    await Promise.resolve();
-    const wrap = document.getElementById('compare-clear').closest('.cfm');
-    expect(wrap.style.width).toBe('');
-    compare.toggle(5);
-    await Promise.resolve();
-    expect(wrap.style.width).toBe('');
+    expect(wrap.dataset.side).toBe('right');
+    expect(wrap.classList.contains('cfm-morph')).toBe(false);
   });
 
   test('« Effacer ? » ouvert puis sélection vidée ailleurs : le panneau revient au repos', () => {

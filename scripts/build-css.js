@@ -33,6 +33,7 @@ const BUNDLES = {
     'shared-responsive.css',
     'shared-underlay.css',
     'shared-utilities.css',
+    'shared-morph.css',
     'shared-onboarding.css',
     'fonts.css',
     'cookies.css',

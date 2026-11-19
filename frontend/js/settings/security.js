@@ -84,6 +84,7 @@
 
     const submitBtn = form.querySelector('button[type="submit"]');
     setButtonLoading(submitBtn, true);
+    let saved = false;
 
     try {
       const response = await auth.authFetch(`${API_BASE}/users/${state.currentUser.id}`, {
@@ -101,6 +102,7 @@
         form.reset();
         updatePasswordStrength('');
         updatePasswordRequirements('');
+        saved = true;
       } else if (VH.settings.profile.CURRENT_PASSWORD_ERRORS.includes(data.code)) {
         setFieldError(currentInput, i18n.t('settings.toast_current_password_invalid'));
       } else {
@@ -109,7 +111,7 @@
     } catch {
       showToast('API non disponible. Connectez votre backend pour changer le mot de passe.', 'error');
     } finally {
-      setButtonLoading(submitBtn, false);
+      setButtonLoading(submitBtn, false, { done: saved, label: VH.settings.ui.tr('settings.btn_saved', 'Enregistré') });
     }
   }
 

@@ -507,7 +507,7 @@ describe('details/admin — suppression', () => {
 
   test('poubelle dessinée dans le bouton, enveloppée par la confirmation sur place', () => {
     boot();
-    expect(deleteBtn().querySelector('svg.det-bin')).not.toBeNull();
+    expect(deleteBtn().querySelector('svg.cfm-bin')).not.toBeNull();
     expect(deleteBtn().querySelector('i')).toBeNull();
     expect(wrap().dataset.state).toBe('idle');
     expect(deleteBtn().getAttribute('aria-expanded')).toBe('false');

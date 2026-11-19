@@ -46,6 +46,7 @@
     const { API_BASE, tr, setButtonLoading } = VH.settings.ui;
     if (button && button.getAttribute('aria-busy') === 'true') return;
     setButtonLoading(button, true);
+    let saved = false;
 
     try {
       const response = await auth.authFetch(`${API_BASE}/users/me/export`);
@@ -59,10 +60,11 @@
       const filename = filenameFromDisposition(response.headers.get('Content-Disposition')) || DEFAULT_FILENAME;
       triggerDownload(blob, filename);
       showToast(tr('settings.export_success', 'Vos données ont été téléchargées.'), 'success');
+      saved = true;
     } catch {
       showToast(i18n.t('settings.toast_network_error'), 'error');
     } finally {
-      setButtonLoading(button, false);
+      setButtonLoading(button, false, { done: saved, label: tr('settings.btn_downloaded', 'Téléchargé') });
     }
   }
 

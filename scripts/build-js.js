@@ -33,12 +33,14 @@ const BUNDLES = {
     'shared/rolling-number.js',
     'shared/custom-select.js',
     'shared/confirm-action.js',
+    'shared/busy-button.js',
     'shared/underlay-nav.js',
     'nav.js',
     'cookies.js',
     'shared/alpha3.js',
     'shared/picture.js',
     'shared/card.js',
+    'shared/view-morph.js',
   ],
 
   // Sous-ensemble d'icones Font Awesome (genere par scripts/build-icons.py).
@@ -105,6 +107,7 @@ const BUNDLES = {
     'details/lineage.js',
     'details/compare.js',
     'details/ui.js',
+    'details/photo-zoom.js',
     'details.js',
   ],
 

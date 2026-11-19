@@ -58,6 +58,7 @@ function loadModules() {
   require('../js/login/state');
   require('../js/login/strength');
   require('../js/login/tabs');
+  require('../js/shared/busy-button');
   require('../js/login/ui');
   require('../js/shared/otp-input');
   require('../js/login/flow');
@@ -258,11 +259,14 @@ describe('VH.login.ui', () => {
     ui.setButtonLoading(btn, true);
     expect(btn.disabled).toBe(true);
     expect(btn.getAttribute('aria-busy')).toBe('true');
-    expect(btn.querySelector('.sr-only').textContent).toBe('Se connecter');
+    expect(btn.classList.contains('is-loading')).toBe(true);
+    // Libellé gardé dans le bouton (VH.busyButton) : toujours lu.
+    expect(btn.querySelector('.bb-label').textContent.trim()).toBe('Se connecter');
     ui.setButtonLoading(btn, false);
     expect(btn.disabled).toBe(false);
     expect(btn.hasAttribute('aria-busy')).toBe(false);
-    expect(btn.innerHTML).toBe(html);
+    expect(btn.classList.contains('is-loading')).toBe(false);
+    expect(btn.querySelector('.bb-label').innerHTML).toBe(html);
   });
 
   test('avis « email non vérifié » unique, renvoi du lien réussi puis échoué', async () => {

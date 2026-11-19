@@ -154,6 +154,9 @@
 
     const submitBtn = form.querySelector('button[type="submit"]');
     setButtonLoading(submitBtn, true);
+    // Coche « Enregistré » seulement si tout est enregistré : un changement
+    // d'adresse attend encore son code.
+    let saved = false;
 
     try {
       const payload = emailChanged
@@ -168,6 +171,7 @@
 
       if (response.ok) {
         onProfileSaved(state, name, data, currentPwInput, email);
+        saved = !emailChanged;
       } else if (CURRENT_PASSWORD_ERRORS.includes(data.code)) {
         setFieldError(currentPwInput, i18n.t('settings.toast_current_password_invalid'));
       } else {
@@ -176,7 +180,7 @@
     } catch {
       showToast(i18n.t('settings.toast_network_error'), 'error');
     } finally {
-      setButtonLoading(submitBtn, false);
+      setButtonLoading(submitBtn, false, { done: saved, label: VH.settings.ui.tr('settings.btn_saved', 'Enregistré') });
     }
   }
 

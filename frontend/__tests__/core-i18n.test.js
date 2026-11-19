@@ -95,6 +95,15 @@ describe('détection de la langue', () => {
     expect(window.i18n).toBe(i18n);
     expect(i18n.isLoaded).toBe(true);
   });
+
+  test('émet i18nReady une fois les traductions chargées', async () => {
+    const onReady = jest.fn();
+    window.addEventListener('i18nReady', onReady);
+    await loadI18n({ url: '/?lang=en' });
+    window.removeEventListener('i18nReady', onReady);
+    expect(onReady).toHaveBeenCalledTimes(1);
+    expect(onReady.mock.calls[0][0].detail).toEqual({ lang: 'en' });
+  });
 });
 
 // =============================================================================

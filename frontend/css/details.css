@@ -378,64 +378,44 @@ body.page-details { background: var(--night); }
 /* Suppression de la fiche : le bouton est enveloppé par VH.confirmAction
    (.cfm.det-del). Enveloppe cachée tant que le bouton l'est (rôle). */
 .page-details .hero-actions .cfm:has(> .btn.hidden) { display: none; }
-/* « Supprimer » se transforme sur place, depuis son centre, en
-   « ✓ Supprimer · ✗ Garder » (morphing générique .cfm-morph, shared-base).
-   La transition de .btn (ci-dessus) remplace celle de shared-base : elle
-   est reprise ici avec opacity, scale et visibility. */
+/* Même confirmation que la suppression d'un utilisateur (Paramètres) : le
+   couvercle de la poubelle se soulève (charnière à gauche, panneau à droite)
+   et « ✓ Supprimer · ✗ Garder » sort à droite du bouton, à sa hauteur ; à
+   la confirmation, la coche se trace (poubelle : shared-base). */
 .page-details .det-del { align-items: stretch; }
-.page-details .det-del > .btn {
-  transition: opacity var(--dur-fast) var(--ease-out) var(--dur-instant),
-              scale var(--dur-base) var(--ease-out),
-              visibility 0s linear 0s,
-              background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out),
-              color var(--dur-fast) var(--ease-out);
-}
-.page-details .det-del[data-state="confirm"] > .btn {
-  transition: opacity var(--dur-instant) var(--ease-in),
-              scale var(--dur-base) var(--ease-in-out),
-              visibility 0s linear var(--dur-base);
-}
-/* La paire occupe exactement la place du bouton : il se scinde depuis son
-   milieu en « ✓ Supprimer » et une croix seule (nom accessible « Garder »),
-   sans élargir la rangée — alignée à gauche, elle ne pourrait grandir que
-   vers la droite, et le centre glisserait. */
-.page-details .det-del .cfm-panel { width: 100%; gap: 0.375rem; }
+.page-details .det-del .cfm-panel { align-items: stretch; }
 .page-details .det-del .cfm-yes,
 .page-details .det-del .cfm-no {
+  min-height: 0;
   gap: 0.45rem;
+  padding: 0 0.85rem;
   border-radius: 12px;
   font-size: 0.9rem;
-}
-.page-details .det-del .cfm-yes { flex: 1 1 auto; padding: 0 0.75rem; }
-.page-details .det-del .cfm-no { flex: 0 0 auto; aspect-ratio: 1; padding: 0; }
-.page-details .det-del .cfm-no .cfm-text {
-  position: absolute; width: 1px; height: 1px; overflow: hidden;
-  clip-path: inset(50%); white-space: nowrap;
 }
 .page-details .det-del .cfm-yes { background: rgba(231,76,60,0.2); border-color: var(--accent); color: #ff8a7a; }
 .page-details .det-del .cfm-yes:hover { background: rgba(231,76,60,0.32); color: var(--white); }
 .page-details .det-del .cfm-no { background: var(--white-a04); border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.85); }
 .page-details .det-del .cfm-no:hover { background: var(--white-a08); color: var(--white); }
-.page-details .det-del[data-state="confirm"] .btn-danger { background: rgba(231,76,60,0.2); border-color: var(--accent); }
-.page-details .det-bin {
-  width: 1.2em; height: 1.2em; flex-shrink: 0; overflow: visible;
-  fill: none; stroke: currentColor; stroke-width: 1.8;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-.page-details .det-bin-lid {
-  transform-box: view-box; transform-origin: 4.5px 7px;
-  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
-}
-.page-details .det-bin-can { transition: opacity var(--dur-fast) var(--ease-out); }
-.page-details .btn-danger:hover .det-bin-lid { transform: translateY(-0.8px) rotate(-7deg); }
-.page-details .det-del[data-state="confirm"] .det-bin-lid { transform: translate(-0.4px, -2.4px) rotate(-24deg); }
-.page-details .det-bin-check { stroke-dasharray: 20; stroke-dashoffset: 20; opacity: 0; }
-.page-details .det-del[data-state="done"] .det-bin-lid,
-.page-details .det-del[data-state="done"] .det-bin-can { opacity: 0; }
-.page-details .det-del[data-state="done"] .det-bin-check {
-  stroke-dashoffset: 0; opacity: 1;
-  transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant),
-              opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
+.page-details .det-del[data-state="confirm"] .btn-danger,
+.page-details .det-del[data-state="done"] .btn-danger { background: rgba(231,76,60,0.2); border-color: var(--accent); }
+.page-details .det-del[data-state="done"] .btn-danger { pointer-events: none; }
+/* Rangée en ligne (≥ 48em) : la place de la paire est réservée — un vide en
+   fin de rangée, invisible — et la paire se découvre vers la droite. Si elle
+   prenait sa place à l'ouverture, « Supprimer » pourrait passer à la ligne
+   sous le doigt. */
+@media (min-width: 48em) {
+  .page-details .det-del .cfm-panel {
+    max-width: none;
+    margin-inline-start: 6px;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in);
+  }
+  .page-details .det-del[data-state="confirm"] .cfm-panel {
+    max-width: none;
+    margin-inline-start: 6px;
+    clip-path: inset(0 0 0 0);
+    transition: clip-path var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+  }
 }
 
 /* Lien copié : les maillons s'effacent, une coche se trace, puis retour. */
@@ -460,6 +440,11 @@ body.page-details { background: var(--night); }
 /* HERO IMAGE */
 .page-details .hero-right { position: relative; }
 .page-details .aircraft-image-container { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--white-a08); box-shadow: 0 16px 48px rgba(0,0,0,0.4); background: var(--night-soft); }
+/* Morphing carte → fiche (shared-morph.css, js/shared/view-morph.js) :
+   nommée en CSS, pas en JS — la page d'arrivée peut s'afficher avant ses
+   scripts différés. C'est la page de départ qui décide si la transition a
+   lieu. */
+.page-details .aircraft-image-container { view-transition-name: vh-photo; }
 .page-details .aircraft-image { width: 100%; height: auto; display: block; transition: transform var(--dur-base) var(--ease-out); }
 .page-details .aircraft-image-container:hover .aircraft-image { transform: scale(1.05); }
 .page-details .image-credit { margin: 0.6rem 0 0; text-align: right; font-size: 0.75rem; line-height: 1.4; color: var(--text-muted); letter-spacing: 0.01em; }
@@ -469,6 +454,72 @@ body.page-details { background: var(--night); }
 .page-details .image-credit a:hover,
 .page-details .image-credit a:focus-visible { color: var(--white); }
 .page-details .image-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,13,13,0.4) 0%, transparent 40%); pointer-events: none; }
+
+/* Visionneuse de la photo (js/details/photo-zoom.js). Un bouton couvre la
+   photo ; l'indice (quatre coins) apparaît au survol et s'écarte. */
+.page-details .det-zoom-btn {
+  position: absolute; inset: 0; z-index: 1;
+  padding: 0; border: 0; border-radius: inherit;
+  background: transparent; cursor: zoom-in;
+}
+.page-details .det-zoom-btn[hidden] { display: none; }
+.page-details .det-zoom-btn:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: -3px; }
+.page-details .det-zoom-hint {
+  position: absolute; right: 0.75rem; bottom: 0.75rem;
+  display: grid; place-items: center; width: 38px; height: 38px;
+  border: 1px solid var(--white-a08); border-radius: 10px;
+  background: rgba(13,13,13,0.6); color: var(--white);
+  opacity: 0; translate: 0 4px;
+  transition: opacity var(--dur-fast) var(--ease-out), translate var(--dur-base) var(--ease-out);
+}
+.page-details .det-zoom-btn:hover .det-zoom-hint,
+.page-details .det-zoom-btn:focus-visible .det-zoom-hint { opacity: 1; translate: 0 0; }
+@media (hover: none) { .page-details .det-zoom-hint { opacity: 0.9; translate: 0 0; } }
+.page-details .det-zoom-ico {
+  width: 18px; height: 18px; overflow: visible;
+  fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.page-details .dz-c { transition: translate var(--dur-base) var(--ease-out); }
+.page-details .det-zoom-btn:hover .dz-tl { translate: -1.5px -1.5px; }
+.page-details .det-zoom-btn:hover .dz-tr { translate: 1.5px -1.5px; }
+.page-details .det-zoom-btn:hover .dz-br { translate: 1.5px 1.5px; }
+.page-details .det-zoom-btn:hover .dz-bl { translate: -1.5px 1.5px; }
+
+/* Plein écran : la photo entière (contain), son crédit, une croix. Ouvert
+   par morphing (.is-morph : aucune animation propre, la transition porte
+   tout) ou, sans l'API, en fondu ; sortie par VH.motion.exit (.is-closing). */
+.page-details .det-zoom {
+  width: 100vw; height: 100dvh; max-width: none; max-height: none;
+  margin: 0; padding: clamp(1rem, 4vw, 3rem);
+  border: 0; background: transparent; color: var(--white);
+}
+.page-details .det-zoom[open] { display: flex; align-items: center; justify-content: center; }
+.page-details .det-zoom::backdrop { background: rgba(8,8,9,0.92); }
+.page-details .det-zoom:not(.is-morph)[open],
+.page-details .det-zoom:not(.is-morph)[open]::backdrop { animation: vh-fade-in var(--dur-base) var(--ease-out); }
+.page-details .det-zoom.is-closing,
+.page-details .det-zoom.is-closing::backdrop { animation: vh-fade-out var(--dur-fast) var(--ease-in) forwards; }
+.page-details .det-zoom-figure {
+  display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+  max-width: 100%; max-height: 100%; margin: 0;
+}
+.page-details .det-zoom-img {
+  display: block; width: auto; height: auto;
+  max-width: min(100%, 1600px); max-height: calc(100dvh - 8rem);
+  border-radius: 12px; object-fit: contain; cursor: zoom-out;
+}
+.page-details .det-zoom-credit { max-width: 60ch; font-size: var(--text-xs); color: rgba(255,255,255,0.6); text-align: center; }
+.page-details .det-zoom-credit[hidden] { display: none; }
+.page-details .det-zoom-close {
+  position: absolute; top: 1rem; right: 1rem;
+  display: grid; place-items: center; width: 44px; height: 44px;
+  border: 1px solid var(--white-a08); border-radius: 12px;
+  background: var(--white-a04); color: var(--white); cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+}
+.page-details .det-zoom-close:hover { background: var(--white-a08); }
+.page-details .det-zoom-close:active { scale: var(--press-scale); }
+.page-details .det-zoom-close:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
 
 /* QUICK STATS */
 .page-details .quick-stats { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px) saturate(1.1); -webkit-backdrop-filter: blur(20px) saturate(1.1); padding: 4rem 0; margin-top: -2rem; margin-bottom: 4rem; position: relative; z-index: 2; border-top: 1px solid var(--white-a06); border-bottom: 1px solid var(--white-a06); }
@@ -794,10 +845,14 @@ body.page-details { background: var(--night); }
   .page-details .hero-actions { flex-direction: column; }
   /* Le cœur garde sa taille : seule la pastille s'allonge au retrait. */
   .page-details .hero-actions .det-fav { align-self: flex-start; }
-  /* En colonne, « Supprimer » occupe toute la largeur : l'enveloppe la garde
-     (la largeur posée par le morphing ne s'applique pas), le bouton se
-     rétracte vers son centre et la paire s'y ouvre. */
-  .page-details .hero-actions .det-del.cfm-morph { width: auto !important; }
+  /* En colonne, « Supprimer » occupe toute la largeur : il se resserre pour
+     laisser sortir la paire, réduite à ses icônes (noms accessibles gardés). */
+  .page-details .hero-actions .det-del { display: flex; }
+  .page-details .hero-actions .det-del > .btn { flex: 1 1 auto; min-width: 0; }
+  .page-details .hero-actions .det-del .cfm-panel { flex-shrink: 0; }
+  .page-details .det-del .cfm-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .page-details .det-del .cfm-yes,
+  .page-details .det-del .cfm-no { width: 44px; padding: 0; }
   /* Pas les boutons du bandeau cookies : pleine largeur, ils s'empilaient
      sur trois lignes et le bandeau masquait le bas de la fiche. */
   .page-details .btn:not(.cookie-banner .btn) { width: 100%; min-height: 44px; }
@@ -908,6 +963,7 @@ body.page-details { background: var(--night); }
   .page-details > header, .page-details footer, .page-details .skip-link,
   .page-details .breadcrumb, .page-details .hero-actions, .page-details .share-bar,
   .page-details .hero-background, .page-details .image-overlay,
+  .page-details .det-zoom-btn, .page-details .det-zoom,
   .page-details .mini-bar, .page-details .scroll-progress, .page-details .nav-scrim,
   .page-details #compare-bar, .page-details .compare-bar, .page-details .compare-modal,
   .page-details #toast-container, .page-details #edit-modal, .page-details .modal,

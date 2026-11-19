@@ -31,7 +31,7 @@
     // Normaliser la génération en nombre pour cohérence URL/état
     state.filters[filterType] = (filterType === 'generation' && newVal != null) ? Number(newVal) : newVal;
     VH.favorites.url.writeStateToUrl(state);
-    VH.favorites.render.applyFiltersAndRender(state);
+    VH.favorites.render.applyFiltersAndRender(state, { morph: true });
     VH.favorites.dropdowns.closeAllDropdowns();
     updateActiveFilters(state);
     decorateFacetCounts(state);
@@ -108,7 +108,7 @@
 
   function onFiltersCleared(state) {
     VH.favorites.url.writeStateToUrl(state);
-    VH.favorites.render.applyFiltersAndRender(state);
+    VH.favorites.render.applyFiltersAndRender(state, { morph: true });
     updateActiveFilters(state);
     decorateFacetCounts(state);
   }
@@ -155,7 +155,7 @@
     document.getElementById('sort-select')?.addEventListener('change', (e) => {
       state.sort = e.target.value;
       VH.favorites.url.writeStateToUrl(state);
-      VH.favorites.render.applyFiltersAndRender(state);
+      VH.favorites.render.applyFiltersAndRender(state, { morph: true });
     });
   }
 

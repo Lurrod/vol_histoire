@@ -120,7 +120,8 @@ function loadModules() {
   require('../js/cookies');
   require('../js/shared/motion');
   // Odomètre et confirmation sur place (modules partagés d'app.min.js).
-  loadMotion(['.t-roll-col.is-leaving', '.adm-bin-check']);
+  loadMotion(['.t-roll-col.is-leaving', '.cfm-bin-check']);
+  require('../js/shared/busy-button');
   require('../js/shared/otp-input');
   ['ui', 'tabs', 'account', 'profile', 'security', 'danger-zone', 'admin', 'dashboard', 'cookies', 'data-export']
     .forEach((m) => require(`../js/settings/${m}`));
@@ -149,16 +150,34 @@ describe('VH.settings.ui', () => {
     expect(ui.tr('a.b', 'repli')).toBe('repli');
   });
 
-  test('setButtonLoading : spinner + libellé lu, puis restauration ; bouton absent toléré', () => {
+  test('setButtonLoading : anneau, libellé toujours lu, puis repos ; bouton absent toléré', () => {
     const { ui } = loadModules();
     const btn = document.getElementById('delete-account-btn');
-    const html = btn.innerHTML;
     ui.setButtonLoading(btn, true);
-    expect(btn.querySelector('.spinner')).not.toBeNull();
-    expect(btn.querySelector('.sr-only').textContent).toBe('Supprimer');
+    expect(btn.dataset.bb).toBe('busy');
+    expect(btn.disabled).toBe(true);
+    expect(btn.getAttribute('aria-busy')).toBe('true');
+    expect(btn.querySelector('.bb-label').textContent.trim()).toBe('Supprimer');
     ui.setButtonLoading(btn, false);
-    expect(btn.innerHTML).toBe(html);
+    expect(btn.dataset.bb).toBeUndefined();
+    expect(btn.disabled).toBe(false);
+    expect(btn.hasAttribute('aria-busy')).toBe(false);
     expect(() => ui.setButtonLoading(null, true)).not.toThrow();
+  });
+
+  test('setButtonLoading(…, false, { done }) : coche et libellé de succès, puis repos', () => {
+    jest.useFakeTimers();
+    const { ui } = loadModules();
+    const btn = document.getElementById('delete-account-btn');
+    ui.setButtonLoading(btn, true);
+    ui.setButtonLoading(btn, false, { done: true, label: 'Enregistré' });
+    expect(btn.dataset.bb).toBe('done');
+    expect(btn.querySelector('.bb-done-text').textContent).toBe('Enregistré');
+    expect(btn.disabled).toBe(true);
+    jest.advanceTimersByTime(window.VH.busyButton.HOLD_MS);
+    expect(btn.dataset.bb).toBeUndefined();
+    expect(btn.disabled).toBe(false);
+    jest.useRealTimers();
   });
 
   test('scrollBehavior respecte prefers-reduced-motion', () => {
@@ -784,7 +803,7 @@ describe('VH.settings.admin', () => {
     const trigger = () => document.querySelector('.btn-delete');
     const wrapper = () => document.querySelector('.adm-del');
     // La poubelle est dessinée en SVG, nommée, et enveloppée d'un panneau inerte.
-    expect(trigger().querySelector('svg.adm-bin .adm-bin-lid')).not.toBeNull();
+    expect(trigger().querySelector('svg.cfm-bin .cfm-bin-lid')).not.toBeNull();
     expect(trigger().getAttribute('aria-label')).toBe('t:settings.delete_user');
     expect(wrapper().dataset.state).toBe('idle');
     expect(wrapper().querySelector('.cfm-yes .cfm-text').textContent).toBe('t:settings.delete_user_confirm');
@@ -1040,7 +1059,9 @@ describe('VH.settings.dataExport (LEGAL-011)', () => {
     expect(clicks).toEqual([{ href: 'blob:vh/1', download: 'vol-histoire-donnees-42.json', attached: true }]);
     expect(document.querySelector('a[download]')).toBeNull(); // lien retiré
     expect(btn.hasAttribute('aria-busy')).toBe(false);
-    expect(btn.disabled).toBe(false);
+    // Coche « Téléchargé » le temps de la lire, puis retour au repos.
+    expect(btn.dataset.bb).toBe('done');
+    expect(btn.querySelector('.bb-done-text').textContent).toBe('t:settings.btn_downloaded');
     expect(toasts).toContainEqual(['success', 't:settings.export_success']);
     jest.advanceTimersByTime(1000);
     expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:vh/1');

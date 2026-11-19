@@ -33,18 +33,18 @@
     }
     applyView();
 
-    document.getElementById('view-grid')?.addEventListener('click', () => {
-      state.view = 'grid';
-      localStorage.setItem('vh_hangar_view', 'grid');
-      applyView();
+    /* Bascule : chaque carte visible glisse de sa tuile à sa ligne (et
+     * inversement) — VH.viewMorph, sinon d'un coup. */
+    function switchTo(view) {
+      if (state.view === view) return;
+      state.view = view;
+      localStorage.setItem('vh_hangar_view', view);
+      if (VH.viewMorph) VH.viewMorph.swap({ root: container, update: applyView });
+      else applyView();
       VH.hangar.filters.saveFiltersToSession(state);
-    });
-    document.getElementById('view-list')?.addEventListener('click', () => {
-      state.view = 'list';
-      localStorage.setItem('vh_hangar_view', 'list');
-      applyView();
-      VH.hangar.filters.saveFiltersToSession(state);
-    });
+    }
+    document.getElementById('view-grid')?.addEventListener('click', () => switchTo('grid'));
+    document.getElementById('view-list')?.addEventListener('click', () => switchTo('list'));
   }
 
   VH.hangar.viewToggle = { init };
