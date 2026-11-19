@@ -35,6 +35,12 @@ const test = base.test.extend({
         if (!window.localStorage.getItem('vol-histoire-lang')) {
           window.localStorage.setItem('vol-histoire-lang', 'fr');
         }
+        // Visite guidée de la première connexion (onboarding.js) : déjà vue.
+        // Sinon son voile recouvre l'accueil 1,5 s après le chargement et
+        // intercepte les clics des specs connectées. Une spec qui teste la
+        // visite retire cette clé par son propre addInitScript, exécuté après
+        // celui-ci (onboarding.spec.js).
+        window.localStorage.setItem('vh-onboarding-done', '1');
       } catch (_) {}
     });
     await use(page);
