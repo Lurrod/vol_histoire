@@ -143,6 +143,20 @@ describe('updateAuthUI', () => {
     expect(() => nav.updateAuthUI()).not.toThrow();
   });
 
+  test('menu flottant : .is-auth sur l’en-tête suit la session (Connexion ou Paramètres/Déconnexion)', () => {
+    auth.getPayload.mockReturnValue(null);
+    const nav = loadNav();
+    const header = document.querySelector('body > header');
+    nav.updateAuthUI();
+    expect(header.classList.contains('is-auth')).toBe(false);
+    auth.getPayload.mockReturnValue({ name: 'Jean', role: 3 });
+    nav.updateAuthUI();
+    expect(header.classList.contains('is-auth')).toBe(true);
+    auth.getPayload.mockReturnValue(null);
+    nav.updateAuthUI();
+    expect(header.classList.contains('is-auth')).toBe(false);
+  });
+
   test('met à jour le nom et le rôle si payload existe', () => {
     auth.getPayload.mockReturnValue({ name: 'Jean', role: 1 });
     i18n.t.mockImplementation((key) => {
@@ -187,6 +201,26 @@ describe('updateAuthUI', () => {
 // =============================================================================
 // Hamburger toggle
 // =============================================================================
+describe('pastille du menu compte', () => {
+  test('suit l’entrée survolée, rouge sur Déconnexion, s’efface en sortant', () => {
+    loadNav();
+    const dd = document.querySelector('.user-dropdown');
+    const logout = document.getElementById('logout-icon');
+    logout.classList.add('dropdown-item', 'logout');
+    document.getElementById('settings-icon').classList.add('dropdown-item');
+    logout.dispatchEvent(new window.Event('pointerover', { bubbles: true }));
+    expect(dd.style.getPropertyValue('--pf-hl-o')).toBe('1');
+    expect(dd.classList.contains('hl-danger')).toBe(true);
+    const settings = document.getElementById('settings-icon');
+    if (settings) {
+      settings.dispatchEvent(new window.Event('focusin', { bubbles: true }));
+      expect(dd.classList.contains('hl-danger')).toBe(false);
+    }
+    dd.dispatchEvent(new window.Event('pointerleave'));
+    expect(dd.style.getPropertyValue('--pf-hl-o')).toBe('0');
+  });
+});
+
 describe('hamburger click', () => {
   test('toggle la classe show sur nav-links', () => {
     loadNav();
@@ -198,6 +232,18 @@ describe('hamburger click', () => {
 
     hamburger.click();
     expect(navLinks.classList.contains('show')).toBe(false);
+  });
+
+  test('pilote le menu flottant : .menu-open sur l’en-tête, retirée à la fermeture', () => {
+    const nav = loadNav();
+    const header = document.querySelector('body > header');
+    document.querySelector('.hamburger').click();
+    expect(header.classList.contains('menu-open')).toBe(true);
+    document.querySelector('.hamburger').click();
+    expect(header.classList.contains('menu-open')).toBe(false);
+    document.querySelector('.hamburger').click();
+    nav.closeMenu();
+    expect(header.classList.contains('menu-open')).toBe(false);
   });
 });
 

@@ -41,15 +41,14 @@ const ASSET_PATTERNS = [
 // Lien actif et variantes de l'en-tête, par page (nom du fichier sans .html).
 // active  : href du lien de navigation principal à marquer comme page courante
 // current : entrée du menu compte à marquer (login, settings)
-// logoLink: le logo devient un lien vers l'accueil (page 404)
 const PAGE_OPTIONS = {
   index: { active: '/' },
   hangar: { active: '/hangar' },
   timeline: { active: '/timeline' },
   favorites: { active: '/favorites' },
-  login: { current: 'login' },
-  settings: { current: 'settings' },
-  404: { logoLink: true },
+  login: { current: 'login', active: '/login' },
+  settings: { current: 'settings', active: '/settings' },
+  conflits: { active: '/conflits' },
 };
 
 const INCLUDE_RE = /^[ \t]*<!--\s*@include\s+([a-z0-9-]+)\s*-->[ \t]*(\r?)$/gm;
@@ -88,17 +87,10 @@ function loadPartials(frontendDir) {
 /** Applique les variantes de page aux marqueurs {{active:…}} / {{current:…}}. */
 function applyPageOptions(content, pageName) {
   const opts = PAGE_OPTIONS[pageName] || {};
-  let out = content
+  return content
     .replace(/\{\{active:([^}]+)\}\}/g, (_, href) =>
       (opts.active === href ? ' class="active" aria-current="page"' : ''))
     .replace(/\{\{current:([a-z-]+)\}\}/g, (_, key) => (opts.current === key ? ' active' : ''));
-  if (opts.logoLink) {
-    out = out.replace(
-      /<div class="logo">([\s\S]*?<\/picture>)<\/div>/,
-      (_, inner) => `<a href="/" class="logo" aria-label="Vol d'Histoire — Accueil">${inner}</a>`
-    );
-  }
-  return out;
 }
 
 /**

@@ -1,9 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="VH">
-  <rect x="1" y="1" width="126" height="126" fill="none" stroke="#C8A96E" stroke-width="1" opacity=".35"></rect>
-  <g font-family="&#39;Barlow Condensed&#39;, &#39;Arial Narrow&#39;, sans-serif" font-weight="300" fill="#C8A96E" text-anchor="middle">
-    <text x="64" y="74" font-size="72" letter-spacing="-2">V<tspan fill="#C8A96E" opacity=".55">H</tspan></text>
-  </g>
-  <g fill="#C8A96E" opacity=".7">
-    <path d="M64 102 L78 114 L78 116 L64 112 L50 116 L50 114 Z"></path>
-  </g>
+  <rect x="1.5" y="1.5" width="125" height="125" rx="12" fill="none" stroke="#C8A96E" stroke-width="1" opacity=".5"/>
+  <path d="M42.28 77.27 32.84 32.66 32.77 32.39Q32.77 31.8 33.5 31.8H42.01Q42.8 31.8 42.87 32.53L47.42 61.57Q47.49 61.83 47.62 61.83Q47.75 61.83 47.82 61.57L52.24 32.53Q52.31 31.8 53.1 31.8H61.35Q62.21 31.8 62.01 32.66L52.51 77.27Q52.37 78 51.65 78H43.13Q42.41 78 42.28 77.27Z" fill="#F0EDE8"/>
+  <path d="M87.9 31.8H91.27Q91.93 31.8 91.93 32.46V77.34Q91.93 78 91.27 78H87.9Q87.24 78 87.24 77.34V57.21Q87.24 56.95 86.98 56.95H75.23Q74.97 56.95 74.97 57.21V77.34Q74.97 78 74.31 78H70.94Q70.28 78 70.28 77.34V32.46Q70.28 31.8 70.94 31.8H74.31Q74.97 31.8 74.97 32.46V52.52Q74.97 52.79 75.23 52.79H86.98Q87.24 52.79 87.24 52.52V32.46Q87.24 31.8 87.9 31.8Z" fill="#C8A96E"/>
+  <g transform="translate(52 88) scale(.19)"><path d="M61.5 16 L6 100 Q36 91 61.5 104 Z" fill="#DCC293"/><path d="M66.5 16 L122 100 Q92 91 66.5 104 Z" fill="#A98B54"/></g>
 </svg>

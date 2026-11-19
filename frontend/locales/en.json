@@ -11,7 +11,11 @@
     "user_default": "User",
     "user_role": "Member",
     "language": "Language",
-    "primary_label": "Main navigation"
+    "primary_label": "Main navigation",
+    "menu": "Menu",
+    "group_explore": "Explore",
+    "group_space": "Your space",
+    "logo_label": "Vol d'Histoire — Home"
   },
   "conflicts": {
     "title": "Conflicts | Vol d'Histoire",
@@ -1140,23 +1144,29 @@
     "pc_sec6_body_v2": "<h3>6.1 Tracker categories</h3><div class=\"cookie-types\"><div class=\"cookie-card essential\"><i class=\"fas fa-check-circle\"></i><h4>Essential and functional</h4><p>Needed for the service you ask for: session, security, cookie choice, language, comparison tool, display</p><span class=\"cookie-consent\">No consent required</span></div><div class=\"cookie-card analytics\"><i class=\"fas fa-chart-pie\"></i><h4>Audience measurement</h4><p>Google Analytics: site traffic, with a pseudonymous identifier</p><span class=\"cookie-consent\">Consent required</span></div></div><h3>6.2 Detailed inventory</h3><p>List of cookies and other trackers used by the site, in accordance with CNIL deliberation no. 2020-091:</p><section class=\"cookies-inventory-wrap\" tabindex=\"0\" aria-label=\"Cookie inventory\"><table class=\"cookies-inventory\"><caption class=\"sr-only\">Detailed inventory of cookies and trackers: name, type, duration, purpose, storage and consent requirement.</caption><thead><tr><th scope=\"col\">Name</th><th scope=\"col\">Type</th><th scope=\"col\">Duration</th><th scope=\"col\">Purpose</th><th scope=\"col\">Storage</th><th scope=\"col\">Consent</th></tr></thead><tbody><tr><td><code>refreshToken</code></td><td>Essential</td><td>7 days</td><td>Keeps you logged in (renews the access token)</td><td>HttpOnly cookie · Secure · SameSite=Strict · Path=/api</td><td>Exempt</td></tr><tr><td><code>vh_session</code></td><td>Essential</td><td>7 days</td><td>Tells the browser that a session exists; contains no personal data</td><td>Cookie · SameSite=Strict</td><td>Exempt</td></tr><tr><td><code>voldhistoire_cookie_consent</code></td><td>Essential</td><td>6 months</td><td>Remembers your cookie choice and its date</td><td>Cookie + localStorage</td><td>Exempt</td></tr><tr><td><code>vol-histoire-lang</code></td><td>Functional</td><td>Until cleared</td><td>Display language (FR / EN)</td><td>localStorage</td><td>Exempt</td></tr><tr><td><code>vh_hangar_view</code></td><td>Functional</td><td>Until cleared</td><td>Hangar shown as a grid or a list</td><td>localStorage</td><td>Exempt</td></tr><tr><td><code>vh_compare_ids</code></td><td>Functional</td><td>Until cleared</td><td>Aircraft selected for the comparison tool</td><td>localStorage</td><td>Exempt</td></tr><tr><td><code>vh-onboarding-done</code></td><td>Functional</td><td>Until cleared</td><td>Guided tour already seen (not shown again)</td><td>localStorage</td><td>Exempt</td></tr><tr><td><code>hangar_filters</code></td><td>Functional</td><td>Until the tab is closed</td><td>Hangar filters, to get back to the same list from an aircraft page</td><td>sessionStorage</td><td>Exempt</td></tr><tr><td>Site cache</td><td>Functional</td><td>Until the next site version</td><td>Site files kept by the service worker for faster display</td><td>Browser cache</td><td>Exempt</td></tr><tr><td><code>_ga</code></td><td>Audience measurement</td><td>13 months</td><td>Pseudonymous browser identifier (Google Analytics 4)</td><td>Cookie set by Google Analytics</td><td>Required</td></tr><tr><td><code>_ga_&lt;ID&gt;</code></td><td>Audience measurement</td><td>13 months</td><td>Measurement session state (Google Analytics 4)</td><td>Cookie set by Google Analytics</td><td>Required</td></tr><tr><td>hCaptcha</td><td>Security</td><td>Set by hCaptcha</td><td>Telling humans from bots on the sign-up, login, forgotten password and contact forms</td><td>hCaptcha trackers on its own domain</td><td>Exempt (security)</td></tr></tbody></table></section><p class=\"cookies-marketing-note\"><strong>Advertising cookies:</strong> none. Sentry, used for error tracking, sets no cookie.</p><h3>6.3 Managing your choices</h3><ul><li>Your choice is kept for 6 months, then you are asked again.</li><li>You can change it at any time via the \"Cookies\" link at the bottom of every page or, if you have an account, in Settings › Cookies &amp; Privacy.</li><li>Refusing or withdrawing consent deletes the Google Analytics cookies and stops audience measurement.</li><li>You can also clear the site's data from your browser settings: language, comparison tool and display then return to their defaults.</li></ul><div class=\"info-box\"><i class=\"fas fa-exclamation-triangle\"></i><p>Blocking essential trackers in your browser prevents you from logging in to your account.</p></div>"
   },
   "onboarding": {
-    "aria_label": "Welcome briefing",
-    "step1_badge": "INCOMING TRANSMISSION",
-    "step1_title": "Welcome aboard.",
-    "step1_desc": "Your access is confirmed. Here's a quick briefing before your first mission.",
-    "step2_badge": "MODULE 01 — HANGAR",
-    "step2_title": "The Hangar",
-    "step2_desc": "More than 400 military aircraft profiles. Filter by country, generation, type, conflict or mission. Each aircraft has its specs, weapons and history.",
-    "step3_badge": "MODULE 02 — FAVORITES",
-    "step3_title": "Your Favorites",
-    "step3_desc": "Click the heart to save an aircraft to your collection. Access them anytime from the Favorites tab.",
-    "step4_badge": "MODULE 03 — TIMELINE",
-    "step4_title": "The Timeline",
-    "step4_desc": "Over 80 years of military aviation. An interactive timeline spanning from first-gen jets to the 5th generation.",
-    "skip": "Skip briefing",
-    "prev": "Previous",
+    "aria_label": "Guided tour",
+    "welcome_title": "Welcome aboard.",
+    "welcome_title_name": "Welcome aboard, {name}.",
+    "welcome_text": "A thirty-second tour to find your way around. You can skip it at any time.",
+    "search_title": "Find an aircraft",
+    "search_text": "A name, a country, a manufacturer: suggestions appear after the first few letters.",
+    "hangar_title": "The Hangar",
+    "hangar_text": "The whole catalogue, from 1945 to today, filterable by country, generation, type, conflict or mission.",
+    "hangar_text_count": "{count} aircraft, from 1945 to today, filterable by country, generation, type, conflict or mission.",
+    "timeline_title": "The Timeline",
+    "timeline_text": "Eight decades of military aviation on a single timeline, with the conflicts and the aircraft that mattered.",
+    "favorites_title": "Your favourites",
+    "favorites_text": "The heart on an aircraft page adds it to your collection. You will find it here.",
+    "menu_title": "The menu",
+    "menu_text": "The Hangar, the Timeline, Conflicts and your personal space all start here.",
+    "lang_title": "French or English",
+    "lang_text": "The whole site, aircraft pages included, is available in both languages.",
+    "count": "Step {n} of {total}",
+    "skip": "Skip",
+    "prev": "Back",
     "next": "Next",
-    "finish": "Start exploring"
+    "start": "Start the tour",
+    "finish": "Let's go"
   },
   "seo": {
     "description": {

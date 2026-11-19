@@ -659,7 +659,7 @@ describe('timeline.js — démarrage', () => {
   afterEach(() => { delete global.showToast; });
 
   test('succès : chapitres, règle, filtres, totaux, puis chargement masqué', async () => {
-    document.querySelector('header').getBoundingClientRect = () => ({ height: 64 });
+    document.querySelector('header').getBoundingClientRect = () => ({ bottom: 64 });
     await boot(ok({ decades: DECADES, wars: WARS }));
     expect(auth.init).toHaveBeenCalled();
     expect(auth.fetchWithTimeout).toHaveBeenCalledWith('/api/timeline');

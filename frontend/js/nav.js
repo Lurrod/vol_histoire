@@ -6,7 +6,7 @@
    ====================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const header = document.querySelector('header');
+  const header = document.querySelector('body > header');
   const hamburger = document.querySelector('.hamburger');
   const navLinks = document.querySelector('.nav-links');
   const loginIcon = document.getElementById('login-icon');
@@ -31,7 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.toggle('nav-open', locked);
   }
 
+  // .menu-open sur l'en-tête pilote le menu flottant (shared-responsive.css) :
+  // la barre s'élargit, le panneau se déroule, les liens montent en cascade.
+  function setMenuOpen(open) {
+    header?.classList.toggle('menu-open', open);
+  }
+
   function closeMenu() {
+    setMenuOpen(false);
     navLinks?.classList.remove('show');
     hamburger?.classList.remove('active');
     hamburger?.setAttribute('aria-expanded', 'false');
@@ -92,6 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateAuthUI() {
     const payload = auth.getPayload();
+    // Menu flottant : « Votre espace » propose Connexion sans session,
+    // Paramètres et Déconnexion avec (l'icône de profil y est masquée).
+    header?.classList.toggle('is-auth', !!payload);
     if (!payload) return;
 
     // Connecté : l'icône ouvre un menu au lieu de mener à /login.
@@ -138,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     hamburger.classList.toggle('active');
     hamburger.setAttribute('aria-expanded', String(nowOpen));
     scrim?.classList.toggle('show', nowOpen);
+    setMenuOpen(nowOpen);
     setScrollLock(!!navLinks?.classList.contains('show'));
     // Un seul élément ouvert à la fois : menu, langue ou compte.
     if (nowOpen) { closeDropdown(); closeLang(); }
@@ -204,6 +215,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Pastille de survol du menu compte : une seule, qui glisse d'une entrée
+  // à l'autre (même principe que la liste des langues). Mesure de mise en
+  // page (offsetTop), insensible au translate d'entrée ; position posée en
+  // CSSOM — la CSP interdit l'attribut style, pas setProperty.
+  function placeUserHighlight(item) {
+    if (!userDropdown || !item) return;
+    userDropdown.style.setProperty('--pf-hl-y', item.offsetTop + 'px');
+    userDropdown.style.setProperty('--pf-hl-h', item.offsetHeight + 'px');
+    userDropdown.style.setProperty('--pf-hl-o', '1');
+    userDropdown.classList.toggle('hl-danger', item.classList.contains('logout'));
+  }
+  const followUserItem = (e) => {
+    const item = e.target.closest && e.target.closest('.dropdown-item');
+    if (item) placeUserHighlight(item);
+  };
+  userDropdown?.addEventListener('pointerover', followUserItem);
+  userDropdown?.addEventListener('focusin', followUserItem);
+  userDropdown?.addEventListener('pointerleave', () => userDropdown.style.setProperty('--pf-hl-o', '0'));
+
   // -------------------------------------------------------------------
   // Settings navigation
   // -------------------------------------------------------------------
@@ -215,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // -------------------------------------------------------------------
   // Logout (version simple — settings.js a sa propre modale)
   // -------------------------------------------------------------------
-  const logoutButtons = document.querySelectorAll('#logout-icon, #logout-btn');
+  const logoutButtons = document.querySelectorAll('#logout-icon, #logout-btn, .nav-logout');
   logoutButtons.forEach(btn => {
     btn?.addEventListener('click', async (e) => {
       e.preventDefault();

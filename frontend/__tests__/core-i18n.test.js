@@ -349,6 +349,26 @@ describe('menu de langue', () => {
     expect(document.querySelector('.lang-switch').classList.contains('open')).toBe(false);
   });
 
+  test('la pastille de survol suit l’option visée (pointeur ou focus)', async () => {
+    document.body.innerHTML = MENU;
+    await loadI18n({ url: '/login' });
+    const list = document.getElementById('lang-dropdown');
+    expect(list.style.getPropertyValue('--lang-hl-o')).toBe('');
+    document.querySelector('.lang-option[data-lang="en"]').dispatchEvent(new window.Event('pointerover', { bubbles: true }));
+    expect(list.style.getPropertyValue('--lang-hl-o')).toBe('1');
+    expect(list.style.getPropertyValue('--lang-hl-h')).toBe('0px');
+  });
+
+  test('changer de langue rejoue l’animation du bouton ; même langue : rien', async () => {
+    document.body.innerHTML = MENU;
+    const i18n = await loadI18n({ url: '/login' });
+    const toggle = document.getElementById('lang-toggle');
+    await i18n.setLang('fr');
+    expect(toggle.classList.contains('is-switching')).toBe(false);
+    await i18n.setLang('en');
+    expect(toggle.classList.contains('is-switching')).toBe(true);
+  });
+
   test('clic à l’extérieur : la liste ouverte se referme', async () => {
     document.body.innerHTML = MENU;
     await loadI18n({ url: '/login' });
