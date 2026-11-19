@@ -209,3 +209,23 @@ describe('prefersReducedMotion', () => {
     window.matchMedia = saved;
   });
 });
+
+describe('exit — annulations sans effet', () => {
+  // Quand la sortie se fait aussitôt (mouvements réduits, aucune durée,
+  // élément absent), exit() renvoie tout de même une annulation appelable :
+  // un appelant qui la garde pour une réouverture ne doit pas avoir à tester.
+  test('mouvements réduits, élément absent ou sans durée : annulation inerte, rappel par défaut', () => {
+    setReducedMotion(true);
+    const done = jest.fn();
+    const el = document.createElement('div');
+    const cancelReduced = exit(el, done);
+    expect(done).toHaveBeenCalledTimes(1);
+    expect(() => cancelReduced()).not.toThrow();
+
+    setReducedMotion(false);
+    expect(() => exit(null)()).not.toThrow();
+    const cancelNoDuration = exit(el, 'pas une fonction');
+    expect(() => cancelNoDuration()).not.toThrow();
+    expect(el.classList.contains('is-closing')).toBe(false);
+  });
+});

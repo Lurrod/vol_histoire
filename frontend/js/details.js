@@ -25,17 +25,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     userRole: null,
   };
 
-  // UI utilisateur (nom, rôle, boutons admin)
+  // Boutons d'administration selon le rôle
   const payload = auth.getPayload();
   if (payload) {
     state.userRole = Number(payload.role);
-    const userNameEl = document.getElementById('user-name');
-    if (userNameEl) userNameEl.textContent = payload.name;
-    document.querySelector('.user-role').textContent =
-      state.userRole === 1 ? i18n.t('common.role_admin') :
-      state.userRole === 2 ? i18n.t('common.role_editor') :
-      i18n.t('nav.user_role');
-    document.querySelector('.user-dropdown')?.classList.remove('hidden');
     if (state.userRole === 1 || state.userRole === 2) {
       document.getElementById('edit-btn')?.classList.remove('hidden');
       document.getElementById('delete-btn')?.classList.remove('hidden');

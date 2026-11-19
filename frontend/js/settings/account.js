@@ -16,21 +16,6 @@
       : { name: 'Utilisateur', email: '' };
   }
 
-  function updateUserDisplay(state) {
-    const currentUser = state.currentUser;
-    document.querySelectorAll('#user-name').forEach(el => {
-      el.textContent = currentUser?.name || i18n.t('nav.user_default');
-    });
-
-    // Rôle affiché dans le menu du compte
-    const userRoleEl = document.querySelector('.user-role');
-    if (userRoleEl && currentUser) {
-      const role = Number(currentUser.role);
-      userRoleEl.textContent = role === 1 ? i18n.t('common.role_admin') :
-                               role === 2 ? i18n.t('common.role_editor') : i18n.t('nav.user_role');
-    }
-  }
-
   function revealAdminIfNeeded(user) {
     if (Number(user.role) !== 1) return;
     document.getElementById('admin-nav-link').classList.remove('hidden');
@@ -62,7 +47,6 @@
     const cachedUser = auth.getUserInfo();
     if (cachedUser) {
       state.currentUser = cachedUser;
-      updateUserDisplay(state);
       fillProfileForm(state.currentUser);
       revealAdminIfNeeded(state.currentUser);
       return true;
@@ -74,23 +58,20 @@
       if (response.ok) {
         state.currentUser = await response.json();
         auth.setUserInfo(state.currentUser);
-        updateUserDisplay(state);
         fillProfileForm(state.currentUser);
       } else {
         // API indisponible — authentification par jeton uniquement
         state.currentUser = userFromPayload(auth.getPayload());
-        updateUserDisplay(state);
       }
     } catch {
       // Erreur réseau — authentification par jeton uniquement
       state.currentUser = userFromPayload(auth.getPayload());
-      updateUserDisplay(state);
     }
     revealAdminIfNeeded(state.currentUser);
     return true;
   }
 
-  VH.settings.account = { userFromPayload, updateUserDisplay, checkAuth };
+  VH.settings.account = { userFromPayload, checkAuth };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = VH.settings.account;

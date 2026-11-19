@@ -5,7 +5,6 @@
  * routes/favorites.js, middleware/auth.js (refresh tokens, token_version).
  */
 
-const crypto = require('crypto');
 const request = require('supertest');
 const { describeIt, airplaneId, IT_PASSWORD } = require('./helpers/it-db');
 const { startItApp } = require('./helpers/it-app');
@@ -44,85 +43,111 @@ describeIt('Intégration SQL — comptes et sessions', () => {
   const api = () => request(ctx.app);
   const userByEmail = async (email) =>
     (await ctx.pool.query('SELECT * FROM users WHERE email = $1', [email])).rows[0];
-  const sha256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
-  // La base ne garde que l'empreinte du jeton (SEC-008) : le jeton en clair se
-  // retrouve dans les emails simulés, et doit correspondre à l'empreinte.
-  const mailedTokens = () => [
+  // Requis après startItApp (JWT_SECRET d'intégration posé par it-app.js).
+  const emailCodes = require('../../repositories/email-tokens');
+  // La base ne garde que l'empreinte HMAC du code (SEC-008) : le code en clair
+  // se retrouve dans les emails simulés, et doit correspondre à l'empreinte.
+  const mailedCodes = () => [
     ctx.mailer.sendVerificationEmail,
     ctx.mailer.sendPasswordResetEmail,
     ctx.mailer.sendEmailChangeConfirmation,
   ].flatMap((fn) => fn.mock.calls.map((args) => args[2]));
-  const openToken = async (userId, type) => {
+  const openCode = async (userId, type) => {
     const row = (await ctx.pool.query(
-      'SELECT token_hash, new_email FROM email_tokens WHERE user_id = $1 AND type = $2 AND used_at IS NULL',
+      'SELECT id, token_hash, new_email, attempts FROM email_tokens WHERE user_id = $1 AND type = $2 AND used_at IS NULL',
       [userId, type]
     )).rows[0];
     if (!row) return undefined;
-    const token = mailedTokens().find((t) => typeof t === 'string' && sha256(t) === row.token_hash);
+    const code = mailedCodes().find((c) => typeof c === 'string' && emailCodes.hashCode(userId, type, c) === row.token_hash);
     // L'email part après l'écriture en base : on attend qu'il soit « envoyé ».
-    return token ? { ...row, token } : undefined;
+    return code ? { ...row, code } : undefined;
   };
+  /** Un code faux à coup sûr (différent du code envoyé). */
+  const wrongCode = (code) => String((Number(code) + 1) % 1000000).padStart(6, '0');
 
-  describe('inscription → vérification → connexion', () => {
+  describe('inscription → code → mot de passe → connexion', () => {
     const email = 'nouveau@it.local';
     const newPassword = 'Nouveau123';
 
-    test('register crée le compte et un jeton de vérification', async () => {
+    test('register crée le compte (sans mot de passe connu) et un code d\'activation', async () => {
       const res = await api().post('/api/register').send({ name: 'Nouveau IT', email: 'Nouveau@IT.local', password: 'Inscrit123' });
       expect(res.status).toBe(201);
       const user = await waitFor(() => userByEmail(email));
       expect(user.email_verified).toBe(false);
       expect(user.role_id).toBe(3);
-      const open = await waitFor(() => openToken(user.id, 'verify'));
-      expect(ctx.mailer.sendVerificationEmail).toHaveBeenCalledWith(email, 'Nouveau IT', expect.stringMatching(/^[a-f0-9]{64}$/));
-      // SEC-008 : seule l'empreinte est en base, jamais le jeton envoyé.
-      expect(open.token_hash).toBe(sha256(open.token));
-      expect(open.token_hash).not.toBe(open.token);
-      const plain = await ctx.pool.query('SELECT 1 FROM email_tokens WHERE token_hash = $1', [open.token]);
+      const open = await waitFor(() => openCode(user.id, 'verify'));
+      expect(ctx.mailer.sendVerificationEmail).toHaveBeenCalledWith(email, 'Nouveau IT', expect.stringMatching(/^[0-9]{6}$/));
+      // SEC-008 : seule l'empreinte est en base, jamais le code envoyé.
+      expect(open.token_hash).toMatch(/^[a-f0-9]{64}$/);
+      expect(open.token_hash).not.toBe(open.code);
+      expect(open.attempts).toBe(0);
+      const plain = await ctx.pool.query('SELECT 1 FROM email_tokens WHERE token_hash = $1', [open.code]);
       expect(plain.rowCount).toBe(0);
+      // Le mot de passe envoyé à l'inscription n'est pas retenu
+      const bcrypt = require('bcryptjs');
+      expect(await bcrypt.compare('Inscrit123', user.password)).toBe(false);
     });
 
-    test('register à nouveau sur un compte non vérifié : nouveau jeton, l\'ancien est clos', async () => {
+    test('register à nouveau sur un compte non vérifié : nouveau code, l\'ancien est supprimé', async () => {
       const user = await userByEmail(email);
-      const first = await openToken(user.id, 'verify');
-      const res = await api().post('/api/register').send({ name: 'Nouveau Bis', email, password: 'Inscrit123' });
+      const first = await openCode(user.id, 'verify');
+      const res = await api().post('/api/register').send({ name: 'Nouveau Bis', email });
       expect(res.status).toBe(201);
       const second = await waitFor(async () => {
-        const t = await openToken(user.id, 'verify');
-        return t && t.token !== first.token ? t : null;
+        const c = await openCode(user.id, 'verify');
+        return c && c.id !== first.id ? c : null;
       });
-      expect(second.token).not.toBe(first.token);
+      expect(second.id).not.toBe(first.id);
+      const rows = await ctx.pool.query("SELECT COUNT(*)::int AS n FROM email_tokens WHERE user_id = $1 AND type = 'verify'", [user.id]);
+      expect(rows.rows[0].n).toBe(1);
       expect((await userByEmail(email)).name).toBe('Nouveau Bis');
     });
 
-    test('resend-verification remplace le jeton ouvert', async () => {
+    test('resend-verification remplace le code ouvert', async () => {
       const user = await userByEmail(email);
-      const before = await openToken(user.id, 'verify');
+      const before = await openCode(user.id, 'verify');
       const res = await api().post('/api/auth/resend-verification').send({ email });
       expect(res.status).toBe(200);
       await waitFor(async () => {
-        const t = await openToken(user.id, 'verify');
-        return t && t.token !== before.token;
+        const c = await openCode(user.id, 'verify');
+        return c && c.id !== before.id;
       });
     });
 
-    test('connexion refusée tant que l\'email n\'est pas vérifié, sans le dire (anti-énumération)', async () => {
+    test('connexion refusée tant que le compte n\'est pas activé, sans le dire (anti-énumération)', async () => {
       const res = await api().post('/api/login').send({ email, password: 'Inscrit123' });
       expect(res.status).toBe(400);
       expect(res.body).toEqual({ message: 'Email ou mot de passe incorrect' });
     });
 
-    test('verify-email active le compte avec le mot de passe choisi à la vérification', async () => {
+    test('check-code : code faux compté en base, code juste confirmé sans être consommé', async () => {
       const user = await userByEmail(email);
-      const { token } = await openToken(user.id, 'verify');
-      const res = await api().post('/api/auth/verify-email').send({ token, password: newPassword });
+      const { code } = await openCode(user.id, 'verify');
+      const wrong = await api().post('/api/auth/check-code').send({ email, type: 'verify', code: wrongCode(code) });
+      expect(wrong.status).toBe(400);
+      expect(wrong.body.code).toBe('CODE_INVALID');
+      expect((await openCode(user.id, 'verify')).attempts).toBe(1);
+
+      const ok = await api().post('/api/auth/check-code').send({ email, type: 'verify', code });
+      expect(ok.status).toBe(200);
+      const still = await openCode(user.id, 'verify');
+      expect(still).toBeDefined();
+      expect(still.attempts).toBe(1);
+    });
+
+    test('verify-email active le compte avec le mot de passe choisi après le code', async () => {
+      const user = await userByEmail(email);
+      const { code } = await openCode(user.id, 'verify');
+      const res = await api().post('/api/auth/verify-email').send({ email, code, password: newPassword });
       expect(res.status).toBe(200);
       const after = await userByEmail(email);
       expect(after.email_verified).toBe(true);
       expect(after.token_version).toBe(user.token_version + 1);
-      // Jeton à usage unique
-      const replay = await api().post('/api/auth/verify-email').send({ token, password: newPassword });
+      expect(ctx.mailer.sendWelcomeEmail).toHaveBeenCalledWith(email, 'Nouveau Bis');
+      // Code à usage unique
+      const replay = await api().post('/api/auth/verify-email').send({ email, code, password: newPassword });
       expect(replay.status).toBe(400);
+      expect(await openCode(user.id, 'verify')).toBeUndefined();
       // Le mot de passe de l'inscription n'est pas celui qui est activé
       const old = await api().post('/api/login').send({ email, password: 'Inscrit123' });
       expect(old.status).toBe(400);
@@ -207,23 +232,68 @@ describeIt('Intégration SQL — comptes et sessions', () => {
   });
 
   describe('mot de passe oublié', () => {
-    test('forgot-password → reset-password → connexion avec le nouveau mot de passe', async () => {
-      const email = 'oubli@it.local';
+    const insertVerified = async (name, email) => {
       const hash = (await userByEmail('member@it.local')).password;
       const { rows } = await ctx.pool.query(
-        "INSERT INTO users (name, email, password, email_verified) VALUES ('Oubli', $1, $2, TRUE) RETURNING id",
-        [email, hash]
+        'INSERT INTO users (name, email, password, email_verified) VALUES ($1, $2, $3, TRUE) RETURNING id',
+        [name, email, hash]
       );
-      const userId = rows[0].id;
+      return rows[0].id;
+    };
+
+    test('forgot-password → code → reset-password → connexion avec le nouveau mot de passe', async () => {
+      const email = 'oubli@it.local';
+      const userId = await insertVerified('Oubli', email);
       const res = await api().post('/api/auth/forgot-password').send({ email });
       expect(res.status).toBe(200);
-      const { token } = await waitFor(() => openToken(userId, 'reset'));
+      const { code } = await waitFor(() => openCode(userId, 'reset'));
 
-      const reset = await api().post('/api/auth/reset-password').send({ token, password: 'Change123' });
+      expect((await api().post('/api/auth/check-code').send({ email, type: 'reset', code })).status).toBe(200);
+      const reset = await api().post('/api/auth/reset-password').send({ email, code, password: 'Change123' });
       expect(reset.status).toBe(200);
-      const reuse = await api().post('/api/auth/reset-password').send({ token, password: 'Change456' });
+      const reuse = await api().post('/api/auth/reset-password').send({ email, code, password: 'Change456' });
       expect(reuse.status).toBe(400);
       expect((await api().post('/api/login').send({ email, password: 'Change123' })).status).toBe(200);
+    });
+
+    test('5 codes faux closent le code : le bon ne vaut plus rien', async () => {
+      const email = 'essais@it.local';
+      const userId = await insertVerified('Essais', email);
+      await api().post('/api/auth/forgot-password').send({ email });
+      const { id, code } = await waitFor(() => openCode(userId, 'reset'));
+
+      for (let i = 0; i < emailCodes.MAX_ATTEMPTS; i++) {
+        const res = await api().post('/api/auth/check-code').send({ email, type: 'reset', code: wrongCode(code) });
+        expect(res.status).toBe(400);
+      }
+      const row = (await ctx.pool.query('SELECT attempts, used_at FROM email_tokens WHERE id = $1', [id])).rows[0];
+      expect(row.attempts).toBe(emailCodes.MAX_ATTEMPTS);
+      expect(row.used_at).not.toBeNull();
+      const late = await api().post('/api/auth/reset-password').send({ email, code, password: 'Change123' });
+      expect(late.status).toBe(400);
+      expect(late.body.code).toBe('CODE_INVALID');
+    });
+
+    test('essais simultanés : le compteur ne perd aucun essai (verrou FOR UPDATE)', async () => {
+      const email = 'concurrence@it.local';
+      const userId = await insertVerified('Concurrence', email);
+      await api().post('/api/auth/forgot-password').send({ email });
+      const { id, code } = await waitFor(() => openCode(userId, 'reset'));
+      await Promise.all(Array.from({ length: 3 }, () =>
+        api().post('/api/auth/check-code').send({ email, type: 'reset', code: wrongCode(code) })
+      ));
+      const row = (await ctx.pool.query('SELECT attempts FROM email_tokens WHERE id = $1', [id])).rows[0];
+      expect(row.attempts).toBe(3);
+    });
+
+    test('code expiré : refusé', async () => {
+      const email = 'expire@it.local';
+      const userId = await insertVerified('Expiré', email);
+      await api().post('/api/auth/forgot-password').send({ email });
+      const { id, code } = await waitFor(() => openCode(userId, 'reset'));
+      await ctx.pool.query("UPDATE email_tokens SET expires_at = NOW() - INTERVAL '1 second' WHERE id = $1", [id]);
+      const res = await api().post('/api/auth/check-code').send({ email, type: 'reset', code });
+      expect(res.status).toBe(400);
     });
   });
 
@@ -266,7 +336,7 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       expect(fresh.status).toBe(200);
     });
 
-    test('PUT /api/users/:id — changement d\'email confirmé par lien', async () => {
+    test('PUT /api/users/:id — changement d\'email confirmé par code (session requise)', async () => {
       const email = 'ancien@it.local';
       const hash = (await userByEmail('member@it.local')).password;
       await ctx.pool.query("INSERT INTO users (name, email, password, email_verified) VALUES ('Ancien', $1, $2, TRUE)", [email, hash]);
@@ -277,12 +347,24 @@ describeIt('Intégration SQL — comptes et sessions', () => {
         .send({ email: 'Nouvelle@IT.local', currentPassword: IT_PASSWORD });
       expect(res.status).toBe(200);
       expect(res.body.emailChangePending).toBe(true);
-      const pending = await openToken(me.id, 'email');
+      const pending = await waitFor(() => openCode(me.id, 'email'));
       expect(pending.new_email).toBe('nouvelle@it.local');
 
-      const confirm = await api().post('/api/auth/confirm-email-change').send({ token: pending.token });
+      // Sans session : refusé ; avec la session d'un autre compte : code inconnu
+      expect((await api().post('/api/auth/confirm-email-change').send({ code: pending.code })).status).toBe(403);
+      const other = await ctx.login('editor@it.local');
+      const foreign = await api().post('/api/auth/confirm-email-change').set('Authorization', `Bearer ${other}`).send({ code: pending.code });
+      expect(foreign.status).toBe(400);
+
+      const confirm = await api().post('/api/auth/confirm-email-change').set('Authorization', `Bearer ${token}`).send({ code: pending.code });
       expect(confirm.status).toBe(200);
-      expect((await ctx.pool.query('SELECT email FROM users WHERE id = $1', [me.id])).rows[0].email).toBe('nouvelle@it.local');
+      expect(confirm.body.email).toBe('nouvelle@it.local');
+      const after = (await ctx.pool.query('SELECT email, token_version FROM users WHERE id = $1', [me.id])).rows[0];
+      expect(after.email).toBe('nouvelle@it.local');
+      expect(after.token_version).toBe(me.token_version + 1);
+      // L'access token d'avant est désormais refusé (sessions coupées)
+      const stale = await api().get(`/api/users/${me.id}`).set('Authorization', `Bearer ${token}`);
+      expect(stale.status).toBe(401);
     });
 
     test('confirm-email-change : adresse prise entre-temps → 409', async () => {
@@ -292,9 +374,10 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       );
       await ctx.pool.query(
         "INSERT INTO email_tokens (user_id, token_hash, type, expires_at, new_email) VALUES ($1, $2, 'email', NOW() + INTERVAL '1 hour', 'editor@it.local')",
-        [rows[0].id, sha256('c'.repeat(64))]
+        [rows[0].id, emailCodes.hashCode(rows[0].id, 'email', '123456')]
       );
-      const res = await api().post('/api/auth/confirm-email-change').send({ token: 'c'.repeat(64) });
+      const token = await ctx.login('course@it.local');
+      const res = await api().post('/api/auth/confirm-email-change').set('Authorization', `Bearer ${token}`).send({ code: '123456' });
       expect(res.status).toBe(409);
       expect(res.body.code).toBe('EMAIL_TAKEN');
     });

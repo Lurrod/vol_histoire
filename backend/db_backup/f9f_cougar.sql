@@ -58,7 +58,7 @@ INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
 INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 ((SELECT id FROM airplanes WHERE name = 'F9F Cougar'), (SELECT id FROM armement WHERE name = 'Colt Mk 12')),
 ((SELECT id FROM airplanes WHERE name = 'F9F Cougar'), (SELECT id FROM armement WHERE name = 'AIM-9 Sidewinder')),
-((SELECT id FROM airplanes WHERE name = 'F9F Cougar'), (SELECT id FROM armement WHERE name = 'HVAR 70 mm')),
+((SELECT id FROM airplanes WHERE name = 'F9F Cougar'), (SELECT id FROM armement WHERE name = 'HVAR 127 mm')),
 ((SELECT id FROM airplanes WHERE name = 'F9F Cougar'), (SELECT id FROM armement WHERE name = 'Bombe lisse 250 kg'));
 
 -- Missions

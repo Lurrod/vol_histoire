@@ -14,7 +14,12 @@
   function resetForms(ctx) {
     ctx.els.loginForm.reset();
     ctx.els.registerForm.reset();
-    VH.login.strength.updatePasswordStrength(0);
+  }
+
+  /** Tous les panneaux : les deux onglets et les étapes par code. */
+  function allSlides(ctx) {
+    const { loginSlide, registerSlide, forgotSlide, codeSlide, passwordSlide } = ctx.els;
+    return [loginSlide, registerSlide, forgotSlide, codeSlide, passwordSlide].filter(Boolean);
   }
 
   /** Marque l'onglet choisi comme sélectionné, les autres non. */
@@ -33,10 +38,11 @@
    * `inert` remplace le couple aria-hidden + tabindex : une seule propriété
    * exclut le sous-arbre du tab order ET des AT, évitant l'antipattern
    * « aria-hidden sur conteneur focusable » (WCAG 4.1.2). */
-  function showPanel(ctx, panel, focusInput) {
+  function showPanel(ctx, panel, focusInput, { reset = true, after = null } = {}) {
     ctx.state.pendingSwap = null;
-    [ctx.els.loginSlide, ctx.els.registerSlide].forEach(p => {
-      if (!p) return;
+    // Étapes par code : les onglets s'effacent (aucun des deux n'est actif).
+    ctx.els.container?.classList.toggle('is-flow', panel.classList.contains('form-flow'));
+    allSlides(ctx).forEach(p => {
       p.classList.remove('is-leaving');
       if (p === panel) {
         p.classList.add('active');
@@ -47,27 +53,36 @@
       }
     });
 
-    resetForms(ctx);
+    if (reset) resetForms(ctx);
 
     if (focusInput) {
       const firstInput = panel.querySelector('input:not([type="hidden"])');
       firstInput?.focus({ preventScroll: true });
     }
+    // Panneau affiché et atteignable : préremplissage, focus ciblé…
+    if (after) after(panel);
   }
 
-  function activateTab(ctx, tab, { focusInput } = { focusInput: false }) {
+  function activateTab(ctx, tab, { focusInput = false, reset = true, after = null } = {}) {
     if (!tab) return;
     const panel = document.getElementById(tab.getAttribute('aria-controls'));
     if (!panel) return;
+    selectTab(tab);
+    swapTo(ctx, panel, { focusInput, reset, after });
+  }
 
+  /**
+   * Bascule animée vers un panneau : sortie (slideOut) du panneau visible,
+   * puis entrée du nouveau (slideIn). Les étapes par code gardent les
+   * formulaires des onglets (reset: false) : l'adresse saisie reste.
+   * « after » s'exécute une fois le nouveau panneau affiché (la sortie animée
+   * diffère la bascule : un préremplissage fait avant serait effacé).
+   */
+  function swapTo(ctx, panel, { focusInput = false, reset = true, after = null } = {}) {
     // Une bascule encore en cours se termine immédiatement.
     if (ctx.state.pendingSwap) ctx.state.pendingSwap();
-
-    selectTab(tab);
-
-    const { loginSlide, registerSlide } = ctx.els;
-    const outgoing = [loginSlide, registerSlide].find(p => p && p !== panel && p.classList.contains('active'));
-    const swap = () => showPanel(ctx, panel, focusInput);
+    const outgoing = allSlides(ctx).find(p => p !== panel && p.classList.contains('active'));
+    const swap = () => showPanel(ctx, panel, focusInput, { reset, after });
 
     if (!outgoing) {
       swap();
@@ -81,6 +96,12 @@
     outgoing.inert = true;
     const cancel = VH.motion.exit(outgoing, () => { swapped = true; swap(); }, { className: 'is-leaving' });
     if (!swapped) ctx.state.pendingSwap = () => { cancel(); swap(); };
+  }
+
+  /** Étape par code (mot de passe oublié, code, mot de passe). */
+  function showSlide(ctx, panel, { focusInput = false, after = null } = {}) {
+    if (!panel) return;
+    swapTo(ctx, panel, { focusInput, reset: false, after });
   }
 
   // Navigation clavier dans la tablist (ArrowLeft/ArrowRight, Home/End).
@@ -120,7 +141,7 @@
     tabs.forEach(tab => tab.addEventListener('keydown', (e) => onTabKeydown(ctx, e, tabs)));
   }
 
-  VH.login.tabs = { resetForms, activateTab, onTabKeydown, setupFormSwitching };
+  VH.login.tabs = { resetForms, activateTab, showSlide, onTabKeydown, setupFormSwitching };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = VH.login.tabs;

@@ -1,0 +1,254 @@
+/* ============================================================
+   MENU « UNDERLAY » — bureau (≥ 64em)
+   (enveloppé dans @layer shared par scripts/build-css.js)
+   ------------------------------------------------------------
+   D'après l'underlay navigation de Motion Core. Le bouton « Menu »
+   remplace la rangée de liens ; à l'ouverture, la page (body) glisse à
+   gauche de la largeur du panneau, se resserre de --underlay-gap sur
+   chaque bord et s'arrondit, et les liens apparaissent en cascade dans le
+   panneau découvert. Mécanique et raisons : js/shared/underlay-nav.js.
+
+   Classes posées sur <html> par le module :
+     .ul-on     structure en place (page figée, popover affiché) ;
+     .ul-open   état cible (page repoussée, liens visibles) ;
+     .ul-gutter la page avait une barre de défilement (gouttière gardée).
+   Chaque état porte ses propres délais : ouverture dans .ul-open, fermeture
+   dans la règle de base, miroirs l'un de l'autre autour de --underlay-total.
+   ============================================================ */
+
+/* Bouton de fermeture du panneau : n'existe qu'au bureau. */
+.nav-close { display: none; }
+
+/* ── Page figée, repoussée ───────────────────────────────────────────── */
+html.ul-on {
+  overflow: hidden;
+  background: var(--underlay-bg);
+}
+/* La barre de défilement disparaît avec overflow: hidden ; sa gouttière
+   reste, sinon la page s'élargirait et tout se décalerait. */
+html.ul-on.ul-gutter { scrollbar-gutter: stable; }
+
+/* overflow-x: hidden sur body n'est plus propagé à l'écran quand <html>
+   coupe le défilement : body deviendrait conteneur de défilement et les
+   éléments sticky (règle de la frise, sommaire des réglages) se décolleraient.
+   clip coupe sans faire défiler. */
+html.ul-on body {
+  overflow-x: clip;
+  transform-origin: 50% var(--ul-oy);
+  transform: translateX(0) scale(1, 1);
+  clip-path: inset(var(--ul-y) 0 var(--ul-b) 0 round 0);
+  will-change: transform;
+  transition:
+    transform var(--underlay-dur) var(--underlay-ease) calc(var(--underlay-total) - var(--underlay-dur)),
+    clip-path var(--underlay-dur) var(--underlay-ease) calc(var(--underlay-total) - var(--underlay-dur));
+}
+
+html.ul-open body {
+  transform: translateX(calc(-1 * var(--ul-pw))) scale(var(--ul-sx), var(--ul-sy));
+  clip-path: inset(var(--ul-y) 0 var(--ul-b) 0 round var(--underlay-radius));
+  transition:
+    transform var(--underlay-dur) var(--underlay-ease),
+    clip-path var(--underlay-dur) var(--underlay-ease);
+}
+
+/* Fonds photographiques des pages (pseudo-éléments fixes de body) : body
+   transformé devient leur bloc conteneur, ils reprennent la hauteur d'un
+   écran à l'endroit où l'on se trouve. Pseudo-éléments : pas de recalage
+   possible par le script. !important : les feuilles de page (couche page)
+   les déclarent en position: fixed. */
+html.ul-on body::before,
+html.ul-on body::after {
+  position: absolute !important;
+  inset: var(--ul-y) 0 auto 0 !important;
+  height: 100vh !important;
+}
+
+@media (min-width: 64em) {
+
+  /* ── Barre : logo · langue · Menu ──────────────────────────
+     Pleine largeur : le bouton Menu se tient au coin de l'écran, au-dessus
+     du panneau qu'il ouvre (sa copie « Fermer » y reste pendant que la page
+     part). */
+  body > header > nav.container { max-width: none; }
+
+  .hamburger {
+    display: flex;
+    order: 3;
+    margin-inline-start: var(--sp-2);
+  }
+
+  .nav-actions {
+    order: 2;
+    margin-inline-start: auto;
+  }
+
+  /* Le vrai bouton part avec la page : sa copie dans le panneau le remplace. */
+  html.ul-on .hamburger { visibility: hidden; }
+
+  /* ── Panneau : popover plein écran, transparent ───────────────────── */
+  .nav-panel:not(:popover-open) { display: none; }
+
+  .nav-panel:popover-open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text-light);
+    overflow: hidden;
+  }
+
+  .nav-panel::backdrop { background: transparent; }
+
+  /* Colonne des liens, à droite. Contenu commun avec le menu flottant
+     (groupes, titres, soulignement : shared-responsive.css). Découpée au
+     rythme du bord de la page (même durée, même courbe) : les liens
+     n'apparaissent jamais par-dessus. */
+  .nav-panel .nav-links {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: var(--underlay-panel-w);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-2);
+    margin: 0;
+    padding: calc(var(--header-h) + var(--sp-4)) var(--sp-4) var(--sp-6);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    clip-path: inset(0 0 0 100%);
+    transition: clip-path var(--underlay-dur) var(--underlay-ease) calc(var(--underlay-total) - var(--underlay-dur));
+  }
+
+  html.ul-open .nav-panel .nav-links {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path var(--underlay-dur) var(--underlay-ease);
+  }
+
+  /* Filet sous la hauteur de la barre, comme sous la barre du menu mobile. */
+  .nav-panel .nav-links::before {
+    content: "";
+    flex: none;
+    height: 1px;
+    margin-block-end: var(--sp-2);
+    background: var(--gold-a08);
+  }
+
+  /* ── Cascade : chaque lien monte de son masque (rang --menu-i), comme
+     sur mobile ; à la fermeture, le délai est le miroir autour de
+     --underlay-total. */
+  .nav-panel .nav-links li a {
+    --ul-start: calc(var(--underlay-items-delay) + var(--menu-i) * var(--underlay-stagger));
+    translate: 0 100%;
+    opacity: 0;
+    transition:
+      translate var(--underlay-item-dur) var(--underlay-ease) calc(var(--underlay-total) - var(--ul-start) - var(--underlay-item-dur)),
+      opacity   var(--underlay-item-dur) var(--underlay-ease) calc(var(--underlay-total) - var(--ul-start) - var(--underlay-item-dur)),
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  /* Fond de « Votre espace » : il arrive avec son premier lien (rang 4),
+     sinon un cadre vide précède la cascade. */
+  .nav-panel .nav-group--muted {
+    --ul-start: calc(var(--underlay-items-delay) + 4 * var(--underlay-stagger));
+    opacity: 0;
+    transition: opacity var(--underlay-item-dur) var(--underlay-ease) calc(var(--underlay-total) - var(--ul-start) - var(--underlay-item-dur));
+  }
+
+  html.ul-open .nav-panel .nav-group--muted {
+    opacity: 1;
+    transition: opacity var(--underlay-item-dur) var(--underlay-ease) var(--ul-start);
+  }
+
+  html.ul-open .nav-panel .nav-links li a {
+    translate: 0 0;
+    opacity: 1;
+    transition:
+      translate var(--underlay-item-dur) var(--underlay-ease) var(--ul-start),
+      opacity   var(--underlay-item-dur) var(--underlay-ease) var(--ul-start),
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  /* ── Bouton « Fermer » : copie du bouton Menu, posée à sa place ───── */
+  /* z-index : la colonne des liens, plus loin dans le flux, le
+     recouvrirait et prendrait ses clics. */
+  .nav-panel .nav-close {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: var(--ul-btn-top);
+    inset-inline-start: var(--ul-btn-left);
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 var(--sp-3) 0 var(--sp-1);
+    border: none;
+    border-radius: var(--r-lg);
+    background: transparent;
+    color: var(--white);
+    font: 500 var(--text-sm) / 1 var(--font-sans);
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+
+  .nav-panel .nav-close:hover,
+  .nav-panel .nav-close:focus-visible { color: var(--hud-cyan); background: var(--white-a06); }
+
+  /* Les traits rejoignent l'axe et pivotent en croix. */
+  .nav-close .hamburger-bar {
+    transition:
+      translate var(--underlay-icon-dur) var(--underlay-ease) calc(var(--underlay-total) - var(--underlay-icon-dur)),
+      rotate    var(--underlay-icon-dur) var(--underlay-ease) calc(var(--underlay-total) - var(--underlay-icon-dur));
+  }
+  html.ul-open .nav-close .hamburger-bar {
+    translate: 0 0;
+    transition:
+      translate var(--underlay-icon-dur) var(--underlay-ease),
+      rotate    var(--underlay-icon-dur) var(--underlay-ease);
+  }
+  html.ul-open .nav-close .hamburger-bar:first-child { rotate: 45deg; }
+  html.ul-open .nav-close .hamburger-bar:last-child  { rotate: -45deg; }
+
+  /* « Menu » monte et sort, « Fermer » monte à sa place. Alignés à gauche :
+     le premier mot tombe exactement sur celui du vrai bouton. */
+  .nav-close-labels {
+    display: grid;
+    overflow: hidden;
+    line-height: 1;
+  }
+
+  .nav-close-labels > span {
+    grid-area: 1 / 1;
+    justify-self: start;
+    transition: translate var(--underlay-label-dur) var(--underlay-ease) calc(var(--underlay-total) - var(--underlay-label-dur));
+  }
+  .nav-close-labels > span:last-child { translate: 0 100%; }
+
+  html.ul-open .nav-close-labels > span {
+    transition: translate var(--underlay-label-dur) var(--underlay-ease);
+  }
+  html.ul-open .nav-close-labels > span:first-child { translate: 0 -100%; }
+  html.ul-open .nav-close-labels > span:last-child  { translate: 0 0; }
+}
+
+/* Mouvements réduits : états atteints sans transition (la page se range
+   d'un coup, les liens sont là). */
+@media (prefers-reduced-motion: reduce) {
+  html.ul-on body,
+  .nav-panel .nav-links,
+  .nav-panel .nav-links li a,
+  .nav-panel .nav-group--muted,
+  .nav-close .hamburger-bar,
+  .nav-close-labels > span { transition: none !important; }
+}

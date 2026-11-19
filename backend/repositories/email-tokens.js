@@ -1,31 +1,51 @@
 'use strict';
 
 // -----------------------------------------------------------------------------
-// Accès aux données — jetons à usage unique envoyés par email (table
+// Accès aux données — codes à usage unique envoyés par email (table
 // email_tokens) : 'verify' (activation), 'reset' (mot de passe oublié),
 // 'email' (changement d'adresse, porteur de new_email).
 //
-// Seule l'empreinte SHA-256 du jeton est stockée (colonne token_hash, SEC-008) :
-// le jeton en clair ne vit que dans l'email. Une fuite de la table ou d'une
-// sauvegarde ne permet donc plus de réinitialiser un mot de passe. Un SHA-256
-// sans sel suffit : le jeton fait 256 bits aléatoires, rien à deviner par
-// dictionnaire. Les appelants manipulent toujours le jeton en clair.
+// Un code fait 6 chiffres : un million de valeurs. Trois protections le
+// rendent sûr malgré sa brièveté :
+//   - un seul code ouvert par compte et par type, valable quelques minutes ;
+//   - MAX_ATTEMPTS essais manqués, puis le code est clos (colonne attempts) ;
+//   - seule son empreinte HMAC est stockée, liée au compte et au type, avec
+//     une clé dérivée de JWT_SECRET : une fuite de la table ne permet pas de
+//     retrouver les codes par simple énumération des 10⁶ valeurs.
+// Les limiteurs de débit des routes s'ajoutent à ces barrages.
 // -----------------------------------------------------------------------------
 
 const crypto = require('crypto');
 
-/**
- * Empreinte stockée d'un jeton : SHA-256 hexadécimal (64 caractères).
- * Identique à `encode(sha256(convert_to(token, 'UTF8')), 'hex')` côté SQL,
- * ce qu'utilise la migration 003 pour les jetons déjà en base.
- * @param {string} token
- * @returns {string}
- */
-function hashToken(token) {
-  return crypto.createHash('sha256').update(String(token), 'utf8').digest('hex');
+const CODE_LENGTH = 6;
+const MAX_ATTEMPTS = 5;
+
+/** Clé HMAC des codes, dérivée du secret des jetons (aucune variable de plus). */
+function codeKey() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error('JWT_SECRET manquant : impossible de chiffrer les codes email');
+  return crypto.createHmac('sha256', secret).update('vh-email-code').digest();
 }
 
-/** Clôt les jetons encore ouverts d'un type donné pour un utilisateur. */
+/** Code à 6 chiffres, zéros de tête compris (« 004217 »). */
+function generateCode() {
+  return String(crypto.randomInt(0, 10 ** CODE_LENGTH)).padStart(CODE_LENGTH, '0');
+}
+
+/** @returns {boolean} six chiffres exactement */
+function isCodeFormat(code) {
+  return typeof code === 'string' && /^[0-9]{6}$/.test(code);
+}
+
+/**
+ * Empreinte stockée : HMAC-SHA256 hexadécimal (64 caractères), liée au compte
+ * et au type pour qu'un même code n'ait pas la même empreinte ailleurs.
+ */
+function hashCode(userId, type, code) {
+  return crypto.createHmac('sha256', codeKey()).update(`${type}:${userId}:${code}`).digest('hex');
+}
+
+/** Clôt les codes encore ouverts d'un type donné pour un utilisateur. */
 async function closeOpen(db, userId, type) {
   await db.query(
     'UPDATE email_tokens SET used_at = NOW() WHERE user_id = $1 AND type = $2 AND used_at IS NULL',
@@ -34,51 +54,67 @@ async function closeOpen(db, userId, type) {
 }
 
 /**
- * Remplace le jeton ouvert d'un type par un nouveau (clôture puis insertion).
- * À appeler dans une transaction (`db` = client) pour que les deux écritures
- * soient atomiques.
+ * Remplace les codes d'un type par un nouveau. Les anciennes lignes du même
+ * compte et du même type sont supprimées, pas seulement closes : un code peut
+ * revenir un jour à l'identique, et son empreinte heurterait la contrainte
+ * UNIQUE de token_hash. À appeler dans une transaction (`db` = client).
  */
-async function replaceOpen(db, { userId, type, token, expiresAt, newEmail = null }) {
-  await closeOpen(db, userId, type);
+async function replaceOpen(db, { userId, type, code, expiresAt, newEmail = null }) {
+  await db.query('DELETE FROM email_tokens WHERE user_id = $1 AND type = $2', [userId, type]);
   await db.query(
     'INSERT INTO email_tokens (user_id, token_hash, type, expires_at, new_email) VALUES ($1, $2, $3, $4, $5)',
-    [userId, hashToken(token), type, expiresAt, newEmail]
+    [userId, hashCode(userId, type, code), type, expiresAt, newEmail]
   );
+}
+
+function sameHash(a, b) {
+  const left = Buffer.from(String(a), 'hex');
+  const right = Buffer.from(String(b), 'hex');
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
 }
 
 /**
- * Consomme un jeton valide. Le UPDATE gardé par `used_at IS NULL` rend la
- * consommation atomique : deux requêtes concurrentes avec le même jeton ne
- * peuvent pas réussir toutes les deux.
- * @returns {Promise<{ user_id: number, new_email: string|null }|null>}
+ * Vérifie un code. À appeler dans une transaction : la ligne est verrouillée
+ * (FOR UPDATE), si bien que deux essais simultanés ne se partagent pas le
+ * même compteur, et un code ne peut être consommé qu'une fois.
+ *
+ * Un code faux compte un essai ; au plafond, le code est clos. Un code juste
+ * est consommé si `consume` est vrai (activation, réinitialisation,
+ * changement d'adresse), simplement confirmé sinon (étape « code » de la page
+ * de connexion, avant le choix du mot de passe).
+ *
+ * @returns {Promise<{ ok: true, new_email: string|null }|{ ok: false }>}
  */
-async function consume(db, token, type) {
-  const result = await db.query(
-    `UPDATE email_tokens SET used_at = NOW()
-     WHERE token_hash = $1 AND type = $2 AND used_at IS NULL AND expires_at > NOW()
-     RETURNING user_id, new_email`,
-    [hashToken(token), type]
+async function checkCode(db, { userId, type, code, consume = false }) {
+  if (!isCodeFormat(code)) return { ok: false };
+  const found = await db.query(
+    `SELECT id, token_hash, attempts, new_email FROM email_tokens
+     WHERE user_id = $1 AND type = $2 AND used_at IS NULL AND expires_at > NOW()
+     ORDER BY id DESC LIMIT 1
+     FOR UPDATE`,
+    [userId, type]
   );
-  return result.rows[0] || null;
+  const row = found.rows[0];
+  if (!row) return { ok: false };
+
+  if (!sameHash(row.token_hash, hashCode(userId, type, code))) {
+    await db.query(
+      `UPDATE email_tokens
+          SET attempts = attempts + 1,
+              used_at = CASE WHEN attempts + 1 >= $2 THEN NOW() ELSE used_at END
+        WHERE id = $1`,
+      [row.id, MAX_ATTEMPTS]
+    );
+    return { ok: false };
+  }
+
+  if (consume) {
+    await db.query('UPDATE email_tokens SET used_at = NOW() WHERE id = $1', [row.id]);
+  }
+  return { ok: true, new_email: row.new_email };
 }
 
-/** Jeton de réinitialisation ouvert et non expiré. @returns {Promise<{ id: number, user_id: number }|null>} */
-async function findOpenReset(db, token) {
-  const result = await db.query(
-    `SELECT id, user_id FROM email_tokens
-     WHERE token_hash = $1 AND type = 'reset' AND used_at IS NULL AND expires_at > NOW()`,
-    [hashToken(token)]
-  );
-  return result.rows[0] || null;
-}
-
-/** @returns {Promise<boolean>} false si le jeton a été consommé entre-temps */
-async function markUsed(db, tokenId) {
-  const result = await db.query(
-    'UPDATE email_tokens SET used_at = NOW() WHERE id = $1 AND used_at IS NULL',
-    [tokenId]
-  );
-  return result.rowCount !== 0;
-}
-
-module.exports = { hashToken, closeOpen, replaceOpen, consume, findOpenReset, markUsed };
+module.exports = {
+  CODE_LENGTH, MAX_ATTEMPTS,
+  generateCode, isCodeFormat, hashCode, closeOpen, replaceOpen, checkCode,
+};

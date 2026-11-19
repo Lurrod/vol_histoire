@@ -55,7 +55,7 @@ INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
 
 -- Armement
 INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
-((SELECT id FROM airplanes WHERE name = 'KAI KT-1 Woongbi'), (SELECT id FROM armement WHERE name = 'HVAR 70 mm'));
+((SELECT id FROM airplanes WHERE name = 'KAI KT-1 Woongbi'), (SELECT id FROM armement WHERE name = 'Hydra 70'));
 
 -- Missions
 INSERT INTO airplane_missions (id_airplane, id_mission) VALUES

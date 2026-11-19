@@ -58,7 +58,7 @@ INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 ((SELECT id FROM airplanes WHERE name = 'F-84F Thunderstreak'), (SELECT id FROM armement WHERE name = 'M3 Browning 12,7 mm')),
 ((SELECT id FROM airplanes WHERE name = 'F-84F Thunderstreak'), (SELECT id FROM armement WHERE name = 'Bombe lisse 250 kg')),
 ((SELECT id FROM airplanes WHERE name = 'F-84F Thunderstreak'), (SELECT id FROM armement WHERE name = 'Bombe lisse 500 kg')),
-((SELECT id FROM airplanes WHERE name = 'F-84F Thunderstreak'), (SELECT id FROM armement WHERE name = 'HVAR 70 mm'));
+((SELECT id FROM airplanes WHERE name = 'F-84F Thunderstreak'), (SELECT id FROM armement WHERE name = 'HVAR 127 mm'));
 
 -- Missions
 INSERT INTO airplane_missions (id_airplane, id_mission) VALUES

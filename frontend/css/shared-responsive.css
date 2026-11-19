@@ -3,9 +3,107 @@
    (enveloppé dans @layer shared par scripts/build-css.js)
    ============================================================ */
 
+/* ── CONTENU DU MENU ─────────────────────────────────────────────────
+   Commun au menu flottant (< 64em, ci-dessous) et au menu « underlay » du
+   bureau (shared-underlay.css), à la manière du floating menu de Motion
+   Core : des groupes titrés (« Explorer », puis « Votre espace » sur fond
+   atténué), des liens alignés à gauche, sans pastille, soulignés au
+   survol. Chaque menu ne garde que sa disposition et son animation. Hors
+   des deux menus, le panneau n'est jamais affiché. */
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-3) var(--sp-4) var(--sp-2);
+  border-radius: var(--r-lg);
+}
+
+.nav-group--muted { background: var(--white-a04); }
+
+.nav-group-title {
+  display: block;
+  margin-block-end: var(--sp-1);
+  font: 600 var(--text-xs) / 1.4 var(--font-sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.nav-group-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-extra { display: block; }
+
+/* « Votre espace » : Connexion sans session, Paramètres et Déconnexion
+   avec (.is-auth, nav.js). */
+.nav-auth,
+header.is-auth .nav-guest { display: none; }
+header.is-auth .nav-auth { display: block; }
+
+/* Rang de chaque lien dans la cascade d'ouverture, d'un groupe à l'autre. */
+.nav-group-list > li {
+  overflow: hidden;
+  --menu-i: 0;
+}
+.nav-group-list > li:nth-child(2) { --menu-i: 1; }
+.nav-group-list > li:nth-child(3) { --menu-i: 2; }
+.nav-group-list > li:nth-child(4) { --menu-i: 3; }
+.nav-group--muted .nav-group-list > li:nth-child(1) { --menu-i: 4; }
+.nav-group--muted .nav-guest,
+.nav-group--muted .nav-auth { --menu-i: 5; }
+.nav-group--muted .nav-auth:last-child { --menu-i: 6; }
+
+/* Grands liens dans la police du logo, en capitales ; la page active est
+   entièrement couverte d'or. La pastille déborde dans la marge du groupe,
+   avec son masque (le li, qui la rognerait sinon) : le texte reste aligné
+   sur le titre du groupe. */
+.nav-group-list { gap: var(--sp-1); }
+.nav-group-list > li { margin-inline: calc(-1 * var(--sp-3)); }
+.nav-group-title { margin-block-end: var(--sp-2); }
+
+.nav-links li a {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 44px;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-lg);
+  font: 500 clamp(2rem, 3.2vw, 3rem) / 0.95 var(--font-display);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+/* Le mot seul, sans icône. */
+.nav-links li a .icon,
+.nav-links li a i { display: none; }
+
+.nav-links li a:hover {
+  background: var(--gold-a08);
+  color: var(--hud-cyan);
+}
+
+.nav-links li a.active,
+.nav-links li a.active:hover {
+  background: var(--hud-cyan);
+  color: var(--night);
+}
+
+/* Déconnexion en rouge (variante claire, lisible sur fond sombre). */
+.nav-links li a.nav-logout,
+.nav-links li a.nav-logout:hover { color: var(--accent-text); }
+.nav-links li a.nav-logout:hover { background: rgba(231, 76, 60, 0.10); }
+
+/* Le masque rognerait l'anneau de focus : il passe à l'intérieur. */
+.nav-links li a:focus-visible { outline-offset: -2px; }
+
 /* ── sous le palier laptop (< 64em) ─── */
-/* 63.99em et non 64em : à 1024 px (tablette paysage), la navigation
-   complète tient sur une ligne ; le burger n'y apporte rien. */
+/* 63.99em et non 64em : dès 1024 px (tablette paysage), le bouton Menu
+   ouvre le menu « underlay » (shared-underlay.css). */
 @media (max-width: 63.99em) {
 
     /* ── MENU FLOTTANT ─────────────────────────────────────────────
@@ -103,11 +201,9 @@
         visibility 0s linear 0s;
     }
 
-    /* Contenu du panneau, à la manière du floating menu : des groupes titrés
-       (« Explorer », puis « Votre espace » sur fond atténué), des liens
-       alignés à gauche, sans pastille, soulignés au survol. La liste n'a ni
-       marge ni bordure propres : dans une ligne à 0fr, elles garderaient le
-       panneau entrouvert ; le filet et l'air passent par ses enfants. */
+    /* Liste du menu flottant : une colonne de grille, sans marge ni bordure
+       propres — dans une ligne à 0fr, elles garderaient le panneau
+       entrouvert ; le filet et l'air passent par ses enfants. */
     .nav-links {
       display: grid;
       grid-template-columns: 1fr;
@@ -130,64 +226,15 @@
     }
     .nav-links::after { height: var(--sp-1); }
 
-    .nav-group {
-      display: flex;
-      flex-direction: column;
-      padding: var(--sp-3) var(--sp-4) var(--sp-2);
-      border-radius: var(--r-lg);
-    }
-
-    .nav-group--muted { background: var(--white-a04); }
-
-    .nav-group-title {
-      display: block;
-      margin-block-end: var(--sp-1);
-      font: 600 var(--text-xs) / 1.4 var(--font-sans);
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .nav-group-list {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .nav-extra { display: block; }
-
-    /* « Votre espace » remplace l'icône de profil de la barre : Connexion
-       sans session, Paramètres et Déconnexion avec (.is-auth, nav.js). */
-    .user-menu { display: none; }
-    .nav-auth,
-    header.is-auth .nav-guest { display: none; }
-    header.is-auth .nav-auth { display: block; }
-
-    /* Chaque lien monte de son propre masque (son li), en cascade d'un
-       groupe à l'autre. */
-    .nav-group-list > li {
-      overflow: hidden;
-      --menu-i: 0;
-    }
-    .nav-group-list > li:nth-child(2) { --menu-i: 1; }
-    .nav-group-list > li:nth-child(3) { --menu-i: 2; }
-    .nav-group-list > li:nth-child(4) { --menu-i: 3; }
-    .nav-group--muted .nav-group-list > li:nth-child(1) { --menu-i: 4; }
-    .nav-group--muted .nav-guest,
-    .nav-group--muted .nav-auth { --menu-i: 5; }
-    .nav-group--muted .nav-auth:last-child { --menu-i: 6; }
-
+    /* Chaque lien monte de son masque (son li), en cascade ; la fermeture
+       rejoue la cascade à l'envers. */
     .nav-links li a {
-      justify-content: flex-start;
-      padding: var(--sp-1) 0;
-      min-height: 44px;
-      border-radius: 0;
-      font-size: var(--text-lg);
-      color: var(--text-secondary);
       translate: 0 100%;
       opacity: 0;
       transition:
         translate var(--menu-dur) var(--menu-ease) calc((6 - var(--menu-i)) * var(--menu-stagger)),
         opacity   var(--menu-dur) var(--menu-ease) calc((6 - var(--menu-i)) * var(--menu-stagger)),
+        background-color var(--dur-fast) var(--ease-out),
         color var(--dur-fast) var(--ease-out);
     }
 
@@ -206,48 +253,9 @@
       transition:
         translate var(--menu-dur) var(--menu-ease) calc(var(--menu-items-delay) + var(--menu-i) * var(--menu-stagger)),
         opacity   var(--menu-dur) var(--menu-ease) calc(var(--menu-items-delay) + var(--menu-i) * var(--menu-stagger)),
+        background-color var(--dur-fast) var(--ease-out),
         color var(--dur-fast) var(--ease-out);
     }
-
-    /* Les icônes servent la barre du bureau ; dans le panneau, le mot seul. */
-    .nav-links li a .icon,
-    .nav-links li a i { display: none; }
-
-    .nav-links li a:hover {
-      background: none;
-      color: var(--white);
-    }
-
-    .nav-links li a.active { color: var(--hud-cyan); }
-
-    /* Déconnexion en rouge, comme dans le menu compte du bureau (variante
-       claire, lisible en texte sur fond sombre). */
-    .nav-links li a.nav-logout,
-    .nav-links li a.nav-logout:hover { color: var(--accent-text); }
-
-    /* Soulignement : il se déroule de gauche à droite au survol et repart
-       vers la droite en sortant (origine inversée entre les deux états). */
-    .nav-label { position: relative; }
-    .nav-label::after {
-      content: "";
-      position: absolute;
-      inset-inline: 0;
-      inset-block-end: -2px;
-      height: 1px;
-      background: currentColor;
-      scale: 0 1;
-      transform-origin: right;
-      transition: scale var(--menu-icon-dur) var(--menu-ease);
-    }
-    .nav-links li a:hover .nav-label::after,
-    .nav-links li a:focus-visible .nav-label::after,
-    .nav-links li a.active .nav-label::after {
-      scale: 1 1;
-      transform-origin: left;
-    }
-
-    /* Le masque rognerait l'anneau de focus : il passe à l'intérieur. */
-    .nav-links li a:focus-visible { outline-offset: -2px; }
 
     /* Voile sur toute la page, sous la barre : un toucher referme le menu.
        Créé par nav.js. */

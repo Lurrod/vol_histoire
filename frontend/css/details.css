@@ -781,7 +781,7 @@ body.page-details { background: var(--night); }
 }
 @media (max-width: 64em) { .page-details .hero-left h1 { font-size: clamp(2rem, 4vw, 3rem); } }
 @media (max-width: 64em) {
-  /* hamburger/nav-links/user-dropdown → shared.css */
+  /* hamburger/nav-links → shared.css */
   .page-details .btn { min-height: 44px; }
   .page-details .form-grid { grid-template-columns: 1fr; }
   .page-details .form-group.span-2 { grid-column: span 1; }
@@ -862,7 +862,7 @@ body.page-details { background: var(--night); }
 }
 @media (hover: none) and (pointer: coarse) {
   .page-details .btn { min-height: 48px; }
-  /* .hamburger, .login-icon → shared.css */
+  /* .hamburger → shared.css */
   .page-details .modal-close { min-width: 48px; min-height: 48px; }
 }
 /* ============================================================

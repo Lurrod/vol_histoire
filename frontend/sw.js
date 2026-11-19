@@ -22,7 +22,7 @@
  *   Chaque cache runtime est borné (éviction FIFO : ordre d'insertion).
  */
 
-const CACHE_VERSION = 'v4.21.0';
+const CACHE_VERSION = 'v4.22.0';
 const CACHE_PREFIX = 'vh-';
 
 const LIMITS = {

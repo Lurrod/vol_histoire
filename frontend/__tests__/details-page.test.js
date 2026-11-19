@@ -14,7 +14,6 @@ let consoleSpy;
 
 function mountDom() {
   document.body.innerHTML = `
-    <div class="user-dropdown hidden"><span id="user-name"></span><span class="user-role"></span></div>
     <button id="edit-btn" class="hidden"></button>
     <button id="delete-btn" class="hidden"></button>
     <nav><a id="crumb" href="/hangar">Hangar</a><a id="hq" href="/hangar?gen=3">Hangar filtré</a>
@@ -143,45 +142,23 @@ describe('details.js — ordre d\'initialisation', () => {
 describe('details.js — interface selon la session', () => {
   const hidden = (id) => document.getElementById(id).classList.contains('hidden');
 
-  test('visiteur anonyme : boutons d\'administration masqués, menu inchangé', async () => {
+  test('visiteur anonyme : boutons d\'administration masqués', async () => {
     load({ payload: null });
     await handler();
     expect(hidden('edit-btn')).toBe(true);
     expect(hidden('delete-btn')).toBe(true);
-    expect(document.querySelector('.user-dropdown').classList.contains('hidden')).toBe(true);
   });
 
   test.each([
-    [1, 't:common.role_admin', false],
-    [2, 't:common.role_editor', false],
-    [3, 't:nav.user_role', true],
-  ])('rôle %i : libellé « %s », boutons admin masqués = %s', async (role, label, adminHidden) => {
+    [1, false],
+    [2, false],
+    [3, true],
+  ])('rôle %i : boutons admin masqués = %s', async (role, adminHidden) => {
     load({ payload: { name: 'Titouan', role: String(role) } });
     await handler();
-    expect(document.getElementById('user-name').textContent).toBe('Titouan');
-    expect(document.querySelector('.user-role').textContent).toBe(label);
-    expect(document.querySelector('.user-dropdown').classList.contains('hidden')).toBe(false);
     expect(hidden('edit-btn')).toBe(adminHidden);
     expect(hidden('delete-btn')).toBe(adminHidden);
     expect(VHd().admin.setup.mock.calls[0][0].userRole).toBe(role);
-  });
-
-  test('le nom d\'utilisateur est inséré comme texte', async () => {
-    load({ payload: { name: '<img src=x onerror=alert(1)>', role: 3 } });
-    await handler();
-    expect(document.querySelector('#user-name img')).toBeNull();
-    expect(document.getElementById('user-name').textContent).toBe('<img src=x onerror=alert(1)>');
-  });
-
-  // Robustesse (details.js:34) : `.user-name` est testé (if), `.user-role` non.
-  // Si l'en-tête inclus (<!-- @include header -->) ne porte pas .user-role,
-  // une session connectée lève une TypeError et la fiche ne se charge pas.
-  // Aujourd'hui partials/header.html le contient : risque latent seulement.
-  test.skip('ROBUSTESSE : connecté, en-tête sans .user-role : la fiche se charge quand même', async () => {
-    load({ payload: { name: 'T', role: 1 } });
-    document.querySelector('.user-role').remove();
-    await handler();
-    expect(VHd().data.loadAircraftDetails).toHaveBeenCalled();
   });
 });
 

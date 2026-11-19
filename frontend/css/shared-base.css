@@ -232,58 +232,36 @@
     color: var(--hud-cyan);
   }
 
-  .nav-links {
-    display: flex;
-    gap: var(--sp-2);
-    align-items: center;
-    margin-inline-start: auto;
-  }
-
   /* Voile du menu mobile : n'existe qu'au palier burger (shared-responsive). */
   .nav-scrim { display: none; }
 
-  /* Enveloppe du panneau mobile : transparente au-delà du palier burger, la
-     liste reste un enfant direct de la barre. */
-  .nav-panel { display: contents; }
+  /* Enveloppe du panneau. C'est un popover (attribut posé dans le partial) :
+     au bureau, le menu « underlay » l'affiche dans la top layer
+     (shared-underlay.css) ; sous 64em, il reste dans la barre (menu
+     flottant, shared-responsive.css). Les styles du navigateur pour
+     [popover] (fixed, bordure, fond Canvas…) sont neutralisés ici pour ce
+     second usage. */
+  .nav-panel {
+    display: contents;
+    position: static;
+    inset: auto;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    overflow: visible;
+  }
 
-  /* Groupes du menu flottant : invisibles dans la barre du bureau, où les
-     liens restent une rangée unique ; titres et liens réservés au panneau
-     (Conflits, Paramètres) n'y apparaissent pas. */
-  .nav-group,
-  .nav-group-list { display: contents; }
-  .nav-group-title,
-  .nav-extra { display: none; }
-
-  /* Langue + compte : hors de la liste des liens pour rester dans la barre
-     en mobile. Espacements identiques à l'ancienne liste unique. */
+  /* Langue : hors de la liste des liens, elle reste dans la barre à
+     toutes les largeurs. */
   .nav-actions {
     display: flex;
     align-items: center;
     gap: var(--sp-2);
     margin-inline-start: var(--sp-2);
-  }
-
-  .nav-links li a {
-    color: rgba(255, 255, 255, 0.70);
-    font-size: var(--text-base);
-    font-weight: 500;
-    padding: var(--sp-2) var(--sp-4);
-    border-radius: var(--r-xl);
-    transition:
-      background-color var(--dur-fast) var(--ease-out),
-      color var(--dur-fast) var(--ease-out);
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-  }
-
-  .nav-links li a:hover {
-    background: var(--white-a06);
-    color: var(--white);
-  }
-
-  .nav-links li a.active {
-    color: var(--hud-cyan);
   }
 
   /* Hamburger */
@@ -328,220 +306,6 @@
   /* Survol : traits et mot passent à l'or de la charte. */
   .hamburger:hover,
   .hamburger:focus-visible { color: var(--hud-cyan); background: var(--white-a06); }
-
-  /* ============================================================
-     USER MENU
-     ============================================================ */
-  .user-menu {
-    position: relative;
-  }
-
-  /* Même style que les boutons « Menu » et langue : sans fond au repos,
-     voile clair au survol et à l'ouverture, coins arrondis, 44 px. Posée
-     au-dessus du menu : la pastille d'ouverture sort de derrière elle. */
-  .login-icon {
-    --pf-btn: 2.75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--pf-btn);
-    height: var(--pf-btn);
-    border-radius: var(--r-lg);
-    position: relative;
-    z-index: calc(var(--z-dropdown) + 1);
-    transition:
-      background-color var(--dur-fast) var(--ease-out),
-      color var(--dur-fast) var(--ease-out),
-      scale var(--dur-instant) var(--ease-out);
-    color: var(--white);
-    font-size: var(--text-xl);
-  }
-
-  .login-icon:hover,
-  .login-icon:focus-visible,
-  .login-icon.is-open {
-    background: var(--white-a06);
-    color: var(--hud-cyan);
-  }
-
-  .login-icon:active { scale: var(--press-scale); }
-
-  /* Menu compte : même ouverture que la liste des langues. Fermé, il n'est
-     qu'une pastille de la taille de l'icône, posée derrière elle (translate
-     vers le haut, clip-path réduit au coin supérieur droit). Ouverture : la
-     pastille glisse et s'agrandit jusqu'au panneau, puis l'en-tête et les
-     entrées arrivent en cascade. Fermeture : le chemin inverse, plus bref
-     (nav.js attend sa durée réelle via VH.motion.exit avant .hidden). */
-  .user-menu {
-    --pf-btn: 2.75rem;
-    --pf-gap: 6px;
-    /* Ombre portée par le parent : le clip-path du menu rognerait une
-       box-shadow. */
-    transition: filter var(--dur-base) var(--ease-out);
-  }
-  .user-menu:has(.user-dropdown.show) { filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.5)); }
-
-  .user-dropdown {
-    position: absolute;
-    inset-inline-end: 0;
-    top: 100%;
-    margin-top: var(--pf-gap);
-    background: var(--night-mid);
-    border: 1px solid var(--border-cyan);
-    border-radius: var(--r-2xl);
-    min-width: 280px;
-    overflow: hidden;
-    padding-block-end: var(--sp-2);
-    opacity: 0;
-    pointer-events: none;
-    z-index: var(--z-dropdown);
-    translate: 0 calc(-1 * (var(--pf-btn) + var(--pf-gap)));
-    clip-path: inset(0 0 calc(100% - var(--pf-btn)) calc(100% - var(--pf-btn)) round var(--r-lg));
-    transition:
-      clip-path var(--dur-base) var(--ease-in) var(--dur-instant),
-      translate var(--dur-base) var(--ease-in) var(--dur-instant),
-      opacity   var(--dur-fast) var(--ease-in) var(--dur-base);
-  }
-
-  .user-dropdown.show {
-    opacity: 1;
-    pointer-events: all;
-    translate: 0 0;
-    clip-path: inset(0 0 0 0 round var(--r-2xl));
-    transition:
-      clip-path var(--dur-slower) var(--menu-ease),
-      translate var(--dur-slow) var(--menu-ease),
-      opacity   var(--dur-instant) var(--ease-out);
-  }
-
-  /* Contenu : chaque bloc monte et apparaît, en cascade, une fois le
-     panneau déplié ; il repart d'un coup à la fermeture. */
-  .user-dropdown > * {
-    position: relative;
-    z-index: 1;
-    opacity: 0;
-    translate: 0 10px;
-    transition:
-      opacity var(--dur-fast) var(--ease-in),
-      translate var(--dur-fast) var(--ease-in);
-  }
-  .user-dropdown.show > * {
-    opacity: 1;
-    translate: 0 0;
-    transition:
-      opacity var(--dur-base) var(--ease-out) var(--pf-item-delay, var(--dur-fast)),
-      translate var(--dur-slower) var(--menu-ease) var(--pf-item-delay, var(--dur-fast)),
-      color var(--dur-fast) var(--ease-out);
-  }
-  .user-dropdown > :nth-child(3) { --pf-item-delay: var(--dur-base); }
-  .user-dropdown > :nth-child(n+4) { --pf-item-delay: calc(var(--dur-base) + var(--dur-instant)); }
-
-  /* Pastille de survol, partagée par les entrées (position posée en
-     CSSOM par nav.js : --pf-hl-y, --pf-hl-h). Teinte rouge sur
-     « Déconnexion » (.hl-danger). */
-  .user-dropdown::before {
-    content: "";
-    position: absolute;
-    inset-inline: var(--sp-2);
-    top: 0;
-    height: var(--pf-hl-h, 0px);
-    translate: 0 var(--pf-hl-y, 0px);
-    border-radius: var(--r-lg);
-    background: var(--gold-a08);
-    opacity: 0;
-    pointer-events: none;
-    transition:
-      translate var(--dur-base) var(--menu-ease),
-      height var(--dur-base) var(--menu-ease),
-      background-color var(--dur-fast) var(--ease-out),
-      opacity var(--dur-fast) var(--ease-out);
-  }
-  .user-dropdown.show::before { opacity: var(--pf-hl-o, 0); }
-  .user-dropdown.hl-danger::before { background: rgba(231, 76, 60, 0.10); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .user-menu, .user-dropdown, .user-dropdown.show,
-    .user-dropdown > *, .user-dropdown.show > *, .user-dropdown::before,
-    .dropdown-item > * { transition: none !important; }
-  }
-
-  .user-header {
-    display: flex;
-    align-items: center;
-    padding: var(--sp-5);
-    background: rgba(200, 169, 110, 0.05);
-    border-bottom: 1px solid rgba(200, 169, 110, 0.10);
-  }
-
-  .user-avatar {
-    font-size: 3rem;
-    margin-inline-end: var(--sp-4);
-    color: var(--hud-cyan);
-  }
-
-  .user-details { flex: 1; }
-
-  .user-name {
-    display: block;
-    font-weight: 600;
-    font-size: var(--text-lg);
-    color: var(--white);
-    margin-bottom: var(--sp-1);
-  }
-
-  .user-role {
-    font-size: var(--text-sm);
-    color: var(--text-muted);
-    font-weight: 500;
-  }
-
-  /* Avec la pastille de survol, les entrées se séparent par l'air et non
-     par des filets (ils coupaient la pastille) ; l'en-tête garde sa bordure. */
-  .user-dropdown .dropdown-divider { display: none; }
-
-  .dropdown-item {
-    display: flex;
-    align-items: center;
-    margin-inline: var(--sp-2);
-    padding: 0.875rem var(--sp-3);
-    border-radius: var(--r-lg);
-    color: rgba(255, 255, 255, 0.80);
-    transition:
-      opacity var(--dur-fast) var(--ease-in),
-      translate var(--dur-fast) var(--ease-in),
-      color var(--dur-fast) var(--ease-out);
-    gap: var(--sp-3);
-  }
-  .user-dropdown > .dropdown-item { margin-block-start: 2px; }
-  .user-dropdown > .dropdown-item:first-of-type { margin-block-start: var(--sp-2); }
-
-  /* Survol : la pastille glisse sous l'entrée, le texte s'éclaire et
-     l'icône comme le libellé se décalent légèrement vers la droite. */
-  .dropdown-item > * {
-    transition: translate var(--dur-base) var(--menu-ease);
-  }
-  .dropdown-item:hover > *,
-  .dropdown-item:focus-visible > * { translate: 4px 0; }
-
-  .dropdown-item:hover,
-  .dropdown-item:focus-visible {
-    color: var(--white);
-  }
-  .dropdown-item:focus-visible { outline-offset: -2px; }
-
-  .dropdown-item.active {
-    color: var(--hud-cyan);
-  }
-
-  .dropdown-item.logout,
-  .dropdown-item.logout:hover {
-    color: var(--accent-text);
-  }
-
-  .dropdown-item i, .dropdown-item .icon {
-    width: 20px;
-    text-align: center;
-  }
 
   /* ============================================================
      LANGUE — SÉLECTEUR (même famille que le menu flottant et les icônes
@@ -1620,7 +1384,7 @@
     display: block;
   }
 
-  /* Logos des pages d'authentification (login/check-email/forgot-password/reset-password/verify-email) */
+  /* Logos des pages d'authentification (page de connexion) */
   .auth-lockup {
     height: 2.75rem;
     width: auto;
@@ -1867,7 +1631,7 @@
      ============================================================ */
   :where(.btn, .filter-btn, .fs-tab, .ob-btn, .share-btn, .view-btn,
          .prev-page-btn, .next-page-btn, .pagination button, .clear-all-filters,
-         .hero-quiz-option, .cmp-remove, .tl-tick, .rp-submit, .form-tab,
+         .hero-quiz-option, .cmp-remove, .tl-tick, .form-tab,
          .favorite-remove, .ev-resend-btn, .btn-submit, .logout-modal-btn,
          .hero-search-btn, .tl-cta, .sidebar-link, .toast-undo-btn,
          .hero-suggest-all, .remove-filter-btn, .tl-lens-toggle, .tl-lens-reset,

@@ -39,12 +39,8 @@ describe('isValidPassword : même verdict que le serveur', () => {
 describe('Aides affichées : la même règle partout, borne haute comprise', () => {
   const KEYS = [
     ['login', 'password_requirements'],
-    ['reset_password', 'requirements_hint'],
-    ['verify_email', 'password_hint'],
     ['settings', 'req_length'],
     ['settings', 'toast_password_min'],
-    ['verify_email', 'error_password_weak'],
-    ['reset_password', 'error_password_weak'],
   ];
 
   test.each(KEYS)('%s.%s mentionne 8 et 128 dans les deux langues', (section, key) => {
@@ -54,15 +50,15 @@ describe('Aides affichées : la même règle partout, borne haute comprise', () 
     });
   });
 
-  test('plus de clé reset_password.strength_hint (inutilisée, et sans la minuscule)', () => {
-    expect(fr.reset_password.strength_hint).toBeUndefined();
-    expect(en.reset_password.strength_hint).toBeUndefined();
+  test('plus d’espaces de noms des anciennes pages à lien (tout passe par /login)', () => {
+    ['reset_password', 'verify_email', 'forgot_password', 'check_email'].forEach((ns) => {
+      expect(fr[ns]).toBeUndefined();
+      expect(en[ns]).toBeUndefined();
+    });
   });
 
   test.each([
     ['login.html', 'login.password_requirements'],
-    ['reset-password.html', 'reset_password.requirements_hint'],
-    ['verify-email.html', 'verify_email.password_hint'],
   ])('%s : le texte de repli (sans JS) donne aussi la borne de 128', (file, key) => {
     const html = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
     const match = html.match(new RegExp(`data-i18n="${key.replace('.', '\\.')}">([^<]*)<`));

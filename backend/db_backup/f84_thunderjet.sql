@@ -57,7 +57,7 @@ INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
 -- Armement
 INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 ((SELECT id FROM airplanes WHERE name = 'F-84 Thunderjet'), (SELECT id FROM armement WHERE name = 'M3 Browning 12,7 mm')),
-((SELECT id FROM airplanes WHERE name = 'F-84 Thunderjet'), (SELECT id FROM armement WHERE name = 'HVAR 70 mm')),
+((SELECT id FROM airplanes WHERE name = 'F-84 Thunderjet'), (SELECT id FROM armement WHERE name = 'HVAR 127 mm')),
 ((SELECT id FROM airplanes WHERE name = 'F-84 Thunderjet'), (SELECT id FROM armement WHERE name = 'Bombe lisse 500 kg'));
 
 -- Missions

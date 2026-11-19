@@ -6,35 +6,7 @@
 
 const utils = require('../js/utils');
 
-const LOGIN_DOM = `
-  <section>
-    <div role="tablist">
-      <button type="button" role="tab" id="tab-login" class="form-tab active" aria-controls="login-slide" aria-selected="true" tabindex="0">Identification</button>
-      <button type="button" role="tab" id="tab-register" class="form-tab" aria-controls="register-slide" aria-selected="false" tabindex="-1">Enregistrement</button>
-    </div>
-    <div class="form-slide form-login active" id="login-slide" role="tabpanel">
-      <form id="login-form">
-        <input type="email" id="login-email">
-        <div><input type="password" id="login-password"><button type="button" id="toggle-login-password"><i class="fas fa-eye-slash"></i></button></div>
-        <button type="submit" class="btn-submit"><span>Se connecter</span></button>
-      </form>
-      <button type="button" class="switch-form" id="switch-to-register">Créer un compte</button>
-    </div>
-    <div class="form-slide form-register" id="register-slide" role="tabpanel" inert>
-      <form id="register-form">
-        <input type="text" id="register-name">
-        <input type="email" id="register-email">
-        <div><input type="password" id="register-password" aria-describedby="register-password-hint"><button type="button" id="toggle-register-password"><i class="fas fa-eye-slash"></i></button></div>
-        <span id="register-password-error" class="form-error" role="alert"></span>
-        <p id="register-password-hint">Minimum 8 caractères avec 1 majuscule, 1 minuscule et 1 chiffre.</p>
-        <div class="password-strength"><div class="strength-bar"><div class="strength-fill"></div></div><span class="strength-text">Force</span></div>
-        <input type="checkbox" id="accept-terms">
-        <button type="submit" class="btn-submit"><span>Créer mon compte</span></button>
-      </form>
-      <button type="button" class="switch-form" id="switch-to-login">Se connecter</button>
-    </div>
-    <div class="auth-visual"><div class="auth-photo-media"></div></div><span id="stat-airplanes"></span><span id="stat-years"></span><span id="stat-years-label"></span><span id="stat-countries"></span>
-  </section>`;
+const { LOGIN_DOM } = require('./helpers/login-dom');
 
 function jsonResponse(status, body) {
   return { ok: status >= 200 && status < 300, status, json: () => Promise.resolve(body) };
@@ -87,6 +59,8 @@ function loadModules() {
   require('../js/login/strength');
   require('../js/login/tabs');
   require('../js/login/ui');
+  require('../js/shared/otp-input');
+  require('../js/login/flow');
   require('../js/login/visual');
   require('../js/login/forms');
   // jsdom ne navigue pas : on relève les redirections demandées.
@@ -148,11 +122,11 @@ describe('VH.login.strength', () => {
     expect(strength.strengthLevel(score)).toEqual({ key, text, fill });
   });
 
-  test('la jauge suit la saisie du mot de passe d\'inscription', () => {
+  test('la jauge suit la saisie du nouveau mot de passe', () => {
     const { state, strength } = loadModules();
     const ctx = state.createContext(document);
     strength.setupPasswordStrength(ctx);
-    const input = ctx.els.registerPassword;
+    const input = ctx.els.newPassword;
     input.value = 'Abcdefgh1!xyz';
     input.dispatchEvent(new window.Event('input'));
     const fill = document.querySelector('.strength-fill');
@@ -438,32 +412,17 @@ describe('VH.login.forms — inscription', () => {
     const ctx = login.state.createContext(document);
     return { login, ctx };
   }
-  function fill({ name = 'Pilote', email = 'pilote@x.fr', password = 'Abcdefg1', terms = true } = {}) {
+  function fill({ name = 'Pilote', email = 'pilote@x.fr', terms = true } = {}) {
     document.getElementById('register-name').value = name;
     document.getElementById('register-email').value = email;
-    document.getElementById('register-password').value = password;
     document.getElementById('accept-terms').checked = terms;
   }
   const ev = { preventDefault() {} };
 
-  test('A11Y-006 : l\'aide du mot de passe reste intacte et reliée, l\'erreur s\'y ajoute puis s\'en retire', async () => {
+  test('conditions non acceptées : message, aucun appel', async () => {
     const { login, ctx } = setup();
-    const pw = ctx.els.registerPassword;
-    const hint = document.getElementById('register-password-hint');
-    const hintText = hint.textContent;
-
-    fill({ password: 'abc' });
-    await login.forms.onRegisterSubmit(ctx, ev);
-    expect(pw.getAttribute('aria-describedby')).toBe('register-password-error register-password-hint');
-    expect(document.getElementById('register-password-error').textContent).toBe('t:login.password_requirements');
-    expect(hint.textContent).toBe(hintText);
-    expect(document.querySelectorAll('#register-password-error')).toHaveLength(1);
-
     fill({ terms: false });
     await login.forms.onRegisterSubmit(ctx, ev);
-    expect(pw.getAttribute('aria-describedby')).toBe('register-password-hint');
-    expect(pw.hasAttribute('aria-invalid')).toBe(false);
-    expect(hint.textContent).toBe(hintText);
     expect(toasts).toContainEqual(['error', 't:login.accept_terms_error']);
     expect(auth.fetchWithTimeout).not.toHaveBeenCalled();
   });
@@ -478,17 +437,19 @@ describe('VH.login.forms — inscription', () => {
     expect(document.getElementById('register-email-error').textContent).toBe('t:login.invalid_email');
   });
 
-  test('succès : jeton hCaptcha transmis, redirection vers /check-email', async () => {
+  test('succès : sans mot de passe, jeton hCaptcha transmis, étape « code » sur la page', async () => {
     const { login, ctx } = setup();
     window.getHcaptchaToken = jest.fn(() => Promise.resolve('cap'));
     auth.fetchWithTimeout.mockResolvedValue(jsonResponse(201, {}));
     fill({ email: 'p+1@x.fr' });
     await login.forms.onRegisterSubmit(ctx, ev);
     const body = JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body);
-    expect(body).toEqual({ name: 'Pilote', email: 'p+1@x.fr', password: 'Abcdefg1', 'h-captcha-response': 'cap' });
-    // L'adresse passe par sessionStorage, jamais par l'URL (historique, GTM, Sentry)
-    expect(navigations).toEqual(['/check-email']);
-    expect(sessionStorage.getItem('vh_pending_email')).toBe('p+1@x.fr');
+    expect(body).toEqual({ name: 'Pilote', email: 'p+1@x.fr', 'h-captcha-response': 'cap' });
+    expect(navigations).toEqual([]);
+    expect(ctx.state.flow).toEqual({ type: 'verify', email: 'p+1@x.fr', code: null });
+    expect(document.getElementById('code-slide').classList.contains('active')).toBe(true);
+    expect(document.getElementById('code-email').textContent).toBe('p+1@x.fr');
+    expect(window.location.hash).toBe('#code');
   });
 
   test.each([

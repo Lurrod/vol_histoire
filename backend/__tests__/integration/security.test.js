@@ -3,7 +3,8 @@
 /**
  * Intégration SQL — correctifs de sécurité du lot H1 sur une vraie base :
  * SEC-003 (identifiants hors plage, octet NUL : plus d'erreur PostgreSQL),
- * SEC-002 (corps invalides), SEC-008 (migration 003 des jetons hachés),
+ * SEC-002 (corps invalides), SEC-008 (migrations 003 des jetons hachés et
+ * 004 des codes à 6 chiffres),
  * LEGAL-011 (export des données personnelles).
  */
 
@@ -17,6 +18,7 @@ const { startItApp } = require('./helpers/it-app');
 
 const IT_URL = process.env.IT_DATABASE_URL || '';
 const MIGRATION_003 = path.join(__dirname, '../../migrations/003_jetons_haches.sql');
+const MIGRATION_004 = path.join(__dirname, '../../migrations/004_codes_email.sql');
 const sha256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
 
 describeIt('Intégration SQL — sécurité (lot H1)', () => {
@@ -123,10 +125,11 @@ describeIt('Intégration SQL — sécurité (lot H1)', () => {
   });
 });
 
-// La migration se joue sur un schéma à part, à l'état d'avant (colonne `token`
-// en clair) : elle doit hacher sur place, être rejouable, et le code doit
-// retrouver un jeton émis avant elle.
-describeIt('Intégration SQL — migration 003_jetons_haches.sql', () => {
+// Les migrations se jouent sur un schéma à part, à l'état d'avant (colonne
+// `token` en clair) : 003 doit hacher sur place et être rejouable ; 004 (codes
+// à 6 chiffres) ajoute le compteur d'essais, clôt les liens encore ouverts,
+// est rejouable, et le code applicatif fonctionne sur la table obtenue.
+describeIt('Intégration SQL — migrations 003_jetons_haches.sql et 004_codes_email.sql', () => {
   const SCHEMA = 'it_migration_003';
   let pool;
 
@@ -165,7 +168,7 @@ describeIt('Intégration SQL — migration 003_jetons_haches.sql', () => {
     }
   });
 
-  test('hache les jetons en place, rejouable, jeton antérieur toujours valide', async () => {
+  test('003 : hache les jetons en place, rejouable, empreinte unique', async () => {
     const sql = fs.readFileSync(MIGRATION_003, 'utf8');
     await pool.query(sql);
     await pool.query(sql); // rejouable
@@ -180,9 +183,9 @@ describeIt('Intégration SQL — migration 003_jetons_haches.sql', () => {
     const { rows } = await pool.query('SELECT token_hash FROM email_tokens');
     expect(rows).toEqual([{ token_hash: sha256('b'.repeat(64)) }]);
 
-    const emailTokensRepo = require('../../repositories/email-tokens');
-    const found = await emailTokensRepo.findOpenReset(pool, 'b'.repeat(64));
-    expect(found).toMatchObject({ user_id: 1 });
+    // Le jeton antérieur reste ouvert jusqu'à la migration 004
+    const open = await pool.query('SELECT user_id FROM email_tokens WHERE token_hash = $1 AND used_at IS NULL', [sha256('b'.repeat(64))]);
+    expect(open.rows).toEqual([{ user_id: 1 }]);
 
     await expect(pool.query(
       "INSERT INTO email_tokens (user_id, token_hash, type, expires_at) VALUES (1, $1, 'verify', NOW())",
@@ -192,5 +195,36 @@ describeIt('Intégration SQL — migration 003_jetons_haches.sql', () => {
       "SELECT 1 FROM pg_indexes WHERE schemaname = $1 AND indexname = 'idx_email_tokens_token'", [SCHEMA]
     );
     expect(index.rowCount).toBe(0);
+  });
+
+  test('004 : compteur d\'essais à 0, liens ouverts clos, rejouable', async () => {
+    const sql = fs.readFileSync(MIGRATION_004, 'utf8');
+    await pool.query(sql);
+    await pool.query(sql); // rejouable
+
+    const column = (await pool.query(
+      `SELECT data_type, is_nullable, column_default FROM information_schema.columns
+       WHERE table_schema = $1 AND table_name = 'email_tokens' AND column_name = 'attempts'`, [SCHEMA]
+    )).rows[0];
+    expect(column).toEqual({ data_type: 'smallint', is_nullable: 'NO', column_default: '0' });
+
+    const { rows } = await pool.query('SELECT attempts, used_at FROM email_tokens');
+    expect(rows).toHaveLength(1);
+    expect(rows[0].attempts).toBe(0);
+    expect(rows[0].used_at).not.toBeNull();
+  });
+
+  test('004 : le dépôt des codes fonctionne sur la table migrée', async () => {
+    const emailTokensRepo = require('../../repositories/email-tokens');
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    await emailTokensRepo.replaceOpen(pool, { userId: 1, type: 'reset', code: '042042', expiresAt });
+    // L'ancienne ligne du même compte et du même type a disparu
+    expect((await pool.query("SELECT COUNT(*)::int AS n FROM email_tokens WHERE type = 'reset'")).rows[0].n).toBe(1);
+
+    expect(await emailTokensRepo.checkCode(pool, { userId: 1, type: 'reset', code: '000000' })).toEqual({ ok: false });
+    expect((await pool.query("SELECT attempts FROM email_tokens WHERE type = 'reset'")).rows[0].attempts).toBe(1);
+    expect(await emailTokensRepo.checkCode(pool, { userId: 1, type: 'reset', code: '042042', consume: true }))
+      .toEqual({ ok: true, new_email: null });
+    expect(await emailTokensRepo.checkCode(pool, { userId: 1, type: 'reset', code: '042042' })).toEqual({ ok: false });
   });
 });

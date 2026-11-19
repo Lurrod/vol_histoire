@@ -54,8 +54,6 @@ INSERT INTO airplane_tech (id_airplane, id_tech) VALUES
 ((SELECT id FROM airplanes WHERE name = 'SOCATA TB-30 Epsilon'), (SELECT id FROM tech WHERE name = 'Aile droite à faible allongement'));
 
 -- Armement
-INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
-((SELECT id FROM airplanes WHERE name = 'SOCATA TB-30 Epsilon'), (SELECT id FROM armement WHERE name = 'HVAR 70 mm'));
 
 -- Missions
 INSERT INTO airplane_missions (id_airplane, id_mission) VALUES

@@ -38,7 +38,7 @@ function loadMailer(env = {}) {
 }
 
 const SMTP = { MAIL_USER: 'robot@example.test', MAIL_PASS: 'secret-fictif', FRONTEND_URL: 'https://vh.example.test' };
-const TOKEN = 'ab'.repeat(32);
+const CODE = '004217';
 
 describe('gabarits purs', () => {
   test('escapeHtmlEmail échappe & < > " et tolère le vide', () => {
@@ -49,19 +49,29 @@ describe('gabarits purs', () => {
     expect(mailer.escapeHtmlEmail(42)).toBe('42');
   });
 
-  test.each([
-    ['buildVerifyTemplate', 'Confirmez votre adresse email'],
-    ['buildResetTemplate', 'Réinitialisation'],
-  ])('%s : lien présent deux fois (bouton + copie), nom échappé', (fn, heading) => {
+  test('buildCodeTemplate : code en grand, validité, avertissement, aucun lien ; tout est échappé', () => {
     const { mailer } = loadMailer();
-    const link = `https://vh.example.test/x?token=${TOKEN}`;
-    const html = mailer[fn]('<script>alert(1)</script>', link);
+    const html = mailer.buildCodeTemplate({
+      heading: 'Titre <h>', name: '<script>alert(1)</script>', paragraph: 'Texte & suite',
+      code: CODE, validity: '15 minutes', note: 'Note <n>',
+    });
     expect(html).toContain('<!DOCTYPE html>');
-    expect(html.split(`href="${link}"`).length - 1).toBe(2);
+    expect(html).toContain('<title>Titre &lt;h&gt;</title>');
+    expect(html).toContain(`>${CODE}</div>`);
+    expect(html).toContain('Ce code est valable <strong style="color:rgba(255,255,255,0.55);">15 minutes</strong>, pour un seul usage.');
+    expect(html).toContain('Note &lt;n&gt; Ne communiquez ce code à personne.');
     expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
     expect(html).not.toContain('<script>');
-    expect(html).toMatch(new RegExp(heading.replace(/[éè]/g, '.')));
+    expect(html).toContain('Texte &amp; suite');
+    expect(html).not.toMatch(/href=|token=/);
     expect(html).toContain(String(new Date().getFullYear()));
+  });
+
+  test('buildCodeTemplate : un code inattendu est échappé lui aussi', () => {
+    const { mailer } = loadMailer();
+    const html = mailer.buildCodeTemplate({ heading: 'H', name: 'N', paragraph: 'P', code: '<1>', validity: 'v', note: 'n' });
+    expect(html).toContain('&lt;1&gt;');
+    expect(html).not.toContain('<1>');
   });
 
   test('buildContactTemplate échappe chaque champ et conserve les retours à la ligne', () => {
@@ -106,45 +116,58 @@ describe('envoi via SMTP (transport simulé)', () => {
     }));
   });
 
-  test('vérification : lien /verify-email avec jeton encodé', async () => {
+  test('activation : code de 30 minutes, ni lien ni jeton, code absent de l\'objet', async () => {
     const { mailer, sendMail } = loadMailer(SMTP);
-    await mailer.sendVerificationEmail('a@b.fr', 'Ana', 'a b&c');
+    await mailer.sendVerificationEmail('a@b.fr', 'Ana <b>', CODE);
     const mail = sendMail.mock.calls[0][0];
     expect(mail.to).toBe('a@b.fr');
     expect(mail.from).toBe(`"Vol d'Histoire" <${SMTP.MAIL_USER}>`);
-    expect(mail.subject).toMatch(/Confirmez votre adresse email/);
-    expect(mail.html).toContain('href="https://vh.example.test/verify-email?token=a%20b%26c"');
+    expect(mail.subject).toMatch(/code d'activation/);
+    expect(mail.subject).not.toContain(CODE);
+    expect(mail.html).toContain(CODE);
+    expect(mail.html).toContain('30 minutes');
+    expect(mail.html).toContain('Ana &lt;b&gt;');
+    expect(mail.html).not.toMatch(/href=|token=|verify-email/);
   });
 
-  test('réinitialisation : lien /reset-password', async () => {
+  test('réinitialisation : code de 15 minutes, ni lien ni jeton', async () => {
     const { mailer, sendMail } = loadMailer(SMTP);
-    await mailer.sendPasswordResetEmail('a@b.fr', 'Ana', TOKEN);
+    await mailer.sendPasswordResetEmail('a@b.fr', 'Ana', CODE);
     const mail = sendMail.mock.calls[0][0];
     expect(mail.subject).toMatch(/Réinitialisation/);
-    expect(mail.html).toContain(`https://vh.example.test/reset-password?token=${TOKEN}`);
+    expect(mail.subject).not.toContain(CODE);
+    expect(mail.html).toContain(CODE);
+    expect(mail.html).toContain('15 minutes');
+    expect(mail.html).not.toMatch(/href=|token=|reset-password/);
   });
 
-  test('changement d\'adresse : lien type=email à la nouvelle, avertissement sans lien à l\'ancienne', async () => {
+  test('changement d\'adresse : code à la nouvelle, avertissement sans code ni lien à l\'ancienne', async () => {
     const { mailer, sendMail } = loadMailer(SMTP);
-    await mailer.sendEmailChangeConfirmation('new@b.fr', 'Ana', TOKEN);
+    await mailer.sendEmailChangeConfirmation('new@b.fr', 'Ana', CODE);
     await mailer.sendEmailChangeNotice('old@b.fr', 'Ana');
-    const [confirm, notice] = sendMail.mock.calls.map((c) => c[0]);
+    const [confirm, notice] = sendMail.mock.calls.map((call) => call[0]);
     expect(confirm.to).toBe('new@b.fr');
-    expect(confirm.html).toContain(`https://vh.example.test/verify-email?type=email&token=${TOKEN}`);
+    expect(confirm.subject).not.toContain(CODE);
+    expect(confirm.html).toContain(CODE);
+    expect(confirm.html).toContain('réglages');
+    expect(confirm.html).not.toMatch(/href=|token=|verify-email/);
     expect(notice.to).toBe('old@b.fr');
     expect(notice.subject).toMatch(/Changement d'adresse demandé/);
-    expect(notice.html).not.toContain('verify-email');
+    expect(notice.html).not.toContain(CODE);
+    expect(notice.html).toContain('code envoyé à la nouvelle adresse');
+    expect(notice.html).not.toMatch(/verify-email|forgot-password|token=/);
   });
 
-  test('inscription sur une adresse déjà inscrite : avertissement, lien de connexion, aucun jeton', async () => {
+  test('inscription sur une adresse déjà inscrite : avertissement, lien de connexion, aucun code', async () => {
     const { mailer, sendMail } = loadMailer(SMTP);
     await mailer.sendAccountExistsNotice('a@b.fr', 'Ana <b>');
     const mail = sendMail.mock.calls[0][0];
     expect(mail.to).toBe('a@b.fr');
     expect(mail.subject).toMatch(/Tentative d'inscription/);
     expect(mail.html).toContain('href="https://vh.example.test/login"');
-    expect(mail.html).toContain('https://vh.example.test/forgot-password');
-    expect(mail.html).not.toMatch(/verify-email|token=/);
+    // « Mot de passe oublié » se trouve sur la page de connexion : plus d'adresse dédiée
+    expect(mail.html).toContain('Mot de passe oublié');
+    expect(mail.html).not.toMatch(/forgot-password|verify-email|token=/);
     expect(mail.html).toContain('Ana &lt;b&gt;');
   });
 

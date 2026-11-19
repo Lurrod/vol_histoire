@@ -5,7 +5,8 @@
    projecteur est une découpe dans un voile sombre : il glisse et se
    redimensionne d'une cible à l'autre (top/left/width/height en
    transition), la bulle se place dessous ou dessus selon la place.
-   Parcours différent sous 64em : les liens sont dans le menu burger.
+   Les liens vivent derrière le bouton Menu à toutes les largeurs (menu
+   flottant sous 64em, menu « underlay » au-delà) : le parcours le montre.
    ====================================================================== */
 (function () {
   'use strict';
@@ -14,7 +15,6 @@
   var GAP = 14;        // espace entre la cible et la bulle
   var PAD = 8;         // marge du projecteur autour de la cible
   var EDGE = 16;       // marge minimale avec les bords de l'écran
-  var MOBILE = '(max-width: 63.99em)';
 
   function shouldShow() {
     try { if (localStorage.getItem(STORAGE_KEY)) return false; } catch { return false; }
@@ -34,27 +34,12 @@
     return out;
   }
 
-  function isMobile() {
-    return !!(window.matchMedia && window.matchMedia(MOBILE).matches);
-  }
-
   function reducedMotion() {
     return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   }
 
-  /** Nombre d'appareils affiché par l'accueil, sinon null. Le compteur est un
-   *  odomètre (VH.rollingNumber) : son texte brut contient toutes les bandes de
-   *  chiffres ; la valeur lisible est dans son .sr-only. */
-  function catalogueCount() {
-    var el = document.getElementById('hero-split-stat-airplanes');
-    var src = el ? (el.querySelector('.sr-only') || el) : null;
-    var n = src ? parseInt(String(src.textContent).replace(/\D/g, ''), 10) : NaN;
-    return Number.isFinite(n) && n > 0 ? n : null;
-  }
-
   /** Étapes du parcours ; une étape sans cible présente est retirée. */
   function buildSteps(userName) {
-    var count = catalogueCount();
     var welcome = {
       id: 'welcome',
       target: null,
@@ -69,36 +54,17 @@
       title: t('onboarding.search_title', 'Cherchez un appareil'),
       text: t('onboarding.search_text', 'Un nom, un pays, un constructeur : les suggestions arrivent dès les premières lettres.'),
     };
-    var steps = isMobile()
-      ? [welcome, search, {
-        id: 'menu',
-        target: '.hamburger',
-        title: t('onboarding.menu_title', 'Le menu'),
-        text: t('onboarding.menu_text', 'Le Hangar, la Chronologie, les Conflits et votre espace personnel : tout part d\'ici.'),
-      }, {
-        id: 'lang',
-        target: '#lang-toggle',
-        title: t('onboarding.lang_title', 'Français ou anglais'),
-        text: t('onboarding.lang_text', 'Tout le site, fiches comprises, existe dans les deux langues.'),
-      }]
-      : [welcome, search, {
-        id: 'hangar',
-        target: '.nav-links a[href="/hangar"]',
-        title: t('onboarding.hangar_title', 'Le Hangar'),
-        text: count
-          ? t('onboarding.hangar_text_count', '{count} appareils, de 1945 à aujourd\'hui, à filtrer par pays, génération, type, conflit ou mission.', { count: count.toLocaleString(document.documentElement.lang || 'fr') })
-          : t('onboarding.hangar_text', 'Tout le catalogue, de 1945 à aujourd\'hui, à filtrer par pays, génération, type, conflit ou mission.'),
-      }, {
-        id: 'timeline',
-        target: '.nav-links a[href="/timeline"]',
-        title: t('onboarding.timeline_title', 'La Chronologie'),
-        text: t('onboarding.timeline_text', 'Huit décennies d\'aviation militaire sur une même frise, avec les conflits et les appareils qui ont compté.'),
-      }, {
-        id: 'favorites',
-        target: '.nav-links a[href="/favorites"]',
-        title: t('onboarding.favorites_title', 'Vos favoris'),
-        text: t('onboarding.favorites_text', 'Le cœur d\'une fiche range l\'appareil dans votre collection. Elle vous attend ici.'),
-      }];
+    var steps = [welcome, search, {
+      id: 'menu',
+      target: '.hamburger',
+      title: t('onboarding.menu_title', 'Le menu'),
+      text: t('onboarding.menu_text', 'Le Hangar, la Chronologie, les Conflits et votre espace personnel : tout part d\'ici.'),
+    }, {
+      id: 'lang',
+      target: '#lang-toggle',
+      title: t('onboarding.lang_title', 'Français ou anglais'),
+      text: t('onboarding.lang_text', 'Tout le site, fiches comprises, existe dans les deux langues.'),
+    }];
     return steps.filter(function (s) { return !s.target || document.querySelector(s.target); });
   }
 

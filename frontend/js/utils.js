@@ -453,35 +453,7 @@ function setNumberPopIn(el, value) {
   el.classList.add('is-animating');
 }
 
-/**
- * Lit des paramètres sensibles de l'URL (jeton d'un lien reçu par email,
- * adresse…) puis les retire de la barre d'adresse et de l'entrée d'historique
- * courante : ils ne restent ni dans l'historique, ni dans ce que GTM ou Sentry
- * liraient de window.location. Les autres paramètres (?lang=…) sont gardés.
- * Renvoie { nom: valeur | null }.
- */
-function takeUrlParams(names) {
-  const url = new URL(window.location.href);
-  const values = {};
-  let changed = false;
-  names.forEach((name) => {
-    values[name] = url.searchParams.get(name);
-    if (url.searchParams.has(name)) {
-      url.searchParams.delete(name);
-      changed = true;
-    }
-  });
-  if (changed) {
-    try {
-      window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
-    } catch {
-      /* historique indisponible : la valeur reste utilisable */
-    }
-  }
-  return values;
-}
-
 // Export conditionnel pour les tests unitaires (Node.js)
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { takeUrlParams, escapeHtml, safeSetHTML, showToast, animateNumber, setNumberPopIn, setupPasswordToggle, isValidEmail, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, isValidPassword, calculatePasswordStrength, trapFocus, setFieldError, clearFieldError };
+  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setNumberPopIn, setupPasswordToggle, isValidEmail, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, isValidPassword, calculatePasswordStrength, trapFocus, setFieldError, clearFieldError };
 }

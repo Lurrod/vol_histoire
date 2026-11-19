@@ -1,10 +1,9 @@
 /* Connexion / inscription — validation et envoi des deux formulaires.
  *
  * Les erreurs de champ passent par setFieldError / clearFieldError
- * (utils.js), qui gèrent un aria-describedby à plusieurs identifiants : le
- * mot de passe d'inscription garde son aide permanente
- * (#register-password-hint, WCAG 3.3.2) et y ajoute
- * #register-password-error le temps d'une erreur.
+ * (utils.js). L'inscription ne demande que le nom et l'adresse : un code
+ * part par email, puis le mot de passe se choisit dans les étapes suivantes
+ * (js/login/flow.js).
  */
 (function () {
   const root = typeof window !== 'undefined' ? window : globalThis;
@@ -104,12 +103,11 @@
   }
 
   // ========== Inscription ==========
-  function validateRegister(ctx, { name, email, password, acceptTerms }) {
+  function validateRegister(ctx, { name, email, acceptTerms }) {
     const nameInput = document.getElementById('register-name');
     const emailInput = document.getElementById('register-email');
     clearFieldError(nameInput);
     clearFieldError(emailInput);
-    clearFieldError(ctx.els.registerPassword);
 
     if (name.length < 2) {
       setFieldError(nameInput, i18n.t('login.name_too_short'));
@@ -117,10 +115,6 @@
     }
     if (!isValidEmail(email)) {
       setFieldError(emailInput, i18n.t('login.invalid_email'));
-      return false;
-    }
-    if (!VH.login.strength.validatePassword(password)) {
-      setFieldError(ctx.els.registerPassword, i18n.t('login.password_requirements'));
       return false;
     }
     if (!acceptTerms) {
@@ -137,19 +131,18 @@
     const fields = {
       name: document.getElementById('register-name').value.trim(),
       email: document.getElementById('register-email').value.trim(),
-      password: ctx.els.registerPassword.value,
       acceptTerms: document.getElementById('accept-terms').checked,
     };
     const submitBtn = ctx.els.registerForm.querySelector('button[type="submit"]');
 
     if (!validateRegister(ctx, fields)) return;
-    const { name, email, password } = fields;
+    const { name, email } = fields;
 
     try {
       setButtonLoading(submitBtn, true);
 
       const captchaToken = window.getHcaptchaToken ? await window.getHcaptchaToken('register') : null;
-      const payload = { name, email, password };
+      const payload = { name, email };
       if (captchaToken) payload['h-captcha-response'] = captchaToken;
 
       const response = await auth.fetchWithTimeout('/api/register', {
@@ -160,10 +153,9 @@
       const data = await readJson(response);
 
       if (response.ok) {
+        setButtonLoading(submitBtn, false);
         showToast(i18n.t('login.register_success'), 'success');
-        // Adresse transmise hors de l'URL (historique, GTM, Sentry) : check-email.js
-        try { sessionStorage.setItem('vh_pending_email', email); } catch { /* stockage indisponible */ }
-        VH.login.forms.navigate('/check-email');
+        VH.login.flow.startCode(ctx, 'verify', email);
       } else if (response.status === 429) {
         showToast(data.message || i18n.t('login.too_many_attempts'), 'error');
         setButtonLoading(submitBtn, false);

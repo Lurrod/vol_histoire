@@ -30,21 +30,6 @@
   .skeleton-block { display: block; margin-bottom: 8px; }
   .skeleton-block-last { display: block; }
 
-  /* Bouton "Nouveau lien" reset-password invalide */
-  .rp-newlink-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.7rem 1.5rem;
-    background: rgba(200, 169, 110, 0.1);
-    border: 1px solid rgba(200, 169, 110, 0.25);
-    border-radius: 10px;
-    color: #C8A96E;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
   /* Modale édition utilisateur (settings) */
   .edit-modal-container { max-width: 460px; width: 92%; }
   .edit-modal-icon-champagne {
@@ -110,12 +95,10 @@
   @media (hover: none) and (pointer: coarse) {
     .btn          { min-height: 44px; }
     .nav-links li a { min-height: 48px; }
-    .dropdown-item  { min-height: 44px; }
     .hamburger      { min-width: 48px; min-height: 48px; }
     /* Sélecteur de langue au même gabarit que le bouton « Menu » (la pastille
        d'ouverture de la liste suit la même variable). */
     .lang-btn, .lang-dropdown { --lang-btn-h: 48px; }
-    .login-icon, .user-menu { --pf-btn: 48px; }
     .modal-close    { min-width: 48px; min-height: 48px; }
   }
 

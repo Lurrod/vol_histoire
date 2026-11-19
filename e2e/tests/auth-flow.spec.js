@@ -39,7 +39,6 @@ test.describe('Flux authentification complet', () => {
 
     await page.fill('#register-name', `Test ${unique}`);
     await page.fill('#register-email', `${unique}@test-e2e.com`);
-    await page.fill('#register-password', 'Testuser1');
     // Le checkbox réel est masqué (CSS custom-check), on force le check via JS
     await page.evaluate(() => {
       const cb = document.getElementById('accept-terms');
@@ -88,23 +87,14 @@ test.describe('Flux authentification complet', () => {
     await page.goto('/');
     await page.waitForLoadState('networkidle');
 
-    // Ouvrir le menu utilisateur
-    const userToggle = page.locator('.user-toggle, #login-icon').first();
-    await userToggle.click();
-    await page.waitForTimeout(300);
-
-    // Cliquer sur déconnexion
-    const logoutBtn = page.locator('#logout-icon, #logout-btn').first();
-    if (await logoutBtn.isVisible()) {
-      await logoutBtn.click();
-      await page.waitForTimeout(1500);
-      const bodyText = await page.textContent('body');
-      const isLoggedOut =
-        page.url().includes('/') ||
-        bodyText.includes('Connexion') ||
-        bodyText.includes('connecter');
-      expect(isLoggedOut).toBe(true);
-    }
+    // « Déconnexion » est dans le groupe « Votre espace » du menu
+    await page.click('.hamburger');
+    const logoutBtn = page.locator('#nav-panel .nav-logout');
+    await expect(logoutBtn).toBeVisible();
+    await logoutBtn.click();
+    await page.waitForURL((url) => url.pathname === '/', { timeout: 5000 });
+    // Session close : le menu repropose « Connexion »
+    await expect(page.locator('body > header')).not.toHaveClass(/is-auth/, { timeout: 5000 });
   });
 
   test('basculer entre login et inscription via les boutons switch', async ({ page }) => {
