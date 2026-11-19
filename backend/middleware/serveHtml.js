@@ -51,6 +51,22 @@ const PAGE_OPTIONS = {
   conflits: { active: '/conflits' },
 };
 
+/* Opt-in des transitions entre pages (frontend/css/shared-morph.css),
+ * répété EN LIGNE en tête de <head> : une extension qui fait calculer les
+ * styles avant l'arrivée de core.min.css (bloqueur de bandeaux cookies du
+ * propriétaire) laissait Chrome voir une page sans opt-in, et la transition
+ * était annulée à l'arrivée (« ViewTransition opt-in disabled »). Le nonce
+ * CSP est posé à l'envoi (injectCspNonce, app.js). */
+const MORPH_OPT_IN = '<style>@view-transition{navigation:auto}' +
+  '@media (prefers-reduced-motion:reduce){@view-transition{navigation:none}}</style>';
+
+/** Insère MORPH_OPT_IN juste après <head>, une seule fois. */
+function injectMorphOptIn(html) {
+  if (html.includes('@view-transition{navigation:auto}')) return html;
+  return html.replace(/<head(\s[^>]*)?>/i, (m) => `${m}
+  ${MORPH_OPT_IN}`);
+}
+
 const INCLUDE_RE = /^[ \t]*<!--\s*@include\s+([a-z0-9-]+)\s*-->[ \t]*(\r?)$/gm;
 
 function rewrite(html, version) {
@@ -202,7 +218,7 @@ function renderTemplate(frontendDir, fileName, version) {
   try {
     const raw = fs.readFileSync(path.join(frontendDir, fileName), 'utf8');
     const html = resolveIncludes(raw, path.basename(fileName, '.html'), loadPartials(frontendDir));
-    return rewrite(html, version);
+    return injectMorphOptIn(rewrite(html, version));
   } catch {
     return '';
   }
@@ -239,7 +255,7 @@ function buildHtmlCache(frontendDir, version) {
       try {
         const raw = fs.readFileSync(full, 'utf8');
         const pageName = entry.name.slice(0, -5);
-        const html = rewrite(resolveIncludes(raw, pageName, partials, warnings), version);
+        const html = injectMorphOptIn(rewrite(resolveIncludes(raw, pageName, partials, warnings), version));
         cache.set(full, {
           fr: localizeHead(html, pageName, 'fr', {}),
           en: localizeHead(html, pageName, 'en', dictionaries.en),
@@ -267,4 +283,5 @@ function buildHtmlCache(frontendDir, version) {
 
 module.exports = {
   buildHtmlCache, rewrite, resolveIncludes, loadPartials, renderTemplate, localizeHead, PAGE_OPTIONS,
+  injectMorphOptIn, MORPH_OPT_IN,
 };

@@ -100,9 +100,17 @@
     bindCards(container, state);
   }
 
-  function applyFiltersAndRender(state) {
+  /* opts.morph : les cartes restées visibles glissent vers leur nouvelle
+   * place (VH.viewMorph, tri et filtres). Pas pour la saisie de la
+   * recherche : une transition par touche saccaderait. */
+  function applyFiltersAndRender(state, opts) {
     state.filtered = VH.favorites.filters.selectFavorites(state);
-    renderFavorites(state);
+    const draw = () => renderFavorites(state);
+    if (opts && opts.morph && VH.viewMorph) {
+      VH.viewMorph.swap({ root: document.getElementById('favorites-container'), update: draw });
+    } else {
+      draw();
+    }
     updateResultsCount(state);
   }
 

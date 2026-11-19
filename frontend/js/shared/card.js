@@ -85,9 +85,9 @@
     });
     const href = buildDetailsPath(aircraft.id, aircraft.name);
     return `
-      <article class="aircraft-card" data-id="${Number(aircraft.id)}">
+      <article class="aircraft-card" data-id="${Number(aircraft.id)}" data-morph-id="${Number(aircraft.id)}">
         ${removeBtn}
-        <div class="aircraft-image">
+        <div class="aircraft-image" data-morph="photo">
           ${pic}
           <div class="aircraft-overlay">
             <div class="aircraft-badges">${genBadge}${typeBadge}</div>

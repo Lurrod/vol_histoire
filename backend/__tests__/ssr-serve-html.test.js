@@ -7,6 +7,7 @@ const os = require('os');
 const path = require('path');
 const {
   buildHtmlCache, rewrite, resolveIncludes, loadPartials, renderTemplate, localizeHead,
+  injectMorphOptIn, MORPH_OPT_IN,
 } = require('../middleware/serveHtml');
 
 const FRONTEND = path.join(__dirname, '../../frontend');
@@ -106,6 +107,17 @@ describe('buildHtmlCache / renderTemplate', () => {
   });
 });
 
+describe('injectMorphOptIn', () => {
+  test('juste après <head> (avec ou sans attributs), idempotent, rien sans <head>', () => {
+    expect(injectMorphOptIn('<html><head lang="fr"><meta>')).toBe(`<html><head lang="fr">
+  ${MORPH_OPT_IN}<meta>`);
+    const once = injectMorphOptIn('<head></head>');
+    expect(injectMorphOptIn(once)).toBe(once);
+    expect(injectMorphOptIn('<div>fragment</div>')).toBe('<div>fragment</div>');
+    expect(MORPH_OPT_IN).toContain('prefers-reduced-motion:reduce');
+  });
+});
+
 describe('rewrite — cache-busting', () => {
   test('PERF-001 : les preload de polices ne sont pas versionnés (même URL que @font-face)', () => {
     const html = '<link rel="preload" href="fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>';
@@ -134,6 +146,17 @@ describe('pages réelles de frontend/', () => {
       expect(html.match(/<header>/g)).toHaveLength(1);
       expect(html.match(/<footer>/g)).toHaveLength(1);
       expect(html).toContain('id="nav-links"');
+    }
+  });
+
+  test('opt-in des transitions entre pages en ligne, en tête de <head>, une fois (pages et gabarits SSR)', () => {
+    for (const name of HEADER_PAGES) {
+      const html = page(name);
+      expect(html.split(MORPH_OPT_IN)).toHaveLength(2);
+      expect(html.indexOf(MORPH_OPT_IN)).toBeLessThan(html.indexOf('<link rel="stylesheet"'));
+    }
+    for (const tpl of ['details.html', 'conflits.html']) {
+      expect(renderTemplate(FRONTEND, tpl, 'test')).toContain(MORPH_OPT_IN);
     }
   });
 

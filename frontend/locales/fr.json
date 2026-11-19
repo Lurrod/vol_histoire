@@ -363,7 +363,8 @@
     "admin_variants_en": "Variantes en anglais (texte libre / markdown)",
     "admin_generation_option": "{n}e génération",
     "photo_modified": "image modifiée (redimensionnement, conversion)",
-    "hero_first_flight": "1er vol en {year}"
+    "hero_first_flight": "1er vol en {year}",
+    "photo_zoom": "Agrandir la photo"
   },
   "hangar": {
     "title": "Hangar - Collection d'Aviation Militaire | Vol d'Histoire",
@@ -961,7 +962,9 @@
     "email_code_invalid": "Code incorrect ou expiré.",
     "email_code_taken": "Cette adresse est déjà utilisée par un autre compte.",
     "email_code_done": "Adresse modifiée. Reconnectez-vous avec la nouvelle.",
-    "email_code_cancel": "Annuler"
+    "email_code_cancel": "Annuler",
+    "btn_saved": "Enregistré",
+    "btn_downloaded": "Téléchargé"
   },
   "error404": {
     "title": "404 — Contact Perdu | Vol d'Histoire",

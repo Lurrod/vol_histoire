@@ -1802,65 +1802,92 @@
   .cfm-panel .icon,
   .cfm-panel i { font-size: 0.8rem; }
 
-  /* Morphing (option `morph`) : le déclencheur se transforme sur place,
-     DEPUIS SON CENTRE, en la paire « ✓ · ✗ ».
-     - L'enveloppe passe de la largeur du déclencheur à celle de la paire
-       (largeurs mesurées par confirm-action.js, posées en CSSOM).
-     - Le déclencheur reste au centre, se rétracte vers son milieu en
-       s'éteignant, puis est caché (visibility : plus focalisable).
-     - La paire garde sa largeur naturelle, centrée en absolu sur le même
-       milieu, et se découvre du centre vers les bords (clip-path).
-     Une feuille de page qui redéfinit `transition` sur le déclencheur
-     (.btn…) doit y reprendre opacity, scale et visibility. */
-  .cfm.cfm-morph {
+  /* BOUTON D'ENVOI (VH.busyButton, js/shared/busy-button.js) : largeur
+     figée par le JS ; le libellé monte et s'efface, l'anneau apparaît à sa
+     place ; au succès, l'anneau cède la place à une coche tracée et à son
+     texte, qui montent à leur tour ; puis le libellé revient. */
+  .bb { position: relative; }
+  .bb-label {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    transition: width var(--dur-base) var(--ease-in-out);
+    gap: inherit;
+    transition: opacity var(--dur-fast) var(--ease-out), translate var(--dur-base) var(--ease-out);
   }
-  .cfm-morph > :not(.cfm-panel) {
-    flex-shrink: 0;
-    transition: opacity var(--dur-fast) var(--ease-out) var(--dur-instant),
-                scale var(--dur-base) var(--ease-out),
-                visibility 0s linear 0s;
-  }
-  .cfm-morph[data-state="confirm"] > :not(.cfm-panel) {
-    opacity: 0;
-    scale: 0.6 1;
-    visibility: hidden;
-    transition: opacity var(--dur-instant) var(--ease-in),
-                scale var(--dur-base) var(--ease-in-out),
-                visibility 0s linear var(--dur-base);
-  }
-  .cfm-morph .cfm-panel {
+  .bb[data-bb] .bb-label { opacity: 0; translate: 0 -0.6em; }
+  .bb-spin {
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 50%;
     left: 50%;
-    translate: -50% 0;
-    width: max-content;
-    max-width: none;
-    margin: 0;
-    opacity: 1;
-    clip-path: inset(0 50% 0 50% round var(--r-md));
+    width: 1.1em;
+    height: 1.1em;
+    margin: -0.55em 0 0 -0.55em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    opacity: 0;
+    scale: 0.6;
     pointer-events: none;
-    transition: clip-path var(--dur-fast) var(--ease-in);
+    transition: opacity var(--dur-fast) var(--ease-out), scale var(--dur-base) var(--ease-out);
+    animation: spin 0.7s linear infinite; /* boucle */
   }
-  .cfm-morph[data-state="confirm"] .cfm-panel {
-    max-width: none;
-    margin: 0;
-    clip-path: inset(0 0 0 0 round var(--r-md));
-    pointer-events: auto;
-    /* Léger retard : le libellé du déclencheur s'éteint d'abord, les deux
-       textes ne se superposent pas. */
-    transition: clip-path var(--dur-base) var(--ease-in-out) calc(var(--dur-instant) * 0.6);
+  .bb[data-bb="busy"] .bb-spin { opacity: 0.9; scale: 1; }
+  .bb-done {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    opacity: 0;
+    translate: 0 0.6em;
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease-out), translate var(--dur-base) var(--ease-out);
   }
-  /* Pas de glissement propre aux boutons : l'ouverture depuis le centre
-     porte tout le mouvement. */
-  .cfm-morph .cfm-yes,
-  .cfm-morph .cfm-no {
-    translate: none;
+  .bb[data-bb="done"] .bb-done { opacity: 1; translate: 0 0; }
+  .bb-check {
+    width: 1.1em; height: 1.1em; flex-shrink: 0;
+    fill: none; stroke: currentColor; stroke-width: 2.4;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .bb-check path { stroke-dasharray: 20; stroke-dashoffset: 20; }
+  .bb[data-bb="done"] .bb-check path {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant);
+  }
+  .bb[data-bb="busy"] { cursor: progress; }
+
+  /* POUBELLE (VH.confirmAction.binIcon) : couvercle, cuve et coche animés
+     séparément. Le couvercle pivote sur la charnière OPPOSÉE au côté où
+     s'ouvre le panneau : il se soulève vers la confirmation. Il s'entrouvre
+     au survol, s'ouvre pendant la confirmation ; à la confirmation,
+     couvercle et cuve s'effacent et une coche se trace. */
+  .cfm-bin {
+    width: 1.2em; height: 1.2em; flex-shrink: 0; overflow: visible;
+    fill: none; stroke: currentColor; stroke-width: 1.8;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .cfm-bin-lid {
+    transform-box: view-box;
+    transform-origin: 4.5px 7px;
+    transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+  }
+  .cfm-bin-can { transition: opacity var(--dur-fast) var(--ease-out); }
+  .cfm[data-state="idle"] > :hover .cfm-bin-lid { transform: translateY(-0.8px) rotate(-7deg); }
+  .cfm[data-state="confirm"] .cfm-bin-lid { transform: translate(-0.4px, -2.4px) rotate(-24deg); }
+  /* Panneau à gauche : charnière à droite. */
+  .cfm[data-side="left"] .cfm-bin-lid { transform-origin: 19.5px 7px; }
+  .cfm[data-side="left"][data-state="idle"] > :hover .cfm-bin-lid { transform: translateY(-0.8px) rotate(7deg); }
+  .cfm[data-side="left"][data-state="confirm"] .cfm-bin-lid { transform: translate(0.4px, -2.4px) rotate(24deg); }
+  .cfm-bin-check { stroke-dasharray: 20; stroke-dashoffset: 20; opacity: 0; }
+  .cfm[data-state="done"] .cfm-bin-lid,
+  .cfm[data-state="done"] .cfm-bin-can { opacity: 0; }
+  .cfm[data-state="done"] .cfm-bin-check {
+    stroke-dashoffset: 0;
     opacity: 1;
-    min-height: 0;
-    height: 100%;
+    transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant),
+                opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
   }
 
   /* ============================================================

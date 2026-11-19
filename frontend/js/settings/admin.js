@@ -101,25 +101,17 @@
     document.querySelectorAll('.btn-delete').forEach(armDeleteButton);
   }
 
-  /* Poubelle dessinée en SVG (couvercle, cuve, coche : trois tracés animés
-   * séparément par settings.css). Posée après coup : safeSetHTML retire les
-   * balises SVG du fragment. Le balisage est statique, sans donnée saisie. */
-  const BIN_SVG =
-    '<svg class="adm-bin" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-    '<g class="adm-bin-lid"><path d="M4.5 7h15"/><path d="M9.5 7V5.2c0-.7.5-1.2 1.2-1.2h2.6c.7 0 1.2.5 1.2 1.2V7"/></g>' +
-    '<g class="adm-bin-can"><path d="M6.5 7.5l.9 11.2c.1 1 .9 1.8 1.9 1.8h5.4c1 0 1.8-.8 1.9-1.8l.9-11.2"/><path d="M10.2 11v5.5M13.8 11v5.5"/></g>' +
-    '<path class="adm-bin-check" d="M6.5 12.5l3.6 3.6 7.4-7.6"/>' +
-    '</svg>';
-
   /* Suppression en deux temps, sur place : la poubelle ouvre « supprimer /
    * garder » à sa gauche ; la requête ne part qu'après la coche tracée. */
   function armDeleteButton(btn) {
-    btn.innerHTML = BIN_SVG;
+    // Poubelle partagée (shared/confirm-action.js) : posée après coup,
+    // safeSetHTML retire les balises SVG du fragment.
+    btn.replaceChildren(window.VH.confirmAction.binIcon());
     const control = window.VH.confirmAction.arm(btn, {
       side: 'left',
       showText: true,
       className: 'adm-del',
-      measure: '.adm-bin-check',
+      measure: '.cfm-bin-check',
       labels: {
         group: i18n.t('settings.delete_user_group'),
         confirm: i18n.t('settings.delete_user_confirm'),

@@ -16,8 +16,6 @@
  *     side: 'right' | 'left',   // côté où le panneau s'ouvre
  *     className: '',            // classe ajoutée à l'enveloppe (style de page)
  *     measure: '.selector',     // élément animé à l'état « done » (dans l'enveloppe)
- *     morph: false,             // le déclencheur se transforme sur place, depuis
- *                               // son centre, en la paire (CSS .cfm-morph)
  *     when: () => true,         // confirmation requise ? faux → le clic n'est pas
  *                               // intercepté (ex. cœur de la fiche : l'ajout se
  *                               // fait d'un clic, seul le retrait se confirme)
@@ -28,6 +26,19 @@
 
   var openControl = null;
   var uid = 0;
+
+  /* Libellés à rafraîchir quand la langue est prête ou change : armés avant
+   * le chargement des traductions, ils porteraient la clé brute — et le
+   * panneau, la largeur de celle-ci (sa place est réservée sur la fiche).
+   * Un seul écouteur pour tous les contrôles ; ceux sortis du DOM
+   * (liste d'utilisateurs re-rendue) sont oubliés au passage. */
+  var relabelers = [];
+  function relabelAll() {
+    relabelers = relabelers.filter(function (r) { return r.wrap.isConnected; });
+    relabelers.forEach(function (r) { r.apply(); });
+  }
+  window.addEventListener('i18nReady', relabelAll);
+  window.addEventListener('langChanged', relabelAll);
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -42,47 +53,30 @@
       '</button>';
   }
 
-  /* Morphing (option morph, CSS .cfm-morph de shared-base) : l'enveloppe
-   * passe de la largeur du déclencheur à celle de la paire, et retour. Les
-   * deux largeurs ne sont connues qu'à l'exécution (libellés traduits) :
-   * mesurées à chaque changement d'état, posées en CSSOM (permis par la
-   * CSP), puis rendues à `auto` au repos. */
-  function morphWidth(wrap, trigger, panel) {
-    function setWidth(from, to) {
-      // Même largeur (ex. coche tracée puis retour au repos) : aucune
-      // transition, donc aucun transitionend pour rendre la main à `auto`.
-      if (Math.round(from) === Math.round(to)) {
-        wrap.style.width = wrap.dataset.state === 'idle' ? '' : to + 'px';
-        return;
-      }
-      wrap.style.width = from + 'px';
-      void wrap.offsetWidth; // point de départ de la transition
-      wrap.style.width = to + 'px';
-    }
-    var last = wrap.dataset.state;
-    new MutationObserver(function () {
-      var state = wrap.dataset.state;
-      if (state === last) return; // reset() d'un contrôle déjà au repos
-      last = state;
-      // Contrôle caché (ex. barre du comparateur vide) : rien à mesurer —
-      // largeur naturelle, sinon un 0 px resterait figé (pas de transitionend).
-      if (!wrap.offsetWidth && !trigger.offsetWidth) { wrap.style.width = ''; return; }
-      // « done » : le déclencheur revient (coche tracée à sa place).
-      if (state === 'confirm') setWidth(trigger.offsetWidth, panel.scrollWidth);
-      else setWidth(wrap.offsetWidth, trigger.offsetWidth);
-    }).observe(wrap, { attributes: true, attributeFilter: ['data-state'] });
-    wrap.addEventListener('transitionend', function (e) {
-      if (e.target === wrap && e.propertyName === 'width' && wrap.dataset.state === 'idle') {
-        wrap.style.width = '';
-      }
-    });
+  /* Poubelle dessinée (couvercle, cuve, coche : trois tracés animés
+   * séparément, CSS « POUBELLE » de shared-base). Le couvercle pivote sur la
+   * charnière opposée au côté où s'ouvre le panneau ; à la confirmation,
+   * couvercle et cuve s'effacent et la coche se trace (measure: '.cfm-bin-check').
+   * Balisage statique, sans donnée saisie. */
+  var BIN_SVG =
+    '<svg class="cfm-bin" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+    '<g class="cfm-bin-lid"><path d="M4.5 7h15"/><path d="M9.5 7V5.2c0-.7.5-1.2 1.2-1.2h2.6c.7 0 1.2.5 1.2 1.2V7"/></g>' +
+    '<g class="cfm-bin-can"><path d="M6.5 7.5l.9 11.2c.1 1 .9 1.8 1.9 1.8h5.4c1 0 1.8-.8 1.9-1.8l.9-11.2"/><path d="M10.2 11v5.5M13.8 11v5.5"/></g>' +
+    '<path class="cfm-bin-check" pathLength="20" d="M6.5 12.5l3.6 3.6 7.4-7.6"/>' +
+    '</svg>';
+
+  /** Nœud SVG de la poubelle, à poser dans un déclencheur. */
+  function binIcon() {
+    var holder = document.createElement('span');
+    holder.innerHTML = BIN_SVG;
+    return holder.firstChild;
   }
 
   /**
    * @param {HTMLElement|null} trigger
    * @param {{ onConfirm: () => void, labels: { group: string, confirm: string, cancel: string },
    *           showText?: boolean, side?: 'left'|'right', className?: string, measure?: string,
-   *           when?: () => boolean, morph?: boolean }} opts
+   *           when?: () => boolean }} opts
    */
   function arm(trigger, opts) {
     if (!trigger || !trigger.parentNode || trigger.dataset.cfmArmed) return null;
@@ -91,7 +85,7 @@
     var labels = o.labels || {};
 
     var wrap = document.createElement('span');
-    wrap.className = 'cfm' + (o.morph ? ' cfm-morph' : '') + (o.className ? ' ' + o.className : '');
+    wrap.className = 'cfm' + (o.className ? ' ' + o.className : '');
     wrap.dataset.state = 'idle';
     wrap.dataset.side = o.side === 'left' ? 'left' : 'right';
     trigger.parentNode.insertBefore(wrap, trigger);
@@ -129,7 +123,7 @@
     var yes = panel.querySelector('.cfm-yes');
     var no = panel.querySelector('.cfm-no');
     applyLabels();
-    if (o.morph) morphWidth(wrap, trigger, panel);
+    relabelers.push({ wrap: wrap, apply: applyLabels });
     var state = function () { return wrap.dataset.state; };
 
     function setState(next) {
@@ -164,10 +158,9 @@
       },
       cancel: function (refocus) {
         if (state() !== 'confirm') return;
-        // Retour au repos D'ABORD : un déclencheur replié (morphing, caché
-        // pendant la confirmation) doit redevenir visible pour reprendre le
-        // focus. Le panneau devient inerte, puis le focus revient au
-        // déclencheur — sans passer par l'annulation de focusout (état idle).
+        // Retour au repos D'ABORD : le panneau devient inerte, puis le focus
+        // revient au déclencheur — sans passer par l'annulation de focusout
+        // (état idle).
         setState('idle');
         release();
         if (refocus) trigger.focus();
@@ -212,7 +205,7 @@
     return control;
   }
 
-  window.VH.confirmAction = { arm: arm };
+  window.VH.confirmAction = { arm: arm, binIcon: binIcon };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = window.VH.confirmAction;

@@ -38,6 +38,7 @@ function load() {
   require('../js/login/state');
   require('../js/login/strength');
   require('../js/login/tabs');
+  require('../js/shared/busy-button');
   require('../js/login/ui');
   require('../js/shared/otp-input');
   require('../js/login/flow');

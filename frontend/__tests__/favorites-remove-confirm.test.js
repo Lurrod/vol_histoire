@@ -218,51 +218,50 @@ test('option when : faux → le clic passe au code de la page (pas de panneau), 
   expect(ctl.wrap.dataset.state).toBe('idle');
 });
 
-describe('option morph : le déclencheur se transforme sur place', () => {
-  function armMorph() {
-    document.body.innerHTML = '<div id="row"><button id="t">Supprimer</button></div>';
-    const t = document.getElementById('t');
-    Object.defineProperty(t, 'offsetWidth', { configurable: true, get: () => 120 });
-    const ctl = window.VH.confirmAction.arm(t, { onConfirm: jest.fn(), morph: true, labels: {} });
-    Object.defineProperty(ctl.wrap.querySelector('.cfm-panel'), 'scrollWidth', { configurable: true, get: () => 210 });
-    return { t, ctl };
-  }
-
-  test('enveloppe marquée cfm-morph ; sans l\'option, rien', () => {
-    const { ctl } = armMorph();
-    expect(ctl.wrap.classList.contains('cfm-morph')).toBe(true);
-    document.body.innerHTML = '<button id="u">x</button>';
-    const plain = window.VH.confirmAction.arm(document.getElementById('u'), { onConfirm: jest.fn(), labels: {} });
-    expect(plain.wrap.classList.contains('cfm-morph')).toBe(false);
+describe('binIcon : poubelle partagée', () => {
+  test('couvercle, cuve et coche, décorative', () => {
+    const svg = window.VH.confirmAction.binIcon();
+    expect(svg.tagName.toLowerCase()).toBe('svg');
+    expect(svg.classList.contains('cfm-bin')).toBe(true);
+    expect(svg.getAttribute('aria-hidden')).toBe('true');
+    ['.cfm-bin-lid', '.cfm-bin-can', '.cfm-bin-check'].forEach((sel) => {
+      expect(svg.querySelector(sel)).not.toBeNull();
+    });
   });
 
-  test('largeur : du bouton à la paire à l\'ouverture, retour au bouton, puis auto', async () => {
-    const { t, ctl } = armMorph();
-    t.click();
-    await Promise.resolve();
-    expect(ctl.wrap.style.width).toBe('210px');
-    ctl.wrap.querySelector('.cfm-no').click();
-    await Promise.resolve();
-    expect(ctl.wrap.style.width).toBe('120px');
-    const end = new window.Event('transitionend', { bubbles: true });
-    Object.defineProperty(end, 'propertyName', { value: 'width' });
-    ctl.wrap.dispatchEvent(end);
-    expect(ctl.wrap.style.width).toBe('');
+  test('un nœud neuf à chaque appel', () => {
+    expect(window.VH.confirmAction.binIcon()).not.toBe(window.VH.confirmAction.binIcon());
+  });
+
+  test('côté du panneau reflété sur l’enveloppe (charnière du couvercle en CSS)', () => {
+    document.body.innerHTML = '<button id="l">x</button><button id="r">y</button>';
+    const left = window.VH.confirmAction.arm(document.getElementById('l'), { onConfirm: jest.fn(), side: 'left', labels: {} });
+    const right = window.VH.confirmAction.arm(document.getElementById('r'), { onConfirm: jest.fn(), labels: {} });
+    expect(left.wrap.dataset.side).toBe('left');
+    expect(right.wrap.dataset.side).toBe('right');
   });
 });
 
-test('morph : après la coche (done), retour au repos à même largeur → largeur rendue à auto', async () => {
-  document.body.innerHTML = '<button id="t">Supprimer</button>';
-  const t = document.getElementById('t');
-  Object.defineProperty(t, 'offsetWidth', { configurable: true, get: () => 120 });
-  const ctl = window.VH.confirmAction.arm(t, { onConfirm: jest.fn(), morph: true, labels: {} });
-  Object.defineProperty(ctl.wrap, 'offsetWidth', { configurable: true, get: () => 120 });
-  t.click();
-  await Promise.resolve();
-  ctl.wrap.querySelector('.cfm-yes').click(); // done
-  await Promise.resolve();
-  expect(ctl.wrap.style.width).toBe('120px');
-  ctl.reset(); // idle, même largeur : pas de transition
-  await Promise.resolve();
-  expect(ctl.wrap.style.width).toBe('');
+test('libellés rafraîchis à i18nReady et langChanged ; contrôle sorti du DOM oublié', () => {
+  document.body.innerHTML = '<button id="a">x</button><button id="b">y</button>';
+  let text = 'details.delete_confirm';
+  const live = window.VH.confirmAction.arm(document.getElementById('a'), {
+    onConfirm: jest.fn(), showText: true, labels: { confirm: () => text, cancel: 'Garder' },
+  });
+  const goneLabel = jest.fn(() => 'Effacer');
+  const gone = window.VH.confirmAction.arm(document.getElementById('b'), {
+    onConfirm: jest.fn(), labels: { confirm: goneLabel },
+  });
+  gone.wrap.remove();
+  goneLabel.mockClear();
+  const yes = live.wrap.querySelector('.cfm-yes');
+  expect(yes.querySelector('.cfm-text').textContent).toBe('details.delete_confirm');
+  text = 'Supprimer';
+  window.dispatchEvent(new window.CustomEvent('i18nReady'));
+  expect(yes.querySelector('.cfm-text').textContent).toBe('Supprimer');
+  expect(yes.getAttribute('aria-label')).toBe('Supprimer');
+  text = 'Delete';
+  window.dispatchEvent(new window.CustomEvent('langChanged'));
+  expect(yes.getAttribute('aria-label')).toBe('Delete');
+  expect(goneLabel).not.toHaveBeenCalled();
 });

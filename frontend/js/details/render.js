@@ -291,9 +291,9 @@
         height: '200',
       });
       cards.push(`
-        <a class="related-card" href="${href}">
+        <a class="related-card" href="${href}" data-morph-id="${Number(id)}">
           <span class="related-relation">${relation}</span>
-          <div class="related-img">${relPic}</div>
+          <div class="related-img" data-morph="photo">${relPic}</div>
           <h3>${escapeHtml(name)}</h3>
           <span class="related-arrow"><i class="fas fa-arrow-right"></i></span>
         </a>

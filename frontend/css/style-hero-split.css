@@ -385,6 +385,29 @@
   color: #efb3a8;
 }
 .page-home .hero-quiz-option:disabled { cursor: default; opacity: 0.65; }
+/* Coche ou croix tracée dans une pastille posée sur le coin de l'option
+   (hero-quiz.js) : rien ne se décale. La pastille s'ouvre, puis le trait
+   se trace ; la croix attend la fin de la secousse, ses traits se suivent. */
+.page-home .hero-quiz-option { position: relative; }
+.page-home .hero-quiz-mark {
+  position: absolute; top: -7px; right: -7px;
+  width: 20px; height: 20px; padding: 3px;
+  border-radius: 50%;
+  fill: none; stroke: currentColor; stroke-width: 2.6;
+  stroke-linecap: round; stroke-linejoin: round;
+  animation: hero-quiz-pop var(--dur-base) var(--ease-out) backwards;
+}
+.page-home .is-correct .hero-quiz-mark { background: #2f6b40; color: #e3f5e8; }
+.page-home .is-wrong .hero-quiz-mark { background: #8a2c22; color: #fbe4df; animation-delay: var(--shake-total); }
+.page-home .hero-quiz-mark path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: hero-quiz-draw var(--dur-slower) var(--ease-out) var(--dur-base) forwards;
+}
+.page-home .is-wrong .hero-quiz-mark path { animation-duration: var(--dur-slow); animation-delay: calc(var(--shake-total) + var(--dur-base)); }
+.page-home .is-wrong .hero-quiz-mark path + path { animation-delay: calc(var(--shake-total) + var(--dur-base) + var(--stagger-step)); }
+@keyframes hero-quiz-draw { to { stroke-dashoffset: 0; } }
+@keyframes hero-quiz-pop { from { opacity: 0; scale: 0.6; } }
 .page-home .hero-quiz-option.is-correct,
 .page-home .hero-quiz-option.is-wrong { opacity: 1; }
 .page-home .hero-quiz-link[hidden] { display: none; }

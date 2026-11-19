@@ -39,6 +39,7 @@ function stubModules() {
       },
       render: { renderAircraftDetails: track('render.details') },
       lineage: { load: track('lineage.load') },
+      photoZoom: { setup: track('photoZoom.setup') },
     },
   };
   return order;
@@ -129,7 +130,7 @@ describe('details.js — ordre d\'initialisation', () => {
     await handler();
     expect(order).toEqual([
       'favorites.setup', 'compare.setup', 'admin.setup', 'ui.share', 'ui.scroll', 'ui.pdf',
-      'ui.minibarVisibility', 'data.load', 'ui.sections', 'ui.syncMiniBar',
+      'ui.minibarVisibility', 'photoZoom.setup', 'data.load', 'ui.sections', 'ui.syncMiniBar',
     ]);
     const state = VHd().data.loadAircraftDetails.mock.calls[0][0];
     // Le même objet state est partagé par tous les modules.

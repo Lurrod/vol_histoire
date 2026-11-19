@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   VH.details.ui.setupScrollProgress();
   VH.details.ui.setupPdfExport();
   VH.details.ui.setupMiniBarVisibility();
+  VH.details.photoZoom.setup();
 
   // "Retour au listing" : restaure la pagination et les filtres depuis
   // sessionStorage.hangar_filters sur tous les liens /hangar de la page

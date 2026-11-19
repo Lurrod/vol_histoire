@@ -38,22 +38,13 @@
   }
 
   // ========== Loading State ==========
-  // Le libellé reste lu par les lecteurs d'écran pendant le chargement
-  // (texte masqué visuellement) et aria-busy signale l'action en cours.
+  // Partagé avec les Paramètres : VH.busyButton (largeur figée, anneau à
+  // la place du libellé, libellé toujours lu par les lecteurs d'écran).
   function setButtonLoading(button, loading) {
-    if (loading) {
-      const label = button.textContent.trim();
-      button.disabled = true;
-      button.setAttribute('aria-busy', 'true');
-      button.classList.add('is-loading');
-      button.dataset.originalText = button.innerHTML;
-      button.innerHTML = `<span class="loading" aria-hidden="true"></span><span class="sr-only">${escapeHtml(label)}</span>`;
-    } else {
-      button.disabled = false;
-      button.removeAttribute('aria-busy');
-      button.classList.remove('is-loading');
-      button.innerHTML = button.dataset.originalText;
-    }
+    if (!button) return;
+    button.classList.toggle('is-loading', !!loading);
+    if (loading) VH.busyButton.start(button);
+    else VH.busyButton.stop(button);
   }
 
   // ========== Email non vérifié ==========

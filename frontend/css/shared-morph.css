@@ -1,0 +1,83 @@
+/* ======================================================================
+   MORPHINGS — API View Transitions (js/shared/view-morph.js)
+   Hors couche : @view-transition se déclare au premier niveau de la
+   feuille, et aucune autre règle ne vise ces pseudo-éléments.
+   Les pseudo-éléments ::view-transition-* descendent de <html> : ils
+   héritent des jetons de mouvement de :root (tokens.css).
+   ====================================================================== */
+
+/* Navigations : activées pour toutes les pages, mais view-morph.js saute
+   la transition sauf de la carte cliquée vers sa fiche (et au retour
+   arrière) — toute autre navigation reste instantanée. */
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+/* En-tête et bandeau cookies restent au premier plan : nommés pendant
+   une transition seulement (un nom permanent ferait de l'en-tête une
+   racine de flou d'arrière-plan, et ses listes déroulantes ne floueraient
+   plus la page dessous). */
+html:active-view-transition body > header { view-transition-name: vh-header; }
+html:active-view-transition .cookie-banner.show { view-transition-name: vh-cookie; }
+::view-transition-group(vh-header),
+::view-transition-group(vh-cookie) {
+  z-index: 1;
+  animation-duration: var(--dur-base);
+}
+
+/* Le reste de la page passe en fondu, au rythme de base. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-base);
+  animation-timing-function: var(--ease-out);
+}
+
+/* Photo de la carte → photo de la fiche (vh-photo) et photo de la fiche →
+   plein écran (vh-zoom, visionneuse). Recadrage en `cover` : les deux
+   cadres n'ont pas les mêmes proportions. */
+::view-transition-group(vh-photo),
+::view-transition-group(vh-zoom) {
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-in-out);
+  border-radius: 12px;
+  overflow: clip;
+}
+::view-transition-old(vh-photo),
+::view-transition-new(vh-photo),
+::view-transition-old(vh-zoom),
+::view-transition-new(vh-zoom) {
+  height: 100%;
+  object-fit: cover;
+  overflow: clip;
+}
+/* Carte → fiche : la photo d'arrivée n'est pas toujours décodée quand la
+   fiche s'affiche (revalidation en développement, réseau lent) — son cadre
+   serait vide. La photo de la carte vole donc AU-DESSUS pendant tout le
+   trajet et ne s'efface qu'à la fin ; le cadre d'arrivée reste dessous.
+   Avant cela, le cadre vide se révélait par-dessus la photo de la carte. */
+::view-transition-old(vh-photo) {
+  z-index: 1;
+  animation: vh-morph-hold-out var(--dur-slow) var(--ease-in) both;
+}
+::view-transition-new(vh-photo) { animation: none; }
+@keyframes vh-morph-hold-out {
+  0%, 55% { opacity: 1; }
+  100% { opacity: 0; }
+}
+/* Visionneuse : l'image du plein écran est décodée avant la transition
+   (photo-zoom.js) ; elle se révèle en fondu sur la photo de départ. */
+::view-transition-old(vh-zoom) { animation: none; }
+::view-transition-new(vh-zoom) { animation: vh-fade-in var(--dur-base) var(--ease-out) both; }
+
+/* Dans la page (grille ↔ liste, filtres de la frise, tri des favoris) :
+   chaque élément visible glisse de son ancienne place à la nouvelle. */
+::view-transition-group(*.vh-morph) {
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-in-out);
+}

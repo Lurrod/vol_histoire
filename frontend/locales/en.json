@@ -363,7 +363,8 @@
     "admin_variants_en": "Variants in English (markdown supported)",
     "admin_generation_option": "Generation {n}",
     "photo_modified": "image modified (resized, converted)",
-    "hero_first_flight": "First flight {year}"
+    "hero_first_flight": "First flight {year}",
+    "photo_zoom": "Enlarge photo"
   },
   "hangar": {
     "title": "Hangar - Military Aviation Collection | Vol d'Histoire",
@@ -961,7 +962,9 @@
     "email_code_invalid": "Wrong or expired code.",
     "email_code_taken": "This address is already used by another account.",
     "email_code_done": "Address changed. Log in again with the new one.",
-    "email_code_cancel": "Cancel"
+    "email_code_cancel": "Cancel",
+    "btn_saved": "Saved",
+    "btn_downloaded": "Downloaded"
   },
   "error404": {
     "title": "404 — Contact Lost | Vol d'Histoire",

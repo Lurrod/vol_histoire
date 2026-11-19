@@ -60,21 +60,61 @@
 .compare-bar .cmp-share-label { display: inline-block; }
 .compare-bar .cmp-share-label.is-swapping { animation: vh-text-swap var(--dur-base) var(--ease-out); }
 
-/* « Effacer » : morphing générique (.cfm-morph, shared-base.css). La
-   feuille de page reprend la transition du bouton, qu'elle complète par ses
-   couleurs (une transition déclarée ici remplace celle de shared-base). */
-.compare-bar .cmp-clear { align-items: center; }
-.compare-bar .cmp-clear #compare-clear {
-  transition: opacity var(--dur-fast) var(--ease-out) var(--dur-instant),
-              scale var(--dur-base) var(--ease-out),
-              visibility 0s linear 0s,
-              border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
-              background-color var(--dur-fast) var(--ease-out);
+/* « Effacer » : même confirmation que la suppression d'un utilisateur
+   (poubelle et panneau : shared-base). Le panneau sort à droite du bouton,
+   la barre centrée s'élargit des deux côtés. */
+.compare-bar .cmp-clear,
+.compare-bar .cmp-clear .cfm-panel { align-items: stretch; }
+.compare-bar #compare-clear { display: inline-flex; align-items: center; gap: 0.45rem; }
+.compare-bar .cmp-clear .cfm-bin { width: 16px; height: 16px; }
+.compare-bar .cmp-clear .cfm-yes,
+.compare-bar .cmp-clear .cfm-no { min-height: 0; }
+.compare-bar .cmp-clear:not([data-state="idle"]) #compare-clear {
+  background: rgba(231,76,60,0.15); border-color: var(--accent); color: #ff8a7a;
 }
-.compare-bar .cmp-clear[data-state="confirm"] #compare-clear {
-  transition: opacity var(--dur-instant) var(--ease-in),
-              scale var(--dur-base) var(--ease-in-out),
-              visibility 0s linear var(--dur-base);
+.compare-bar .cmp-clear[data-state="done"] #compare-clear { pointer-events: none; }
+/* Téléphone : la barre (≈ 500 px) débordait de l'écran. Elle prend la
+   largeur de l'écran, moins une marge, sur deux lignes : compteur et
+   « Comparer » en haut, « Copier le lien » et « Effacer » à parts égales en
+   bas. Un élément vide de pleine largeur (::after) force le retour à la
+   ligne quelle que soit la largeur. « Effacer » se resserre pour laisser
+   sortir sa paire. */
+@media (max-width: 47.99em) {
+  .compare-bar {
+    left: 1rem;
+    right: 1rem;
+    transform: none;
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+  .compare-bar #compare-count { order: 0; flex: 1 1 auto; }
+  .compare-bar #compare-view { order: 1; }
+  .compare-bar::after { content: ''; order: 2; flex-basis: 100%; }
+  .compare-bar #compare-share,
+  .compare-bar .cmp-clear { order: 3; flex: 1 1 0; min-width: 0; margin-top: 0.625rem; }
+  .compare-bar #compare-share { justify-content: center; }
+  .compare-bar .cmp-clear { order: 4; display: flex; }
+  .compare-bar .cmp-clear #compare-clear { flex: 1 1 auto; min-width: 0; justify-content: center; }
+  .compare-bar .cmp-clear .cfm-panel { flex-shrink: 0; }
+  /* Paire ouverte : le libellé se replie, la poubelle (couvercle levé)
+     reste seule à côté de « ✓ · ✗ » — sinon « Effacer » était tronqué. */
+  .compare-bar .cmp-clear-label {
+    display: inline-block;
+    max-width: 8em;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+  }
+  .compare-bar .cmp-clear:not([data-state="idle"]) #compare-clear { gap: 0; }
+  .compare-bar .cmp-clear:not([data-state="idle"]) .cmp-clear-label { max-width: 0; opacity: 0; }
+}
+/* Jusqu'à 64em, la paire se réduit à ses icônes (noms accessibles gardés) :
+   avec ses libellés, la barre ouverte dépassait l'écran (757 px à 641 px). */
+@media (max-width: 64em) {
+  .compare-bar .cmp-clear .cfm-text {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap;
+  }
 }
 
 /* Compare modal — forcer le display par défaut (certains resets cassent <dialog>) */

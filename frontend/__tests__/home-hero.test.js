@@ -306,6 +306,11 @@ describe('VH.home.heroQuiz', () => {
     const btn = [...document.querySelectorAll('.hero-quiz-option')].find((b) => b.dataset.value === target.name);
     btn.click();
     expect(btn.classList.contains('is-correct')).toBe(true);
+    // Coche tracée dans une pastille, décorative.
+    const mark = btn.querySelector('svg.hero-quiz-mark');
+    expect(mark.getAttribute('aria-hidden')).toBe('true');
+    expect(mark.querySelectorAll('path')).toHaveLength(1);
+    expect(btn.textContent).toBe(target.name);
     expect([...document.querySelectorAll('.hero-quiz-option')].every((b) => b.disabled)).toBe(true);
     expect(document.getElementById('hero-quiz-card').classList.contains('is-revealed')).toBe(true);
     expect(document.getElementById('hero-quiz-link-label').textContent).toBe('Bien joué — voir la fiche');
@@ -321,10 +326,14 @@ describe('VH.home.heroQuiz', () => {
     const wrong = [...document.querySelectorAll('.hero-quiz-option')].find((b) => b.dataset.value !== 'Mirage III');
     wrong.click();
     expect(wrong.classList.contains('is-wrong')).toBe(true);
+    expect(wrong.querySelectorAll('svg.hero-quiz-mark path')).toHaveLength(2); // croix
+    const right = [...document.querySelectorAll('.hero-quiz-option')].find((b) => b.dataset.value === 'Mirage III');
+    expect(right.querySelectorAll('svg.hero-quiz-mark path')).toHaveLength(1); // la bonne réponse est cochée
     expect(document.getElementById('hero-quiz-link-label').textContent).toBe('C’était le Mirage III — voir la fiche');
     expect(document.getElementById('hero-quiz-link').getAttribute('href')).toBe('/hangar?search=mirage%2Biii');
     document.getElementById('hero-quiz-reroll').click();
     expect([...document.querySelectorAll('.hero-quiz-option')].some((b) => b.disabled)).toBe(false);
+    expect(document.querySelector('.hero-quiz-mark')).toBeNull(); // marques retirées au tirage suivant
   });
 
   test('picture partagé utilisé quand il existe', () => {
