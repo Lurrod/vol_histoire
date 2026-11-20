@@ -63,8 +63,22 @@ const MORPH_OPT_IN = '<style>@view-transition{navigation:auto}' +
 /** Insère MORPH_OPT_IN juste après <head>, une seule fois. */
 function injectMorphOptIn(html) {
   if (html.includes('@view-transition{navigation:auto}')) return html;
-  return html.replace(/<head(\s[^>]*)?>/i, (m) => `${m}
-  ${MORPH_OPT_IN}`);
+  return html.replace(/<head(\s[^>]*)?>/i, (m) => `${m}\n  ${MORPH_OPT_IN}`);
+}
+
+/* Recherche du site proposée par le navigateur (frontend/opensearch.xml). */
+const OPENSEARCH_LINK = '<link rel="search" type="application/opensearchdescription+xml" ' +
+  'title="Vol d&#39;Histoire" href="/opensearch.xml">';
+
+/** Insère OPENSEARCH_LINK juste avant </head>, une seule fois. */
+function injectOpenSearchLink(html) {
+  if (html.includes('rel="search"')) return html;
+  return html.replace(/<\/head>/i, (m) => `  ${OPENSEARCH_LINK}\n${m}`);
+}
+
+/** Ajouts communs à toutes les pages servies (gabarits SSR compris). */
+function injectHeadExtras(html) {
+  return injectOpenSearchLink(injectMorphOptIn(html));
 }
 
 const INCLUDE_RE = /^[ \t]*<!--\s*@include\s+([a-z0-9-]+)\s*-->[ \t]*(\r?)$/gm;
@@ -218,7 +232,7 @@ function renderTemplate(frontendDir, fileName, version) {
   try {
     const raw = fs.readFileSync(path.join(frontendDir, fileName), 'utf8');
     const html = resolveIncludes(raw, path.basename(fileName, '.html'), loadPartials(frontendDir));
-    return injectMorphOptIn(rewrite(html, version));
+    return injectHeadExtras(rewrite(html, version));
   } catch {
     return '';
   }
@@ -255,7 +269,7 @@ function buildHtmlCache(frontendDir, version) {
       try {
         const raw = fs.readFileSync(full, 'utf8');
         const pageName = entry.name.slice(0, -5);
-        const html = injectMorphOptIn(rewrite(resolveIncludes(raw, pageName, partials, warnings), version));
+        const html = injectHeadExtras(rewrite(resolveIncludes(raw, pageName, partials, warnings), version));
         cache.set(full, {
           fr: localizeHead(html, pageName, 'fr', {}),
           en: localizeHead(html, pageName, 'en', dictionaries.en),
@@ -283,5 +297,5 @@ function buildHtmlCache(frontendDir, version) {
 
 module.exports = {
   buildHtmlCache, rewrite, resolveIncludes, loadPartials, renderTemplate, localizeHead, PAGE_OPTIONS,
-  injectMorphOptIn, MORPH_OPT_IN,
+  injectMorphOptIn, MORPH_OPT_IN, injectOpenSearchLink, OPENSEARCH_LINK, injectHeadExtras,
 };

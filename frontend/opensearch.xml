@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Description OpenSearch : permet aux navigateurs d'ajouter la recherche du
+     site à la barre d'adresse. Annoncée par <link rel="search"> dans chaque
+     page (injectOpenSearchLink, backend/middleware/serveHtml.js). -->
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>Vol d'Histoire</ShortName>
+  <Description>Rechercher un appareil dans l'encyclopédie Vol d'Histoire</Description>
+  <Tags>aviation militaire avions encyclopédie</Tags>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Language>fr</Language>
+  <Language>en</Language>
+  <Image width="16" height="16" type="image/x-icon">https://vol-histoire.titouan-borde.com/favicon.ico</Image>
+  <Image width="48" height="48" type="image/png">https://vol-histoire.titouan-borde.com/assets/logo/icon-48.png</Image>
+  <Url type="text/html" method="get" template="https://vol-histoire.titouan-borde.com/hangar?search={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://vol-histoire.titouan-borde.com/opensearch.xml"/>
+  <moz:SearchForm>https://vol-histoire.titouan-borde.com/hangar</moz:SearchForm>
+</OpenSearchDescription>

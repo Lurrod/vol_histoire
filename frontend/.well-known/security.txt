@@ -1,4 +1,9 @@
+# Signalement de failles de sécurité — Vol d'Histoire (RFC 9116).
+# Renouveler « Expires » avant échéance : scripts/check-release.js fait
+# échouer la CI à moins de 30 jours de la date, et refuse plus d'un an.
 Contact: mailto:vdh@titouan-borde.com
-Expires: 2027-12-31T23:59:59.000Z
+Contact: https://github.com/Lurrod/vol_histoire/security/advisories/new
+Expires: 2027-11-19T23:59:59.000Z
+Policy: https://github.com/Lurrod/vol_histoire/security/policy
 Preferred-Languages: fr, en
 Canonical: https://vol-histoire.titouan-borde.com/.well-known/security.txt
