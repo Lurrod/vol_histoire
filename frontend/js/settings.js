@@ -10,23 +10,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const authReady = auth.init();
 
-  // Administration, tableau de bord et cookies se branchent sans attendre la
-  // session (même ordre qu'avant le découpage, où ils avaient chacun leur
-  // propre écouteur DOMContentLoaded).
+  // Barre d'enregistrement d'abord : profil et cookies s'y inscrivent.
+  S.saveBar.setup();
   S.admin.init(state);
-  S.dashboard.init(state);
+  S.identity.init();
+  S.collection.init();
   S.cookies.init();
+  S.preferences.setup();
 
   await authReady;
 
   S.tabs.setup();
   S.profile.setup(state);
   S.security.setup(state);
+  S.sessions.setup();
   S.dangerZone.setup(state);
   S.dataExport.setup();
 
-  S.account.checkAuth(state).then(() => {
-    if (Number(state.currentUser?.role) === 1) S.admin.loadUsers();
-    S.dashboard.loadDashboard(state);
+  S.account.checkAuth(state).then((ok) => {
+    if (!ok) return;
+    S.identity.render(state.currentUser);
+    S.collection.load();
+    if (Number(state.currentUser?.role) === 1) {
+      S.admin.loadUsers();
+      // #admin n'est ouvrable qu'une fois l'onglet révélé.
+      if (window.location.hash === '#admin') S.tabs.openFromHash();
+    }
   });
 });

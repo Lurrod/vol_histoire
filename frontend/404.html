@@ -4,7 +4,7 @@
 
 <!-- Google Tag Manager -->
 <script defer src="/js/gtm.js"></script>
-<script defer src="js/sw-register.js"></script>
+<script defer src="/js/sw-register.js"></script>
 <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -19,533 +19,247 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title data-i18n="error404.title">404 — Contact Perdu | Vol d'Histoire</title>
-  <meta name="description" content="Page introuvable — L'appareil demandé a disparu du radar.">
+  <title data-i18n="error404.title">404 — Hors des radars | Vol d'Histoire</title>
+  <meta name="description" content="Page introuvable — cette adresse est hors des radars.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/404">
   <meta name="robots" content="noindex, nofollow">
-  <meta property="og:title" content="404 — Contact Perdu | Vol d'Histoire">
-  <meta property="og:description" content="Page introuvable — L'appareil demandé a disparu du radar.">
+  <meta property="og:title" content="404 — Hors des radars | Vol d'Histoire">
+  <meta property="og:description" content="Page introuvable — cette adresse est hors des radars.">
   <meta property="og:url" content="https://vol-histoire.titouan-borde.com/404">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Vol d'Histoire">
   <meta property="og:locale" content="fr_FR">
   <meta property="og:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/a10-thunderbolt-2.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="404 — Contact Perdu | Vol d'Histoire">
-  <meta name="twitter:description" content="Page introuvable — L'appareil demandé a disparu du radar.">
+  <meta name="twitter:title" content="404 — Hors des radars | Vol d'Histoire">
+  <meta name="twitter:description" content="Page introuvable — cette adresse est hors des radars.">
   <meta name="twitter:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/a10-thunderbolt-2.jpg">
   <link rel="preload" href="/fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/css/core.min.css">
   <style>
     /* ============================================================
-       404 PAGE — RADAR CONTACT LOST
+       404 — HORS DES RADARS : même langage que l'accueil et le hangar
+       (fond photo flouté ambré, titre condensé bicolore, recherche),
+       avec un avion qui écrit « 404 » et un tableau des départs.
        ============================================================ */
-    /* Backdrop aligné sur le pattern hangar */
     body.page-404 { background: var(--night); }
     body.page-404::before,
-    body.page-404::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: -1;
-    }
+    body.page-404::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1; }
     body.page-404::before {
       background-image: url('/assets/airplanes/f4-phantom-2.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      background-size: cover; background-position: center;
       filter: blur(30px) brightness(0.28) saturate(0.7);
-      transform: scale(1.15);
-      opacity: 0.55;
-      z-index: -2;
+      transform: scale(1.15); opacity: 0.55; z-index: -2;
     }
     body.page-404::after {
       background-image:
         linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-        radial-gradient(ellipse at 20% 20%, rgba(231, 76, 60, 0.22) 0%, transparent 55%);
+        radial-gradient(ellipse at 20% 20%, rgba(255, 140, 0, 0.45) 0%, transparent 55%);
       background-size: 60px 60px, 60px 60px, 100% 100%;
     }
 
-    .error-page {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background: transparent;
-      position: relative;
+    .e4 { min-height: 100vh; display: flex; align-items: center; }
+    .e4-grid {
+      width: 100%; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr; justify-items: center;
+      gap: 2.5rem; padding: 7rem 1.5rem 4rem; max-width: 40rem;
     }
 
-    .error-main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6rem 2rem 4rem;
-      position: relative;
-      z-index: 1;
-    }
+    /* ---------- Colonne éditoriale ---------- */
+    .e4-left { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .e4-left > * { animation: vh-enter var(--dur-slower) var(--ease-out) backwards; }
+    .e4-left > :nth-child(2) { animation-delay: calc(var(--stagger-step) * 1); }
+    .e4-left > :nth-child(3) { animation-delay: calc(var(--stagger-step) * 2); }
+    .e4-left > :nth-child(4) { animation-delay: calc(var(--stagger-step) * 3); }
+    .e4-left > :nth-child(5) { animation-delay: calc(var(--stagger-step) * 4); }
+    .e4-left > :nth-child(6) { animation-delay: calc(var(--stagger-step) * 5); }
 
-    .error-content {
-      display: flex;
-      align-items: center;
-      gap: 5rem;
-      max-width: 1100px;
-      width: 100%;
-    }
 
-    /* ---- RADAR ---- */
-    .radar-container {
-      flex-shrink: 0;
-      width: 340px;
-      height: 340px;
-      position: relative;
-    }
-
-    .radar {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(200, 169, 110, 0.03) 0%, rgba(13, 13, 13, 0.95) 70%);
-      border: 2px solid rgba(200, 169, 110, 0.2);
-      position: relative;
-      overflow: hidden;
-      box-shadow:
-        0 0 60px rgba(200, 169, 110, 0.08),
-        inset 0 0 60px rgba(200, 169, 110, 0.03);
-    }
-
-    .radar::before,
-    .radar::after {
-      content: '';
-      position: absolute;
-      border-radius: 50%;
-      border: 1px solid rgba(200, 169, 110, 0.08);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    .radar::before { width: 66%; height: 66%; }
-    .radar::after  { width: 33%; height: 33%; }
-
-    .radar-ring-outer {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      height: 90%;
-      border-radius: 50%;
-      border: 1px solid rgba(200, 169, 110, 0.05);
-    }
-
-    .radar-cross-h,
-    .radar-cross-v {
-      position: absolute;
-      background: rgba(200, 169, 110, 0.07);
-    }
-    .radar-cross-h { top: 50%; left: 0; right: 0; height: 1px; transform: translateY(-0.5px); }
-    .radar-cross-v { left: 50%; top: 0; bottom: 0; width: 1px; transform: translateX(-0.5px); }
-
-    .radar-sweep {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: conic-gradient(
-        from 0deg at 50% 50%,
-        transparent 0deg,
-        rgba(200, 169, 110, 0.25) 30deg,
-        rgba(200, 169, 110, 0.08) 50deg,
-        transparent 55deg
-      );
-      animation: sweep 3s linear infinite;
-    }
-
-    @keyframes sweep {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    .radar-center {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 8px;
-      height: 8px;
-      background: var(--hud-cyan);
-      border-radius: 50%;
-      box-shadow: 0 0 12px rgba(200, 169, 110, 0.6);
-      z-index: 2;
-    }
-
-    /* Ghost blip — fading echo of the lost aircraft */
-    .radar-ghost {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      top: 28%;
-      left: 62%;
-      z-index: 2;
-      animation: ghostBlink 2.5s ease-in-out infinite;
-    }
-
-    .radar-ghost::after {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: 1px solid rgba(231, 76, 60, 0.4);
-      animation: ghostRing 2.5s ease-out infinite;
-    }
-
-    @keyframes ghostBlink {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 0.8; }
-    }
-
-    @keyframes ghostRing {
-      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.8; }
-      100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
-    }
-
-    .radar-ghost-2 {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: rgba(231, 76, 60, 0.3);
-      top: 40%;
-      left: 70%;
-      z-index: 2;
-      animation: ghostBlink 3.5s ease-in-out 0.8s infinite;
-    }
-
-    .radar-label {
-      position: absolute;
+    .e4-title {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 0.55rem;
-      color: rgba(200, 169, 110, 0.3);
-      letter-spacing: 1px;
-      z-index: 3;
+      font-size: clamp(2.6rem, 5vw, 4.6rem); font-weight: 700;
+      line-height: 0.95; letter-spacing: -0.02em; color: var(--white);
+      margin: 0 0 1.5rem;
     }
-    .radar-label.top    { top: 8%;  left: 50%; transform: translateX(-50%); }
-    .radar-label.bottom { bottom: 8%; left: 50%; transform: translateX(-50%); }
-    .radar-label.left   { left: 8%; top: 50%; transform: translateY(-50%); }
-    .radar-label.right  { right: 8%; top: 50%; transform: translateY(-50%); }
+    .e4-title .gradient-text {
+      background: linear-gradient(135deg, #E8C98A 0%, var(--hud-cyan) 50%, rgba(255,255,255,0.9) 100%);
+      background-size: 220% 100%; background-position: 100% 0;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: e4-shimmer calc(var(--dur-slower) * 3) var(--ease-out) calc(var(--stagger-step) * 8) both;
+    }
+    @keyframes e4-shimmer { to { background-position: 0% 0; } }
 
-    .radar-pulse-ring {
-      position: absolute;
-      inset: -8px;
-      border-radius: 50%;
-      border: 1px solid rgba(231, 76, 60, 0.15);
-      animation: radarPulse 4s ease-in-out infinite;
-    }
+    .e4-lead { margin: 0 auto 2rem; max-width: 32rem; font-size: 1.125rem; line-height: 1.55; color: rgba(255,255,255,0.72); }
 
-    @keyframes radarPulse {
-      0%, 100% { border-color: rgba(231, 76, 60, 0.15); transform: scale(1); }
-      50% { border-color: rgba(231, 76, 60, 0.3); transform: scale(1.02); }
+    .e4-search { position: relative; display: flex; gap: 0.5rem; width: 100%; max-width: 32rem; margin-bottom: 1.5rem; }
+    .e4-search-field { position: relative; flex: 1; min-width: 0; display: flex; }
+    .e4-search-icon { position: absolute; left: 1.1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+    .e4-search-input {
+      flex: 1; min-width: 0; padding: 0.95rem 1rem 0.95rem 2.8rem;
+      font: inherit; font-size: 1rem; color: var(--text-primary);
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border-field); border-radius: 12px;
+      transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
     }
+    .e4-search-input::placeholder { color: var(--text-placeholder); }
+    .e4-search-input:focus { outline: none; border-color: var(--hud-cyan); background: var(--white-a07); }
+    .e4-search-input:focus-visible { box-shadow: 0 0 0 3px rgba(200,169,110,0.25); }
+    .e4-search .e4-search-btn { flex: none; width: auto; margin: 0; }
 
-    /* ---- TEXT CONTENT ---- */
-    .error-text { flex: 1; min-width: 0; }
-
-    /* ---- SOS BEACON (remplace l'ancien warning) ----
-       Balise de détresse : code Morse SOS (· · · — — — · · ·) animé
-       en vraie cadence, avec indicatif de vol. */
-    .error-beacon {
-      display: inline-flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.75rem;
-      padding-bottom: 0.9rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 3px;
+    /* ---------- Tableau des départs (404-board.js) ---------- */
+    .e4-fids {
+      --cell: 0.74em; container-type: inline-size;
+      width: 100%; max-width: 40rem; margin-top: 1rem; padding: 1rem 1.25rem 1.1rem;
+      border: 1px solid var(--white-a08); border-radius: 16px;
+      background: rgba(10, 10, 11, 0.78); box-shadow: 0 24px 60px -30px rgba(0,0,0,0.9);
+      text-align: left;
     }
-
-    .beacon-morse {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      height: 10px;
+    .e4-fids-head {
+      display: flex; align-items: center; gap: 0.6rem; margin: 0 0 0.85rem; padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--white-a08);
+      font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.72);
     }
-
-    .beacon-morse span {
-      display: block;
-      height: 6px;
-      width: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      opacity: 0.1;
-      box-shadow: 0 0 0 rgba(231, 76, 60, 0);
-      animation: morseBlink 6s linear infinite;
+    .e4-fids-head .icon { color: var(--hud-cyan); }
+    .e4-fids-clock { margin-left: auto; }
+    /* Une seule grille : libellés et lignes s'alignent par subgrid. */
+    .e4-fids-board {
+      list-style: none; margin: 0; padding: 0;
+      display: grid; grid-template-columns: repeat(5, max-content); justify-content: space-between;
+      column-gap: 0.6em; row-gap: 0.35rem;
+      /* Taille des palettes proportionnelle au cadre : largeur totale = 34,7 em
+       (39 palettes de 0,74 em, 34 jours de 0,1 em, 4 gouttières de 0,6 em). */
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: clamp(0.6rem, 2.85cqi, 1.05rem);
     }
-    .beacon-morse span.dash {
-      width: 18px;
-      border-radius: 3px;
+    .e4-fids-board > li, .e4-fids-row { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; }
+    .e4-fids-labels {
+      margin-bottom: 0.1rem; font-family: 'DM Sans', sans-serif; font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.45);
     }
-
-    /* Timing SOS authentique — 6s par cycle.
-       S (· · ·) de 0 à 0.9s · pause lettre 0.6s
-       O (— — —) de 1.5 à 3.3s · pause lettre 0.6s
-       S (· · ·) de 3.9 à 4.8s · silence 1.2s */
-    .beacon-morse span:nth-child(1) { animation-delay: 0.0s; }
-    .beacon-morse span:nth-child(2) { animation-delay: 0.3s; }
-    .beacon-morse span:nth-child(3) { animation-delay: 0.6s; }
-    .beacon-morse span:nth-child(4) { animation-delay: 1.5s; animation-name: morseBlinkLong; }
-    .beacon-morse span:nth-child(5) { animation-delay: 2.1s; animation-name: morseBlinkLong; }
-    .beacon-morse span:nth-child(6) { animation-delay: 2.7s; animation-name: morseBlinkLong; }
-    .beacon-morse span:nth-child(7) { animation-delay: 3.9s; }
-    .beacon-morse span:nth-child(8) { animation-delay: 4.2s; }
-    .beacon-morse span:nth-child(9) { animation-delay: 4.5s; }
-
-    @keyframes morseBlink {
-      0%, 100% { opacity: 0.1; box-shadow: 0 0 0 rgba(231, 76, 60, 0); }
-      1%       { opacity: 1;   box-shadow: 0 0 10px rgba(231, 76, 60, 0.7); }
-      4%       { opacity: 1;   box-shadow: 0 0 10px rgba(231, 76, 60, 0.7); }
-      5%       { opacity: 0.1; box-shadow: 0 0 0 rgba(231, 76, 60, 0); }
+    .e4-fids-row {
+      position: relative; margin: 0 -0.5rem; padding: 0.3rem 0.5rem; border-radius: 8px;
+      color: inherit; text-decoration: none;
+      transition: background-color var(--dur-fast) var(--ease-out);
     }
-    @keyframes morseBlinkLong {
-      0%, 100% { opacity: 0.1; box-shadow: 0 0 0 rgba(231, 76, 60, 0); }
-      1%       { opacity: 1;   box-shadow: 0 0 10px rgba(231, 76, 60, 0.7); }
-      14%      { opacity: 1;   box-shadow: 0 0 10px rgba(231, 76, 60, 0.7); }
-      15%      { opacity: 0.1; box-shadow: 0 0 0 rgba(231, 76, 60, 0); }
+    a.e4-fids-row[href]:hover, a.e4-fids-row[href]:focus-visible { background: var(--gold-a08); }
+    a.e4-fids-row:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 1px; }
+    .e4-fld { display: flex; gap: 0.1em; }
+    /* Une palette : deux demi-plaques séparées par la charnière. */
+    .e4-flap {
+      display: grid; place-items: center; width: var(--cell); height: 1.5em; border-radius: 3px;
+      background: linear-gradient(#1d1d20 0 49%, #050505 49% 53%, #17171a 53%);
+      color: #F2EBDD; line-height: 1; backface-visibility: hidden;
     }
-
-    .beacon-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: rgba(255, 255, 255, 0.45);
+    .e4-fld.is-dest .e4-flap { color: #E8C98A; }
+    .e4-fids-row.is-cancelled .e4-fld.is-status .e4-flap { color: var(--accent-text); }
+    .e4-fids-row.is-boarding .e4-fld.is-status .e4-flap { color: var(--hud-green-text); }
+    /* Embarquement : le statut clignote doucement (boucle). */
+    .e4-fids-row.is-boarding.is-settled .e4-fld.is-status { animation: e4-board 1.4s var(--ease-in-out) infinite alternate; }
+    @keyframes e4-board { to { opacity: 0.45; } }
+    .e4-fids-row.is-cancelled .e4-fld.is-dest .e4-flap { color: rgba(242,235,221,0.55); }
+    /* ---------- Tablette et téléphone ---------- */
+    @media (max-width: 63.99em) {
+      .e4 { min-height: 0; }
+      .e4-grid { padding: 7rem 1.5rem 3rem; }
     }
-    .beacon-label-dim { color: rgba(255, 255, 255, 0.66); }
-    .beacon-callsign {
-      color: var(--hud-cyan);
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 0.82rem;
-      letter-spacing: 2px;
-      font-weight: 700;
+    @media (max-width: 30em) {
+      .e4-grid { padding: 7.5rem 1rem 2.5rem; }
+      .e4-fids { padding: 0.9rem 0.85rem 1rem; }
+      /* Trois colonnes : 29 palettes, largeur 25,3 em. */
+      .e4-fids-board { font-size: clamp(0.6rem, 3.9cqi, 1.05rem); }
+      .e4-fids .is-flight, .e4-fids .is-gate { display: none; }
+      .e4-fids-board { grid-template-columns: repeat(3, max-content); }
+      .e4-search { flex-direction: column; }
+      .e4-search .e4-search-btn { width: 100%; }
     }
-    .beacon-sep {
-      width: 18px;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.12);
+    /* ---------- Écriture dans le ciel (404-sky.js) ---------- */
+    .e4-sky {
+      position: relative; display: block; width: 100%; max-width: 34rem; margin: 0 auto 1.25rem; align-self: center;
+      padding: 0; border: 0; background: none; cursor: pointer; border-radius: 12px;
     }
+    .e4-sky:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 4px; }
+    .e4-sky-svg { display: block; width: 100%; height: auto; overflow: hidden; }
+    .e4-trail { fill: none; stroke: #E8C98A; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.4; opacity: 0.35;
+      transition: opacity 2.4s var(--ease-out), stroke-width 2.4s var(--ease-out); }
+    .e4-trail.e4-glyph { stroke: var(--hud-cyan); stroke-width: 6; opacity: 0.95; }
+    .e4-trails { transition: filter 3s var(--ease-out); }
+    /* Traînée qui s'étale et se dilue, comme une vraie traînée de condensation. */
+    .e4-sky.is-done .e4-trails { filter: blur(0.8px); }
+    .e4-sky.is-done .e4-trail { opacity: 0.12; }
+    .e4-sky.is-done .e4-trail.e4-glyph { opacity: 0.9; stroke-width: 9; }
+    .e4-plane path { fill: var(--white); }
+    .e4-plane { opacity: 0; transition: opacity var(--dur-fast) var(--ease-out); }
+    .e4-sky.is-flying .e4-plane { opacity: 1; }
+    .e4-sky-replay {
+      position: absolute; right: 0.5rem; bottom: 0.25rem; display: grid; place-items: center;
+      width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--white-a08);
+      color: rgba(255,255,255,0.6); font-size: 0.75rem; opacity: 0;
+      transition: opacity var(--dur-fast) var(--ease-out), rotate var(--dur-slow) var(--ease-out);
+    }
+    .e4-sky.is-done:hover .e4-sky-replay, .e4-sky.is-done:focus-visible .e4-sky-replay { opacity: 1; rotate: -180deg; }
 
     @media (prefers-reduced-motion: reduce) {
-      .beacon-morse span { animation: none; opacity: 0.7; }
-    }
-
-    .error-code {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: clamp(4rem, 8vw, 7rem);
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--accent) 0%, #ff8a80 40%, rgba(231, 76, 60, 0.4) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: codeGlitch 5s ease-in-out infinite;
-    }
-
-    @keyframes codeGlitch {
-      0%, 94%, 100% { opacity: 1; }
-      95% { opacity: 0.7; transform: translateX(-2px); }
-      96% { opacity: 1; transform: translateX(2px); }
-      97% { opacity: 0.8; transform: translateX(0); }
-    }
-
-    .error-title {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      font-weight: 600;
-      color: var(--white);
-      margin-bottom: 1rem;
-    }
-
-    .error-description {
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 1.05rem;
-      line-height: 1.8;
-      margin-bottom: 2rem;
-      max-width: 500px;
-    }
-
-    .error-telemetry {
-      position: relative;
-      background: rgba(255, 255, 255, 0.035);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 2rem;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.85rem;
-      max-width: 460px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 24px rgba(0, 0, 0, 0.25);
-    }
-
-    .error-telemetry::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 14px; bottom: 14px;
-      width: 2px;
-      background: linear-gradient(180deg, transparent, var(--hud-cyan) 30%, var(--hud-cyan) 70%, transparent);
-      border-radius: 2px;
-      opacity: 0.6;
-    }
-
-    .telemetry-line {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 1.5rem;
-      padding: 0.65rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    }
-
-    .telemetry-line:first-child { padding-top: 0; }
-    .telemetry-line:last-child { border-bottom: none; padding-bottom: 0; }
-
-    .telemetry-key {
-      color: rgba(255, 255, 255, 0.66);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-size: 0.68rem;
-      font-weight: 600;
-    }
-
-    .telemetry-value {
-      color: rgba(255, 255, 255, 0.78);
-      font-weight: 500;
-      font-feature-settings: 'tnum' 1;
-    }
-    .telemetry-value.alert { color: var(--accent); font-weight: 600; }
-    .telemetry-value.ok { color: var(--hud-green, #4ade80); }
-    .telemetry-value .u-inline-dot { font-size: 0.5rem; vertical-align: middle; margin-right: 0.35rem; }
-
-    .error-actions {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    /* ---- RESPONSIVE ---- */
-    @media (max-width: 991px) {
-      .error-content { flex-direction: column; text-align: center; gap: 3rem; }
-      .radar-container { width: 280px; height: 280px; }
-      .error-description { margin-left: auto; margin-right: auto; }
-      .error-telemetry { margin-left: auto; margin-right: auto; }
-      .error-actions { justify-content: center; }
-    }
-
-    @media (max-width: 639px) {
-      .error-main { padding: 5rem 1rem 3rem; }
-      .radar-container { width: 220px; height: 220px; }
-      .error-beacon { font-size: 0.65rem; letter-spacing: 2px; gap: 0.75rem; }
-      .beacon-morse span { width: 5px; height: 5px; }
-      .beacon-morse span.dash { width: 14px; }
-      .error-telemetry { font-size: 0.75rem; padding: 0.875rem 1rem; }
-      .btn { width: 100%; max-width: 320px; }
-    }
-
-    @media (max-width: 479px) {
-      .radar-container { width: 180px; height: 180px; }
-      .radar-label { display: none; }
-      .error-main { padding: 5rem 0.875rem 2rem; }
+      .e4-left > *, .e4-title .gradient-text, .e4-fids-row .e4-fld.is-status { animation: none; }
     }
   </style>
 </head>
 <body class="page-404">
 <a href="#main-content" class="skip-link">Aller au contenu</a>
-<!-- Header -->
   <!-- @include header -->
 
-  <!-- 404 Content -->
-  <div class="error-page">
-    <main id="main-content" class="error-main">
-      <div class="error-content">
+  <main id="main-content" class="error-page e4">
+    <div class="e4-grid">
+      <div class="e4-left">
+        <button type="button" class="e4-sky" id="e4-sky" data-i18n-aria="error404.sky_aria" aria-label="Rejouer l’animation : un avion écrit 404 dans le ciel">
+          <svg class="e4-sky-svg" viewBox="-27 0 620 230" aria-hidden="true" focusable="false">
+            <defs>
+              <filter id="e4-diffuse" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur id="e4-blur" stdDeviation="0"/></filter>
+            </defs>
+            <g class="e4-trails" filter="url(#e4-diffuse)">
+              <!-- Chiffres (traînées franches) et liaisons (virages, plus ténues) : un seul vol. -->
+              <path class="e4-trail" d="M 30 120 C 60 120, 110 205, 125 205"/>
+              <path class="e4-trail e4-glyph" d="M 125 205 L 125 25 L 38 145 L 172 145"/>
+              <path class="e4-trail" d="M 172 145 C 215 145, 240 25, 305 25"/>
+              <path class="e4-trail e4-glyph" d="M 305 25 A 58 90 0 1 1 304.9 25"/>
+              <path class="e4-trail" d="M 304.9 25 C 380 25, 410 215, 480 205"/>
+              <path class="e4-trail e4-glyph" d="M 480 205 L 480 25 L 393 145 L 527 145"/>
+              <path class="e4-trail" d="M 527 145 C 570 145, 600 90, 660 40"/>
+            </g>
+            <g class="e4-plane" id="e4-plane">
+              <path d="M 13 0 L 3 -2 L -3 -10 L -6 -10 L -3 -2 L -9 -2 L -12 -6 L -14 -6 L -12 0 L -14 6 L -12 6 L -9 2 L -3 2 L -6 10 L -3 10 L 3 2 Z"/>
+            </g>
+          </svg>
+          <span class="e4-sky-replay" aria-hidden="true"><i class="fas fa-redo"></i></span>
+        </button>
+        <h1 class="e4-title"><span class="sr-only" data-i18n="error404.sr_prefix">Erreur 404 : </span><span data-i18n="error404.title_1">Hors des</span><br><span class="gradient-text" data-i18n="error404.title_2">radars.</span></h1>
+        <p class="e4-lead" data-i18n="error404.lead">Cette page n’existe pas, ou elle a changé d’adresse.</p>
 
-        <!-- Radar -->
-        <div class="radar-container">
-          <div class="radar-pulse-ring"></div>
-          <div class="radar">
-            <div class="radar-ring-outer"></div>
-            <div class="radar-cross-h"></div>
-            <div class="radar-cross-v"></div>
-            <div class="radar-sweep"></div>
-            <div class="radar-center"></div>
-            <div class="radar-ghost"></div>
-            <div class="radar-ghost-2"></div>
-            <span class="radar-label top">N</span>
-            <span class="radar-label bottom">S</span>
-            <span class="radar-label left">O</span>
-            <span class="radar-label right">E</span>
-          </div>
-        </div>
+        <form class="e4-search" action="/hangar" method="get" role="search">
+          <label for="e4-q" class="sr-only" data-i18n="error404.search_label">Chercher un appareil</label>
+          <span class="e4-search-field">
+            <i class="fas fa-search e4-search-icon" aria-hidden="true"></i>
+            <input id="e4-q" class="e4-search-input" type="search" name="search" placeholder="Rafale, Tu-95, C-130…" autocomplete="off">
+          </span>
+          <button type="submit" class="btn btn-primary e4-search-btn" data-i18n="error404.search_btn">Chercher</button>
+        </form>
 
-        <!-- Text -->
-        <div class="error-text">
-          <div class="error-beacon" role="img" aria-label="Signal de détresse SOS">
-            <span class="beacon-morse" aria-hidden="true">
-              <span></span><span></span><span></span>
-              <span class="dash"></span><span class="dash"></span><span class="dash"></span>
-              <span></span><span></span><span></span>
-            </span>
-            <span class="beacon-sep" aria-hidden="true"></span>
-            <span class="beacon-label">
-              <span class="beacon-label-dim" data-i18n="error404.beacon_callsign">Indicatif</span>
-              <span class="beacon-callsign">GHOST-404</span>
-            </span>
-          </div>
-
-          <div class="error-code">404</div>
-          <h1 class="error-title" data-i18n="error404.aircraft_not_found">Appareil introuvable</h1>
-          <p class="error-description">
-            <span data-i18n="error404.search_desc">L'escadron de recherche n'a pas pu localiser la page demandée.</span>
-            <span data-i18n="error404.desc">L'appareil a peut-être été retiré du service, ou les coordonnées sont incorrectes.</span>
-          </p>
-
-          <div class="error-telemetry">
-            <h2 class="sr-only" data-i18n="error404.telemetry_heading">État des systèmes</h2>
-            <div class="telemetry-line">
-              <span class="telemetry-key" data-i18n="error404.status">Statut</span>
-              <span class="telemetry-value alert"><i class="fas fa-circle u-inline-dot"></i> <span data-i18n="error404.out_of_range">Hors portée</span></span>
-            </div>
-            <div class="telemetry-line">
-              <span class="telemetry-key" data-i18n="error404.requested_route">Route demandée</span>
-              <span class="telemetry-value" id="requested-path">—</span>
-            </div>
-            <div class="telemetry-line">
-              <span class="telemetry-key" data-i18n="error404.main_base">Base principale</span>
-              <span class="telemetry-value ok" data-i18n="error404.operational">Opérationnelle</span>
-            </div>
-            <div class="telemetry-line">
-              <span class="telemetry-key" data-i18n="error404.hangar_label">Hangar</span>
-              <span class="telemetry-value ok" data-i18n="error404.online">En ligne</span>
-            </div>
-          </div>
-
-          <div class="error-actions">
-            <a href="/" class="btn btn-primary"><i class="fas fa-tower-broadcast"></i><span data-i18n="error404.btn_home">Retour à la base</span></a>
-            <a href="/hangar" class="btn btn-ghost"><i class="fas fa-plane"></i><span data-i18n="error404.btn_hangar">Explorer le hangar</span></a>
-          </div>
-        </div>
-
+        <section class="e4-fids" aria-labelledby="e4-fids-title">
+          <h2 class="e4-fids-head">
+            <i class="fas fa-plane-departure" aria-hidden="true"></i>
+            <span id="e4-fids-title" data-i18n="error404.board_title">Départs</span>
+            <span class="e4-fids-clock" id="e4-fids-clock" aria-hidden="true"></span>
+          </h2>
+          <ol class="e4-fids-board" id="e4-fids-board">
+            <li class="e4-fids-labels" aria-hidden="true">
+              <span data-i18n="error404.col_time">Heure</span><span class="is-flight" data-i18n="error404.col_flight">Vol</span><span data-i18n="error404.col_dest">Destination</span><span class="is-gate" data-i18n="error404.col_gate">Porte</span><span data-i18n="error404.col_status">Statut</span>
+            </li>
+          </ol>
+        </section>
       </div>
-    </main>
-  </div>
 
-  <!-- Footer -->
+    </div>
+  </main>
+
   <!-- @include footer -->
 
   <div id="toast-container" aria-live="polite"></div>
@@ -554,5 +268,7 @@
   <script defer src="/js/dist/icons.min.js"></script>
   <script defer src="/js/sentry-init.js"></script>
   <script defer src="/js/404.js"></script>
+  <script defer src="/js/404-sky.js"></script>
+  <script defer src="/js/404-board.js"></script>
 </body>
 </html>

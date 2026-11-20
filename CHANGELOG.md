@@ -7,6 +7,40 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 ## [Unreleased]
 
+## [4.25.0] - 2026-11-20
+
+### Added
+
+- Une nouvelle page « page introuvable » : un avion écrit 404 dans le ciel, la recherche est déjà
+  remplie avec les mots de l'adresse, et un tableau des départs vous propose quatre appareils à
+  découvrir.
+- Paramètres : « Ma collection » montre vos favoris en photos, leur répartition par décennie et par
+  pays, et la dernière fiche que vous avez consultée.
+- Paramètres : vous pouvez vous déconnecter d'un coup de tous les appareils où votre compte est
+  ouvert.
+- Paramètres : un onglet « Préférences » pour choisir la langue, réduire les animations sur tout le
+  site et revoir la visite guidée.
+- Comparateur : la photo de l'appareil que vous cochez rejoint la barre de comparaison, et la barre
+  s'ouvre en fenêtre de comparaison.
+
+### Changed
+
+- Les paramètres ont été entièrement revus : un en-tête compact à votre nom, cinq onglets au lieu de
+  six, des onglets en bandeau sur téléphone, et une barre « Modifications non enregistrées » pour
+  enregistrer ou annuler.
+- Hangar : quand vous changez de filtre ou de page, les cartes glissent vers leur nouvelle place au
+  lieu de disparaître, et le chargement se transforme directement en cartes.
+- Connexion : les étapes (connexion, inscription, code, mot de passe) s'enchaînent en douceur ; à
+  l'inscription, « Se connecter » passe sous la question ; sur téléphone et tablette, le fond est
+  celui des autres pages.
+- Pour les administrateurs : recherche, filtre par rôle et rôle modifiable directement dans la liste
+  des comptes.
+
+### Fixed
+
+- La page introuvable s'affiche correctement, textes et bandeau des cookies compris, même à une
+  adresse à plusieurs niveaux.
+
 ## [4.24.0] - 2026-11-20
 
 ### Added
@@ -572,7 +606,8 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 - Première version de Vol d'Histoire : un catalogue d'avions militaires.
 
-[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.24.0...HEAD
+[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.25.0...HEAD
+[4.25.0]: https://github.com/Lurrod/vol_histoire/compare/v4.24.0...v4.25.0
 [4.24.0]: https://github.com/Lurrod/vol_histoire/compare/v4.23.1...v4.24.0
 [4.23.1]: https://github.com/Lurrod/vol_histoire/compare/v4.23.0...v4.23.1
 [4.23.0]: https://github.com/Lurrod/vol_histoire/compare/v4.22.0...v4.23.0

@@ -700,6 +700,151 @@ describe('POST /api/logout', () => {
 });
 
 // =============================================================================
+// AUTH — POST /api/auth/logout-all
+// =============================================================================
+describe('POST /api/auth/logout-all', () => {
+  test('200 — révoque tous les refresh tokens, incrémente token_version, efface le cookie', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rowCount: 3 }) // revokeAllForUser
+      .mockResolvedValueOnce({ rows: [{ token_version: 1 }] }); // bumpTokenVersion
+
+    const res = await request(app)
+      .post('/api/auth/logout-all')
+      .set('Authorization', `Bearer ${tokenMember}`)
+      .set('Cookie', `refreshToken=${makeRefreshToken({ id: 3, role: 3 })}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ message: 'Toutes les sessions ont été fermées' });
+
+    const revoke = mockPool.query.mock.calls.find(c => /UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = \$1/.test(c[0]));
+    expect(revoke).toBeDefined();
+    expect(revoke[1]).toEqual([3]);
+    const bump = mockPool.query.mock.calls.find(c => /token_version = token_version \+ 1/.test(c[0]));
+    expect(bump).toBeDefined();
+    expect(bump[1]).toEqual([3]);
+
+    const cookies = res.headers['set-cookie'];
+    const refreshCookie = cookies.find(c => c.startsWith('refreshToken='));
+    expect(refreshCookie).toMatch(/refreshToken=;|Expires=Thu, 01 Jan 1970/i);
+    const hint = cookies.find(c => c.startsWith('vh_session='));
+    expect(hint).toMatch(/Expires=Thu, 01 Jan 1970/i);
+  });
+
+  test('403 — sans jeton, rien n\'est révoqué', async () => {
+    const res = await request(app).post('/api/auth/logout-all');
+    expect(res.status).toBe(403);
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+
+  test('401 — jeton déjà révoqué (token_version dépassée)', async () => {
+    authState = { ...authState, 2: { role_id: 2, token_version: 1 } };
+    const res = await request(app)
+      .post('/api/auth/logout-all')
+      .set('Authorization', `Bearer ${tokenEditor}`);
+    expect(res.status).toBe(401);
+    expect(res.body.code).toBe('TOKEN_REVOKED');
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+
+  test('500 — échec de la base : transaction annulée, cookie conservé', async () => {
+    mockPool.query.mockRejectedValueOnce(new Error('DB down'));
+    const res = await request(app)
+      .post('/api/auth/logout-all')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(500);
+    const cookies = res.headers['set-cookie'] || [];
+    expect(cookies.some(c => c.startsWith('refreshToken='))).toBe(false);
+  });
+});
+
+// =============================================================================
+// UTILISATEURS — GET /api/users?role= (filtre et compteurs par rôle)
+// =============================================================================
+describe('GET /api/users — filtre de rôle et meta.roles', () => {
+  const ROLE_COUNTS = { rows: [
+    { role_id: 1, count: '2' },
+    { role_id: 3, count: '40' },
+    { role_id: null, count: '1' },
+  ] };
+
+  test('200 — sans filtre : meta.roles a toujours les trois clés, total = tous les comptes', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(ROLE_COUNTS)
+      .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email: 'a@test.fr', role_id: 1 }] });
+    const res = await request(app)
+      .get('/api/users')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(200);
+    expect(res.body.meta).toEqual({ total: 43, page: 1, limit: 20, totalPages: 3, roles: { 1: 2, 2: 0, 3: 40 } });
+    expect(mockPool.query.mock.calls[0][0]).toMatch(/GROUP BY role_id/);
+    expect(mockPool.query.mock.calls[1][0]).not.toMatch(/role_id = \$/);
+  });
+
+  test('200 — ?role=3 : liste filtrée, total du rôle, compteurs sans le filtre', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(ROLE_COUNTS)
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await request(app)
+      .get('/api/users?role=3&search=jean&limit=10')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(200);
+    expect(res.body.meta.total).toBe(40);
+    expect(res.body.meta.totalPages).toBe(4);
+    expect(res.body.meta.roles).toEqual({ 1: 2, 2: 0, 3: 40 });
+
+    const [countSql, countValues] = mockPool.query.mock.calls[0];
+    expect(countSql).not.toMatch(/role_id = \$/);
+    expect(countValues).toEqual(['%jean%']);
+    const [listSql, listValues] = mockPool.query.mock.calls[1];
+    expect(listSql).toMatch(/WHERE \(name ILIKE \$1 OR email ILIKE \$1\) AND role_id = \$2 ORDER BY id LIMIT \$3 OFFSET \$4/);
+    expect(listValues).toEqual(['%jean%', 3, 10, 0]);
+  });
+
+  test('200 — ?role=2 sans aucun éditeur : total 0', async () => {
+    mockPool.query
+      .mockResolvedValueOnce(ROLE_COUNTS)
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await request(app)
+      .get('/api/users?role=2')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(200);
+    expect(res.body.meta.total).toBe(0);
+    expect(res.body.meta.totalPages).toBe(0);
+    expect(mockPool.query.mock.calls[1][1]).toEqual([2, 20, 0]);
+  });
+
+  test('200 — ?role= vide : aucun filtre', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] });
+    const res = await request(app)
+      .get('/api/users?role=')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(200);
+    expect(res.body.meta.roles).toEqual({ 1: 0, 2: 0, 3: 0 });
+    expect(res.body.meta.total).toBe(0);
+    expect(mockPool.query.mock.calls[1][1]).toEqual([20, 0]);
+  });
+
+  test.each(['0', '4', 'admin', '1.0', '01', '-1'])('400 — ?role=%s refusé avant toute requête', async (role) => {
+    const res = await request(app)
+      .get(`/api/users?role=${encodeURIComponent(role)}`)
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe('Rôle invalide (1 = admin, 2 = éditeur, 3 = membre)');
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+
+  test('400 — ?role répété (tableau) refusé', async () => {
+    const res = await request(app)
+      .get('/api/users?role=1&role=2')
+      .set('Authorization', `Bearer ${tokenAdmin}`);
+    expect(res.status).toBe(400);
+    expect(mockPool.query).not.toHaveBeenCalled();
+  });
+});
+
+// =============================================================================
 // UTILISATEURS — GET /api/users/:id
 // =============================================================================
 describe('GET /api/users/:id', () => {
@@ -724,6 +869,25 @@ describe('GET /api/users/:id', () => {
       .get('/api/users/3')
       .set('Authorization', `Bearer ${tokenMember}`);
     expect(res.status).toBe(200);
+  });
+
+  test('200 — created_at renvoyé en ISO 8601, sans hash ni token_version', async () => {
+    mockPool.query.mockResolvedValueOnce({
+      rows: [{ id: 3, name: 'Member', email: 'member@test.com', role_id: 3, created_at: new Date('2025-03-14T09:26:53.000Z') }],
+    });
+
+    const res = await request(app)
+      .get('/api/users/3')
+      .set('Authorization', `Bearer ${tokenMember}`);
+    expect(res.status).toBe(200);
+    expect(res.body.created_at).toBe('2025-03-14T09:26:53.000Z');
+    expect(res.body).not.toHaveProperty('password');
+    expect(res.body).not.toHaveProperty('token_version');
+
+    const [sql, values] = mockPool.query.mock.calls[0];
+    expect(sql).toMatch(/SELECT id, name, email, role_id, created_at FROM users WHERE id = \$1/);
+    expect(sql).not.toMatch(/password|token_version/);
+    expect(values).toEqual(['3']);
   });
 
   test('403 — membre ne peut pas voir le profil d\'un autre', async () => {

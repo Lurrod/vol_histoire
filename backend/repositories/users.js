@@ -50,9 +50,12 @@ async function findContact(db, id) {
   return result.rows[0] || null;
 }
 
-/** Profil public (sans hash). */
+/**
+ * Profil public (sans hash ni token_version), avec la date d'inscription
+ * (« membre depuis » des réglages).
+ */
 async function findPublicById(db, id) {
-  const result = await db.query('SELECT id, name, email, role_id FROM users WHERE id = $1', [id]);
+  const result = await db.query('SELECT id, name, email, role_id, created_at FROM users WHERE id = $1', [id]);
   return result.rows[0] || null;
 }
 
@@ -85,11 +88,22 @@ async function findAuthState(db, id) {
   return result.rows[0] || null;
 }
 
+/** Rôles connus (1 = admin, 2 = éditeur, 3 = membre), clés de `roles` dans findPage. */
+const ROLE_IDS = [1, 2, 3];
+
 /**
- * Page de la liste d'administration, recherche ILIKE sur nom et email.
- * @returns {Promise<{ total: number, rows: object[] }>}
+ * Page de la liste d'administration, recherche ILIKE sur nom et email,
+ * filtre facultatif sur le rôle.
+ *
+ * Un seul comptage groupé par rôle, sur la recherche SEULE (sans le filtre de
+ * rôle) : il donne à la fois les compteurs des pastilles de filtre (`roles`,
+ * toujours les trois clés) et le total de la page demandée — celui du rôle
+ * filtré, ou la somme de tous les groupes (comptes sans rôle compris).
+ *
+ * @param {{ search?: string, roleId?: number|null, limit: number, offset: number }} options
+ * @returns {Promise<{ total: number, roles: { 1: number, 2: number, 3: number }, rows: object[] }>}
  */
-async function findPage(db, { search, limit, offset }) {
+async function findPage(db, { search, roleId = null, limit, offset }) {
   const whereParts = [];
   const whereValues = [];
   if (search) {
@@ -99,17 +113,32 @@ async function findPage(db, { search, limit, offset }) {
   const whereSql = whereParts.length ? `WHERE ${whereParts.join(' AND ')}` : '';
 
   const countResult = await db.query(
-    `SELECT COUNT(*) FROM users ${whereSql}`,
+    `SELECT role_id, COUNT(*) AS count FROM users ${whereSql} GROUP BY role_id`,
     whereValues
   );
-  const total = parseInt(countResult.rows[0].count, 10);
+  const roles = Object.fromEntries(ROLE_IDS.map((id) => [id, 0]));
+  let all = 0;
+  for (const row of countResult.rows) {
+    const count = parseInt(row.count, 10) || 0;
+    all += count;
+    const id = Number(row.role_id);
+    if (ROLE_IDS.includes(id)) roles[id] = count;
+  }
+  const total = roleId ? roles[roleId] : all;
 
-  const listValues = [...whereValues, limit, offset];
+  const listParts = [...whereParts];
+  const listValues = [...whereValues];
+  if (roleId) {
+    listValues.push(roleId);
+    listParts.push(`role_id = $${listValues.length}`);
+  }
+  const listWhere = listParts.length ? `WHERE ${listParts.join(' AND ')}` : '';
+  const pageValues = [...listValues, limit, offset];
   const result = await db.query(
-    `SELECT id, name, email, role_id FROM users ${whereSql} ORDER BY id LIMIT $${listValues.length - 1} OFFSET $${listValues.length}`,
-    listValues
+    `SELECT id, name, email, role_id FROM users ${listWhere} ORDER BY id LIMIT $${pageValues.length - 1} OFFSET $${pageValues.length}`,
+    pageValues
   );
-  return { total, rows: result.rows };
+  return { total, roles, rows: result.rows };
 }
 
 // --- Inscription et connexion -------------------------------------------------

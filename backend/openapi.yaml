@@ -35,7 +35,7 @@ info:
     - **415** : jeu de caractères ou encodage du corps non pris en charge.
     Les caractères de contrôle d'un paramètre `search` sont remplacés par une
     espace.
-  version: 4.24.0
+  version: 4.25.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -414,6 +414,17 @@ components:
           enum: [1, 2, 3]
           description: "1=admin, 2=éditeur, 3=membre"
 
+    UserProfile:
+      description: Profil d'un compte (`GET /users/{id}`), sans hash ni version de jeton.
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - type: object
+          properties:
+            created_at:
+              type: string
+              format: date-time
+              description: Date d'inscription (ISO 8601), pour « membre depuis »
+
     Country:
       type: object
       properties:
@@ -599,6 +610,35 @@ paths:
       responses:
         '200':
           description: Déconnexion réussie
+
+  /auth/logout-all:
+    post:
+      tags: [Auth]
+      summary: Se déconnecter de tous les appareils
+      description: |
+        Révoque tous les refresh tokens du compte connecté et incrémente sa
+        `token_version` : tout access token déjà émis, y compris celui de la
+        requête, est ensuite refusé (401 `TOKEN_REVOKED`). Le cookie de session
+        de ce navigateur est effacé. Limiteur dédié : 10 requêtes / 15 min par IP.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Toutes les sessions sont fermées
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Toutes les sessions ont été fermées
+        '401':
+          description: Jeton expiré, invalide ou révoqué
+        '403':
+          description: Aucun jeton
+        '429':
+          description: Trop de demandes
 
   /auth/check-code:
     post:
@@ -808,6 +848,19 @@ paths:
             type: integer
             default: 20
             maximum: 100
+        - name: search
+          in: query
+          description: Recherche (ILIKE) dans le nom et l'email, 100 caractères au plus
+          schema:
+            type: string
+        - name: role
+          in: query
+          description: |
+            Filtre sur le rôle (1 = admin, 2 = éditeur, 3 = membre). Absent ou
+            vide : tous les rôles. Toute autre valeur : 400.
+          schema:
+            type: integer
+            enum: [1, 2, 3]
       responses:
         '200':
           description: Liste paginée
@@ -831,6 +884,21 @@ paths:
                         type: integer
                       totalPages:
                         type: integer
+                      roles:
+                        type: object
+                        description: |
+                          Nombre de comptes par rôle pour la recherche courante,
+                          sans tenir compte du filtre `role` (toujours les trois clés).
+                        properties:
+                          '1':
+                            type: integer
+                          '2':
+                            type: integer
+                          '3':
+                            type: integer
+                        example: { '1': 2, '2': 5, '3': 120 }
+        '400':
+          description: Rôle invalide
         '403':
           description: Accès réservé aux admins
 
@@ -914,7 +982,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserProfile'
         '403':
           description: Accès non autorisé (sauf son propre profil ou admin)
         '404':

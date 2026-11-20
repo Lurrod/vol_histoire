@@ -75,6 +75,7 @@ const BUNDLES = {
   ],
 
   'hangar.min.js': [
+    'shared/compare-morph.js',
     'shared/compare.js',
     'nations-map.js',
     'hangar/data.js',
@@ -92,6 +93,8 @@ const BUNDLES = {
   ],
 
   'details.min.js': [
+    'shared/last-viewed.js',
+    'shared/compare-morph.js',
     'shared/compare.js',
     'details/markdown.js',
     'details/data.js',
@@ -126,15 +129,20 @@ const BUNDLES = {
   ],
 
   'settings.min.js': [
+    'shared/last-viewed.js',
     'settings/ui.js',
     'settings/tabs.js',
+    'settings/save-bar.js',
     'settings/account.js',
+    'settings/identity.js',
+    'settings/collection.js',
     'shared/otp-input.js',
     'settings/profile.js',
     'settings/security.js',
+    'settings/sessions.js',
+    'settings/preferences.js',
     'settings/danger-zone.js',
     'settings/admin.js',
-    'settings/dashboard.js',
     'settings/cookies.js',
     'settings/data-export.js',
     'settings.js',

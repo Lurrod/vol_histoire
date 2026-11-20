@@ -1,6 +1,6 @@
 /**
  * Tests — petites pages et scripts communs :
- *   - js/404.js (route demandée affichée) ;
+ *   - js/404.js (mots de l'adresse manquante, recherche préremplie) ;
  *   - js/sw-register.js (enregistrement du service worker) ;
  *   - js/shared/alpha3.js (drapeaux : tous les pays de db.sql couverts) ;
  *   - js/app-version.js (version injectée par le build).
@@ -31,14 +31,33 @@ describe('404.js', () => {
     ready.forEach((fn) => fn());
   }
 
-  test('affiche la route demandée dans le panneau télémétrie (texte brut)', () => {
-    window.history.replaceState(null, '', '/hangar/%3Cb%3Ex%3C/b%3E');
+  test('préremplit la recherche avec les mots de l’adresse', () => {
+    window.history.replaceState(null, '', '/hangar/rafal');
     run(mainOf('404.html'));
-    expect($('requested-path').textContent).toBe('/hangar/%3Cb%3Ex%3C/b%3E');
-    expect($('requested-path').querySelector('b')).toBeNull();
+    expect($('e4-q').value).toBe('rafal');
   });
 
-  test('page sans panneau : rien ne casse', () => {
+  test('fiche : retire l’identifiant et les mots vides', () => {
+    window.history.replaceState(null, '', '/details/mirage-2000-c-14');
+    run(mainOf('404.html'));
+    expect($('e4-q').value).toBe('mirage 2000 c');
+  });
+
+  test('/404 lui-même : recherche laissée vide', () => {
+    window.history.replaceState(null, '', '/404');
+    run(mainOf('404.html'));
+    expect($('e4-q').value).toBe('');
+  });
+
+  test('queryFromPath : adresse mal encodée lue telle quelle, extension retirée', () => {
+    run('<main></main>');
+    const { queryFromPath } = window.VH.e404;
+    expect(queryFromPath('/hangar/%E0%A4%A')).toBe('%E0%A4%A');
+    expect(queryFromPath('/conflits/guerre-du-golfe.html')).toBe('guerre golfe');
+    expect(queryFromPath('/')).toBe('');
+  });
+
+  test('page sans champ de recherche : rien ne casse', () => {
     expect(() => run('<main></main>')).not.toThrow();
   });
 });

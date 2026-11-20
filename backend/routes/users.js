@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const { isValidEmail, isValidName, isValidPassword } = require('../validators');
+const { isValidEmail, isValidName, isValidPassword, isValidRoleId } = require('../validators');
 const {
   authorize,
   isOwnerOrAdmin,
@@ -39,10 +39,19 @@ module.exports = function createUsersRouter(getPool, { mailer, dataExportLimiter
     const offset = (page - 1) * limit;
     const search = cleanSearch(req.query.search);
 
-    const { total, rows } = await usersRepo.findPage(getPool(), { search, limit, offset });
+    // Filtre de rôle facultatif : absent ou vide = tous les rôles.
+    const rawRole = req.query.role;
+    if (rawRole !== undefined && rawRole !== '' && !isValidRoleId(rawRole)) {
+      return res.status(400).json({ message: 'Rôle invalide (1 = admin, 2 = éditeur, 3 = membre)' });
+    }
+    const roleId = rawRole ? Number(rawRole) : null;
+
+    // meta.roles : nombre de comptes par rôle pour la recherche courante,
+    // filtre de rôle ignoré (compteurs des pastilles de filtre).
+    const { total, roles, rows } = await usersRepo.findPage(getPool(), { search, roleId, limit, offset });
     res.json({
       data: rows,
-      meta: { total, page, limit, totalPages: Math.ceil(total / limit) }
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit), roles }
     });
   }));
 

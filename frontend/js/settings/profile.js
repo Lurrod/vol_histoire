@@ -6,6 +6,11 @@
  * envoyé à celle-ci (champ de code sous le formulaire, VH.otpInput). Le
  * serveur coupe alors toutes les sessions : on se reconnecte avec la
  * nouvelle adresse.
+ *
+ * Pas de boutons permanents (2026-11-20) : le formulaire s'inscrit auprès de
+ * la barre flottante (settings/save-bar.js), qui apparaît dès qu'un champ
+ * diffère du profil enregistré. Entrée dans un champ enregistre aussi (bouton
+ * d'envoi visuellement masqué du formulaire, qui passe par la barre).
  */
 (function () {
   const root = typeof window !== 'undefined' ? window : globalThis;
@@ -141,22 +146,39 @@
     }
   }
 
-  async function onProfileSubmit(state, form, e) {
-    e.preventDefault();
-    const { API_BASE, setButtonLoading } = VH.settings.ui;
+  /** Le formulaire diffère-t-il du profil enregistré ? */
+  function isDirty(state) {
+    const name = document.getElementById('name');
+    const email = document.getElementById('email');
+    if (!name || !email || !state.currentUser) return false;
+    return name.value.trim() !== (state.currentUser.name || '') || emailDiffers(email.value, state.currentUser);
+  }
+
+  /** Retour aux valeurs enregistrées (bouton Annuler de la barre). */
+  function resetForm(state) {
+    const name = document.getElementById('name');
+    const email = document.getElementById('email');
+    const currentPw = document.getElementById('profile-current-password');
+    if (name) { name.value = state.currentUser?.name || ''; clearFieldError(name); }
+    if (email) { email.value = state.currentUser?.email || ''; clearFieldError(email); }
+    if (currentPw) { currentPw.value = ''; clearFieldError(currentPw); }
+    toggleProfileCurrentPassword(state);
+  }
+
+  /**
+   * Envoie le profil. L'état d'attente du bouton est tenu par la barre.
+   * @returns {Promise<boolean>} true si tout est enregistré (un changement
+   *   d'adresse attend encore son code : false, sans erreur)
+   */
+  async function submitProfile(state) {
+    const { API_BASE } = VH.settings.ui;
 
     const name = document.getElementById('name').value.trim();
     const email = document.getElementById('email').value.trim();
     const currentPwInput = document.getElementById('profile-current-password');
     const emailChanged = emailDiffers(email, state.currentUser);
 
-    if (!validateProfile({ name, email, emailChanged, currentPwInput })) return;
-
-    const submitBtn = form.querySelector('button[type="submit"]');
-    setButtonLoading(submitBtn, true);
-    // Coche « Enregistré » seulement si tout est enregistré : un changement
-    // d'adresse attend encore son code.
-    let saved = false;
+    if (!validateProfile({ name, email, emailChanged, currentPwInput })) return false;
 
     try {
       const payload = emailChanged
@@ -171,38 +193,51 @@
 
       if (response.ok) {
         onProfileSaved(state, name, data, currentPwInput, email);
-        saved = !emailChanged;
-      } else if (CURRENT_PASSWORD_ERRORS.includes(data.code)) {
+        VH.settings.identity?.render(state.currentUser);
+        return !emailChanged;
+      }
+      if (CURRENT_PASSWORD_ERRORS.includes(data.code)) {
         setFieldError(currentPwInput, i18n.t('settings.toast_current_password_invalid'));
       } else {
         showToast(data.message || i18n.t('settings.toast_profile_error'), 'error');
       }
     } catch {
       showToast(i18n.t('settings.toast_network_error'), 'error');
-    } finally {
-      setButtonLoading(submitBtn, false, { done: saved, label: VH.settings.ui.tr('settings.btn_saved', 'Enregistré') });
     }
+    return false;
+  }
+
+  /** Envoi du formulaire (Entrée) : par la barre, qui montre l'attente. */
+  function onProfileSubmit(state, e) {
+    e.preventDefault();
+    const bar = VH.settings.saveBar;
+    return bar ? bar.save() : submitProfile(state);
   }
 
   function setup(state) {
     const profileForm = document.getElementById('profile-form');
     if (profileForm) {
-      profileForm.addEventListener('submit', (e) => onProfileSubmit(state, profileForm, e));
+      profileForm.addEventListener('submit', (e) => onProfileSubmit(state, e));
     }
 
-    document.getElementById('email')?.addEventListener('input', () => toggleProfileCurrentPassword(state));
+    const changed = () => VH.settings.saveBar?.update();
+    document.getElementById('name')?.addEventListener('input', changed);
+    document.getElementById('email')?.addEventListener('input', () => {
+      toggleProfileCurrentPassword(state);
+      changed();
+    });
     document.getElementById('email-code-cancel')?.addEventListener('click', closeEmailCode);
 
-    document.getElementById('reset-profile-btn')?.addEventListener('click', () => {
-      document.getElementById('name').value = state.currentUser?.name || '';
-      document.getElementById('email').value = state.currentUser?.email || '';
-      toggleProfileCurrentPassword(state);
-      showToast(i18n.t('settings.toast_form_reset'), 'info');
+    VH.settings.saveBar?.register({
+      isDirty: () => isDirty(state),
+      save: () => submitProfile(state),
+      reset: () => resetForm(state),
     });
   }
 
   VH.settings.profile = {
     CURRENT_PASSWORD_ERRORS, emailDiffers, toggleProfileCurrentPassword, validateProfile, onProfileSubmit, setup,
+    isDirty, resetForm, submitProfile,
     navigate, openEmailCode, closeEmailCode, confirmEmailCode,
   };
 

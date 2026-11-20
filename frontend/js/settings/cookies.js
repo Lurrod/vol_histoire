@@ -6,6 +6,10 @@
  * Lecture et écriture passent par window.VH.consent (cookies.js, chargé avant
  * dans app.min.js) : lui seul connaît la clé, la forme stockée et la durée de
  * conservation du choix (6 mois, LEGAL-004).
+ *
+ * Plus de bouton « Enregistrer mes préférences » (2026-11-20) :
+ * l'interrupteur s'inscrit auprès de la barre flottante (settings/save-bar.js),
+ * qui apparaît dès qu'il diffère du choix enregistré.
  */
 (function () {
   const root = typeof window !== 'undefined' ? window : globalThis;
@@ -55,11 +59,33 @@
     }
   }
 
+  /** Mesure d'audience acceptée dans le choix enregistré (false sans choix). */
+  function savedAnalytics() {
+    const api = consentApi();
+    const record = api ? api.record() : null;
+    return Boolean(record && record.preferences && record.preferences.analytics === true);
+  }
+
+  /** L'interrupteur diffère-t-il du choix enregistré ? */
+  function isDirty() {
+    const toggle = document.getElementById('pref-analytics');
+    return Boolean(toggle) && toggle.checked !== savedAnalytics();
+  }
+
+  /** Remet l'interrupteur sur le choix enregistré. */
+  function resetToggle() {
+    const toggle = document.getElementById('pref-analytics');
+    if (!toggle) return;
+    toggle.checked = savedAnalytics();
+    updateToggleStatus('analytics', toggle.checked);
+  }
+
+  /** @returns {boolean} enregistré ou non */
   function saveCookiePreferences() {
     const api = consentApi();
     if (!api) {
       showToast(i18n.t('settings.toast_cookies_unavailable'), 'error');
-      return;
+      return false;
     }
     const analyticsToggle = document.getElementById('pref-analytics');
     const { preferences } = api.save({ analytics: analyticsToggle ? analyticsToggle.checked : false });
@@ -75,13 +101,12 @@
 
     loadCookiePreferences();
     showToast(i18n.t('settings.toast_cookies_saved'), 'success');
+    return true;
   }
 
   const RELOAD_EVENTS = ['analytics_enabled', 'analytics_disabled'];
 
   function init() {
-    document.getElementById('save-cookie-preferences')?.addEventListener('click', saveCookiePreferences);
-
     document.getElementById('open-cookie-modal')?.addEventListener('click', () => {
       if (window.cookieConsent) {
         window.cookieConsent.openModal();
@@ -92,17 +117,27 @@
 
     document.getElementById('pref-analytics')?.addEventListener('change', (e) => {
       updateToggleStatus('analytics', e.target.checked);
+      VH.settings.saveBar?.update();
     });
 
     document.addEventListener('cookieConsent', (e) => {
-      if (RELOAD_EVENTS.includes(e.detail.event)) loadCookiePreferences();
+      if (RELOAD_EVENTS.includes(e.detail.event)) {
+        loadCookiePreferences();
+        VH.settings.saveBar?.update();
+      }
+    });
+
+    VH.settings.saveBar?.register({
+      isDirty,
+      save: () => Promise.resolve(saveCookiePreferences()),
+      reset: resetToggle,
     });
 
     // État initial
     loadCookiePreferences();
   }
 
-  VH.settings.cookies = { loadCookiePreferences, saveCookiePreferences, updateToggleStatus, init };
+  VH.settings.cookies = { loadCookiePreferences, saveCookiePreferences, updateToggleStatus, isDirty, resetToggle, init };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = VH.settings.cookies;

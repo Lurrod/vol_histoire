@@ -139,8 +139,8 @@ test.describe('Settings (authentifié)', () => {
     await loginViaApi(page, 'user@test.local', 'Testuser1');
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
-    // Section dashboard est active par défaut → switch vers profil
-    await page.click('[data-section="profile"]');
+    // « Ma collection » est active par défaut → onglet Compte
+    await page.click('[data-section="account"]');
     await page.waitForTimeout(300);
 
     expect(page.url()).toContain('settings');

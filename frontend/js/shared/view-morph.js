@@ -15,7 +15,10 @@
  *
  * 2. Dans la page : VH.viewMorph.swap({ root, update }) — les éléments
  *    [data-morph-id] visibles glissent de leur ancienne place à la
- *    nouvelle (bascule grille/liste, filtres de la frise, tri des favoris).
+ *    nouvelle (bascule grille/liste, filtres et pages du hangar, filtres de
+ *    la frise, tri des favoris) ; option `slots` : squelettes → cartes.
+ *    VH.viewMorph.run({ update, name }) : morphing libre (comparateur,
+ *    étapes de connexion, onglets des réglages).
  *
  * Sans l'API (Firefox) ou en mouvement réduit : la mise à jour se fait
  * d'un coup, comme avant. Les noms de transition sont posés en CSSOM
@@ -143,51 +146,108 @@
     return r.bottom > -h * 0.25 && r.top < h * 1.25 && r.width > 0;
   }
 
+  /**
+   * Morphing libre dans la page : `name()` désigne les éléments à nommer,
+   * appelée AVANT et APRÈS `update()`. Un même nom des deux côtés = l'élément
+   * glisse et se transforme (taille, place) ; un nom d'un seul côté = entrée
+   * ou sortie (classe `className`, CSS de shared-morph.css). Deux éléments
+   * présents au même nom dans un même état annuleraient la transition.
+   * @param {{ update: () => void, name?: () => Array<[Element, string]>,
+   *           className?: string, rootClass?: string }} opts
+   *   rootClass : classe(s) posée(s) sur <html> pendant la transition (sens, variante),
+   *   séparées par des espaces.
+   * @returns {Promise<void>} résolue une fois la mise à jour faite
+   */
+  function run(opts) {
+    var update = opts && opts.update;
+    if (typeof update !== 'function') return Promise.resolve();
+    if (typeof document.startViewTransition !== 'function' || reduced() || document.hidden) {
+      update();
+      return Promise.resolve();
+    }
+    var named = [];
+    var pick = typeof opts.name === 'function' ? opts.name : function () { return []; };
+    var apply = function () {
+      pick().forEach(function (pair) {
+        var el = pair && pair[0];
+        if (!el || !pair[1]) return;
+        setName(el, pair[1]);
+        if (opts.className) el.style.setProperty('view-transition-class', opts.className);
+        named.push(el);
+      });
+    };
+    apply();
+    var html = document.documentElement;
+    var classes = String(opts.rootClass || '').split(/\s+/).filter(Boolean);
+    classes.forEach(function (c) { html.classList.add(c); });
+    var vt = document.startViewTransition(function () {
+      update();
+      apply();
+    });
+    // Une erreur de update() remonte par updateCallbackDone (renvoyée à
+    // l'appelant) ; finished la répète, d'où le catch ici.
+    vt.finished.catch(function () {}).then(function () {
+      named.forEach(clearName);
+      classes.forEach(function (c) { html.classList.remove(c); });
+    });
+    return vt.updateCallbackDone;
+  }
+
   // Seuls les éléments visibles (à un quart d'écran près) sont nommés :
   // des centaines de noms alourdiraient la capture pour rien.
-  function nameItems(root, named) {
+  function visibleItems(root, selector) {
+    var out = [];
+    var items = root.querySelectorAll(selector);
+    for (var i = 0; i < items.length; i++) if (inView(items[i])) out.push(items[i]);
+    return out;
+  }
+
+  function idNames(root) {
     var used = Object.create(null);
-    var items = root.querySelectorAll('[data-morph-id]');
-    for (var i = 0; i < items.length; i++) {
-      var el = items[i];
+    return visibleItems(root, '[data-morph-id]').reduce(function (acc, el) {
       var id = el.getAttribute('data-morph-id');
-      if (!id || used[id] || !inView(el)) continue;
-      used[id] = true;
-      setName(el, 'vh-m-' + cssEscape(id));
-      el.style.setProperty('view-transition-class', 'vh-morph');
-      named.push(el);
-    }
+      if (id && !used[id]) {
+        used[id] = true;
+        acc.push([el, 'vh-m-' + cssEscape(id)]);
+      }
+      return acc;
+    }, []);
+  }
+
+  /** Emplacements : le n-ième élément avant devient le n-ième après
+   * (squelette de chargement → carte). */
+  function slotNames(root, selector) {
+    return visibleItems(root, selector).map(function (el, i) { return [el, 'vh-slot-' + i]; });
   }
 
   /**
-   * @param {{ root: Element|null, update: () => void }} opts
-   * @returns {Promise<void>} résolue une fois la mise à jour faite
+   * Les éléments [data-morph-id] visibles de `root` glissent de leur
+   * ancienne place à la nouvelle ; ceux qui partent ou arrivent s'effacent
+   * ou entrent. Avec `slots` (sélecteur), on apparie par position.
+   * @param {{ root: Element|null, update: () => void, slots?: string, rootClass?: string }} opts
+   * @returns {Promise<void>}
    */
   function swap(opts) {
     var root = opts && opts.root;
     var update = opts && opts.update;
     if (typeof update !== 'function') return Promise.resolve();
-    if (!root || typeof document.startViewTransition !== 'function' || reduced() || document.hidden) {
+    if (!root) {
       update();
       return Promise.resolve();
     }
-    var named = [];
-    nameItems(root, named);
-    var vt = document.startViewTransition(function () {
-      update();
-      nameItems(root, named);
+    return run({
+      update: update,
+      className: 'vh-morph',
+      rootClass: opts.rootClass,
+      name: function () { return opts.slots ? slotNames(root, opts.slots) : idNames(root); },
     });
-    // Une erreur de update() remonte par updateCallbackDone (renvoyée à
-    // l'appelant) ; finished la répète, d'où le catch ici.
-    vt.finished.catch(function () {}).then(function () { named.forEach(clearName); });
-    return vt.updateCallbackDone;
   }
 
   document.addEventListener('click', onCardClick, true);
   window.addEventListener('pageswap', onPageSwap);
   window.addEventListener('pagereveal', onPageReveal);
 
-  window.VH.viewMorph = { swap: swap, selfId: selfId, photoFor: photoFor };
+  window.VH.viewMorph = { swap: swap, run: run, selfId: selfId, photoFor: photoFor };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = window.VH.viewMorph;

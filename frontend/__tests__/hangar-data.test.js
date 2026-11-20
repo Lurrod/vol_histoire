@@ -35,12 +35,16 @@ beforeEach(() => {
   global.auth = { fetchWithTimeout: jest.fn() };
   render = {
     renderSkeletons: jest.fn(),
+    showLoading: jest.fn(),
+    clearLoading: jest.fn(),
     lockPagination: jest.fn(),
     renderAircraft: jest.fn(),
     renderPagination: jest.fn(),
     updateResultsCount: jest.fn(),
     updateStats: jest.fn(),
   };
+  // Le morphing appelle le rendu des cartes ; ici sans transition.
+  render.showResults = jest.fn((state) => { render.renderAircraft(state); return Promise.resolve(); });
   window.VH = {
     hangar: {
       render,
@@ -126,9 +130,9 @@ describe('loadAircraft', () => {
     ['country', 'generation', 'type', 'war', 'mission', 'search'].forEach(k => expect(p.has(k)).toBe(false));
   });
 
-  test('squelettes et verrou de pagination avant la requête, rendu complet après', async () => {
+  test('état de chargement et verrou de pagination avant la requête, rendu complet après', async () => {
     const order = [];
-    render.renderSkeletons.mockImplementation(() => order.push('skeletons'));
+    render.showLoading.mockImplementation(() => order.push('skeletons'));
     render.lockPagination.mockImplementation(() => order.push('lock'));
     auth.fetchWithTimeout.mockImplementationOnce(() => {
       order.push('fetch');
@@ -139,6 +143,7 @@ describe('loadAircraft', () => {
     await data.loadAircraft(state);
 
     expect(order).toEqual(['skeletons', 'lock', 'fetch', 'cards']);
+    expect(render.showResults).toHaveBeenCalledWith(state, null);
     expect(state.aircraft).toEqual([{ id: 1 }, { id: 2 }]);
     expect(state.total).toBe(2);
     expect(render.renderPagination).toHaveBeenCalledWith(state);
@@ -195,7 +200,18 @@ describe('loadAircraft', () => {
     await data.loadAircraft(state);
     expect(render.renderPagination).toHaveBeenCalledWith(state);
     expect(render.renderAircraft).not.toHaveBeenCalled();
+    expect(render.clearLoading).toHaveBeenCalled();
     expect(showToast).toHaveBeenCalledWith('common.loading_error', 'error');
+  });
+
+  test('sens de pagination transmis au morphing, puis oublié', async () => {
+    auth.fetchWithTimeout.mockResolvedValue(jsonResponse({ data: [{ id: 1 }], total: 20 }));
+    const state = makeState({ pageDirection: 'next' });
+    await data.loadAircraft(state);
+    expect(render.showResults).toHaveBeenLastCalledWith(state, 'next');
+    expect(state.pageDirection).toBeNull();
+    await data.loadAircraft(state);
+    expect(render.showResults).toHaveBeenLastCalledWith(state, null);
   });
 
   test('une erreur périmée reste silencieuse', async () => {

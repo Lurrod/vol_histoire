@@ -207,7 +207,7 @@ describe('applyToDOM', () => {
    */
   test('settings.html : la date de consentement survit à la traduction', async () => {
     const html = fs.readFileSync(path.join(__dirname, '..', 'settings.html'), 'utf8');
-    const fragment = /<div class="consent-date">[\s\S]*?<\/div>/.exec(html)[0];
+    const fragment = /<p class="consent-date">[\s\S]*?<\/p>/.exec(html)[0];
     document.body.innerHTML = fragment;
     await loadI18n();
     const date = document.getElementById('consent-date');

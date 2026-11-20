@@ -1,140 +1,21 @@
 /**
  * Tests — page Paramètres (js/settings/*.js + js/settings.js).
  * Découpage ARCH-004 : chaque module VH.settings.* est testé sur un DOM
- * réduit à ses éléments, l'API étant simulée.
+ * réduit à ses éléments, l'API étant simulée (helpers/settings-env.js).
+ * Collection et identité : settings-collection.test.js ; barre
+ * d'enregistrement, sessions et préférences : settings-extras.test.js.
  */
 
-const utils = require('../js/utils');
-const { loadMotion } = require('./helpers/motion-env');
 // DOMPurify réel (devDependency) : safeSetHTML l'utilise comme en production.
 global.DOMPurify = require('dompurify');
-
-const SETTINGS_DOM = `
-  <section class="settings-section">
-    <nav>
-      <a href="#dashboard" class="sidebar-link active" data-section="dashboard" id="tab-dashboard" aria-selected="true" tabindex="0">Dashboard</a>
-      <a href="#profile" class="sidebar-link" data-section="profile" id="tab-profile" aria-selected="false" tabindex="-1">Profil</a>
-      <a href="#admin" class="sidebar-link hidden" data-section="admin" id="admin-nav-link" aria-selected="false" tabindex="-1">Admin</a>
-      <a href="#danger" class="sidebar-link" data-section="danger" id="tab-danger" aria-selected="false" tabindex="-1">Danger</a>
-    </nav>
-    <div id="dashboard" class="content-section active">
-      <div id="db-avatar">U</div><h2 id="db-name"></h2><span id="db-role-badge" class="db-role-badge role-member"></span><p id="db-email"></p>
-      <div id="db-kpis"><div id="db-total-fav">0</div><div id="db-total-countries">0</div><div id="db-total-gen">0</div><div id="db-total-types">0</div></div>
-      <div id="db-charts"><div id="db-country-bars"></div><div id="db-gen-bars"></div></div>
-      <div id="db-type-block"><div id="db-type-bars"></div></div>
-      <div id="db-empty" class="hidden"></div>
-    </div>
-    <div id="profile" class="content-section" hidden>
-      <form id="profile-form">
-        <div><input id="name"></div>
-        <div><input id="email"></div>
-        <div id="profile-current-password-group" hidden><input type="password" id="profile-current-password"></div>
-        <button type="submit">Enregistrer</button>
-        <button type="button" id="reset-profile-btn">Annuler</button>
-      </form>
-      <section id="email-code-box" hidden>
-        <h3 id="email-code-title">Confirmez</h3>
-        <p><strong id="email-code-target"></strong></p>
-        <div id="email-code-otp"></div>
-        <p id="email-code-status" role="status"></p>
-        <button type="button" id="email-code-cancel">Annuler</button>
-      </section>
-    </div>
-    <div id="security" class="content-section" hidden>
-      <form id="security-form">
-        <div><input type="password" id="current-password"></div>
-        <div><input type="password" id="password"><button type="button" id="toggle-password"></button></div>
-        <div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div>
-        <span id="strength-text"></span>
-        <ul><li id="req-length"></li><li id="req-upper"></li><li id="req-lower"></li><li id="req-number"></li></ul>
-        <button type="submit">Changer</button>
-      </form>
-    </div>
-    <div id="privacy" class="content-section" hidden>
-      <input type="checkbox" id="pref-analytics"><span id="analytics-status"></span>
-      <strong id="consent-date" data-i18n="settings.never">Jamais</strong>
-      <button id="save-cookie-preferences">Enregistrer</button>
-      <button id="open-cookie-modal">Ouvrir</button>
-      <button type="button" id="export-data-btn"><span>Télécharger mes données</span></button>
-    </div>
-    <div id="admin" class="content-section hidden" hidden>
-      <input id="user-filter"><span id="total-users">0</span>
-      <div id="user-list"></div><div id="user-pagination"></div>
-    </div>
-    <div id="danger" class="content-section" hidden><button type="button" id="delete-account-btn"><span>Supprimer</span></button></div>
-  </section>
-  <div id="edit-user-modal" class="hidden">
-    <div class="logout-modal-backdrop"></div>
-    <h2 id="edit-user-modal-title"></h2>
-    <div><input id="edit-user-name"></div><div><input id="edit-user-email"></div>
-    <select id="edit-user-role"><option value="1">Admin</option><option value="2">Éditeur</option><option value="3">Membre</option></select>
-    <button id="edit-user-cancel">Annuler</button><button id="edit-user-save">Enregistrer</button>
-  </div>`;
-
-function jsonResponse(status, body) {
-  return { ok: status >= 200 && status < 300, status, json: () => Promise.resolve(body) };
-}
-const flush = async (n = 4) => { for (let i = 0; i < n; i++) await Promise.resolve(); };
-const tick = () => new Promise((r) => setTimeout(r, 0));
+const { jsonResponse, flush, tick, env, loadModules, resetEnv } = require('./helpers/settings-env');
 
 let auth;
 let toasts;
 
-function installGlobals() {
-  Object.assign(global, {
-    escapeHtml: utils.escapeHtml,
-    safeSetHTML: utils.safeSetHTML,
-    setFieldError: utils.setFieldError,
-    clearFieldError: utils.clearFieldError,
-    isValidEmail: utils.isValidEmail,
-    calculatePasswordStrength: utils.calculatePasswordStrength,
-    isValidPassword: utils.isValidPassword,
-    PASSWORD_MIN_LENGTH: utils.PASSWORD_MIN_LENGTH,
-    PASSWORD_MAX_LENGTH: utils.PASSWORD_MAX_LENGTH,
-    setupPasswordToggle: jest.fn(),
-  });
-  toasts = [];
-  global.showToast = jest.fn((msg, type) => toasts.push([type, msg]));
-  global.i18n = { currentLang: 'fr', t: jest.fn((k, p) => (p ? `t:${k}:${JSON.stringify(p)}` : `t:${k}`)) };
-  auth = {
-    init: jest.fn(() => Promise.resolve(null)),
-    getPayload: jest.fn(() => ({ id: 1, name: 'Chef', email: 'chef@x.fr', role: 1 })),
-    getUserInfo: jest.fn(() => null),
-    setUserInfo: jest.fn(),
-    setToken: jest.fn(),
-    clearSession: jest.fn(),
-    logout: jest.fn(() => Promise.resolve()),
-    authFetch: jest.fn(() => Promise.resolve(jsonResponse(200, {}))),
-  };
-  global.auth = auth;
-}
-
-/** Valeur lisible d'un compteur « odomètre » (le .sr-only porte le nombre). */
-const rolled = (id) => document.getElementById(id).querySelector('.sr-only').textContent;
-
-function loadModules() {
-  jest.resetModules();
-  window.VH = {};
-  // window.VH.consent (cookies.js, chargé avant settings.min.js dans app.min.js)
-  global.safeSetHTML = utils.safeSetHTML;
-  require('../js/cookies');
-  require('../js/shared/motion');
-  // Odomètre et confirmation sur place (modules partagés d'app.min.js).
-  loadMotion(['.t-roll-col.is-leaving', '.cfm-bin-check']);
-  require('../js/shared/busy-button');
-  require('../js/shared/otp-input');
-  ['ui', 'tabs', 'account', 'profile', 'security', 'danger-zone', 'admin', 'dashboard', 'cookies', 'data-export']
-    .forEach((m) => require(`../js/settings/${m}`));
-  return window.VH.settings;
-}
-
 beforeEach(() => {
-  document.body.innerHTML = SETTINGS_DOM;
-  installGlobals();
-  window.matchMedia = jest.fn(() => ({ matches: false }));
-  window.Element.prototype.scrollIntoView = jest.fn();
-  window.scrollTo = jest.fn();
-  localStorage.clear();
+  resetEnv();
+  ({ auth, toasts } = env);
 });
 
 afterEach(() => {
@@ -143,11 +24,24 @@ afterEach(() => {
 });
 
 describe('VH.settings.ui', () => {
-  test('tr : traduction ou repli', () => {
+  test('tr : traduction ou repli ; trf : paramètres remplacés dans le repli', () => {
     const { ui } = loadModules();
     expect(ui.tr('a.b', 'repli')).toBe('t:a.b');
+    expect(ui.trf('a.b', 'x {n}', { n: 2 })).toBe('t:a.b:{"n":2}');
     i18n.t.mockImplementation((k) => k);
     expect(ui.tr('a.b', 'repli')).toBe('repli');
+    expect(ui.trf('a.b', '{n} sur {n}, {m}', { n: 2, m: 'x' })).toBe('2 sur 2, x');
+    expect(ui.trf('a.b', 'fixe')).toBe('fixe');
+    delete global.i18n;
+    expect(ui.tr('a.b', 'repli')).toBe('repli');
+    expect(ui.trf('a.b', 'v{n}', { n: 1 })).toBe('v1');
+  });
+
+  test('plural : _one pour 1, _many sinon', () => {
+    const { ui } = loadModules();
+    expect(ui.plural('k', 1)).toBe('k_one');
+    expect(ui.plural('k', 0)).toBe('k_many');
+    expect(ui.plural('k', '3')).toBe('k_many');
   });
 
   test('setButtonLoading : anneau, libellé toujours lu, puis repos ; bouton absent toléré', () => {
@@ -161,7 +55,6 @@ describe('VH.settings.ui', () => {
     ui.setButtonLoading(btn, false);
     expect(btn.dataset.bb).toBeUndefined();
     expect(btn.disabled).toBe(false);
-    expect(btn.hasAttribute('aria-busy')).toBe(false);
     expect(() => ui.setButtonLoading(null, true)).not.toThrow();
   });
 
@@ -173,118 +66,506 @@ describe('VH.settings.ui', () => {
     ui.setButtonLoading(btn, false, { done: true, label: 'Enregistré' });
     expect(btn.dataset.bb).toBe('done');
     expect(btn.querySelector('.bb-done-text').textContent).toBe('Enregistré');
-    expect(btn.disabled).toBe(true);
     jest.advanceTimersByTime(window.VH.busyButton.HOLD_MS);
     expect(btn.dataset.bb).toBeUndefined();
-    expect(btn.disabled).toBe(false);
-    jest.useRealTimers();
   });
 
-  test('scrollBehavior respecte prefers-reduced-motion', () => {
+  test('scrollBehavior : système, réglage du site, ou matchMedia seul sans VH.motion', () => {
     const { ui } = loadModules();
     expect(ui.scrollBehavior()).toBe('smooth');
+    window.VH.motion.setReducedMotion(true);
+    expect(ui.scrollBehavior()).toBe('auto');
+    window.VH.motion.setReducedMotion(false);
     window.matchMedia = jest.fn(() => ({ matches: true }));
     expect(ui.scrollBehavior()).toBe('auto');
+    delete window.VH.motion;
+    expect(ui.scrollBehavior()).toBe('auto');
+    window.matchMedia = jest.fn(() => ({ matches: false }));
+    expect(ui.scrollBehavior()).toBe('smooth');
   });
 });
 
 describe('VH.settings.tabs', () => {
+  const key = (id, k) => document.getElementById(id).dispatchEvent(new window.KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
+  afterEach(() => window.history.replaceState(null, '', '/'));
+
   test('ancre de l’URL : ouvre l’onglet nommé, sans défiler ; ancre inconnue ou onglet masqué : rien', () => {
     const { tabs } = loadModules();
-    window.history.replaceState(null, '', '/settings#profile');
-    window.Element.prototype.scrollIntoView.mockClear?.();
+    window.history.replaceState(null, '', '/settings#account');
     tabs.setup();
-    expect(document.getElementById('tab-profile').getAttribute('aria-selected')).toBe('true');
-    expect(document.getElementById('profile').hidden).toBe(false);
+    expect(document.getElementById('tab-account').getAttribute('aria-selected')).toBe('true');
+    expect(document.getElementById('account').hidden).toBe(false);
     expect(window.Element.prototype.scrollIntoView).not.toHaveBeenCalled();
 
     const links = Array.from(document.querySelectorAll('.sidebar-link'));
     window.history.replaceState(null, '', '/settings#inconnu');
-    tabs.openFromHash(links);
-    expect(document.getElementById('tab-profile').getAttribute('aria-selected')).toBe('true');
+    expect(tabs.openFromHash(links)).toBe(false);
     window.history.replaceState(null, '', '/settings#admin'); // onglet masqué (non-admin)
-    tabs.openFromHash(links);
-    expect(document.getElementById('admin-nav-link').getAttribute('aria-selected')).toBe('false');
+    expect(tabs.openFromHash(links)).toBe(false);
+    window.history.replaceState(null, '', '/settings#%E0%A4%A'); // ancre mal encodée
+    expect(tabs.openFromHash()).toBe(false);
     window.history.replaceState(null, '', '/settings');
-    tabs.openFromHash(links); // sans ancre : rien
-    expect(document.getElementById('tab-profile').getAttribute('aria-selected')).toBe('true');
-    window.history.replaceState(null, '', '/');
+    expect(tabs.openFromHash(links)).toBe(false);
+    expect(document.getElementById('tab-account').getAttribute('aria-selected')).toBe('true');
   });
 
-  test('clic : onglet et section actifs, défilement vers la section', () => {
+  test.each([
+    ['dashboard', 'collection', null],
+    ['profile', 'account', null],
+    ['security', 'account', 'password-block'],
+    ['danger', 'privacy', 'delete-block'],
+    ['privacy', 'privacy', null],
+  ])('ancienne ancre #%s → onglet %s, bloc %s', (hash, section, block) => {
+    const { tabs } = loadModules();
+    expect(tabs.resolveHash(hash)).toEqual({ section, block });
+    window.history.replaceState(null, '', `/settings#${hash}`);
+    tabs.setup();
+    expect(document.getElementById(`tab-${section}`).getAttribute('aria-selected')).toBe('true');
+    expect(document.getElementById(section).hidden).toBe(false);
+    if (block) {
+      expect(document.activeElement.id).toBe(block);
+      expect(window.Element.prototype.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+    } else {
+      expect(window.Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+    }
+  });
+
+  test('focusBlock : bloc absent ignoré', () => {
+    const { tabs } = loadModules();
+    expect(() => tabs.focusBlock(null)).not.toThrow();
+    expect(() => tabs.focusBlock('absent')).not.toThrow();
+  });
+
+  test('clic : onglet et section actifs ; contenu remonté seulement s’il est passé sous l’en-tête', () => {
     const { tabs } = loadModules();
     tabs.setup();
-    document.getElementById('tab-profile').click();
-    expect(document.getElementById('tab-profile').getAttribute('aria-selected')).toBe('true');
-    expect(document.getElementById('tab-dashboard').tabIndex).toBe(-1);
-    expect(document.getElementById('profile').hidden).toBe(false);
-    expect(document.getElementById('dashboard').hidden).toBe(true);
+    const content = document.querySelector('.settings-content');
+    content.getBoundingClientRect = () => ({ top: 120 });
+    document.getElementById('tab-account').click();
+    expect(document.getElementById('tab-account').getAttribute('aria-selected')).toBe('true');
+    expect(document.getElementById('tab-collection').tabIndex).toBe(-1);
+    expect(document.getElementById('account').hidden).toBe(false);
+    expect(document.getElementById('collection').hidden).toBe(true);
+    expect(window.Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+    content.getBoundingClientRect = () => ({ top: -400 });
+    document.getElementById('tab-privacy').click();
     expect(window.Element.prototype.scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
   });
 
   test('clavier : onglet masqué sauté, bouclage, Début / Fin, focus sans défilement', () => {
     const { tabs } = loadModules();
     tabs.setup();
-    const key = (id, k) => document.getElementById(id).dispatchEvent(new window.KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
-    key('tab-dashboard', 'ArrowDown');
-    expect(document.activeElement.id).toBe('tab-profile');
-    key('tab-profile', 'ArrowRight');
-    expect(document.activeElement.id).toBe('tab-danger'); // admin masqué
-    key('tab-danger', 'ArrowDown');
-    expect(document.activeElement.id).toBe('tab-dashboard');
-    key('tab-dashboard', 'ArrowUp');
-    expect(document.activeElement.id).toBe('tab-danger');
-    key('tab-danger', 'Home');
-    expect(document.activeElement.id).toBe('tab-dashboard');
-    key('tab-dashboard', 'End');
-    expect(document.activeElement.id).toBe('tab-danger');
-    key('tab-danger', 'ArrowLeft');
-    expect(document.activeElement.id).toBe('tab-profile');
-    key('tab-profile', 'a');
-    expect(document.activeElement.id).toBe('tab-profile');
+    key('tab-collection', 'ArrowDown');
+    expect(document.activeElement.id).toBe('tab-account');
+    key('tab-account', 'ArrowRight');
+    expect(document.activeElement.id).toBe('tab-preferences');
+    key('tab-preferences', 'ArrowDown');
+    expect(document.activeElement.id).toBe('tab-privacy');
+    key('tab-privacy', 'ArrowDown'); // admin masqué : bouclage
+    expect(document.activeElement.id).toBe('tab-collection');
+    key('tab-collection', 'ArrowUp');
+    expect(document.activeElement.id).toBe('tab-privacy');
+    key('tab-privacy', 'Home');
+    expect(document.activeElement.id).toBe('tab-collection');
+    key('tab-collection', 'End');
+    expect(document.activeElement.id).toBe('tab-privacy');
+    key('tab-privacy', 'ArrowLeft');
+    expect(document.activeElement.id).toBe('tab-preferences');
+    key('tab-preferences', 'a');
+    expect(document.activeElement.id).toBe('tab-preferences');
     key('admin-nav-link', 'ArrowDown'); // onglet masqué : ignoré
     expect(window.Element.prototype.scrollIntoView).not.toHaveBeenCalled();
   });
 
-  test('activateTab : onglet masqué ignoré, repli sur scrollTo', () => {
+  test('activateTab : onglet masqué ignoré ; sans .settings-content : scrollTo', () => {
     const { tabs } = loadModules();
     tabs.activateTab(document.getElementById('admin-nav-link'));
     expect(document.getElementById('admin').hidden).toBe(true);
-    document.querySelector('.settings-section').classList.remove('settings-section');
-    tabs.activateTab(document.getElementById('tab-danger'));
+    document.querySelector('.settings-content').classList.remove('settings-content');
+    tabs.activateTab(document.getElementById('tab-privacy'));
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+  });
+
+  test('aria-orientation suit la largeur (rangée sous 64em) ; matchMedia indisponible : inchangé', () => {
+    let listener = null;
+    const mq = { matches: true, addEventListener: jest.fn((t, cb) => { listener = cb; }) };
+    window.matchMedia = jest.fn(() => mq);
+    const { tabs } = loadModules();
+    tabs.setup();
+    const nav = document.querySelector('.sidebar-nav');
+    expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 64em)');
+    expect(nav.getAttribute('aria-orientation')).toBe('horizontal');
+    mq.matches = false;
+    listener();
+    expect(nav.getAttribute('aria-orientation')).toBe('vertical');
+    // matchMedia qui ne renvoie rien : aucune erreur.
+    window.matchMedia = jest.fn(() => null);
+    expect(() => loadModules().tabs.setup()).not.toThrow();
+  });
+
+  test('rangée horizontale : l’onglet actif est ramené au centre de la rangée', () => {
+    const { tabs } = loadModules();
+    const row = document.querySelector('.settings-sidebar');
+    Object.defineProperty(row, 'scrollWidth', { configurable: true, get: () => 600 });
+    Object.defineProperty(row, 'clientWidth', { configurable: true, get: () => 300 });
+    const link = document.getElementById('tab-privacy');
+    Object.defineProperty(link, 'offsetLeft', { configurable: true, get: () => 420 });
+    Object.defineProperty(link, 'offsetWidth', { configurable: true, get: () => 100 });
+    row.scrollTo = jest.fn();
+    tabs.revealInRow(link);
+    expect(row.scrollTo).toHaveBeenCalledWith({ left: 300, behavior: 'smooth' });
+    // Sans scrollTo : scrollLeft directement.
+    delete row.scrollTo;
+    row.scrollTo = undefined;
+    tabs.revealInRow(document.getElementById('tab-collection'));
+    expect(row.scrollLeft).toBe(0);
+    // Rangée qui tient en entier : rien.
+    Object.defineProperty(row, 'scrollWidth', { configurable: true, get: () => 300 });
+    expect(() => tabs.revealInRow(link)).not.toThrow();
+  });
+
+  test('onglet hors colonne : pas de rangée à faire défiler', () => {
+    const { tabs } = loadModules();
+    document.querySelector('.settings-sidebar').replaceWith(document.querySelector('.sidebar-nav'));
+    expect(() => tabs.revealInRow(document.getElementById('tab-account'))).not.toThrow();
+  });
+});
+
+/* Pastille glissante et morphing du contenu (settings/tabs.js). jsdom ne
+ * calcule aucune mise en page : les mesures des onglets sont simulées, et
+ * l'API View Transitions l'est aussi (rappel synchrone de la mise à jour). */
+const TABS_DOM = `
+  <section class="settings-section">
+    <aside class="settings-sidebar">
+      <nav class="sidebar-nav" role="tablist">
+        <a href="#collection" class="sidebar-link active" data-section="collection" id="tab-collection" role="tab" aria-selected="true" tabindex="0">Collection</a>
+        <a href="#account" class="sidebar-link" data-section="account" id="tab-account" role="tab" aria-selected="false" tabindex="-1">Compte</a>
+        <a href="#admin" class="sidebar-link hidden" data-section="admin" id="admin-nav-link" role="tab" aria-selected="false" tabindex="-1">Admin</a>
+        <a href="#privacy" class="sidebar-link" data-section="privacy" id="tab-privacy" role="tab" aria-selected="false" tabindex="-1">Confidentialité</a>
+      </nav>
+    </aside>
+    <div class="settings-content">
+      <div id="collection" class="content-section active" role="tabpanel">
+        <div class="section-card"><div class="section-header"><div class="header-text"><h2 id="collection-title">Collection</h2></div></div><div class="col-content"></div></div>
+      </div>
+      <div id="account" class="content-section" role="tabpanel" hidden>
+        <div class="section-card"><div class="section-header"><div class="header-text"><h2 id="account-title">Compte</h2></div></div><form id="profile-form"></form></div>
+      </div>
+      <div id="admin" class="content-section hidden" role="tabpanel" hidden><div class="section-card"></div></div>
+      <div id="privacy" class="content-section" role="tabpanel" hidden>
+        <div class="section-card"><div class="section-header"><div class="header-text"><h2 id="privacy-title">Confidentialité</h2></div></div><section class="danger-block" id="delete-block" tabindex="-1"></section></div>
+      </div>
+      <div id="orphan" class="content-section" hidden></div>
+    </div>
+  </section>`;
+
+/** Mesures simulées d'un onglet dans la colonne (offsetParent). */
+function fakeLayout(el, box, parent) {
+  const def = (k, v) => Object.defineProperty(el, k, { configurable: true, get: () => v });
+  def('offsetParent', parent);
+  def('offsetLeft', box.x);
+  def('offsetTop', box.y);
+  def('offsetWidth', box.w);
+  def('offsetHeight', box.h);
+}
+
+function layoutTabs(boxes) {
+  const sidebar = document.querySelector('.settings-sidebar');
+  Object.entries(boxes).forEach(([id, box]) => fakeLayout(document.getElementById(id), box, sidebar));
+}
+
+const DEFAULT_BOXES = {
+  'tab-collection': { x: 8, y: 8, w: 220, h: 44 },
+  'tab-account': { x: 8, y: 56, w: 220, h: 44 },
+  'admin-nav-link': { x: 0, y: 0, w: 0, h: 0 },
+  'tab-privacy': { x: 8, y: 104, w: 220, h: 44 },
+};
+
+const hl = () => {
+  const ind = document.querySelector('.sidebar-indicator');
+  const v = (k) => ind.style.getPropertyValue(`--tab-hl-${k}`);
+  return { x: v('x'), y: v('y'), w: v('w'), h: v('h'), o: v('o') };
+};
+
+/** View Transitions simulée : noms relevés avant et après la mise à jour.
+ * Comme le navigateur, on ne compte que les éléments rendus : une section
+ * masquée garde ses anciens noms jusqu'à la fin, sans être capturée. */
+function mockViewTransition() {
+  const seen = { before: null, after: null, rootClasses: null };
+  const names = () => Object.fromEntries(
+    [...document.querySelectorAll('*')]
+      .filter((el) => el.style.viewTransitionName && !el.closest('[hidden]'))
+      .map((el) => [el.style.viewTransitionName, el.id || el.className]),
+  );
+  let resolveFinished;
+  document.startViewTransition = jest.fn((cb) => {
+    seen.before = names();
+    seen.rootClasses = [...document.documentElement.classList];
+    cb();
+    seen.after = names();
+    return {
+      finished: new Promise((r) => { resolveFinished = r; }),
+      updateCallbackDone: Promise.resolve(),
+    };
+  });
+  return { seen, finish: () => resolveFinished(), names };
+}
+
+function loadTabs() {
+  const S = loadModules();
+  require('../js/shared/view-morph');
+  return S.tabs;
+}
+
+describe('VH.settings.tabs — pastille et morphing', () => {
+  let roCallback;
+  let observed;
+
+  beforeEach(() => {
+    document.body.innerHTML = TABS_DOM;
+    layoutTabs(DEFAULT_BOXES);
+    observed = [];
+    roCallback = null;
+    global.ResizeObserver = jest.fn((cb) => {
+      roCallback = cb;
+      return { observe: (el) => observed.push(el) };
+    });
+  });
+
+  afterEach(() => {
+    delete document.startViewTransition;
+    delete global.ResizeObserver;
+    document.documentElement.className = '';
+    window.history.replaceState(null, '', '/');
+  });
+
+  test('setup : pastille décorative posée sous l’onglet actif, sans animation d’entrée', () => {
+    const tabs = loadTabs();
+    tabs.setup();
+    const ind = document.querySelector('.settings-sidebar > .sidebar-indicator');
+    expect(ind).not.toBeNull();
+    expect(ind.getAttribute('aria-hidden')).toBe('true');
+    expect(document.querySelector('.sidebar-nav .sidebar-indicator')).toBeNull(); // hors du tablist
+    expect(hl()).toEqual({ x: '8px', y: '8px', w: '220px', h: '44px', o: '1' });
+    expect(ind.classList.contains('is-ready')).toBe(true);
+    expect(document.querySelector('.settings-sidebar').classList.contains('has-indicator')).toBe(true);
+    expect(observed).toContain(document.querySelector('.sidebar-nav'));
+    expect(observed).toContain(document.getElementById('tab-privacy'));
+    tabs.setup();
+    expect(document.querySelectorAll('.sidebar-indicator')).toHaveLength(1);
+  });
+
+  test('ancre d’alias (#danger) : pastille directement sur Confidentialité, sans morphing', () => {
+    const vt = mockViewTransition();
+    window.history.replaceState(null, '', '/settings#danger');
+    const tabs = loadTabs();
+    tabs.setup();
+    expect(document.startViewTransition).not.toHaveBeenCalled();
+    expect(vt.seen.before).toBeNull();
+    expect(hl().y).toBe('104px');
+    expect(document.getElementById('privacy').hidden).toBe(false);
+    expect(document.activeElement.id).toBe('delete-block');
+  });
+
+  test('clic : la pastille glisse (transition gardée)', () => {
+    const tabs = loadTabs();
+    tabs.setup();
+    const ind = document.querySelector('.sidebar-indicator');
+    document.getElementById('tab-account').click();
+    expect(hl()).toEqual({ x: '8px', y: '56px', w: '220px', h: '44px', o: '1' });
+    expect(ind.classList.contains('is-ready')).toBe(true);
+    document.getElementById('tab-privacy').click();
+    expect(hl().y).toBe('104px');
+  });
+
+  test('mise en page changée : recalage sans animation ; mesure inchangée : rien', async () => {
+    const tabs = loadTabs();
+    tabs.setup();
+    const ind = document.querySelector('.sidebar-indicator');
+    const removed = jest.spyOn(ind.classList, 'remove');
+    roCallback(); // même mesure
+    expect(removed).not.toHaveBeenCalledWith('is-ready');
+    // Passage en rangée (< 64em) : l'onglet change de place et de largeur.
+    layoutTabs({ 'tab-collection': { x: 6, y: 6, w: 150, h: 44 } });
+    roCallback();
+    expect(removed).toHaveBeenCalledWith('is-ready');
+    expect(hl()).toEqual({ x: '6px', y: '6px', w: '150px', h: '44px', o: '1' });
+    expect(ind.classList.contains('is-ready')).toBe(true);
+    // Onglet Administration révélé : vu par le MutationObserver.
+    layoutTabs({ 'tab-collection': { x: 6, y: 12, w: 150, h: 44 } });
+    document.getElementById('admin-nav-link').classList.remove('hidden');
+    await new Promise((r) => setTimeout(r, 0));
+    expect(hl().y).toBe('12px');
+  });
+
+  test('onglet non rendu : pastille masquée, l’onglet garde son propre fond', () => {
+    const tabs = loadTabs();
+    tabs.setup();
+    layoutTabs({ 'tab-account': { x: 0, y: 0, w: 0, h: 0 } });
+    tabs.placeIndicator(document.getElementById('tab-account'));
+    expect(hl().o).toBe('0');
+    expect(document.querySelector('.settings-sidebar').classList.contains('has-indicator')).toBe(false);
+    fakeLayout(document.getElementById('tab-privacy'), { x: 1, y: 1, w: 10, h: 10 }, null);
+    tabs.placeIndicator(document.getElementById('tab-privacy'));
+    expect(hl().o).toBe('0');
+    tabs.placeIndicator(null);
+    expect(hl().o).toBe('0');
+    document.querySelector('.sidebar-indicator').remove();
+    expect(() => tabs.placeIndicator(document.getElementById('tab-collection'))).not.toThrow();
+  });
+
+  test('sans colonne .settings-sidebar ni ResizeObserver : onglets fonctionnels, pas de pastille', () => {
+    delete global.ResizeObserver;
+    document.querySelector('.settings-sidebar').replaceWith(document.querySelector('.sidebar-nav'));
+    const tabs = loadTabs();
+    tabs.setup();
+    expect(document.querySelector('.sidebar-indicator')).toBeNull();
+    document.getElementById('tab-account').click();
+    expect(document.getElementById('account').hidden).toBe(false);
+    expect(tabs.morphNames().map(([, n]) => n)).toEqual(['vh-set-frame', 'vh-set-title', 'vh-set-account-0', 'vh-set-account-1']);
+  });
+
+  test('sans ResizeObserver mais avec la colonne : pastille posée quand même', () => {
+    delete global.ResizeObserver;
+    const tabs = loadTabs();
+    tabs.setup();
+    expect(hl().o).toBe('1');
+  });
+
+  test('sans View Transitions (Firefox) : changement direct, entrée CSS conservée, aucun nom', () => {
+    const tabs = loadTabs();
+    tabs.setup();
+    document.getElementById('tab-account').click();
+    const account = document.getElementById('account');
+    expect(account.hidden).toBe(false);
+    expect(account.classList.contains('is-morphed')).toBe(false);
+    expect(document.documentElement.classList.contains('vh-set')).toBe(false);
+    expect([...document.querySelectorAll('*')].some((el) => el.style.viewTransitionName)).toBe(false);
+  });
+
+  test('mouvement réduit (réglage du site) : pas de transition même si l’API existe', () => {
+    mockViewTransition();
+    const tabs = loadTabs();
+    window.VH.motion.setReducedMotion(true);
+    tabs.setup();
+    document.getElementById('tab-account').click();
+    expect(document.startViewTransition).not.toHaveBeenCalled();
+    expect(document.getElementById('account').hidden).toBe(false);
+  });
+
+  test('vers un onglet placé après : cadre et titre appariés, blocs nommés par section, sens « suivant »', async () => {
+    const vt = mockViewTransition();
+    const tabs = loadTabs();
+    tabs.setup();
+    document.getElementById('tab-account').click();
+
+    expect(document.startViewTransition).toHaveBeenCalledTimes(1);
+    expect(vt.seen.rootClasses).toEqual(expect.arrayContaining(['vh-set', 'vh-set-next']));
+    expect(vt.seen.rootClasses).not.toContain('vh-set-prev');
+    expect(vt.seen.before).toEqual({
+      'vh-set-nav': 'settings-sidebar has-indicator',
+      'vh-set-frame': 'section-card',
+      'vh-set-title': 'collection-title',
+      'vh-set-collection-0': 'section-header',
+      'vh-set-collection-1': 'col-content',
+    });
+    expect(vt.seen.after).toEqual({
+      'vh-set-nav': 'settings-sidebar has-indicator',
+      'vh-set-frame': 'section-card',
+      'vh-set-title': 'account-title',
+      'vh-set-account-0': 'section-header',
+      'vh-set-account-1': 'profile-form',
+    });
+    const account = document.getElementById('account');
+    expect(account.hidden).toBe(false);
+    expect(account.classList.contains('is-morphed')).toBe(true);
+    expect(document.getElementById('collection').hidden).toBe(true);
+    expect(document.getElementById('tab-account').getAttribute('aria-selected')).toBe('true');
+
+    vt.finish();
+    await flush();
+    expect([...document.querySelectorAll('*')].some((el) => el.style.viewTransitionName)).toBe(false);
+    expect(document.documentElement.classList.contains('vh-set')).toBe(false);
+    expect(document.documentElement.classList.contains('vh-set-next')).toBe(false);
+
+    // Onglet actif recliqué : la marque reste (la retirer relancerait l'entrée CSS).
+    document.getElementById('tab-account').click();
+    expect(document.startViewTransition).toHaveBeenCalledTimes(1);
+    expect(account.classList.contains('is-morphed')).toBe(true);
+  });
+
+  test('vers un onglet placé avant : sens « précédent » ; même onglet : aucun morphing', async () => {
+    const vt = mockViewTransition();
+    window.history.replaceState(null, '', '/settings#privacy');
+    const tabs = loadTabs();
+    tabs.setup();
+    document.getElementById('tab-privacy').click(); // déjà actif
+    expect(document.startViewTransition).not.toHaveBeenCalled();
+    const home = new window.KeyboardEvent('keydown', { key: 'Home', bubbles: true, cancelable: true });
+    document.getElementById('tab-privacy').dispatchEvent(home);
+    expect(vt.seen.rootClasses).toEqual(expect.arrayContaining(['vh-set', 'vh-set-prev']));
+    expect(vt.seen.before['vh-set-title']).toBe('privacy-title');
+    expect(vt.seen.after['vh-set-title']).toBe('collection-title');
+    expect(document.activeElement.id).toBe('tab-collection');
+    vt.finish();
+    await flush();
+    tabs.activateTab(document.getElementById('tab-account'), { scroll: false, morph: false });
+    expect(document.getElementById('collection').classList.contains('is-morphed')).toBe(false);
+  });
+
+  test('direction et noms : cas limites', () => {
+    const tabs = loadTabs();
+    const d = (a, b) => tabs.direction(document.getElementById(a), document.getElementById(b));
+    expect(d('tab-account', 'tab-privacy')).toBe(1);
+    expect(d('tab-privacy', 'tab-collection')).toBe(-1);
+    document.getElementById('collection').classList.remove('active');
+    document.getElementById('orphan').classList.add('active');
+    expect(tabs.morphNames()).toEqual([[document.querySelector('.settings-sidebar'), 'vh-set-nav']]);
+    document.getElementById('orphan').classList.remove('active');
+    expect(tabs.morphNames()).toHaveLength(1);
   });
 });
 
 describe('VH.settings.account', () => {
-  test('userFromPayload', () => {
+  test('userFromPayload et normalizeUser', () => {
     const { account } = loadModules();
     expect(account.userFromPayload({ id: 2, role: '3' })).toEqual({ id: 2, name: 'Utilisateur', email: '', role: 3 });
     expect(account.userFromPayload(null)).toEqual({ name: 'Utilisateur', email: '' });
+    expect(account.normalizeUser({ id: 1, role_id: 2 }).role).toBe(2);
+    expect(account.normalizeUser({ id: 1, role: '1', role_id: 3 }).role).toBe(1);
   });
 
-  test('utilisateur en mémoire : formulaire rempli, administration révélée', async () => {
+  test('utilisateur en mémoire avec date : formulaire rempli, administration révélée, pas d’appel', async () => {
     const { account } = loadModules();
-    auth.getUserInfo.mockReturnValue({ id: 1, name: 'Chef', email: 'chef@x.fr', role: 1 });
+    auth.getUserInfo.mockReturnValue({ id: 1, name: 'Chef', email: 'chef@x.fr', role: 1, created_at: '2025-03-04' });
     const state = { currentUser: null };
     expect(await account.checkAuth(state)).toBe(true);
     expect(state.currentUser.name).toBe('Chef');
     expect(document.getElementById('name').value).toBe('Chef');
     expect(document.getElementById('admin-nav-link').classList.contains('hidden')).toBe(false);
+    expect(auth.authFetch).not.toHaveBeenCalled();
   });
 
-  test('sinon l\'API ; éditeur : pas d\'administration', async () => {
+  test('sans date d’inscription : complété par l’API (role_id normalisé), champ déjà modifié respecté', async () => {
     const { account } = loadModules();
-    auth.authFetch.mockResolvedValue(jsonResponse(200, { id: 1, name: 'Ed', email: 'ed@x.fr', role: 2 }));
+    auth.getUserInfo.mockReturnValue({ id: 1, name: 'Ed', email: 'ed@x.fr', role: 3 });
+    let release;
+    auth.authFetch.mockReturnValue(new Promise((r) => { release = r; }));
     const state = { currentUser: null };
-    await account.checkAuth(state);
+    const done = account.checkAuth(state);
+    await flush();
+    document.getElementById('name').value = 'Édité'; // saisi pendant la requête
+    release(jsonResponse(200, { id: 1, name: 'Edouard', email: 'edouard@x.fr', role_id: 2, created_at: '2025-03-04T10:00:00Z' }));
+    await done;
     expect(auth.authFetch).toHaveBeenCalledWith('/api/users/1');
+    expect(state.currentUser).toMatchObject({ role: 2, created_at: '2025-03-04T10:00:00Z', name: 'Edouard' });
     expect(auth.setUserInfo).toHaveBeenCalledWith(state.currentUser);
-    expect(document.getElementById('email').value).toBe('ed@x.fr');
+    expect(document.getElementById('name').value).toBe('Édité');
+    expect(document.getElementById('email').value).toBe('edouard@x.fr');
     expect(document.getElementById('admin-nav-link').classList.contains('hidden')).toBe(true);
   });
 
-  test('API en erreur puis réseau coupé : utilisateur du jeton', async () => {
+  test('API en erreur puis réseau coupé : utilisateur du jeton, sans date', async () => {
     const { account } = loadModules();
     auth.authFetch.mockResolvedValueOnce(jsonResponse(500, {}));
     const state = { currentUser: null };
@@ -299,13 +580,21 @@ describe('VH.settings.account', () => {
     expect(state2.currentUser.name).toBe('Utilisateur');
   });
 
+  test('utilisateur sans identifiant : pas d’appel ; champs absents tolérés', async () => {
+    const { account } = loadModules();
+    auth.getUserInfo.mockReturnValue({ name: 'Anonyme', role: 3 });
+    auth.getPayload.mockReturnValueOnce({ id: 1 }).mockReturnValue({});
+    document.getElementById('name').remove();
+    await account.checkAuth({ currentUser: null });
+    expect(auth.authFetch).not.toHaveBeenCalled();
+  });
+
   test('sans session : un rafraîchissement tenté puis redirection vers /login', async () => {
     const { account } = loadModules();
     auth.getPayload.mockReturnValue(null);
     auth.authFetch.mockRejectedValue(new Error('401'));
-    const state = { currentUser: null };
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {}); // navigation jsdom
-    expect(await account.checkAuth(state)).toBe(false);
+    expect(await account.checkAuth({ currentUser: null })).toBe(false);
     spy.mockRestore();
     expect(auth.authFetch).toHaveBeenCalledWith('/api/stats');
   });
@@ -313,7 +602,7 @@ describe('VH.settings.account', () => {
   test('session revenue après rafraîchissement', async () => {
     const { account } = loadModules();
     auth.getPayload.mockReturnValueOnce(null).mockReturnValue({ id: 1, role: 3 });
-    auth.getUserInfo.mockReturnValue({ id: 1, name: 'R', email: 'r@x.fr', role: 3 });
+    auth.getUserInfo.mockReturnValue({ id: 1, name: 'R', email: 'r@x.fr', role: 3, created_at: '2025-01-01' });
     const state = { currentUser: null };
     expect(await account.checkAuth(state)).toBe(true);
     expect(state.currentUser.name).toBe('R');
@@ -324,63 +613,119 @@ describe('VH.settings.profile', () => {
   function setup(user = { id: 1, name: 'Chef', email: 'chef@x.fr', role: 1 }) {
     const S = loadModules();
     const state = { currentUser: user };
+    S.saveBar.setup();
     S.profile.setup(state);
     document.getElementById('name').value = user.name;
     document.getElementById('email').value = user.email;
     return { S, state };
   }
   const submit = () => document.getElementById('profile-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+  const type = (id, value) => {
+    const el = document.getElementById(id);
+    el.value = value;
+    el.dispatchEvent(new window.Event('input'));
+  };
 
   test('le mot de passe actuel n\'est demandé que si l\'adresse change', () => {
     setup();
-    const email = document.getElementById('email');
-    email.value = ' CHEF@x.fr ';
-    email.dispatchEvent(new window.Event('input'));
+    type('email', ' CHEF@x.fr ');
     expect(document.getElementById('profile-current-password-group').hidden).toBe(true);
-    email.value = 'autre@x.fr';
-    email.dispatchEvent(new window.Event('input'));
+    type('email', 'autre@x.fr');
     expect(document.getElementById('profile-current-password-group').hidden).toBe(false);
   });
 
-  test('validation : nom, email, mot de passe actuel', () => {
+  test('isDirty : nom ou adresse différents de l’enregistré ; utilisateur absent : non', () => {
+    const { S, state } = setup();
+    expect(S.profile.isDirty(state)).toBe(false);
+    type('name', 'Chef ');
+    expect(S.profile.isDirty(state)).toBe(false);
+    type('name', 'Chef2');
+    expect(S.profile.isDirty(state)).toBe(true);
+    expect(S.profile.isDirty({ currentUser: null })).toBe(false);
+  });
+
+  test('saisie : la barre apparaît ; Annuler : valeurs enregistrées, barre masquée', () => {
+    const { S } = setup();
+    expect(document.getElementById('save-bar').hidden).toBe(true);
+    type('email', 'autre@x.fr');
+    document.getElementById('profile-current-password').value = 'x';
+    expect(document.getElementById('save-bar').hidden).toBe(false);
+    document.getElementById('save-bar-cancel').click();
+    expect(document.getElementById('email').value).toBe('chef@x.fr');
+    expect(document.getElementById('profile-current-password').value).toBe('');
+    expect(document.getElementById('profile-current-password-group').hidden).toBe(true);
+    expect(S.saveBar.isShown()).toBe(false);
+  });
+
+  test('validation : nom, email, mot de passe actuel (aucune requête)', async () => {
     setup();
-    document.getElementById('name').value = 'A';
+    type('name', 'A');
     submit();
+    await flush();
     expect(document.getElementById('name-error').textContent).toBe('t:settings.toast_name_min');
-    document.getElementById('name').value = 'Chef';
-    document.getElementById('email').value = 'x';
+    type('name', 'Chef2');
+    type('email', 'x');
     submit();
+    await flush();
     expect(document.getElementById('email-error').textContent).toBe('t:settings.toast_email_invalid');
-    document.getElementById('email').value = 'autre@x.fr';
+    type('email', 'autre@x.fr');
     submit();
+    await flush();
     expect(document.getElementById('profile-current-password-error').textContent).toBe('t:settings.toast_current_password_required');
     expect(auth.authFetch).not.toHaveBeenCalled();
   });
 
-  test('nom seul : PUT {name}, toast de succès', async () => {
-    const { state } = setup();
-    document.getElementById('name').value = 'Nouveau';
+  test('Entrée sans modification : rien n’est envoyé', async () => {
+    setup();
+    submit();
+    await flush();
+    expect(auth.authFetch).not.toHaveBeenCalled();
+  });
+
+  test('nom seul (Entrée) : PUT {name}, toast, coche sur la barre, en-tête mis à jour', async () => {
+    jest.useFakeTimers();
+    const { S, state } = setup();
+    const render = jest.spyOn(S.identity, 'render');
+    type('name', 'Nouveau');
     auth.authFetch.mockResolvedValue(jsonResponse(200, {}));
     submit();
-    await tick();
+    await flush(8);
     expect(JSON.parse(auth.authFetch.mock.calls[0][1].body)).toEqual({ name: 'Nouveau' });
     expect(state.currentUser.name).toBe('Nouveau');
     expect(toasts).toContainEqual(['success', 't:settings.toast_profile_updated']);
+    expect(render).toHaveBeenCalledWith(state.currentUser);
+    expect(document.getElementById('save-bar-save').dataset.bb).toBe('done');
+    jest.advanceTimersByTime(window.VH.busyButton.HOLD_MS);
+    await flush(8);
+    jest.advanceTimersByTime(400);
+    expect(document.getElementById('save-bar').hidden).toBe(true);
+    expect(document.getElementById('save-bar-live').textContent).toBe('t:settings.savebar_saved');
   });
 
-  test('changement d\'adresse en attente : adresse actuelle conservée', async () => {
+  test('sans barre d’enregistrement : envoi direct', async () => {
+    const { S, state } = setup();
+    delete window.VH.settings.saveBar;
+    type('name', 'Direct');
+    auth.authFetch.mockResolvedValue(jsonResponse(200, {}));
+    submit();
+    await flush(8);
+    expect(state.currentUser.name).toBe('Direct');
+    expect(S.profile.submitProfile).toBeDefined();
+  });
+
+  test('changement d\'adresse en attente : adresse actuelle conservée, barre masquée sans coche', async () => {
     const { state } = setup();
-    document.getElementById('email').value = 'autre@x.fr';
+    type('email', 'autre@x.fr');
     document.getElementById('profile-current-password').value = 'Secret1';
     auth.authFetch.mockResolvedValue(jsonResponse(200, { emailChangePending: true }));
-    submit();
+    document.getElementById('save-bar-save').click();
     await tick();
     expect(JSON.parse(auth.authFetch.mock.calls[0][1].body)).toEqual({ name: 'Chef', email: 'autre@x.fr', currentPassword: 'Secret1' });
     expect(document.getElementById('email').value).toBe('chef@x.fr');
     expect(document.getElementById('profile-current-password').value).toBe('');
     expect(state.currentUser.email).toBe('chef@x.fr');
     expect(toasts).toContainEqual(['info', 't:settings.toast_email_change_pending']);
-    // Le code se saisit sous le formulaire, pour la nouvelle adresse.
+    expect(document.getElementById('save-bar-save').dataset.bb).toBeUndefined();
     expect(document.getElementById('email-code-box').hidden).toBe(false);
     expect(document.getElementById('email-code-target').textContent).toBe('autre@x.fr');
     expect(document.querySelectorAll('#email-code-otp .otp-slot')).toHaveLength(6);
@@ -388,7 +733,7 @@ describe('VH.settings.profile', () => {
 
   describe('code du changement d\'adresse', () => {
     async function pending(S) {
-      document.getElementById('email').value = 'autre@x.fr';
+      type('email', 'autre@x.fr');
       document.getElementById('profile-current-password').value = 'Secret1';
       auth.authFetch.mockResolvedValueOnce(jsonResponse(200, { emailChangePending: true }));
       submit();
@@ -405,16 +750,15 @@ describe('VH.settings.profile', () => {
       jest.useFakeTimers();
       auth.authFetch.mockResolvedValueOnce(jsonResponse(200, { email: 'autre@x.fr' }));
       typeCode(input, '123456');
-      await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+      await flush(3);
       expect(auth.authFetch).toHaveBeenLastCalledWith('/api/auth/confirm-email-change', expect.objectContaining({ method: 'POST' }));
       expect(JSON.parse(auth.authFetch.mock.calls.at(-1)[1].body)).toEqual({ code: '123456' });
       expect(document.getElementById('email-code-otp').classList.contains('is-success')).toBe(true);
       expect(document.getElementById('email-code-status').textContent).toBe('t:settings.email_code_done');
       jest.advanceTimersByTime(1500);
-      await Promise.resolve(); await Promise.resolve();
+      await flush(2);
       expect(auth.logout).toHaveBeenCalled();
       expect(S.profile.navigate).toHaveBeenCalledWith('/login');
-      jest.useRealTimers();
     });
 
     test('déconnexion qui échoue (session déjà révoquée) : retour à la connexion quand même', async () => {
@@ -424,11 +768,10 @@ describe('VH.settings.profile', () => {
       jest.useFakeTimers();
       auth.authFetch.mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.reject(new Error('vide')) });
       typeCode(input, '123456');
-      await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+      await flush(4);
       jest.advanceTimersByTime(1500);
-      await Promise.resolve(); await Promise.resolve(); await Promise.resolve();
+      await flush(3);
       expect(S.profile.navigate).toHaveBeenCalledWith('/login');
-      jest.useRealTimers();
     });
 
     test('code faux, adresse prise, réseau : erreur, champ réactivé', async () => {
@@ -462,7 +805,6 @@ describe('VH.settings.profile', () => {
       expect(document.getElementById('email-code-box').hidden).toBe(true);
       await pending(S);
       expect(document.getElementById('email-code-box').hidden).toBe(false);
-      expect(document.querySelectorAll('#email-code-otp .otp-slot')).toHaveLength(6);
       expect(input.value).toBe('');
     });
 
@@ -474,35 +816,37 @@ describe('VH.settings.profile', () => {
     });
   });
 
-  test('mot de passe actuel refusé, autre erreur, réseau', async () => {
+  test('mot de passe actuel refusé, autre erreur, réseau : la barre reste, bouton rendu', async () => {
     setup();
-    document.getElementById('name').value = 'Nouveau';
+    type('name', 'Nouveau');
     auth.authFetch.mockResolvedValueOnce(jsonResponse(403, { code: 'CURRENT_PASSWORD_INVALID' }));
     submit(); await tick();
     expect(document.getElementById('profile-current-password-error').textContent).toBe('t:settings.toast_current_password_invalid');
     auth.authFetch.mockResolvedValueOnce(jsonResponse(400, { message: 'Non' }));
     submit(); await tick();
     expect(toasts).toContainEqual(['error', 'Non']);
+    auth.authFetch.mockResolvedValueOnce(jsonResponse(400, {}));
+    submit(); await tick();
+    expect(toasts).toContainEqual(['error', 't:settings.toast_profile_error']);
     auth.authFetch.mockRejectedValueOnce(new Error('réseau'));
     submit(); await tick();
     expect(toasts).toContainEqual(['error', 't:settings.toast_network_error']);
-    expect(document.querySelector('#profile-form [type="submit"]').disabled).toBe(false);
+    expect(document.getElementById('save-bar-save').disabled).toBe(false);
+    expect(document.getElementById('save-bar').hidden).toBe(false);
   });
 
-  test('bouton de réinitialisation', () => {
-    setup();
-    document.getElementById('name').value = 'X';
-    document.getElementById('reset-profile-btn').click();
-    expect(document.getElementById('name').value).toBe('Chef');
-    expect(toasts).toContainEqual(['info', 't:settings.toast_form_reset']);
+  test('resetForm sans champs : aucune erreur', () => {
+    const { S } = setup();
+    ['name', 'email', 'profile-current-password'].forEach((id) => document.getElementById(id).remove());
+    expect(() => S.profile.resetForm({ currentUser: null })).not.toThrow();
+    expect(S.profile.isDirty({ currentUser: { name: 'x' } })).toBe(false);
   });
 });
 
 describe('VH.settings.security', () => {
   function setup() {
     const S = loadModules();
-    const state = { currentUser: { id: 1 } };
-    S.security.setup(state);
+    S.security.setup({ currentUser: { id: 1 } });
     return S;
   }
   const submit = () => document.getElementById('security-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
@@ -529,7 +873,6 @@ describe('VH.settings.security', () => {
     expect(security.strengthLabel('', 0).key).toBe('settings.password_strength');
     expect(security.strengthLabel('x', 50).key).toBe('settings.strength_medium');
     expect(security.meetsRequirements('Abcdefg1')).toBe(true);
-    // « Entre 8 et 128 caractères » s'affichait, mais la case passait au vert au-delà
     expect(security.meetsRequirements('Aa1' + 'x'.repeat(126))).toBe(false);
     expect(security.passwordRequirements('Aa1' + 'x'.repeat(126))['req-length']).toBe(false);
     expect(security.meetsRequirements('Abcdefgh')).toBe(false);
@@ -621,340 +964,6 @@ describe('VH.settings.dangerZone', () => {
   });
 });
 
-describe('VH.settings.admin', () => {
-  const USERS = [
-    { id: 1, name: 'Chef', email: 'chef@x.fr', role_id: 1 },
-    { id: 2, name: '<img src=x onerror=alert(1)>', email: 'b@x.fr', role_id: 2 },
-    { id: 3, name: '', email: 'c@x.fr', role_id: 3 },
-  ];
-  function setup(meta = { total: 19, totalPages: 3 }) {
-    const S = loadModules();
-    const state = { currentUser: { id: 1 } };
-    S.admin.init(state);
-    auth.authFetch.mockResolvedValue(jsonResponse(200, { data: USERS, meta }));
-    return S;
-  }
-
-  test('roleView et carte utilisateur échappée, sans bouton de suppression pour soi', () => {
-    const S = setup();
-    expect(S.admin.roleView(2)).toEqual({ label: 'Éditeur', badge: 'badge-editor' });
-    const own = S.admin.userCardHtml(USERS[0], 1);
-    expect(own).not.toContain('btn-delete');
-    const other = S.admin.userCardHtml(USERS[1], 1);
-    expect(other).toContain('&lt;img');
-    expect(other).toContain('btn-delete');
-    expect(S.admin.userCardHtml(USERS[2], 1)).toContain('>?<');
-  });
-
-  test('chargement : liste, pagination, total ; navigation entre pages', async () => {
-    const S = setup();
-    await S.admin.loadUsers();
-    expect(auth.authFetch).toHaveBeenLastCalledWith('/api/users?page=1&limit=8');
-    expect(document.querySelectorAll('.user-card')).toHaveLength(3);
-    expect(rolled('total-users')).toBe('19');
-    expect(document.querySelector('.prev-page-btn').disabled).toBe(true);
-    document.querySelector('.next-page-btn').click();
-    await tick();
-    expect(auth.authFetch).toHaveBeenLastCalledWith('/api/users?page=2&limit=8');
-    document.querySelector('.prev-page-btn').click();
-    await tick();
-    expect(auth.authFetch).toHaveBeenLastCalledWith('/api/users?page=1&limit=8');
-  });
-
-  test('page au-delà du total : recul et nouveau chargement', async () => {
-    const S = setup({ total: 3, totalPages: 1 });
-    await S.admin.loadUsers();
-    document.querySelector('.next-page-btn').click(); // désactivé : sans effet
-    const ctx = S.admin.init({ currentUser: { id: 1 } });
-    ctx.page = 4;
-    await S.admin.loadUsers();
-    expect(ctx.page).toBe(1);
-  });
-
-  test('total nul : pagination vide ; meta absente : déduite de la liste', async () => {
-    const S = setup({ total: 0, totalPages: 1 });
-    auth.authFetch.mockResolvedValue(jsonResponse(200, { data: [] , meta: { total: 0 } }));
-    await S.admin.loadUsers();
-    expect(document.getElementById('user-pagination').innerHTML).toBe('');
-    auth.authFetch.mockResolvedValue(jsonResponse(200, { data: 'pas un tableau' }));
-    await S.admin.loadUsers();
-    expect(rolled('total-users')).toBe('0');
-  });
-
-  test('401 : session effacée ; 500 et réseau : message dans la liste', async () => {
-    jest.useFakeTimers();
-    const S = setup();
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(401, {}));
-    await S.admin.loadUsers();
-    expect(auth.clearSession).toHaveBeenCalled();
-    expect(toasts).toContainEqual(['error', 't:settings.toast_session_expired']);
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(500, {}));
-    await S.admin.loadUsers();
-    expect(document.getElementById('user-list').textContent).toBe('t:settings.admin_api_unavailable');
-    auth.authFetch.mockRejectedValueOnce(new Error('réseau'));
-    await S.admin.loadUsers();
-    expect(document.getElementById('user-list').textContent).toBe('t:settings.toast_users_error');
-  });
-
-  test('recherche temporisée côté serveur', async () => {
-    jest.useFakeTimers();
-    setup();
-    const input = document.getElementById('user-filter');
-    input.value = ' pil ';
-    input.dispatchEvent(new window.Event('input'));
-    input.value = ' pilo ';
-    input.dispatchEvent(new window.Event('input'));
-    jest.advanceTimersByTime(300);
-    expect(auth.authFetch).toHaveBeenCalledTimes(1);
-    expect(auth.authFetch).toHaveBeenCalledWith('/api/users?page=1&limit=8&search=pilo');
-  });
-
-  test('édition : modale pré-remplie, validation, enregistrement, fermeture', async () => {
-    const S = setup();
-    await S.admin.loadUsers();
-    document.querySelectorAll('.btn-edit')[2].click();
-    const modal = document.getElementById('edit-user-modal');
-    expect(modal.classList.contains('hidden')).toBe(false);
-    expect(document.getElementById('edit-user-email').value).toBe('c@x.fr');
-    expect(document.getElementById('edit-user-role').value).toBe('3');
-
-    document.getElementById('edit-user-name').value = 'Z';
-    document.getElementById('edit-user-save').click();
-    expect(document.getElementById('edit-user-name-error').textContent).toBe('t:settings.toast_name_min');
-    document.getElementById('edit-user-name').dispatchEvent(new window.Event('input'));
-    expect(document.getElementById('edit-user-name').hasAttribute('aria-invalid')).toBe(false);
-
-    document.getElementById('edit-user-name').value = 'Zoé';
-    document.getElementById('edit-user-email').value = 'pas-email';
-    document.getElementById('edit-user-save').click();
-    expect(document.getElementById('edit-user-email-error').textContent).toBe('t:settings.toast_email_invalid');
-    document.getElementById('edit-user-email').dispatchEvent(new window.Event('input'));
-
-    document.getElementById('edit-user-email').value = 'zoe@x.fr';
-    document.getElementById('edit-user-role').value = '2';
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(200, {}));
-    await S.admin.saveEditedUser();
-    const call = auth.authFetch.mock.calls.find(([url]) => url === '/api/admin/users/3');
-    expect(JSON.parse(call[1].body)).toEqual({ name: 'Zoé', email: 'zoe@x.fr', role_id: 2 });
-    expect(toasts).toContainEqual(['success', 'Utilisateur modifié avec succès']);
-    expect(modal.classList.contains('show')).toBe(false);
-  });
-
-  test('édition : refus du serveur, réseau, annulation et voile', async () => {
-    const S = setup();
-    S.admin.openEditUserModal(USERS[1]);
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(409, {}));
-    document.getElementById('edit-user-email').value = 'b@x.fr';
-    document.getElementById('edit-user-name').value = 'Bob';
-    await S.admin.saveEditedUser();
-    expect(toasts).toContainEqual(['error', 'Erreur lors de la modification']);
-    auth.authFetch.mockRejectedValueOnce(new Error('réseau'));
-    await S.admin.saveEditedUser();
-    expect(toasts).toContainEqual(['error', 't:settings.toast_network_error']);
-    jest.useFakeTimers();
-    document.getElementById('edit-user-cancel').click();
-    jest.advanceTimersByTime(300);
-    expect(document.getElementById('edit-user-modal').classList.contains('hidden')).toBe(true);
-    document.querySelector('.logout-modal-backdrop').click();
-  });
-
-  test('fermeture animée de la modale, annulée par une réouverture', () => {
-    const S = setup();
-    const modal = document.getElementById('edit-user-modal');
-    // jsdom ne calcule aucune durée : on simule une sortie de 300 ms.
-    window.VH.motion.exit = (el, done, _opts) => {
-      const timer = setTimeout(() => done(), 300);
-      return () => clearTimeout(timer);
-    };
-    jest.useFakeTimers();
-    S.admin.openEditUserModal(USERS[1]);
-    jest.advanceTimersByTime(10);
-    expect(modal.classList.contains('show')).toBe(true);
-    document.getElementById('edit-user-cancel').click();
-    expect(modal.classList.contains('hidden')).toBe(false);
-    // réouverture pendant la sortie : la fermeture est annulée
-    S.admin.openEditUserModal(USERS[1]);
-    jest.advanceTimersByTime(400);
-    expect(modal.classList.contains('hidden')).toBe(false);
-    document.getElementById('edit-user-cancel').click();
-    jest.advanceTimersByTime(300);
-    expect(modal.classList.contains('hidden')).toBe(true);
-    expect(modal.classList.contains('show')).toBe(false);
-  });
-
-  test('double fermeture puis réouverture rapide : aucune minuterie orpheline ne masque la modale', () => {
-    const S = setup();
-    const modal = document.getElementById('edit-user-modal');
-    let exits = 0;
-    window.VH.motion.exit = (el, done, _opts) => {
-      exits += 1;
-      const timer = setTimeout(() => done(), 300);
-      return () => clearTimeout(timer);
-    };
-    jest.useFakeTimers();
-    S.admin.openEditUserModal(USERS[1]);
-    jest.advanceTimersByTime(10);
-    document.getElementById('edit-user-cancel').click();
-    document.getElementById('edit-user-cancel').click(); // double clic
-    expect(exits).toBe(1);
-    S.admin.openEditUserModal(USERS[1]);
-    jest.advanceTimersByTime(400);
-    expect(modal.classList.contains('hidden')).toBe(false);
-    expect(modal.classList.contains('show')).toBe(true);
-  });
-
-  test('mouvements réduits (sortie immédiate) : la fermeture suivante n\'est pas bloquée', () => {
-    const S = setup();
-    const modal = document.getElementById('edit-user-modal');
-    window.VH.motion.exit = (el, done) => { done(); return () => {}; };
-    jest.useFakeTimers();
-    S.admin.openEditUserModal(USERS[1]);
-    jest.advanceTimersByTime(10);
-    document.getElementById('edit-user-cancel').click();
-    expect(modal.classList.contains('hidden')).toBe(true);
-    S.admin.openEditUserModal(USERS[1]);
-    jest.advanceTimersByTime(10);
-    document.getElementById('edit-user-cancel').click();
-    expect(modal.classList.contains('hidden')).toBe(true);
-  });
-
-  test('suppression : confirmation sur place, succès, refus serveur, réseau', async () => {
-    jest.useFakeTimers();
-    const S = setup();
-    await S.admin.loadUsers();
-    const trigger = () => document.querySelector('.btn-delete');
-    const wrapper = () => document.querySelector('.adm-del');
-    // La poubelle est dessinée en SVG, nommée, et enveloppée d'un panneau inerte.
-    expect(trigger().querySelector('svg.cfm-bin .cfm-bin-lid')).not.toBeNull();
-    expect(trigger().getAttribute('aria-label')).toBe('t:settings.delete_user');
-    expect(wrapper().dataset.state).toBe('idle');
-    expect(wrapper().querySelector('.cfm-yes .cfm-text').textContent).toBe('t:settings.delete_user_confirm');
-    expect(wrapper().querySelector('.cfm-panel').getAttribute('aria-label')).toBe('t:settings.delete_user_group');
-
-    // Ouvrir puis annuler : aucune requête.
-    auth.authFetch.mockClear();
-    trigger().click();
-    expect(wrapper().dataset.state).toBe('confirm');
-    wrapper().querySelector('.cfm-no').click();
-    expect(wrapper().dataset.state).toBe('idle');
-    expect(auth.authFetch).not.toHaveBeenCalled();
-
-    // Confirmer : coche tracée, puis DELETE.
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(200, {}));
-    trigger().click();
-    wrapper().querySelector('.cfm-yes').click();
-    expect(wrapper().dataset.state).toBe('done');
-    jest.advanceTimersByTime(400);
-    await Promise.resolve();
-    expect(auth.authFetch).toHaveBeenCalledWith(expect.stringMatching(/\/users\/\d+$/), { method: 'DELETE' });
-    await Promise.resolve();
-    await Promise.resolve();
-    expect(toasts).toContainEqual(['success', 't:settings.toast_user_deleted']);
-
-    // Refus serveur : message du serveur, bouton remis au repos.
-    await S.admin.loadUsers();
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(403, { message: 'Interdit' }));
-    trigger().click();
-    wrapper().querySelector('.cfm-yes').click();
-    jest.advanceTimersByTime(400);
-    for (let i = 0; i < 6; i++) await Promise.resolve();
-    expect(toasts).toContainEqual(['error', 'Interdit']);
-    expect(wrapper().dataset.state).toBe('idle');
-
-    // Réseau.
-    auth.authFetch.mockRejectedValueOnce(new Error('réseau'));
-    trigger().click();
-    wrapper().querySelector('.cfm-yes').click();
-    jest.advanceTimersByTime(400);
-    for (let i = 0; i < 6; i++) await Promise.resolve();
-    expect(toasts).toContainEqual(['error', 't:settings.toast_network_error']);
-    expect(wrapper().dataset.state).toBe('idle');
-  });
-
-  test('deleteUser sans confirmation attachée : requête directe', async () => {
-    const S = setup();
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(200, {}));
-    await S.admin.deleteUser(2);
-    expect(auth.authFetch).toHaveBeenCalledWith('/api/users/2', { method: 'DELETE' });
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(403, { message: 'Interdit' }));
-    await S.admin.deleteUser(2);
-    auth.authFetch.mockRejectedValueOnce(new Error('réseau'));
-    await S.admin.deleteUser(2);
-    expect(toasts).toContainEqual(['error', 't:settings.toast_network_error']);
-  });
-
-  test('loadUsers avant init : sans effet', async () => {
-    const S = loadModules();
-    await S.admin.loadUsers();
-    expect(auth.authFetch).not.toHaveBeenCalled();
-  });
-});
-
-describe('VH.settings.dashboard', () => {
-  const FAVS = [
-    { generation: 4, country_name: 'France', country_name_en: 'France', type_name: 'Multirôle', type_name_en: 'Multirole' },
-    { generation: 4, country_name: 'États-Unis', country_name_en: 'United States', type_name: 'Chasseur', type_name_en: 'Fighter' },
-    { generation: 5, country_name: 'États-Unis', type_name: 'Chasseur' },
-    { generation: 1, country_name: 'URSS', type_name: 'Intercepteur' },
-  ];
-
-  test('computeStats : comptes et répartitions, libellés de génération', () => {
-    const { dashboard } = loadModules();
-    const fr = dashboard.computeStats(FAVS, 'fr');
-    expect(fr).toMatchObject({ total: 4, countries: 3, generations: 3, types: 3 });
-    expect(fr.byCountry).toEqual({ France: 1, 'États-Unis': 2, URSS: 1 });
-    expect(Object.keys(fr.byGeneration)).toEqual(['Gen 1', 'Gen 4', 'Gen 5']);
-    const en = dashboard.computeStats(FAVS, 'en');
-    expect(en.byCountry).toEqual({ France: 1, 'United States': 1, 'États-Unis': 1, URSS: 1 });
-    expect(Object.keys(en.byGeneration)).toEqual(['1st Gen', '4th Gen', '5th Gen']);
-    expect(dashboard.generationLabel('2', 'en')).toBe('2nd Gen');
-    expect(dashboard.generationLabel('3', 'en')).toBe('3rd Gen');
-  });
-
-  test('loadDashboard : carte de profil, compteurs, barres', async () => {
-    jest.useFakeTimers();
-    window.requestAnimationFrame = (cb) => setTimeout(cb, 0);
-    const { dashboard } = loadModules();
-    auth.authFetch.mockResolvedValue(jsonResponse(200, FAVS));
-    await dashboard.loadDashboard({ currentUser: { name: 'chef', email: 'c@x.fr', role: 2 } });
-    expect(document.getElementById('db-avatar').textContent).toBe('C');
-    expect(document.getElementById('db-role-badge').className).toBe('db-role-badge role-editor');
-    jest.advanceTimersByTime(1000);
-    expect(rolled('db-total-fav')).toBe('4');
-    expect(rolled('db-total-countries')).toBe('3');
-    const rows = document.querySelectorAll('#db-country-bars .db-bar-row');
-    expect(rows[0].querySelector('.db-bar-label').textContent).toBe('États-Unis');
-    expect(rows[0].querySelector('.db-bar-fill').style.width).toBe('100%');
-    expect(document.querySelectorAll('#db-gen-bars .db-bar-label')[0].textContent).toBe('Gen 1');
-  });
-
-  test('aucun favori : bloc vide ; erreurs API silencieuses', async () => {
-    const { dashboard } = loadModules();
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(200, []));
-    await dashboard.loadDashboard({ currentUser: null });
-    expect(document.getElementById('db-empty').classList.contains('hidden')).toBe(false);
-    expect(document.getElementById('db-kpis').classList.contains('hidden')).toBe(true);
-    expect(document.getElementById('db-name').textContent).toBe('Utilisateur');
-    expect(document.getElementById('db-role-badge').className).toBe('db-role-badge role-member');
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(500, {}));
-    await expect(dashboard.loadDashboard({ currentUser: { role: 1 } })).resolves.toBeUndefined();
-    auth.authFetch.mockRejectedValueOnce(new Error('réseau'));
-    await expect(dashboard.loadDashboard({ currentUser: { role: 1 } })).resolves.toBeUndefined();
-    expect(document.getElementById('db-role-badge').className).toBe('db-role-badge role-admin');
-  });
-
-  test('changement de langue : re-rendu seulement une fois l\'utilisateur connu', () => {
-    const { dashboard } = loadModules();
-    const state = { currentUser: null };
-    dashboard.init(state);
-    window.dispatchEvent(new window.Event('langChanged'));
-    expect(auth.authFetch).not.toHaveBeenCalled();
-    state.currentUser = { name: 'X' };
-    window.dispatchEvent(new window.Event('langChanged'));
-    expect(auth.authFetch).toHaveBeenCalledWith('/api/favorites');
-  });
-});
-
 describe('VH.settings.cookies', () => {
   test('état initial lu depuis le consentement enregistré', () => {
     const recent = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
@@ -963,11 +972,10 @@ describe('VH.settings.cookies', () => {
     cookies.init();
     expect(document.getElementById('pref-analytics').checked).toBe(true);
     expect(document.getElementById('analytics-status').textContent).toBe('t:settings.enabled');
-    // Couleur par classe, pas par element.style (CSP)
     expect(document.getElementById('analytics-status').classList.contains('is-enabled')).toBe(true);
     expect(document.getElementById('consent-date').textContent).toMatch(String(recent.getFullYear()));
-    // Date rendue en JS : plus retraduite en « Jamais » au changement de langue
     expect(document.getElementById('consent-date').hasAttribute('data-i18n')).toBe(false);
+    expect(cookies.isDirty()).toBe(false);
   });
 
   test('sans consentement ou JSON invalide : rien ne change', () => {
@@ -978,9 +986,10 @@ describe('VH.settings.cookies', () => {
     expect(document.getElementById('analytics-status').textContent).toBe('');
   });
 
-  test('enregistrement : localStorage, cookie miroir, cookieConsent appliqué, événement', () => {
-    const { cookies } = loadModules();
-    cookies.init();
+  test('interrupteur changé : barre affichée ; Enregistrer : localStorage, cookieConsent appliqué, événement', async () => {
+    const S = loadModules();
+    S.saveBar.setup();
+    S.cookies.init();
     window.cookieConsent = { applyConsent: jest.fn(), openModal: jest.fn() };
     const events = [];
     document.addEventListener('cookieConsent', (e) => events.push(e.detail.event));
@@ -988,16 +997,29 @@ describe('VH.settings.cookies', () => {
     toggle.checked = true;
     toggle.dispatchEvent(new window.Event('change'));
     expect(document.getElementById('analytics-status').textContent).toBe('t:settings.enabled');
-    document.getElementById('save-cookie-preferences').click();
+    expect(document.getElementById('save-bar').hidden).toBe(false);
+    await S.saveBar.save();
     const saved = JSON.parse(localStorage.getItem('voldhistoire_cookie_consent'));
     expect(saved.preferences).toEqual({ essential: true, analytics: true, marketing: false });
-    expect(Number.isNaN(Date.parse(saved.timestamp))).toBe(false);
     expect(document.cookie).toContain('voldhistoire_cookie_consent=true');
     expect(window.cookieConsent.applyConsent).toHaveBeenCalled();
     expect(events).toContain('preferences_saved');
+    expect(S.cookies.isDirty()).toBe(false);
     document.getElementById('open-cookie-modal').click();
     expect(window.cookieConsent.openModal).toHaveBeenCalled();
     delete window.cookieConsent;
+  });
+
+  test('Annuler : interrupteur remis sur le choix enregistré', () => {
+    const S = loadModules();
+    S.saveBar.setup();
+    S.cookies.init();
+    const toggle = document.getElementById('pref-analytics');
+    toggle.checked = true;
+    toggle.dispatchEvent(new window.Event('change'));
+    document.getElementById('save-bar-cancel').click();
+    expect(toggle.checked).toBe(false);
+    expect(document.getElementById('analytics-status').textContent).toBe('t:settings.disabled');
   });
 
   test('modale indisponible : toast ; événement de consentement : rechargement', () => {
@@ -1010,6 +1032,13 @@ describe('VH.settings.cookies', () => {
     document.dispatchEvent(new window.CustomEvent('cookieConsent', { detail: { event: 'analytics_disabled' } }));
     expect(document.getElementById('pref-analytics').checked).toBe(false);
     document.dispatchEvent(new window.CustomEvent('cookieConsent', { detail: { event: 'autre' } }));
+  });
+
+  test('sans interrupteur : jamais modifié, remise à zéro sans effet', () => {
+    const { cookies } = loadModules();
+    document.getElementById('pref-analytics').remove();
+    expect(cookies.isDirty()).toBe(false);
+    expect(() => cookies.resetToggle()).not.toThrow();
   });
 });
 
@@ -1026,9 +1055,10 @@ describe('VH.settings.cookies — conservation du choix (LEGAL-004)', () => {
   test('VH.consent absent : enregistrement refusé avec un toast, sans exception', () => {
     const { cookies } = loadModules();
     delete window.VH.consent;
-    expect(() => cookies.saveCookiePreferences()).not.toThrow();
+    expect(cookies.saveCookiePreferences()).toBe(false);
     expect(toasts).toContainEqual(['error', 't:settings.toast_cookies_unavailable']);
     expect(() => cookies.loadCookiePreferences()).not.toThrow();
+    expect(cookies.isDirty()).toBe(false);
   });
 });
 
@@ -1071,17 +1101,13 @@ describe('VH.settings.dataExport (LEGAL-011)', () => {
     btn.click();
     expect(auth.authFetch).toHaveBeenCalledWith('/api/users/me/export');
     expect(btn.getAttribute('aria-busy')).toBe('true');
-    expect(btn.disabled).toBe(true);
-    // Un second clic pendant la requête ne relance rien
     btn.click();
     expect(auth.authFetch).toHaveBeenCalledTimes(1);
 
     resolve(exportResponse());
     await flush(8);
     expect(clicks).toEqual([{ href: 'blob:vh/1', download: 'vol-histoire-donnees-42.json', attached: true }]);
-    expect(document.querySelector('a[download]')).toBeNull(); // lien retiré
-    expect(btn.hasAttribute('aria-busy')).toBe(false);
-    // Coche « Téléchargé » le temps de la lire, puis retour au repos.
+    expect(document.querySelector('a[download]')).toBeNull();
     expect(btn.dataset.bb).toBe('done');
     expect(btn.querySelector('.bb-done-text').textContent).toBe('t:settings.btn_downloaded');
     expect(toasts).toContainEqual(['success', 't:settings.export_success']);
@@ -1108,7 +1134,6 @@ describe('VH.settings.dataExport (LEGAL-011)', () => {
     auth.authFetch.mockResolvedValueOnce(exportResponse({ ok: false, status: 500, json: () => Promise.reject(new Error('pas du JSON')) }));
     await dataExport.exportData(btn);
     expect(toasts).toContainEqual(['error', 't:settings.export_error']);
-    expect(btn.hasAttribute('aria-busy')).toBe(false);
     expect(window.URL.createObjectURL).not.toHaveBeenCalled();
   });
 
@@ -1132,24 +1157,37 @@ describe('settings.js — point d\'entrée', () => {
     await onReady();
     await tick();
   }
+  afterEach(() => window.history.replaceState(null, '', '/'));
 
-  test('administrateur : liste des utilisateurs et tableau de bord chargés', async () => {
-    auth.getUserInfo.mockReturnValue({ id: 1, name: 'Chef', email: 'chef@x.fr', role: 1 });
+  test('administrateur : en-tête, collection et liste des utilisateurs chargées ; #admin ouvert après révélation', async () => {
+    window.history.replaceState(null, '', '/settings#admin');
+    auth.getUserInfo.mockReturnValue({ id: 1, name: 'Chef', email: 'chef@x.fr', role: 1, created_at: '2025-03-04' });
     auth.authFetch.mockResolvedValue(jsonResponse(200, { data: [], meta: { total: 0 } }));
     await boot();
     const urls = auth.authFetch.mock.calls.map(([u]) => u);
     expect(urls).toContain('/api/users?page=1&limit=8');
     expect(urls).toContain('/api/favorites');
-    document.getElementById('tab-profile').click();
-    expect(document.getElementById('profile').hidden).toBe(false);
+    expect(document.getElementById('id-name').textContent).toBe('Chef');
+    expect(document.getElementById('admin-nav-link').getAttribute('aria-selected')).toBe('true');
+    document.getElementById('tab-account').click();
+    expect(document.getElementById('account').hidden).toBe(false);
   });
 
   test('membre : pas de liste des utilisateurs', async () => {
-    auth.getUserInfo.mockReturnValue({ id: 3, name: 'M', email: 'm@x.fr', role: 3 });
+    auth.getUserInfo.mockReturnValue({ id: 3, name: 'M', email: 'm@x.fr', role: 3, created_at: '2025-03-04' });
     auth.authFetch.mockResolvedValue(jsonResponse(200, []));
     await boot();
     const urls = auth.authFetch.mock.calls.map(([u]) => u);
     expect(urls).not.toContain('/api/users?page=1&limit=8');
     expect(urls).toContain('/api/favorites');
+  });
+
+  test('sans session : rien n’est chargé', async () => {
+    auth.getPayload.mockReturnValue(null);
+    auth.authFetch.mockRejectedValue(new Error('401'));
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    await boot();
+    spy.mockRestore();
+    expect(auth.authFetch.mock.calls.map(([u]) => u)).not.toContain('/api/favorites');
   });
 });

@@ -14,11 +14,16 @@
   window.VH.shared = window.VH.shared || {};
 
   const STORAGE_KEY = 'vh_compare_ids';
+  // Photo de chaque appareil retenu (vignettes de la barre) : sans elle, une
+  // sélection relue au chargement n'aurait que des icônes d'attente.
+  const THUMBS_KEY = 'vh_compare_thumbs';
   const URL_PARAM = 'compare';
   const MAX = 3;
 
   const listeners = [];
   let ids = [];
+  let thumbs = {}; // id → chemin local de la photo (persisté)
+  let live = {};   // id → URL déjà chargée par la page (carte, hero), le temps de la session
   // Le hangar est la seule page qui reflète la sélection dans son URL : c'est
   // là qu'un lien /hangar?compare=12,30,24 a un sens. Sur une fiche, l'URL
   // canonique doit rester celle de l'appareil.
@@ -44,8 +49,104 @@
   }
 
   function writeStorage() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(ids)); }
-    catch { /* mode privé : la sélection ne survivra pas au rechargement */ }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+      localStorage.setItem(THUMBS_KEY, JSON.stringify(thumbs));
+    } catch { /* mode privé : la sélection ne survivra pas au rechargement */ }
+  }
+
+  // ── Vignettes de la barre ──────────────────────────────────────────
+
+  /* Chemin local d'une photo (« /assets/… »), sans paramètres ; l'image
+   * d'attente (placeholder-airplane-*.svg) n'en est pas une. */
+  function safePath(src) {
+    if (typeof src !== 'string' || !/^\/[^/\\]/.test(src) || /placeholder-airplane/.test(src)) return null;
+    return src.split(/[?#]/)[0];
+  }
+
+  /* URL réellement affichée par la page (AVIF/WebP déjà en cache), de même
+   * origine seulement. */
+  function liveUrl(img) {
+    const src = img.currentSrc || img.src || '';
+    if (!src || /placeholder-airplane/.test(src)) return null;
+    try { return new URL(src, location.href).origin === location.origin ? src : null; }
+    catch { return null; }
+  }
+
+  function readThumbs() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(THUMBS_KEY) || '{}');
+      const out = {};
+      Object.keys(raw || {}).forEach((k) => {
+        const path = safePath(raw[k]);
+        if (path && Number.isInteger(Number(k))) out[Number(k)] = path;
+      });
+      return out;
+    } catch { return {}; }
+  }
+
+  /** Photo de l'appareil `id` dans la page : sa carte, ou le hero de sa fiche. */
+  function pageImg(id) {
+    const img = document.querySelector('[data-morph-id="' + id + '"] [data-morph="photo"] img');
+    if (img) return img;
+    const vm = window.VH.viewMorph;
+    const self = vm && typeof vm.selfId === 'function' && vm.selfId() === String(id);
+    return self ? document.querySelector('[data-morph-self] [data-morph="photo"] img') : null;
+  }
+
+  function rememberFromPage(id) {
+    const img = pageImg(id);
+    if (!img) return;
+    const path = safePath(img.getAttribute('src'));
+    if (!path) return;
+    thumbs[id] = path;
+    const url = liveUrl(img);
+    if (url) live[id] = url;
+  }
+
+  function pruneThumbs() {
+    const keep = (map) => ids.reduce((acc, id) => {
+      if (map[id]) acc[id] = map[id];
+      return acc;
+    }, {});
+    thumbs = keep(thumbs);
+    live = keep(live);
+  }
+
+  function thumbInner(id) {
+    if (live[id]) return '<img src="' + escapeHtml(live[id]) + '" alt="" width="48" height="36">';
+    const pic = window.VH.shared.picture;
+    const html = pic && (pic.thumbHtml || pic.pictureHtml);
+    if (thumbs[id] && html) return html(thumbs[id], { alt: '', width: '48', height: '36' });
+    return '<i class="fas fa-plane" aria-hidden="true"></i>';
+  }
+
+  /* Une vignette par appareil, dans l'ordre de la sélection. Les vignettes
+   * gardées ne sont ni recréées ni réinsérées (l'image ne se recharge pas,
+   * le morphing retrouve le même élément). */
+  function renderThumbs(bar) {
+    const box = bar.querySelector('.cmp-thumbs');
+    if (!box) return;
+    const kept = {};
+    Array.from(box.children).forEach((el) => {
+      const id = Number(el.getAttribute('data-cmp-thumb'));
+      if (ids.includes(id)) kept[id] = el; else el.remove();
+    });
+    ids.forEach((id, i) => {
+      if (!thumbs[id]) rememberFromPage(id);
+      let el = kept[id];
+      if (!el) {
+        el = document.createElement('span');
+        el.className = 'cmp-thumb';
+        el.setAttribute('data-cmp-thumb', String(id));
+      }
+      const key = live[id] || thumbs[id] || '';
+      if (el.getAttribute('data-src') !== key || !el.firstChild) {
+        el.setAttribute('data-src', key);
+        el.innerHTML = thumbInner(id);
+      }
+      if (box.children[i] !== el) box.insertBefore(el, box.children[i] || null);
+    });
   }
 
   function readUrl() {
@@ -70,10 +171,21 @@
     } catch { /* ignore */ }
   }
 
-  function commit() {
+  function morphApi() { return window.VH.shared.compareMorph || null; }
+
+  /* `morph` ({ id, dir }) : la barre se redessine par un morphing carte ↔
+   * barre (compare-morph.js) ; sans lui, d'un coup. */
+  function commit(morph) {
+    pruneThumbs();
     writeStorage();
     writeUrl();
-    renderBar();
+    const cm = morphApi();
+    const bar = document.getElementById('compare-bar');
+    if (morph && cm && bar) {
+      cm.bar({ bar, id: morph.id, dir: morph.dir, update: renderBar, preload: live[morph.id] || null });
+    } else {
+      renderBar();
+    }
     listeners.forEach((fn) => { try { fn(getIds()); } catch { /* ignore */ } });
   }
 
@@ -88,12 +200,13 @@
     if (!Number.isInteger(n)) return 'full';
     if (has(n)) {
       ids = ids.filter((x) => x !== n);
-      commit();
+      commit({ id: n, dir: 'remove' });
       return 'removed';
     }
     if (isFull()) return 'full';
     ids = ids.concat(n);
-    commit();
+    rememberFromPage(n);
+    commit({ id: n, dir: 'add' });
     return 'added';
   }
 
@@ -136,7 +249,10 @@
     bar.id = 'compare-bar';
     // `.hidden` suffit (display: none) : plus de style en ligne.
     bar.className = 'compare-bar hidden';
+    // Vignettes décoratives (le compteur dit déjà combien) : cibles du
+    // morphing carte → barre.
     bar.innerHTML =
+      '<span class="cmp-thumbs" aria-hidden="true"></span>' +
       '<span id="compare-count"></span>' +
       '<button type="button" id="compare-share" class="btn btn-secondary btn-sm">' + LINK_SVG +
         '<span class="cmp-share-label">' + escapeHtml(t('hangar.compare_share', 'Copier le lien')) + '</span></button>' +
@@ -214,10 +330,37 @@
   /* La modale se fermait d'un coup (dialog.close()). .is-closing joue le
    * fondu de la boîte et du voile (compare.css), puis on la ferme. */
   let cancelModalClose = null;
+  // Morphing barre ↔ modale en cours (jusqu'à la mise à jour du DOM).
+  let panelPending = null;
+
+  function barShown(bar) {
+    return !!bar && !bar.classList.contains('hidden') && !bar.classList.contains('is-leaving');
+  }
+
+  /* Ouvre la modale ; avec l'API View Transitions, la barre s'y agrandit. */
+  function showPanel(dlg) {
+    const cm = morphApi();
+    const bar = document.getElementById('compare-bar');
+    const morph = !!(cm && cm.canMorph() && barShown(bar));
+    // L'entrée CSS de la modale (modalSlideIn) se tait sous le morphing.
+    dlg.classList.toggle('is-morph', morph);
+    if (!morph) { dlg.showModal(); return; }
+    const done = () => { panelPending = null; };
+    panelPending = cm.panel({ from: bar, to: dlg, update: () => dlg.showModal() }).then(done, done);
+  }
 
   function closeModal() {
     const dlg = document.getElementById('compare-modal');
-    if (!dlg || !dlg.open || cancelModalClose) return;
+    if (!dlg || !dlg.open || cancelModalClose || panelPending) return;
+    // La modale se replie dans la barre si celle-ci reste affichée (sinon,
+    // sélection vidée : simple fondu de sortie).
+    const cm = morphApi();
+    const bar = document.getElementById('compare-bar');
+    if (cm && cm.canMorph() && barShown(bar)) {
+      const done = () => { panelPending = null; };
+      panelPending = cm.panel({ from: dlg, to: bar, update: () => dlg.close() }).then(done, done);
+      return;
+    }
     let finished = false;
     const cancel = VH.motion.exit(dlg, () => {
       finished = true;
@@ -281,6 +424,7 @@
     clearOfConsentBanner(bar);
     const n = ids.length;
     if (n === 0) hideBar(bar); else showBar(bar);
+    renderThumbs(bar);
     const cnt = document.getElementById('compare-count');
     if (cnt) {
       const key = n > 1 ? 'hangar.compare_selected_many' : 'hangar.compare_selected_one';
@@ -351,6 +495,7 @@
       const fromUrl = urlSync ? readUrl() : [];
       const hadUrlIds = fromUrl.length > 0;
       ids = hadUrlIds ? fromUrl : readStorage();
+      thumbs = readThumbs();
       ensureUi();
       commit();
       if (hadUrlIds && options.autoOpen !== false) open();
@@ -431,17 +576,21 @@
     ensureUi();
     const dlg = document.getElementById('compare-modal');
     const body = document.getElementById('compare-modal-body');
+    if (panelPending) return; // la barre s'agrandit déjà en modale
     body.innerHTML = '<div class="cmp-loading"><i class="fas fa-circle-notch fa-spin"></i> ' + escapeHtml(t('common.loading', 'Chargement')) + '</div>';
     // Réouverture pendant la sortie : on l'interrompt, la modale reste ouverte.
     if (cancelModalClose) { cancelModalClose(); cancelModalClose = null; }
-    if (!dlg.open) dlg.showModal();
+    if (!dlg.open) showPanel(dlg);
 
     try {
       const loaded = await Promise.all(ids.map(fetchOne));
+      // Modale encore en train de s'ouvrir : la refermer maintenant serait sans effet.
+      if (panelPending) await panelPending;
       // Un id qui ne répond plus est purgé ici — c'est le seul endroit où l'on
       // sait vraiment qu'il n'existe pas (l'ancienne purge comparait à la page
       // courante du hangar et supprimait des ids parfaitement valides).
       const items = loaded.filter(Boolean);
+      rememberLoaded(items);
       if (items.length !== ids.length) {
         ids = sanitize(items.map((a) => a.id));
         commit();
@@ -452,6 +601,23 @@
     } catch {
       body.innerHTML = '<div class="cmp-loading cmp-error"><i class="fas fa-triangle-exclamation"></i> ' + escapeHtml(t('common.loading_error', 'Erreur de chargement')) + '</div>';
     }
+  }
+
+  /* Les fiches chargées donnent la photo de chaque appareil : la barre
+   * remplace ses icônes d'attente (sélection relue d'un lien ou du stockage). */
+  function rememberLoaded(items) {
+    let changed = false;
+    items.forEach((a) => {
+      const path = safePath(a.image_url);
+      if (path && ids.includes(a.id) && thumbs[a.id] !== path) {
+        thumbs[a.id] = path;
+        changed = true;
+      }
+    });
+    if (!changed) return;
+    writeStorage();
+    const bar = document.getElementById('compare-bar');
+    if (bar) renderThumbs(bar);
   }
 
   function renderModal(body, items) {
@@ -561,6 +727,8 @@
     body.dataset.removing = 'true';
     body.querySelectorAll('.cmp-remove').forEach((b) => { b.disabled = true; });
     const parts = Array.from(body.querySelectorAll('[data-cmp-id="' + id + '"]'));
+    const cm = morphApi();
+    const morph = !!(cm && cm.canMorph());
 
     const finish = () => {
       delete body.dataset.removing;
@@ -570,10 +738,17 @@
       const rest = items.filter((a) => a.id !== id && ids.includes(a.id));
       if (rest.length === 0) return;
       renderModal(body, rest);
+      if (morph) return; // les colonnes glissent déjà (morphing)
       body.classList.remove('cmp-enter');
       void body.offsetWidth; // relance le fondu de recomposition
       body.classList.add('cmp-enter');
     };
+    // Morphing : la colonne retirée s'efface, les autres glissent à leur
+    // nouvelle place (compare-morph.js).
+    if (morph) {
+      cm.columns({ body, update: finish });
+      return;
+    }
     // Le premier élément porte la minuterie (durée mesurée) ; les autres
     // reçoivent la même classe et s'effacent en même temps.
     parts.slice(1).forEach((el) => el.classList.add('is-removing'));

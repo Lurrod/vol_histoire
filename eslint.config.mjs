@@ -78,7 +78,7 @@ export default [
         // Project globals (defined in utils.js, auth.js, i18n.js, nav.js)
         auth: 'writable', i18n: 'writable', nav: 'writable',
         escapeHtml: 'writable', safeSetHTML: 'writable',
-        showToast: 'writable', animateNumber: 'writable',
+        showToast: 'writable', queueToast: 'writable', animateNumber: 'writable',
         setupPasswordToggle: 'writable', takeUrlParams: 'writable', isValidEmail: 'writable',
         calculatePasswordStrength: 'writable', isValidPassword: 'writable',
         PASSWORD_MIN_LENGTH: 'readonly', PASSWORD_MAX_LENGTH: 'readonly',

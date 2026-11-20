@@ -34,7 +34,7 @@ afterAll(() => {
   app.stopCleanup();
 });
 
-const PAGE_404 = 'class="error-page"';
+const PAGE_404 = 'class="error-page e4"';
 
 describe('404 sous /api : JSON, jamais la page par défaut d\'Express', () => {
   test.each([

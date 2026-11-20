@@ -109,6 +109,14 @@ function isOptionalNonNegativeInt(value) {
   return Number.isInteger(num) && num >= 0;
 }
 
+// Identifiant de rôle : 1 (admin), 2 (éditeur) ou 3 (membre), en chaîne
+// (paramètre de requête) ou en nombre. Rien d'autre : ni « 01 », ni « 1.0 »,
+// ni tableau (?role=1&role=2).
+function isValidRoleId(value) {
+  if (typeof value !== 'string' && typeof value !== 'number') return false;
+  return /^[123]$/.test(String(value));
+}
+
 function validateAirplaneData(body) {
   const errors = [];
 
@@ -241,5 +249,6 @@ module.exports = {
   isOptionalDate,
   isOptionalPositiveNumber,
   isOptionalId,
+  isValidRoleId,
   validateAirplaneData,
 };

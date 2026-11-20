@@ -13,6 +13,7 @@ global.animateNumber = jest.fn();
 
 require('../js/shared/motion');
 require('../js/shared/rolling-number');
+require('../js/shared/view-morph');
 const filters = require('../js/hangar/filters');
 const render = require('../js/hangar/render');
 
@@ -201,5 +202,74 @@ describe('compteurs', () => {
     expect(stat('total-aircraft')).toBe('1');
     expect(stat('total-countries')).toBe('0');
     expect(stat('total-generations')).toBe('0');
+  });
+});
+
+describe('chargement et morphing des résultats', () => {
+  const container = () => document.getElementById('airplanes-container');
+
+  test('premier chargement : squelettes ; suivants : cartes gardées, estompées, puis rétablies', () => {
+    render.showLoading();
+    expect(container().querySelectorAll('.skeleton-card')).toHaveLength(6);
+    render.renderAircraft(makeState({ aircraft: [{ id: 1 }] }));
+    render.showLoading();
+    expect(container().querySelector('.aircraft-card')).not.toBeNull();
+    expect(container().classList.contains('is-loading')).toBe(true);
+    expect(container().getAttribute('aria-busy')).toBe('true');
+    render.clearLoading();
+    expect(container().classList.contains('is-loading')).toBe(false);
+    expect(container().hasAttribute('aria-busy')).toBe(false);
+  });
+
+  test('sans conteneur : rien ne casse', async () => {
+    document.body.innerHTML = '';
+    expect(() => { render.showLoading(); render.clearLoading(); }).not.toThrow();
+    await expect(render.showResults(makeState())).resolves.toBeUndefined();
+  });
+
+  test('sans l’API : cartes posées et état de chargement levé', async () => {
+    render.renderAircraft(makeState({ aircraft: [{ id: 1 }] }));
+    render.showLoading();
+    await render.showResults(makeState({ aircraft: [{ id: 2 }, { id: 3 }] }), 'next');
+    expect(container().querySelectorAll('.aircraft-card')).toHaveLength(2);
+    expect(container().classList.contains('is-loading')).toBe(false);
+  });
+
+  test('avec l’API : squelettes appariés aux cartes, sens de pagination sur <html>', async () => {
+    window.VH.shared.renderAircraftCard = jest.fn((a) => `<article class="aircraft-card" data-morph-id="${a.id}"></article>`);
+    jest.spyOn(window.Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: 10, bottom: 100, width: 100, height: 90 });
+    const calls = [];
+    document.startViewTransition = jest.fn((cb) => {
+      calls.push({
+        before: [...container().children].map((el) => el.style.viewTransitionName),
+        html: [...document.documentElement.classList],
+      });
+      cb();
+      return { finished: new Promise(() => {}), updateCallbackDone: Promise.resolve() };
+    });
+    try {
+      render.showLoading();
+      await render.showResults(makeState({ aircraft: [{ id: 5 }, { id: 6 }] }), 'prev');
+      expect(calls[0].before.slice(0, 2)).toEqual(['vh-slot-0', 'vh-slot-1']);
+      expect(calls[0].html).toEqual(expect.arrayContaining(['vh-hangar-morph', 'vh-dir-prev']));
+      expect([...container().children].map((el) => el.style.viewTransitionName)).toEqual(['vh-slot-0', 'vh-slot-1']);
+
+      // Cartes → cartes : appariées par appareil.
+      await render.showResults(makeState({ aircraft: [{ id: 6 }, { id: 7 }] }));
+      expect(calls[1].before).toEqual(['vh-m-5', 'vh-m-6']);
+    } finally {
+      delete document.startViewTransition;
+      document.documentElement.className = '';
+    }
+  });
+
+  test('changePage retient le sens de la pagination', () => {
+    const state = makeState({ total: 30, currentPage: 2 });
+    render.changePage(state, 3);
+    expect(state.pageDirection).toBe('next');
+    render.changePage(state, 1);
+    expect(state.pageDirection).toBe('prev');
+    render.changePage(state, 1);
+    expect(state.pageDirection).toBeNull();
   });
 });

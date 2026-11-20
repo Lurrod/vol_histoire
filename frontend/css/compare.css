@@ -30,6 +30,29 @@
    de son libellé. DM Sans gras 0.85rem : l'odomètre prend la hauteur d'une ligne. */
 .compare-bar #compare-count { color: var(--hud-cyan); font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: baseline; --roll-h: 1.2em; white-space: pre; }
 
+/* Vignettes : une par appareil retenu, cible du morphing carte → barre
+   (js/shared/compare-morph.js). Format 4:3, celui des photos des cartes. */
+.compare-bar .cmp-thumbs { display: inline-flex; gap: 0.3rem; flex-shrink: 0; }
+.compare-bar .cmp-thumbs:empty { display: none; }
+.compare-bar .cmp-thumb {
+  width: 2.5rem;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--night);
+  border: 1px solid var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-faint);
+  font-size: 0.75rem;
+  animation: vh-fade-in var(--dur-base) var(--ease-out);
+}
+.compare-bar .cmp-thumb picture { display: block; width: 100%; height: 100%; }
+.compare-bar .cmp-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Pendant un morphing, c'est la photo qui vole qui fait l'entrée. */
+html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
+
 /* « Copier le lien » : maillon de chaîne qui se replie, coche qui se trace. */
 .compare-bar #compare-share { display: inline-flex; align-items: center; gap: 0.45rem; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
 .compare-bar #compare-share.is-copied { background: rgba(200,169,110,0.14); border-color: var(--hud-cyan); color: var(--hud-cyan); }
@@ -88,6 +111,8 @@
     row-gap: 0;
   }
   .compare-bar #compare-count { order: 0; flex: 1 1 auto; }
+  .compare-bar .cmp-thumbs { order: 0; gap: 0.2rem; }
+  .compare-bar .cmp-thumb { width: 2rem; }
   .compare-bar #compare-view { order: 1; }
   .compare-bar::after { content: ''; order: 2; flex-basis: 100%; }
   .compare-bar #compare-share,
@@ -474,11 +499,114 @@
 .cmp-remove:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
 #compare-modal-body.cmp-enter > * { animation: vh-fade-in var(--dur-fast) var(--ease-out) backwards; }
 
+/* ======================================================================
+   MORPHINGS DU COMPARATEUR (js/shared/compare-morph.js, API View
+   Transitions). Sans l'API ou en mouvement réduit, aucun ne joue.
+   ====================================================================== */
+
+/* Sous le morphing barre → modale, l'entrée propre de la modale se tait. */
+.compare-modal.is-morph { animation: none; }
+
+::view-transition-group(*.vh-cmp-thumb),
+::view-transition-group(*.vh-cmp-col),
+::view-transition-group(vh-cmp-panel) {
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-in-out);
+}
+
+/* 1. Carte ↔ barre : la photo se recadre en vignette (cover). */
+::view-transition-group(*.vh-cmp-thumb) { border-radius: var(--r-sm); overflow: clip; }
+::view-transition-old(*.vh-cmp-thumb),
+::view-transition-new(*.vh-cmp-thumb) {
+  height: 100%;
+  object-fit: cover;
+  overflow: clip;
+}
+/* À l'ajout, la photo de la carte vole au-dessus et ne s'efface qu'à la
+   fin : la vignette d'arrivée n'est pas toujours décodée à la capture. */
+html.vh-cmp-adding::view-transition-old(*.vh-cmp-thumb) {
+  z-index: 1;
+  animation: vh-cmp-hold-out var(--dur-slow) var(--ease-in) both;
+}
+html.vh-cmp-adding::view-transition-new(*.vh-cmp-thumb) { animation: none; }
+@keyframes vh-cmp-hold-out {
+  0%, 60% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* 2. Barre ↔ modale : la boîte grandit (ou se replie) avec le fond de la
+   modale ; les contenus ne sont pas étirés, ils restent calés en haut et
+   se relaient en fondu. */
+::view-transition-group(vh-cmp-panel) {
+  background: var(--night-mid);
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px var(--border-cyan-md);
+  overflow: clip;
+}
+::view-transition-old(vh-cmp-panel),
+::view-transition-new(vh-cmp-panel) {
+  width: 100%;
+  height: 100%;
+  object-fit: none;
+  object-position: 50% 0;
+  overflow: clip;
+}
+::view-transition-old(vh-cmp-panel) { animation: vh-fade-out var(--dur-fast) var(--ease-in) both; }
+::view-transition-new(vh-cmp-panel) { animation: vh-fade-in var(--dur-base) var(--ease-out) both; }
+
+/* 3. Retrait d'une colonne : en-têtes et cellules glissent sans que leur
+   texte soit étiré (calé en haut à gauche, rogné à la boîte). */
+::view-transition-old(*.vh-cmp-col),
+::view-transition-new(*.vh-cmp-col) {
+  width: 100%;
+  height: 100%;
+  object-fit: none;
+  object-position: 0 0;
+  overflow: clip;
+}
+/* Une colonne qui s'élargit change d'échelle (photo, retours à la ligne) :
+   en fondu croisé sur toute la durée, l'ancienne et la nouvelle version se
+   superposaient. L'ancienne s'efface vite, la nouvelle se découvre à mesure
+   que la boîte s'élargit — comme pour la modale. */
+::view-transition-old(*.vh-cmp-col) { animation: vh-fade-out var(--dur-fast) var(--ease-in) both; }
+::view-transition-new(*.vh-cmp-col) { animation: vh-fade-in var(--dur-fast) var(--ease-out) both; }
+
+/* Navigateurs à groupes imbriqués : le corps de la modale est nommé et ses
+   cellules s'y rattachent ; il les rogne, elles ne débordent plus sur le voile. */
+html.vh-cmp-nest .compare-modal [data-cmp-id] { view-transition-group: nearest; }
+::view-transition-group(vh-cmp-body) {
+  overflow: clip;
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-in-out);
+}
+::view-transition-old(vh-cmp-body),
+::view-transition-new(vh-cmp-body) {
+  width: 100%;
+  height: 100%;
+  object-fit: none;
+  object-position: 0 0;
+}
+
+/* Entrées et sorties (vignette sans photo à l'écran, colonne retirée).
+   La variante html.vh-cmp-adding l'emporte sur la règle « vole au-dessus ». */
+html::view-transition-old(*.vh-cmp-thumb):only-child,
+html.vh-cmp-adding::view-transition-old(*.vh-cmp-thumb):only-child,
+html::view-transition-old(*.vh-cmp-col):only-child {
+  animation: vh-cmp-out var(--dur-base) var(--ease-in) both;
+}
+html::view-transition-new(*.vh-cmp-thumb):only-child,
+html.vh-cmp-adding::view-transition-new(*.vh-cmp-thumb):only-child {
+  animation: vh-cmp-in var(--dur-slow) var(--ease-out) both;
+}
+@keyframes vh-cmp-out { to { opacity: 0; scale: 0.96; } }
+@keyframes vh-cmp-in { from { opacity: 0; scale: 0.96; } }
+
 /* Mouvement réduit : la barre, le compteur, la modale et le retrait de
    colonne passent sans animation (le JS saute aussi ses délais). */
 @media (prefers-reduced-motion: reduce) {
   .compare-bar,
   .compare-bar.is-leaving,
+  .compare-bar .cmp-thumb,
   .compare-bar .cmp-share-label.is-swapping,
   .compare-modal,
   #compare-modal-body.cmp-enter > * { animation: none; }

@@ -19,6 +19,53 @@
     `).join('');
   }
 
+  /* Chargement : au premier affichage (aucune carte), des squelettes ; ensuite
+   * les cartes déjà là restent, estompées (.is-loading), jusqu'à la réponse :
+   * elles glisseront vers leur nouvelle place au lieu de disparaître. */
+  function showLoading() {
+    const container = document.getElementById('airplanes-container');
+    if (!container) return;
+    if (container.querySelector('.aircraft-card')) {
+      container.classList.add('is-loading');
+      container.setAttribute('aria-busy', 'true');
+      return;
+    }
+    renderSkeletons();
+  }
+
+  function clearLoading() {
+    const container = document.getElementById('airplanes-container');
+    if (!container) return;
+    container.classList.remove('is-loading');
+    container.removeAttribute('aria-busy');
+  }
+
+  /**
+   * Pose les résultats par morphing (VH.viewMorph.swap) : depuis les squelettes,
+   * chaque squelette devient la carte de même rang ; sinon un appareil encore
+   * présent glisse vers sa nouvelle place, les autres sortent ou entrent —
+   * par la droite pour la page suivante, par la gauche pour la précédente.
+   * @param {object} state
+   * @param {'next'|'prev'|null} [direction] sens de pagination
+   * @returns {Promise<void>} résolue une fois les cartes dans le DOM
+   */
+  function showResults(state, direction) {
+    const container = document.getElementById('airplanes-container');
+    if (!container) return Promise.resolve();
+    const fromSkeleton = !!container.querySelector('.skeleton-card');
+    const dir = direction === 'next' || direction === 'prev' ? ` vh-dir-${direction}` : '';
+    return VH.viewMorph.swap({
+      root: container,
+      slots: fromSkeleton ? '.skeleton-card, .aircraft-card' : undefined,
+      // vh-hangar-morph coupe l'entrée CSS des cartes : le morphing la remplace.
+      rootClass: `vh-hangar-morph${dir}`,
+      update: () => {
+        renderAircraft(state);
+        clearLoading();
+      },
+    });
+  }
+
   function renderAircraft(state) {
     const container = document.getElementById('airplanes-container');
     if (!container) return;
@@ -77,7 +124,10 @@
     if (document.getElementById('pagination-container')?.getAttribute('aria-busy') === 'true') return;
     const total = Number.isFinite(state.total) ? state.total : 0;
     const totalPages = Math.max(1, Math.ceil(total / state.itemsPerPage));
-    state.currentPage = Math.min(Math.max(1, page), totalPages);
+    const next = Math.min(Math.max(1, page), totalPages);
+    // Sens de la pagination : les cartes de la nouvelle page arrivent de ce côté.
+    state.pageDirection = next > state.currentPage ? 'next' : next < state.currentPage ? 'prev' : null;
+    state.currentPage = next;
     // Persister page + filters en URL et session → permet au user
     // de revenir à la bonne page après visite d'une fiche.
     VH.hangar.filters.writeStateToUrl(state);
@@ -131,6 +181,7 @@
   VH.hangar.render = {
     renderSkeletons, renderAircraft, renderPagination, changePage,
     updateStats, updateResultsCount, lockPagination,
+    showLoading, clearLoading, showResults,
   };
 
   // Export conditionnel pour les tests unitaires (Node.js / jsdom)

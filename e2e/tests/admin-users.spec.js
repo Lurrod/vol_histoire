@@ -88,9 +88,8 @@ test.describe('Admin — Gestion des utilisateurs', () => {
     const email = await emailInput.inputValue();
     expect(email).toContain('@');
 
-    // Le sélecteur de rôle doit être présent
-    const roleSelect = page.locator('#edit-user-role');
-    await expect(roleSelect).toBeVisible();
+    // Le rôle se change dans la liste, plus dans la modale.
+    await expect(page.locator('#edit-user-role')).toHaveCount(0);
 
     // Fermer la modale
     const cancelBtn = page.locator('#edit-user-cancel');
@@ -98,14 +97,13 @@ test.describe('Admin — Gestion des utilisateurs', () => {
     await page.waitForTimeout(500);
   });
 
-  test('modifier le rôle d\'un utilisateur', async ({ page }) => {
+  test('modifier le rôle d\'un utilisateur dans la liste', async ({ page }) => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');
 
     const adminLink = page.locator('[data-section="admin"]');
     await expect(adminLink).toBeVisible({ timeout: 8000 });
     await adminLink.click();
-    await page.waitForTimeout(1000);
 
     // Compte dédié, utilisé par aucune autre spec : changer un rôle révoque
     // les jetons du compte (token_version). Prendre « le premier non-admin »
@@ -115,41 +113,54 @@ test.describe('Admin — Gestion des utilisateurs', () => {
     await page.locator('#user-filter').fill(TARGET);
     const targetCard = page.locator('.user-card', { hasText: TARGET });
     await expect(targetCard).toBeVisible({ timeout: 8000 });
-    const nonAdminEdit = targetCard.locator('.btn-edit');
 
-    if (await nonAdminEdit.isVisible()) {
-      await nonAdminEdit.click();
+    // <select> natif, amélioré par VH.customSelect (le natif reste la source de vérité).
+    const roleSelect = targetCard.locator('select.user-role-select');
+    const currentRole = await roleSelect.inputValue();
+    const newRole = currentRole === '3' ? '2' : '3';
+    await roleSelect.selectOption(newRole, { force: true });
+    await expect(page.locator('.toast').first()).toBeVisible({ timeout: 5000 });
 
-      const modal = page.locator('#edit-user-modal');
-      await expect(modal).toBeVisible({ timeout: 3000 });
+    // Restaurer le rôle d'origine (la liste est rechargée après le changement).
+    const again = page.locator('.user-card', { hasText: TARGET }).locator('select.user-role-select');
+    await expect(again).toHaveValue(newRole, { timeout: 8000 });
+    await again.selectOption(currentRole, { force: true });
+    await expect(again).toHaveValue(currentRole, { timeout: 8000 });
+  });
 
-      // Changer le rôle
-      const roleSelect = page.locator('#edit-user-role');
-      const currentRole = await roleSelect.inputValue();
+  test('pastilles de rôle : filtre et état pressé', async ({ page }) => {
+    await page.goto('/settings');
+    await page.waitForLoadState('networkidle');
+    const adminLink = page.locator('[data-section="admin"]');
+    await expect(adminLink).toBeVisible({ timeout: 8000 });
+    await adminLink.click();
+    await expect(page.locator('.user-card').first()).toBeVisible({ timeout: 8000 });
 
-      // Basculer entre membre (3) et éditeur (2)
-      const newRole = currentRole === '3' ? '2' : '3';
-      await roleSelect.selectOption(newRole);
+    const editors = page.locator('.role-chip[data-role="2"]');
+    await editors.click();
+    await expect(editors).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('.role-chip[data-role=""]')).toHaveAttribute('aria-pressed', 'false');
+    // Chaque ligne affichée est un éditeur. La liste est redessinée après la
+    // réponse : on attend que toutes les lignes le soient (compter avant
+    // donnait le nombre de l'ancienne liste).
+    const selects = page.locator('.user-card select.user-role-select');
+    await expect.poll(async () => {
+      const values = await selects.evaluateAll((els) => els.map((el) => el.value));
+      return values.length > 0 && values.every((v) => v === '2');
+    }, { timeout: 8000 }).toBe(true);
+  });
 
-      // Sauvegarder
-      const saveBtn = page.locator('#edit-user-save');
-      await saveBtn.click();
-
-      // Attendre le toast de succès
-      const toast = page.locator('.toast').first();
-      await expect(toast).toBeVisible({ timeout: 5000 });
-
-      // Restaurer le rôle original
-      await page.waitForTimeout(1000);
-      const editBtnAgain = page.locator('.user-card', { hasText: TARGET }).locator('.btn-edit');
-      if (await editBtnAgain.isVisible()) {
-        await editBtnAgain.click();
-        await expect(modal).toBeVisible({ timeout: 3000 });
-        await roleSelect.selectOption(currentRole);
-        await saveBtn.click();
-        await page.waitForTimeout(1000);
-      }
-    }
+  test('son propre rôle n\'est pas modifiable', async ({ page }) => {
+    await page.goto('/settings');
+    await page.waitForLoadState('networkidle');
+    const adminLink = page.locator('[data-section="admin"]');
+    await expect(adminLink).toBeVisible({ timeout: 8000 });
+    await adminLink.click();
+    await page.locator('#user-filter').fill('test@gmail.com');
+    const own = page.locator('.user-card.is-self');
+    await expect(own).toBeVisible({ timeout: 8000 });
+    await expect(own.locator('select.user-role-select')).toBeDisabled();
+    await expect(own.locator('.btn-delete')).toHaveCount(0);
   });
 });
 

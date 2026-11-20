@@ -229,7 +229,8 @@ class CookieConsent {
 
   async loadTemplate() {
     try {
-      const basePath = document.querySelector('script[src*="cookies.js"]')?.src.replace(/js\/cookies\.js.*$/, '') || './';
+      // Racine du site par défaut : la page 404 est servie à n'importe quelle profondeur.
+      const basePath = document.querySelector('script[src*="cookies.js"]')?.src.replace(/js\/cookies\.js.*$/, '') || '/';
       const res = await fetch(`${basePath}cookie-consent.html`);
       if (!res.ok) return;
       const html = await res.text();

@@ -1,5 +1,9 @@
 /* Variables, reset, body et container fournis par tokens.css + base.css */
 body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
+/* Fond flouté commun (shared-base.css) : seulement sans le panneau photo,
+   sous 64em ; sur grand écran la photo en vol occupe la moitié gauche. */
+body.page-login::before,
+body.page-login::after { display: none; }
 
 /* header/nav/hamburger/hidden → shared.css */
 
@@ -256,6 +260,53 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
   from { opacity: 1; transform: translateX(0); }
   to { opacity: 0; transform: translateX(-40px); }
 }
+
+/* ==================== MORPHING DES ÉTAPES (js/login/tabs.js) ====================
+   Bascule par VH.viewMorph.run (API View Transitions), classe de transition
+   « vh-login » :
+   - vh-login-frame (.form-container) : le cadre prend la hauteur du nouveau
+     panneau et rogne son contenu pendant qu'il grandit ou rétrécit ; ce
+     contenu (champs, textes) sort d'un côté et entre de l'autre ;
+   - vh-login-tabs, -icon, -title, -submit, -footer : glissent de leur
+     ancienne place à la nouvelle, en fondu enchaîné ; présents d'un seul
+     côté (onglets des étapes par code, bouton absent de l'étape « code »),
+     ils s'effacent ou apparaissent.
+   html.vh-login-fwd : vers l'avant ; html.vh-login-back : retour (miroir).
+   Sans l'API ou en mouvement réduit : slideOut puis slideIn (ci-dessus).
+   Pas d'espace entre html.x et le pseudo-élément : ::view-transition-* a
+   <html> pour élément d'origine, pas un de ses descendants. */
+
+/* Le panneau entré par morphing ne rejoue pas slideIn par-dessus. */
+.page-login .form-slide.no-enter { animation: none; }
+
+::view-transition-group(*.vh-login) {
+  animation-duration: var(--dur-slow);
+  animation-timing-function: var(--ease-in-out);
+}
+::view-transition-group(vh-login-frame.vh-login) { overflow: clip; }
+::view-transition-old(vh-login-frame.vh-login),
+::view-transition-new(vh-login-frame.vh-login) { mix-blend-mode: normal; }
+::view-transition-old(vh-login-frame.vh-login) {
+  animation: vh-login-out var(--dur-fast) var(--ease-in) both;
+}
+::view-transition-new(vh-login-frame.vh-login) {
+  animation: vh-login-in var(--dur-base) var(--ease-out) var(--dur-instant) both;
+}
+html.vh-login-back::view-transition-old(vh-login-frame.vh-login) { animation-name: vh-login-out-back; }
+html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-name: vh-login-in-back; }
+
+/* Présent d'un seul côté de la bascule : simple fondu. */
+::view-transition-old(*.vh-login):only-child {
+  animation: vh-fade-out var(--dur-fast) var(--ease-in) both;
+}
+::view-transition-new(*.vh-login):only-child {
+  animation: vh-fade-in var(--dur-base) var(--ease-out) var(--dur-instant) both;
+}
+
+@keyframes vh-login-out { to { opacity: 0; translate: calc(var(--enter-distance) * -2) 0; } }
+@keyframes vh-login-in { from { opacity: 0; translate: calc(var(--enter-distance) * 2) 0; } }
+@keyframes vh-login-out-back { to { opacity: 0; translate: calc(var(--enter-distance) * 2) 0; } }
+@keyframes vh-login-in-back { from { opacity: 0; translate: calc(var(--enter-distance) * -2) 0; } }
 
 /* Form Header */
 .page-login .form-header {
@@ -601,8 +652,10 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 }
 .page-login .switch-form:hover i, .page-login .switch-form:hover .icon { transform: translateX(3px); }
 
-/* Inscription : « Vous avez déjà un compte ? Se connecter » sur une ligne,
-   le lien à droite de la question (passe à la ligne si la place manque). */
+/* Étapes du parcours par code (« Retour », « Changer d'adresse ») : la
+   question et le lien sur une ligne (passe à la ligne si la place manque).
+   L'inscription, plus courte depuis les codes, reprend la disposition de la
+   connexion : le lien sous la question. */
 .page-login .form-footer--inline {
   display: flex;
   flex-wrap: wrap;
@@ -623,16 +676,17 @@ body.page-login { min-height: 100vh; display: flex; flex-direction: column; }
 
 @media (max-width: 64em) {
   .page-login .auth-visual { display: none; }
-  .page-login .auth-section {
-    justify-content: center;
-    background:
-      radial-gradient(ellipse at 30% 40%, rgba(200, 169, 110, 0.05) 0%, transparent 60%),
-      linear-gradient(160deg, var(--night) 0%, var(--night-mid) 50%, var(--night-soft) 100%);
-  }
+  /* Sans la photo : le même fond que les autres pages (photo floutée, lueur
+     ambrée, grille), posé par shared-base.css sur body. */
+  body.page-login::before,
+  body.page-login::after { display: block; }
+  .page-login .auth-section { justify-content: center; }
   .page-login .auth-form-panel {
     width: 100%;
     min-width: auto;
     max-width: 520px;
+    /* Carte translucide comme celles des réglages : le fond se devine dessous. */
+    background: rgba(20, 20, 20, 0.7);
     border-radius: 16px;
     margin: 1rem;
     border: 1px solid var(--gold-a12);

@@ -178,13 +178,15 @@ test.describe('Timeline — Journal de Bord', () => {
       sel.dispatchEvent(new Event('change', { bubbles: true }));
     }, nations[0]);
     await expect(page).toHaveURL(new RegExp('nation=' + encodeURIComponent(nations[0]).replace(/%20/g, '(\\+|%20)')));
-    const filtered = await page.locator('.tl-plane-card, .tl-chip').count();
-    expect(filtered).toBeLessThan(total);
+    // La frise se redessine dans une transition (morphing) : une image plus
+    // tard que l'URL. On attend le nouveau compte au lieu de le lire d'un coup.
+    const items = page.locator('.tl-plane-card, .tl-chip');
+    await expect.poll(() => items.count()).toBeLessThan(total);
     await expect(page.locator('#tl-lens-reset')).toBeVisible();
 
     await page.locator('#tl-lens-reset').click();
     await expect(page).not.toHaveURL(/nation=/);
-    expect(await page.locator('.tl-plane-card, .tl-chip').count()).toBe(total);
+    await expect(items).toHaveCount(total);
   });
 
   test('lien « Voir ces appareils dans le hangar » → hangar filtré sur la décennie', async ({ page }) => {
