@@ -358,6 +358,23 @@ header.is-auth .nav-auth { display: block; }
 
     .toast { min-width: auto; }
 
+    /* Mise à jour : grille de deux lignes. En haut l'icône, le message et
+       la croix (à sa place habituelle, coin haut droit) ; dessous,
+       « Recharger » en pleine largeur, aligné sur le texte — une cible
+       franche pour le pouce, sans vide à gauche. */
+    .toast.sw-update {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      column-gap: var(--sp-3);
+      row-gap: var(--sp-3);
+    }
+    .toast.sw-update > .icon,
+    .toast.sw-update > i { grid-area: 1 / 1; }
+    .toast.sw-update .toast-message { grid-area: 1 / 2; white-space: normal; }
+    .toast.sw-update .toast-close { grid-area: 1 / 3; }
+    .toast.sw-update .sw-update-reload { grid-area: 2 / 2 / 3 / 4; width: 100%; }
+
     /* Footer 2 colonnes */
     .footer-content {
       grid-template-columns: 1fr 1fr;
