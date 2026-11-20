@@ -1124,14 +1124,19 @@
   /* Mise à jour du service worker (js/sw-register.js) : toast persistant
      « Nouvelle version disponible — Recharger ». Le bouton reprend l'or du
      toast d'information, en plein pour se distinguer de la croix. */
-  /* Étroit (mobile) : le message garde sa ligne, « Recharger » et la croix
-     passent dessous, alignés à droite. */
+  /* Sur une seule ligne. Le passage à la ligne n'est permis que sur mobile
+     (shared-responsive.css, toast pleine largeur) : sur ordinateur, la
+     largeur d'un conteneur fixe ajustée à son contenu se calculait trop
+     juste pour une rangée « wrap », et la croix tombait seule sur une
+     seconde ligne (en anglais surtout). */
+  .toast.sw-update .toast-message { flex: 1 1 auto; white-space: nowrap; }
+  /* Fond presque opaque (teinte or conservée par-dessus) : ce toast reste
+     affiché jusqu'à une action, et sur téléphone il recouvre les boutons
+     de la page, qui se lisaient au travers du message. */
   .toast.sw-update {
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    row-gap: var(--sp-3);
+    background: linear-gradient(var(--gold-a12), var(--gold-a12)), rgba(22, 22, 24, 0.95);
+    box-shadow: var(--shadow-xl);
   }
-  .toast.sw-update .toast-message { flex: 1 1 12rem; }
   .toast .sw-update-reload {
     flex-shrink: 0;
     min-height: 44px;
