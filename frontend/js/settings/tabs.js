@@ -54,8 +54,19 @@
     }
   }
 
+  /** Ouvre l'onglet nommé dans l'URL (/settings#security) : lien direct vers
+   * une section, et cible de /.well-known/change-password (gestionnaires de
+   * mots de passe). Ancre inconnue ou onglet masqué : onglet par défaut. */
+  function openFromHash(links) {
+    const id = decodeURIComponent((window.location.hash || '').slice(1));
+    if (!id) return;
+    const link = links.find(l => l.dataset.section === id && !l.classList.contains('hidden'));
+    if (link) activateTab(link, { scroll: false });
+  }
+
   function setup() {
     const sidebarLinks = Array.from(document.querySelectorAll('.sidebar-link'));
+    openFromHash(sidebarLinks);
 
     sidebarLinks.forEach(link => {
       link.addEventListener('click', (e) => {
@@ -75,7 +86,7 @@
     });
   }
 
-  VH.settings.tabs = { activateTab, targetForKey, setup };
+  VH.settings.tabs = { activateTab, targetForKey, setup, openFromHash };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = VH.settings.tabs;

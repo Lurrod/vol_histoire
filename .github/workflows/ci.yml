@@ -51,6 +51,12 @@ jobs:
       - name: html-validate
         run: npx --yes html-validate@11.21.0 "frontend/*.html"
 
+      # La version de package.json doit se retrouver partout où elle est
+      # recopiée (backend, e2e, verrou, service worker, OpenAPI, badge) et
+      # avoir son entrée datée dans CHANGELOG.md.
+      - name: Version et CHANGELOG cohérents
+        run: npm run check:release
+
       # Les bundles sont versionnés et déployés tels quels (le serveur ne lance
       # pas de build) : un oubli de rebuild partirait en production. Le build
       # échoue aussi de lui-même sur un « + » compacté dans un calc() et sur

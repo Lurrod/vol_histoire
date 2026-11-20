@@ -35,7 +35,7 @@ info:
     - **415** : jeu de caractères ou encodage du corps non pris en charge.
     Les caractères de contrôle d'un paramètre `search` sont remplacés par une
     espace.
-  version: 4.23.1
+  version: 4.24.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com

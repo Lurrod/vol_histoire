@@ -412,6 +412,11 @@ const STATIC_OPTS = {
       // immédiatement. Les browsers capent de toute façon la revérification à 24h.
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.setHeader('Service-Worker-Allowed', '/');
+    } else if (base === 'opensearch.xml') {
+      // Description OpenSearch : type exigé par les navigateurs pour proposer
+      // la recherche du site dans la barre d'adresse.
+      res.setHeader('Content-Type', 'application/opensearchdescription+xml; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
     } else if (ext === '.webmanifest') {
       // Manifest PWA : revalider à chaque nav. Assez petit pour que ce ne soit
       // pas un souci bandwidth.
@@ -445,6 +450,12 @@ const STATIC_OPTS = {
 // frontend/ contient aussi les outils de dev (node_modules, tests, package.json) :
 // on les filtre avant express.static.
 app.use(createPrivateStaticGuard(sendNotFound));
+// Gestionnaires de mots de passe (W3C « A Well-Known URL for Changing
+// Passwords ») : renvoie vers l'onglet Sécurité des réglages, ouvert d'après
+// l'ancre (js/settings/tabs.js). 302 : la cible peut changer.
+app.get('/.well-known/change-password', (req, res) => {
+  res.redirect(302, '/settings#security');
+});
 // .well-known/ commence par un point : express.static l'ignore par défaut (dotfiles).
 app.use('/.well-known', express.static(path.join(__dirname, '../frontend/.well-known'), STATIC_OPTS));
 app.use(express.static(path.join(__dirname, '../frontend/'), { ...STATIC_OPTS, index: false }));
@@ -638,12 +649,14 @@ app.use('/api', createCreditsRouter(() => pool));
 
 const createAirplanesRouter = require('./routes/airplanes');
 const { invalidateSitemap } = require('./routes/sitemap');
+const { invalidateLlms } = require('./routes/llms');
 const airplanesRouter = createAirplanesRouter(() => pool, {
   onAirplaneChange: () => {
     app.invalidateStatsCache?.();
     app.invalidateTimelineCache?.();
     app.invalidateHeroCache?.();
     invalidateSitemap().catch(() => {}); // sitemap stale si Redis down, non-bloquant
+    invalidateLlms().catch(() => {});
   },
 });
 app.use('/api', airplanesRouter);
@@ -676,6 +689,8 @@ app.use('/api', createContactRouter(() => pool, { contactLimiter, mailer }));
 
 const createSitemapRouter = require('./routes/sitemap');
 app.use('/', createSitemapRouter(() => pool));
+const createLlmsRouter = require('./routes/llms');
+app.use('/', createLlmsRouter(() => pool));
 
 // Health check. Pas d'uptime : public, il donnait la date du dernier
 // redémarrage. Le déploiement vérifie le redémarrage par le PID pm2.

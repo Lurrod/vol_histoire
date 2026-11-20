@@ -1,6 +1,6 @@
 {
   "name": "vol-histoire",
-  "version": "4.23.1",
+  "version": "4.24.0",
   "private": true,
   "engines": {
     "node": ">=24 <25"
@@ -11,6 +11,7 @@
     "build:js": "node scripts/build-js.js",
     "build:css": "node scripts/build-css.js",
     "build": "node scripts/build-js.js && node scripts/build-css.js",
+    "check:release": "node scripts/check-release.js",
     "lint": "eslint backend/ frontend/js/ scripts/ --ignore-pattern 'frontend/js/dist' --ignore-pattern 'frontend/js/vendor'",
     "lint:fix": "eslint backend/ frontend/js/ scripts/ --ignore-pattern 'frontend/js/dist' --ignore-pattern 'frontend/js/vendor' --fix",
     "test:all": "cd backend && npm run test:coverage && cd ../e2e && npm test"

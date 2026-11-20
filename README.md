@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.23.1-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.24.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-24-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/tests-2120-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
@@ -331,7 +331,7 @@ Couverture : backend 96,0 % des lignes (seuil 80), frontend 99,8 % des lignes et
 
 | Job | Contenu |
 |---|---|
-| `quality` | `npm run lint` (ESLint), `html-validate` sur `frontend/*.html`, `npm run build` puis échec si un fichier généré diffère du dépôt (`frontend/js/dist`, `frontend/js/vendor`, `frontend/css/*.min.css`, `app-version.js`, `shared/airplane-fields.js`) |
+| `quality` | `npm run lint` (ESLint), `html-validate` sur `frontend/*.html`, `npm run check:release` (version et CHANGELOG cohérents, voir plus bas), `npm run build` puis échec si un fichier généré diffère du dépôt (`frontend/js/dist`, `frontend/js/vendor`, `frontend/css/*.min.css`, `app-version.js`, `shared/airplane-fields.js`) |
 | `test` | `npm audit` (backend : dépendances de production au seuil `high`, arbre complet au seuil `critical` ; frontend : `high`), Jest backend avec couverture et suite d'intégration sur PostgreSQL, Jest frontend avec couverture (seuils de `frontend/jest.config.json`) |
 | `e2e` | Playwright sur une base seedée |
 | `load` | tests de charge autocannon |
@@ -340,6 +340,34 @@ Couverture : backend 96,0 % des lignes (seuil 80), frontend 99,8 % des lignes et
 Node 24 partout : `.nvmrc` (lu par `setup-node`), champ `engines` des quatre `package.json`, et la production. Sur le serveur, `vol-histoire` tourne avec un Node 24 dédié (interpréteur pm2), distinct du Node système utilisé par les autres applications ; les scripts de déploiement et de retour arrière le placent en tête du `PATH`. Le déploiement affiche un avertissement si la version ne correspond pas à `.nvmrc`. Les actions tierces sont épinglées par SHA de commit ; Dependabot les met à jour.
 
 Les bundles sont versionnés et déployés tels quels : **toute modification de JS/CSS source doit être suivie de `npm run build` et du commit des fichiers générés**, sinon le job `quality` échoue.
+
+### Publier une version
+
+[`CHANGELOG.md`](CHANGELOG.md) suit [Keep a Changelog 1.1.0](https://keepachangelog.com/fr/1.1.0/) et
+s'écrit **pour les visiteurs** : ce qui change pour eux, en langage courant — ni nom de fichier, ni
+migration, ni cache. Le travail purement interne (tests, CI, refactorisation) n'y figure pas ; les
+opérations de mise en production (migrations SQL, purges Redis) vont dans la description de la PR.
+
+- Rubriques, dans cet ordre et seulement si elles ont du contenu : `Added`, `Changed`, `Deprecated`,
+  `Removed`, `Fixed`, `Security`.
+- Pendant le travail, chaque changement visible s'écrit sous `## [Unreleased]`.
+- Une version retirée garde son entrée, marquée `[YANKED]` (ex. `## [4.4.5] - 2026-06-10 [YANKED]`).
+
+Au moment de la version :
+
+1. Choisir le numéro (versionnage sémantique : mineure pour une fonctionnalité ou un lot de fiches,
+   correctif pour une correction).
+2. Le porter dans `package.json` (racine, `backend/`, `e2e/`), le verrou `backend/package-lock.json`,
+   `CACHE_VERSION` de `frontend/sw.js`, `info.version` de `backend/openapi.yaml` et le badge du README.
+3. Dans le CHANGELOG : renommer `## [Unreleased]` en `## [x.y.z] - AAAA-MM-JJ`, rouvrir un
+   `## [Unreleased]` vide au-dessus, et en bas du fichier faire pointer `[unreleased]` sur
+   `compare/vx.y.z...HEAD` et ajouter `[x.y.z]: …/compare/v<précédente>...vx.y.z`.
+4. `npm run build`, puis `npm run check:release` : il échoue si une copie du numéro a été oubliée, si
+   l'entrée ou un lien du CHANGELOG manque, ou si `security.txt` expire dans moins de 30 jours. La CI
+   lance le même contrôle.
+5. Après la fusion, poser le tag sur le commit de `main` et le pousser, sinon les liens de comparaison
+   du CHANGELOG ne mènent nulle part :
+   `git tag -a vx.y.z <commit> -m vx.y.z && git push origin vx.y.z`.
 
 ### Deroulement du deploiement
 

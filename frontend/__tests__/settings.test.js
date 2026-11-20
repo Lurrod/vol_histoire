@@ -189,6 +189,28 @@ describe('VH.settings.ui', () => {
 });
 
 describe('VH.settings.tabs', () => {
+  test('ancre de l’URL : ouvre l’onglet nommé, sans défiler ; ancre inconnue ou onglet masqué : rien', () => {
+    const { tabs } = loadModules();
+    window.history.replaceState(null, '', '/settings#profile');
+    window.Element.prototype.scrollIntoView.mockClear?.();
+    tabs.setup();
+    expect(document.getElementById('tab-profile').getAttribute('aria-selected')).toBe('true');
+    expect(document.getElementById('profile').hidden).toBe(false);
+    expect(window.Element.prototype.scrollIntoView).not.toHaveBeenCalled();
+
+    const links = Array.from(document.querySelectorAll('.sidebar-link'));
+    window.history.replaceState(null, '', '/settings#inconnu');
+    tabs.openFromHash(links);
+    expect(document.getElementById('tab-profile').getAttribute('aria-selected')).toBe('true');
+    window.history.replaceState(null, '', '/settings#admin'); // onglet masqué (non-admin)
+    tabs.openFromHash(links);
+    expect(document.getElementById('admin-nav-link').getAttribute('aria-selected')).toBe('false');
+    window.history.replaceState(null, '', '/settings');
+    tabs.openFromHash(links); // sans ancre : rien
+    expect(document.getElementById('tab-profile').getAttribute('aria-selected')).toBe('true');
+    window.history.replaceState(null, '', '/');
+  });
+
   test('clic : onglet et section actifs, défilement vers la section', () => {
     const { tabs } = loadModules();
     tabs.setup();
