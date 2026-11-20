@@ -118,7 +118,8 @@
   body.page-favorites,
   body.page-legal,
   body.page-settings,
-  body.page-hangar {
+  body.page-hangar,
+  body.page-login {
     background: var(--night);
   }
 
@@ -131,7 +132,9 @@
   body.page-settings::before,
   body.page-settings::after,
   body.page-hangar::before,
-  body.page-hangar::after {
+  body.page-hangar::after,
+  body.page-login::before,
+  body.page-login::after {
     content: "";
     position: fixed;
     inset: 0;
@@ -143,7 +146,8 @@
   body.page-favorites::before,
   body.page-legal::before,
   body.page-settings::before,
-  body.page-hangar::before {
+  body.page-hangar::before,
+  body.page-login::before {
     background-image: url('/assets/airplanes/f4-phantom-2.jpg');
     background-image: image-set(
       url('/assets/airplanes/f4-phantom-2.avif') type('image/avif'),
@@ -163,7 +167,8 @@
   body.page-favorites::after,
   body.page-legal::after,
   body.page-settings::after,
-  body.page-hangar::after {
+  body.page-hangar::after,
+  body.page-login::after {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),

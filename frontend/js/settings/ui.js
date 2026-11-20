@@ -22,13 +22,29 @@
     else VH.busyButton.stop(button);
   }
 
-  /** Défilement doux, sauf si l'utilisateur demande moins d'animations. */
+  /** Défilement doux, sauf si l'utilisateur demande moins d'animations
+   * (système ou réglage du site, VH.motion). */
   function scrollBehavior() {
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const motion = window.VH && window.VH.motion;
+    const reduce = motion && typeof motion.prefersReducedMotion === 'function'
+      ? motion.prefersReducedMotion()
+      : Boolean(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     return reduce ? 'auto' : 'smooth';
   }
 
-  VH.settings.ui = { API_BASE, tr, setButtonLoading, scrollBehavior };
+  /** Clé au singulier (_one) ou au pluriel (_many) selon `count`. */
+  function plural(base, count) {
+    return `${base}_${Number(count) === 1 ? 'one' : 'many'}`;
+  }
+
+  /** Traduction avec paramètres et repli ({nom} remplacés dans les deux cas). */
+  function trf(key, fallback, params) {
+    const raw = (typeof i18n !== 'undefined' && typeof i18n.t === 'function') ? i18n.t(key, params) : null;
+    if (raw && raw !== key) return raw;
+    return Object.keys(params || {}).reduce((out, k) => out.split(`{${k}}`).join(String(params[k])), fallback);
+  }
+
+  VH.settings.ui = { API_BASE, tr, trf, plural, setButtonLoading, scrollBehavior };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = VH.settings.ui;

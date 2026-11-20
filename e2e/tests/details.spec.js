@@ -36,7 +36,8 @@ test.describe('Page Détails', () => {
     // client vers /404, donc jamais de 200 indexable pour une fiche absente.
     const response = await page.goto('/details?id=99999');
     expect(response.status()).toBe(404);
-    await expect(page.locator('h1.error-title')).toBeVisible();
+    // Page 404 « Hors des radars » (main.error-page, titre e4-title).
+    await expect(page.locator('main.error-page h1')).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
   });
 

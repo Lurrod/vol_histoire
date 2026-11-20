@@ -61,6 +61,8 @@
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       state.aircraftData = await response.json();
       VH.details.render.renderAircraftDetails(state);
+      // « Dernière fiche consultée » des réglages (shared/last-viewed.js).
+      if (VH.lastViewed) VH.lastViewed.save(state.aircraftData);
     } catch {
       showLoadError(state);
       return;

@@ -453,7 +453,42 @@ function setNumberPopIn(el, value) {
   el.classList.add('is-animating');
 }
 
+// ── Toast différé ─────────────────────────────────────────────────────
+// Un message à lire sur la page suivante (ex. « Toutes vos sessions ont été
+// fermées », puis redirection vers /login) : gardé en sessionStorage, montré
+// au chargement de la page d'arrivée, puis oublié.
+const QUEUED_TOAST_KEY = 'vh-toast';
+const QUEUED_TOAST_TYPES = ['info', 'success', 'error'];
+
+/** Garde un toast pour la prochaine page. @returns {boolean} gardé ou non */
+function queueToast(message, type = 'info') {
+  try {
+    sessionStorage.setItem(QUEUED_TOAST_KEY, JSON.stringify({ message: String(message), type }));
+    return true;
+  } catch {
+    return false; // stockage refusé : le message est perdu, sans conséquence
+  }
+}
+
+/** Montre (une seule fois) le toast gardé par la page précédente. */
+function showQueuedToast() {
+  let entry = null;
+  try {
+    entry = JSON.parse(sessionStorage.getItem(QUEUED_TOAST_KEY));
+    sessionStorage.removeItem(QUEUED_TOAST_KEY);
+  } catch {
+    return false;
+  }
+  if (!entry || typeof entry.message !== 'string' || !entry.message) return false;
+  showToast(entry.message, QUEUED_TOAST_TYPES.includes(entry.type) ? entry.type : 'info');
+  return true;
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', showQueuedToast);
+}
+
 // Export conditionnel pour les tests unitaires (Node.js)
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { escapeHtml, safeSetHTML, showToast, animateNumber, setNumberPopIn, setupPasswordToggle, isValidEmail, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, isValidPassword, calculatePasswordStrength, trapFocus, setFieldError, clearFieldError };
+  module.exports = { escapeHtml, safeSetHTML, showToast, queueToast, showQueuedToast, animateNumber, setNumberPopIn, setupPasswordToggle, isValidEmail, PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, isValidPassword, calculatePasswordStrength, trapFocus, setFieldError, clearFieldError };
 }

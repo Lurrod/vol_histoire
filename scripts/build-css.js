@@ -59,7 +59,7 @@ const BUNDLES = {
   // La page des conflits reprend le bandeau et les cartes de favorites.css.
   'conflicts.min.css': ['catalog.css', 'favorites.css', 'conflicts.css'],
   'login.min.css': ['otp-input.css', 'login.css'],
-  'settings.min.css': ['otp-input.css', 'settings.css'],
+  'settings.min.css': ['otp-input.css', 'settings.css', 'settings-sections.css'],
   'legal.min.css': ['legal.css'],
   'contact.min.css': ['contact.css'],
 };

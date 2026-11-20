@@ -81,3 +81,25 @@ html:active-view-transition .cookie-banner.show { view-transition-name: vh-cooki
   animation-duration: var(--dur-slow);
   animation-timing-function: var(--ease-in-out);
 }
+
+/* Entrées et sorties : un élément présent d'un seul côté de la mise à jour
+   (carte qui quitte ou rejoint les résultats, page suivante du hangar). */
+::view-transition-old(*.vh-morph):only-child {
+  animation: vh-morph-out var(--dur-base) var(--ease-in) both;
+}
+::view-transition-new(*.vh-morph):only-child {
+  animation: vh-morph-in var(--dur-slow) var(--ease-out) both;
+}
+@keyframes vh-morph-out { to { opacity: 0; scale: 0.96; } }
+@keyframes vh-morph-in { from { opacity: 0; translate: 0 var(--enter-distance); } }
+
+/* Pagination : la page suivante arrive par la droite, la précédente par la
+   gauche ; l'ancienne part du côté opposé. */
+html.vh-dir-next::view-transition-old(*.vh-morph):only-child { animation-name: vh-morph-out-left; }
+html.vh-dir-next::view-transition-new(*.vh-morph):only-child { animation-name: vh-morph-in-right; }
+html.vh-dir-prev::view-transition-old(*.vh-morph):only-child { animation-name: vh-morph-out-right; }
+html.vh-dir-prev::view-transition-new(*.vh-morph):only-child { animation-name: vh-morph-in-left; }
+@keyframes vh-morph-out-left { to { opacity: 0; translate: calc(var(--enter-distance) * -3) 0; } }
+@keyframes vh-morph-out-right { to { opacity: 0; translate: calc(var(--enter-distance) * 3) 0; } }
+@keyframes vh-morph-in-right { from { opacity: 0; translate: calc(var(--enter-distance) * 3) 0; } }
+@keyframes vh-morph-in-left { from { opacity: 0; translate: calc(var(--enter-distance) * -3) 0; } }

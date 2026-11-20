@@ -25,7 +25,9 @@ const {
   authorize,
 } = require('../middleware/auth');
 
-module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, codeLimiter, mailer }) {
+const passThrough = (req, res, next) => next();
+
+module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, codeLimiter, sessionsLimiter = passThrough, mailer }) {
   const router = express.Router();
 
   // Durées de validité des codes envoyés par email (rappelées dans les emails).
@@ -299,6 +301,22 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     clearRefreshCookie(res);
     res.json({ message: 'Déconnexion réussie' });
   });
+
+  // POST /api/auth/logout-all — « Se déconnecter de tous les appareils ».
+  // Dans une transaction : révocation de tous les refresh tokens du compte et
+  // incrément de token_version, qui fait refuser par authorize() tout access
+  // token déjà émis, y compris celui de cette requête. Le cookie de ce
+  // navigateur est effacé : il faut se reconnecter partout.
+  router.post('/auth/logout-all', sessionsLimiter, authorize([1, 2, 3]), asyncHandler(async (req, res) => {
+    const userId = Number(req.user.id);
+    await withTransaction(getPool(), async (client) => {
+      await refreshTokensRepo.revokeAllForUser(client, userId);
+      await usersRepo.bumpTokenVersion(client, userId);
+    });
+    logger.info('Déconnexion de tous les appareils', { userId, route: 'POST /auth/logout-all' });
+    clearRefreshCookie(res);
+    res.json({ message: 'Toutes les sessions ont été fermées' });
+  }));
 
   // -----------------------------------------------------------------------------
   // Auth : vérification email + mot de passe oublié

@@ -67,8 +67,9 @@ const i18n = (() => {
   /** Load JSON translation file */
   async function loadTranslations(lang) {
     try {
-      // Determine the base path relative to the page
-      const basePath = document.querySelector('script[src*="i18n.js"]')?.src.replace(/js\/i18n\.js.*$/, '') || './';
+      // Chemin de base : celui du script s'il est chargé seul, sinon la racine du site
+      // (la page 404 est servie à n'importe quelle profondeur : « ./ » visait /details/locales/).
+      const basePath = document.querySelector('script[src*="i18n.js"]')?.src.replace(/js\/i18n\.js.*$/, '') || '/';
       const url = `${basePath}locales/${lang}.json`;
       const res = await fetch(url);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

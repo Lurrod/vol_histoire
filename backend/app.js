@@ -191,6 +191,8 @@ const LIMITER_DEFS = [
   { key: 'cspReport',     max: 60,  msg: 'Trop de rapports, réessayez plus tard.' },
   // Export des données personnelles (LEGAL-011) : requête rare et coûteuse.
   { key: 'dataExport',    max: 10,  msg: "Trop de demandes d'export, réessayez dans 15 minutes." },
+  // « Se déconnecter de tous les appareils » : action rare, qui écrit en base.
+  { key: 'sessions',      max: 10,  msg: 'Trop de demandes, réessayez dans 15 minutes.' },
 ];
 
 function buildLimiter({ max, msg }, store) {
@@ -221,6 +223,7 @@ const emailLimiter         = (req, res, next) => _impl.email(req, res, next);
 const contactLimiter       = (req, res, next) => _impl.contact(req, res, next);
 const cspReportLimiter     = (req, res, next) => _impl.cspReport(req, res, next);
 const dataExportLimiter    = (req, res, next) => _impl.dataExport(req, res, next);
+const sessionsLimiter      = (req, res, next) => _impl.sessions(req, res, next);
 
 // Upgrade vers Redis — appelé depuis server.js si REDIS_URL est défini.
 // 1. Connexion paresseuse + ping pour valider rapidement (échec → fallback mémoire)
@@ -630,7 +633,7 @@ app.get('/api/config', (req, res) => {
 });
 
 const createAuthRouter = require('./routes/auth');
-app.use('/api', createAuthRouter(() => pool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, codeLimiter, mailer }));
+app.use('/api', createAuthRouter(() => pool, { registerLimiter, loginLimiter, emailLimiter, refreshLimiter, codeLimiter, sessionsLimiter, mailer }));
 
 const createUsersRouter = require('./routes/users');
 app.use('/api', createUsersRouter(() => pool, { mailer, dataExportLimiter }));

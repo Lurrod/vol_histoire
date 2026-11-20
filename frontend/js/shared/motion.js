@@ -13,13 +13,50 @@
  * La durée vient donc des tokens de tokens.css, jamais d'une constante.
  * Mouvements réduits : done() est appelé aussitôt, sans classe de sortie.
  * exit() renvoie une fonction d'annulation, pour une réouverture pendant
- * la sortie. */
+ * la sortie.
+ *
+ * Préférence du site « Réduire les animations » (réglages, 2026-11-20) :
+ * clé vh-reduce-motion en stockage local, appliquée ici dès le chargement
+ * d'app.min.js par la classe html.vh-reduce-motion (garde-fou CSS de
+ * shared-utilities.css) ; prefersReducedMotion() la compte comme la
+ * préférence du système. */
 (function () {
   window.VH = window.VH || {};
 
   // Marge au-delà de la durée calculée : une image (≈16 ms) et un peu
   // de jeu, pour que la dernière image de l'animation soit peinte.
   var SETTLE_MS = 34;
+
+  var REDUCE_KEY = 'vh-reduce-motion';
+  var REDUCE_CLASS = 'vh-reduce-motion';
+
+  function readReducePref() {
+    try {
+      return window.localStorage.getItem(REDUCE_KEY) === '1';
+    } catch {
+      return false; // stockage refusé : préférence du système seule
+    }
+  }
+
+  /** Préférence du site (réglages), indépendante de celle du système. */
+  function siteReducesMotion() {
+    return document.documentElement.classList.contains(REDUCE_CLASS);
+  }
+
+  /** Active ou retire la préférence du site, mémorisée si possible.
+   * @param {boolean} on */
+  function setReducedMotion(on) {
+    try {
+      if (on) window.localStorage.setItem(REDUCE_KEY, '1');
+      else window.localStorage.removeItem(REDUCE_KEY);
+    } catch {
+      // stockage refusé : la préférence vaut pour cette page seulement
+    }
+    document.documentElement.classList.toggle(REDUCE_CLASS, Boolean(on));
+  }
+
+  // Au plus tôt : app.min.js est le premier script de la page.
+  if (readReducePref()) document.documentElement.classList.add(REDUCE_CLASS);
 
   /** @param {string|null|undefined} value « 160ms », « 0.24s »
    *  @returns {number} millisecondes (0 si illisible) */
@@ -59,6 +96,12 @@
 
   /** @returns {boolean} */
   function prefersReducedMotion() {
+    if (siteReducesMotion()) return true;
+    return systemPrefersReducedMotion();
+  }
+
+  /** @returns {boolean} préférence du système seule */
+  function systemPrefersReducedMotion() {
     if (typeof window.matchMedia !== 'function') return false;
     try {
       return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -138,6 +181,10 @@
     parseTime: parseTime,
     exitDuration: exitDuration,
     prefersReducedMotion: prefersReducedMotion,
+    systemPrefersReducedMotion: systemPrefersReducedMotion,
+    siteReducesMotion: siteReducesMotion,
+    setReducedMotion: setReducedMotion,
+    REDUCE_KEY: REDUCE_KEY,
     exit: exit,
     replay: replay,
     swapText: swapText

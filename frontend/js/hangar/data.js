@@ -28,7 +28,10 @@
 
   async function loadAircraft(state) {
     const seq = ++requestSeq;
-    VH.hangar.render.renderSkeletons();
+    // Sens de pagination demandé par changePage, consommé par cette requête.
+    const direction = state.pageDirection || null;
+    state.pageDirection = null;
+    VH.hangar.render.showLoading();
     VH.hangar.render.lockPagination();
     try {
       const params = new URLSearchParams({
@@ -59,12 +62,15 @@
         return loadAircraft(state);
       }
 
-      VH.hangar.render.renderAircraft(state);
+      // Cartes posées (morphing) avant la pagination et les compteurs : le
+      // code appelant (cases « Comparer ») les trouve dans le DOM au retour.
+      await VH.hangar.render.showResults(state, direction);
       VH.hangar.render.renderPagination(state);
       VH.hangar.render.updateResultsCount(state);
       VH.hangar.render.updateStats(state);
     } catch {
       if (seq !== requestSeq) return;
+      VH.hangar.render.clearLoading();
       // Les boutons ont été désactivés au départ : on les rend de nouveau
       // utilisables pour permettre de réessayer.
       VH.hangar.render.renderPagination(state);

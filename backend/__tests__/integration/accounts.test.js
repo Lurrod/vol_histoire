@@ -190,6 +190,30 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       expect(again.body.code).toBe('REFRESH_REVOKED');
     });
 
+    test('logout-all : tous les refresh tokens révoqués, access tokens refusés', async () => {
+      const email = 'partout@it.local';
+      const hash = (await userByEmail('member@it.local')).password;
+      await ctx.pool.query("INSERT INTO users (name, email, password, email_verified) VALUES ('Partout', $1, $2, TRUE)", [email, hash]);
+      const first = await api().post('/api/login').send({ email, password: IT_PASSWORD });
+      const second = await api().post('/api/login').send({ email, password: IT_PASSWORD });
+      const before = await userByEmail(email);
+
+      const out = await api().post('/api/auth/logout-all')
+        .set('Authorization', `Bearer ${second.body.token}`).set('Cookie', refreshCookie(second));
+      expect(out.status).toBe(200);
+      expect(out.body.message).toBe('Toutes les sessions ont été fermées');
+
+      const { rows } = await ctx.pool.query(
+        'SELECT COUNT(*)::int AS n FROM refresh_tokens WHERE user_id = $1 AND revoked = FALSE', [before.id]
+      );
+      expect(rows[0].n).toBe(0);
+      expect((await userByEmail(email)).token_version).toBe(before.token_version + 1);
+      const stale = await api().get(`/api/users/${before.id}`).set('Authorization', `Bearer ${first.body.token}`);
+      expect(stale.status).toBe(401);
+      const refresh = await api().post('/api/refresh').set('Cookie', refreshCookie(first));
+      expect(refresh.status).toBe(401);
+    });
+
     test('nettoyage des jetons expirés et des comptes non vérifiés', async () => {
       const auth = require('../../middleware/auth');
       await expect(auth.cleanupExpiredTokens()).resolves.toBeUndefined();
@@ -307,12 +331,40 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       expect(found.body.data.map((u) => u.email)).toEqual(['editor@it.local']);
     });
 
+    test('GET /api/users?role= — filtre par rôle, compteurs par rôle sur la recherche seule', async () => {
+      const { rows } = await ctx.pool.query(
+        'SELECT role_id, COUNT(*)::int AS n FROM users GROUP BY role_id'
+      );
+      const expected = { 1: 0, 2: 0, 3: 0 };
+      rows.forEach((r) => { if (expected[r.role_id] !== undefined) expected[r.role_id] = r.n; });
+
+      const editors = await api().get('/api/users').query({ role: 2 }).set('Authorization', `Bearer ${adminToken}`);
+      expect(editors.status).toBe(200);
+      expect(editors.body.data.length).toBeGreaterThanOrEqual(1);
+      expect(editors.body.data.every((u) => u.role_id === 2)).toBe(true);
+      expect(editors.body.meta.total).toBe(expected[2]);
+      expect(editors.body.meta.roles).toEqual({ 1: expected[1], 2: expected[2], 3: expected[3] });
+
+      const searched = await api().get('/api/users').query({ search: 'admin@', role: 3 })
+        .set('Authorization', `Bearer ${adminToken}`);
+      expect(searched.status).toBe(200);
+      expect(searched.body.data).toEqual([]);
+      expect(searched.body.meta.total).toBe(0);
+      expect(searched.body.meta.roles).toEqual({ 1: 1, 2: 0, 3: 0 });
+
+      const bad = await api().get('/api/users').query({ role: 4 }).set('Authorization', `Bearer ${adminToken}`);
+      expect(bad.status).toBe(400);
+    });
+
     test('GET /api/users/:id — son propre profil', async () => {
       const token = await ctx.login('editor@it.local');
       const me = await userByEmail('editor@it.local');
       const res = await api().get(`/api/users/${me.id}`).set('Authorization', `Bearer ${token}`);
       expect(res.status).toBe(200);
-      expect(res.body).toEqual({ id: me.id, name: 'Editeur IT', email: 'editor@it.local', role_id: 2 });
+      expect(res.body).toEqual({
+        id: me.id, name: 'Editeur IT', email: 'editor@it.local', role_id: 2,
+        created_at: me.created_at.toISOString(),
+      });
     });
 
     test('PUT /api/users/:id — mot de passe : sessions coupées, nouvelle session ouverte', async () => {

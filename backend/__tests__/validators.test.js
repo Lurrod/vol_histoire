@@ -12,6 +12,7 @@ const {
   isOptionalDate,
   isOptionalPositiveNumber,
   isOptionalId,
+  isValidRoleId,
   validateAirplaneData,
 } = require('../validators');
 
@@ -857,5 +858,18 @@ describe('validateAirplaneData — strate 2 et strate 4 champs non couverts', ()
   test('rival_id négatif → erreur isOptionalId (ligne 190)', () => {
     const errors = validateAirplaneData({ ...base, rival_id: -5 });
     expect(errors).toContain('rival_id doit être un entier positif.');
+  });
+});
+
+// =============================================================================
+// isValidRoleId
+// =============================================================================
+describe('isValidRoleId', () => {
+  test.each(['1', '2', '3', 1, 2, 3])('%p accepté', (v) => {
+    expect(isValidRoleId(v)).toBe(true);
+  });
+
+  test.each(['0', '4', '01', '1.0', ' 1', '', 'admin', 1.5, null, undefined, ['1'], {}])('%p refusé', (v) => {
+    expect(isValidRoleId(v)).toBe(false);
   });
 });

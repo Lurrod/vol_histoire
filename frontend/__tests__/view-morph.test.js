@@ -250,3 +250,63 @@ describe('swap : morphing dans la page', () => {
     expect(document.startViewTransition).not.toHaveBeenCalled();
   });
 });
+
+describe('run et emplacements : morphing libre', () => {
+  test('noms posés avant et après, classes de <html> posées puis retirées, noms vides ignorés', async () => {
+    load();
+    document.body.innerHTML = '<div id="a"></div><div id="b"></div>';
+    const vt = fakeVt();
+    let during = null;
+    document.startViewTransition = jest.fn((cb) => { cb(); return vt; });
+    const a = document.getElementById('a');
+    const b = document.getElementById('b');
+    await vm.run({
+      className: 'vh-x',
+      rootClass: 'vh-one  vh-two',
+      name: () => [[a, 'vh-a'], [b, ''], [null, 'vh-c']],
+      update: () => { during = [...document.documentElement.classList]; },
+    });
+    expect(during).toEqual(expect.arrayContaining(['vh-one', 'vh-two']));
+    expect(a.style.viewTransitionName).toBe('vh-a');
+    expect(a.style.getPropertyValue('view-transition-class')).toBe('vh-x');
+    expect(b.style.viewTransitionName).toBe('');
+    vt.end();
+    await flush();
+    expect(a.style.viewTransitionName).toBe('');
+    expect(document.documentElement.classList.contains('vh-one')).toBe(false);
+  });
+
+  test('sans update : rien ; sans name : transition sans nom ; sans API : mise à jour directe', async () => {
+    load();
+    await expect(vm.run({})).resolves.toBeUndefined();
+    const vt = fakeVt();
+    document.startViewTransition = jest.fn((cb) => { cb(); return vt; });
+    const update = jest.fn();
+    await vm.run({ update });
+    expect(update).toHaveBeenCalledTimes(1);
+    delete document.startViewTransition;
+    const u2 = jest.fn();
+    await vm.run({ update: u2, name: () => [] });
+    expect(u2).toHaveBeenCalledTimes(1);
+  });
+
+  test('swap avec slots : le n-ième élément avant porte le même nom que le n-ième après', async () => {
+    load();
+    document.body.innerHTML = '<section id="r"><div class="sk"></div><div class="sk"></div></section>';
+    const root = document.getElementById('r');
+    const vt = fakeVt();
+    let before = null;
+    document.startViewTransition = jest.fn((cb) => {
+      before = [...root.children].map((el) => el.style.viewTransitionName);
+      cb();
+      return vt;
+    });
+    await vm.swap({
+      root,
+      slots: '.sk, .card',
+      update: () => { root.innerHTML = '<article class="card" data-morph-id="9"></article><article class="card" data-morph-id="4"></article>'; },
+    });
+    expect(before).toEqual(['vh-slot-0', 'vh-slot-1']);
+    expect([...root.children].map((el) => el.style.viewTransitionName)).toEqual(['vh-slot-0', 'vh-slot-1']);
+  });
+});

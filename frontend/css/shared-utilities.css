@@ -128,4 +128,21 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* Même garde-fou, demandé dans les réglages (« Réduire les animations ») :
+     classe posée par js/shared/motion.js d'après le stockage local. */
+  html.vh-reduce-motion,
+  html.vh-reduce-motion *,
+  html.vh-reduce-motion *::before,
+  html.vh-reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  html.vh-reduce-motion::view-transition-group(*),
+  html.vh-reduce-motion::view-transition-old(*),
+  html.vh-reduce-motion::view-transition-new(*) {
+    animation: none !important;
+  }
 }
