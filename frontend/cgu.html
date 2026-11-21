@@ -62,30 +62,26 @@
   <!-- Header -->
   <!-- @include header -->
 
-  <!-- Hero Section -->
-  <section class="page-hero" aria-labelledby="page-hero-heading">
-    <div class="hero-background"></div>
-    <div class="container">
-      <div class="page-hero-inner">
-        <div class="hero-text">
-          <div class="hero-eyebrow"><span data-i18n="legal.page_eyebrow">Légal</span></div>
-          <h1 id="page-hero-heading"><span data-i18n="legal.cgu_hero_title_1">Conditions Générales</span><span class="hero-muted" data-i18n="legal.cgu_hero_title_2">d'Utilisation</span></h1>
-          <p data-i18n="legal.cgu_hero_subtitle">Règles et modalités d'utilisation du site Vol d'Histoire</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Main Content -->
   <main id="main-content" class="legal-content">
     <div class="container">
-      <div class="legal-container">
-        <!-- Breadcrumb -->
-        <div class="breadcrumb">
-          <a href="/"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a>
-          <i class="fas fa-chevron-right"></i>
-          <span data-i18n="legal.breadcrumb_cgu">CGU</span>
+      <!-- En-tête de document : fil d'Ariane, documents légaux, titre, informations -->
+      <header class="doc-head" aria-labelledby="page-hero-heading">
+        <nav class="breadcrumb" aria-label="Fil d'Ariane">
+          <a href="/"><i class="fas fa-home" aria-hidden="true"></i> <span data-i18n="nav.home">Accueil</span></a>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          <span aria-current="page" data-i18n="legal.breadcrumb_cgu">CGU</span>
+        </nav>
+        <nav class="doc-tabs" aria-label="Documents légaux" data-i18n-aria="legal.docs_nav"><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a><a href="/politique-confidentialite" data-i18n="footer.privacy_short">Confidentialité</a><a href="/cgu" data-i18n="footer.terms" aria-current="page">CGU</a><a href="/credits" data-i18n="footer.photo_credits">Crédits photo</a></nav>
+        <h1 id="page-hero-heading" data-i18n="legal.cgu_title">Conditions générales d'utilisation</h1>
+        <p class="doc-sub" data-i18n="legal.cgu_hero_subtitle">Règles et modalités d'utilisation du site Vol d'Histoire</p>
+        <div class="doc-row">
+          <p class="doc-meta"><span><i class="fas fa-code-branch" aria-hidden="true"></i><span data-i18n="legal.meta_version">Version</span> <strong>1.3</strong></span><span><i class="fas fa-calendar" aria-hidden="true"></i><span data-i18n="legal.meta_updated">Mise à jour le</span> <strong data-i18n="legal.cgu_updated">19 novembre 2026</strong></span><span><i class="fas fa-clock" aria-hidden="true"></i><strong data-reading-time>7 min</strong> <span data-i18n="legal.meta_reading">de lecture</span></span></p>
+          <button type="button" class="doc-print" data-print><i class="fas fa-file-pdf" aria-hidden="true"></i><span data-i18n="legal.print">Imprimer / PDF</span></button>
         </div>
+      </header>
+      <div class="legal-container" data-toc data-toc-sections=".legal-section">
 
         <div class="legal-intro">
           <div class="intro-box">
@@ -370,10 +366,6 @@
           </div>
         </div>
 
-        <div class="legal-footer">
-          <p data-i18n="legal.last_update"><i class="fas fa-calendar"></i> Dernière mise à jour : 10 novembre 2026</p>
-          <p data-i18n="legal.version"><i class="fas fa-check-double"></i> Version 1.2</p>
-        </div>
 
         <div class="acceptance-box">
           <i class="fas fa-handshake"></i>

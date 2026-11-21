@@ -2280,10 +2280,12 @@ describe('GET /api/stats', () => {
       .mockResolvedValueOnce({ rows: [{ total: 47 }] })
       .mockResolvedValueOnce({ rows: [{ earliest: 1953, latest: 2023 }] })
       .mockResolvedValueOnce({ rows: [{ total: 12 }] })
-      .mockResolvedValueOnce({ rows: [{ total: 5 }] });
+      .mockResolvedValueOnce({ rows: [{ total: 5 }] })
+      .mockResolvedValueOnce({ rows: [{ total: 61 }] });
 
     const res = await request(app).get('/api/stats');
     expect(res.status).toBe(200);
+    expect(res.body.wars).toBe(61);
     expect(res.body.airplanes).toBe(47);
     expect(res.body.earliest_year).toBe(1953);
     expect(res.body.latest_year).toBe(2023);
@@ -2302,7 +2304,8 @@ describe('GET /api/stats', () => {
       .mockResolvedValueOnce({ rows: [{ total: 68 }] })
       .mockResolvedValueOnce({ rows: [{ earliest: 1970, latest: 2024 }] })
       .mockResolvedValueOnce({ rows: [{ total: 15 }] })
-      .mockResolvedValueOnce({ rows: [{ total: 5 }] });
+      .mockResolvedValueOnce({ rows: [{ total: 5 }] })
+      .mockResolvedValueOnce({ rows: [{ total: 61 }] });
 
     const first = await request(app).get('/api/stats');
     expect(first.status).toBe(200);
@@ -4089,6 +4092,7 @@ describe('GET /api/stats — valeurs null (lignes 36-37)', () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ total: 0 }] })
       .mockResolvedValueOnce({ rows: [{ earliest: null, latest: null }] })
+      .mockResolvedValueOnce({ rows: [{ total: 0 }] })
       .mockResolvedValueOnce({ rows: [{ total: 0 }] })
       .mockResolvedValueOnce({ rows: [{ total: 0 }] });
 

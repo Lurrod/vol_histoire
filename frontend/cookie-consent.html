@@ -27,133 +27,94 @@
   </div>
 </aside>
 
-<!-- Cookie Settings Modal -->
+<!-- Cookie Settings Modal : une ligne par finalité, détails repliés.
+     Sous 48em, panneau qui monte du bas (cookies.css). -->
 <div id="cookie-modal" class="cookie-modal hidden">
   <div class="cookie-modal-backdrop"></div>
   <div class="cookie-modal-container">
     <div class="cookie-modal-header">
-      <h2>
-        <i class="fas fa-cookie-bite"></i>
-        <span data-i18n="cookie.settings_title">Paramètres des cookies</span>
-      </h2>
+      <h2 data-i18n="cookie.settings_title">Paramètres des cookies</h2>
       <button type="button" class="cookie-modal-close" aria-label="Fermer" data-i18n-aria="cookie.close_label">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
 
     <div class="cookie-modal-content">
-      <div class="cookie-intro">
-        <p data-i18n="cookie.intro">Seule la mesure d'audience dépend de votre accord. Votre choix est conservé 6 mois, puis vous sera redemandé.</p>
-      </div>
+      <p class="cookie-intro">
+        <span data-i18n="cookie.intro">Seule la mesure d'audience dépend de votre accord. Votre choix est conservé 6 mois, puis vous sera redemandé.</span>
+        <span data-i18n-html="cookie.more_info_desc">Pour en savoir plus sur notre utilisation des cookies et vos droits, consultez notre <a href="/politique-confidentialite">Politique de confidentialité</a>.</span>
+      </p>
 
-      <!-- Essential Cookies -->
-      <div class="cookie-category">
-        <div class="cookie-category-header">
-          <div class="cookie-category-info">
-            <div class="cookie-category-icon essential">
-              <i class="fas fa-shield-alt"></i>
-            </div>
-            <div>
+      <ul class="cookie-categories">
+        <!-- Essentiels : pas d'interrupteur bloqué, une pastille -->
+        <li class="cookie-category">
+          <div class="cookie-category-header">
+            <div class="cookie-category-info">
               <h3 id="cookie-essential-title" data-i18n="cookie.essential_title">Cookies essentiels</h3>
-              <p class="cookie-category-description" data-i18n="cookie.essential_cant_disable">Nécessaires au fonctionnement du site. Ils ne peuvent pas être désactivés.</p>
+              <p class="cookie-category-description" data-i18n="cookie.essential_desc">Nécessaires au fonctionnement du site.</p>
             </div>
+            <span class="cookie-always">
+              <i class="fas fa-lock" aria-hidden="true"></i>
+              <span data-i18n="cookie.always_on">Toujours actifs</span>
+            </span>
           </div>
-          <div class="cookie-toggle">
-            <input type="checkbox" id="cookie-essential" aria-labelledby="cookie-essential-title" checked disabled>
-            <label for="cookie-essential" class="toggle-disabled">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="cookie-category-details">
-          <p><strong data-i18n="cookie.examples_label">Exemples :</strong></p>
-          <ul>
-            <li data-i18n="cookie.essential_auth">Session de connexion et sécurité</li>
-            <li data-i18n="cookie.essential_prefs">Langue, affichage du hangar, comparateur, visite guidée déjà vue</li>
-            <li data-i18n="cookie.essential_consent">Mémorisation de votre choix sur les cookies</li>
-          </ul>
-          <p class="cookie-duration"><i class="fas fa-clock"></i> <span data-i18n="cookie.duration_essential">Durée : de la session à 6 mois (détail dans la politique de confidentialité)</span></p>
-        </div>
-      </div>
+          <details class="cookie-category-details">
+            <summary><span data-i18n="cookie.details">Détails</span><i class="fas fa-chevron-down" aria-hidden="true"></i></summary>
+            <ul>
+              <li data-i18n="cookie.essential_auth">Session de connexion et sécurité</li>
+              <li data-i18n="cookie.essential_prefs">Langue, affichage du hangar, comparateur, visite guidée déjà vue</li>
+              <li data-i18n="cookie.essential_consent">Mémorisation de votre choix sur les cookies</li>
+            </ul>
+            <p class="cookie-duration"><i class="fas fa-clock" aria-hidden="true"></i> <span data-i18n="cookie.duration_essential">Durée : de la session à 6 mois (détail dans la politique de confidentialité)</span></p>
+          </details>
+        </li>
 
-      <!-- Analytics Cookies -->
-      <div class="cookie-category">
-        <div class="cookie-category-header">
-          <div class="cookie-category-info">
-            <div class="cookie-category-icon analytics">
-              <i class="fas fa-chart-line"></i>
-            </div>
-            <div>
+        <!-- Mesure d'audience : seule finalité réglable -->
+        <li class="cookie-category">
+          <div class="cookie-category-header">
+            <div class="cookie-category-info">
               <h3 id="cookie-analytics-title" data-i18n="cookie.analytics_title">Cookies analytiques</h3>
               <p class="cookie-category-description" data-i18n="cookie.analytics_desc">Nous aident à comprendre comment les visiteurs utilisent notre site.</p>
             </div>
-          </div>
-          <div class="cookie-toggle">
-            <input type="checkbox" id="cookie-analytics" aria-labelledby="cookie-analytics-title">
-            <label for="cookie-analytics">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="cookie-category-details">
-          <p><strong data-i18n="cookie.examples_label">Exemples :</strong></p>
-          <ul>
-            <li data-i18n="cookie.analytics_google">Google Analytics (mesure d'audience)</li>
-            <li data-i18n="cookie.analytics_pages">Pages visitées et durée de visite</li>
-            <li data-i18n="cookie.analytics_bounce">Taux de rebond et parcours utilisateur</li>
-            <li data-i18n="cookie.analytics_anonymous">Identifiant pseudonyme de navigateur (cookies _ga)</li>
-          </ul>
-          <p class="cookie-duration"><i class="fas fa-clock"></i> <span data-i18n="cookie.duration_analytics">Durée : 13 mois maximum</span></p>
-        </div>
-      </div>
-
-      <!-- Marketing Cookies (optionnel) -->
-      <div class="cookie-category">
-        <div class="cookie-category-header">
-          <div class="cookie-category-info">
-            <div class="cookie-category-icon marketing">
-              <i class="fas fa-bullhorn"></i>
-            </div>
-            <div>
-              <h3 id="cookie-marketing-title" data-i18n="cookie.marketing_title">Cookies marketing</h3>
-              <p class="cookie-category-description" data-i18n="cookie.marketing_desc_full">Utilisés pour afficher des publicités pertinentes (actuellement non utilisés).</p>
+            <div class="cookie-toggle">
+              <input type="checkbox" id="cookie-analytics" aria-labelledby="cookie-analytics-title">
+              <label for="cookie-analytics">
+                <span class="toggle-slider"></span>
+              </label>
             </div>
           </div>
-          <div class="cookie-toggle">
-            <input type="checkbox" id="cookie-marketing" aria-labelledby="cookie-marketing-title" disabled>
-            <label for="cookie-marketing" class="toggle-disabled">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="cookie-category-details">
-          <p><strong data-i18n="cookie.marketing_note_label">Note :</strong> <span data-i18n="cookie.marketing_note">Nous n'utilisons actuellement pas de cookies marketing ou publicitaires sur ce site.</span></p>
-        </div>
-      </div>
+          <details class="cookie-category-details">
+            <summary><span data-i18n="cookie.details">Détails</span><i class="fas fa-chevron-down" aria-hidden="true"></i></summary>
+            <ul>
+              <li data-i18n="cookie.analytics_google">Google Analytics (mesure d'audience)</li>
+              <li data-i18n="cookie.analytics_pages">Pages visitées et durée de visite</li>
+              <li data-i18n="cookie.analytics_bounce">Taux de rebond et parcours utilisateur</li>
+              <li data-i18n="cookie.analytics_anonymous">Identifiant pseudonyme de navigateur (cookies _ga)</li>
+            </ul>
+            <p class="cookie-duration"><i class="fas fa-clock" aria-hidden="true"></i> <span data-i18n="cookie.duration_analytics">Durée : 13 mois maximum</span></p>
+          </details>
+        </li>
+      </ul>
 
-      <!-- Information -->
-      <div class="cookie-info-box">
-        <i class="fas fa-info-circle"></i>
-        <div>
-          <p><strong data-i18n="cookie.more_info">Plus d'informations</strong></p>
-          <p data-i18n-html="cookie.more_info_desc">Pour en savoir plus sur notre utilisation des cookies et vos droits, consultez notre <a href="/politique-confidentialite" data-i18n="footer.privacy">Politique de confidentialité</a>.</p>
-        </div>
-      </div>
+      <p class="cookie-no-ads" data-i18n="cookie.no_ads">Aucun cookie publicitaire ni marketing sur ce site.</p>
     </div>
 
+    <!-- Refuser et Accepter au même niveau (CNIL, LEGAL-013) -->
     <div class="cookie-modal-footer">
-      <button type="button" class="btn btn-primary" id="cookie-reject-all-btn">
-        <i class="fas fa-times" aria-hidden="true"></i>
-        <span data-i18n="cookie.reject_all">Tout refuser</span>
-      </button>
       <button type="button" class="btn btn-secondary" id="cookie-save-preferences-btn">
-        <i class="fas fa-check"></i>
+        <i class="fas fa-check" aria-hidden="true"></i>
         <span data-i18n="cookie.save_preferences">Enregistrer mes préférences</span>
       </button>
-      <button type="button" class="btn btn-primary" id="cookie-accept-all-btn">
-        <i class="fas fa-check-double"></i>
-        <span data-i18n="cookie.accept_all">Tout accepter</span>
-      </button>
+      <div class="cookie-modal-choices">
+        <button type="button" class="btn btn-primary" id="cookie-reject-all-btn">
+          <i class="fas fa-times" aria-hidden="true"></i>
+          <span data-i18n="cookie.reject_all">Tout refuser</span>
+        </button>
+        <button type="button" class="btn btn-primary" id="cookie-accept-all-btn">
+          <i class="fas fa-check-double" aria-hidden="true"></i>
+          <span data-i18n="cookie.accept_all">Tout accepter</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

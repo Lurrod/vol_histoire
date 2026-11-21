@@ -119,6 +119,8 @@ body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
 }
 .page-details .mini-bar .mini-stats span i, .page-details .mini-bar .mini-stats span .icon { color: var(--hud-cyan); margin-right: 0.35rem; }
 @media (max-width: 64em) { .page-details .mini-bar { display: none; } }
+/* Sommaire collant (shared-toc.css) : sous l'en-tête ET la mini-barre */
+@media (min-width: 64.01em) { .page-details { --toc-top: calc(var(--header-h) + 4.5rem); } }
 
 /* CAPABILITIES DOSSIER (armement / tech / missions) */
 .page-details .capabilities-grid {
@@ -195,19 +197,8 @@ body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
 
 /* EDITORIAL DESCRIPTION */
 .page-details .description-section .section-content { max-width: 65ch; }
-/* Une seule lettrine : sur le texte simple, ou sur le premier paragraphe du
-   Markdown — #aircraft-description est un <p> qui contient alors les titres,
-   et ::first-letter visait aussi la première lettre du premier titre. */
-.page-details .description-section .section-content > p:not(.markdown-body):first-of-type::first-letter,
-.page-details .description-section .markdown-body > p:first-of-type::first-letter {
-  font-family: var(--font-display);
-  font-size: 3.6em;
-  float: left;
-  line-height: 0.9;
-  padding: 4px 10px 0 0;
-  color: var(--hud-cyan);
-  font-weight: 700;
-}
+/* Pas de mise en avant du début du récit (ni lettrine, ni première ligne
+   en gras) : choix du propriétaire, 2026-11-21. */
 
 /* AIRCRAFT HERO */
 /* Fond photographique flouté : voir shared-base.css (source unique). */
@@ -1043,8 +1034,6 @@ body.page-details { background: var(--night); }
   .page-details p, .page-details li { orphans: 3; widows: 3; }
   .page-details .description-section p, .page-details .markdown-body p, .page-details .markdown-body li,
   .page-details .variants-content p, .page-details .variants-content li { font-size: 10.5pt !important; line-height: 1.55 !important; }
-  .page-details .description-section .section-content > p:not(.markdown-body):first-of-type::first-letter,
-  .page-details .description-section .markdown-body > p:first-of-type::first-letter { all: unset; }
   .page-details .markdown-body h3.md-section { margin: 3.5mm 0 1mm !important; font-size: 11pt !important; color: #000 !important; break-after: avoid; page-break-after: avoid; }
   .page-details .markdown-body h4.md-subsection { font-size: 10.5pt !important; break-after: avoid; }
   .page-details .markdown-body ul, .page-details .variants-content ul { margin: 1mm 0 !important; padding-left: 5mm !important; }

@@ -355,6 +355,7 @@ header.is-auth .nav-auth { display: block; }
       inset-inline: var(--sp-4);
       bottom: var(--sp-4);
     }
+    #toast-container.toast-stack { width: auto; }
 
     .toast { min-width: auto; }
 
@@ -375,12 +376,6 @@ header.is-auth .nav-auth { display: block; }
     .toast.sw-update .toast-close { grid-area: 1 / 3; }
     .toast.sw-update .sw-update-reload { grid-area: 2 / 2 / 3 / 4; width: 100%; }
 
-    /* Footer 2 colonnes */
-    .footer-content {
-      grid-template-columns: 1fr 1fr;
-      gap: var(--sp-8);
-    }
-
     /* Modal responsive */
     .modal-container {
       max-height: 95vh;
@@ -398,31 +393,6 @@ header.is-auth .nav-auth { display: block; }
     .form-group.span-2 {
       grid-column: span 1;
     }
-  }
-
-  /* ── tablet (≤ 48em) ─── */
-  /* Pied de page : la présentation sur toute la largeur, puis les trois
-     listes côte à côte. En une seule colonne centrée, il occupait près
-     d'un écran entier sur mobile. */
-  @media (max-width: 48em) {
-    .footer-content {
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--sp-8) var(--sp-6);
-      margin-bottom: var(--sp-12);
-    }
-    .footer-content > .footer-section:first-child { grid-column: 1 / -1; }
-    .footer-section h3 { margin-bottom: var(--sp-4); }
-    /* Cibles tactiles de 44 px (WCAG 2.5.5, HIG, Material) : la hauteur
-       passe de 32 à 44 px et l'espacement entre items (12 px) est absorbé
-       par la cible elle-même — même pas de 44 px qu'avant, rien ne bouge. */
-    .footer-section ul li { margin-bottom: 0; }
-    .footer-section ul li a {
-      display: inline-flex;
-      align-items: center;
-      min-height: 44px;
-      min-width: 44px;
-    }
-    .footer-bottom { text-align: center; }
   }
 
   /* ── phone (≤ 30em) ──── */
@@ -446,10 +416,6 @@ header.is-auth .nav-auth { display: block; }
       width: 100%;
     }
 
-    /* Deux colonnes : « Politique de confidentialité » ne tient pas en trois. */
-    .footer-content { grid-template-columns: 1fr 1fr; gap: var(--sp-8) var(--sp-4); }
-    .footer-logo    { font-size: var(--text-xl); }
-    .footer-lockup  { height: 2.25rem; }
     .auth-lockup    { height: 2.5rem; }
   }
 

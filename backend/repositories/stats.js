@@ -5,10 +5,10 @@
 // -----------------------------------------------------------------------------
 
 /**
- * @returns {Promise<{ airplanes: number, earliest: number|null, latest: number|null, countries: number, generations: number }>}
+ * @returns {Promise<{ airplanes: number, earliest: number|null, latest: number|null, countries: number, generations: number, wars: number }>}
  */
 async function loadCatalogStats(db) {
-  const [countRes, datesRes, countriesRes, generationsRes] = await Promise.all([
+  const [countRes, datesRes, countriesRes, generationsRes, warsRes] = await Promise.all([
     db.query('SELECT COUNT(*)::int AS total FROM airplanes'),
     db.query(`
         SELECT
@@ -19,6 +19,8 @@ async function loadCatalogStats(db) {
       `),
     db.query('SELECT COUNT(DISTINCT country_id)::int AS total FROM airplanes WHERE country_id IS NOT NULL'),
     db.query('SELECT COUNT(DISTINCT id_generation)::int AS total FROM airplanes WHERE id_generation IS NOT NULL'),
+    // Conflits référencés (pied de page : « 61 conflits »)
+    db.query('SELECT COUNT(*)::int AS total FROM wars'),
   ]);
   return {
     airplanes: countRes.rows[0].total,
@@ -26,6 +28,7 @@ async function loadCatalogStats(db) {
     latest: datesRes.rows[0].latest,
     countries: countriesRes.rows[0].total,
     generations: generationsRes.rows[0].total,
+    wars: warsRes.rows[0].total,
   };
 }
 

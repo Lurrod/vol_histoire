@@ -62,30 +62,26 @@
   <!-- Header -->
   <!-- @include header -->
 
-  <!-- Hero Section -->
-  <section class="page-hero" aria-labelledby="page-hero-heading">
-    <div class="hero-background"></div>
-    <div class="container">
-      <div class="page-hero-inner">
-        <div class="hero-text">
-          <div class="hero-eyebrow"><span data-i18n="legal.page_eyebrow">Légal</span></div>
-          <h1 id="page-hero-heading"><span data-i18n="legal.pc_hero_title_1">Politique de</span><span class="hero-muted" data-i18n="legal.pc_hero_title_2">Confidentialité</span></h1>
-          <p data-i18n="legal.pc_hero_subtitle">Comment nous protégeons et utilisons vos données personnelles</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- Main Content -->
   <main id="main-content" class="legal-content">
     <div class="container">
-      <div class="legal-container">
-        <!-- Breadcrumb -->
-        <div class="breadcrumb">
-          <a href="/"><i class="fas fa-home"></i> <span data-i18n="nav.home">Accueil</span></a>
-          <i class="fas fa-chevron-right"></i>
-          <span data-i18n="legal.breadcrumb_pc">Politique de Confidentialité</span>
+      <!-- En-tête de document : fil d'Ariane, documents légaux, titre, informations -->
+      <header class="doc-head" aria-labelledby="page-hero-heading">
+        <nav class="breadcrumb" aria-label="Fil d'Ariane">
+          <a href="/"><i class="fas fa-home" aria-hidden="true"></i> <span data-i18n="nav.home">Accueil</span></a>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          <span aria-current="page" data-i18n="legal.breadcrumb_pc">Politique de Confidentialité</span>
+        </nav>
+        <nav class="doc-tabs" aria-label="Documents légaux" data-i18n-aria="legal.docs_nav"><a href="/mentions-legales" data-i18n="footer.legal_notices">Mentions légales</a><a href="/politique-confidentialite" data-i18n="footer.privacy_short" aria-current="page">Confidentialité</a><a href="/cgu" data-i18n="footer.terms">CGU</a><a href="/credits" data-i18n="footer.photo_credits">Crédits photo</a></nav>
+        <h1 id="page-hero-heading" data-i18n="legal.pc_title">Politique de confidentialité</h1>
+        <p class="doc-sub" data-i18n="legal.pc_hero_subtitle">Comment nous protégeons et utilisons vos données personnelles</p>
+        <div class="doc-row">
+          <p class="doc-meta"><span><i class="fas fa-code-branch" aria-hidden="true"></i><span data-i18n="legal.meta_version">Version</span> <strong>2.1</strong></span><span><i class="fas fa-calendar" aria-hidden="true"></i><span data-i18n="legal.meta_updated">Mise à jour le</span> <strong data-i18n="legal.pc_updated">19 novembre 2026</strong></span><span><i class="fas fa-clock" aria-hidden="true"></i><strong data-reading-time>8 min</strong> <span data-i18n="legal.meta_reading">de lecture</span></span></p>
+          <button type="button" class="doc-print" data-print><i class="fas fa-file-pdf" aria-hidden="true"></i><span data-i18n="legal.print">Imprimer / PDF</span></button>
         </div>
+      </header>
+      <div class="legal-container" data-toc data-toc-sections=".legal-section">
 
         <div class="legal-intro">
           <div class="intro-box">
@@ -320,7 +316,6 @@
         </div>
 
         <div class="legal-footer">
-          <p data-i18n="legal.last_update"><i class="fas fa-calendar"></i> Dernière mise à jour : 10 novembre 2026</p>
           <p data-i18n="legal.rgpd_compliant"><i class="fas fa-check-circle"></i> Conforme au RGPD (UE) 2016/679</p>
         </div>
       </div>

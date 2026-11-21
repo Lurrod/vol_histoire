@@ -140,6 +140,13 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  /* Exception : l'interrupteur qui active cette préférence garde son
+     mouvement (choix du propriétaire) — sinon il sauterait au moment même
+     où on le touche. Plus spécifique que la règle ci-dessus, même couche. */
+  html.vh-reduce-motion #pref-reduce-motion + label,
+  html.vh-reduce-motion #pref-reduce-motion + label .toggle-slider {
+    transition-duration: var(--dur-base) !important;
+  }
   html.vh-reduce-motion::view-transition-group(*),
   html.vh-reduce-motion::view-transition-old(*),
   html.vh-reduce-motion::view-transition-new(*) {
