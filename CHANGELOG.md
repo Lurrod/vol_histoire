@@ -7,6 +7,44 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 ## [Unreleased]
 
+## [4.27.0] - 2026-11-21
+
+### Added
+
+- Une erreur sur une fiche ? Le lien « Signalez-la », en bas de chaque fiche, ouvre le formulaire de
+  contact avec l'appareil déjà indiqué, et votre message nous arrive avec le lien de la fiche.
+- Le formulaire de contact se remplit plus vite : le sujet se choisit d'un clic, le délai de réponse
+  s'affiche selon le sujet, un compteur montre la longueur du message, et l'adresse e-mail se copie
+  d'un geste.
+
+### Changed
+
+- La page contact est repensée : un seul champ pour le nom, facultatif, et le formulaire à côté des
+  autres moyens de nous écrire.
+- Sur les fiches d'appareil :
+  - la fiche technique se lit en trois groupes (cellule, performances, motorisation), bien plus
+    courte sur téléphone ;
+  - le profil de capacités rejoint les autres sections et le sommaire, et il figure dans l'export
+    PDF ;
+  - la génération s'affiche avec le pays, le constructeur et l'année ;
+  - sur téléphone, les boutons favori, comparer et PDF tiennent sur une seule ligne.
+- Les en-têtes du hangar, des favoris et des conflits sont plus compacts sur téléphone et tablette, et
+  la petite ligne au-dessus des titres disparaît. Sur la page d'un conflit, ses dates s'affichent sous
+  son nom.
+- La barre de comparaison tient dans l'écran à toutes les tailles ; sur téléphone, elle passe sur
+  deux lignes avec des boutons plus grands.
+- De nouvelles icônes remplacent le bouclier, par exemple pour la mise en service d'un appareil ou
+  l'onglet « Confidentialité » des paramètres.
+
+### Fixed
+
+- Les nombres d'une fiche s'écrivent partout de la même façon, selon la langue du site
+  (« 2 336 km/h »).
+- Un conflit d'une seule année n'affiche plus « 1999 – 1999 ».
+- Les grands nombres de la page des conflits sont groupés (« 1 119 »).
+- Sur la page d'un conflit, le dernier chevron du fil d'Ariane avait une taille et une couleur
+  différentes des autres.
+
 ## [4.26.0] - 2026-11-21
 
 ### Added
@@ -636,7 +674,8 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 - Première version de Vol d'Histoire : un catalogue d'avions militaires.
 
-[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.25.0...HEAD
+[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.27.0...HEAD
+[4.27.0]: https://github.com/Lurrod/vol_histoire/compare/v4.26.0...v4.27.0
 [4.26.0]: https://github.com/Lurrod/vol_histoire/compare/v4.25.0...v4.26.0
 [4.25.0]: https://github.com/Lurrod/vol_histoire/compare/v4.24.0...v4.25.0
 [4.24.0]: https://github.com/Lurrod/vol_histoire/compare/v4.23.1...v4.24.0

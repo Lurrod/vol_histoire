@@ -1,19 +1,140 @@
-// Soumission du formulaire contact via API backend
+// Page contact : sujet en pastilles, fiche concernée (?fiche=<id>), compteur
+// du message, adresse à copier, envoi via l'API (POST /api/contact).
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('contact-form');
   if (!form) return;
+
+  const MESSAGE_MAX = 5000;
+  const SEND_DONE_MS = 1800;
+  const COPIED_MS = 1600;
+  // Sujet → ligne des délais de réponse (partenariat et autre : aucune).
+  const DELAY_TOPIC = { general: 'general', bug: 'bug', contrib: 'contrib' };
 
   const submitBtn = form.querySelector('.btn-send');
   const successMsg = document.getElementById('contact-success');
   // Avion du bouton (contact.css) : data-state idle → sending → done.
   const sendLabel = submitBtn?.querySelector('span');
   let sendResetTimer = null;
-  const SEND_DONE_MS = 1800;
 
+  const nameEl = document.getElementById('contact-name');
   const emailEl = document.getElementById('contact-email');
   const messageEl = document.getElementById('contact-message');
+  const countEl = document.getElementById('contact-count');
 
-  // Nettoyage de l'erreur au fur et à mesure que l'utilisateur corrige.
+  // Traduction avec repli : tant que les locales ne sont pas chargées,
+  // i18n.t() renvoie la clé.
+  function tr(key, fallback, params) {
+    const value = i18n.t(key, params);
+    return value && value !== key ? value : fallback;
+  }
+
+  // ── Sujet ────────────────────────────────────────────────────────────
+  function selectedSubject() {
+    const checked = form.querySelector('input[name="subject"]:checked');
+    return checked ? checked.value : 'general';
+  }
+
+  function selectSubject(value) {
+    // Valeur lue dans l'adresse : comparée aux pastilles, jamais injectée
+    // dans un sélecteur.
+    const radio = Array.from(form.querySelectorAll('input[name="subject"]')).find((r) => r.value === value);
+    if (radio) radio.checked = true;
+    syncDelays();
+  }
+
+  // La ligne des délais qui correspond au sujet choisi est mise en avant.
+  function syncDelays() {
+    const topic = DELAY_TOPIC[selectedSubject()];
+    document.querySelectorAll('.contact-delays [data-topic]').forEach((row) => {
+      row.classList.toggle('is-active', row.dataset.topic === topic);
+    });
+  }
+
+  form.addEventListener('change', (e) => {
+    if (e.target.name === 'subject') syncDelays();
+  });
+
+  // ── Compteur du message ──────────────────────────────────────────────
+  function formatCount(n) {
+    const locale = i18n.currentLang === 'en' ? 'en-GB' : 'fr-FR';
+    return n.toLocaleString(locale);
+  }
+
+  function syncCount() {
+    if (!countEl || !messageEl) return;
+    const length = messageEl.value.length;
+    const params = { n: formatCount(length), max: formatCount(MESSAGE_MAX) };
+    countEl.textContent = tr('contact.form_count', `${params.n} / ${params.max}`, params);
+    countEl.classList.toggle('is-near', length >= MESSAGE_MAX * 0.9);
+  }
+
+  messageEl?.addEventListener('input', syncCount);
+  window.addEventListener('langChanged', syncCount);
+
+  // ── Fiche concernée ──────────────────────────────────────────────────
+  const aircraftBox = document.getElementById('contact-aircraft');
+  const aircraftLink = document.getElementById('contact-aircraft-link');
+  let aircraftId = null;
+
+  function clearAircraft() {
+    aircraftId = null;
+    if (aircraftBox) aircraftBox.hidden = true;
+    // L'adresse ne garde plus la fiche (un rechargement ne la remettrait pas).
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('fiche')) {
+      url.searchParams.delete('fiche');
+      window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
+    }
+  }
+
+  async function loadAircraft(id) {
+    try {
+      const res = await fetch(`/api/airplanes/${id}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const aircraft = data && (data.data || data);
+      if (!aircraft || !aircraft.name) return;
+      aircraftId = Number(id);
+      aircraftLink.textContent = aircraft.name;
+      aircraftLink.href = window.VH?.shared?.buildDetailsPath
+        ? window.VH.shared.buildDetailsPath(aircraftId, aircraft.name)
+        : `/details?id=${aircraftId}`;
+      aircraftBox.hidden = false;
+    } catch {
+      // Fiche illisible : le formulaire reste utilisable sans elle.
+    }
+  }
+
+  document.getElementById('contact-aircraft-remove')?.addEventListener('click', () => {
+    clearAircraft();
+    messageEl?.focus();
+  });
+
+  // ?sujet=bug&fiche=30 (lien « Signaler une erreur » des fiches).
+  const params = new URLSearchParams(window.location.search);
+  const subjectParam = params.get('sujet');
+  if (subjectParam) selectSubject(subjectParam);
+  const ficheParam = params.get('fiche');
+  if (ficheParam && /^\d{1,9}$/.test(ficheParam) && aircraftBox && aircraftLink) {
+    loadAircraft(ficheParam);
+  }
+
+  // ── Adresse à copier ─────────────────────────────────────────────────
+  const copyBtn = document.getElementById('contact-copy');
+  let copiedTimer = null;
+  copyBtn?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(copyBtn.dataset.copy);
+      copyBtn.classList.add('is-copied');
+      clearTimeout(copiedTimer);
+      copiedTimer = setTimeout(() => copyBtn.classList.remove('is-copied'), COPIED_MS);
+      showToast(tr('contact.copied', 'Adresse copiée'), 'success');
+    } catch {
+      showToast(tr('contact.copy_failed', 'Copie impossible : sélectionnez l’adresse à la main.'), 'error');
+    }
+  });
+
+  // ── Erreurs et message de succès ─────────────────────────────────────
   emailEl?.addEventListener('input', () => clearFieldError(emailEl));
   messageEl?.addEventListener('input', () => clearFieldError(messageEl));
 
@@ -40,35 +161,58 @@ document.addEventListener('DOMContentLoaded', function () {
   form.addEventListener('input', hideSuccess);
   form.addEventListener('change', hideSuccess);
 
+  function validate(email, message) {
+    clearFieldError(emailEl);
+    clearFieldError(messageEl);
+    if (!email || !isValidEmail(email)) {
+      setFieldError(emailEl, i18n.t('contact.form_error_email'));
+      emailEl.focus();
+      return false;
+    }
+    if (!message) {
+      setFieldError(messageEl, i18n.t('contact.form_error_message'));
+      messageEl.focus();
+      return false;
+    }
+    return true;
+  }
+
+  function onSent() {
+    // form.reset() ne déclenche ni input ni change : le message reste
+    // affiché jusqu'à la prochaine saisie. La fiche concernée ne vaut que
+    // pour ce message.
+    form.reset();
+    clearAircraft();
+    syncDelays();
+    syncCount();
+    showSuccess();
+    // transitions-dev (success check) : rejoue le stroke-draw via
+    // data-state. La longueur du tracé (≈ 31) tient dans le repli CSS
+    // de 32 : plus d'écriture dans element.style, interdite par la CSP.
+    const successCheck = successMsg.querySelector('.t-success-check');
+    if (successCheck) {
+      successCheck.setAttribute('data-state', 'out');
+      void successCheck.offsetWidth; // reflow → rejoue le tracé
+      successCheck.setAttribute('data-state', 'in');
+    }
+    showToast(i18n.t('contact.form_success'), 'success');
+  }
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const email = emailEl.value.trim();
     const message = messageEl.value.trim();
-
-    clearFieldError(emailEl);
-    clearFieldError(messageEl);
-
-    if (!email || !isValidEmail(email)) {
-      setFieldError(emailEl, i18n.t('contact.form_error_email'));
-      emailEl.focus();
-      return;
-    }
-    if (!message) {
-      setFieldError(messageEl, i18n.t('contact.form_error_message'));
-      messageEl.focus();
-      return;
-    }
+    if (!validate(email, message)) return;
 
     const payload = {
-      firstname: document.getElementById('contact-firstname').value.trim(),
-      lastname: document.getElementById('contact-lastname').value.trim(),
+      name: nameEl ? nameEl.value.trim() : '',
       email,
-      subject: document.getElementById('contact-subject').value,
+      subject: selectedSubject(),
       message,
     };
+    if (aircraftId) payload.aircraft_id = aircraftId;
 
-    // Loading state
     // L'avion décolle (CSS) ; le libellé passe à « Envoi… » le temps de la requête.
     const labelText = sendLabel ? sendLabel.textContent : '';
     const labelKey = sendLabel ? sendLabel.getAttribute('data-i18n') : null;
@@ -96,20 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (response.ok) {
         sent = true;
-        // form.reset() ne déclenche ni input ni change : le message reste
-        // affiché jusqu'à la prochaine saisie.
-        form.reset();
-        showSuccess();
-        // transitions-dev (success check) : rejoue le stroke-draw via
-        // data-state. La longueur du tracé (≈ 31) tient dans le repli CSS
-        // de 32 : plus d'écriture dans element.style, interdite par la CSP.
-        const successCheck = successMsg.querySelector('.t-success-check');
-        if (successCheck) {
-          successCheck.setAttribute('data-state', 'out');
-          void successCheck.offsetWidth; // reflow → rejoue le tracé
-          successCheck.setAttribute('data-state', 'in');
-        }
-        showToast(i18n.t('contact.form_success'), 'success');
+        onSent();
       } else if (response.status === 429) {
         const data = await response.json().catch(() => ({}));
         showToast(data.message || i18n.t('login.too_many_attempts'), 'error');
@@ -141,4 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   });
+
+  syncDelays();
+  syncCount();
 });

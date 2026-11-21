@@ -21,9 +21,10 @@ test.describe('Contact Form', () => {
     await expect(page.locator('.btn-send')).toBeVisible();
   });
 
-  test('les 3 cartes de contact sont affichées', async ({ page }) => {
-    const cards = page.locator('.contact-card');
-    await expect(cards).toHaveCount(3);
+  test('colonne d’appoint : adresse, délais, lien depuis les fiches', async ({ page }) => {
+    await expect(page.locator('.contact-card')).toHaveCount(3);
+    await expect(page.locator('.contact-address a[href="mailto:vdh@titouan-borde.com"]')).toBeVisible();
+    await expect(page.locator('#contact-copy')).toBeVisible();
   });
 
   test('soumission avec email vide → erreur inline sur le champ email', async ({ page }) => {
@@ -57,28 +58,45 @@ test.describe('Contact Form', () => {
       route.fulfill({ status: 200, contentType: 'application/json', body: '{"message":"ok"}' })
     );
 
-    await page.fill('#contact-firstname', 'Jean');
-    await page.fill('#contact-lastname', 'Dupont');
+    await page.fill('#contact-name', 'Jean Dupont');
     await page.fill('#contact-email', 'jean@example.com');
-    await page.selectOption('#contact-subject', 'general');
+    await page.getByRole('radio', { name: /contribution/i }).check();
     await page.fill('#contact-message', 'Ceci est un message de test E2E.');
 
+    const sent = page.waitForRequest('**/api/contact');
     await page.click('.btn-send');
+    const body = JSON.parse((await sent).postData());
+    expect(body).toMatchObject({ name: 'Jean Dupont', email: 'jean@example.com', subject: 'contrib' });
 
     // Succès : message de confirmation visible
     const success = page.locator('#contact-success');
     await expect(success).toHaveClass(/visible/, { timeout: 10000 });
   });
 
-  test('le sélecteur de sujet contient les options attendues', async ({ page }) => {
-    const options = page.locator('#contact-subject option');
-    await expect(options).toHaveCount(5); // general, bug, contrib, partner, other
+  test('cinq sujets en pastilles ; le délai du sujet choisi est mis en avant', async ({ page }) => {
+    await expect(page.locator('input[name="subject"]')).toHaveCount(5); // general, bug, contrib, partner, other
+    await expect(page.locator('.contact-delays > div')).toHaveCount(3);
+    await expect(page.locator('.contact-delays .is-active')).toHaveAttribute('data-topic', 'general');
+    await page.getByRole('radio', { name: /signaler une erreur/i }).check();
+    await expect(page.locator('.contact-delays .is-active')).toHaveAttribute('data-topic', 'bug');
   });
 
-  test('les délais de réponse sont affichés', async ({ page }) => {
-    // Les délais sont dans une liste <ul> dans .legal-section
-    const delayItems = page.locator('.legal-section ul li');
-    const count = await delayItems.count();
-    expect(count).toBeGreaterThanOrEqual(3);
+  test('depuis une fiche : sujet « erreur » et fiche concernée envoyée', async ({ page }) => {
+    // Une fiche réelle du jeu de test, trouvée par l'API.
+    const list = await (await page.request.get('/api/airplanes?limit=1')).json();
+    const aircraft = (list.data || list)[0];
+    await page.goto(`/contact?sujet=bug&fiche=${aircraft.id}`);
+    await expect(page.locator('#contact-aircraft')).toBeVisible();
+    await expect(page.locator('#contact-aircraft-link')).toHaveText(aircraft.name);
+    await expect(page.getByRole('radio', { name: /signaler une erreur/i })).toBeChecked();
+
+    await page.route('**/api/contact', route =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '{"message":"ok"}' })
+    );
+    await page.fill('#contact-email', 'jean@example.com');
+    await page.fill('#contact-message', 'La vitesse maximale semble fausse.');
+    const sent = page.waitForRequest('**/api/contact');
+    await page.click('.btn-send');
+    expect(JSON.parse((await sent).postData()).aircraft_id).toBe(aircraft.id);
   });
 });

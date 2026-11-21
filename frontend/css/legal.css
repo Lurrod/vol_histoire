@@ -7,7 +7,6 @@ body.page-legal { background: var(--night); }
 /* En-tête de la page contact (seule à garder le bandeau HERO COMMUN de
    shared-base.css) : fond transparent pour laisser voir la photo floue. */
 .page-legal .page-hero { background: transparent; padding: 7rem 0 6rem; margin-top: 70px; }
-.page-legal .hero-eyebrow { color: rgba(255,255,255,0.66); margin-bottom: 2.5rem; }
 
 /* ======================================================================
    EN-TÊTE DE DOCUMENT — CGU, confidentialité, mentions légales, crédits
@@ -292,7 +291,6 @@ body.page-legal { background: var(--night); }
   /* En-tête centré comme Conflits (favorites.css) */
   .page-legal .page-hero { padding: 5rem 0 4rem; }
   .page-legal .page-hero-inner { flex-direction: column; gap: 2.5rem; align-items: center; text-align: center; }
-  .page-legal .hero-eyebrow { justify-content: center; }
   .page-legal .hero-text > p { margin-inline: auto; }
   .page-legal .hero-text h1 { font-size: clamp(2.5rem, 8vw, 4rem); }
   .page-legal .legal-container { padding: 1.5rem; border-radius: 12px; }

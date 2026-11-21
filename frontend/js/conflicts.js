@@ -47,13 +47,21 @@
     return parts[0] === 'conflits' && parts[1] ? decodeURIComponent(parts[1]) : null;
   }
 
+  // Chiffres du bandeau groupés (« 1 119 », « 1,119 »). L'espace fine du
+  // français (U+202F) disparaissait entre les « 1 » serrés du gros chiffre :
+  // espace insécable ordinaire à la place.
+  function num(n) {
+    const locale = window.i18n && i18n.currentLang === 'en' ? 'en-GB' : 'fr-FR';
+    return Number(n).toLocaleString(locale).replace(/\u202f/g, '\u00a0');
+  }
+
   // ── Liste ──────────────────────────────────────────────────────────────
   function renderList(wars) {
     const list = $('conflicts-list');
     if (!list) return;
     const total = wars.reduce((n, w) => n + (w.count || 0), 0);
-    setText($('stat-a'), String(wars.length));
-    setText($('stat-b'), String(total));
+    setText($('stat-a'), num(wars.length));
+    setText($('stat-b'), num(total));
 
     list.innerHTML = wars.map((w) => `
       <a class="conflict-card" href="/conflits/${encodeURIComponent(w.slug)}">
@@ -68,15 +76,20 @@
 
   // ── Un conflit ─────────────────────────────────────────────────────────
   function renderWar(war) {
+    // Période en seconde ligne du titre (comme « Hangar / des Avions ») :
+    // elle était dans la ligne d'accroche, supprimée.
     const h1 = $('page-hero-heading');
     setText(h1, war.name);
-    setText($('hero-eyebrow'), `${i18n.t('conflicts.eyebrow_war')} · ${period(war)}`);
+    const when = period(war);
+    if (h1 && when) {
+      h1.insertAdjacentHTML('beforeend', ` <span class="hero-muted">${escapeHtml(when)}</span>`);
+    }
     setText($('hero-desc'), war.description || '');
 
     const nations = new Set((war.airplanes || []).map((a) => a.country_code).filter(Boolean));
-    setText($('stat-a'), String(war.count));
+    setText($('stat-a'), num(war.count));
     setText($('stat-a-label'), i18n.t('conflicts.stat_aircraft_engaged'));
-    setText($('stat-b'), String(nations.size));
+    setText($('stat-b'), num(nations.size));
     setText($('stat-b-label'), i18n.t('conflicts.stat_nations'));
 
     const crumb = $('crumb-current');

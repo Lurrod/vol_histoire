@@ -3685,6 +3685,59 @@ describe('POST /api/contact', () => {
     expect(res.body.message).toMatch(/erreur.*envoi/i);
   });
 
+  test('200 — champ unique « name » (nouveau formulaire)', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.11')
+      .send({ name: '  Ada Lovelace ', email: 'ada@example.com', message: 'Bonjour' });
+    expect(res.status).toBe(200);
+    expect(mailer.sendContactEmail).toHaveBeenCalledWith(expect.objectContaining({ name: 'Ada Lovelace' }));
+  });
+
+  test('400 — nom trop long', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.12')
+      .send({ name: 'x'.repeat(101), email: 'ada@example.com', message: 'Bonjour' });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/nom invalide/i);
+    expect(mailer.sendContactEmail).not.toHaveBeenCalled();
+  });
+
+  test('200 — fiche concernée : nom et lien relus en base, en tête du message', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 30, name: 'Dassault Rafale' }] });
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.13')
+      .send({ email: 'ada@example.com', subject: 'bug', message: 'Vitesse fausse', aircraft_id: 30 });
+    expect(res.status).toBe(200);
+    expect(mockPool.query).toHaveBeenCalledWith('SELECT id, name FROM airplanes WHERE id = $1', [30]);
+    expect(mailer.sendContactEmail).toHaveBeenCalledWith(expect.objectContaining({
+      message: 'Fiche concernée : Dassault Rafale — https://vol-histoire.titouan-borde.com/details/dassault-rafale-30\n\nVitesse fausse',
+    }));
+  });
+
+  test('200 — fiche inconnue ou base indisponible : message envoyé sans la ligne', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    await request(app).post('/api/contact').set('X-Forwarded-For', '172.16.0.14')
+      .send({ email: 'ada@example.com', message: 'Texte', aircraft_id: '999' });
+    expect(mailer.sendContactEmail).toHaveBeenLastCalledWith(expect.objectContaining({ message: 'Texte' }));
+    mockPool.query.mockRejectedValueOnce(new Error('DB down'));
+    const res = await request(app).post('/api/contact').set('X-Forwarded-For', '172.16.0.15')
+      .send({ email: 'ada@example.com', message: 'Texte 2', aircraft_id: 5 });
+    expect(res.status).toBe(200);
+    expect(mailer.sendContactEmail).toHaveBeenLastCalledWith(expect.objectContaining({ message: 'Texte 2' }));
+  });
+
+  test('400 — identifiant de fiche invalide', async () => {
+    const res = await request(app)
+      .post('/api/contact')
+      .set('X-Forwarded-For', '172.16.0.16')
+      .send({ email: 'ada@example.com', message: 'Texte', aircraft_id: 'abc' });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/fiche invalide/i);
+  });
+
   test('200 — message trimé (espaces en début/fin supprimés)', async () => {
     const res = await request(app)
       .post('/api/contact')
