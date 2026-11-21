@@ -330,8 +330,16 @@
     script.textContent = JSON.stringify(data);
   }
 
+  /* Nombres de la fiche dans la langue du site, jamais celle du navigateur :
+   * « 2 336 km/h » en français, « 2,336 km/h » en anglais, partout
+   * (chiffres clés, mini-barre, fiche technique). */
+  function formatNumber(n, maxDigits = 2) {
+    const locale = window.i18n && i18n.currentLang === 'en' ? 'en' : 'fr';
+    return new Intl.NumberFormat(locale, { maximumFractionDigits: maxDigits }).format(Number(n));
+  }
+
   VH.details.data = {
-    loadAircraftDetails, loadRelatedData, updateSeoMeta, slugify, buildVehicleLd, buildArticleLd,
+    formatNumber, loadAircraftDetails, loadRelatedData, updateSeoMeta, slugify, buildVehicleLd, buildArticleLd,
     markdownToText, plainDescription, showLoadError,
   };
 })();

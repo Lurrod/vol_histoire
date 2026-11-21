@@ -403,16 +403,6 @@
 
 @media (max-width: 48em) {
   .page-favorites .container { padding: 0 1.5rem; }
-  .page-favorites .page-hero { padding: 5rem 0 4rem; }
-  .page-favorites .page-hero-inner { flex-direction: column; gap: 2.5rem; align-items: center; text-align: center; }
-  .page-favorites .hero-eyebrow { justify-content: center; }
-  .page-favorites .hero-text > p { margin-inline: auto; }
-  .page-favorites .hero-text h1 { font-size: clamp(2.5rem, 8vw, 4rem); }
-  .page-favorites .hero-data { flex-direction: row; justify-content: center; padding-left: 0; border-left: none; border-top: 1px solid var(--white-a07); padding-top: 2rem; width: 100%; min-width: 0; }
-  .page-favorites .data-row { flex-direction: column; gap: 0.2rem; border-bottom: none; padding: 0 1.5rem; border-right: 1px solid var(--white-a06); justify-content: center; align-items: center; }
-  .page-favorites .data-row:first-child { padding-left: 0; }
-  .page-favorites .data-row:last-child { border-right: none; }
-  .page-favorites .data-number { font-size: 1.75rem; }
   .page-favorites .aircraft-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
   .page-favorites .aircraft-specs { grid-template-columns: 1fr; gap: 0.5rem; }
   .page-favorites .aircraft-content { padding: 1.5rem; }

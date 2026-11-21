@@ -321,6 +321,12 @@ async function update(db, id, body) {
   return result.rows[0] || null;
 }
 
+/** Nom d'une fiche (formulaire de contact : « fiche concernée »). @returns {Promise<{ id: number, name: string }|null>} */
+async function findNameById(db, id) {
+  const result = await db.query('SELECT id, name FROM airplanes WHERE id = $1', [id]);
+  return result.rows[0] || null;
+}
+
 /** @returns {Promise<{ id: number, name: string }|null>} */
 async function remove(db, id) {
   const result = await db.query('DELETE FROM airplanes WHERE id = $1 RETURNING id, name', [id]);
@@ -333,6 +339,7 @@ module.exports = {
   findPage,
   loadFilterValues,
   findById,
+  findNameById,
   findArmament,
   findTech,
   findMissions,

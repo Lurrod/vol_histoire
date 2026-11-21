@@ -3,8 +3,9 @@
  *
  * Radar SVG des capacités : cinq axes normalisés sur des références fixes
  * (vitesse 3 529 km/h, rayon 15 000 km, 10 armements, 8 missions, 8 technos),
- * plus une légende textuelle — seule partie lue par les lecteurs d'écran,
- * le SVG étant aria-hidden.
+ * plus une légende textuelle (libellé et pourcentage) — seule partie lue par
+ * les lecteurs d'écran, le SVG étant aria-hidden. Les valeurs brutes sont
+ * dans les chiffres clés et la fiche technique.
  */
 
 const escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({
@@ -34,7 +35,6 @@ const items = (n) => Array.from({ length: n }, (_, i) => ({ name: `x${i}` }));
 function legend() {
   return [...document.querySelectorAll('#radar-legend .radar-stat')].map((s) => ({
     label: s.querySelector('.radar-stat-label').textContent,
-    value: s.querySelector('.radar-stat-value').textContent,
     pct: s.querySelector('.radar-stat-pct').textContent,
     target: s.querySelector('.radar-bar-fill').dataset.target,
   }));
@@ -121,32 +121,21 @@ describe('radar.render — légende', () => {
       { aircraftId: 1, aircraftData: { max_speed: 7058, max_range: 3750 } },
       items(5), items(20), items(2),
     );
-    expect(legend().map((l) => l.pct)).toEqual(['100%', '25%', '50%', '25%', '100%']);
+    expect(legend().map((l) => l.pct)).toEqual(['100 %', '25 %', '50 %', '25 %', '100 %']);
     expect(legend().map((l) => l.target)).toEqual(['100.0', '25.0', '50.0', '25.0', '100.0']);
   });
 
-  test('valeurs brutes en français : unités, pluriels, N/A', () => {
-    const radar = boot('fr');
-    radar.render({ aircraftId: 1, aircraftData: { max_speed: null, max_range: 0 } }, items(1), items(2), items(0));
-    expect(legend().map((l) => l.value)).toEqual(['N/A', 'N/A', '1 système', '0 mission', '2 techs']);
-    radar.render({ aircraftId: 1, aircraftData: {} }, items(3), items(1), items(2));
-    expect(legend().map((l) => l.value).slice(2)).toEqual(['3 systèmes', '2 missions', '1 tech']);
-  });
-
-  test('valeurs brutes en anglais : pluriel dès 0', () => {
+  test('pourcentage à l\'anglaise en anglais (pas d\'espace avant %)', () => {
     const radar = boot('en');
-    radar.render({ aircraftId: 1, aircraftData: {} }, items(0), [], items(1));
-    expect(legend().map((l) => l.value).slice(2, 4)).toEqual(['0 systems', '1 mission']);
-    radar.render({ aircraftId: 1, aircraftData: {} }, items(1), [], items(3));
-    expect(legend().map((l) => l.value).slice(2, 4)).toEqual(['1 system', '3 missions']);
+    radar.render({ aircraftId: 1, aircraftData: { max_speed: 3529 } }, [], [], []);
+    expect(legend()[0].pct).toBe('100%');
   });
 
-  test('vitesse et rayon formatés avec l\'unité', () => {
+  test('aucune valeur brute dans la légende (déjà dans les chiffres clés)', () => {
     const radar = boot();
-    radar.render({ aircraftId: 1, aircraftData: { max_speed: '2120', max_range: 3700 } }, [], [], []);
-    const [speed, range] = legend();
-    expect(speed.value).toMatch(/^2.?120 km\/h$/);
-    expect(range.value).toMatch(/^3.?700 km$/);
+    radar.render({ aircraftId: 1, aircraftData: { max_speed: 2120, max_range: 3700 } }, items(3), [], []);
+    expect(document.querySelector('.radar-stat-value')).toBeNull();
+    expect(document.getElementById('radar-legend').textContent).not.toMatch(/km|système/);
   });
 
   test('les libellés traduits sont échappés dans la légende', () => {

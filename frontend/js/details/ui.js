@@ -88,12 +88,14 @@
     if (!a) return;
     const nameEl = document.getElementById('mini-name');
     if (nameEl) nameEl.textContent = a.name || '';
+    const data = VH.details.data;
+    const num = (n) => (data && data.formatNumber ? data.formatNumber(n) : String(n));
     const sp = document.getElementById('mini-speed');
-    if (sp) sp.innerHTML = a.max_speed ? '<i class="fas fa-gauge-high"></i>' + a.max_speed + ' km/h' : '';
+    if (sp) sp.innerHTML = a.max_speed ? '<i class="fas fa-gauge-high"></i>' + num(a.max_speed) + ' km/h' : '';
     const rn = document.getElementById('mini-range');
-    if (rn) rn.innerHTML = a.max_range ? '<i class="fas fa-route"></i>' + a.max_range + ' km' : '';
+    if (rn) rn.innerHTML = a.max_range ? '<i class="fas fa-route"></i>' + num(a.max_range) + ' km' : '';
     const wt = document.getElementById('mini-weight');
-    if (wt) wt.innerHTML = a.empty_weight ? '<i class="fas fa-weight-hanging"></i>' + a.empty_weight + ' kg' : '';
+    if (wt) wt.innerHTML = a.empty_weight ? '<i class="fas fa-weight-hanging"></i>' + num(a.empty_weight) + ' kg' : '';
   }
 
   function setupMiniBarVisibility() {

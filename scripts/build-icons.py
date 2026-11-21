@@ -16,22 +16,22 @@ fa-arrow-left fa-arrow-right fa-balance-scale fa-bug fa-building fa-bullhorn
 fa-bullseye fa-burst fa-calendar fa-calendar-check fa-calendar-days fa-chart-area
 fa-chart-bar fa-chart-line fa-chart-pie fa-check fa-check-circle fa-check-double
 fa-chevron-down fa-chevron-left fa-chevron-right fa-child fa-circle fa-circle-check
-fa-circle-notch fa-clock fa-clock-rotate-left fa-cog fa-cookie-bite fa-copyright
+fa-circle-notch fa-clock fa-clock-rotate-left fa-cog fa-cookie-bite fa-copy fa-copyright fa-ellipsis
 fa-crosshairs fa-crown fa-database fa-download fa-edit fa-envelope
 fa-envelope-open-text fa-exclamation fa-exclamation-circle fa-exclamation-triangle
 fa-external-link-alt fa-eye fa-eye-slash fa-fighter-jet fa-file-alt fa-file-contract
-fa-file-lines fa-file-pdf fa-file-shield fa-filter fa-fingerprint fa-folder
+fa-file-lines fa-file-pdf fa-filter fa-fingerprint fa-folder
 fa-gauge-high fa-gavel fa-globe fa-hand fa-hand-paper fa-handshake fa-heart
 fa-heart-broken fa-heart-crack fa-home fa-id-badge fa-image fa-industry fa-info-circle
 fa-jet-fighter fa-key fa-language fa-layer-group fa-lightbulb fa-link fa-list fa-lock
 fa-magnifying-glass fa-microchip fa-mouse-pointer fa-palette fa-paper-plane fa-pause
-fa-pen fa-pen-to-square fa-phone fa-plane fa-plane-departure fa-plane-slash fa-plus
+fa-pen fa-pen-to-square fa-phone fa-plane fa-plane-circle-check fa-plane-departure fa-plane-slash fa-plus
 fa-question-circle fa-redo fa-route fa-satellite-dish fa-save fa-search fa-server
-fa-share-nodes fa-shield fa-shield-alt fa-shield-halved fa-sign-in-alt fa-sign-out-alt
+fa-share-nodes fa-sign-in-alt fa-sign-out-alt
 fa-signature fa-sliders-h fa-sort fa-star fa-sync fa-sync-alt fa-tachometer-alt fa-tags
 fa-th fa-timeline fa-times fa-times-circle fa-tower-broadcast fa-trash fa-trash-alt
 fa-triangle-exclamation fa-undo fa-user fa-user-astronaut fa-user-check fa-user-circle
-fa-user-edit fa-user-lock fa-user-plus fa-user-shield fa-users fa-users-cog fa-virus
+fa-user-edit fa-user-lock fa-user-plus fa-users fa-users-cog fa-virus
 fa-weight-hanging fa-jet-fighter-up
 fa-ruler-combined fa-ruler-horizontal fa-ruler-vertical fa-arrows-left-right
 fa-feather-pointed fa-scale-balanced fa-arrow-trend-up fa-location-crosshairs
@@ -47,7 +47,6 @@ fa-wikipedia-w
 ALIASES = {
     'fa-edit': 'pen-to-square',
     'fa-trash-alt': 'trash-can',
-    'fa-shield-alt': 'shield-halved',
     'fa-tachometer-alt': 'gauge-high',
     'fa-sign-in-alt': 'right-to-bracket',
     'fa-sign-out-alt': 'right-from-bracket',
@@ -69,7 +68,6 @@ ALIASES = {
     'fa-times': 'xmark',
     'fa-th': 'table-cells-large',
     'fa-balance-scale': 'scale-balanced',
-    'fa-shield': 'shield-halved',
     'fa-sliders-h': 'sliders',
     'fa-hand-paper': 'hand',
     'fa-heart-broken': 'heart-crack',

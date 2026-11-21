@@ -10,7 +10,6 @@ const T = {
   'conflicts.since': 'depuis {year}',
   'conflicts.aircraft_one': '{count} appareil',
   'conflicts.aircraft_many': '{count} appareils',
-  'conflicts.eyebrow_war': 'Conflit',
   'conflicts.stat_aircraft_engaged': 'Appareils engagés',
   'conflicts.stat_nations': 'Nations',
 };
@@ -21,7 +20,6 @@ function page() {
   document.body.innerHTML = `
     <nav><span id="crumb-current" class="hidden"><span id="crumb-current-name" data-i18n="x">…</span></span></nav>
     <h1 id="page-hero-heading" data-i18n="conflicts.title">Conflits</h1>
-    <p id="hero-eyebrow" data-i18n="conflicts.eyebrow">…</p>
     <p id="hero-desc" data-i18n-html="conflicts.desc">…</p>
     <span id="stat-a" data-i18n="x">—</span><span id="stat-a-label" data-i18n="x">—</span>
     <span id="stat-b" data-i18n="x">—</span><span id="stat-b-label" data-i18n="x">—</span>
@@ -160,9 +158,10 @@ describe('page d\'un conflit (/conflits/<slug>)', () => {
     await conflicts.init();
 
     expect(auth.fetchWithTimeout).toHaveBeenCalledWith('/api/wars/guerre%20du%20golfe');
-    expect($('page-hero-heading').textContent).toBe('Guerre du Golfe');
+    // Période en seconde ligne du titre ; l'espace garde un nom accessible lisible.
+    expect($('page-hero-heading').textContent).toBe('Guerre du Golfe 1990 – 1991');
+    expect($('page-hero-heading').querySelector('.hero-muted').textContent).toBe('1990 – 1991');
     expect($('page-hero-heading').hasAttribute('data-i18n')).toBe(false);
-    expect($('hero-eyebrow').textContent).toBe('Conflit · 1990 – 1991');
     expect($('hero-desc').textContent).toBe('Libération du Koweït');
     expect($('hero-desc').hasAttribute('data-i18n-html')).toBe(false);
     expect($('stat-a').textContent).toBe('3');
@@ -183,7 +182,7 @@ describe('page d\'un conflit (/conflits/<slug>)', () => {
     load({ response: ok({ ...WAR, name: 'Gulf War', name_fr: "Guerre d'Algérie & co" }) });
     await conflicts.init();
     expect($('conflict-hangar-link').getAttribute('href')).toBe('/hangar?war=Guerre%20d\'Alg%C3%A9rie%20%26%20co');
-    expect($('page-hero-heading').textContent).toBe('Gulf War');
+    expect($('page-hero-heading').firstChild.textContent).toBe('Gulf War');
   });
 
   test('conflit sans description ni appareils, page allégée : pas d\'erreur', async () => {
@@ -192,7 +191,7 @@ describe('page d\'un conflit (/conflits/<slug>)', () => {
     load({ response: ok({ name: 'X', name_fr: 'X', count: 0, date_start: '2001-01-01' }) });
     await conflicts.init();
     expect($('stat-b').textContent).toBe('0');
-    expect($('hero-eyebrow').textContent).toBe('Conflit · depuis 2001');
+    expect($('page-hero-heading').textContent).toBe('X depuis 2001');
     expect($('conflict-detail').classList.contains('hidden')).toBe(false);
   });
 

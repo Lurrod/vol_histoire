@@ -22,6 +22,21 @@
     }
   }
 
+  /* Génération : dernier élément de la ligne pays · constructeur · année
+   * (« 4e génération », « 4th generation »), masqué si elle est inconnue.
+   * Elle était dans une ligne d'accroche au-dessus du titre, supprimée. */
+  function renderHeroGeneration(a) {
+    const item = document.getElementById('hero-generation-item');
+    const text = document.getElementById('hero-generation');
+    if (!item || !text) return;
+    const g = Number(a.generation);
+    if (!g) { item.hidden = true; return; }
+    text.textContent = i18n.currentLang === 'en'
+      ? `${g}${['st', 'nd', 'rd'][g - 1] || 'th'} generation`
+      : `${g}e génération`;
+    item.hidden = false;
+  }
+
   function renderAircraftDetails(state) {
     const a = state.aircraftData;
 
@@ -41,13 +56,7 @@
     document.getElementById('aircraft-name').textContent = a.name || 'N/A';
     document.getElementById('aircraft-complete-name').textContent = a.complete_name || '';
 
-    const badge = document.getElementById('hero-badge');
-    if (a.generation) {
-      badge.innerHTML = `
-        <i class="fas fa-layer-group"></i>
-        <span>${escapeHtml(a.generation)}${i18n.currentLang === 'en' ? (['st','nd','rd'][a.generation-1]||'th') + ' Generation' : 'e Génération'}</span>
-      `;
-    }
+    renderHeroGeneration(a);
 
     document.getElementById('hero-country').textContent = a.country_name || i18n.t('details.not_specified');
     document.getElementById('hero-manufacturer').textContent = a.manufacturer_name || i18n.t('details.not_specified');
@@ -61,9 +70,10 @@
 
     renderImageCredit(a);
 
-    document.getElementById('stat-speed').textContent = a.max_speed ? `${a.max_speed} km/h` : 'N/A';
-    document.getElementById('stat-range').textContent = a.max_range ? `${a.max_range} km` : 'N/A';
-    document.getElementById('stat-weight').textContent = a.empty_weight ? `${a.empty_weight} kg` : 'N/A';
+    const num = VH.details.data.formatNumber;
+    document.getElementById('stat-speed').textContent = a.max_speed ? `${num(a.max_speed)} km/h` : 'N/A';
+    document.getElementById('stat-range').textContent = a.max_range ? `${num(a.max_range)} km` : 'N/A';
+    document.getElementById('stat-weight').textContent = a.empty_weight ? `${num(a.empty_weight)} kg` : 'N/A';
     document.getElementById('stat-status').textContent = a.status || i18n.t('details.not_specified');
     document.getElementById('aircraft-description').textContent = a.description || i18n.t('details.no_description');
 
@@ -153,47 +163,64 @@
   }
 
   // ── Strate 1 + 2 : Fiche technique étendue ──────────────────────
+  /* Une ligne « libellé — valeur » (dt / dd), valeur déjà formatée. */
+  function specRow(labelKey, value) {
+    return `<div class="spec-row"><dt class="spec-label">${escapeHtml(i18n.t(labelKey))}</dt>` +
+      `<dd class="spec-value">${escapeHtml(String(value))}</dd></div>`;
+  }
+
+  const present = (v) => v != null && v !== '';
+
+  /* Trois groupes de lignes au lieu de 17 tuiles à icône : sur téléphone,
+   * les tuiles s'empilaient une par ligne (2 400 px pour la seule fiche). */
+  const SPEC_GROUPS = [
+    ['details.spec_group_airframe', [
+      ['details.spec_length', 'length', 'm'],
+      ['details.spec_wingspan', 'wingspan', 'm'],
+      ['details.spec_height', 'height', 'm'],
+      ['details.spec_wing_area', 'wing_area', 'm²'],
+      ['details.spec_empty_weight', 'empty_weight', 'kg'],
+      ['details.spec_mtow', 'mtow', 'kg'],
+      ['details.spec_crew', 'crew', null],
+    ]],
+    ['details.spec_group_performance', [
+      ['details.spec_ceiling', 'service_ceiling', 'm'],
+      ['details.spec_climb_rate', 'climb_rate', 'm/s'],
+      ['details.spec_combat_radius', 'combat_radius', 'km'],
+      ['details.spec_g_pos', 'g_limit_pos', 'g'],
+      ['details.spec_g_neg', 'g_limit_neg', 'g'],
+    ]],
+    ['details.spec_group_propulsion', [
+      ['details.spec_engine', 'engine_name', null],
+      ['details.spec_engine_count', 'engine_count', null],
+      ['details.spec_engine_type', 'engine_type', null],
+      ['details.spec_thrust_dry', 'thrust_dry', 'kN'],
+      ['details.spec_thrust_wet', 'thrust_wet', 'kN'],
+    ]],
+  ];
+
   function renderSpecs(a) {
     const section = document.getElementById('specs-section');
     const grid = document.getElementById('specs-grid');
     if (!section || !grid) return;
 
-    const dims = [
-      ['details.spec_length', a.length, 'm', 'fa-ruler-horizontal'],
-      ['details.spec_wingspan', a.wingspan, 'm', 'fa-arrows-left-right'],
-      ['details.spec_height', a.height, 'm', 'fa-ruler-vertical'],
-      ['details.spec_wing_area', a.wing_area, 'm²', 'fa-feather-pointed'],
-      ['details.spec_empty_weight', a.empty_weight, 'kg', 'fa-weight-hanging'],
-      ['details.spec_mtow', a.mtow, 'kg', 'fa-scale-balanced'],
-      ['details.spec_ceiling', a.service_ceiling, 'm', 'fa-chart-line'],
-      ['details.spec_climb_rate', a.climb_rate, 'm/s', 'fa-arrow-trend-up'],
-      ['details.spec_combat_radius', a.combat_radius, 'km', 'fa-location-crosshairs'],
-      ['details.spec_g_pos', a.g_limit_pos, 'g', 'fa-arrow-up-wide-short'],
-      ['details.spec_g_neg', a.g_limit_neg, 'g', 'fa-arrow-down-wide-short'],
-      ['details.spec_crew', a.crew, null, 'fa-user-tie'],
-      ['details.spec_engine', a.engine_name, null, 'fa-cogs'],
-      ['details.spec_engine_count', a.engine_count, null, 'fa-gears'],
-      ['details.spec_engine_type', a.engine_type, null, 'fa-bolt'],
-      ['details.spec_thrust_dry', a.thrust_dry, 'kN', 'fa-rocket'],
-      ['details.spec_thrust_wet', a.thrust_wet, 'kN', 'fa-fire'],
-    ];
-    const tiles = dims
-      .filter(([, v]) => v != null && v !== '')
-      .map(([labelKey, value, unit, icon]) => {
-        const label = i18n.t(labelKey);
-        const displayValue = typeof value === 'number'
-          ? (unit ? `${value.toLocaleString(i18n.currentLang === 'en' ? 'en' : 'fr')} ${unit}` : value)
-          : escapeHtml(String(value));
-        return `<div class="spec-tile">
-          <i class="fas ${icon}" aria-hidden="true"></i>
-          <div class="spec-label">${escapeHtml(label)}</div>
-          <div class="spec-value">${typeof displayValue === 'string' ? displayValue : escapeHtml(String(displayValue))}</div>
-        </div>`;
-      });
+    const num = VH.details.data.formatNumber;
+    const groups = SPEC_GROUPS.map(([titleKey, fields]) => {
+      const rows = fields
+        .filter(([, field]) => present(a[field]))
+        .map(([labelKey, field, unit]) => {
+          const v = a[field];
+          const shown = typeof v === 'number' ? (unit ? `${num(v)} ${unit}` : num(v)) : String(v);
+          return specRow(labelKey, shown);
+        });
+      if (rows.length === 0) return '';
+      return `<section class="spec-group"><h3 class="spec-group-title">${escapeHtml(i18n.t(titleKey))}</h3>` +
+        `<dl class="spec-list">${rows.join('')}</dl></section>`;
+    }).filter(Boolean);
 
-    if (tiles.length === 0) { section.classList.add('hidden'); return; }
+    if (groups.length === 0) { section.classList.add('hidden'); return; }
     section.classList.remove('hidden');
-    grid.innerHTML = tiles.join('');
+    grid.innerHTML = groups.join('');
   }
 
   // ── Strate 3 : Production & Service ──────────────────────────────
@@ -230,20 +257,14 @@
       : null;
 
     const items = [
-      ['details.prod_years', prodYears, 'fa-calendar-days'],
-      ['details.prod_units_built', a.units_built != null ? a.units_built.toLocaleString() : null, 'fa-layer-group'],
-      ['details.prod_unit_cost', costStr, 'fa-coins'],
-      ['details.prod_operators', a.operators_count, 'fa-flag'],
-      ['details.prod_stealth', a.stealth_level ? stealthLabel(a.stealth_level) : null, 'fa-eye-slash'],
-      ['details.prod_nickname', a.nickname, 'fa-quote-right'],
+      ['details.prod_years', prodYears],
+      ['details.prod_units_built', a.units_built != null ? fmtNumber(a.units_built, 0) : null],
+      ['details.prod_unit_cost', costStr],
+      ['details.prod_operators', a.operators_count],
+      ['details.prod_stealth', a.stealth_level ? stealthLabel(a.stealth_level) : null],
+      ['details.prod_nickname', a.nickname],
     ];
-    const tiles = items.filter(([, v]) => v != null && v !== '').map(([labelKey, value, icon]) => `
-      <div class="spec-tile">
-        <i class="fas ${icon}" aria-hidden="true"></i>
-        <div class="spec-label">${escapeHtml(i18n.t(labelKey))}</div>
-        <div class="spec-value">${escapeHtml(String(value))}</div>
-      </div>
-    `);
+    const rows = items.filter(([, v]) => present(v)).map(([labelKey, value]) => specRow(labelKey, value));
 
     const variantsBlock = document.getElementById('variants-block');
     const variantsContent = document.getElementById('variants-content');
@@ -256,9 +277,9 @@
       variantsBlock.classList.add('hidden');
     }
 
-    if (tiles.length === 0 && !a.variants) { section.classList.add('hidden'); return; }
+    if (rows.length === 0 && !a.variants) { section.classList.add('hidden'); return; }
     section.classList.remove('hidden');
-    grid.innerHTML = tiles.join('');
+    grid.innerHTML = rows.length ? `<dl class="spec-list">${rows.join('')}</dl>` : '';
   }
 
   function stealthLabel(level) {
@@ -398,6 +419,8 @@
       const endYear = war.date_end
         ? new Date(war.date_end).getFullYear()
         : (war.date_start ? i18n.t('details.war_ongoing') : '?');
+      // Conflit d'une seule année : « 1999 », pas « 1999 – 1999 ».
+      const period = startYear === endYear && startYear !== '?' ? String(startYear) : `${startYear} – ${endYear}`;
       // La carte entière mène à la page du conflit (lien étiré, voir details.css).
       const title = war.slug
         ? `<a class="war-link" href="/conflits/${encodeURIComponent(war.slug)}">${escapeHtml(war.name)}</a>`
@@ -406,7 +429,7 @@
       // chronologie sans trait ni pastille (grille, details.css).
       return `
         <div class="war-card${war.slug ? ' war-card-linked' : ''}">
-          <div class="war-period"><span>${startYear} – ${endYear}</span></div>
+          <div class="war-period"><span>${period}</span></div>
           <h3>${title}</h3>
           <p>${escapeHtml(war.description) || i18n.t('details.no_desc_available')}</p>
           ${war.slug ? `<span class="war-more" aria-hidden="true">${i18n.t('details.war_see_aircraft')} <i class="fas fa-arrow-right"></i></span>` : ''}

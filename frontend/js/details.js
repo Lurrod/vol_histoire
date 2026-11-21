@@ -18,6 +18,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  // « Signaler une erreur » : le formulaire de contact s'ouvre avec la fiche.
+  const reportLink = document.getElementById('report-link');
+  if (reportLink) reportLink.href = `/contact?sujet=bug&fiche=${aircraftId}`;
+
   const state = {
     aircraftId,
     aircraftData: null,

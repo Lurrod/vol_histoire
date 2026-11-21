@@ -1607,26 +1607,6 @@
     max-width: 48em;
   }
 
-  .hero-eyebrow {
-    font-size: var(--text-xs);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: var(--text-faint);
-    display: flex;
-    align-items: center;
-    gap: var(--sp-4);
-    margin-bottom: var(--sp-10);
-  }
-
-  .hero-eyebrow::before {
-    content: '';
-    width: 28px;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.15);
-    flex-shrink: 0;
-  }
-
   .hero-text h1 {
     font-family: var(--font-sans);
     font-size: clamp(3rem, 6vw, 5.5rem);
@@ -1654,7 +1634,6 @@
   /* Sans chiffres à droite (pages légales, crédits, contact) : l'en-tête se
      centre, fil d'Ariane compris — aligné à gauche, il laissait un grand vide. */
   .page-hero:not(:has(.hero-data)) .page-hero-inner { justify-content: center; text-align: center; }
-  .page-hero:not(:has(.hero-data)) .hero-eyebrow { justify-content: center; }
   /* (fil d'Ariane centré : à côté de .breadcrumb, couche « shared », plus bas) */
   .page-hero:not(:has(.hero-data)) .hero-text > p { margin-inline: auto; }
 
@@ -2294,6 +2273,10 @@
 .breadcrumb span {
   color: rgba(255, 255, 255, 0.7);
 }
+/* Maillon qui porte son propre chevron (conflits : #crumb-current). */
+.breadcrumb > span:has(> .icon) { display: inline-flex; align-items: center; gap: 0.75rem; }
+.breadcrumb > span > .icon:first-child { font-size: 0.6rem; color: rgba(255, 255, 255, 0.15); }
+.breadcrumb > span.hidden { display: none; }
 /* En-tête centré (sans chiffres à droite, voir HERO COMMUN) : fil d'Ariane
    centré aussi. Ici et non là-haut : cette couche l'emporte sur la sienne. */
 .page-hero:not(:has(.hero-data)) .breadcrumb { justify-content: center; }

@@ -53,10 +53,9 @@
   <link rel="preload" href="fonts/DMSans.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/BarlowCondensed-700.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/core.min.css">
-  <link rel="stylesheet" href="css/legal.min.css">
   <link rel="stylesheet" href="css/contact.min.css">
 </head>
-<body class="page-legal">
+<body class="page-contact">
 <a href="#main-content" class="skip-link">Aller au contenu</a>
 
 
@@ -74,124 +73,112 @@
       </nav>
       <div class="page-hero-inner">
         <div class="hero-text">
-          <div class="hero-eyebrow"><span data-i18n="contact.badge">Contact</span></div>
-          <h1 id="page-hero-heading"><span data-i18n="contact.hero_title_1">Nous</span><span class="hero-muted" data-i18n="contact.hero_title_2">écrire</span></h1>
-          <p data-i18n="contact.hero_desc">Une question, une suggestion, un signalement ? Notre équipe vous répond dans les plus brefs délais.</p>
+          <h1 id="page-hero-heading"><span data-i18n="contact.hero_title_1">Nous</span> <span class="hero-muted" data-i18n="contact.hero_title_2">écrire</span></h1>
+          <p data-i18n="contact.hero_desc">Une question, une erreur repérée sur une fiche, un appareil à proposer ? Écrivez-nous, chaque message est lu.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Main Content -->
-  <main id="main-content" class="legal-content">
-    <div class="container">
-      <div class="legal-container">
+  <main id="main-content" class="contact-main">
+    <div class="container contact-layout">
 
-        <!-- Contact cards -->
-        <div class="legal-section">
-          <h2><i class="fas fa-envelope-open-text"></i> <span data-i18n="contact.email_general">Email général</span></h2>
-          <div class="legal-text">
-            <p data-i18n="contact.hero_desc">Une question, une suggestion, un signalement ? Notre équipe vous répond dans les plus brefs délais.</p>
-          </div>
-          <div class="contact-cards">
-            <div class="contact-card">
-              <div class="contact-card-icon"><i class="fas fa-envelope"></i></div>
-              <h3 data-i18n="contact.email_general">Email général</h3>
-              <p data-i18n="contact.email_general_desc">Pour toute question générale sur la plateforme</p>
-              <a href="mailto:vdh@titouan-borde.com" data-i18n="contact.email_general_addr">vdh@titouan-borde.com</a>
+      <!-- Formulaire -->
+      <section class="contact-panel" aria-labelledby="contact-form-title">
+        <h2 id="contact-form-title" data-i18n="contact.form_title">Envoyer un message</h2>
+        <p class="contact-lead" data-i18n="contact.form_desc">Quelques lignes suffisent : la réponse arrive à l’adresse que vous indiquez.</p>
+
+        <form id="contact-form" novalidate>
+          <fieldset class="contact-topics">
+            <legend data-i18n="contact.form_subject">De quoi s’agit-il ?</legend>
+            <div class="topic-list">
+              <label class="topic"><input type="radio" name="subject" value="general" checked><i class="fas fa-question-circle" aria-hidden="true"></i><span data-i18n="contact.form_subject_general">Question</span></label>
+              <label class="topic"><input type="radio" name="subject" value="bug"><i class="fas fa-bug" aria-hidden="true"></i><span data-i18n="contact.form_subject_bug">Signaler une erreur</span></label>
+              <label class="topic"><input type="radio" name="subject" value="contrib"><i class="fas fa-pen-to-square" aria-hidden="true"></i><span data-i18n="contact.form_subject_contrib">Contribution</span></label>
+              <label class="topic"><input type="radio" name="subject" value="partner"><i class="fas fa-handshake" aria-hidden="true"></i><span data-i18n="contact.form_subject_partner">Partenariat</span></label>
+              <label class="topic"><input type="radio" name="subject" value="other"><i class="fas fa-ellipsis" aria-hidden="true"></i><span data-i18n="contact.form_subject_other">Autre</span></label>
             </div>
-            <div class="contact-card">
-              <div class="contact-card-icon"><i class="fas fa-bug"></i></div>
-              <h3 data-i18n="contact.email_bugs">Signaler un bug</h3>
-              <p data-i18n="contact.email_bugs_desc">Erreur technique ou donnée incorrecte</p>
-              <a href="mailto:vdh@titouan-borde.com" data-i18n="contact.email_bugs_addr">vdh@titouan-borde.com</a>
-            </div>
-            <div class="contact-card">
-              <div class="contact-card-icon"><i class="fas fa-pen-to-square"></i></div>
-              <h3 data-i18n="contact.email_contrib">Contribuer</h3>
-              <p data-i18n="contact.email_contrib_desc">Proposer un appareil ou enrichir une fiche</p>
-              <a href="mailto:vdh@titouan-borde.com" data-i18n="contact.email_contrib_addr">vdh@titouan-borde.com</a>
-            </div>
+          </fieldset>
+
+          <div class="contact-aircraft" id="contact-aircraft" hidden>
+            <i class="fas fa-plane" aria-hidden="true"></i>
+            <span class="contact-aircraft-label" data-i18n="contact.aircraft_label">Fiche concernée</span>
+            <a class="contact-aircraft-name" id="contact-aircraft-link" href="/hangar"></a>
+            <button type="button" class="contact-aircraft-remove" id="contact-aircraft-remove" data-i18n-aria="contact.aircraft_remove" aria-label="Retirer la fiche"><i class="fas fa-times" aria-hidden="true"></i></button>
           </div>
-        </div>
 
-        <!-- Response times -->
-        <div class="legal-section">
-          <h2><i class="fas fa-clock"></i> <span data-i18n="contact.delay_title">Délais de réponse estimés</span></h2>
-          <div class="legal-text">
-            <ul>
-              <li><strong data-i18n="contact.delay_general">Questions générales</strong> — <span data-i18n="contact.delay_general_time">24 – 48h</span></li>
-              <li><strong data-i18n="contact.delay_bugs">Signalement de bugs</strong> — <span data-i18n="contact.delay_bugs_time">12 – 24h</span></li>
-              <li><strong data-i18n="contact.delay_contrib">Contributions</strong> — <span data-i18n="contact.delay_contrib_time">48 – 72h</span></li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Contact form -->
-        <div class="contact-form">
-          <h2><i class="fas fa-paper-plane"></i> <span data-i18n="contact.form_title">Envoyer un Message</span></h2>
-          <p data-i18n="contact.form_desc">Remplissez le formulaire ci-dessous, nous vous répondrons rapidement.</p>
-
-          <form id="contact-form" novalidate>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="contact-firstname" data-i18n="contact.form_firstname">Prénom</label>
-                <input type="text" id="contact-firstname" name="firstname" data-i18n-placeholder="contact.form_firstname_placeholder" placeholder="Jean" autocomplete="given-name">
-              </div>
-              <div class="form-group">
-                <label for="contact-lastname" data-i18n="contact.form_lastname">Nom</label>
-                <input type="text" id="contact-lastname" name="lastname" data-i18n-placeholder="contact.form_lastname_placeholder" placeholder="Dupont" autocomplete="family-name">
-              </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="contact-name"><span data-i18n="contact.form_name">Nom</span> <span class="form-optional" data-i18n="contact.form_optional">(facultatif)</span></label>
+              <input type="text" id="contact-name" name="name" maxlength="100" data-i18n-placeholder="contact.form_name_placeholder" placeholder="Jean Dupont" autocomplete="name">
             </div>
             <div class="form-group">
               <label for="contact-email" data-i18n="contact.form_email">Email</label>
               <input type="email" id="contact-email" name="email" data-i18n-placeholder="contact.form_email_placeholder" placeholder="jean.dupont@exemple.fr" autocomplete="email" required aria-describedby="contact-email-error">
               <span id="contact-email-error" class="form-error" role="alert"></span>
             </div>
-            <div class="form-group">
-              <label for="contact-subject" data-i18n="contact.form_subject">Sujet</label>
-              <select id="contact-subject" name="subject">
-                <option value="general" data-i18n="contact.form_subject_general">Question générale</option>
-                <option value="bug" data-i18n="contact.form_subject_bug">Signaler une erreur</option>
-                <option value="contrib" data-i18n="contact.form_subject_contrib">Contribution</option>
-                <option value="partner" data-i18n="contact.form_subject_partner">Partenariat</option>
-                <option value="other" data-i18n="contact.form_subject_other">Autre</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="contact-message" data-i18n="contact.form_message">Message</label>
-              <textarea id="contact-message" name="message" data-i18n-placeholder="contact.form_message_placeholder" placeholder="Décrivez votre demande en détail..." required aria-describedby="contact-message-error"></textarea>
-              <span id="contact-message-error" class="form-error" role="alert"></span>
-            </div>
-            <div class="form-submit-row">
-              <button type="submit" class="btn-send" data-state="idle">
-                <svg class="send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <g class="send-trail"><path d="M0.5 9h3"/><path d="M0.5 15h3"/></g>
-                  <g class="send-plane"><path d="M3.5 12h16.5"/><path d="M10.5 12L7 5.5h2.4L16 12"/><path d="M10.5 12L7 18.5h2.4L16 12"/><path d="M5 12L3.5 9.2h2L8 12"/><path d="M5 12l-1.5 2.8h2L8 12"/></g>
-                  <path class="send-check" pathLength="20" d="M5.5 12.5l4.2 4.2L18.5 7.5"/>
-                </svg>
-                <span data-i18n="contact.form_submit">Envoyer le message</span>
-              </button>
-              <span class="form-data-note">
-                <i class="fas fa-shield-alt"></i>
-                <span data-i18n="contact.form_data_protected">Vos données sont protégées</span>
-              </span>
-            </div>
-          </form>
-
-          <p class="form-rgpd-notice" data-i18n-html="contact.form_rgpd_notice">Vos données (nom, email, message) sont traitées pour répondre à votre demande et conservées 12 mois maximum. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression. Pour en savoir plus, consultez notre <a href="/politique-confidentialite">politique de confidentialité</a>.</p>
-
-          <div id="contact-success" class="form-success-msg" aria-live="assertive" role="status">
-            <span class="t-success-check" data-state="out" aria-hidden="true">
-              <svg viewBox="0 0 48 48" fill="none">
-                <path d="M14 25 l7 7 l13 -16" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            <span data-i18n="contact.form_success">Message envoyé avec succès ! Nous vous répondrons sous 24–48h.</span>
           </div>
-        </div>
+          <div class="form-group">
+            <div class="form-label-row">
+              <label for="contact-message" data-i18n="contact.form_message">Message</label>
+              <span class="contact-count" id="contact-count" aria-hidden="true">0 / 5000</span>
+            </div>
+            <textarea id="contact-message" name="message" maxlength="5000" data-i18n-placeholder="contact.form_message_placeholder" placeholder="Décrivez votre demande en détail…" required aria-describedby="contact-message-error"></textarea>
+            <span id="contact-message-error" class="form-error" role="alert"></span>
+          </div>
+          <div class="form-submit-row">
+            <button type="submit" class="btn-send" data-state="idle">
+              <svg class="send-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <g class="send-trail"><path d="M0.5 9h3"/><path d="M0.5 15h3"/></g>
+                <g class="send-plane"><path d="M3.5 12h16.5"/><path d="M10.5 12L7 5.5h2.4L16 12"/><path d="M10.5 12L7 18.5h2.4L16 12"/><path d="M5 12L3.5 9.2h2L8 12"/><path d="M5 12l-1.5 2.8h2L8 12"/></g>
+                <path class="send-check" pathLength="20" d="M5.5 12.5l4.2 4.2L18.5 7.5"/>
+              </svg>
+              <span data-i18n="contact.form_submit">Envoyer le message</span>
+            </button>
+            <p class="form-rgpd-notice" data-i18n-html="contact.form_rgpd_notice">Vos données (nom, email, message) servent uniquement à vous répondre et sont conservées 12 mois au plus. Vous pouvez y accéder, les corriger ou les faire supprimer : voir la <a href="/politique-confidentialite">politique de confidentialité</a>.</p>
+          </div>
+        </form>
 
-      </div>
+        <div id="contact-success" class="form-success-msg" aria-live="assertive" role="status">
+          <span class="t-success-check" data-state="out" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <path d="M14 25 l7 7 l13 -16" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span data-i18n="contact.form_success">Message envoyé ! La réponse arrivera à l’adresse indiquée.</span>
+        </div>
+      </section>
+
+      <!-- Colonne d'appoint -->
+      <aside class="contact-aside" data-i18n-aria="contact.aside_label" aria-label="Autres moyens de contact">
+        <section class="contact-card" aria-labelledby="contact-direct-title">
+          <h2 id="contact-direct-title" data-i18n="contact.direct_title">Écrire directement</h2>
+          <p data-i18n="contact.direct_desc">Vous préférez votre messagerie ? Une seule adresse pour tout.</p>
+          <div class="contact-address">
+            <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a>
+            <button type="button" class="contact-copy" id="contact-copy" data-copy="vdh@titouan-borde.com" data-i18n-aria="contact.copy_address" aria-label="Copier l’adresse">
+              <i class="fas fa-copy" aria-hidden="true"></i>
+              <i class="fas fa-check" aria-hidden="true"></i>
+            </button>
+          </div>
+        </section>
+
+        <section class="contact-card" aria-labelledby="contact-delay-title">
+          <h2 id="contact-delay-title" data-i18n="contact.delay_title">Délais de réponse</h2>
+          <dl class="contact-delays">
+            <div data-topic="general"><dt data-i18n="contact.delay_general">Questions</dt><dd data-i18n="contact.delay_general_time">24 – 48 h</dd></div>
+            <div data-topic="bug"><dt data-i18n="contact.delay_bugs">Erreurs</dt><dd data-i18n="contact.delay_bugs_time">12 – 24 h</dd></div>
+            <div data-topic="contrib"><dt data-i18n="contact.delay_contrib">Contributions</dt><dd data-i18n="contact.delay_contrib_time">48 – 72 h</dd></div>
+          </dl>
+        </section>
+
+        <section class="contact-card contact-tip" aria-labelledby="contact-tip-title">
+          <h2 id="contact-tip-title"><i class="fas fa-flag" aria-hidden="true"></i> <span data-i18n="contact.tip_title">Une erreur sur une fiche ?</span></h2>
+          <p data-i18n="contact.tip_desc">Le lien « Signaler une erreur » en bas de chaque fiche ouvre ce formulaire avec l’appareil déjà indiqué.</p>
+        </section>
+      </aside>
+
     </div>
   </main>
 

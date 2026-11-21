@@ -96,50 +96,91 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   background: rgba(231,76,60,0.15); border-color: var(--accent); color: #ff8a7a;
 }
 .compare-bar .cmp-clear[data-state="done"] #compare-clear { pointer-events: none; }
-/* Téléphone : la barre (≈ 500 px) débordait de l'écran. Elle prend la
-   largeur de l'écran, moins une marge, sur deux lignes : compteur et
-   « Comparer » en haut, « Copier le lien » et « Effacer » à parts égales en
-   bas. Un élément vide de pleine largeur (::after) force le retour à la
-   ligne quelle que soit la largeur. « Effacer » se resserre pour laisser
-   sortir sa paire. */
+/* Jamais plus large que l'écran, quelle que soit la largeur. */
+.compare-bar { max-width: calc(100vw - 2rem); }
+
+/* Libellés qui se replient (« Copier le lien », « Effacer ») : utilisé quand
+   la paire de confirmation doit trouver sa place (tablette). */
+.compare-bar .cmp-share-label,
+.compare-bar .cmp-clear-label {
+  display: inline-block;
+  max-width: 10em;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  transition: max-width var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+
+/* Téléphone : deux lignes. En haut, les vignettes et le compteur ; en bas,
+   « Copier le lien » et « Effacer » réduits à leur icône (nom accessible
+   gardé, cible de 44 px) et « Voir la comparaison » sur le reste de la
+   largeur, sous le pouce. Avec les trois vignettes, l'ancienne disposition
+   (compteur et bouton principal en haut, deux boutons libellés en bas)
+   passait sur trois lignes et coupait « Effacer » à 320 px.
+   Un élément vide de pleine largeur (::after) force le retour à la ligne. */
 @media (max-width: 47.99em) {
   .compare-bar {
     left: 1rem;
     right: 1rem;
     transform: none;
     flex-wrap: wrap;
-    row-gap: 0;
+    gap: 0 0.5rem;
+    padding: 0.75rem;
   }
-  .compare-bar #compare-count { order: 0; flex: 1 1 auto; }
   .compare-bar .cmp-thumbs { order: 0; gap: 0.2rem; }
   .compare-bar .cmp-thumb { width: 2rem; }
-  .compare-bar #compare-view { order: 1; }
-  .compare-bar::after { content: ''; order: 2; flex-basis: 100%; }
+  .compare-bar #compare-count { order: 0; flex: 1 1 auto; min-width: 0; margin-inline-start: 0.25rem; }
+  .compare-bar::after { content: ''; order: 1; flex-basis: 100%; }
   .compare-bar #compare-share,
-  .compare-bar .cmp-clear { order: 3; flex: 1 1 0; min-width: 0; margin-top: 0.625rem; }
-  .compare-bar #compare-share { justify-content: center; }
-  .compare-bar .cmp-clear { order: 4; display: flex; }
-  .compare-bar .cmp-clear #compare-clear { flex: 1 1 auto; min-width: 0; justify-content: center; }
-  .compare-bar .cmp-clear .cfm-panel { flex-shrink: 0; }
-  /* Paire ouverte : le libellé se replie, la poubelle (couvercle levé)
-     reste seule à côté de « ✓ · ✗ » — sinon « Effacer » était tronqué. */
-  .compare-bar .cmp-clear-label {
-    display: inline-block;
-    max-width: 8em;
-    overflow: hidden;
-    white-space: nowrap;
-    transition: max-width var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+  .compare-bar .cmp-clear,
+  .compare-bar #compare-view { margin-top: 0.625rem; min-height: 44px; }
+  .compare-bar #compare-share { order: 2; }
+  .compare-bar .cmp-clear { order: 3; }
+  .compare-bar #compare-share,
+  .compare-bar #compare-clear {
+    justify-content: center;
+    gap: 0;
+    min-width: 44px;
+    padding-inline: 0;
   }
-  .compare-bar .cmp-clear:not([data-state="idle"]) #compare-clear { gap: 0; }
-  .compare-bar .cmp-clear:not([data-state="idle"]) .cmp-clear-label { max-width: 0; opacity: 0; }
+  .compare-bar #compare-clear { min-height: 44px; }
+  .compare-bar .cmp-share-label,
+  .compare-bar .cmp-clear-label { max-width: 0; opacity: 0; }
+  .compare-bar #compare-view {
+    order: 4;
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 0.75rem;
+    justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* « Effacer ? » ouvert : la question occupe la ligne du bas. Le lien et
+     « Voir la comparaison » s'effacent le temps de répondre ; « ✓ Effacer »
+     et « ✗ Garder » reprennent leur libellé et se partagent la place. */
+  .compare-bar:has(.cmp-clear:not([data-state="idle"])) #compare-share,
+  .compare-bar:has(.cmp-clear:not([data-state="idle"])) #compare-view { display: none; }
+  .compare-bar .cmp-clear:not([data-state="idle"]) { flex: 1 1 0; min-width: 0; }
+  .compare-bar .cmp-clear .cfm-panel { flex: 1 1 auto; min-width: 0; }
+  .compare-bar .cmp-clear[data-state="confirm"] .cfm-panel { max-width: 100%; }
+  .compare-bar .cmp-clear .cfm-yes,
+  .compare-bar .cmp-clear .cfm-no { flex: 1 1 0; min-height: 44px; }
 }
-/* Jusqu'à 64em, la paire se réduit à ses icônes (noms accessibles gardés) :
-   avec ses libellés, la barre ouverte dépassait l'écran (757 px à 641 px). */
-@media (max-width: 64em) {
+
+/* Tablette : une seule ligne. La paire de confirmation se réduit à ses
+   icônes (noms accessibles gardés) et, quand elle s'ouvre, « Copier le lien »
+   et « Effacer » replient leur libellé : avec trois vignettes, la barre
+   ouverte faisait 808 px et sortait d'un écran de 768. */
+@media (min-width: 48em) and (max-width: 64em) {
   .compare-bar .cmp-clear .cfm-text {
     position: absolute; width: 1px; height: 1px; overflow: hidden;
     clip-path: inset(50%); white-space: nowrap;
   }
+  .compare-bar:has(.cmp-clear:not([data-state="idle"])) #compare-share,
+  .compare-bar .cmp-clear:not([data-state="idle"]) #compare-clear { gap: 0; }
+  .compare-bar:has(.cmp-clear:not([data-state="idle"])) .cmp-share-label,
+  .compare-bar .cmp-clear:not([data-state="idle"]) .cmp-clear-label { max-width: 0; opacity: 0; }
 }
 
 /* Compare modal — forcer le display par défaut (certains resets cassent <dialog>) */

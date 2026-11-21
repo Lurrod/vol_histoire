@@ -1,7 +1,9 @@
 /**
  * Tests — frontend/js/contact.js sur le vrai <main> de contact.html :
  * validation, envoi (avec ou sans hCaptcha), états du bouton, message de
- * succès effacé à la reprise de saisie, erreurs 429 / serveur / réseau.
+ * succès effacé à la reprise de saisie, erreurs 429 / serveur / réseau,
+ * sujet en pastilles et délais, fiche concernée (?fiche=), compteur, copie
+ * de l'adresse.
  *
  * Les aides de formulaire (isValidEmail, setFieldError, clearFieldError) sont
  * celles de utils.js, comme dans le bundle app.min.js.
@@ -35,13 +37,13 @@ function loadContact() {
 }
 
 const $ = (id) => document.getElementById(id);
-function fill({ email = 'ada@test.local', message = 'Bonjour', firstname = ' Ada ', lastname = 'Lovelace', subject = 'bug' } = {}) {
-  $('contact-firstname').value = firstname;
-  $('contact-lastname').value = lastname;
+function fill({ email = 'ada@test.local', message = 'Bonjour', name = ' Ada Lovelace ', subject = 'bug' } = {}) {
+  $('contact-name').value = name;
   $('contact-email').value = email;
-  $('contact-subject').value = subject;
+  document.querySelector(`input[name="subject"][value="${subject}"]`).checked = true;
   $('contact-message').value = message;
 }
+const activeDelay = () => document.querySelector('.contact-delays .is-active')?.dataset.topic || null;
 const submit = async () => {
   $('contact-form').dispatchEvent(new Event('submit', { cancelable: true }));
   await flush();
@@ -52,9 +54,10 @@ beforeEach(() => {
   global.setFieldError = utils.setFieldError;
   global.clearFieldError = utils.clearFieldError;
   global.showToast = jest.fn();
-  global.i18n = { t: jest.fn((k) => k) };
+  global.i18n = { t: jest.fn((k) => k), currentLang: 'fr' };
   global.fetch = jest.fn(() => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({}) }));
   delete window.getHcaptchaToken;
+  window.history.replaceState(null, '', '/contact');
 });
 
 describe('contact.js — validation', () => {
@@ -104,7 +107,7 @@ describe('contact.js — envoi', () => {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
     }));
     expect(JSON.parse(global.fetch.mock.calls[0][1].body)).toEqual({
-      firstname: 'Ada', lastname: 'Lovelace', email: 'ada@test.local', subject: 'bug', message: 'Bonjour',
+      name: 'Ada Lovelace', email: 'ada@test.local', subject: 'bug', message: 'Bonjour',
     });
     expect($('contact-email').value).toBe('');
     expect($('contact-success').classList.contains('visible')).toBe(true);
@@ -276,5 +279,153 @@ describe('contact.js — message de succès', () => {
     jest.advanceTimersByTime(500);
     expect(msg.classList.contains('visible')).toBe(true);
     expect(msg.classList.contains('is-hiding')).toBe(false);
+  });
+});
+
+describe('contact.js — sujet et délais', () => {
+  test('sujet par défaut « question » : délai des questions mis en avant', () => {
+    loadContact();
+    expect(document.querySelector('input[name="subject"]:checked').value).toBe('general');
+    expect(activeDelay()).toBe('general');
+  });
+
+  test('changer de sujet déplace la mise en avant ; partenariat : aucune ligne', () => {
+    loadContact();
+    const pick = (v) => {
+      const radio = document.querySelector(`input[name="subject"][value="${v}"]`);
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+    pick('contrib');
+    expect(activeDelay()).toBe('contrib');
+    pick('partner');
+    expect(activeDelay()).toBeNull();
+  });
+
+  test('?sujet=bug présélectionne la pastille ; valeur inconnue ignorée', () => {
+    window.history.replaceState(null, '', '/contact?sujet=bug');
+    loadContact();
+    expect(document.querySelector('input[name="subject"]:checked').value).toBe('bug');
+    expect(activeDelay()).toBe('bug');
+    window.history.replaceState(null, '', '/contact?sujet=%22%5D%2C*');
+    loadContact();
+    expect(document.querySelector('input[name="subject"]:checked').value).toBe('general');
+  });
+});
+
+describe('contact.js — fiche concernée', () => {
+  const aircraftOk = () => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ id: 30, name: 'Dassault Rafale' }) });
+
+  test('?fiche=30 : nom relu par l’API, lien vers la fiche, envoyé avec le message', async () => {
+    window.history.replaceState(null, '', '/contact?sujet=bug&fiche=30');
+    global.fetch = jest.fn((url) => (url === '/api/airplanes/30'
+      ? aircraftOk()
+      : Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({}) })));
+    window.VH.shared = { buildDetailsPath: (id, n) => `/details/${n.toLowerCase().replace(/ /g, '-')}-${id}` };
+    loadContact();
+    await flush();
+    expect($('contact-aircraft').hidden).toBe(false);
+    expect($('contact-aircraft-link').textContent).toBe('Dassault Rafale');
+    expect($('contact-aircraft-link').getAttribute('href')).toBe('/details/dassault-rafale-30');
+    fill();
+    await submit();
+    const body = JSON.parse(global.fetch.mock.calls.find((c) => c[0] === '/api/contact')[1].body);
+    expect(body.aircraft_id).toBe(30);
+    // Après l'envoi, la fiche ne vaut plus pour le message suivant.
+    expect($('contact-aircraft').hidden).toBe(true);
+    expect(window.location.search).toBe('?sujet=bug');
+    delete window.VH.shared;
+  });
+
+  test('sans buildDetailsPath : lien de repli /details?id=', async () => {
+    window.history.replaceState(null, '', '/contact?fiche=30');
+    global.fetch = jest.fn(aircraftOk);
+    loadContact();
+    await flush();
+    expect($('contact-aircraft-link').getAttribute('href')).toBe('/details?id=30');
+  });
+
+  test('retirer la fiche : encadré masqué, adresse nettoyée, rien n’est envoyé', async () => {
+    window.history.replaceState(null, '', '/contact?fiche=30#x');
+    global.fetch = jest.fn(aircraftOk);
+    loadContact();
+    await flush();
+    $('contact-aircraft-remove').click();
+    expect($('contact-aircraft').hidden).toBe(true);
+    expect(window.location.search).toBe('');
+    expect(window.location.hash).toBe('#x');
+    expect(document.activeElement).toBe($('contact-message'));
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true, status: 200 }));
+    fill();
+    await submit();
+    expect(JSON.parse(global.fetch.mock.calls[0][1].body)).not.toHaveProperty('aircraft_id');
+  });
+
+  test('fiche introuvable, réponse sans nom ou réseau coupé : pas d’encadré', async () => {
+    for (const impl of [
+      () => Promise.resolve({ ok: false, status: 404 }),
+      () => Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({}) }),
+      () => Promise.reject(new Error('réseau')),
+    ]) {
+      window.history.replaceState(null, '', '/contact?fiche=12');
+      global.fetch = jest.fn(impl);
+      loadContact();
+      await flush();
+      expect($('contact-aircraft').hidden).toBe(true);
+    }
+  });
+
+  test('?fiche= non numérique : aucune requête', () => {
+    window.history.replaceState(null, '', '/contact?fiche=abc');
+    loadContact();
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+});
+
+describe('contact.js — compteur du message', () => {
+  test('compte les caractères, se met en avant près de la limite', () => {
+    loadContact();
+    global.i18n.t = jest.fn((k, p) => (k === 'contact.form_count' ? `${p.n} / ${p.max}` : k));
+    $('contact-message').value = 'x'.repeat(4600);
+    $('contact-message').dispatchEvent(new Event('input'));
+    expect($('contact-count').textContent).toBe(`${(4600).toLocaleString('fr-FR')} / ${(5000).toLocaleString('fr-FR')}`);
+    expect($('contact-count').classList.contains('is-near')).toBe(true);
+    global.i18n.currentLang = 'en';
+    window.dispatchEvent(new Event('langChanged'));
+    expect($('contact-count').textContent).toBe('4,600 / 5,000');
+  });
+
+  test('locales non chargées : repli « n / max » (jamais la clé brute)', () => {
+    global.i18n.t = jest.fn((k) => k);
+    loadContact();
+    $('contact-message').value = 'abc';
+    $('contact-message').dispatchEvent(new Event('input'));
+    expect($('contact-count').textContent).toBe(`3 / ${(5000).toLocaleString('fr-FR')}`);
+  });
+});
+
+describe('contact.js — copie de l’adresse', () => {
+  afterEach(() => { delete navigator.clipboard; jest.useRealTimers(); });
+
+  test('copie réussie : coche puis retour à l’icône de copie, toast de succès', async () => {
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText: jest.fn(() => Promise.resolve()) }, configurable: true });
+    loadContact();
+    jest.useFakeTimers();
+    $('contact-copy').click();
+    await Promise.resolve(); await Promise.resolve();
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('vdh@titouan-borde.com');
+    expect($('contact-copy').classList.contains('is-copied')).toBe(true);
+    expect(showToast).toHaveBeenCalledWith('Adresse copiée', 'success');
+    jest.advanceTimersByTime(1700);
+    expect($('contact-copy').classList.contains('is-copied')).toBe(false);
+  });
+
+  test('presse-papiers refusé : toast d’erreur', async () => {
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText: jest.fn(() => Promise.reject(new Error('refus'))) }, configurable: true });
+    loadContact();
+    $('contact-copy').click();
+    await flush();
+    expect($('contact-copy').classList.contains('is-copied')).toBe(false);
+    expect(showToast).toHaveBeenCalledWith(expect.stringMatching(/Copie impossible/), 'error');
   });
 });

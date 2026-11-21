@@ -17,20 +17,15 @@
 
     const axes = [
       { label: i18n.t('details.radar_speed'), icon: 'gauge-high',
-        score: Math.min((a.max_speed || 0) / REF_SPEED * 100, 100),
-        raw: a.max_speed ? `${Number(a.max_speed).toLocaleString()} km/h` : 'N/A' },
+        score: Math.min((a.max_speed || 0) / REF_SPEED * 100, 100) },
       { label: i18n.t('details.radar_range'), icon: 'route',
-        score: Math.min((a.max_range || 0) / REF_RANGE * 100, 100),
-        raw: a.max_range ? `${Number(a.max_range).toLocaleString()} km` : 'N/A' },
+        score: Math.min((a.max_range || 0) / REF_RANGE * 100, 100) },
       { label: i18n.t('details.radar_armament'), icon: 'crosshairs',
-        score: Math.min((armament.length || 0) / REF_ARMAMENT * 100, 100),
-        raw: `${armament.length} ${i18n.currentLang === 'en' ? (armament.length !== 1 ? 'systems' : 'system') : (armament.length > 1 ? 'systèmes' : 'système')}` },
+        score: Math.min((armament.length || 0) / REF_ARMAMENT * 100, 100) },
       { label: i18n.t('details.radar_versatility'), icon: 'bullseye',
-        score: Math.min((missions.length || 0) / REF_MISSIONS * 100, 100),
-        raw: `${missions.length} ${i18n.currentLang === 'en' ? (missions.length !== 1 ? 'missions' : 'mission') : (missions.length > 1 ? 'missions' : 'mission')}` },
+        score: Math.min((missions.length || 0) / REF_MISSIONS * 100, 100) },
       { label: i18n.t('details.radar_technology'), icon: 'microchip',
-        score: Math.min((tech.length || 0) / REF_TECH * 100, 100),
-        raw: `${tech.length} tech${tech.length > 1 ? 's' : ''}` },
+        score: Math.min((tech.length || 0) / REF_TECH * 100, 100) },
     ];
 
     const cx = 150, cy = 150, r = 95;
@@ -88,15 +83,15 @@
       </svg>
     `;
 
+    // Valeurs brutes (km/h, nombre d'armes…) : déjà dans les chiffres clés,
+    // la fiche technique et les capacités. Ici, seulement le profil.
+    const pct = (score) => `${Math.round(score)}${i18n.currentLang === 'en' ? '' : '\u00a0'}%`;
     legendEl.innerHTML = axes.map(axis => `
       <div class="radar-stat">
         <div class="radar-stat-head">
           <div class="radar-stat-icon"><i class="fas fa-${axis.icon}"></i></div>
-          <div class="radar-stat-info">
-            <span class="radar-stat-label">${escapeHtml(axis.label)}</span>
-            <span class="radar-stat-value">${escapeHtml(axis.raw)}</span>
-          </div>
-          <span class="radar-stat-pct">${Math.round(axis.score)}%</span>
+          <span class="radar-stat-label">${escapeHtml(axis.label)}</span>
+          <span class="radar-stat-pct">${pct(axis.score)}</span>
         </div>
         <div class="radar-bar">
           <div class="radar-bar-fill" data-target="${axis.score.toFixed(1)}"></div>

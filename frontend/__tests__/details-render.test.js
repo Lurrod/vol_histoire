@@ -96,9 +96,10 @@ describe('renderAircraftDetails — en-tête et statistiques', () => {
   test('statistiques avec unités ; N/A et « non précisé » si absentes', () => {
     boot();
     render.renderAircraftDetails({ aircraftId: '30', aircraftData: { ...RAFALE } });
-    expect(text('stat-speed')).toBe('1912 km/h');
-    expect(text('stat-range')).toBe('3700 km');
-    expect(text('stat-weight')).toBe('10300 kg');
+    // Nombres groupés dans la langue du site (espace fine insécable en français).
+    expect(text('stat-speed')).toMatch(/^1\s912 km\/h$/);
+    expect(text('stat-range')).toMatch(/^3\s700 km$/);
+    expect(text('stat-weight')).toMatch(/^10\s300 kg$/);
     expect(text('stat-status')).toBe('En service');
     render.renderAircraftDetails({ aircraftId: '1', aircraftData: { name: 'X' } });
     expect(text('stat-speed')).toBe('N/A');
@@ -124,16 +125,30 @@ describe('renderAircraftDetails — en-tête et statistiques', () => {
     expect(text('aircraft-name')).toBe(evil);
   });
 
-  test('badge de génération : « 4e Génération » en français', () => {
-    boot('fr');
+  test('chiffres clés en anglais : séparateur de milliers anglais', () => {
+    boot('en');
     render.renderAircraftDetails({ aircraftId: '30', aircraftData: { ...RAFALE } });
-    expect($('#hero-badge span').textContent).toBe('4e Génération');
+    expect(text('stat-speed')).toBe('1,912 km/h');
   });
 
-  test.each([[1, '1st'], [2, '2nd'], [3, '3rd'], [5, '5th']])('badge en anglais : génération %i → %s', (gen, suffix) => {
+  test('génération dans la ligne pays · constructeur · année : « 4e génération »', () => {
+    boot('fr');
+    render.renderAircraftDetails({ aircraftId: '30', aircraftData: { ...RAFALE } });
+    expect(text('hero-generation')).toBe('4e génération');
+    expect($('#hero-generation-item').hidden).toBe(false);
+    expect($('#hero-badge')).toBeNull();
+  });
+
+  test.each([[1, '1st'], [2, '2nd'], [3, '3rd'], [5, '5th']])('génération en anglais : %i → %s', (gen, suffix) => {
     boot('en');
     render.renderAircraftDetails({ aircraftId: '30', aircraftData: { ...RAFALE, generation: gen } });
-    expect($('#hero-badge span').textContent).toBe(`${suffix} Generation`);
+    expect(text('hero-generation')).toBe(`${suffix} generation`);
+  });
+
+  test('génération inconnue : élément masqué', () => {
+    boot('fr');
+    render.renderAircraftDetails({ aircraftId: '30', aircraftData: { ...RAFALE, generation: null } });
+    expect($('#hero-generation-item').hidden).toBe(true);
   });
 
   test('image hero : alt composé, chargement immédiat ; crédit photo affiché', () => {
@@ -260,7 +275,7 @@ describe('renderAircraftDetails — description', () => {
 });
 
 describe('renderSpecs (strates 1-2)', () => {
-  test('une tuile par valeur renseignée, nombres localisés avec unité', () => {
+  test('une ligne par valeur renseignée, rangée dans son groupe ; nombres localisés', () => {
     boot('fr', { 'details.spec_length': 'Longueur', 'details.spec_crew': 'Équipage' });
     render.renderAircraftDetails({
       aircraftId: '30',
@@ -268,8 +283,8 @@ describe('renderSpecs (strates 1-2)', () => {
     });
     const section = document.getElementById('specs-section');
     expect(section.classList.contains('hidden')).toBe(false);
-    const tiles = [...section.querySelectorAll('.spec-tile')].map((t) => [
-      t.querySelector('.spec-label').textContent, t.querySelector('.spec-value').textContent,
+    const tiles = [...section.querySelectorAll('.spec-row')].map((t) => [
+      t.querySelector('dt.spec-label').textContent, t.querySelector('dd.spec-value').textContent,
     ]);
     expect(tiles).toContainEqual(['Longueur', '15,27 m']);
     expect(tiles).toContainEqual(['Équipage', '2']);
@@ -277,8 +292,12 @@ describe('renderSpecs (strates 1-2)', () => {
     // empty_weight (RAFALE) + mtow
     expect(tiles.find(([l]) => l === 'details.spec_mtow')[1]).toMatch(/^24\s500 kg$/);
     expect(tiles.map(([l]) => l)).not.toContain('details.spec_wingspan');
-    // Icônes décoratives
-    section.querySelectorAll('.spec-tile i').forEach((i) => expect(i.getAttribute('aria-hidden')).toBe('true'));
+    // Trois groupes au plus, chacun titré ; la longueur est dans « cellule ».
+    const groups = [...section.querySelectorAll('.spec-group')];
+    expect(groups.map((g) => g.querySelector('.spec-group-title').textContent))
+      .toEqual(['details.spec_group_airframe', 'details.spec_group_propulsion']);
+    expect(groups[0].textContent).toContain('Longueur');
+    expect(groups[1].textContent).toContain('Snecma M88-2');
   });
 
   test('séparateur décimal anglais', () => {
@@ -303,7 +322,7 @@ describe('renderSpecs (strates 1-2)', () => {
 });
 
 describe('renderProduction (strate 3)', () => {
-  const values = () => Object.fromEntries([...document.querySelectorAll('#production-grid .spec-tile')].map((t) => [
+  const values = () => Object.fromEntries([...document.querySelectorAll('#production-grid .spec-row')].map((t) => [
     t.querySelector('.spec-label').textContent, t.querySelector('.spec-value').textContent,
   ]));
 
@@ -509,6 +528,16 @@ describe('renderWars — liens vers les conflits', () => {
     boot();
     render.renderWars([{ name: 'Ukraine', description: 'd', date_start: '2022-02-24', date_end: null }]);
     expect(document.querySelector('.war-period span').textContent).toBe('2022 – details.war_ongoing');
+  });
+
+  test('conflit d\'une seule année : « 1999 », pas « 1999 – 1999 »', () => {
+    boot();
+    render.renderWars([
+      { name: 'Kargil', description: 'd', date_start: '1999-05-03', date_end: '1999-07-26' },
+      { name: 'Golfe', description: 'd', date_start: '1990-08-02', date_end: '1991-02-28' },
+    ]);
+    const periods = [...document.querySelectorAll('.war-period span')].map((s) => s.textContent);
+    expect(periods).toEqual(['1999', '1990 – 1991']);
   });
 
   test('sans description : texte de repli ; sans slug : titre non cliquable', () => {
