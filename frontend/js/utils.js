@@ -42,7 +42,9 @@ function safeSetHTML(el, html) {
                      'a', 'i', 'b', 'strong', 'em', 'br', 'hr', 'img',
                      'ul', 'ol', 'li', 'button', 'input', 'label', 'option',
                      'table', 'tr', 'td', 'th', 'thead', 'tbody',
-                     'aside', 'section', 'nav', 'header', 'footer', 'main', 'article'],
+                     'aside', 'section', 'nav', 'header', 'footer', 'main', 'article',
+                     // détails repliables de la modale des cookies
+                     'details', 'summary'],
       // data-i18n* : attributs déclaratifs lus par i18n.applyToDOM pour
       // traduire le contenu injecté (sans ces attributs, le banner reste figé en FR).
       // label/for/checked/disabled : interrupteurs du bandeau cookies
@@ -147,6 +149,9 @@ function showToast(message, type = 'info', duration) {
   toast.appendChild(closeBtn);
 
   container.appendChild(toast);
+  // Paquet de notifications (shared/toast-stack.js) : survoler le paquet
+  // met en pause tous ses toasts, pas seulement celui sous le pointeur.
+  const stack = container.id === 'toast-container' ? container : null;
 
   const total = Number.isFinite(duration) && duration > 0 ? duration
     : (type === 'error' ? TOAST_DURATION_ERROR : TOAST_DURATION_DEFAULT);
@@ -159,6 +164,10 @@ function showToast(message, type = 'info', duration) {
     if (dismissed) return;
     dismissed = true;
     clearTimeout(timer);
+    if (stack) {
+      stack.removeEventListener('mouseenter', pause);
+      stack.removeEventListener('mouseleave', resume);
+    }
     // Sortie animée par .fade-out (keyframes toastOut, portée par le toast
     // lui-même) ; la durée est lue sur le CSS par VH.motion.
     window.VH.motion.exit(toast, () => toast.remove(), { className: 'fade-out' });
@@ -181,6 +190,7 @@ function showToast(message, type = 'info', duration) {
     // Reste en pause tant que le pointeur survole ou que le focus est dedans.
     if (dismissed || timer !== null) return;
     if (toast.matches(':hover') || toast.contains(document.activeElement)) return;
+    if (stack && stack.matches(':hover')) return;
     // Un minimum d'une seconde pour laisser le temps de relire.
     remaining = Math.max(remaining, 1000);
     start();
@@ -191,6 +201,10 @@ function showToast(message, type = 'info', duration) {
   toast.addEventListener('mouseleave', resume);
   toast.addEventListener('focusin', pause);
   toast.addEventListener('focusout', () => setTimeout(resume, 0));
+  if (stack) {
+    stack.addEventListener('mouseenter', pause);
+    stack.addEventListener('mouseleave', resume);
+  }
 
   start();
   return { dismiss };

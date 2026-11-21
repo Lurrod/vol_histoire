@@ -269,16 +269,23 @@ describe('CookieConsent — chargement du fragment cookie-consent.html', () => {
    * modifiables, le MARKETING activable, et perdait les quatre <label> qui
    * portent les interrupteurs (.cookie-toggle label, cookies.css:374).
    */
-  test('le fragment injecté garde interrupteurs, cases verrouillées et libellés', async () => {
+  test('le fragment injecté garde interrupteur, détails et libellés', async () => {
     setupPage();
     await createConsent();
-    const essential = document.getElementById('cookie-essential');
-    expect(essential.checked).toBe(true);
-    expect(essential.disabled).toBe(true);
-    expect(document.getElementById('cookie-marketing').disabled).toBe(true);
-    // essentiels, mesure d'audience, marketing : plus de catégorie « préférence »
-    expect(document.querySelectorAll('.cookie-toggle label')).toHaveLength(3);
+    // Une seule finalité réglable : la mesure d'audience. Essentiels en
+    // pastille « Toujours actifs », marketing remplacé par une phrase.
+    expect(document.querySelectorAll('.cookie-toggle label')).toHaveLength(1);
+    expect(document.getElementById('cookie-analytics')).not.toBeNull();
+    expect(document.getElementById('cookie-essential')).toBeNull();
+    expect(document.getElementById('cookie-marketing')).toBeNull();
     expect(document.getElementById('cookie-preference')).toBeNull();
+    expect(document.querySelector('.cookie-always')).not.toBeNull();
+    // Les détails repliables survivent au nettoyage du fragment
+    expect(document.querySelectorAll('.cookie-category-details')).toHaveLength(2);
+    document.querySelectorAll('.cookie-category-details').forEach((d) => {
+      expect(d.tagName).toBe('DETAILS');
+      expect(d.querySelector('summary')).not.toBeNull();
+    });
     document.querySelectorAll('.cookie-toggle label').forEach((label) => {
       expect(document.getElementById(label.getAttribute('for'))).not.toBeNull();
     });

@@ -34,6 +34,7 @@ const BUNDLES = {
     'shared-underlay.css',
     'shared-utilities.css',
     'shared-morph.css',
+    'shared-toc.css',
     'shared-onboarding.css',
     'fonts.css',
     'cookies.css',
@@ -78,6 +79,7 @@ const BUNDLES = {
 const CORE_FILE_LAYERS = {
   'shared-responsive.css': 'shared',
   'shared-underlay.css': 'shared',
+  'shared-toc.css': 'shared',
   'shared-onboarding.css': 'shared',
   'cookies.css': 'shared',
 };

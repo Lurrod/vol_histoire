@@ -7,6 +7,36 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 ## [Unreleased]
 
+## [4.26.0] - 2026-11-21
+
+### Added
+
+- Les pages longues (fiches d'appareils, CGU, politique de confidentialité, mentions légales) ont un
+  sommaire qui vous suit pendant la lecture : un filet pointillé désigne la partie en cours et un clic
+  vous y emmène. Sur téléphone, il tient dans une barre en haut de l'écran.
+- Les documents légaux s'ouvrent sur un en-tête clair : des onglets pour passer de l'un à l'autre, la
+  version, la date de mise à jour, le temps de lecture, et un bouton pour les imprimer ou les
+  enregistrer en PDF.
+- Le pied de page affiche les chiffres du catalogue : appareils, nations et conflits.
+
+### Changed
+
+- Nouveau pied de page : il se découvre comme un rideau en fin de page, avec le nom du site en grand,
+  et ne garde que les liens utiles.
+- Les notifications s'empilent : la plus récente devant, les autres derrière ; survolez-les pour
+  toutes les voir.
+- La fenêtre des cookies est plus courte et plus claire : une ligne par usage, les détails repliés, et
+  sur téléphone un panneau qui monte du bas de l'écran.
+- Les interrupteurs des paramètres et des cookies s'étirent en glissant ; celui de « Réduire les
+  animations » garde son mouvement même quand l'option est active.
+- La page contact a un titre plus simple, « Nous écrire », et un en-tête centré.
+- Le récit des fiches commence sans lettrine.
+
+### Fixed
+
+- Les cookies publicitaires, que le site n'utilise pas, ne s'affichent plus comme activés.
+- Les pages légales indiquent leur vraie version et leur vraie date de mise à jour.
+
 ## [4.25.0] - 2026-11-20
 
 ### Added
@@ -607,6 +637,7 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 - Première version de Vol d'Histoire : un catalogue d'avions militaires.
 
 [unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.25.0...HEAD
+[4.26.0]: https://github.com/Lurrod/vol_histoire/compare/v4.25.0...v4.26.0
 [4.25.0]: https://github.com/Lurrod/vol_histoire/compare/v4.24.0...v4.25.0
 [4.24.0]: https://github.com/Lurrod/vol_histoire/compare/v4.23.1...v4.24.0
 [4.23.1]: https://github.com/Lurrod/vol_histoire/compare/v4.23.0...v4.23.1

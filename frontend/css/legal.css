@@ -4,29 +4,143 @@
 
 /* Backdrop unifié — même pattern que hangar/details */
 body.page-legal { background: var(--night); }
-/* Page Hero */
-.page-legal .page-hero { position: relative; background: transparent; padding: 7rem 0; margin-top: 70px; overflow: hidden; }
-.page-legal .hero-background { position: absolute; inset: 0; background: transparent; z-index: 0; }
-.page-legal .page-hero-inner { position: relative; z-index: 1; display: flex; justify-content: center; align-items: center; }
-.page-legal .hero-text { text-align: center; max-width: 700px; }
-.page-legal .hero-eyebrow { font-size: var(--text-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: rgba(255,255,255,0.66); display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 2.5rem; }
-.page-legal .hero-text h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 700; letter-spacing: -2px; line-height: 1.0; color: var(--white); margin-bottom: 2rem; }
-.page-legal .hero-muted { display: block; color: rgba(255,255,255,0.55); font-weight: 300; letter-spacing: -1px; }
-.page-legal .hero-text > p { font-size: 1rem; color: rgba(255,255,255,0.62); max-width: 520px; line-height: 1.85; margin: 0 auto; }
+/* En-tête de la page contact (seule à garder le bandeau HERO COMMUN de
+   shared-base.css) : fond transparent pour laisser voir la photo floue. */
+.page-legal .page-hero { background: transparent; padding: 7rem 0 6rem; margin-top: 70px; }
+.page-legal .hero-eyebrow { color: rgba(255,255,255,0.66); margin-bottom: 2.5rem; }
+
+/* ======================================================================
+   EN-TÊTE DE DOCUMENT — CGU, confidentialité, mentions légales, crédits
+   (2026-11-21, motif des pages légales de Stripe / GitHub / Apple)
+   Court et aligné sur le texte : fil d'Ariane, onglets entre les documents,
+   titre sur une ligne, résumé, puis version · mise à jour · temps de lecture
+   (js/shared/legal-doc.js) et impression. Le sommaire et le texte sont
+   visibles sans défiler.
+   ====================================================================== */
+.page-legal .legal-content:has(.doc-head) { padding-top: 0; }
+.page-legal .doc-head {
+  display: grid;
+  justify-items: start;
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: calc(var(--header-h) + 4rem) 0 2.5rem;
+}
+/* Avec le sommaire en colonne : l'en-tête couvre les deux colonnes */
+@media (min-width: 75em) {
+  .page-legal .has-toc > .doc-head { grid-column: 1 / -1; width: 100%; max-width: none; }
+}
+.page-legal .doc-head .breadcrumb { margin: 0; }
+/* La règle globale des <nav> les met en flex centré */
+.page-legal .doc-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: 100%;
+  padding: 0.25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border: 1px solid var(--white-a08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.page-legal .doc-tabs a {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  color: var(--text-ghost);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+}
+.page-legal .doc-tabs a:hover { color: var(--white); }
+.page-legal .doc-tabs a[aria-current="page"] {
+  background: var(--gold-a12);
+  color: var(--white);
+  box-shadow: inset 0 0 0 1px var(--gold-a20);
+}
+.page-legal .doc-tabs a:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: -2px; }
+.page-legal .doc-head h1 {
+  margin: 0;
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-size: clamp(2.1rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+.page-legal .doc-sub { max-width: 40rem; margin: 0; color: rgba(255, 255, 255, 0.62); font-size: 1.05rem; line-height: 1.6; }
+.page-legal .doc-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--white-a08);
+}
+.page-legal .doc-meta { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin: 0; color: var(--text-ghost); font-size: 0.8125rem; }
+.page-legal .doc-meta > span { display: inline-flex; align-items: center; gap: 0.45rem; }
+.page-legal .doc-meta .icon { width: 0.8rem; height: 0.8rem; color: var(--hud-cyan); }
+.page-legal .doc-meta strong { color: var(--white); font-weight: 600; }
+.page-legal .doc-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 40px;
+  padding: 0 1rem;
+  border: 1px solid var(--white-a12);
+  border-radius: 999px;
+  background: none;
+  color: var(--white);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+}
+.page-legal .doc-print:hover { border-color: var(--gold-a20); }
+.page-legal .doc-print:active { scale: var(--press-scale); }
+.page-legal .doc-print .icon { width: 0.85rem; height: 0.85rem; color: var(--hud-cyan); }
+@media (max-width: 48em) {
+  .page-legal .doc-head { gap: 1.25rem; padding: calc(var(--header-h) + 2rem) 0 2rem; }
+  .page-legal .doc-tabs a { min-height: 44px; }
+  .page-legal .doc-print { min-height: 44px; }
+}
+
+/* Impression / « Enregistrer en PDF » (bouton de l'en-tête) : document
+   texte noir sur blanc. color-scheme: light, sinon les marges de page sont
+   peintes en noir (même piège que l'export de la fiche). */
+@media print {
+  html:has(body.page-legal) { color-scheme: light !important; background: #fff !important; height: auto !important; min-height: 0 !important; }
+  body.page-legal { background: #fff !important; }
+  body.page-legal::before, body.page-legal::after { display: none !important; }
+  .page-legal .doc-tabs, .page-legal .doc-print, .page-legal .breadcrumb,
+  .page-legal .toc, .page-legal .nav-scrim { display: none !important; }
+  .page-legal .doc-head { padding: 0 0 1rem; max-width: none; }
+  .page-legal .legal-content { padding: 0; }
+  .page-legal .legal-container { max-width: none; padding: 0; border: 0; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .page-legal * { color: #000 !important; box-shadow: none !important; text-shadow: none !important; }
+  .page-legal .intro-box, .page-legal .info-box, .page-legal .use-item { background: none; border-color: #ccc; }
+  .page-legal a { text-decoration: underline; }
+}
+@page { size: A4; margin: 18mm; }
 
 /* Main Content */
 .page-legal .legal-content { padding: 3rem 0 5rem; background: transparent; }
 .page-legal .legal-container { max-width: 1000px; margin: 0 auto; background: var(--white-a04); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 3rem; }
 
-/* Breadcrumb */
-.page-legal .legal-content .breadcrumb, .page-legal .legal-container .breadcrumb { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--gold-a08); font-size: 0.875rem; color: var(--text-ghost); }
-.page-legal .legal-content .breadcrumb a, .page-legal .legal-container .breadcrumb a { color: var(--hud-cyan); text-decoration: none; transition: color var(--dur-fast) var(--ease-out); }
-.page-legal .legal-content .breadcrumb a:hover, .page-legal .legal-container .breadcrumb a:hover { color: var(--white); }
-.page-legal .legal-content .breadcrumb i, .page-legal .legal-content .breadcrumb .icon, .page-legal .legal-container .breadcrumb i, .page-legal .legal-container .breadcrumb .icon { font-size: 0.75rem; color: rgba(200,169,110,0.3); }
 
 /* Intro Box */
 .page-legal .legal-intro { margin-bottom: 3rem; }
-.page-legal .intro-box { display: flex; gap: 1.5rem; padding: 1.5rem; background: rgba(200,169,110,0.04); border-left: 3px solid rgba(200,169,110,0.3); border-radius: 12px; }
+.page-legal .intro-box { display: flex; gap: 1.5rem; padding: 1.5rem; background: rgba(200,169,110,0.04); border: 1px solid rgba(200,169,110,0.16); border-radius: 12px; }
 .page-legal .intro-box > i, .page-legal .intro-box > .icon { font-size: 2rem; color: var(--hud-cyan); flex-shrink: 0; }
 .page-legal .intro-box h3 { font-size: 1.2rem; font-weight: 600; color: var(--white); margin-bottom: 0.5rem; }
 .page-legal .intro-box p { color: var(--text-ghost); line-height: 1.6; margin: 0; }
@@ -49,7 +163,7 @@ body.page-legal { background: var(--night); }
 .page-legal .legal-text li { margin-bottom: 0.5rem; padding-left: 0.5rem; }
 
 /* Info Box */
-.page-legal .info-box { display: flex; align-items: start; gap: 1rem; padding: 1rem 1.5rem; margin: 1.5rem 0; background: rgba(255,171,0,0.04); border-left: 3px solid rgba(255,171,0,0.3); border-radius: 12px; }
+.page-legal .info-box { display: flex; align-items: start; gap: 1rem; padding: 1rem 1.5rem; margin: 1.5rem 0; background: rgba(255,171,0,0.04); border: 1px solid rgba(255,171,0,0.16); border-radius: 12px; }
 .page-legal .info-box i, .page-legal .info-box .icon { color: var(--hud-amber); font-size: 1.25rem; margin-top: 0.25rem; flex-shrink: 0; }
 .page-legal .info-box p { margin: 0; color: rgba(255,255,255,0.55); }
 
@@ -121,8 +235,8 @@ body.page-legal { background: var(--night); }
 /* Allowed/Forbidden Uses */
 .page-legal .allowed-uses { margin: 1.5rem 0; }
 .page-legal .use-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 0.75rem; border-radius: 12px; transition: box-shadow var(--dur-base) var(--ease-out); }
-.page-legal .use-item.allowed { background: rgba(0,230,118,0.04); border-left: 3px solid rgba(0,230,118,0.3); }
-.page-legal .use-item.forbidden { background: rgba(231,76,60,0.04); border-left: 3px solid rgba(231,76,60,0.3); }
+.page-legal .use-item.allowed { background: rgba(0,230,118,0.04); border: 1px solid rgba(0,230,118,0.16); }
+.page-legal .use-item.forbidden { background: rgba(231,76,60,0.04); border: 1px solid rgba(231,76,60,0.16); }
 .page-legal .use-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 .page-legal .use-item i, .page-legal .use-item .icon { font-size: 1.1rem; flex-shrink: 0; }
 .page-legal .use-item.allowed i, .page-legal .use-item.allowed .icon { color: var(--hud-green); }
@@ -168,13 +282,14 @@ body.page-legal { background: var(--night); }
 .page-legal .credits-table { min-width: 640px; }
 .page-legal .version-history { margin: 0; padding-left: 1.25rem; }
 .page-legal .cookies-inventory code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82em; padding: 2px 6px; border-radius: 4px; background: var(--white-a04); color: var(--hud-cyan, #5BC0BE); white-space: nowrap; }
-.page-legal .cookies-marketing-note { margin: 1rem 0 1.5rem; padding: 0.85rem 1rem; border-left: 3px solid var(--hud-cyan, #5BC0BE); background: rgba(91,192,190,0.04); border-radius: 0 12px 12px 0; font-size: 0.9rem; }
+.page-legal .cookies-marketing-note { margin: 1rem 0 1.5rem; padding: 0.85rem 1rem; border: 1px solid var(--gold-a15); background: var(--gold-a08); border-radius: 12px; font-size: 0.9rem; }
 @media (max-width: 48em) {
   .page-legal .cookies-inventory { font-size: 0.78rem; }
   .page-legal .cookies-inventory thead th, .page-legal .cookies-inventory tbody td { padding: 0.6rem 0.7rem; }
 }
 
 @media (max-width: 48em) {
+  /* En-tête centré comme Conflits (favorites.css) */
   .page-legal .page-hero { padding: 5rem 0 4rem; }
   .page-legal .page-hero-inner { flex-direction: column; gap: 2.5rem; align-items: center; text-align: center; }
   .page-legal .hero-eyebrow { justify-content: center; }
@@ -191,8 +306,6 @@ body.page-legal { background: var(--night); }
 }
 @media (max-width: 30em) {
   .page-legal .container { padding: 0 1rem; }
-  .page-legal .page-hero { padding: 3rem 0 2.5rem; }
-  .page-legal .hero-text h1 { font-size: clamp(1.75rem, 10vw, 2.5rem); margin-bottom: 0.75rem; }
   .page-legal .legal-container { padding: 1rem; }
   .page-legal .legal-content { padding: 1.5rem 0 2rem; }
   .page-legal .legal-section { padding: 1.25rem 0; }

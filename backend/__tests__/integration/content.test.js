@@ -166,12 +166,15 @@ describeIt('Intégration SQL — contenus', () => {
       ctx.app.invalidateStatsCache();
       const res = await api().get('/api/stats');
       expect(res.status).toBe(200);
+      const wars = (await ctx.pool.query('SELECT COUNT(*)::int AS n FROM wars')).rows[0].n;
+      expect(wars).toBeGreaterThan(0);
       expect(res.body).toEqual({
         airplanes: FIXTURE_FILES.length,
         earliest_year: 1949,
         latest_year: 2000,
         countries: 3,
         generations: 5,
+        wars,
       });
     });
   });

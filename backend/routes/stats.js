@@ -27,6 +27,7 @@ module.exports = function createStatsRouter(getPool) {
       latest_year: stats.latest ?? null,
       countries: stats.countries,
       generations: stats.generations,
+      wars: stats.wars,
     };
 
     cached = data;

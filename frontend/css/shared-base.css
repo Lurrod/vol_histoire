@@ -931,6 +931,44 @@
     gap: var(--sp-4);
   }
 
+  /* Paquet de notifications (js/shared/toast-stack.js, motif « Sonner ») :
+     le plus récent devant, les précédents derrière, plus petits et décalés
+     vers le haut ; déplié au survol ou au focus. Hauteur du conteneur et
+     place de chaque toast posées en CSSOM. */
+  #toast-container.toast-stack {
+    display: block;
+    width: min(24rem, calc(100vw - 2 * var(--sp-8)));
+    height: var(--stack-h, 0px);
+    transition: height var(--dur-slow) var(--ease-out);
+  }
+
+  #toast-container.toast-stack.is-empty { pointer-events: none; }
+
+  .toast-stack > .toast {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    min-width: 0;
+    z-index: var(--toast-z, 1);
+    translate: 0 var(--toast-y, 0px);
+    scale: var(--toast-s, 1);
+    transform-origin: 50% 0;
+    box-shadow: var(--shadow-xl);
+    transition:
+      translate var(--dur-slow) var(--ease-out),
+      scale var(--dur-slow) var(--ease-out),
+      opacity var(--dur-base) var(--ease-out);
+  }
+
+  /* Derrière : à la hauteur du toast de devant (sinon un toast plus haut
+     dépasse et masque les autres) ; seule la carte dépasse, son contenu
+     s'efface. */
+  .toast-stack > .toast > * { transition: opacity var(--dur-base) var(--ease-out); }
+  .toast-stack > .toast.is-behind { height: var(--front-h); overflow: hidden; }
+  .toast-stack > .toast.is-behind > * { opacity: 0; }
+  .toast-stack > .toast.is-hidden-stack { opacity: 0; pointer-events: none; }
+
   .toast {
     min-width: 320px;
     padding: var(--sp-4) var(--sp-5);
@@ -943,9 +981,11 @@
     animation: toastIn var(--dur-base) var(--ease-out);
   }
 
+  /* Entrée par le bas, sortie vers le bas (« transform » : la place dans
+     le paquet passe par « translate », les deux se composent) */
   @keyframes toastIn {
-    from { transform: translateX(400px); opacity: 0; }
-    to   { transform: translateX(0); opacity: 1; }
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: none; opacity: 1; }
   }
 
   .toast.fade-out {
@@ -953,7 +993,7 @@
   }
 
   @keyframes toastOut {
-    to { transform: translateX(400px); opacity: 0; }
+    to { transform: translateY(40%); opacity: 0; }
   }
 
   /* transitions-dev — error state shake. Posé par utils.setFieldError()
@@ -1074,20 +1114,22 @@
     .hamburger { padding-inline-end: var(--sp-1); }
   }
 
+  /* Fonds teintés mais opaques (calque teinté sur --night-mid) : dans le
+     paquet, des cartes translucides se mélangeaient. */
   .toast-success {
-    background: rgba(0, 230, 118, 0.12);
+    background: linear-gradient(rgba(0, 230, 118, 0.12), rgba(0, 230, 118, 0.12)), var(--night-mid);
     color: var(--hud-green-text);
     border: 1px solid rgba(0, 230, 118, 0.25);
   }
 
   .toast-error {
-    background: rgba(231, 76, 60, 0.12);
+    background: linear-gradient(rgba(231, 76, 60, 0.12), rgba(231, 76, 60, 0.12)), var(--night-mid);
     color: var(--accent-text);
     border: 1px solid rgba(231, 76, 60, 0.25);
   }
 
   .toast-info {
-    background: var(--gold-a12);
+    background: linear-gradient(var(--gold-a12), var(--gold-a12)), var(--night-mid);
     color: var(--hud-cyan);
     border: 1px solid rgba(200, 169, 110, 0.25);
   }
@@ -1350,48 +1392,178 @@
   }
 
   /* ============================================================
-     FOOTER
+     PIED DE PAGE « RIDEAU » + GRAND MOT-SYMBOLE (2026-11-21)
+     ------------------------------------------------------------
+     Le contenu du pied reste immobile par rapport au bas de l'écran
+     pendant que la fin de la page remonte et le découvre (« reveal
+     footer »). Pas de position: fixed derrière la page : celle-ci n'est
+     pas opaque (fonds photo flous de body::before). C'est l'intérieur
+     du pied (.footer-reveal) qui est décalé vers le haut, d'une animation
+     pilotée par le défilement (view-timeline du pied), et le pied le
+     rogne. Sans cette API (Firefox) ou en mouvement réduit : pied
+     ordinaire, tout simplement posé en bas.
      ============================================================ */
   footer {
-    background: var(--night);
+    position: relative;
+    overflow: hidden;
+    container-type: inline-size;
+    view-timeline: --vh-footer block;
+    background: var(--night-soft);
     color: var(--white);
-    padding: var(--sp-28) 0 var(--sp-12);
     border-top: 1px solid var(--white-a06);
+    /* la page « passe par-dessus » : ombre de son bord */
+    box-shadow: inset 0 28px 36px -28px rgba(0, 0, 0, 0.85);
   }
 
-  .footer-content {
+  .footer-reveal {
+    padding-top: var(--sp-20);
+  }
+
+  .footer-top {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: var(--sp-20);
-    margin-bottom: var(--sp-20);
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--sp-12);
+    margin-bottom: var(--sp-12);
   }
 
-  .footer-section h3 {
-    font-family: var(--font-sans);
-    font-size: 0.80rem;
+  .footer-tagline {
+    color: var(--text-ghost);
+    line-height: var(--leading-relaxed);
+    max-width: 24rem;
+    margin: 0;
+  }
+
+  /* Chiffres du catalogue (/api/stats, js/shared/footer-stats.js) */
+  .footer-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-6);
+    margin: var(--sp-4) 0 0;
+  }
+
+  .footer-stats[hidden] { display: none; }
+
+  .footer-stat {
+    color: var(--text-ghost);
+    font-size: 0.875rem;
+  }
+
+  .footer-stat-num {
+    margin-right: 0.15em;
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 1.75rem;
     font-weight: 700;
-    margin-bottom: var(--sp-6);
+    --roll-h: 1.1em;
+  }
+
+  /* La règle globale des <nav> les met en flex centré */
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(8rem, 1fr));
+    gap: var(--sp-8);
+    align-items: start;
+  }
+
+  .footer-col h3 {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin: 0 0 var(--sp-4);
     color: rgba(255, 255, 255, 0.66);
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 0.12em;
   }
 
-  .footer-logo {
-    font-family: var(--font-display);
-    font-size: var(--text-2xl);
-    font-weight: 700;
-    display: flex;
+  .footer-col ul {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .footer-col a,
+  .footer-legal a {
+    display: inline-flex;
     align-items: center;
-    gap: var(--sp-2);
-    margin-bottom: var(--sp-4);
+    min-height: 32px;
+    color: var(--text-ghost);
+    transition: color var(--dur-fast) var(--ease-out);
   }
 
-  .footer-logo i, .footer-logo .icon { color: var(--hud-cyan); }
+  .footer-col a:hover,
+  .footer-legal a:hover {
+    color: var(--white);
+  }
 
-  .footer-lockup {
-    height: 2.5rem;
-    width: auto;
+  .footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-2) var(--sp-6);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--white-a08);
+    color: rgba(240, 237, 232, 0.5);
+    font-size: 0.8125rem;
+  }
+
+  .footer-legal p { margin: 0; }
+
+  .footer-legal ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--sp-5);
+  }
+
+  .footer-legal a {
+    min-height: 28px;
+    font-size: 0.8125rem;
+  }
+
+  /* Nom du site sur toute la largeur, rogné par le bas du pied */
+  .footer-word {
     display: block;
+    margin-top: var(--sp-10);
+    padding-inline: clamp(0.5rem, 2cqi, 1.5rem);
+    font-family: var(--font-display);
+    font-size: 18.4cqi;
+    font-weight: 700;
+    line-height: 0.8;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    color: transparent;
+    background: linear-gradient(180deg, rgba(200, 169, 110, 0.7), rgba(200, 169, 110, 0.05) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    translate: 0 12%;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* Pied étroit : une colonne, barre légale empilée, cibles tactiles */
+  @container (max-width: 40rem) {
+    .footer-reveal { padding-top: var(--sp-12); }
+    .footer-top { grid-template-columns: 1fr; gap: var(--sp-8); margin-bottom: var(--sp-8); }
+    .footer-legal { flex-direction: column; align-items: flex-start; }
+    .footer-col a { min-height: 44px; }
+    .footer-legal a { min-height: 44px; }
+  }
+
+  /* Rideau : l'intérieur part décalé d'une hauteur de pied et rejoint sa
+     place quand le pied a fini d'entrer — il reste donc collé au bas de
+     l'écran. Courbe linéaire obligatoire (suivi du défilement). */
+  @keyframes vh-footer-reveal {
+    from { translate: 0 -100%; }
+    to   { translate: 0 0; }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) and (min-height: 36em) {
+      html:not(.vh-reduce-motion) .footer-reveal {
+        animation: vh-footer-reveal linear both;
+        animation-timeline: --vh-footer;
+        animation-range: entry 0% entry 100%;
+      }
+    }
   }
 
   /* Logos des pages d'authentification (page de connexion) */
@@ -1401,42 +1573,6 @@
     display: block;
     margin: 0 auto;
   }
-
-  .footer-section p {
-    color: var(--text-ghost);
-    line-height: var(--leading-relaxed);
-    margin-bottom: var(--sp-6);
-  }
-
-  .footer-section ul li {
-    margin-bottom: var(--sp-3);
-  }
-
-  .footer-section ul li a {
-    display: inline-block;
-    min-height: 24px;
-    color: var(--text-ghost);
-    font-size: var(--text-base);
-    transition: color var(--dur-fast) var(--ease-out);
-  }
-
-  .footer-section ul li a:hover {
-    color: var(--white);
-  }
-
-  .footer-bottom {
-    text-align: center;
-    padding-top: var(--sp-12);
-    border-top: 1px solid var(--white-a06);
-  }
-
-  .footer-bottom p {
-    color: rgba(255, 255, 255, 0.70);
-    margin-bottom: var(--sp-2);
-    font-size: 0.90rem;
-  }
-
-  .footer-bottom i, .footer-bottom .icon { color: var(--accent); }
 
   /* ============================================================
      HERO COMMUN (pages secondaires)
@@ -1514,6 +1650,13 @@
     max-width: 420px;
     line-height: var(--leading-loose);
   }
+
+  /* Sans chiffres à droite (pages légales, crédits, contact) : l'en-tête se
+     centre, fil d'Ariane compris — aligné à gauche, il laissait un grand vide. */
+  .page-hero:not(:has(.hero-data)) .page-hero-inner { justify-content: center; text-align: center; }
+  .page-hero:not(:has(.hero-data)) .hero-eyebrow { justify-content: center; }
+  /* (fil d'Ariane centré : à côté de .breadcrumb, couche « shared », plus bas) */
+  .page-hero:not(:has(.hero-data)) .hero-text > p { margin-inline: auto; }
 
   .hero-data {
     display: flex;
@@ -2151,6 +2294,9 @@
 .breadcrumb span {
   color: rgba(255, 255, 255, 0.7);
 }
+/* En-tête centré (sans chiffres à droite, voir HERO COMMUN) : fil d'Ariane
+   centré aussi. Ici et non là-haut : cette couche l'emporte sur la sienne. */
+.page-hero:not(:has(.hero-data)) .breadcrumb { justify-content: center; }
 @media (max-width: 1024px) {
   .breadcrumb {
     font-size: 0.85rem;

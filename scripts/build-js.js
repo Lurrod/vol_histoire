@@ -29,6 +29,7 @@ const BUNDLES = {
     'i18n.js',
     'auth.js',
     'utils.js',
+    'shared/toast-stack.js',
     'shared/motion.js',
     'shared/rolling-number.js',
     'shared/custom-select.js',
@@ -41,6 +42,9 @@ const BUNDLES = {
     'shared/picture.js',
     'shared/card.js',
     'shared/view-morph.js',
+    'shared/footer-stats.js',
+    'shared/toc.js',
+    'shared/legal-doc.js',
   ],
 
   // Sous-ensemble d'icones Font Awesome (genere par scripts/build-icons.py).

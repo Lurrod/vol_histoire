@@ -3,17 +3,10 @@
    ================================================================ */
 
 /* Lien "Paramètres des cookies" (footer optionnel) */
-.cookie-settings-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 0.875rem;
-  transition: color var(--dur-fast) var(--ease-out);
-}
-.cookie-settings-link:hover { color: var(--secondary); }
-.cookie-settings-link i, .cookie-settings-link .icon { font-size: 1rem; }
+/* .cookie-settings-link (lien « Cookies » du pied de page) : simple accroche
+   pour cookies.js ; son apparence est celle des autres liens de la barre
+   légale (.footer-legal a, shared-base.css). Un style ici l'emportait par
+   l'ordre des couches et le faisait ressortir. */
 
 /* Cookie Banner */
 .cookie-banner {
@@ -139,19 +132,23 @@
   white-space: nowrap;
 }
 
-/* Cookie Modal */
+/* ============================================================
+   MODALE « PARAMÈTRES DES COOKIES » (cookie-consent.html)
+   ------------------------------------------------------------
+   Une ligne par finalité (essentiels, mesure d'audience), détails
+   repliés dans un <details>. Sous 48em, panneau qui monte du bas.
+   ============================================================ */
 .cookie-modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: var(--z-modal);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   pointer-events: none;
+  /* ouverture animée des <details> (navigateurs qui la connaissent) */
+  interpolate-size: allow-keywords;
   /* Fermeture : fondu court ; l'ouverture est portée par .show. */
   transition: opacity var(--modal-close-dur) var(--ease-in);
 }
@@ -168,10 +165,7 @@
 
 .cookie-modal-backdrop {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(4px);
 }
@@ -181,13 +175,14 @@
   background: var(--night-mid, #141414);
   border: 1px solid var(--gold-a15);
   border-radius: 16px;
-  max-width: 800px;
-  width: 90%;
+  max-width: 34rem;
+  width: calc(100% - 2rem);
   max-height: 90vh;
+  max-height: 90dvh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  transform: scale(0.9);
+  transform: scale(0.96);
   transition: transform var(--modal-close-dur) var(--ease-in);
 }
 
@@ -200,15 +195,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2rem;
-  border-bottom: 1px solid var(--gold-a15);
-  background: rgba(200, 169, 110, 0.04);
+  gap: 1rem;
+  padding: 1.5rem 1.75rem 0;
 }
 
 .cookie-modal-header h2 {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
   font-family: var(--font-display, 'Barlow Condensed', sans-serif);
   font-size: 1.5rem;
   font-weight: 600;
@@ -216,18 +207,11 @@
   margin: 0;
 }
 
-.cookie-modal-header i, .cookie-modal-header .icon {
-  color: var(--hud-cyan, #C8A96E);
-  font-size: 1.75rem;
-}
-
 .cookie-modal-close {
   background: none;
   border: none;
-  font-size: 1.5rem;
   color: var(--text-ghost);
   cursor: pointer;
-  padding: 0.5rem;
   border-radius: 12px;
   transition:
     background-color var(--dur-fast) var(--ease-out),
@@ -235,8 +219,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  margin-right: -0.625rem;
+  flex-shrink: 0;
+}
+
+.cookie-modal-close .icon {
+  width: 1.1rem;
+  height: 1.1rem;
 }
 
 .cookie-modal-close:hover {
@@ -247,95 +238,65 @@
 .cookie-modal-content {
   flex: 1;
   overflow-y: auto;
-  padding: 2rem;
+  padding: 0.75rem 1.75rem 1.25rem;
   /* Scrollbar globale dans shared.css (charcoal + hud-cyan) */
 }
 
 .cookie-intro {
-  margin-bottom: 2rem;
-  padding: 1rem 1.5rem;
-  background: rgba(200, 169, 110, 0.06);
-  border-left: 4px solid var(--hud-cyan, #C8A96E);
-  border-radius: 12px;
-}
-
-.cookie-intro p {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-ghost);
+  font-size: 0.9375rem;
   line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+.cookie-intro a {
+  color: var(--hud-cyan, #C8A96E);
+  text-decoration: underline;
+  text-decoration-color: var(--gold-a15);
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color var(--dur-fast) var(--ease-out);
+}
+
+.cookie-intro a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* Finalités : lignes séparées par un filet, sans cartes */
+.cookie-categories {
+  list-style: none;
   margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--white-a08);
 }
 
-/* Cookie Category */
 .cookie-category {
-  margin-bottom: 1.5rem;
-  border: 1px solid var(--white-a08);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: border-color var(--dur-fast) var(--ease-out);
-}
-
-.cookie-category:hover {
-  border-color: rgba(200, 169, 110, 0.25);
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--white-a08);
 }
 
 .cookie-category-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem;
-  background: var(--white-a02);
-  transition: background-color var(--dur-fast) var(--ease-out);
+  gap: 1rem;
 }
 
 /* Seules les catégories réglables invitent au clic : l'en-tête bascule alors
-   l'interrupteur (cookies.js pose .is-toggleable). Essentiels et marketing,
-   verrouillés, ne réagissent plus au survol. */
+   l'interrupteur (cookies.js pose .is-toggleable). */
 .cookie-category-header.is-toggleable {
   cursor: pointer;
 }
 
-.cookie-category-header.is-toggleable:hover {
-  background: rgba(200, 169, 110, 0.04);
-}
-
 .cookie-category-info {
-  display: flex;
-  align-items: start;
-  gap: 1rem;
   flex: 1;
-}
-
-.cookie-category-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.cookie-category-icon.essential {
-  background: rgba(46, 125, 82, 0.15);
-  color: var(--success, #2E7D52);
-}
-
-.cookie-category-icon.analytics {
-  background: var(--gold-a12);
-  color: var(--hud-cyan, #C8A96E);
-}
-
-.cookie-category-icon.marketing {
-  background: rgba(184, 134, 11, 0.15);
-  color: var(--warning, #B8860B);
+  min-width: 0;
 }
 
 .cookie-category-info h3 {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #fff;
-  margin: 0 0 0.25rem 0;
+  margin: 0 0 0.2rem;
 }
 
 .cookie-category-description {
@@ -345,15 +306,218 @@
   margin: 0;
 }
 
+/* Essentiels : une pastille plutôt qu'un interrupteur bloqué */
+.cookie-always {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--white-a12);
+  border-radius: 999px;
+  color: var(--text-ghost);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.cookie-always .icon {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+/* Détails repliés */
+.cookie-category-details {
+  margin-top: 0.5rem;
+}
+
+.cookie-category-details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 24px;
+  color: var(--hud-cyan, #C8A96E);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  border-radius: 6px;
+}
+
+.cookie-category-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.cookie-category-details summary:focus-visible {
+  outline: 2px solid var(--hud-cyan, #C8A96E);
+  outline-offset: 3px;
+}
+
+.cookie-category-details summary .icon {
+  width: 0.65rem;
+  height: 0.65rem;
+  transition: rotate var(--dur-base) var(--ease-out);
+}
+
+.cookie-category-details[open] summary .icon {
+  rotate: 180deg;
+}
+
+/* Ouverture en hauteur (Chrome 131+) ; ailleurs, d'un coup */
+.cookie-category-details::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size var(--dur-base) var(--ease-out),
+    content-visibility var(--dur-base) allow-discrete;
+}
+
+.cookie-category-details[open]::details-content {
+  block-size: auto;
+}
+
+.cookie-category-details ul {
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cookie-category-details li {
+  color: var(--text-ghost);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  padding-left: 1rem;
+  position: relative;
+}
+
+.cookie-category-details li::before {
+  content: "";
+  position: absolute;
+  left: 0.2rem;
+  top: 0.75em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--hud-cyan, #C8A96E);
+  opacity: 0.6;
+}
+
+.cookie-duration {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-ghost);
+  font-size: 0.8125rem;
+  margin: 0.5rem 0 0;
+}
+
+.cookie-duration .icon {
+  width: 0.8rem;
+  height: 0.8rem;
+  color: var(--hud-cyan, #C8A96E);
+  flex-shrink: 0;
+}
+
+.cookie-no-ads {
+  color: var(--text-ghost);
+  font-size: 0.8125rem;
+  margin: 1rem 0 0;
+}
+
 /* Défilement de la page bloqué sous la modale (classe posée par cookies.js) */
 body.cookie-modal-open {
   overflow: hidden;
 }
 
-/* Toggle Switch */
+/* Pied : « Enregistrer » sur toute la largeur, puis refuser et accepter,
+   de même poids (CNIL), côte à côte. Trois boutons sur une ligne ne
+   tiennent pas dans la largeur de la modale. */
+.cookie-modal-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.625rem;
+  padding: 1rem 1.75rem 1.5rem;
+  border-top: 1px solid var(--white-a08);
+}
+
+.cookie-modal-choices {
+  display: flex;
+  gap: 0.625rem;
+}
+
+.cookie-modal-choices .btn {
+  flex: 1;
+}
+
+/* ============================================================
+   INTERRUPTEUR « GOUTTE » — modale des cookies et Réglages
+   ------------------------------------------------------------
+   Pastille posée par ses deux bords (left / right) plutôt que déplacée
+   d'un bloc. Le bord avant part le premier, l'arrière suit avec un temps
+   de retard : la pastille s'étire en chemin puis se referme en cercle.
+   La transition déclarée est celle de l'état d'arrivée, d'où un ordre
+   des bords propre à chaque sens. À l'appui, elle s'allonge vers sa
+   destination. Piste 54 px, pastille 22 px, marge 3 px. Couleurs de la
+   piste : propres à chaque emploi.
+   ============================================================ */
 .cookie-toggle {
   flex-shrink: 0;
   position: relative;
+}
+
+:is(.cookie-toggle, .toggle-switch) {
+  --switch-in: 3px;
+  --switch-out: 29px;
+  --switch-stretch: 6px;
+  --switch-lag: calc(var(--dur-fast) / 2);
+}
+
+:is(.cookie-toggle, .toggle-switch) .toggle-slider {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: var(--switch-in);
+  right: var(--switch-out);
+  background: var(--white);
+  border-radius: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  /* vers la gauche (décoché) : le bord gauche mène */
+  transition:
+    left var(--dur-base) var(--ease-out),
+    right var(--dur-base) var(--ease-out) var(--switch-lag);
+}
+
+:is(.cookie-toggle, .toggle-switch) input[type="checkbox"]:checked + label .toggle-slider {
+  left: var(--switch-out);
+  right: var(--switch-in);
+  /* vers la droite (coché) : le bord droit mène */
+  transition:
+    right var(--dur-base) var(--ease-out),
+    left var(--dur-base) var(--ease-out) var(--switch-lag);
+}
+
+:is(.cookie-toggle, .toggle-switch) input[type="checkbox"]:active:not(:disabled) + label .toggle-slider {
+  right: calc(var(--switch-out) - var(--switch-stretch));
+}
+
+:is(.cookie-toggle, .toggle-switch) input[type="checkbox"]:checked:active:not(:disabled) + label .toggle-slider {
+  left: calc(var(--switch-out) - var(--switch-stretch));
+}
+
+/* Mouvement réduit : le garde-fou ramène les durées à rien mais garde les
+   délais — sans ceci, les deux bords sauteraient l'un après l'autre.
+   Sauf l'interrupteur « Réduire les animations » des Réglages, exempté du
+   garde-fou du site (shared-utilities.css) : il garde son étirement. */
+html.vh-reduce-motion :is(.cookie-toggle, .toggle-switch):not(:has(#pref-reduce-motion)) .toggle-slider {
+  transition-delay: 0s !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.cookie-toggle, .toggle-switch) .toggle-slider {
+    transition-delay: 0s !important;
+  }
 }
 
 /* Case masquée visuellement mais toujours focalisable au clavier (Tab +
@@ -367,10 +531,6 @@ body.cookie-modal-open {
   opacity: 0;
   cursor: pointer;
   z-index: 1;
-}
-
-.cookie-toggle input[type="checkbox"]:disabled {
-  cursor: not-allowed;
 }
 
 /* Anneau de focus clavier sur la piste de l'interrupteur */
@@ -387,148 +547,11 @@ body.cookie-modal-open {
   border-radius: 50px;
   position: relative;
   cursor: pointer;
-  transition: background-color var(--dur-fast) var(--ease-out);
-}
-
-.cookie-toggle label.toggle-disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.cookie-toggle .toggle-slider {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 22px;
-  height: 22px;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 50%;
-  transition: transform var(--dur-base) var(--ease-out);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: background-color var(--dur-base) var(--ease-out);
 }
 
 .cookie-toggle input[type="checkbox"]:checked + label {
   background: var(--success, #2E7D52);
-}
-
-.cookie-toggle input[type="checkbox"]:checked + label .toggle-slider {
-  transform: translateX(26px);
-}
-
-.cookie-toggle input[type="checkbox"]:disabled + label {
-  background: var(--success, #2E7D52);
-  opacity: 0.6;
-}
-
-/* Cookie Category Details */
-.cookie-category-details {
-  padding: 1.5rem;
-  border-top: 1px solid var(--white-a06);
-  background: var(--white-a02);
-}
-
-.cookie-category-details p {
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.6;
-  margin-bottom: 0.75rem;
-}
-
-.cookie-category-details strong {
-  color: #fff;
-  font-weight: 600;
-}
-
-.cookie-category-details ul {
-  margin: 0.5rem 0 1rem 0;
-  padding-left: 0;
-  list-style: none;
-}
-
-.cookie-category-details li {
-  color: var(--text-ghost);
-  line-height: 1.8;
-  margin-bottom: 0.25rem;
-  padding-left: 1.25rem;
-  position: relative;
-}
-
-.cookie-category-details li::before {
-  content: "";
-  position: absolute;
-  left: 0.25rem;
-  top: 0.75em;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--hud-cyan, #C8A96E);
-  opacity: 0.6;
-}
-
-.cookie-duration {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--text-ghost);
-  font-size: 0.875rem;
-  margin: 1rem 0 0 0;
-  padding-top: 1rem;
-  border-top: 1px dashed var(--white-a08);
-}
-
-.cookie-duration i, .cookie-duration .icon {
-  color: var(--hud-cyan, #C8A96E);
-}
-
-/* Cookie Info Box */
-.cookie-info-box {
-  display: flex;
-  align-items: start;
-  gap: 1rem;
-  padding: 1.5rem;
-  margin-top: 2rem;
-  background: rgba(184, 134, 11, 0.08);
-  border-left: 4px solid var(--warning, #B8860B);
-  border-radius: 12px;
-}
-
-.cookie-info-box > i, .cookie-info-box > .icon {
-  color: var(--warning, #B8860B);
-  font-size: 1.5rem;
-  flex-shrink: 0;
-  margin-top: 0.25rem;
-}
-
-.cookie-info-box p {
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.6;
-  margin: 0 0 0.5rem 0;
-}
-
-.cookie-info-box p:last-child {
-  margin-bottom: 0;
-}
-
-.cookie-info-box a {
-  color: var(--hud-cyan, #C8A96E);
-  text-decoration: none;
-  font-weight: 600;
-  border-bottom: 1px solid transparent;
-  transition: border-bottom-color var(--dur-fast) var(--ease-out);
-}
-
-.cookie-info-box a:hover {
-  border-bottom-color: var(--hud-cyan, #C8A96E);
-}
-
-/* Cookie Modal Footer */
-.cookie-modal-footer {
-  display: flex;
-  gap: 1rem;
-  padding: 1.5rem 2rem;
-  border-top: 1px solid var(--gold-a15);
-  background: rgba(200, 169, 110, 0.04);
-  justify-content: flex-end;
-  flex-wrap: wrap;
 }
 
 /* Responsive Design */
@@ -547,14 +570,6 @@ body.cookie-modal-open {
     flex: 1;
   }
 
-  .cookie-modal-container {
-    width: 95%;
-    max-height: 95vh;
-  }
-
-  .cookie-modal-header, .cookie-modal-content, .cookie-modal-footer {
-    padding: 1.5rem;
-  }
 }
 
 @media (max-width: 48em) {
@@ -597,44 +612,48 @@ body.cookie-modal-open {
     padding: 0.55rem 0.75rem;
   }
 
+  /* Modale : panneau qui monte du bas, ancré au bord de l'écran */
+  .cookie-modal {
+    align-items: flex-end;
+  }
+
+  .cookie-modal-container {
+    width: 100%;
+    max-width: none;
+    max-height: 92vh;
+    max-height: 92dvh;
+    border-bottom: 0;
+    border-radius: 20px 20px 0 0;
+    transform: translateY(100%);
+  }
+
+  .cookie-modal.show .cookie-modal-container {
+    transform: translateY(0);
+  }
+
+  .cookie-modal-header {
+    padding: 1.25rem 1.25rem 0;
+  }
+
   .cookie-modal-header h2 {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
 
-  .cookie-category-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: start;
+  .cookie-modal-content {
+    padding: 0.5rem 1.25rem 1rem;
   }
 
-  .cookie-toggle {
-    align-self: flex-end;
+  .cookie-intro {
+    font-size: 0.875rem;
   }
 
   .cookie-modal-footer {
-    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem calc(1rem + env(safe-area-inset-bottom));
   }
 
-  .cookie-modal-footer .btn {
-    width: 100%;
-  }
-}
-
-@media (max-width: 30em) {
-  .cookie-modal-container {
-    width: 100%;
-    max-height: 100vh;
-    border-radius: 0;
-  }
-
-  .cookie-modal-header, .cookie-modal-content {
-    padding: 1rem;
-  }
-
-  .cookie-category-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 1.25rem;
+  .cookie-modal-choices {
+    gap: 0.5rem;
   }
 }
 

@@ -1,0 +1,225 @@
+/* ============================================================
+   SOMMAIRE COLLANT (js/shared/toc.js) — 2026-11-21
+   ------------------------------------------------------------
+   Filet pointillé or à crochet jusqu'à la section en cours (survol :
+   second filet pâle). ≥ 75em : colonne collante à gauche du contenu ;
+   en dessous : barre collante qui déplie la liste.
+   Les pages règlent --toc-top (bas de l'en-tête, mini-barre comprise).
+   ============================================================ */
+:root {
+  --toc-top: calc(var(--header-h) + 2rem);
+  --toc-rail-x: 0.35rem;   /* filet vertical */
+  --toc-hook: 0.65rem;     /* longueur du crochet */
+}
+
+/* Les sections ciblées s'arrêtent sous l'en-tête (et sous la barre mobile) */
+[data-toc-target] { scroll-margin-top: calc(var(--toc-top) + 1rem); }
+
+/* La règle globale des <nav> les met en flex centré */
+.toc { display: block; position: relative; }
+
+.toc-title {
+  margin: 0 0 1rem;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.toc-track {
+  position: relative;
+  padding-left: 1.4rem;
+}
+
+.toc-list {
+  display: grid;
+  gap: 0.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc-link {
+  display: block;
+  padding: 0.35rem 0;
+  color: var(--text-ghost);
+  font-size: 0.875rem;
+  line-height: 1.35;
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.toc-link:hover { color: rgba(255, 255, 255, 0.85); }
+.toc-link.is-active { color: var(--white); }
+
+.toc-link:focus-visible {
+  outline: 2px solid var(--hud-cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Filet en L : bord gauche + bord bas arrondi = le crochet */
+.toc-rail {
+  position: absolute;
+  top: 0;
+  left: var(--toc-rail-x);
+  width: var(--toc-hook);
+  border-left: 1.5px dotted;
+  border-bottom: 1.5px dotted;
+  border-bottom-left-radius: 0.5rem;
+  pointer-events: none;
+}
+
+.toc-rail--active {
+  height: var(--toc-y, 0px);
+  border-color: var(--hud-cyan);
+  transition: height var(--dur-slow) var(--ease-out);
+}
+
+.toc-rail--hover {
+  height: var(--toc-hy, 0px);
+  border-color: rgba(255, 255, 255, 0.28);
+  opacity: 0;
+  transition:
+    height var(--dur-base) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out);
+}
+
+.toc.is-hovering .toc-rail--hover { opacity: 1; }
+
+/* Bouton de la barre (sous 75em seulement) */
+.toc-toggle { display: none; }
+
+/* ---------- Grand écran : colonne collante ---------- */
+@media (min-width: 75em) {
+  .has-toc {
+    display: grid;
+    grid-template-columns: 13.5rem minmax(0, 1fr);
+    gap: 0 3rem;
+    align-items: start;
+  }
+
+  .toc {
+    position: sticky;
+    top: var(--toc-top);
+    max-height: calc(100vh - var(--toc-top) - 1.5rem);
+    overflow-y: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+}
+
+/* ---------- Sous 75em : barre collante qui déplie la liste ---------- */
+@media (max-width: 74.99em) {
+  :root { --toc-top: calc(var(--header-h) + 0.75rem); }
+
+  [data-toc-target] { scroll-margin-top: calc(var(--toc-top) + 4.5rem); }
+
+  .toc {
+    position: sticky;
+    top: var(--toc-top);
+    z-index: var(--z-raised);
+    margin-bottom: 1.5rem;
+    background: rgba(20, 20, 20, 0.86);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    backdrop-filter: blur(14px) saturate(1.1);
+    border: 1px solid var(--white-a08);
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .toc-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 48px;
+    padding: 0.6rem 1rem;
+    border: 0;
+    background: none;
+    color: var(--white);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .toc-toggle-title {
+    flex-shrink: 0;
+    color: rgba(255, 255, 255, 0.66);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .toc-toggle-current {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .toc-toggle .icon {
+    width: 0.75rem;
+    height: 0.75rem;
+    color: var(--hud-cyan);
+    transition: rotate var(--dur-base) var(--ease-out);
+  }
+
+  .toc.is-open .toc-toggle .icon { rotate: 180deg; }
+
+  /* Repliée, la liste sort aussi du parcours clavier (visibility), mais
+     seulement une fois la fermeture jouée. */
+  /* La liste s'ouvre par-dessus la page, sous la barre : dans le flux,
+     elle repoussait tout le contenu. */
+  .toc-panel {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    left: 0;
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    background: rgba(20, 20, 20, 0.98);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    backdrop-filter: blur(14px) saturate(1.1);
+    border: 1px solid var(--white-a08);
+    border-radius: 14px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+    transition:
+      grid-template-rows var(--dur-base) var(--ease-out),
+      visibility 0s linear var(--dur-base);
+  }
+
+  .toc.is-open .toc-panel {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition: grid-template-rows var(--dur-base) var(--ease-out), visibility 0s;
+  }
+
+  .toc-panel > .toc-track {
+    min-height: 0;
+    max-height: min(60vh, 28rem);
+    overflow: hidden auto;
+    margin: 0 1rem;
+  }
+
+  .toc.is-open .toc-panel > .toc-track { padding-block: 0.5rem; }
+
+  /* Repliée, la carte disparaît entièrement (bordure comprise) */
+  .toc:not(.is-open) .toc-panel { border-color: transparent; box-shadow: none; }
+
+  .toc-panel > .toc-title { display: none; }
+
+  .toc-link { padding-block: 0.6rem; }
+
+}
+
+@media print {
+  .toc { display: none !important; }
+  .has-toc { display: block !important; }
+}
