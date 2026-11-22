@@ -769,6 +769,34 @@ describe('validateAirplaneData — strates enrichissement', () => {
     expect(errors).toContain('Variants (EN) > 5000 caractères.');
   });
 
+  test('strate 7 : valeurs valides → aucune erreur', () => {
+    const errors = validateAirplaneData({
+      ...base, mach_max: 2.25, supercruise: true, ferry_range: 3220, internal_fuel: 8200,
+      hardpoints: 0, internal_weapons_bay: false, radar_model: 'AN/APG-77 (AESA)',
+    });
+    expect(errors).toEqual([]);
+  });
+
+  test('strate 7 : null et chaîne vide acceptés (non établi)', () => {
+    const errors = validateAirplaneData({ ...base, mach_max: null, supercruise: null, internal_weapons_bay: '', hardpoints: '' });
+    expect(errors).toEqual([]);
+  });
+
+  test.each([
+    [{ mach_max: 0.05 }, 'Le Mach max doit être compris entre 0,1 et 10.'],
+    [{ mach_max: 12 }, 'Le Mach max doit être compris entre 0,1 et 10.'],
+    [{ mach_max: 'vite' }, 'Le Mach max doit être compris entre 0,1 et 10.'],
+    [{ ferry_range: -1 }, 'La distance de convoyage doit être un nombre positif.'],
+    [{ internal_fuel: 'beaucoup' }, 'Le carburant interne doit être un nombre positif.'],
+    [{ hardpoints: 31 }, "Le nombre de points d'emport doit être un entier entre 0 et 30."],
+    [{ hardpoints: 2.5 }, "Le nombre de points d'emport doit être un entier entre 0 et 30."],
+    [{ supercruise: 'true' }, 'supercruise doit valoir true, false ou null.'],
+    [{ internal_weapons_bay: 1 }, 'internal_weapons_bay doit valoir true, false ou null.'],
+    [{ radar_model: 'x'.repeat(256) }, 'Modèle de radar > 255 caractères.'],
+  ])('strate 7 : %j refusé', (extra, message) => {
+    expect(validateAirplaneData({ ...base, ...extra })).toContain(message);
+  });
+
   test('stealth_level hors enum → erreur strate 4', () => {
     const errors = validateAirplaneData({ ...base, stealth_level: 'super' });
     expect(errors.some(e => e.startsWith('stealth_level doit être'))).toBe(true);

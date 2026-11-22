@@ -76,7 +76,8 @@ UPDATE airplanes SET
   combat_radius = 6400, crew = 4,
   engine_name = 'Kuznetsov NK-12MV', engine_count = 4,
   engine_type = 'Turbopropulseur', engine_type_en = 'Turboprop',
-  thrust_dry = 11185,
+  -- thrust_dry laissé NULL : le NK-12MV est un turbopropulseur (11 185 kW d'arbre),
+  -- sa puissance n'est pas une poussée en kN.
   production_start = 1952, production_end = 1994, units_built = 410,
   operators_count = 1,
   nickname = 'Bear',

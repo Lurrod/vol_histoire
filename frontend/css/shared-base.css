@@ -1177,6 +1177,15 @@
      juste pour une rangée « wrap », et la croix tombait seule sur une
      seconde ligne (en anglais surtout). */
   .toast.sw-update .toast-message { flex: 1 1 auto; white-space: nowrap; }
+  /* Le paquet de notifications (toast-stack) fixe sa largeur à 24rem et
+     ses toasts la prennent (position absolue) : « Nouvelle version
+     disponible » + « Recharger » + la croix en demandent ~28rem, la croix
+     sortait du cadre. Le paquet s'élargit tant que ce toast y est. Sous
+     48em, la règle pleine largeur de shared-responsive (couche shared,
+     postérieure) reprend la main. */
+  #toast-container.toast-stack:has(> .toast.sw-update) {
+    width: min(30rem, calc(100vw - 2 * var(--sp-8)));
+  }
   /* Fond presque opaque (teinte or conservée par-dessus) : ce toast reste
      affiché jusqu'à une action, et sur téléphone il recouvre les boutons
      de la page, qui se lisaient au travers du message. */

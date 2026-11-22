@@ -98,6 +98,15 @@
       ['thrust_dry', { label: 'details.admin_thrust_dry' }],
       ['thrust_wet', { label: 'details.admin_thrust_wet' }],
     ] },
+    { icon: 'fa-fighter-jet', title: 'details.admin_section_advanced', fields: [
+      ['mach_max', { label: 'details.admin_mach_max', placeholder: '1.8' }],
+      ['supercruise', { label: 'details.admin_supercruise' }],
+      ['ferry_range', { label: 'details.admin_ferry_range' }],
+      ['internal_fuel', { label: 'details.admin_internal_fuel' }],
+      ['hardpoints', { label: 'details.admin_hardpoints' }],
+      ['internal_weapons_bay', { label: 'details.admin_weapons_bay' }],
+      ['radar_model', { label: 'details.admin_radar', wide: true, maxlength: 255, placeholder: 'Thales RBE2-AA (AESA)' }],
+    ] },
     { icon: 'fa-industry', title: 'details.admin_section_production', fields: [
       ['production_start', { label: 'details.admin_production_start', placeholder: '1986' }],
       ['production_end', { label: 'details.admin_production_end' }],
@@ -175,6 +184,11 @@
         });
         return `<select ${common}><option value="">—</option>${options.join('')}</select>`;
       }
+      case 'bool':
+        // Trois états : non établi (vide → NULL), oui, non.
+        return `<select ${common}><option value="">—</option>` +
+          `<option value="true" data-i18n="details.spec_yes">${escapeHtml(t('details.spec_yes'))}</option>` +
+          `<option value="false" data-i18n="details.spec_no">${escapeHtml(t('details.spec_no'))}</option></select>`;
       case 'ref': {
         const empty = field.ref === 'airplanes' ? '—' : t('details.select');
         return `<select ${common} data-ref="${escapeHtml(field.ref)}"><option value="">${escapeHtml(empty)}</option></select>`;
@@ -322,6 +336,8 @@
           selectValue(el, raw, labelFrom ? record[labelFrom] : undefined);
         } else if (field.kind === 'date') {
           el.value = raw ? String(raw).split('T')[0] : '';
+        } else if (field.kind === 'bool') {
+          el.value = typeof raw === 'boolean' ? String(raw) : '';
         } else {
           el.value = raw == null ? '' : raw;
         }
@@ -337,6 +353,9 @@
       if (field.kind === 'number') {
         const n = Number(value);
         return Number.isNaN(n) ? null : n;
+      }
+      if (field.kind === 'bool') {
+        return value === 'true' ? true : value === 'false' ? false : null;
       }
       return value;
     }

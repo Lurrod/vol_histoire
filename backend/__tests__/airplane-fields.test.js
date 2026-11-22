@@ -5,15 +5,15 @@ const {
 } = require('../utils/airplane-fields');
 
 describe('utils/airplane-fields', () => {
-  test('52 colonnes éditables, uniques, name en tête', () => {
-    expect(AIRPLANE_COLUMNS).toHaveLength(52);
-    expect(new Set(AIRPLANE_COLUMNS).size).toBe(52);
+  test('59 colonnes éditables, uniques, name en tête', () => {
+    expect(AIRPLANE_COLUMNS).toHaveLength(59);
+    expect(new Set(AIRPLANE_COLUMNS).size).toBe(59);
     expect(AIRPLANE_COLUMNS[0]).toBe('name');
     expect(AIRPLANE_COLUMNS).toEqual(expect.arrayContaining(['engine_type_en', 'variants_en', 'image_licence']));
   });
 
   test('chaque entrée a un kind et un groupe connus ; ref et enum renseignés', () => {
-    const kinds = ['text', 'longtext', 'url', 'date', 'int', 'number', 'enum', 'ref'];
+    const kinds = ['text', 'longtext', 'url', 'date', 'int', 'number', 'enum', 'ref', 'bool'];
     for (const f of AIRPLANE_FIELDS) {
       expect(kinds).toContain(f.kind);
       expect(typeof f.group).toBe('string');
@@ -39,13 +39,13 @@ describe('utils/airplane-fields', () => {
     expect(toDbValue(speed, '1800')).toBe('1800');
   });
 
-  test('toDbValues : 52 paramètres dans l\'ordre des colonnes', () => {
+  test('toDbValues : 59 paramètres dans l\'ordre des colonnes', () => {
     const values = toDbValues({ name: ' X ', variants_en: 'A' });
-    expect(values).toHaveLength(52);
+    expect(values).toHaveLength(59);
     expect(values[0]).toBe('X');
     expect(values[AIRPLANE_COLUMNS.indexOf('variants_en')]).toBe('A');
     expect(values.filter((v) => v !== null)).toHaveLength(2);
-    expect(toDbValues(undefined)).toHaveLength(52);
+    expect(toDbValues(undefined)).toHaveLength(59);
   });
 
   test('presentFields : clés propres seulement, null compris, ordre de la table', () => {

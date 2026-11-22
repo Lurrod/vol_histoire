@@ -23,10 +23,11 @@
 //            'int'    entier                     → <input type="number" step="1">
 //            'number' décimal                    → <input type="number" step="any">
 //            'enum'   valeur d'une liste fermée  → <select> (voir `values`)
+//            'bool'   oui / non / inconnu        → <select> (NULL = non établi)
 //            'ref'    id d'une autre table       → <select> (voir `ref`)
 //   group  : strate éditoriale, pour regrouper les champs d'un formulaire
-//            ('identity', 'dates', 'specs', 'engine', 'production',
-//             'qualitative', 'media')
+//            ('identity', 'dates', 'specs', 'engine', 'advanced',
+//             'production', 'qualitative', 'media')
 //   ref    : (kind 'ref') table visée : 'countries', 'manufacturer',
 //            'generation', 'type' ou 'airplanes'
 //   values : (kind 'enum') valeurs admises
@@ -42,7 +43,7 @@ const STEALTH_LEVELS = Object.freeze(['aucune', 'reduite', 'moderee', 'elevee', 
 
 const f = (column, kind, group, extra = {}) => Object.freeze({ column, kind, group, ...extra });
 
-// L'ordre est celui des colonnes de l'INSERT et de l'UPDATE ($1 … $52).
+// L'ordre est celui des colonnes de l'INSERT et de l'UPDATE ($1 … $59).
 const AIRPLANE_FIELDS = Object.freeze([
   f('name', 'text', 'identity', { required: true, trim: true }),
   f('complete_name', 'text', 'identity'),
@@ -79,6 +80,14 @@ const AIRPLANE_FIELDS = Object.freeze([
   f('engine_type_en', 'text', 'engine'),
   f('thrust_dry', 'number', 'engine'),
   f('thrust_wet', 'number', 'engine'),
+  // Strate 7 : fiche technique avancée (données : db_backup/zz_specs_strate7.sql)
+  f('mach_max', 'number', 'advanced'),
+  f('supercruise', 'bool', 'advanced'),
+  f('ferry_range', 'number', 'advanced'),
+  f('internal_fuel', 'number', 'advanced'),
+  f('hardpoints', 'int', 'advanced'),
+  f('internal_weapons_bay', 'bool', 'advanced'),
+  f('radar_model', 'text', 'advanced'),
   // Strate 3 : production
   f('production_start', 'int', 'production'),
   f('production_end', 'int', 'production'),

@@ -149,6 +149,14 @@ CREATE TABLE airplanes (
     engine_type_en VARCHAR(100),
     thrust_dry FLOAT,
     thrust_wet FLOAT,
+    -- Strate 7 : fiche technique avancée (valeurs : db_backup/zz_specs_strate7.sql)
+    mach_max FLOAT,                 -- Mach maximal en palier
+    supercruise BOOLEAN,            -- vol supersonique sans post-combustion (NULL : non établi)
+    ferry_range FLOAT,              -- distance de convoyage, km
+    internal_fuel FLOAT,            -- carburant interne, kg
+    hardpoints SMALLINT,            -- points d'emport
+    internal_weapons_bay BOOLEAN,   -- soute interne d'armement (NULL : non établi)
+    radar_model VARCHAR(255),       -- radar principal
     -- Strate 3 : production & service
     production_start SMALLINT,
     production_end SMALLINT,
@@ -202,6 +210,9 @@ ALTER TABLE airplanes
     AND (thrust_wet IS NULL OR thrust_dry IS NULL OR thrust_wet >= thrust_dry)),
   ADD CONSTRAINT chk_airplanes_qte_prod    CHECK (units_built IS NULL OR units_built >= 0),
   ADD CONSTRAINT chk_airplanes_annee_cout  CHECK (unit_cost_year IS NULL OR unit_cost_year BETWEEN 1940 AND 2100),
+  ADD CONSTRAINT chk_airplanes_strate7     CHECK (
+        (mach_max IS NULL OR mach_max BETWEEN 0.1 AND 10) AND (ferry_range IS NULL OR ferry_range > 0)
+    AND (internal_fuel IS NULL OR internal_fuel > 0) AND (hardpoints IS NULL OR hardpoints BETWEEN 0 AND 30)),
   ADD CONSTRAINT chk_airplanes_auto_ref    CHECK (
         (predecessor_id IS NULL OR predecessor_id <> id)
     AND (successor_id   IS NULL OR successor_id   <> id)

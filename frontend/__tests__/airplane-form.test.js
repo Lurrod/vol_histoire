@@ -217,6 +217,21 @@ describe('shared/airplane-form — remplissage et lecture', () => {
     expect(body.country_id).toBeNull();
   });
 
+  test('oui / non / non établi : liste à trois états, booléen ou null à la lecture', () => {
+    const form = mountForm();
+    const bay = document.getElementById('edit-internal-weapons-bay');
+    expect(bay.tagName).toBe('SELECT');
+    expect([...bay.options].map((o) => o.value)).toEqual(['', 'true', 'false']);
+    form.fill({ ...RECORD, internal_weapons_bay: false, supercruise: true, radar_model: 'Phazotron N019', hardpoints: 7 });
+    expect(bay.value).toBe('false');
+    let body = form.read();
+    expect(body).toMatchObject({ internal_weapons_bay: false, supercruise: true, radar_model: 'Phazotron N019', hardpoints: 7 });
+    form.fill({ ...RECORD, internal_weapons_bay: null, supercruise: undefined });
+    body = form.read();
+    expect(body.internal_weapons_bay).toBeNull();
+    expect(body.supercruise).toBeNull();
+  });
+
   test('un champ absent du DOM n\'est pas envoyé (le PUT le laisse inchangé)', () => {
     const form = mountForm();
     document.getElementById('edit-nickname').closest('.form-group').remove();

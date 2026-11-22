@@ -90,7 +90,8 @@ function readSql(file) {
 
 /**
  * Crée un pool limité au schéma `it_<suite>`, recrée ce schéma et y charge
- * db.sql, les fiches, la frise, zz_backfill_relations.sql et les comptes.
+ * db.sql, les fiches, la frise, zz_backfill_relations.sql, zz_specs_strate7.sql
+ * et les comptes.
  * @param {string} suite identifiant court ([a-z_]+)
  * @returns {Promise<import('pg').Pool>}
  */
@@ -118,6 +119,8 @@ async function setupItDatabase(suite) {
   // rattachements seraient effacés.
   await pool.query(stripGrants(readSql('timeline_events.sql')));
   await pool.query(readSql('zz_backfill_relations.sql'));
+  // Strate 7 : les UPDATE visant une fiche absente du jeu ne font rien.
+  await pool.query(readSql('zz_specs_strate7.sql'));
 
   const hash = await bcrypt.hash(IT_PASSWORD, 4);
   for (const u of IT_USERS) {

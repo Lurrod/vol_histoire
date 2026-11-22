@@ -53,6 +53,16 @@ END $$;
 ALTER TABLE airplanes ADD COLUMN IF NOT EXISTS image_credit  VARCHAR(255);
 ALTER TABLE airplanes ADD COLUMN IF NOT EXISTS image_licence VARCHAR(100);
 
+-- Strate 7 : fiche technique avancée. Les valeurs viennent de
+-- db_backup/zz_specs_strate7.sql, joué après les fiches.
+ALTER TABLE airplanes ADD COLUMN IF NOT EXISTS mach_max             FLOAT;
+ALTER TABLE airplanes ADD COLUMN IF NOT EXISTS supercruise          BOOLEAN;
+ALTER TABLE airplanes ADD COLUMN IF NOT EXISTS ferry_range          FLOAT;
+ALTER TABLE airplanes ADD COLUMN IF NOT EXISTS internal_fuel        FLOAT;
+ALTER TABLE airplanes ADD COLUMN IF NOT EXISTS hardpoints           SMALLINT;
+ALTER TABLE airplanes ADD COLUMN IF NOT EXISTS internal_weapons_bay BOOLEAN;
+ALTER TABLE airplanes ADD COLUMN IF NOT EXISTS radar_model          VARCHAR(255);
+
 -- ═══ 2. Référentiel ══════════════════════════════════════════════════════
 --
 -- Toute donnée partagée par plusieurs fiches se déclare ici : les fiches
@@ -5291,6 +5301,11 @@ SELECT a.id, x.id
   JOIN armement x ON x.name = v.arme
 ON CONFLICT DO NOTHING;
 
+-- Tu-95 : la colonne de poussée portait la puissance d'arbre du NK-12MV
+-- (11 185 kW). Un turbopropulseur n'a pas de poussée en kN dans ce schéma.
+UPDATE airplanes SET thrust_dry = NULL
+ WHERE name = 'Tu-95' AND thrust_dry IS NOT NULL;
+
 -- ═══ 7. Contraintes de cohérence ═════════════════════════════════════════
 --
 -- Jusqu'ici la seule contrainte de la table portait sur `stealth_level` :
@@ -5323,6 +5338,9 @@ BEGIN
     OR (thrust_wet IS NOT NULL AND thrust_dry IS NOT NULL AND thrust_wet < thrust_dry)
     OR (units_built IS NOT NULL AND units_built < 0)
     OR (unit_cost_year IS NOT NULL AND unit_cost_year NOT BETWEEN 1940 AND 2100)
+    OR (mach_max IS NOT NULL AND mach_max NOT BETWEEN 0.1 AND 10)
+    OR (ferry_range IS NOT NULL AND ferry_range <= 0) OR (internal_fuel IS NOT NULL AND internal_fuel <= 0)
+    OR (hardpoints IS NOT NULL AND hardpoints NOT BETWEEN 0 AND 30)
     OR id IN (predecessor_id, successor_id, rival_id);
   IF n > 0 THEN
     RAISE EXCEPTION '% ligne(s) violent les contraintes — corriger avant de poser les CHECK', n;
@@ -5344,6 +5362,7 @@ ALTER TABLE airplanes
   DROP CONSTRAINT IF EXISTS chk_airplanes_poussee,
   DROP CONSTRAINT IF EXISTS chk_airplanes_qte_prod,
   DROP CONSTRAINT IF EXISTS chk_airplanes_annee_cout,
+  DROP CONSTRAINT IF EXISTS chk_airplanes_strate7,
   DROP CONSTRAINT IF EXISTS chk_airplanes_auto_ref;
 
 ALTER TABLE airplanes
@@ -5369,6 +5388,9 @@ ALTER TABLE airplanes
     AND (thrust_wet IS NULL OR thrust_dry IS NULL OR thrust_wet >= thrust_dry)),
   ADD CONSTRAINT chk_airplanes_qte_prod    CHECK (units_built IS NULL OR units_built >= 0),
   ADD CONSTRAINT chk_airplanes_annee_cout  CHECK (unit_cost_year IS NULL OR unit_cost_year BETWEEN 1940 AND 2100),
+  ADD CONSTRAINT chk_airplanes_strate7     CHECK (
+        (mach_max IS NULL OR mach_max BETWEEN 0.1 AND 10) AND (ferry_range IS NULL OR ferry_range > 0)
+    AND (internal_fuel IS NULL OR internal_fuel > 0) AND (hardpoints IS NULL OR hardpoints BETWEEN 0 AND 30)),
   ADD CONSTRAINT chk_airplanes_auto_ref    CHECK (
         (predecessor_id IS NULL OR predecessor_id <> id)
     AND (successor_id   IS NULL OR successor_id   <> id)

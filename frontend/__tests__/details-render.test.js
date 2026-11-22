@@ -295,9 +295,111 @@ describe('renderSpecs (strates 1-2)', () => {
     // Trois groupes au plus, chacun titré ; la longueur est dans « cellule ».
     const groups = [...section.querySelectorAll('.spec-group')];
     expect(groups.map((g) => g.querySelector('.spec-group-title').textContent))
-      .toEqual(['details.spec_group_airframe', 'details.spec_group_propulsion']);
+      .toEqual(['details.spec_group_airframe', 'details.spec_group_performance', 'details.spec_group_propulsion']);
     expect(groups[0].textContent).toContain('Longueur');
-    expect(groups[1].textContent).toContain('Snecma M88-2');
+    expect(groups[2].textContent).toContain('Snecma M88-2');
+  });
+
+  const specs = () => Object.fromEntries([...document.querySelectorAll('#specs-grid .spec-row')].map((t) => [
+    t.querySelector('dt').textContent, t.querySelector('dd').textContent.replace(/\s/g, ' '),
+  ]));
+  const groupTitles = () => [...document.querySelectorAll('#specs-grid .spec-group-title')].map((h) => h.textContent);
+
+  test('valeurs calculées : charge emportable, poussée totale, charge alaire, poussée/poids', () => {
+    boot('fr', { 'details.spec_per_engine': 'par moteur' });
+    render.renderAircraftDetails({
+      aircraftId: '30',
+      aircraftData: {
+        ...RAFALE, mtow: 24500, empty_weight: 10300, wing_area: 45.7,
+        engine_name: 'Snecma M88-2', engine_count: 2, thrust_dry: 50.04, thrust_wet: 75.62,
+      },
+    });
+    const s = specs();
+    expect(s['details.spec_payload']).toBe('14 200 kg');
+    expect(s['details.spec_thrust_total']).toBe('151,2 kN (2 × 75,62)');
+    expect(s['details.spec_wing_loading']).toBe('536 kg/m²');
+    expect(s['details.spec_thrust_weight']).toBe('0,63');
+    // Poussée par moteur dite comme telle dès deux moteurs
+    expect(s['details.spec_thrust_wet (par moteur)']).toBe('75,62 kN');
+    // Vitesse et distance reprises dans « Performances »
+    expect(s['details.spec_max_speed']).toBe('1 912 km/h');
+    expect(s['details.spec_max_range']).toBe('3 700 km');
+    expect(groupTitles()).toEqual([
+      'details.spec_group_airframe', 'details.spec_group_performance',
+      'details.spec_group_propulsion', 'details.spec_group_ratios',
+    ]);
+  });
+
+  test('monomoteur : pas de total, rapport calculé sur la poussée sèche à défaut de PC', () => {
+    boot();
+    render.renderAircraftDetails({
+      aircraftId: '1',
+      aircraftData: { name: 'X', engine_count: 1, thrust_dry: 40, mtow: 8000 },
+    });
+    const s = specs();
+    expect(s['details.spec_thrust_total']).toBeUndefined();
+    expect(s['details.spec_thrust_dry']).toBe('40 kN');
+    expect(s['details.spec_thrust_weight']).toBe('0,51');
+  });
+
+  test('motorisation mixte (« A + 8 B ») : ni total ni rapport poussée/poids', () => {
+    boot();
+    render.renderAircraftDetails({
+      aircraftId: '1',
+      aircraftData: {
+        name: 'Mirage III V', engine_name: 'SNECMA TF106 + 8 Rolls-Royce RB.162',
+        engine_count: 9, thrust_wet: 82.4, mtow: 13500, wing_area: 34,
+      },
+    });
+    const s = specs();
+    expect(s['details.spec_thrust_total']).toBeUndefined();
+    expect(s['details.spec_thrust_weight']).toBeUndefined();
+    expect(s['details.spec_wing_loading']).toBe('397 kg/m²');
+    // La poussée stockée est celle du moteur principal, pas « par moteur »
+    expect(s['details.spec_thrust_wet (details.spec_main_engine)']).toBe('82,4 kN');
+    expect(Object.keys(s).some((k) => k.includes('spec_per_engine'))).toBe(false);
+  });
+
+  test('masse max ≤ masse à vide : pas de charge emportable', () => {
+    boot();
+    render.renderAircraftDetails({ aircraftId: '1', aircraftData: { name: 'D-21', mtow: 5000, empty_weight: 5000 } });
+    expect(specs()['details.spec_payload']).toBeUndefined();
+  });
+
+  test('colonnes de la strate 7 : Mach, supercroisière, convoyage, emport, soute, radar, carburant', () => {
+    boot('fr', { 'details.spec_yes': 'Oui', 'details.spec_no': 'Non' });
+    render.renderAircraftDetails({
+      aircraftId: '12',
+      aircraftData: {
+        name: 'F-22', mach_max: 2.25, supercruise: true, ferry_range: 3220, hardpoints: 4,
+        internal_weapons_bay: true, radar_model: 'AN/APG-77', internal_fuel: 8200,
+      },
+    });
+    const s = specs();
+    expect(s['details.spec_mach_max']).toBe('Mach 2,25');
+    expect(s['details.spec_supercruise']).toBe('Oui');
+    expect(s['details.spec_ferry_range']).toBe('3 220 km');
+    expect(s['details.spec_hardpoints']).toBe('4');
+    expect(s['details.spec_weapons_bay']).toBe('Oui');
+    expect(s['details.spec_radar']).toBe('AN/APG-77');
+    expect(s['details.spec_internal_fuel']).toBe('8 200 kg');
+    expect(groupTitles()).toContain('details.spec_group_stores');
+  });
+
+  test('supercroisière : « Non » seulement pour un appareil supersonique', () => {
+    boot('fr', { 'details.spec_no': 'Non' });
+    render.renderAircraftDetails({ aircraftId: '1', aircraftData: { name: 'Mirage', mach_max: 2.2, supercruise: false } });
+    expect(specs()['details.spec_supercruise']).toBe('Non');
+    render.renderAircraftDetails({ aircraftId: '1', aircraftData: { name: 'Alphajet', mach_max: 0.85, supercruise: false } });
+    expect(specs()['details.spec_supercruise']).toBeUndefined();
+  });
+
+  test('soute interne : « Non » affiché quand la valeur est connue, rien si elle est nulle', () => {
+    boot('fr', { 'details.spec_no': 'Non' });
+    render.renderAircraftDetails({ aircraftId: '1', aircraftData: { name: 'F-16', internal_weapons_bay: false } });
+    expect(specs()['details.spec_weapons_bay']).toBe('Non');
+    render.renderAircraftDetails({ aircraftId: '1', aircraftData: { name: 'F-16', internal_weapons_bay: null, hardpoints: 11 } });
+    expect(specs()['details.spec_weapons_bay']).toBeUndefined();
   });
 
   test('séparateur décimal anglais', () => {
