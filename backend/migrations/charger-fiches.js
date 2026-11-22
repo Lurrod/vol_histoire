@@ -10,7 +10,8 @@
 //
 // À lancer APRÈS backend/migrations/001_mise_a_niveau.sql (les fiches
 // référencent des constructeurs, types et colonnes qu'il apporte) et AVANT
-// backend/db_backup/zz_backfill_relations.sql (qui exige tous les appareils).
+// backend/db_backup/zz_backfill_relations.sql (qui exige tous les appareils)
+// et zz_specs_strate7.sql (strate 7 de la fiche technique, même raison).
 //
 //   node backend/migrations/charger-fiches.js            # charge
 //   node backend/migrations/charger-fiches.js --dry-run  # liste sans rien écrire
@@ -21,7 +22,7 @@ const { Pool } = require('pg');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 const DOSSIER = path.join(__dirname, '..', 'db_backup');
-const IGNORES = new Set(['db.sql', 'zz_backfill_relations.sql', 'timeline_events.sql']);
+const IGNORES = new Set(['db.sql', 'zz_backfill_relations.sql', 'zz_specs_strate7.sql', 'timeline_events.sql']);
 const SIMULATION = process.argv.includes('--dry-run');
 
 // Le nom de l'appareil est la première valeur du INSERT INTO airplanes.

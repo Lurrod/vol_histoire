@@ -966,7 +966,10 @@ body.page-details { background: var(--night); }
     column-gap: 10mm !important; row-gap: 0 !important;
   }
   .page-details .spec-group-title { margin: 0 0 1mm !important; font-size: 8.5pt !important; color: #555 !important; }
-  .page-details .spec-group { margin: 0 0 3mm !important; }
+  /* Un groupe (dix lignes au plus) ne se coupe pas : son titre restait
+     seul en bas de page, ses lignes en haut de la suivante. */
+  .page-details .spec-group { margin: 0 0 3mm !important; break-inside: avoid; }
+  .page-details .spec-group-title { break-after: avoid; }
 
   /* Profil de capacités sur papier blanc : la grille et les libellés du
      radar sont dessinés en blanc pour l'écran ; les barres doivent

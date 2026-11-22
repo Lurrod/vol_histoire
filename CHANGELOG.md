@@ -7,6 +7,29 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 ## [Unreleased]
 
+## [4.28.0] - 2026-11-22
+
+### Added
+
+- La fiche technique de chaque appareil s'enrichit :
+  - vitesse maximale en Mach, supercroisière, distance de convoyage et carburant interne ;
+  - un groupe « Emport et systèmes » : nombre de points d'emport, soute interne et modèle de radar ;
+  - un groupe « Rapports » : charge alaire et rapport poussée/poids, calculés à la masse maximale au
+    décollage ;
+  - la poussée totale des multimoteurs et la charge emportable.
+- La vitesse maximale et la distance franchissable figurent aussi dans les performances de la fiche
+  technique.
+
+### Changed
+
+- Sur les multimoteurs, la poussée indiquée précise qu'elle s'entend par moteur.
+
+### Fixed
+
+- L'avis « Nouvelle version disponible » s'affiche de nouveau sur une seule ligne sur ordinateur, au
+  lieu d'être écrasé.
+- La poussée du Tu-95, qui affichait en réalité la puissance de ses turbopropulseurs, est retirée.
+
 ## [4.27.0] - 2026-11-21
 
 ### Added
@@ -674,7 +697,8 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 - Première version de Vol d'Histoire : un catalogue d'avions militaires.
 
-[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.27.0...HEAD
+[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.28.0...HEAD
+[4.28.0]: https://github.com/Lurrod/vol_histoire/compare/v4.27.0...v4.28.0
 [4.27.0]: https://github.com/Lurrod/vol_histoire/compare/v4.26.0...v4.27.0
 [4.26.0]: https://github.com/Lurrod/vol_histoire/compare/v4.25.0...v4.26.0
 [4.25.0]: https://github.com/Lurrod/vol_histoire/compare/v4.24.0...v4.25.0

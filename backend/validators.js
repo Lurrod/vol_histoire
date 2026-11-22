@@ -109,6 +109,12 @@ function isOptionalNonNegativeInt(value) {
   return Number.isInteger(num) && num >= 0;
 }
 
+// Booléen facultatif : true, false, ou absent (NULL = non établi). Pas de
+// chaîne « true » : le corps est du JSON, le formulaire envoie un vrai booléen.
+function isOptionalBoolean(value) {
+  return value == null || value === '' || typeof value === 'boolean';
+}
+
 // Identifiant de rôle : 1 (admin), 2 (éditeur) ou 3 (membre), en chaîne
 // (paramètre de requête) ou en nombre. Rien d'autre : ni « 01 », ni « 1.0 »,
 // ni tableau (?role=1&role=2).
@@ -203,6 +209,19 @@ function validateAirplaneData(body) {
   if (!isOptionalPositiveNumber(body.thrust_dry)) errors.push('La poussée sèche doit être un nombre positif.');
   if (!isOptionalPositiveNumber(body.thrust_wet)) errors.push('La poussée PC doit être un nombre positif.');
 
+  // ── Strate 7 : fiche technique avancée ────────────────────────
+  if (!isOptionalPositiveNumber(body.mach_max) || (body.mach_max != null && body.mach_max !== '' && (Number(body.mach_max) < 0.1 || Number(body.mach_max) > 10))) {
+    errors.push('Le Mach max doit être compris entre 0,1 et 10.');
+  }
+  if (!isOptionalPositiveNumber(body.ferry_range)) errors.push('La distance de convoyage doit être un nombre positif.');
+  if (!isOptionalPositiveNumber(body.internal_fuel)) errors.push('Le carburant interne doit être un nombre positif.');
+  if (!isOptionalNonNegativeInt(body.hardpoints) || Number(body.hardpoints) > 30) {
+    errors.push("Le nombre de points d'emport doit être un entier entre 0 et 30.");
+  }
+  if (!isOptionalBoolean(body.supercruise)) errors.push('supercruise doit valoir true, false ou null.');
+  if (!isOptionalBoolean(body.internal_weapons_bay)) errors.push('internal_weapons_bay doit valoir true, false ou null.');
+  if (!isOptionalString(body.radar_model, 255)) errors.push('Modèle de radar > 255 caractères.');
+
   // ── Strate 3 : production ─────────────────────────────────────
   if (!isOptionalYear(body.production_start)) errors.push("Année de début de production invalide.");
   if (!isOptionalYear(body.production_end)) errors.push("Année de fin de production invalide.");
@@ -246,6 +265,7 @@ module.exports = {
   isOptionalNumber,
   isOptionalYear,
   isOptionalNonNegativeInt,
+  isOptionalBoolean,
   isOptionalDate,
   isOptionalPositiveNumber,
   isOptionalId,

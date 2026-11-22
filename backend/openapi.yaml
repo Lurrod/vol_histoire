@@ -35,7 +35,7 @@ info:
     - **415** : jeu de caractères ou encodage du corps non pris en charge.
     Les caractères de contrôle d'un paramètre `search` sont remplacés par une
     espace.
-  version: 4.27.0
+  version: 4.28.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -278,6 +278,41 @@ components:
         thrust_wet:
           type: number
           minimum: 0
+        mach_max:
+          type: number
+          minimum: 0.1
+          maximum: 10
+          nullable: true
+          description: Mach maximal en palier (strate 7).
+        supercruise:
+          type: boolean
+          nullable: true
+          description: Vol supersonique sans post-combustion ; null si non établi.
+        ferry_range:
+          type: number
+          minimum: 0
+          nullable: true
+          description: Distance de convoyage, en km.
+        internal_fuel:
+          type: number
+          minimum: 0
+          nullable: true
+          description: Carburant interne, en kg.
+        hardpoints:
+          type: integer
+          minimum: 0
+          maximum: 30
+          nullable: true
+          description: Nombre de points d'emport.
+        internal_weapons_bay:
+          type: boolean
+          nullable: true
+          description: Soute interne d'armement ; null si non établi.
+        radar_model:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: Radar principal de la version décrite.
         production_start:
           type: integer
         production_end:

@@ -164,38 +164,136 @@
 
   // ── Strate 1 + 2 : Fiche technique étendue ──────────────────────
   /* Une ligne « libellé — valeur » (dt / dd), valeur déjà formatée. */
-  function specRow(labelKey, value) {
-    return `<div class="spec-row"><dt class="spec-label">${escapeHtml(i18n.t(labelKey))}</dt>` +
+  function specRow(labelKey, value, translated = false) {
+    const label = translated ? labelKey : i18n.t(labelKey);
+    return `<div class="spec-row"><dt class="spec-label">${escapeHtml(label)}</dt>` +
       `<dd class="spec-value">${escapeHtml(String(value))}</dd></div>`;
   }
 
   const present = (v) => v != null && v !== '';
 
-  /* Trois groupes de lignes au lieu de 17 tuiles à icône : sur téléphone,
-   * les tuiles s'empilaient une par ligne (2 400 px pour la seule fiche). */
+  /* Nombre strictement positif (l'API renvoie des nombres, des chaînes pour
+   * les BIGINT, ou null) ; null sinon. */
+  function positive(v) {
+    if (!present(v)) return null;
+    const n = Number(v);
+    return Number.isFinite(n) && n > 0 ? n : null;
+  }
+
+  /* Valeurs calculées à partir des colonnes existantes. La poussée est
+   * stockée PAR MOTEUR (B-52 : 8 × 75,6 kN) ; la plus forte des deux
+   * (post-combustion si elle existe) sert aux totaux et au rapport. Les
+   * rapports sont pris à la masse maximale au décollage, seule masse
+   * « chargée » connue pour tout le catalogue — le libellé le dit. */
+  const G = 9.80665;
+  /* Motorisation mixte, écrite « A + 8 B » ou « A (+ 2 B d'appoint) »
+   * (Mirage III V, Do 31, Yak-38, Trident…) : la poussée stockée est celle
+   * du moteur principal, la multiplier par le nombre de moteurs serait faux. */
+  const MIXED_ENGINES = /\s\+\s|\(\+/;
+  const derived = {
+    maxThrust: (a) => positive(a.thrust_wet) || positive(a.thrust_dry),
+    totalThrust(a) {
+      if (MIXED_ENGINES.test(String(a.engine_name || ''))) return null;
+      const per = derived.maxThrust(a);
+      const count = positive(a.engine_count);
+      return per && count ? per * count : null;
+    },
+    payload(a) {
+      const mtow = positive(a.mtow);
+      const empty = positive(a.empty_weight);
+      return mtow && empty && mtow > empty ? mtow - empty : null;
+    },
+    wingLoading(a) {
+      const mtow = positive(a.mtow);
+      const area = positive(a.wing_area);
+      return mtow && area ? mtow / area : null;
+    },
+    thrustToWeight(a) {
+      const total = derived.totalThrust(a);
+      const mtow = positive(a.mtow);
+      return total && mtow ? (total * 1000) / (mtow * G) : null;
+    },
+  };
+
+  /* Fabriques de lignes : chacune renvoie la valeur affichée, ou null pour
+   * ne pas afficher la ligne. `num` est formatNumber (langue du site). */
+  const col = (field, unit = null, digits = 2) => (a, num) => {
+    const v = a[field];
+    if (!present(v)) return null;
+    if (typeof v !== 'number') return String(v);
+    return unit ? `${num(v, digits)} ${unit}` : num(v, digits);
+  };
+  const calc = (fn, unit, digits) => (a, num) => {
+    const v = fn(a);
+    return v == null ? null : `${num(v, digits)}${unit ? ` ${unit}` : ''}`;
+  };
+  const yesNo = (v) => i18n.t(v ? 'details.spec_yes' : 'details.spec_no');
+
+  /* Poussée par moteur : précisé dès qu'il y a plusieurs moteurs ; « moteur
+   * principal » si la motorisation est mixte (Mirage III V : la poussée est
+   * celle du TF106, pas celle des huit réacteurs de sustentation). */
+  const perEngine = (labelKey) => (a) => {
+    const label = i18n.t(labelKey);
+    if (Number(a.engine_count) <= 1) return label;
+    const mixed = MIXED_ENGINES.test(String(a.engine_name || ''));
+    return `${label} (${i18n.t(mixed ? 'details.spec_main_engine' : 'details.spec_per_engine')})`;
+  };
+
+  /* Groupes de lignes « libellé — valeur » (17 tuiles à icône auparavant :
+   * sur téléphone, 2 400 px pour la seule fiche). Une ligne = [libellé
+   * (clé, ou fonction de la fiche), lecture de la valeur]. Les colonnes de
+   * la strate 7 (Mach, convoyage, emport, radar, carburant) s'affichent
+   * dès qu'elles sont renseignées. */
   const SPEC_GROUPS = [
     ['details.spec_group_airframe', [
-      ['details.spec_length', 'length', 'm'],
-      ['details.spec_wingspan', 'wingspan', 'm'],
-      ['details.spec_height', 'height', 'm'],
-      ['details.spec_wing_area', 'wing_area', 'm²'],
-      ['details.spec_empty_weight', 'empty_weight', 'kg'],
-      ['details.spec_mtow', 'mtow', 'kg'],
-      ['details.spec_crew', 'crew', null],
+      ['details.spec_length', col('length', 'm')],
+      ['details.spec_wingspan', col('wingspan', 'm')],
+      ['details.spec_height', col('height', 'm')],
+      ['details.spec_wing_area', col('wing_area', 'm²')],
+      ['details.spec_empty_weight', col('empty_weight', 'kg')],
+      ['details.spec_mtow', col('mtow', 'kg')],
+      ['details.spec_payload', calc(derived.payload, 'kg', 0)],
+      ['details.spec_internal_fuel', col('internal_fuel', 'kg', 0)],
+      ['details.spec_crew', col('crew')],
     ]],
     ['details.spec_group_performance', [
-      ['details.spec_ceiling', 'service_ceiling', 'm'],
-      ['details.spec_climb_rate', 'climb_rate', 'm/s'],
-      ['details.spec_combat_radius', 'combat_radius', 'km'],
-      ['details.spec_g_pos', 'g_limit_pos', 'g'],
-      ['details.spec_g_neg', 'g_limit_neg', 'g'],
+      ['details.spec_max_speed', col('max_speed', 'km/h', 0)],
+      ['details.spec_mach_max', (a, num) => (positive(a.mach_max) ? `Mach ${num(a.mach_max, 2)}` : null)],
+      // Sans objet pour un appareil subsonique : affichée si elle est
+      // confirmée, ou si l'appareil passe Mach 1.
+      ['details.spec_supercruise', (a) => {
+        if (a.supercruise === true) return yesNo(true);
+        return a.supercruise === false && Number(a.mach_max) >= 1 ? yesNo(false) : null;
+      }],
+      ['details.spec_max_range', col('max_range', 'km', 0)],
+      ['details.spec_ferry_range', col('ferry_range', 'km', 0)],
+      ['details.spec_combat_radius', col('combat_radius', 'km', 0)],
+      ['details.spec_ceiling', col('service_ceiling', 'm')],
+      ['details.spec_climb_rate', col('climb_rate', 'm/s')],
+      ['details.spec_g_pos', col('g_limit_pos', 'g')],
+      ['details.spec_g_neg', col('g_limit_neg', 'g')],
     ]],
     ['details.spec_group_propulsion', [
-      ['details.spec_engine', 'engine_name', null],
-      ['details.spec_engine_count', 'engine_count', null],
-      ['details.spec_engine_type', 'engine_type', null],
-      ['details.spec_thrust_dry', 'thrust_dry', 'kN'],
-      ['details.spec_thrust_wet', 'thrust_wet', 'kN'],
+      ['details.spec_engine', col('engine_name')],
+      ['details.spec_engine_count', col('engine_count')],
+      ['details.spec_engine_type', col('engine_type')],
+      [perEngine('details.spec_thrust_dry'), col('thrust_dry', 'kN')],
+      [perEngine('details.spec_thrust_wet'), col('thrust_wet', 'kN')],
+      // Utile seulement à plusieurs moteurs : « 151,24 kN (2 × 75,62) ».
+      ['details.spec_thrust_total', (a, num) => {
+        const count = Number(a.engine_count);
+        const total = derived.totalThrust(a);
+        return count > 1 && total ? `${num(total, 1)} kN (${count} × ${num(derived.maxThrust(a), 2)})` : null;
+      }],
+    ]],
+    ['details.spec_group_ratios', [
+      ['details.spec_wing_loading', calc(derived.wingLoading, 'kg/m²', 0)],
+      ['details.spec_thrust_weight', calc(derived.thrustToWeight, null, 2)],
+    ]],
+    ['details.spec_group_stores', [
+      ['details.spec_hardpoints', col('hardpoints')],
+      ['details.spec_weapons_bay', (a) => (typeof a.internal_weapons_bay === 'boolean' ? yesNo(a.internal_weapons_bay) : null)],
+      ['details.spec_radar', col('radar_model')],
     ]],
   ];
 
@@ -207,12 +305,11 @@
     const num = VH.details.data.formatNumber;
     const groups = SPEC_GROUPS.map(([titleKey, fields]) => {
       const rows = fields
-        .filter(([, field]) => present(a[field]))
-        .map(([labelKey, field, unit]) => {
-          const v = a[field];
-          const shown = typeof v === 'number' ? (unit ? `${num(v)} ${unit}` : num(v)) : String(v);
-          return specRow(labelKey, shown);
-        });
+        .map(([label, read]) => [label, read(a, num)])
+        .filter(([, shown]) => shown != null && shown !== '')
+        .map(([label, shown]) => (typeof label === 'function'
+          ? specRow(label(a), shown, true)
+          : specRow(label, shown)));
       if (rows.length === 0) return '';
       return `<section class="spec-group"><h3 class="spec-group-title">${escapeHtml(i18n.t(titleKey))}</h3>` +
         `<dl class="spec-list">${rows.join('')}</dl></section>`;
