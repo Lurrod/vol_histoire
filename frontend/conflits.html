@@ -109,14 +109,53 @@
       <!-- Vue « liste » : un conflit par carte, ordre chronologique -->
       <div id="conflicts-list" class="conflicts-grid hidden"></div>
 
-      <!-- Vue « conflit » : appareils engagés -->
+      <!-- Vue « conflit » : issue, contexte, guerre aérienne, dates clés,
+           appareils par camp avec leur rôle, sources (js/conflicts.js).
+           Un conflit pas encore rédigé n'affiche que ses appareils. -->
       <div id="conflict-detail" class="hidden">
         <div class="conflict-actions">
           <a id="conflict-hangar-link" class="btn btn-primary" href="/hangar"><i class="fas fa-plane"></i> <span data-i18n="conflicts.explore_hangar">Filtrer dans le hangar</span></a>
           <a class="btn btn-ghost" href="/conflits"><i class="fas fa-arrow-left"></i> <span data-i18n="conflicts.all_conflicts">Tous les conflits</span></a>
         </div>
-        <h2 class="conflict-aircraft-heading" data-i18n="conflicts.aircraft_heading">Appareils engagés</h2>
-        <section id="conflict-aircraft" class="aircraft-grid" aria-label="Appareils engagés" data-i18n-aria="conflicts.aircraft_heading"></section>
+        <div class="conflict-layout">
+          <div class="conflict-body" data-toc data-toc-sections=".conflict-block" data-toc-min="3">
+            <p class="conflict-outcome hidden" id="conflict-outcome"><span class="conflict-outcome-label" data-i18n="conflicts.outcome_label">Issue</span> <span id="conflict-outcome-text"></span></p>
+
+            <section class="conflict-block hidden" id="contexte" aria-labelledby="conflict-context-heading">
+              <h2 id="conflict-context-heading" data-i18n="conflicts.section_context">Contexte</h2>
+              <div class="conflict-prose" id="conflict-context"></div>
+            </section>
+
+            <section class="conflict-block hidden" id="guerre-aerienne" aria-labelledby="conflict-air-heading">
+              <h2 id="conflict-air-heading" data-i18n="conflicts.section_air">La guerre aérienne</h2>
+              <div class="conflict-prose" id="conflict-narrative"></div>
+            </section>
+
+            <section class="conflict-block hidden" id="dates-cles" aria-labelledby="conflict-dates-heading">
+              <h2 id="conflict-dates-heading" data-i18n="conflicts.section_dates">Dates clés</h2>
+              <div class="conflict-dates-strip" id="conflict-events" role="tablist" aria-labelledby="conflict-dates-heading"></div>
+              <div class="conflict-date-panel" id="conflict-event-panel" role="tabpanel" tabindex="0">
+                <div class="conflict-date-content" id="conflict-event-content"></div>
+                <div class="conflict-date-pager">
+                  <button type="button" class="conflict-date-btn" data-dir="-1" data-i18n-aria="conflicts.dates_prev" aria-label="Date précédente"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>
+                  <span class="conflict-date-count" id="conflict-event-count" aria-hidden="true"></span>
+                  <button type="button" class="conflict-date-btn" data-dir="1" data-i18n-aria="conflicts.dates_next" aria-label="Date suivante"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+                </div>
+              </div>
+            </section>
+
+            <section class="conflict-block" id="appareils" aria-labelledby="conflict-aircraft-heading">
+              <h2 class="conflict-aircraft-heading" id="conflict-aircraft-heading" data-i18n="conflicts.aircraft_heading">Appareils engagés</h2>
+              <div id="conflict-sides" class="conflict-sides hidden"></div>
+              <div id="conflict-aircraft" class="aircraft-grid"></div>
+            </section>
+
+            <section class="conflict-block hidden" id="sources" aria-labelledby="conflict-sources-heading">
+              <h2 id="conflict-sources-heading" data-i18n="conflicts.section_sources">Sources</h2>
+              <ol class="conflict-sources" id="conflict-sources"></ol>
+            </section>
+          </div>
+        </div>
       </div>
 
       <div id="conflicts-error" class="empty-state hidden">

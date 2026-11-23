@@ -108,58 +108,209 @@ describe('renderImageCredit (hero de la fiche) avec le module partagé', () => {
 
 describe('page Crédits photo (credits.js)', () => {
   const PAGE = `
+    <div id="credits-tools" hidden>
+      <input type="search" id="credits-search">
+      <button class="credits-filter" data-family="all" aria-pressed="true"><span class="credits-filter-count"></span></button>
+      <button class="credits-filter" data-family="free" aria-pressed="false"><span class="credits-filter-count"></span></button>
+      <button class="credits-filter" data-family="cc" aria-pressed="false"><span class="credits-filter-count"></span></button>
+      <button class="credits-filter" data-family="other" aria-pressed="false"><span class="credits-filter-count"></span></button>
+      <button class="credits-filter" data-family="none" aria-pressed="false"><span class="credits-filter-count"></span></button>
+    </div>
     <p id="credits-status" hidden></p>
-    <section id="credits-table-wrap" hidden><table><tbody id="credits-body"></tbody></table></section>`;
+    <p id="credits-result" hidden></p>
+    <div id="credits-list" hidden></div>
+    <div id="credits-none" hidden><button id="credits-reset"></button></div>`;
   const DATA = [
-    { id: 30, name: 'Rafale', name_en: 'Rafale', image_credit: 'Rob Schleiffert', image_licence: 'CC BY-SA 2.0' },
-    { id: 12, name: 'F-22 Raptor', name_en: 'F-22 Raptor', image_credit: 'USAF', image_licence: 'Public domain' },
-    { id: 7, name: 'Sans crédit', image_credit: null, image_licence: null },
-    { id: 9, name: 'Alizé', name_en: 'Alize', image_credit: null, image_licence: 'CC0' },
+    { id: 30, name: 'Rafale', name_en: 'Rafale', image_url: '/assets/airplanes/rafale.jpg', image_credit: 'Rob Schleiffert', image_licence: 'CC BY-SA 2.0' },
+    { id: 12, name: 'F-22 Raptor', name_en: 'F-22 Raptor', image_url: '/assets/airplanes/f22-raptor.jpg', image_credit: 'USAF', image_licence: 'Public domain' },
+    { id: 7, name: 'Sans crédit', image_url: null, image_credit: null, image_licence: null },
+    { id: 9, name: 'Alizé', name_en: 'Alize', image_url: '/assets/airplanes/alize.jpg', image_credit: null, image_licence: 'CC0' },
   ];
   const ok = (body) => () => Promise.resolve({ ok: true, json: () => Promise.resolve(body) });
+  const items = () => Array.from(document.querySelectorAll('#credits-list .credit'));
+  const visible = () => items().filter((li) => !li.hidden);
+  const filterButton = (family) => document.querySelector(`.credits-filter[data-family="${family}"]`);
 
   beforeEach(() => {
     document.body.innerHTML = PAGE;
     global.i18n.currentLang = 'fr';
+    Object.assign(credits.state, { q: '', family: 'all' });
+    window.history.replaceState(null, '', '/credits');
   });
 
-  test('normalise : écarte les fiches sans crédit, trie par nom, accepte { data }', () => {
-    expect(credits.normalizeCredits(DATA).map((c) => c.id)).toEqual([9, 12, 30]);
-    expect(credits.normalizeCredits({ data: DATA })).toHaveLength(3);
+  afterEach(() => {
+    delete window.VH.shared.picture;
+  });
+
+  test('normalise : garde toutes les fiches, trie par nom, accepte { data }', () => {
+    expect(credits.normalizeCredits(DATA).map((c) => c.id)).toEqual([9, 12, 30, 7]);
+    expect(credits.normalizeCredits({ data: DATA })).toHaveLength(4);
+    expect(credits.normalizeCredits([null, { name: 'sans id' }])).toEqual([]);
     expect(credits.normalizeCredits(null)).toEqual([]);
   });
 
-  test('chargement : une ligne par photo, lien vers la fiche, lien de licence, modifications', async () => {
+  test('familles de licence', () => {
+    expect(credits.licenceFamily('Public domain')).toBe('free');
+    expect(credits.licenceFamily('PDM-owner')).toBe('free');
+    expect(credits.licenceFamily('CC0')).toBe('free');
+    expect(credits.licenceFamily('CC BY-SA 3.0 au')).toBe('cc');
+    expect(credits.licenceFamily('OGL v1.0')).toBe('other');
+    expect(credits.licenceFamily('KOGL Type 1')).toBe('other');
+    expect(credits.licenceFamily('  ')).toBe('none');
+    expect(credits.licenceFamily(null)).toBe('none');
+  });
+
+  test('texte de recherche replié et lettre de groupe', () => {
+    expect(credits.fold('F-16 Fighting Falcon')).toBe('f16fightingfalcon');
+    expect(credits.fold('Alizé')).toBe('alize');
+    expect(credits.fold(null)).toBe('');
+    expect(credits.letterOf('Étendard IV')).toBe('E');
+    expect(credits.letterOf('2000')).toBe('#');
+    expect(credits.letterOf('')).toBe('#');
+  });
+
+  test('chargement : groupes par lettre, une ligne par photo, liens, licence, modifications', async () => {
     const fetchImpl = jest.fn(ok(DATA));
     await credits.load(fetchImpl);
     expect(fetchImpl).toHaveBeenCalledWith('/api/credits');
-    const rows = Array.from(document.querySelectorAll('#credits-body tr'));
-    expect(rows).toHaveLength(3);
-    const rafale = rows.find((r) => r.textContent.includes('Rafale'));
-    const cells = rafale.querySelectorAll('td');
-    expect(cells[0].querySelector('a').getAttribute('href')).toBe('/details/rafale-30');
-    expect(cells[1].textContent).toBe('Rob Schleiffert');
-    expect(cells[2].querySelector('a').getAttribute('href')).toBe('https://creativecommons.org/licenses/by-sa/2.0/');
-    expect(cells[3].textContent).not.toBe('');
-    const raptor = rows.find((r) => r.textContent.includes('F-22'));
-    expect(raptor.querySelectorAll('td')[2].textContent).toBe('Domaine public');
-    expect(raptor.querySelectorAll('td')[3].textContent).toBe('');
-    expect(document.getElementById('credits-table-wrap').hidden).toBe(false);
+    expect(Array.from(document.querySelectorAll('.credits-letter')).map((h) => h.textContent)).toEqual(['A', 'F', 'R', 'S']);
+    expect(items()).toHaveLength(4);
+
+    const rafale = items().find((li) => li.textContent.includes('Rafale'));
+    expect(rafale.dataset.family).toBe('cc');
+    expect(rafale.querySelector('.credit-name').getAttribute('href')).toBe('/details/rafale-30');
+    expect(rafale.querySelector('.credit-thumb').getAttribute('aria-hidden')).toBe('true');
+    expect(rafale.querySelector('.credit-author').textContent).toBe('Rob Schleiffert');
+    const badge = rafale.querySelector('.credit-badge');
+    expect(badge.getAttribute('href')).toBe('https://creativecommons.org/licenses/by-sa/2.0/');
+    expect(badge.rel).toBe('license noopener');
+    expect(rafale.querySelector('.credit-modified')).not.toBeNull();
+
+    const raptor = items().find((li) => li.textContent.includes('F-22'));
+    expect(raptor.querySelector('.credit-badge').textContent).toBe('Domaine public');
+    expect(raptor.querySelector('.credit-badge').classList.contains('credit-badge--free')).toBe(true);
+    expect(raptor.querySelector('.credit-modified')).toBeNull();
+
+    const alize = items().find((li) => li.textContent.includes('Alizé'));
+    expect(alize.querySelector('.credit-author').classList.contains('is-muted')).toBe(true);
+
+    const undocumented = items().find((li) => li.textContent.includes('Sans crédit'));
+    expect(undocumented.dataset.family).toBe('none');
+    expect(undocumented.querySelector('.credit-claim').getAttribute('href')).toBe('/contact?sujet=bug&fiche=7');
+    expect(undocumented.querySelector('.credit-thumb img')).toBeNull();
+    expect(undocumented.querySelector('.credit-badge--none')).not.toBeNull();
+
+    expect(document.getElementById('credits-list').hidden).toBe(false);
+    expect(document.getElementById('credits-tools').hidden).toBe(false);
     expect(document.getElementById('credits-status').hidden).toBe(true);
+    expect(document.getElementById('credits-result').textContent).toBe('4 photos');
+    expect(filterButton('cc').querySelector('.credits-filter-count').textContent).toBe('1');
+    expect(filterButton('free').querySelector('.credits-filter-count').textContent).toBe('2');
+    // Aucune licence « autre » : bouton masqué
+    expect(filterButton('other').hidden).toBe(true);
   });
 
-  test('anglais : nom anglais affiché', async () => {
-    global.i18n.currentLang = 'en';
+  test('vignettes : sources AVIF / WebP de la vignette, photo pleine en repli', async () => {
+    window.VH.shared.picture = {
+      getThumbSources: (url) => ({ avif: '/thumbs/x.avif', webp: '/thumbs/x.webp', fallback: url }),
+    };
     await credits.load(jest.fn(ok(DATA)));
-    expect(document.getElementById('credits-body').textContent).toContain('Alize');
+    const rafale = items().find((li) => li.textContent.includes('Rafale'));
+    const sources = rafale.querySelectorAll('.credit-thumb source');
+    expect(Array.from(sources).map((el) => el.type)).toEqual(['image/avif', 'image/webp']);
+    const img = rafale.querySelector('.credit-thumb img');
+    expect(img.getAttribute('src')).toBe('/assets/airplanes/rafale.jpg');
+    expect(img.getAttribute('loading')).toBe('lazy');
+    expect(img.alt).toBe('');
   });
 
-  test('erreur HTTP ou réseau : message d\'erreur, tableau masqué', async () => {
+  test('sans module d\'images : simple <img> de la photo', async () => {
+    await credits.load(jest.fn(ok(DATA)));
+    const raptor = items().find((li) => li.textContent.includes('F-22'));
+    expect(raptor.querySelector('.credit-thumb picture')).toBeNull();
+    expect(raptor.querySelector('.credit-thumb img').getAttribute('src')).toBe('/assets/airplanes/f22-raptor.jpg');
+  });
+
+  test('recherche (sans accents ni tirets) et filtre de famille, reflétés dans l\'adresse', async () => {
+    credits.bindControls('');
+    await credits.load(jest.fn(ok(DATA)));
+    const input = document.getElementById('credits-search');
+
+    input.value = 'f22';
+    input.dispatchEvent(new window.Event('input'));
+    expect(visible().map((li) => li.querySelector('.credit-name').textContent)).toEqual(['F-22 Raptor']);
+    expect(document.getElementById('credits-result').textContent).toBe('1 photo sur 4');
+    expect(window.location.search).toBe('?q=f22');
+    // Groupes sans résultat masqués
+    expect(Array.from(document.querySelectorAll('.credits-group')).filter((g) => !g.hidden)).toHaveLength(1);
+
+    input.value = 'schleiffert';
+    input.dispatchEvent(new window.Event('input'));
+    expect(visible()).toHaveLength(1);
+
+    input.value = '';
+    input.dispatchEvent(new window.Event('input'));
+    filterButton('free').click();
+    expect(visible()).toHaveLength(2);
+    expect(filterButton('free').getAttribute('aria-pressed')).toBe('true');
+    expect(filterButton('all').getAttribute('aria-pressed')).toBe('false');
+    expect(document.getElementById('credits-result').textContent).toBe('2 photos sur 4');
+    expect(window.location.search).toBe('?licence=free');
+  });
+
+  test('aucun résultat : message et remise à zéro', async () => {
+    credits.bindControls('');
+    await credits.load(jest.fn(ok(DATA)));
+    const input = document.getElementById('credits-search');
+    input.value = 'zzzz';
+    input.dispatchEvent(new window.Event('input'));
+    filterButton('cc').click();
+    expect(visible()).toHaveLength(0);
+    expect(document.getElementById('credits-none').hidden).toBe(false);
+    document.getElementById('credits-reset').click();
+    expect(input.value).toBe('');
+    expect(credits.state).toEqual({ q: '', family: 'all' });
+    expect(visible()).toHaveLength(4);
+    expect(document.getElementById('credits-none').hidden).toBe(true);
+    expect(window.location.search).toBe('');
+  });
+
+  test('vue de départ lue dans l\'adresse ; famille inconnue ignorée', async () => {
+    expect(credits.readUrlState('?licence=bidon&q=x')).toEqual({ q: 'x', family: 'all' });
+    expect(credits.readUrlState('')).toEqual({ q: '', family: 'all' });
+    credits.bindControls('?q=rafale&licence=cc');
+    expect(document.getElementById('credits-search').value).toBe('rafale');
+    await credits.load(jest.fn(ok(DATA)));
+    expect(visible()).toHaveLength(1);
+    expect(filterButton('cc').getAttribute('aria-pressed')).toBe('true');
+  });
+
+  test('l\'adresse garde les autres paramètres (?lang=)', () => {
+    window.history.replaceState(null, '', '/credits?lang=en');
+    credits.writeUrlState({ q: 'mig', family: 'cc' });
+    expect(window.location.search).toBe('?lang=en&q=mig&licence=cc');
+    credits.writeUrlState({ q: '', family: 'all' });
+    expect(window.location.search).toBe('?lang=en');
+  });
+
+  test('anglais : nom anglais affiché, nouveau rendu sans nouvelle requête', async () => {
+    const fetchImpl = jest.fn(ok(DATA));
+    await credits.load(fetchImpl);
+    global.i18n.currentLang = 'en';
+    credits.rerender();
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    expect(document.getElementById('credits-list').textContent).toContain('Alize');
+  });
+
+  test('erreur HTTP ou réseau : message d\'erreur, liste et outils masqués', async () => {
+    await credits.load(jest.fn(ok(DATA)));
     await credits.load(jest.fn(() => Promise.resolve({ ok: false, status: 404 })));
     const status = document.getElementById('credits-status');
     expect(status.hidden).toBe(false);
     expect(status.classList.contains('is-error')).toBe(true);
-    expect(document.getElementById('credits-table-wrap').hidden).toBe(true);
+    expect(document.getElementById('credits-list').hidden).toBe(true);
+    expect(document.getElementById('credits-tools').hidden).toBe(true);
+    expect(document.getElementById('credits-result').hidden).toBe(true);
     await credits.load(jest.fn(() => Promise.reject(new TypeError('Failed to fetch'))));
     expect(status.classList.contains('is-error')).toBe(true);
   });
@@ -167,6 +318,13 @@ describe('page Crédits photo (credits.js)', () => {
   test('liste vide : message dédié', async () => {
     await credits.load(jest.fn(ok([])));
     expect(document.getElementById('credits-status').hidden).toBe(false);
-    expect(document.getElementById('credits-table-wrap').hidden).toBe(true);
+    expect(document.getElementById('credits-list').hidden).toBe(true);
+    expect(document.getElementById('credits-none').hidden).toBe(true);
+  });
+
+  test('sans conteneur de liste : ne fait rien', () => {
+    document.body.innerHTML = '';
+    expect(() => credits.render(credits.normalizeCredits(DATA))).not.toThrow();
+    expect(() => credits.applyView()).not.toThrow();
   });
 });

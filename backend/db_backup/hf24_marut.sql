@@ -58,7 +58,6 @@ INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 
 -- Insertion des guerres
 INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'HAL HF-24 Marut'), (SELECT id FROM wars WHERE name = 'Guerre froide')),
 ((SELECT id FROM airplanes WHERE name = 'HAL HF-24 Marut'), (SELECT id FROM wars WHERE name = 'Guerre Indo-Pakistanaise de 1971'));
 
 -- Insertion des missions

@@ -141,6 +141,41 @@ describeIt('Intégration SQL — contenus', () => {
       expect(res.body.airplanes[0].type_name_fr).toEqual(expect.any(String));
     });
 
+    test('page étoffée (zz_conflits.sql) : camps, dates clés en texte, rôles, sources', async () => {
+      const res = await api().get('/api/wars/guerre-du-kippour');
+      expect(res.status).toBe(200);
+      expect(res.body.context).toEqual(expect.any(String));
+      expect(res.body.narrative).toEqual(expect.any(String));
+      expect(res.body.outcome).toEqual(expect.any(String));
+      expect(res.body.sources.length).toBeGreaterThan(0);
+      expect(res.body.sides.map((s) => s.key)).toEqual(['israel', 'coalition-arabe', 'soutiens']);
+      // Dates en AAAA-MM-JJ, sans décalage de fuseau, dans l'ordre
+      const dates = res.body.events.map((e) => e.date);
+      expect(dates[0]).toBe('1973-10-06');
+      expect(dates).toEqual([...dates].sort());
+      expect(res.body.events.every((e) => /^\d{4}-\d{2}-\d{2}$/.test(e.date))).toBe(true);
+      const mig21 = res.body.airplanes.find((a) => a.name === 'MiG-21');
+      expect(mig21).toEqual(expect.objectContaining({ side_key: 'coalition-arabe', role: expect.any(String) }));
+      expect(mig21.role_sources.length).toBeGreaterThan(0);
+      const arab = res.body.sides.find((s) => s.key === 'coalition-arabe');
+      expect(arab.count).toBe(res.body.airplanes.filter((a) => a.side_key === 'coalition-arabe').length);
+      // Anglais : textes traduits
+      const en = await api().get('/api/wars/guerre-du-kippour?lang=en');
+      expect(en.body.sides[0].name).toBe('Israel');
+      expect(en.body.airplanes.find((a) => a.name === 'MiG-21').role).not.toBe(mig21.role);
+    });
+
+    test('zz_conflits.sql rejoué : aucune écriture', async () => {
+      const fs = require('fs');
+      const path = require('path');
+      const sql = fs.readFileSync(path.join(__dirname, '../../db_backup/zz_conflits.sql'), 'utf8');
+      const results = await ctx.pool.query(sql);
+      const writes = (Array.isArray(results) ? results : [results])
+        .filter((r) => ['UPDATE', 'INSERT', 'DELETE'].includes(r.command))
+        .reduce((n, r) => n + r.rowCount, 0);
+      expect(writes).toBe(0);
+    });
+
     test('conflit sans appareil → 404, slug mal formé → 400', async () => {
       const unknown = await api().get('/api/wars/guerre-de-cent-ans');
       const bad = await api().get('/api/wars/Pas_Un_Slug');

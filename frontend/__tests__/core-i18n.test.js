@@ -160,6 +160,20 @@ describe('applyToDOM', () => {
     expect(i18n.currentLang).toBe('en');
   });
 
+  test('icône déjà convertie en <svg class="icon"> par icons.js : conservée (titres des pages légales)', async () => {
+    document.body.innerHTML = `
+      <h2 id="h" data-i18n="nav.hangar"><svg class="icon icon-info-circle" aria-hidden="true"></svg> 1. Objet</h2>
+      <h2 id="n" data-i18n="nav.home"><span class="note"><svg class="icon icon-x"></svg></span> x</h2>`;
+    await loadI18n({ url: '/?lang=en' });
+    const en = LOCALES.en.nav;
+    const h = document.getElementById('h');
+    expect(h.querySelector('svg.icon-info-circle')).not.toBeNull();
+    expect(h.firstElementChild.tagName.toLowerCase()).toBe('svg');
+    expect(h.textContent.trim()).toBe(en.hangar);
+    // Une icône imbriquée plus bas n'est pas une icône de titre : texte remplacé
+    expect(document.getElementById('n').textContent).toBe(en.home);
+  });
+
   test('<title> : traduction absente (locales non chargées) → titre du serveur conservé', async () => {
     document.head.innerHTML = '<title data-i18n="details.title">Titre serveur | Vol d\'Histoire</title>';
     global.fetch = jest.fn(() => Promise.resolve({ ok: false, status: 503, json: () => Promise.resolve({}) }));

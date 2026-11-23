@@ -135,8 +135,10 @@ const i18n = (() => {
       const key = el.getAttribute('data-i18n');
       const translated = t(key);
       if (translated !== key) {
-        // Preserve child icons (e.g. <i class="fas ..."></i>)
-        const icon = el.querySelector('i.fas, i.fab, i.far');
+        // Icône enfant conservée : <i class="fas …"> tant qu'icons.js ne l'a
+        // pas encore convertie, <svg class="icon …"> ensuite (sans ce second
+        // cas, les icônes des titres des pages légales étaient effacées).
+        const icon = el.querySelector(':scope > i.fas, :scope > i.fab, :scope > i.far, :scope > svg.icon');
         if (icon) {
           el.textContent = '';
           el.appendChild(icon);

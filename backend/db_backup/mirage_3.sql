@@ -58,10 +58,6 @@ INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 ((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM armement WHERE name = 'Bombe lisse 400 kg'));
 
 -- Insertion des guerres
-INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM wars WHERE name = 'Guerre des Six Jours')),
-((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM wars WHERE name = 'Guerre du Kippour')),
-((SELECT id FROM airplanes WHERE name = 'Mirage III'), (SELECT id FROM wars WHERE name = 'Conflit israélo-arabe'));
 
 -- Insertion des missions
 INSERT INTO airplane_missions (id_airplane, id_mission) VALUES

@@ -269,7 +269,28 @@ CREATE TABLE wars (
     date_end DATE,
     country_id INTEGER REFERENCES countries(id) ON DELETE SET NULL,
     description TEXT,
-    description_en TEXT
+    description_en TEXT,
+    -- Page du conflit (contenu : db_backup/zz_conflits.sql, joué après les fiches)
+    outcome TEXT,               -- issue du conflit, une phrase
+    outcome_en TEXT,
+    context TEXT,               -- Markdown : causes, enjeux, forces en présence
+    context_en TEXT,
+    narrative TEXT,             -- Markdown : la guerre aérienne
+    narrative_en TEXT,
+    sources TEXT                -- une URL par ligne
+);
+
+-- Camps d'un conflit (coalition, Irak…), dans l'ordre d'affichage.
+CREATE TABLE war_sides (
+    id SERIAL PRIMARY KEY,
+    war_id INTEGER NOT NULL REFERENCES wars(id) ON DELETE CASCADE,
+    side_key VARCHAR(40) NOT NULL,
+    position SMALLINT NOT NULL DEFAULT 0,
+    name VARCHAR(120) NOT NULL,
+    name_en VARCHAR(120),
+    members TEXT,
+    members_en TEXT,
+    CONSTRAINT uq_war_sides_key UNIQUE (war_id, side_key)
 );
 
 CREATE TABLE armement (
@@ -297,6 +318,12 @@ CREATE TABLE airplane_armement (
 CREATE TABLE airplane_wars (
     id_airplane INTEGER REFERENCES airplanes(id) ON DELETE CASCADE,
     id_wars INTEGER REFERENCES wars(id) ON DELETE CASCADE,
+    -- Ce que l'appareil a fait dans ce conflit (zz_conflits.sql). Camp NULL :
+    -- non renseigné, ou appareil engagé dans plusieurs camps.
+    side_id INTEGER REFERENCES war_sides(id) ON DELETE SET NULL,
+    role TEXT,
+    role_en TEXT,
+    sources TEXT,               -- une URL par ligne
     PRIMARY KEY (id_airplane, id_wars)
 );
 
@@ -454,7 +481,7 @@ INSERT INTO wars (name, name_en, date_start, date_end, country_id, description, 
 ('Guerre contre l''État islamique', 'War against the Islamic State', '2014-08-08', NULL, (SELECT id FROM countries WHERE code = 'IRQ'), 'Campagne aérienne de la coalition internationale (Inherent Resolve, Chammal, Shader, Okra) contre l''État islamique en Irak et en Syrie, jusqu''à la chute du califat territorial en 2019. Les frappes en Syrie recoupent la guerre civile syrienne.', 'Air campaign by the international coalition (Inherent Resolve, Chammal, Shader, Okra) against the Islamic State in Iraq and Syria, until the territorial caliphate fell in 2019. Strikes in Syria overlap the Syrian civil war.'),
 -- Guerre civile yéménite : Début : prise de Sanaa par les Houthis (septembre 2014), jour à confirmer.
 ('Guerre civile yéménite', 'Yemeni Civil War', '2014-09-16', NULL, NULL, 'Guerre entre les Houthis et le gouvernement yéménite, élargie en 2015 à l''intervention de la coalition saoudienne, puis aux frappes américaines et britanniques contre les Houthis à partir de 2024.', 'War between the Houthis and Yemen''s government, widened in 2015 by the Saudi-led coalition and from 2024 by US and British strikes on the Houthis.'),
-('Siège de Marawi', 'Siege of Marawi', '2017-05-23', '2017-10-23', NULL, 'Bataille de cinq mois entre l''armée philippine et des groupes affiliés à l''État islamique dans la ville de Marawi, sur Mindanao. Premier emploi au combat de l''avion d''armes léger FA-50.', 'Five-month battle between the Philippine army and Islamic State-affiliated groups in the city of Marawi, Mindanao. First combat use of the FA-50 light combat aircraft.'),
+('Siège de Marawi', 'Siege of Marawi', '2017-05-23', '2017-10-23', NULL, 'Bataille de cinq mois entre l''armée philippine et des groupes affiliés à l''État islamique dans la ville de Marawi, sur Mindanao. Première grande campagne de l''avion d''armes léger FA-50.', 'Five-month battle between the Philippine army and Islamic State-affiliated groups in the city of Marawi, Mindanao. First major campaign of the FA-50 light combat aircraft.'),
 ('Guerre du Haut-Karabagh (2020)', 'Second Nagorno-Karabakh War', '2020-09-27', '2020-11-10', NULL, 'Guerre de 44 jours remportée par l''Azerbaïdjan contre les forces arméniennes du Haut-Karabagh. Le premier conflit décidé en grande partie par les drones et les munitions rôdeuses.', '44-day war won by Azerbaijan against Armenian forces in Nagorno-Karabakh. The first conflict decided largely by drones and loitering munitions.'),
 -- Guerre Israël-Hamas : Cessez-le-feu en vigueur depuis le 10 octobre 2025, fin non actée.
 ('Guerre Israël-Hamas', 'Israel–Hamas war', '2023-10-07', NULL, NULL, 'Guerre ouverte par l''attaque du Hamas du 7 octobre 2023 et la campagne militaire israélienne sur la bande de Gaza, la plus longue de l''histoire d''Israël.', 'War opened by Hamas''s attack of 7 October 2023 and Israel''s military campaign over the Gaza Strip, the longest in Israel''s history.'),
@@ -1092,3 +1119,30 @@ CREATE INDEX IF NOT EXISTS idx_timeline_events_kind     ON timeline_events (kind
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON timeline_events TO vol_user;
 GRANT USAGE, SELECT ON SEQUENCE timeline_events_id_seq TO vol_user;
+
+-- =============================================================================
+-- war_events — dates clés de la page d'un conflit (frise). Contenu :
+-- db_backup/zz_conflits.sql. date_precision : la date n'est connue qu'au mois
+-- ou à l'année (le 1er du mois / 1er janvier ne veut alors rien dire).
+-- =============================================================================
+
+CREATE TABLE IF NOT EXISTS war_events (
+    id              SERIAL PRIMARY KEY,
+    war_id          INTEGER NOT NULL REFERENCES wars(id) ON DELETE CASCADE,
+    event_date      DATE NOT NULL,
+    date_precision  VARCHAR(5) NOT NULL DEFAULT 'day' CHECK (date_precision IN ('day','month','year')),
+    title           VARCHAR(200) NOT NULL,
+    title_en        VARCHAR(200),
+    body            TEXT,
+    body_en         TEXT,
+    airplane_id     INTEGER REFERENCES airplanes(id) ON DELETE SET NULL,
+    source          TEXT,
+    CONSTRAINT uq_war_events UNIQUE (war_id, event_date, title)
+);
+
+CREATE INDEX IF NOT EXISTS idx_war_events_war       ON war_events (war_id, event_date);
+CREATE INDEX IF NOT EXISTS idx_war_events_airplane  ON war_events (airplane_id) WHERE airplane_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_airplane_wars_side   ON airplane_wars (side_id) WHERE side_id IS NOT NULL;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON war_sides, war_events TO vol_user;
+GRANT USAGE, SELECT ON SEQUENCE war_sides_id_seq, war_events_id_seq TO vol_user;

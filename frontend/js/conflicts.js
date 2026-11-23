@@ -100,12 +100,15 @@
     const hangarLink = $('conflict-hangar-link');
     if (hangarLink) hangarLink.href = `/hangar?war=${encodeURIComponent(war.name_fr)}`;
 
-    const grid = $('conflict-aircraft');
-    if (grid) {
-      // Cartes-liens (titre étendu à la carte) : rien à brancher.
-      grid.innerHTML = (war.airplanes || [])
-        .map((a) => VH.shared.renderAircraftCard(a))
-        .join('');
+    // Issue, contexte, guerre aérienne, dates clés, appareils par camp avec
+    // leur rôle, sources (conflicts/detail.js). Un conflit pas encore rédigé
+    // garde la grille de cartes.
+    const detail = VH.conflicts.detail;
+    if (detail) {
+      detail.render(war);
+    } else {
+      const grid = $('conflict-aircraft');
+      if (grid) grid.innerHTML = (war.airplanes || []).map((a) => VH.shared.renderAircraftCard(a)).join('');
     }
     $('conflict-detail')?.classList.remove('hidden');
   }
@@ -137,7 +140,8 @@
     }
   }
 
-  VH.conflicts = { period, slugFromPath };
+  // Object.assign : conflicts/detail.js, chargé avant, y a posé VH.conflicts.detail.
+  VH.conflicts = Object.assign(VH.conflicts || {}, { period, slugFromPath });
 
   if (typeof module !== 'undefined' && module.exports) {
     // Tests : init et les rendus en plus, sans les exposer dans VH.conflicts.

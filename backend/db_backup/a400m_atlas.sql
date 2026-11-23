@@ -65,8 +65,7 @@ INSERT INTO airplane_missions (id_airplane, id_mission) VALUES
 
 -- Conflits
 INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'Airbus A400M Atlas'), (SELECT id FROM wars WHERE name = 'Guerre d''Afghanistan')),
-((SELECT id FROM airplanes WHERE name = 'Airbus A400M Atlas'), (SELECT id FROM wars WHERE name = 'Guerre civile syrienne'));
+((SELECT id FROM airplanes WHERE name = 'Airbus A400M Atlas'), (SELECT id FROM wars WHERE name = 'Guerre d''Afghanistan'));
 
 -- Enrichissement : strates 1 (fiche technique), 2 (motorisation),
 -- 3 (production) et 6 (médias). Filiations : voir zz_backfill_relations.sql.
