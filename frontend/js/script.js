@@ -4,16 +4,20 @@
  * mise à jour de l'interface connectée → nav.js.
  */
 document.addEventListener('DOMContentLoaded', async () => {
+  const home = VH.home;
+  // Un seul appel API pour la photo du jour et le quiz, sur le même jeu de
+  // données. Lancé AVANT auth.init() : la photo du jour est l'élément LCP de
+  // l'accueil, et cette route publique n'a pas besoin de la session.
+  const discoveries = home.heroData.fetchHeroDiscoveries();
+
   await auth.init();
 
-  const home = VH.home;
   home.pageEffects.smoothAnchors();
   home.pageEffects.fadeInImages();
   home.heroStats.observe();
 
-  // Un seul appel API pour la photo du jour et le quiz, sur le même jeu de données.
   (async () => {
-    const { facts, aircraft, ephemeris, day } = await home.heroData.fetchHeroDiscoveries();
+    const { facts, aircraft, ephemeris, day } = await discoveries;
     home.heroToday.init(ephemeris, facts, day, aircraft);
     home.heroQuiz.init(aircraft, day);
   })();

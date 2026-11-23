@@ -7,6 +7,35 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 ## [Unreleased]
 
+## [4.29.0] - 2026-11-23
+
+### Added
+
+- Les 61 conflits du catalogue ont désormais leur page complète, de la guerre de Corée à la guerre
+  Iran-Israël en passant par la guerre froide : l'issue du conflit, son contexte, le récit de la
+  guerre aérienne, ses dates clés et, pour chaque camp, ce que chaque appareil y a réellement fait,
+  avec les sources.
+- Les dates clés d'un conflit se parcourent en onglets ; chacune s'ouvre sur un grand panneau avec
+  la photo de l'appareil concerné.
+- La page des crédits photo se parcourt mieux : recherche par appareil, auteur ou licence, filtre par
+  famille de licence et compteur de résultats.
+- Hors connexion, la page d'attente montre ce que vous pouvez encore lire : les fiches, les conflits
+  et les pages déjà consultées sur cet appareil, et elle signale le retour du réseau.
+
+### Changed
+
+- Les fiches racontent désormais chaque conflit auquel l'appareil est rattaché.
+- Les rattachements d'appareils aux conflits ont été revus un par un : ceux qu'aucune source ne
+  confirmait ont été retirés.
+- Sur l'accueil, la photo de l'appareil du jour s'affiche plus vite.
+
+### Fixed
+
+- Plusieurs fiches corrigées d'après les sources, notamment le Kfir, le F-15I Ra'am, le Mirage IIICJ
+  Shahak, le F-15 Eagle, le F-16I Soufa, le Tornado italien, le F-14 Tomcat, le Dornier Do 28 et le
+  HA-200 Saeta.
+- Les icônes des titres des pages légales ne disparaissent plus au changement de langue.
+
 ## [4.28.0] - 2026-11-22
 
 ### Added
@@ -697,7 +726,8 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 - Première version de Vol d'Histoire : un catalogue d'avions militaires.
 
-[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.28.0...HEAD
+[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.29.0...HEAD
+[4.29.0]: https://github.com/Lurrod/vol_histoire/compare/v4.28.0...v4.29.0
 [4.28.0]: https://github.com/Lurrod/vol_histoire/compare/v4.27.0...v4.28.0
 [4.27.0]: https://github.com/Lurrod/vol_histoire/compare/v4.26.0...v4.27.0
 [4.26.0]: https://github.com/Lurrod/vol_histoire/compare/v4.25.0...v4.26.0

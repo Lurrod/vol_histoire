@@ -16,8 +16,9 @@ module.exports = function createCreditsRouter(getPool) {
   router.get('/credits', asyncHandler(async (req, res) => {
     const rows = await creditsRepo.listImageCredits(getPool());
     res.set('Cache-Control', CREDITS_CACHE);
-    res.json(rows.map(({ id, name, name_en, image_credit, image_licence }) => (
-      { id, name, name_en, image_credit, image_licence }
+    // image_url : vignette de la photo dans la liste (assets/airplanes/thumbs/).
+    res.json(rows.map(({ id, name, name_en, image_url, image_credit, image_licence }) => (
+      { id, name, name_en, image_url, image_credit, image_licence }
     )));
   }));
 

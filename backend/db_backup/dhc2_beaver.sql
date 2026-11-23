@@ -62,7 +62,6 @@ INSERT INTO airplane_missions (id_airplane, id_mission) VALUES
 
 -- Conflits
 INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'DHC-2 Beaver'), (SELECT id FROM wars WHERE name = 'Guerre froide')),
 ((SELECT id FROM airplanes WHERE name = 'DHC-2 Beaver'), (SELECT id FROM wars WHERE name = 'Guerre de Corée')),
 ((SELECT id FROM airplanes WHERE name = 'DHC-2 Beaver'), (SELECT id FROM wars WHERE name = 'Guerre du Vietnam'));
 

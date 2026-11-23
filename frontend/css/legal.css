@@ -278,7 +278,6 @@ body.page-legal { background: var(--night); }
 .page-legal .credits-status { margin: 1rem 0; color: var(--text-ghost); }
 .page-legal .credits-status.is-error { color: var(--accent-text); }
 .page-legal .credits-status[hidden] { display: none; }
-.page-legal .credits-table { min-width: 640px; }
 .page-legal .version-history { margin: 0; padding-left: 1.25rem; }
 .page-legal .cookies-inventory code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82em; padding: 2px 6px; border-radius: 4px; background: var(--white-a04); color: var(--hud-cyan, #5BC0BE); white-space: nowrap; }
 .page-legal .cookies-marketing-note { margin: 1rem 0 1.5rem; padding: 0.85rem 1rem; border: 1px solid var(--gold-a15); background: var(--gold-a08); border-radius: 12px; font-size: 0.9rem; }
@@ -312,4 +311,196 @@ body.page-legal { background: var(--night); }
   .page-legal .legal-text ul, .page-legal .legal-text ol { margin-left: 0; padding-left: 1rem; }
   .page-legal .intro-box, .page-legal .acceptance-box { padding: 1.25rem; }
   .page-legal .legal-footer { flex-direction: column; gap: 1rem; }
+}
+
+/* ======================================================================
+   CRÉDITS PHOTO (credits.html, js/credits.js — 2026-11-22)
+   Recherche + filtres par famille de licence, puis la liste groupée par
+   lettre : vignette, appareil, auteur, pastille de licence. Remplace le
+   tableau à quatre colonnes (733 lignes, « Modifications » répété 400 fois).
+   ====================================================================== */
+.page-legal .credits-tools { display: grid; gap: var(--sp-4); margin-bottom: var(--sp-5); }
+.page-legal .credits-tools[hidden] { display: none; }
+.page-legal .credits-search { position: relative; }
+.page-legal .credits-search .icon {
+  position: absolute;
+  inset-inline-start: var(--sp-4);
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--text-ghost);
+  pointer-events: none;
+}
+.page-legal .credits-search input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--sp-4) 0 calc(var(--sp-4) * 2 + 1em);
+  border: 1px solid var(--border-field, var(--white-a12));
+  border-radius: var(--r-full);
+  background: var(--white-a04);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--text-base);
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+}
+.page-legal .credits-search input::placeholder { color: var(--text-placeholder); }
+.page-legal .credits-search input:hover { border-color: var(--gold-a20); }
+.page-legal .credits-search input:focus-visible { outline: none; border-color: var(--hud-cyan); background: var(--white-a06); }
+
+/* Filtres : pastilles à bascule (aria-pressed), compteur dans la pastille */
+.page-legal .credits-filters { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.page-legal .credits-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 40px;
+  padding: 0 var(--sp-2) 0 var(--sp-4);
+  border: 1px solid var(--white-a08);
+  border-radius: var(--r-full);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    scale var(--dur-instant) var(--ease-out);
+}
+.page-legal .credits-filter[hidden] { display: none; }
+.page-legal .credits-filter:hover { border-color: var(--gold-a20); color: var(--white); }
+.page-legal .credits-filter:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
+.page-legal .credits-filter[aria-pressed="true"] { border-color: var(--hud-cyan); background: var(--gold-a12); color: var(--white); }
+.page-legal .credits-filter-count {
+  min-width: 2.25em;
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-full);
+  background: var(--white-a06);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.page-legal .credits-filter[aria-pressed="true"] .credits-filter-count { background: var(--hud-cyan); color: var(--night); }
+
+.page-legal .credits-result { margin: 0 0 var(--sp-2); color: var(--text-ghost); font-size: var(--text-sm); }
+.page-legal .credits-result[hidden] { display: none; }
+
+/* Liste : groupes par lettre, rendus à la demande (733 photos) */
+.page-legal .credits-list[hidden] { display: none; }
+.page-legal .credits-group {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
+}
+.page-legal .credits-group[hidden] { display: none; }
+.page-legal .credits-group + .credits-group { margin-top: var(--sp-6); }
+.page-legal .legal-section .credits-letter {
+  margin: 0 0 var(--sp-2);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--gold-a12);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--hud-cyan);
+}
+.page-legal .credits-items { margin: 0; padding: 0; list-style: none; }
+.page-legal .credit {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--white-a04);
+}
+.page-legal .credit:last-child { border-bottom: 0; }
+.page-legal .credit[hidden] { display: none; }
+.page-legal .credit-thumb {
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: var(--white-a04);
+}
+.page-legal .credit-thumb picture,
+.page-legal .credit-thumb img { display: block; width: 100%; height: 100%; }
+.page-legal .credit-thumb img { object-fit: cover; transition: scale var(--dur-base) var(--ease-out); }
+.page-legal .credit:hover .credit-thumb img { scale: 1.05; }
+.page-legal .credit-body { min-width: 0; }
+.page-legal .credit-name {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.page-legal .credit-name:hover,
+.page-legal .credit-name:focus-visible { color: var(--hud-cyan); text-decoration: underline; text-underline-offset: 3px; }
+.page-legal .credit-author {
+  margin: 2px 0 0;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.page-legal .credit-author.is-muted { color: var(--text-ghost); font-style: italic; }
+.page-legal .credit-claim { color: var(--hud-cyan); font-style: normal; }
+.page-legal .credit-licence {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1);
+  text-align: end;
+}
+.page-legal .credit-badge {
+  display: inline-block;
+  padding: 3px var(--sp-3);
+  border: 1px solid var(--gold-a20);
+  border-radius: var(--r-full);
+  color: var(--hud-cyan);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+.page-legal a.credit-badge:hover,
+.page-legal a.credit-badge:focus-visible { background: var(--gold-a12); border-color: var(--hud-cyan); }
+.page-legal .credit-badge--free { border-color: rgba(127, 176, 143, 0.35); color: var(--hud-green-text); }
+.page-legal a.credit-badge--free:hover,
+.page-legal a.credit-badge--free:focus-visible { background: rgba(127, 176, 143, 0.1); border-color: var(--hud-green-text); }
+.page-legal .credit-badge--none { border-style: dashed; border-color: var(--white-a12); color: var(--text-ghost); }
+.page-legal .credit-modified { color: var(--text-ghost); font-size: var(--text-xs); cursor: help; }
+
+.page-legal .credits-none { padding: var(--sp-8) 0; text-align: center; color: var(--text-ghost); }
+.page-legal .credits-none[hidden] { display: none; }
+.page-legal .credits-none p { margin-bottom: var(--sp-4); }
+
+@media (max-width: 40em) {
+  .page-legal .credit {
+    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-areas: "thumb body" "thumb licence";
+    row-gap: var(--sp-2);
+    align-items: start;
+  }
+  .page-legal .credit-thumb { grid-area: thumb; }
+  .page-legal .credit-body { grid-area: body; }
+  .page-legal .credit-licence { grid-area: licence; flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--sp-2); }
+  /* Filtres sur une ligne qui défile plutôt que sur trois lignes */
+  .page-legal .credits-filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(var(--sp-6) * -1); padding-inline: var(--sp-6); }
+  .page-legal .credits-filter { flex-shrink: 0; }
+}
+
+/* Impression : liste texte « appareil — auteur — licence », sans vignettes */
+@media print {
+  .page-legal .credits-tools, .page-legal .credits-result, .page-legal .credit-thumb,
+  .page-legal .credits-none, .page-legal .credit-claim { display: none !important; }
+  .page-legal .credits-group { content-visibility: visible; }
+  .page-legal .credit { display: block; padding: 2px 0; break-inside: avoid; }
+  .page-legal .credit-body, .page-legal .credit-licence { display: inline; }
+  .page-legal .credit-author { display: inline; margin: 0; }
+  .page-legal .credit-author::before,
+  .page-legal .credit-licence::before { content: " \2014  "; }
+  .page-legal .credit-badge { border: 0; padding: 0; }
+  .page-legal .credit-modified::before { content: ", "; }
 }

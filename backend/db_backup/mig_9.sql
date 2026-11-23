@@ -62,10 +62,6 @@ INSERT INTO airplane_missions (id_airplane, id_mission) VALUES
 ((SELECT id FROM airplanes WHERE name = 'MiG-9'), (SELECT id FROM missions WHERE name = 'Supériorité aérienne')),
 ((SELECT id FROM airplanes WHERE name = 'MiG-9'), (SELECT id FROM missions WHERE name = 'Interception'));
 
--- Conflits
-INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'MiG-9'), (SELECT id FROM wars WHERE name = 'Guerre froide'));
-
 -- Enrichissement : strates 1 (fiche technique), 2 (motorisation),
 -- 3 (production) et 6 (médias). Filiations : voir zz_backfill_relations.sql.
 BEGIN;

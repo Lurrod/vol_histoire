@@ -22,7 +22,7 @@ const { Pool } = require('pg');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 const DOSSIER = path.join(__dirname, '..', 'db_backup');
-const IGNORES = new Set(['db.sql', 'zz_backfill_relations.sql', 'zz_specs_strate7.sql', 'timeline_events.sql']);
+const IGNORES = new Set(['db.sql', 'zz_backfill_relations.sql', 'zz_conflits.sql', 'zz_specs_strate7.sql', 'timeline_events.sql']);
 const SIMULATION = process.argv.includes('--dry-run');
 
 // Le nom de l'appareil est la première valeur du INSERT INTO airplanes.

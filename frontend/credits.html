@@ -90,25 +90,30 @@
           </div>
         </div>
 
-        <div class="legal-section">
+        <div class="legal-section credits-section">
           <h2 data-i18n="credits.list_title">Photographies publiées</h2>
-          <div class="legal-text">
-            <p class="credits-status" id="credits-status" role="status" hidden></p>
-            <noscript><p data-i18n="credits.noscript">La liste des crédits nécessite JavaScript. Chaque crédit figure aussi sous la photo, sur la fiche de l'appareil.</p></noscript>
-            <section class="cookies-inventory-wrap" id="credits-table-wrap" tabindex="0" aria-labelledby="credits-caption" hidden>
-              <table class="cookies-inventory credits-table">
-                <caption class="sr-only" id="credits-caption" data-i18n="credits.caption">Crédits des photographies : appareil, auteur, licence et modifications apportées.</caption>
-                <thead>
-                  <tr>
-                    <th scope="col" data-i18n="credits.col_aircraft">Appareil</th>
-                    <th scope="col" data-i18n="credits.col_author">Auteur</th>
-                    <th scope="col" data-i18n="credits.col_licence">Licence</th>
-                    <th scope="col" data-i18n="credits.col_changes">Modifications</th>
-                  </tr>
-                </thead>
-                <tbody id="credits-body"></tbody>
-              </table>
-            </section>
+          <!-- Outils de la liste (js/credits.js) : affichés une fois les crédits chargés -->
+          <div class="credits-tools" id="credits-tools" hidden>
+            <div class="credits-search">
+              <label for="credits-search" class="sr-only" data-i18n="credits.search_label">Rechercher un appareil ou un auteur</label>
+              <i class="fas fa-search" aria-hidden="true"></i>
+              <input type="search" id="credits-search" autocomplete="off" spellcheck="false" placeholder="Appareil ou auteur" data-i18n-placeholder="credits.search_placeholder">
+            </div>
+            <div class="credits-filters" role="group" aria-label="Licence" data-i18n-aria="credits.filter_label">
+              <button type="button" class="credits-filter" data-family="all" aria-pressed="true"><span data-i18n="credits.family_all">Toutes</span><span class="credits-filter-count" data-count="all"></span></button>
+              <button type="button" class="credits-filter" data-family="free" aria-pressed="false"><span data-i18n="credits.family_free">Domaine public et CC0</span><span class="credits-filter-count" data-count="free"></span></button>
+              <button type="button" class="credits-filter" data-family="cc" aria-pressed="false"><span data-i18n="credits.family_cc">Creative Commons</span><span class="credits-filter-count" data-count="cc"></span></button>
+              <button type="button" class="credits-filter" data-family="other" aria-pressed="false"><span data-i18n="credits.family_other">Autres licences ouvertes</span><span class="credits-filter-count" data-count="other"></span></button>
+              <button type="button" class="credits-filter" data-family="none" aria-pressed="false"><span data-i18n="credits.family_none">Non documentées</span><span class="credits-filter-count" data-count="none"></span></button>
+            </div>
+          </div>
+          <p class="credits-status" id="credits-status" role="status" hidden></p>
+          <p class="credits-result" id="credits-result" role="status" hidden></p>
+          <noscript><p class="credits-status" data-i18n="credits.noscript">La liste des crédits nécessite JavaScript. Chaque crédit figure aussi sous la photo, sur la fiche de l'appareil.</p></noscript>
+          <div class="credits-list" id="credits-list" hidden></div>
+          <div class="credits-none" id="credits-none" hidden>
+            <p data-i18n="credits.no_match">Aucune photo ne correspond à cette recherche.</p>
+            <button type="button" class="btn btn-secondary" id="credits-reset"><i class="fas fa-times" aria-hidden="true"></i> <span data-i18n="credits.reset">Tout afficher</span></button>
           </div>
         </div>
 

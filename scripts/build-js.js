@@ -164,7 +164,11 @@ const BUNDLES = {
     'timeline.js',
   ],
 
+  // Page d'un conflit : récits en Markdown (même rendu que les fiches).
   'conflicts.min.js': [
+    'details/markdown.js',
+    'conflicts/dates.js',
+    'conflicts/detail.js',
     'conflicts.js',
   ],
 

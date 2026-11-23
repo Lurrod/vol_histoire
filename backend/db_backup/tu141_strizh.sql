@@ -60,7 +60,6 @@ INSERT INTO airplane_missions (id_airplane, id_mission) VALUES
 
 -- Conflits
 INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'Tu-141 Strizh'), (SELECT id FROM wars WHERE name = 'Guerre froide')),
 ((SELECT id FROM airplanes WHERE name = 'Tu-141 Strizh'), (SELECT id FROM wars WHERE name = 'Invasion russe de l''Ukraine'));
 
 -- Enrichissement : strates 1 (fiche technique), 2 (motorisation),

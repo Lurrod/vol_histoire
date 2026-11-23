@@ -69,7 +69,9 @@ function buildConflictsIndexMeta(lang) {
 function buildConflictMeta(war, slug, lang) {
   const isEn = lang === 'en';
   const name = (isEn && war.name_en) || war.name;
-  const desc = (isEn && war.description_en) || war.description || '';
+  // Conflit rédigé : son issue dit davantage que la description d'une ligne.
+  const desc = (isEn && war.outcome_en) || war.outcome
+    || (isEn && war.description_en) || war.description || '';
   const y1 = war.date_start ? new Date(war.date_start).getFullYear() : null;
   const y2 = war.date_end ? new Date(war.date_end).getFullYear() : null;
   let years = '';
@@ -91,7 +93,59 @@ function buildConflictMeta(war, slug, lang) {
     image: war.image_url ? toAbsoluteUrl(war.image_url) : DEFAULT_OG_IMAGE,
     imageAlt: name,
     breadcrumb: crumbs(lang, { name, url }),
+    content: {
+      outcome: (isEn && war.outcome_en) || war.outcome || null,
+      context: (isEn && war.context_en) || war.context || null,
+      narrative: (isEn && war.narrative_en) || war.narrative || null,
+    },
   };
+}
+
+/**
+ * Markdown des récits → HTML minimal pour le rendu serveur : paragraphes,
+ * titres ##/###, **gras**, *italique*. Tout est échappé d'abord ; le script
+ * de la page refait ensuite le rendu complet (typographie, listes, liens).
+ */
+function proseHtml(markdown) {
+  const inline = (text) => escapeHtml(text)
+    .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  return String(markdown || '')
+    .replace(/\r\n/g, '\n')
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => {
+      const h = /^(#{2,3})\s+(.+)$/.exec(block);
+      if (h) return h[1].length === 2 ? `<h3 class="md-section">${inline(h[2])}</h3>` : `<h4 class="md-subsection">${inline(h[2])}</h4>`;
+      return `<p>${inline(block.replace(/\n/g, ' '))}</p>`;
+    })
+    .join('');
+}
+
+/**
+ * Page d'un conflit rédigé : issue, contexte et récit écrits dans le HTML
+ * (robots, visiteurs sans JavaScript, premier affichage) ; la vue « conflit »
+ * est montrée d'emblée et les silhouettes de chargement masquées.
+ */
+function injectContent(html, content) {
+  if (!content || !(content.outcome || content.context || content.narrative)) return html;
+  let out = html
+    .replace('<div id="conflicts-loading" class="conflicts-grid"', '<div id="conflicts-loading" class="conflicts-grid hidden"')
+    .replace('<div id="conflict-detail" class="hidden">', '<div id="conflict-detail">');
+  if (content.outcome) {
+    out = out
+      .replace('<p class="conflict-outcome hidden" id="conflict-outcome">', '<p class="conflict-outcome" id="conflict-outcome">')
+      .replace('<span id="conflict-outcome-text"></span>', () => `<span id="conflict-outcome-text">${proseHtml(content.outcome).replace(/^<p>|<\/p>$/g, '')}</span>`);
+  }
+  [['contexte', 'conflict-context', content.context], ['guerre-aerienne', 'conflict-narrative', content.narrative]]
+    .forEach(([sectionId, targetId, text]) => {
+      if (!text) return;
+      out = out
+        .replace(`<section class="conflict-block hidden" id="${sectionId}"`, `<section class="conflict-block" id="${sectionId}"`)
+        .replace(`<div class="conflict-prose" id="${targetId}"></div>`, () => `<div class="conflict-prose" id="${targetId}">${proseHtml(text)}</div>`);
+    });
+  return out;
 }
 
 /**
@@ -101,7 +155,7 @@ function buildConflictMeta(war, slug, lang) {
  * @param {string} [h1] - titre de la page de conflit (absent pour la liste)
  */
 function renderHtml(template, meta, h1) {
-  let html = applyHeadMeta(template, meta);
+  let html = injectContent(applyHeadMeta(template, meta), meta.content);
   html = replaceJsonLd(html, [jsonLdScript('jsonld-breadcrumb', meta.breadcrumb)]);
   if (h1) {
     // Le titre du conflit est en dur pour les robots ; data-i18n-html est
@@ -147,3 +201,5 @@ module.exports = createConflictsSsrRouter;
 module.exports.buildConflictMeta = buildConflictMeta;
 module.exports.buildConflictsIndexMeta = buildConflictsIndexMeta;
 module.exports.renderHtml = renderHtml;
+module.exports.proseHtml = proseHtml;
+module.exports.injectContent = injectContent;

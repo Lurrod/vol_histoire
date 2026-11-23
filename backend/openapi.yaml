@@ -35,7 +35,7 @@ info:
     - **415** : jeu de caractères ou encodage du corps non pris en charge.
     Les caractères de contrôle d'un paramètre `search` sont remplacés par une
     espace.
-  version: 4.28.0
+  version: 4.29.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -1555,7 +1555,8 @@ paths:
       summary: Crédits photo de toutes les fiches
       description: >
         Source de la page `/credits` (attribution exigée par les licences
-        Creative Commons et OGL). Une ligne par fiche, triée par nom ;
+        Creative Commons et OGL). Une ligne par fiche, triée par nom, avec le
+        chemin de sa photo (`image_url`, vignette de la liste) ;
         `image_credit` et `image_licence` valent `null` quand la provenance
         n'est pas documentée. Cacheable (Cache-Control public).
       responses:
@@ -1571,6 +1572,7 @@ paths:
                     id: { type: integer }
                     name: { type: string }
                     name_en: { type: string, nullable: true }
+                    image_url: { type: string, nullable: true, example: '/assets/airplanes/rafale.jpg' }
                     image_credit: { type: string, nullable: true }
                     image_licence: { type: string, nullable: true, example: 'CC BY-SA 2.0' }
 
@@ -1726,12 +1728,54 @@ paths:
                 allOf:
                   - $ref: '#/components/schemas/WarSummary'
                   - type: object
+                    description: >
+                      Page étoffée (db_backup/zz_conflits.sql) : `outcome`,
+                      `context`, `narrative` valent null, `sides`, `events` et
+                      `sources` sont vides tant que le conflit n'est pas rédigé.
+                      Textes dans la langue demandée, repli sur le français.
                     properties:
+                      outcome: { type: string, nullable: true, description: Issue du conflit, une phrase }
+                      context: { type: string, nullable: true, description: Markdown — causes, enjeux, forces en présence }
+                      narrative: { type: string, nullable: true, description: Markdown — la guerre aérienne }
+                      sources: { type: array, items: { type: string, format: uri } }
+                      sides:
+                        type: array
+                        description: Camps, dans l'ordre d'affichage
+                        items:
+                          type: object
+                          properties:
+                            key: { type: string, example: coalition }
+                            name: { type: string }
+                            members: { type: string, nullable: true }
+                            count: { type: integer, description: Appareils rattachés à ce camp }
+                      events:
+                        type: array
+                        description: Dates clés, triées
+                        items:
+                          type: object
+                          properties:
+                            date: { type: string, example: '1991-01-17', description: AAAA-MM-JJ (texte, sans fuseau) }
+                            precision: { type: string, enum: [day, month, year] }
+                            title: { type: string }
+                            body: { type: string, nullable: true }
+                            source: { type: string, nullable: true }
+                            airplane:
+                              type: object
+                              nullable: true
+                              properties:
+                                id: { type: integer }
+                                name: { type: string }
                       airplanes:
                         type: array
                         description: Triés par date de premier vol
                         items:
-                          $ref: '#/components/schemas/AirplaneSummary'
+                          allOf:
+                            - $ref: '#/components/schemas/AirplaneSummary'
+                            - type: object
+                              properties:
+                                side_key: { type: string, nullable: true, description: null = non renseigné ou plusieurs camps }
+                                role: { type: string, nullable: true, description: Ce que l'appareil a fait dans ce conflit }
+                                role_sources: { type: array, items: { type: string, format: uri } }
         '400':
           description: Slug au format invalide
         '404':
