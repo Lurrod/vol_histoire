@@ -75,7 +75,45 @@ function renderWar(w, dict, lang) {
   if (Number.isFinite(w.end_year)) years = w.end_year === w.start_year ? String(w.start_year) : `${w.start_year}–${w.end_year}`;
   return `<li class="tl-conflict"><a class="tl-conflict-link" href="/conflits/${encodeURIComponent(w.slug)}">` +
     `<span class="tl-conflict-name">${escapeHtml(pick(w, 'name', lang))}</span>` +
-    `<span class="tl-conflict-meta">${escapeHtml(years)} · ${escapeHtml(count)}</span></a></li>`;
+    `<span class="tl-conflict-meta">${escapeHtml(years)} · ${escapeHtml(count)}</span></a>` +
+    renderWarDates(w, dict, lang) + '</li>';
+}
+
+// Date clé selon sa précision : « 5 juin 1967 », « juin 1967 » ou « 1967 ».
+// Même règle que js/timeline/render.js (keyDate) côté navigateur.
+function keyDate(e, lang) {
+  const [y, m, d] = String(e.date || '').split('-').map(Number);
+  if (!y) return { iso: '', text: '' };
+  if (e.precision === 'year') return { iso: String(y), text: String(y) };
+  const date = new Date(Date.UTC(y, (m || 1) - 1, d || 1));
+  const locale = lang === 'en' ? 'en-GB' : 'fr-FR';
+  if (e.precision === 'month') {
+    return { iso: e.date.slice(0, 7), text: date.toLocaleDateString(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' }) };
+  }
+  return { iso: e.date, text: date.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) };
+}
+
+// Titres des dates clés : seuls les italiques Markdown des noms d'opération
+// (*Moked*) sont rendus, sur du texte déjà échappé.
+function italics(html) {
+  return html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+}
+
+// Dépliant des dates clés de la page du conflit (fermé par défaut).
+function renderWarDates(w, dict, lang) {
+  const events = Array.isArray(w.events) ? w.events : [];
+  if (events.length === 0) return '';
+  const n = events.length;
+  const label = tr(dict, n === 1 ? 'conflict_dates_one' : 'conflict_dates_other', `${n}`, { n });
+  const items = events.map((e) => {
+    const { iso, text } = keyDate(e, lang);
+    return `<li><time datetime="${escapeHtml(iso)}">${escapeHtml(text)}</time>` +
+      `<span class="tl-conflict-date-title">${italics(escapeHtml(pick(e, 'title', lang)))}</span></li>`;
+  }).join('');
+  return '<details class="tl-conflict-dates">' +
+    `<summary>${escapeHtml(label)}</summary><ol class="tl-conflict-date-list">${items}</ol>` +
+    `<a class="tl-conflict-dates-more" href="/conflits/${encodeURIComponent(w.slug)}">${escapeHtml(tr(dict, 'conflict_read', ''))}</a>` +
+    '</details>';
 }
 
 function renderChip(a, dict, lang) {

@@ -234,6 +234,7 @@
     "no_war": "Aucun engagement historique répertorié",
     "war_ongoing": "auj.",
     "war_see_aircraft": "Voir les appareils engagés",
+    "war_side": "Camp",
     "radar_title": "Profil de capacités",
     "radar_speed": "Vitesse",
     "radar_range": "Portée",
@@ -694,6 +695,9 @@
     "hangar_link": "Voir ces {n} appareils dans le hangar",
     "chapter_conflicts_label": "Conflits qui éclatent",
     "conflict_aircraft_one": "{n} appareil engagé",
+    "conflict_dates_one": "{n} date clé",
+    "conflict_dates_other": "{n} dates clés",
+    "conflict_read": "Lire la page du conflit",
     "conflict_aircraft_other": "{n} appareils engagés"
   },
   "login": {

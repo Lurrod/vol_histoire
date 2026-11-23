@@ -6,7 +6,8 @@
  *   {
  *     generated_at,
  *     decades: [{ decade, events: [...], aircraft: [...] }],   // 1940 → 2020
- *     wars:    [{ id, slug, name, name_en, start_year, end_year, era_decade, aircraft_ids }]
+ *     wars:    [{ id, slug, name, name_en, start_year, end_year, era_decade, aircraft_ids,
+ *                events: [{ date, precision, title, title_en }] }]
  *   }
  *
  * Mise en cache (Redis si disponible, mémoire sinon) 30 min ; la clé change
@@ -17,7 +18,7 @@ const logger = require('../logger');
 const { slugify } = require('./url');
 const timelineRepo = require('../repositories/timeline');
 
-const CACHE_KEY = 'vdh:timeline:v2';
+const CACHE_KEY = 'vdh:timeline:v3';
 const CACHE_TTL_S = 30 * 60;
 const DECADES = Object.freeze([1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020]);
 
@@ -80,6 +81,9 @@ function toWar(row) {
     end_year: yearOf(row.date_end),
     era_decade: Math.floor(start / 10) * 10,
     aircraft_ids: (row.aircraft_ids || []).map(Number),
+    events: (Array.isArray(row.events) ? row.events : []).map(e => ({
+      date: e.date, precision: e.precision, title: e.title, title_en: e.title_en,
+    })),
   };
 }
 

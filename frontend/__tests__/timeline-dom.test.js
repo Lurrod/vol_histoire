@@ -154,6 +154,50 @@ const chapter = (decade) => document.getElementById(`ch-${decade}`);
 /* render                                                                 */
 /* ====================================================================== */
 
+describe('render — dates clés des conflits (dépliant)', () => {
+  const SIX = {
+    id: 9, slug: 'guerre-des-six-jours', name: 'Guerre des Six Jours', name_en: 'Six-Day War',
+    start_year: 1967, end_year: 1967, era_decade: 1960, aircraft_ids: [101],
+    events: [
+      { date: '1967-06-05', precision: 'day', title: 'Opération <Moked> *Focus*', title_en: 'Operation Moked' },
+      { date: '1967-06-01', precision: 'month', title: 'Mobilisation', title_en: null },
+    ],
+  };
+
+  afterEach(() => { I18N.currentLang = 'fr'; });
+
+  test('dépliant natif fermé, nombre de dates, dates selon la précision, titres échappés', () => {
+    render.renderChapters(DECADES, [SIX]);
+    const details = document.querySelector('.tl-conflict .tl-conflict-dates');
+    expect(details.tagName).toBe('DETAILS');
+    expect(details.open).toBe(false);
+    expect(details.querySelector('summary').textContent).toContain('2');
+    const items = [...details.querySelectorAll('li')];
+    expect(items).toHaveLength(2);
+    expect(items[0].querySelector('time').getAttribute('datetime')).toBe('1967-06-05');
+    expect(items[0].querySelector('time').textContent).toBe('5 juin 1967');
+    expect(items[1].querySelector('time').textContent).toBe('juin 1967');
+    expect(items[0].textContent).toContain('Opération <Moked> Focus');
+    expect(items[0].querySelector('em').textContent).toBe('Focus');
+    expect(items[0].querySelector('moked')).toBeNull();
+    expect(details.querySelector('a').getAttribute('href')).toBe('/conflits/guerre-des-six-jours');
+  });
+
+  test('anglais : titre anglais, repli sur le français', () => {
+    I18N.currentLang = 'en';
+    render.renderChapters(DECADES, [SIX]);
+    const items = [...document.querySelectorAll('.tl-conflict-dates li')];
+    expect(items[0].textContent).toContain('Operation Moked');
+    expect(items[0].querySelector('time').textContent).toBe('5 June 1967');
+    expect(items[1].textContent).toContain('Mobilisation');
+  });
+
+  test('conflit sans date clé : pas de dépliant', () => {
+    render.renderChapters(DECADES, [{ ...SIX, events: [] }, { ...SIX, id: 10, events: undefined }]);
+    expect(document.querySelector('.tl-conflict-dates')).toBeNull();
+  });
+});
+
 describe('render — chapitres', () => {
   test('un chapitre par décennie, porteur de data-decade, sans style en ligne', () => {
     render.renderChapters(DECADES, WARS);

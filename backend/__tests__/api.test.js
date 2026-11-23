@@ -3971,7 +3971,7 @@ describe('GET /api/timeline', () => {
     // Conflit hors des décennies couvertes : écarté ; slug dérivé du nom.
     expect(res.body.wars).toEqual([{
       id: 4, slug: 'guerre-de-coree', name: 'Guerre de Corée', name_en: 'Korean War',
-      start_year: 1950, end_year: 1953, era_decade: 1950, aircraft_ids: [12, 10],
+      start_year: 1950, end_year: 1953, era_decade: 1950, aircraft_ids: [12, 10], events: [],
     }]);
     expect(Array.isArray(res.body.decades)).toBe(true);
     expect(res.body.decades.length).toBe(9); // 1940 → 2020
@@ -5839,6 +5839,54 @@ describe('GET /api/airplanes/:id/related — clés de lien des conflits et missi
     expect(res.status).toBe(200);
     expect(res.body.wars[0]).toMatchObject({ name: 'First Indochina War', name_fr: "Guerre d'Indochine", slug: 'guerre-d-indochine' });
     expect(res.body.missions[0]).toMatchObject({ name_fr: 'Interception' });
+  });
+
+  const WAR_WITH_ROLE = {
+    name: 'Guerre Iran-Israël', name_en: 'Iran–Israel war', description: 'd', description_en: 'd',
+    date_start: '2025-06-13', date_end: '2025-06-24',
+    role: 'Frappe sur *Fordo*.', role_en: 'Strike on *Fordo*.',
+    side_name: 'États-Unis', side_name_en: 'United States',
+  };
+
+  test('rôle et camp de l\'appareil dans le conflit, traduits (lang=en)', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [{ ...WAR_WITH_ROLE }] });
+
+    const res = await request(app).get('/api/airplanes/7/related?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.body.wars[0]).toMatchObject({ role: 'Strike on *Fordo*.', side_name: 'United States' });
+    expect(res.body.wars[0]).not.toHaveProperty('role_en');
+    expect(res.body.wars[0]).not.toHaveProperty('side_name_en');
+  });
+
+  test('rôle et camp en français par défaut, sans les colonnes _en', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [{ ...WAR_WITH_ROLE }] });
+
+    const res = await request(app).get('/api/airplanes/7/related');
+    expect(res.body.wars[0]).toMatchObject({ role: 'Frappe sur *Fordo*.', side_name: 'États-Unis' });
+    expect(res.body.wars[0]).not.toHaveProperty('role_en');
+  });
+
+  test('GET /api/airplanes/:id/wars : rôle et camp traduits', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ ...WAR_WITH_ROLE }] });
+    const res = await request(app).get('/api/airplanes/7/wars?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.body[0]).toMatchObject({ role: 'Strike on *Fordo*.', side_name: 'United States' });
+  });
+
+  test('la requête des conflits lit le rôle et le camp (jointure war_sides)', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] });
+    await request(app).get('/api/airplanes/7/wars');
+    const sql = mockPool.query.mock.calls.at(-1)[0];
+    expect(sql).toMatch(/airplane_wars\.role/);
+    expect(sql).toMatch(/LEFT JOIN war_sides/);
   });
 });
 

@@ -110,6 +110,22 @@ describeIt('Intégration SQL — contenus', () => {
       }
     });
 
+    test('conflits : dates clés en texte, triées, avec précision', async () => {
+      const res = await api().get('/api/timeline?force=1');
+      const withEvents = res.body.wars.filter((w) => w.events.length > 0);
+      expect(withEvents.length).toBeGreaterThan(0);
+      res.body.wars.forEach((w) => {
+        expect(Array.isArray(w.events)).toBe(true);
+        const dates = w.events.map((e) => e.date);
+        expect([...dates].sort()).toEqual(dates);
+        w.events.forEach((e) => {
+          expect(e.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+          expect(['day', 'month', 'year']).toContain(e.precision);
+          expect(e.title.length).toBeGreaterThan(0);
+        });
+      });
+    });
+
     test('GET /timeline : chapitres rendus par le serveur', async () => {
       const res = await api().get('/timeline');
       expect(res.status).toBe(200);
@@ -180,6 +196,26 @@ describeIt('Intégration SQL — contenus', () => {
       const unknown = await api().get('/api/wars/guerre-de-cent-ans');
       const bad = await api().get('/api/wars/Pas_Un_Slug');
       expect([unknown.status, bad.status]).toEqual([404, 400]);
+    });
+  });
+
+  describe('GET /api/airplanes/:id/related — rôle dans les conflits', () => {
+    test('le F-15 porte son rôle et son camp dans la guerre du Golfe', async () => {
+      const { rows } = await ctx.pool.query("SELECT id FROM airplanes WHERE name = 'F-15 Eagle'");
+      const id = rows[0].id;
+      const fr = await api().get(`/api/airplanes/${id}/related`);
+      const war = fr.body.wars.find((w) => w.slug === 'guerre-du-golfe');
+      expect(war.role).toMatch(/Arabie saoudite/);
+      expect(war.side_name).toBe('Coalition');
+      const en = await api().get(`/api/airplanes/${id}/related?lang=en`);
+      const warEn = en.body.wars.find((w) => w.slug === 'guerre-du-golfe');
+      expect(warEn.role).toMatch(/Saudi Arabia/);
+      expect(warEn).not.toHaveProperty('role_en');
+    });
+
+    test('toute liaison appareil-conflit porte un rôle', async () => {
+      const { rows } = await ctx.pool.query('SELECT count(*)::int AS n FROM airplane_wars WHERE role IS NULL');
+      expect(rows[0].n).toBe(0);
     });
   });
 

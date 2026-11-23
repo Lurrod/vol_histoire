@@ -234,6 +234,7 @@
     "no_war": "No combat engagement listed",
     "war_ongoing": "present",
     "war_see_aircraft": "See the aircraft involved",
+    "war_side": "Side",
     "radar_title": "Capabilities Profile",
     "radar_speed": "Speed",
     "radar_range": "Range",
@@ -694,6 +695,9 @@
     "hangar_link": "See these {n} aircraft in the hangar",
     "chapter_conflicts_label": "Conflicts that break out",
     "conflict_aircraft_one": "{n} aircraft committed",
+    "conflict_dates_one": "{n} key date",
+    "conflict_dates_other": "{n} key dates",
+    "conflict_read": "Read the conflict page",
     "conflict_aircraft_other": "{n} aircraft committed"
   },
   "login": {

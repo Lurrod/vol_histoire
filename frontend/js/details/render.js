@@ -510,7 +510,7 @@
       container.innerHTML = `<p class="details-empty-hint">${i18n.t('details.no_war')}</p>`;
       return;
     }
-    container.innerHTML = wars.map(war => {
+    const html = wars.map(war => {
       const startYear = war.date_start ? new Date(war.date_start).getFullYear() : '?';
       // Sans date de fin mais avec un début : conflit en cours.
       const endYear = war.date_end
@@ -524,15 +524,33 @@
         : escapeHtml(war.name);
       // Période en surtitre, puis le nom : les cartes se lisent comme une
       // chronologie sans trait ni pastille (grille, details.css).
+      // Rôle de CET appareil dans le conflit (page de conflit) ; à défaut, la
+      // description générale du conflit. Camp absent : plusieurs camps ou
+      // non renseigné, on n'affiche rien.
+      const side = war.side_name
+        ? `<p class="war-side"><span class="war-side-label">${i18n.t('details.war_side')}</span> ${escapeHtml(war.side_name)}</p>`
+        : '';
+      const body = war.role
+        ? `<div class="war-role">${warRoleHtml(war.role)}</div>`
+        : `<p>${escapeHtml(war.description) || i18n.t('details.no_desc_available')}</p>`;
       return `
         <div class="war-card${war.slug ? ' war-card-linked' : ''}">
           <div class="war-period"><span>${period}</span></div>
           <h3>${title}</h3>
-          <p>${escapeHtml(war.description) || i18n.t('details.no_desc_available')}</p>
+          ${side}
+          ${body}
           ${war.slug ? `<span class="war-more" aria-hidden="true">${i18n.t('details.war_see_aircraft')} <i class="fas fa-arrow-right"></i></span>` : ''}
         </div>
       `;
     }).join('');
+    if (typeof safeSetHTML === 'function') safeSetHTML(container, html);
+    else container.innerHTML = html;
+  }
+
+  // Rôle en Markdown (italiques des opérations) ; le parseur échappe tout.
+  function warRoleHtml(role) {
+    const md = VH.details.markdown;
+    return md && typeof md.parse === 'function' ? md.parse(role) : `<p>${escapeHtml(role)}</p>`;
   }
 
   VH.details.render = {
