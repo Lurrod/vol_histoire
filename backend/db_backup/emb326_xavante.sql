@@ -56,8 +56,6 @@ INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 ((SELECT id FROM airplanes WHERE name = 'Embraer EMB-326 Xavante'), (SELECT id FROM armement WHERE name = 'SNEB 68 mm'));
 
 -- Insertion des guerres
-INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'Embraer EMB-326 Xavante'), (SELECT id FROM wars WHERE name = 'Guerre froide'));
 
 -- Insertion des missions
 INSERT INTO airplane_missions (id_airplane, id_mission) VALUES

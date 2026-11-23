@@ -96,8 +96,10 @@
   min-width: 0;
 }
 /* La photo couvre le cadre ; la légende (« Ce jour-là », la phrase, le lien)
-   est posée en bas sur un voile sombre. Elle entre en fondu une fois chargée
-   (.is-loaded, hero-today.js) ; sans photo, le cadre garde son fond. */
+   est posée en bas sur un voile sombre. Sans photo, le cadre garde son fond.
+   Pas de fondu d'entrée (2026-11-22) : la photo du jour est l'élément LCP, et
+   partir d'opacity 0 retardait sa première peinture visible d'environ 0,5 s
+   après son chargement (mesure : LCP 3,6 s sur téléphone ralenti). */
 .page-home .hero-today {
   position: relative;
   margin: 0;
@@ -111,10 +113,7 @@
 .page-home .hero-today-media {
   position: absolute;
   inset: 0;
-  opacity: 0;
-  transition: opacity var(--dur-slower) var(--ease-out);
 }
-.page-home .hero-today-media.is-loaded { opacity: 1; }
 .page-home .hero-today-media picture,
 .page-home .hero-today-media img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .page-home .hero-today-media::after {

@@ -22,8 +22,8 @@ beforeEach(() => {
 
 describe('GET /api/credits', () => {
   const rows = [
-    { id: 30, name: 'Rafale', name_en: null, image_credit: 'Jane Doe', image_licence: 'CC BY-SA 4.0' },
-    { id: 12, name: 'F-22 Raptor', name_en: 'F-22 Raptor', image_credit: null, image_licence: 'Domaine public' },
+    { id: 30, name: 'Rafale', name_en: null, image_url: '/assets/airplanes/rafale.jpg', image_credit: 'Jane Doe', image_licence: 'CC BY-SA 4.0' },
+    { id: 12, name: 'F-22 Raptor', name_en: 'F-22 Raptor', image_url: '/assets/airplanes/f22-raptor.jpg', image_credit: null, image_licence: 'Domaine public' },
   ];
 
   test('200 — renvoie les champs attendus par la page, sans autre colonne', async () => {
@@ -31,7 +31,7 @@ describe('GET /api/credits', () => {
     const res = await request(app).get('/api/credits');
     expect(res.status).toBe(200);
     expect(res.body).toEqual(rows);
-    expect(Object.keys(res.body[0]).sort()).toEqual(['id', 'image_credit', 'image_licence', 'name', 'name_en']);
+    expect(Object.keys(res.body[0]).sort()).toEqual(['id', 'image_credit', 'image_licence', 'image_url', 'name', 'name_en']);
   });
 
   test('requête sans paramètre utilisateur, triée par nom', async () => {

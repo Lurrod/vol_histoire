@@ -7037,8 +7037,7 @@ WHERE w.name = 'Guerre d''Indochine' AND a.name IN (
   'F8F Bearcat',
   'A-26 Invader',
   'C-119 Flying Boxcar',
-  'F4U Corsair',
-  'Dassault MD 315 Flamant'
+  'F4U Corsair'
 )
 ON CONFLICT DO NOTHING;
 
@@ -7075,7 +7074,6 @@ WHERE w.name = 'Crise congolaise' AND a.name IN (
   'Saab 29 Tunnan',
   'T-28 Trojan',
   'A-26 Invader',
-  'DHC-4 Caribou',
   'Fouga CM.170 Magister',
   'English Electric Canberra'
 )
@@ -7204,7 +7202,6 @@ ON CONFLICT DO NOTHING;
 INSERT INTO airplane_wars (id_airplane, id_wars)
 SELECT a.id, w.id FROM airplanes a, wars w
 WHERE w.name = 'Guerre du Sahara occidental' AND a.name IN (
-  'Hispano HA-200 Saeta',
   'Mirage F1',
   'F-5 Freedom Fighter'
 )
@@ -7224,7 +7221,6 @@ WHERE w.name = 'Conflit tchado-libyen' AND a.name IN (
   'Jaguar',
   'Mirage F1',
   'Transall C-160',
-  'Pilatus PC-7',
   'SF.260',
   'Tu-22'
 )
@@ -7364,7 +7360,6 @@ SELECT a.id, w.id FROM airplanes a, wars w
 WHERE w.name = 'Guerre russo-géorgienne' AND a.name IN (
   'Su-24',
   'Su-25',
-  'Su-27',
   'Su-34',
   'Tu-22M'
 )
@@ -7381,7 +7376,6 @@ WHERE w.name = 'Guerre du Sahel' AND a.name IN (
   'Airbus A400M Atlas',
   'Airbus A330 MRTT',
   'Transall C-160',
-  'TAI Hürkuş',
   'Bayraktar Akıncı'
 )
 ON CONFLICT DO NOTHING;
@@ -7512,7 +7506,6 @@ ON CONFLICT DO NOTHING;
 INSERT INTO airplane_wars (id_airplane, id_wars)
 SELECT a.id, w.id FROM airplanes a, wars w
 WHERE w.name = 'Guerre du Kippour' AND a.name IN (
-  'MiG-23',
   'C-141 Starlifter'
 )
 ON CONFLICT DO NOTHING;
@@ -7520,7 +7513,6 @@ ON CONFLICT DO NOTHING;
 INSERT INTO airplane_wars (id_airplane, id_wars)
 SELECT a.id, w.id FROM airplanes a, wars w
 WHERE w.name = 'Guerre Iran-Irak' AND a.name IN (
-  'Tu-143 Reys',
   'Super Étendard'
 )
 ON CONFLICT DO NOTHING;
@@ -7537,8 +7529,6 @@ ON CONFLICT DO NOTHING;
 INSERT INTO airplane_wars (id_airplane, id_wars)
 SELECT a.id, w.id FROM airplanes a, wars w
 WHERE w.name = 'Guerre du Liban' AND a.name IN (
-  'Mirage IIICJ Shahak',
-  'Tu-143 Reys',
   'F-16 Fighting Falcon'
 )
 ON CONFLICT DO NOTHING;
@@ -7566,8 +7556,7 @@ WHERE w.name = 'Guerre de Yougoslavie' AND a.name IN (
   'Vickers VC10',
   'MQ-1 Predator',
   'Soko G-2 Galeb',
-  'C-17 Globemaster III',
-  'Britten-Norman Defender'
+  'C-17 Globemaster III'
 )
 ON CONFLICT DO NOTHING;
 

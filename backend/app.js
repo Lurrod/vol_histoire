@@ -612,8 +612,33 @@ Object.entries(LEGACY_AUTH_PAGES).forEach(([page, target]) => {
     res.redirect(301, target);
   });
 });
-app.get('/', (req, res) => {
-  sendCachedHtml(res, path.join(frontendRoot, 'index.html'));
+// Accueil : la photo de l'appareil du jour (élément LCP) est écrite dans le
+// HTML par le serveur (utils/home-ssr.js), pour que le navigateur la demande
+// dès la lecture de la page. Échec de la base : page servie sans, le script
+// la pose comme avant.
+const heroPayload = require('./utils/hero-payload');
+const homeSsr = require('./utils/home-ssr');
+const homeSsrMemo = new Map();
+app.get('/', async (req, res) => {
+  const cached = htmlCache.get(path.join(frontendRoot, 'index.html'), req.lang);
+  if (cached === null) return sendCachedHtml(res, path.join(frontendRoot, 'index.html'));
+  let html = cached;
+  try {
+    const { json } = await heroPayload.loadPayloadJson(pool);
+    const lang = req.lang === 'en' ? 'en' : 'fr';
+    const memo = homeSsrMemo.get(lang);
+    if (memo && memo.json === json && memo.page === cached) {
+      html = memo.html;
+    } else {
+      html = homeSsr.injectDayPhoto(cached, JSON.parse(json), { lang, version: pageAssetVersion });
+      homeSsrMemo.set(lang, { json, page: cached, html });
+    }
+  } catch (err) {
+    logger.warn('accueil : photo du jour non écrite par le serveur', { error: err.message });
+  }
+  res.vary('Accept-Language');
+  res.set('Content-Type', 'text/html; charset=utf-8');
+  res.send(injectCspNonce(html, res.locals.cspNonce));
 });
 
 // -----------------------------------------------------------------------------

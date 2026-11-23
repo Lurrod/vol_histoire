@@ -61,8 +61,7 @@ INSERT INTO airplane_missions (id_airplane, id_mission) VALUES
 
 -- Conflits
 INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'Max Holste Broussard'), (SELECT id FROM wars WHERE name = 'Guerre d''Algérie')),
-((SELECT id FROM airplanes WHERE name = 'Max Holste Broussard'), (SELECT id FROM wars WHERE name = 'Guerre coloniale portugaise'));
+((SELECT id FROM airplanes WHERE name = 'Max Holste Broussard'), (SELECT id FROM wars WHERE name = 'Guerre d''Algérie'));
 
 -- Enrichissement : strates 1 (fiche technique), 2 (motorisation),
 -- 3 (production) et 6 (médias). Filiations : voir zz_backfill_relations.sql.

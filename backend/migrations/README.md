@@ -43,6 +43,11 @@ node backend/migrations/charger-fiches.js
 
 # 3. Filiations — en dernier, une fois tous les appareils présents
 psql -U vol_user -d vol_histoire -f backend/db_backup/zz_backfill_relations.sql
+
+# 4. Pages de conflit (contexte, récit, camps, rôle de chaque appareil, dates
+#    clés), puis strate 7 de la fiche technique
+psql -U vol_user -d vol_histoire -f backend/db_backup/zz_conflits.sql
+psql -U vol_user -d vol_histoire -f backend/db_backup/zz_specs_strate7.sql
 ```
 
 L'étape 1 seule laisse la base au nombre de fiches qu'elle avait : elle porte le
@@ -66,6 +71,11 @@ constructeurs, types et armements que ces fiches référencent.
 présents. C'est aussi pour cela qu'il porte un préfixe `zz` — il passe en
 dernier dans la boucle d'installation à neuf, qui charge `db_backup/*.sql` par
 ordre alphabétique.
+
+`zz_conflits.sql` juste après : il écrit le camp et le rôle de chaque appareil
+sur les liaisons appareil-conflit existantes (`airplane_wars`), qu'il ne crée
+jamais. Il est généré (`.lots/tools/conflits_build.py`) et n'écrit rien au
+second passage.
 
 Les `UPDATE` de `001` qui ne trouvent pas leur cible sont sans effet : il peut
 être joué avant ou après l'import sans dommage. Tous ces scripts sont

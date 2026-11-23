@@ -56,8 +56,6 @@ INSERT INTO airplane_armement (id_airplane, id_armement) VALUES
 ((SELECT id FROM airplanes WHERE name = 'Mitsubishi T-2'), (SELECT id FROM armement WHERE name = 'Bombe lisse 500 kg'));
 
 -- Insertion des guerres
-INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'Mitsubishi T-2'), (SELECT id FROM wars WHERE name = 'Guerre froide'));
 
 -- Insertion des missions
 INSERT INTO airplane_missions (id_airplane, id_mission) VALUES

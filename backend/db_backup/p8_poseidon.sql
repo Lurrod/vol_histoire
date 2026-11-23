@@ -69,11 +69,6 @@ INSERT INTO airplane_missions (id_airplane, id_mission) VALUES
 ((SELECT id FROM airplanes WHERE name = 'P-8 Poseidon'), (SELECT id FROM missions WHERE name = 'Attaque antinavire')),
 ((SELECT id FROM airplanes WHERE name = 'P-8 Poseidon'), (SELECT id FROM missions WHERE name = 'Patrouille aérienne de combat'));
 
--- Conflits
-INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'P-8 Poseidon'), (SELECT id FROM wars WHERE name = 'Guerre d''Afghanistan')),
-((SELECT id FROM airplanes WHERE name = 'P-8 Poseidon'), (SELECT id FROM wars WHERE name = 'Guerre civile syrienne'));
-
 -- Enrichissement : strates 1 (fiche technique), 2 (motorisation),
 -- 3 (production) et 6 (médias). Filiations : voir zz_backfill_relations.sql.
 BEGIN;

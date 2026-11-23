@@ -6,8 +6,10 @@
 
 /**
  * Conflits auxquels au moins un appareil est rattaché — les seuls qui ont une
- * page. Chaque ligne porte aussi la photo d'un appareil engagé (le plus ancien
- * en service, à défaut le premier identifiant), qui sert d'image de partage.
+ * page. Chaque ligne porte aussi le texte de la page étoffée (issue, contexte,
+ * récit aérien : null tant que le conflit n'est pas rédigé) et la photo d'un
+ * appareil engagé (le plus ancien en service, à défaut le premier
+ * identifiant), qui sert d'image de partage.
  * Le slug n'existe pas en base : il est dérivé du nom par l'appelant.
  * @param {import('pg').Pool} pool
  * @returns {Promise<object[]>}
@@ -15,6 +17,7 @@
 async function listEngagedWars(pool) {
   const { rows } = await pool.query(`
     SELECT w.id, w.name, w.name_en, w.description, w.description_en,
+           w.outcome, w.outcome_en, w.context, w.context_en, w.narrative, w.narrative_en,
            w.date_start, w.date_end, img.image_url
     FROM wars w
     LEFT JOIN LATERAL (

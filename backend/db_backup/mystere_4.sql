@@ -66,7 +66,6 @@ INSERT INTO airplane_missions (id_airplane, id_mission) VALUES
 
 -- Conflits
 INSERT INTO airplane_wars (id_airplane, id_wars) VALUES
-((SELECT id FROM airplanes WHERE name = 'Mystère IV'), (SELECT id FROM wars WHERE name = 'Guerre froide')),
 ((SELECT id FROM airplanes WHERE name = 'Mystère IV'), (SELECT id FROM wars WHERE name = 'Guerre d''Algérie')),
 ((SELECT id FROM airplanes WHERE name = 'Mystère IV'), (SELECT id FROM wars WHERE name = 'Guerre des Six Jours')),
 ((SELECT id FROM airplanes WHERE name = 'Mystère IV'), (SELECT id FROM wars WHERE name = 'Conflit israélo-arabe')),

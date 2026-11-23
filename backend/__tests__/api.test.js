@@ -5860,12 +5860,47 @@ describe('API /api/wars', () => {
   test('200 — détail : appareils traduits (EN) avec type_name_fr', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: wars })
-      .mockResolvedValueOnce({ rows: [{ id: 3, name: 'F8F Bearcat', name_en: null, type_name: 'Chasseur', type_name_en: 'Fighter', country_name: 'États-Unis', country_name_en: 'United States', country_code: 'USA' }] });
+      .mockResolvedValueOnce({ rows: [{ id: 3, name: 'F8F Bearcat', name_en: null, type_name: 'Chasseur', type_name_en: 'Fighter', country_name: 'États-Unis', country_name_en: 'United States', country_code: 'USA' }] })
+      .mockResolvedValueOnce({ rows: [] })   // contenu : conflit pas encore rédigé
+      .mockResolvedValueOnce({ rows: [] })   // camps
+      .mockResolvedValueOnce({ rows: [] });  // dates clés
     const res = await request(app).get('/api/wars/guerre-d-indochine?lang=en');
     expect(res.status).toBe(200);
     expect(res.body).toMatchObject({ name: 'First Indochina War', name_fr: "Guerre d'Indochine", description: 'en', count: 5 });
-    expect(res.body.airplanes[0]).toMatchObject({ name: 'F8F Bearcat', type_name: 'Fighter', type_name_fr: 'Chasseur' });
+    expect(res.body.airplanes[0]).toMatchObject({ name: 'F8F Bearcat', type_name: 'Fighter', type_name_fr: 'Chasseur', side_key: null, role: null, role_sources: [] });
+    expect(res.body).toMatchObject({ outcome: null, context: null, narrative: null, sources: [], sides: [], events: [] });
     expect(mockPool.query.mock.calls[1][1]).toEqual([1]);
+  });
+
+  test('200 — page étoffée : contenu, camps comptés, dates clés en texte, rôles, sources filtrées', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: wars })
+      .mockResolvedValueOnce({ rows: [
+        { id: 3, name: 'F8F Bearcat', name_en: null, side_key: 'france', role: 'Appui des postes.', role_en: 'Close support.', role_sources: 'https://a.test/1\njavascript:alert(1)\n  https://a.test/2  ' },
+        { id: 4, name: 'C-47', name_en: null, side_key: null, role: 'Largages.', role_en: null, role_sources: null },
+      ] })
+      .mockResolvedValueOnce({ rows: [{ outcome: 'Issue', outcome_en: 'Outcome', context: 'Contexte', context_en: null, narrative: 'Récit', narrative_en: 'Narrative', sources: 'https://s.test/x\npas une url' }] })
+      .mockResolvedValueOnce({ rows: [
+        { side_key: 'france', name: 'France', name_en: 'France', members: 'France, États associés', members_en: 'France, Associated States' },
+        { side_key: 'viet-minh', name: 'Việt Minh', name_en: null, members: null, members_en: null },
+      ] })
+      .mockResolvedValueOnce({ rows: [
+        { date: '1954-03-13', precision: 'day', title: 'Diên Biên Phu', title_en: 'Dien Bien Phu', body: 'Début du siège.', body_en: null, source: 'https://s.test/e', airplane_id: 3, airplane_name: 'F8F Bearcat', airplane_name_en: null },
+        { date: '1946-12-01', precision: 'month', title: 'Début', title_en: null, body: null, body_en: null, source: null, airplane_id: null, airplane_name: null, airplane_name_en: null },
+      ] });
+    const res = await request(app).get('/api/wars/guerre-d-indochine?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ outcome: 'Outcome', context: 'Contexte', narrative: 'Narrative', sources: ['https://s.test/x'] });
+    expect(res.body.sides).toEqual([
+      { key: 'france', name: 'France', members: 'France, Associated States', count: 1 },
+      { key: 'viet-minh', name: 'Việt Minh', members: null, count: 0 },
+    ]);
+    expect(res.body.events[0]).toEqual({ date: '1954-03-13', precision: 'day', title: 'Dien Bien Phu', body: 'Début du siège.', source: 'https://s.test/e', airplane: { id: 3, name: 'F8F Bearcat' } });
+    expect(res.body.events[1]).toMatchObject({ precision: 'month', title: 'Début', airplane: null });
+    expect(res.body.airplanes[0]).toMatchObject({ side_key: 'france', role: 'Close support.', role_sources: ['https://a.test/1', 'https://a.test/2'] });
+    expect(res.body.airplanes[0]).not.toHaveProperty('role_en');
+    // Rôle sans traduction : le français plutôt que « Translation needed »
+    expect(res.body.airplanes[1]).toMatchObject({ side_key: null, role: 'Largages.', role_sources: [] });
   });
 
   test('404 — slug inconnu ou conflit sans appareil', async () => {
@@ -5901,6 +5936,46 @@ describe('SSR /conflits et /conflits/:slug', () => {
     // Description échappée, jamais injectée telle quelle
     expect(res.text).toContain('Description &lt;b&gt;FR&lt;/b&gt;');
     expect(res.text).not.toContain('<b>FR</b>');
+  });
+
+  test('/conflits/:slug rédigé : issue en description, texte écrit dans la page (échappé), vue montrée', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [
+      {
+        name: 'Guerre du Kippour', name_en: 'Yom Kippur War', description: 'Courte', description_en: 'Short',
+        outcome: 'Victoire *israélienne* <i>x</i>.', outcome_en: 'Israeli victory.',
+        context: '## Avant\n\nLe **6 octobre**, attaque.\n\nSuite $& fin.', context_en: null,
+        narrative: 'Opération *Nickel Grass*.', narrative_en: 'Operation *Nickel Grass*.',
+        date_start: '1973-10-06', date_end: '1973-10-25',
+      },
+    ] });
+    const res = await request(app).get('/conflits/guerre-du-kippour');
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/<meta name="description" content="Victoire \*israélienne\* &lt;i&gt;x&lt;\/i&gt;\.">/);
+    expect(res.text).toContain('<div id="conflict-detail">');
+    expect(res.text).toContain('<div id="conflicts-loading" class="conflicts-grid hidden"');
+    expect(res.text).toContain('<span id="conflict-outcome-text">Victoire <em>israélienne</em> &lt;i&gt;x&lt;/i&gt;.</span>');
+    expect(res.text).toContain('<p class="conflict-outcome" id="conflict-outcome">');
+    expect(res.text).toContain('<section class="conflict-block" id="contexte"');
+    expect(res.text).toContain('<div class="conflict-prose" id="conflict-context"><h3 class="md-section">Avant</h3><p>Le <strong>6 octobre</strong>, attaque.</p><p>Suite $&amp; fin.</p></div>');
+    expect(res.text).toContain('<em>Nickel Grass</em>');
+
+    // Anglais : textes anglais, contexte non traduit → français
+    mockPool.query.mockResolvedValueOnce({ rows: [
+      { name: 'Guerre du Kippour', name_en: 'Yom Kippur War', description: 'Courte', description_en: 'Short', outcome: 'Victoire.', outcome_en: 'Israeli victory.', context: 'Contexte FR.', context_en: null, narrative: null, narrative_en: null, date_start: '1973-10-06', date_end: '1973-10-25' },
+    ] });
+    const en = await request(app).get('/conflits/guerre-du-kippour?lang=en');
+    expect(en.text).toContain('<span id="conflict-outcome-text">Israeli victory.</span>');
+    expect(en.text).toContain('<p>Contexte FR.</p>');
+    expect(en.text).toContain('<section class="conflict-block hidden" id="guerre-aerienne"');
+  });
+
+  test('/conflits/:slug non rédigé : vue cachée jusqu\'au script, rien d\'injecté', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [
+      { name: "Guerre d'Indochine", name_en: null, description: 'd', description_en: null, outcome: null, context: null, narrative: null, date_start: null, date_end: null },
+    ] });
+    const res = await request(app).get('/conflits/guerre-d-indochine');
+    expect(res.text).toContain('<div id="conflict-detail" class="hidden">');
+    expect(res.text).toContain('<div id="conflicts-loading" class="conflicts-grid" aria-hidden="true">');
   });
 
   test('/conflits/:slug — un « $& » dans le nom reste du texte', async () => {
