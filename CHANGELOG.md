@@ -7,6 +7,19 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 ## [Unreleased]
 
+## [4.30.0] - 2026-11-23
+
+### Added
+
+- Sur la fiche d'un appareil, chaque conflit dit désormais ce que cet appareil y a fait et dans quel
+  camp, au lieu d'une description générale du conflit.
+- Dans la chronologie, chaque conflit s'ouvre sur ses dates clés, de l'entrée en guerre au
+  cessez-le-feu, avec un lien vers sa page.
+
+### Security
+
+- Mise à jour de la bibliothèque qui filtre les textes affichés sur le site.
+
 ## [4.29.0] - 2026-11-23
 
 ### Added
@@ -726,7 +739,8 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 - Première version de Vol d'Histoire : un catalogue d'avions militaires.
 
-[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.29.0...HEAD
+[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.30.0...HEAD
+[4.30.0]: https://github.com/Lurrod/vol_histoire/compare/v4.29.0...v4.30.0
 [4.29.0]: https://github.com/Lurrod/vol_histoire/compare/v4.28.0...v4.29.0
 [4.28.0]: https://github.com/Lurrod/vol_histoire/compare/v4.27.0...v4.28.0
 [4.27.0]: https://github.com/Lurrod/vol_histoire/compare/v4.26.0...v4.27.0

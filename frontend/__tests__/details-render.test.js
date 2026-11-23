@@ -652,6 +652,55 @@ describe('renderWars — liens vers les conflits', () => {
   });
 });
 
+describe('renderWars — rôle de l\'appareil dans le conflit', () => {
+  const IRAN = {
+    name: 'Guerre Iran-Israël', slug: 'guerre-iran-israel', description: 'Guerre de douze jours',
+    date_start: '2025-06-13', date_end: '2025-06-24',
+    role: 'Sept B-2 frappent *Fordo* le 22 juin.', side_name: 'États-Unis',
+  };
+
+  test('rôle présent : il remplace la description générale, italique rendu', () => {
+    boot();
+    render.renderWars([IRAN]);
+    const card = document.querySelector('.war-card');
+    const role = card.querySelector('.war-role');
+    expect(role.textContent).toContain('Sept B-2 frappent');
+    expect(role.querySelector('em').textContent).toBe('Fordo');
+    expect(card.textContent).not.toContain('Guerre de douze jours');
+  });
+
+  test('camp affiché avec son libellé', () => {
+    boot();
+    render.renderWars([IRAN]);
+    const side = document.querySelector('.war-card .war-side');
+    expect(side.textContent).toContain('details.war_side');
+    expect(side.textContent).toContain('États-Unis');
+  });
+
+  test('sans camp : aucune ligne de camp', () => {
+    boot();
+    render.renderWars([{ ...IRAN, side_name: null }]);
+    expect(document.querySelector('.war-side')).toBeNull();
+    expect(document.querySelector('.war-role')).not.toBeNull();
+  });
+
+  test('sans rôle : description générale, comme avant', () => {
+    boot();
+    render.renderWars([{ ...IRAN, role: null, side_name: null }]);
+    expect(document.querySelector('.war-role')).toBeNull();
+    expect(document.querySelector('.war-card p').textContent).toBe('Guerre de douze jours');
+  });
+
+  test('rôle et camp échappés', () => {
+    boot();
+    render.renderWars([{ ...IRAN, role: '<img src=x onerror=alert(1)>', side_name: '<b>X</b>' }]);
+    const card = document.querySelector('.war-card');
+    expect(card.querySelector('img')).toBeNull();
+    expect(card.querySelector('.war-side b')).toBeNull();
+    expect(card.querySelector('.war-role').textContent).toContain('<img src=x');
+  });
+});
+
 describe('renderMissions — lien vers le hangar filtré', () => {
   test('mission avec nom FR canonique → /hangar?mission=<nom encodé>', () => {
     boot('en');

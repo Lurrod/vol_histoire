@@ -64,6 +64,9 @@ async function findAircraft(db) {
 // Conflits datés qui ont au moins un appareil rattaché (les autres n'ont pas
 // de page /conflits/<slug>), avec les identifiants de ces appareils : la frise
 // s'en sert pour n'afficher, sous un filtre, que les conflits concernés.
+// Dates clés de la page du conflit (dépliant de la frise) : date en texte,
+// comme les événements (un DATE lu en objet Date glisse d'un jour selon le
+// fuseau), triées, liste vide pour un conflit non rédigé.
 async function findWars(db) {
   return (await db.query(`
       SELECT
@@ -72,7 +75,14 @@ async function findWars(db) {
         w.name_en,
         to_char(w.date_start, 'YYYY-MM-DD') AS date_start,
         to_char(w.date_end, 'YYYY-MM-DD') AS date_end,
-        array_agg(aw.id_airplane ORDER BY aw.id_airplane) AS aircraft_ids
+        array_agg(aw.id_airplane ORDER BY aw.id_airplane) AS aircraft_ids,
+        COALESCE((
+          SELECT json_agg(json_build_object(
+                   'date', to_char(e.event_date, 'YYYY-MM-DD'), 'precision', e.date_precision,
+                   'title', e.title, 'title_en', e.title_en)
+                 ORDER BY e.event_date, e.id)
+          FROM war_events e WHERE e.war_id = w.id
+        ), '[]'::json) AS events
       FROM wars w
       JOIN airplane_wars aw ON aw.id_wars = w.id
       WHERE w.date_start IS NOT NULL

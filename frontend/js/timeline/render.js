@@ -134,8 +134,47 @@
                 <span class="tl-conflict-name">${escapeHtml(util().localName(w))}</span>
                 <span class="tl-conflict-meta">${escapeHtml(warYears(w))} · ${escapeHtml(count)}</span>
               </a>
-              <span class="tl-conflict-track" aria-hidden="true"><span class="tl-conflict-bar"></span></span>
+              <span class="tl-conflict-track" aria-hidden="true"><span class="tl-conflict-bar"></span></span>${renderConflictDates(w)}
             </li>`;
+  }
+
+  /* Date clé selon sa précision : « 5 juin 1967 », « juin 1967 » ou « 1967 ».
+   * Même règle que backend/utils/timeline-ssr.js (keyDate). */
+  function keyDate(e) {
+    const [y, m, d] = String(e.date || '').split('-').map(Number);
+    if (!y) return { iso: '', text: '' };
+    if (e.precision === 'year') return { iso: String(y), text: String(y) };
+    const date = new Date(Date.UTC(y, (m || 1) - 1, d || 1));
+    const locale = util().currentLang() === 'en' ? 'en-GB' : 'fr-FR';
+    const opts = e.precision === 'month'
+      ? { month: 'long', year: 'numeric', timeZone: 'UTC' }
+      : { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' };
+    return { iso: e.precision === 'month' ? e.date.slice(0, 7) : e.date, text: date.toLocaleDateString(locale, opts) };
+  }
+
+  /* Titres des dates clés : seuls les italiques Markdown des noms d'opération
+   * (*Moked*) sont rendus, sur du texte déjà échappé. */
+  function italics(html) {
+    return html.replace(/\*([^*\n]+)\*/g, '<em>$1</em>');
+  }
+
+  /* Dépliant natif des dates clés de la page du conflit, fermé par défaut. */
+  function renderConflictDates(w) {
+    const events = Array.isArray(w.events) ? w.events : [];
+    if (events.length === 0) return '';
+    const n = events.length;
+    const label = t(n === 1 ? 'timeline.conflict_dates_one' : 'timeline.conflict_dates_other',
+      `${n} date${n === 1 ? '' : 's'}`, { n: String(n) });
+    const items = events.map(e => {
+      const { iso, text } = keyDate(e);
+      return `<li><time datetime="${escapeHtml(iso)}">${escapeHtml(text)}</time><span class="tl-conflict-date-title">${italics(escapeHtml(util().localName(e, 'title')))}</span></li>`;
+    }).join('');
+    return `
+              <details class="tl-conflict-dates">
+                <summary>${escapeHtml(label)}</summary>
+                <ol class="tl-conflict-date-list">${items}</ol>
+                <a class="tl-conflict-dates-more" href="/conflits/${encodeURIComponent(w.slug)}">${escapeHtml(t('timeline.conflict_read', 'Lire la page du conflit'))}</a>
+              </details>`;
   }
 
   function renderConflictsBlock(wars) {

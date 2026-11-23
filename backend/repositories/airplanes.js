@@ -183,9 +183,14 @@ const MISSIONS_SQL = `SELECT missions.name, missions.name_en, missions.descripti
      JOIN missions ON airplane_missions.id_mission = missions.id
      WHERE airplane_missions.id_airplane = $1`;
 
-const WARS_SQL = `SELECT wars.name, wars.name_en, wars.date_start, wars.date_end, wars.description, wars.description_en
+// Rôle de l'appareil dans le conflit et camp (pages de conflit, zz_conflits.sql) :
+// camp NULL = appareil engagé dans plusieurs camps, ou non renseigné.
+const WARS_SQL = `SELECT wars.name, wars.name_en, wars.date_start, wars.date_end, wars.description, wars.description_en,
+            airplane_wars.role, airplane_wars.role_en,
+            war_sides.name AS side_name, war_sides.name_en AS side_name_en
      FROM airplane_wars
      JOIN wars ON airplane_wars.id_wars = wars.id
+     LEFT JOIN war_sides ON war_sides.id = airplane_wars.side_id
      WHERE airplane_wars.id_airplane = $1`;
 
 async function findArmament(db, id) {

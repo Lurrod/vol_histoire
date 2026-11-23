@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.29.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.30.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-24-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/tests-2120-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
@@ -290,11 +290,11 @@ La documentation API Swagger est sur `http://localhost:3000/api/docs` (mode dev 
 
 ## Tests
 
-Le projet dispose de **1 030 tests backend**, **1 518 tests frontend** et **21 specs E2E** :
+Le projet dispose de **1 186 tests backend**, **2 046 tests frontend** et **23 specs E2E** (153 scénarios) :
 
 ```bash
-# Backend — 940 tests (routes, validators, SSR, mailer, logger…) ; la suite
-# d'integration (90 tests sur vraie base) est sautee sans IT_DATABASE_URL
+# Backend — 1 081 tests (routes, validators, SSR, mailer, logger…) ; la suite
+# d'integration (105 tests sur vraie base) est sautee sans IT_DATABASE_URL
 cd backend && npm test
 
 # Backend — suite d'integration sur vraie base (nom de base obligatoirement en *_it)
@@ -309,7 +309,7 @@ npm run test:load
 # Frontend — tests unitaires et DOM (jsdom) de tout js/**
 cd frontend && npx jest --coverage
 
-# E2E — Playwright (21 specs ; serveur sur le port 3000, NODE_ENV=test)
+# E2E — Playwright (23 specs ; serveur sur le port 3000, NODE_ENV=test)
 cd e2e && npx playwright test
 ```
 

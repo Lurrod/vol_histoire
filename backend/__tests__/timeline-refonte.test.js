@@ -159,6 +159,53 @@ describe('utils/timeline-ssr', () => {
   });
 });
 
+describe('dates clés des conflits (dépliant de la frise)', () => {
+  // Daté des années 1950 : buildPayload écarte un conflit dont la décennie n'a
+  // aucun appareil (le jeu d'essai n'en a qu'en 1940, 1950 et 2020).
+  const SIX_JOURS = {
+    id: 8, name: 'Guerre des Six Jours', name_en: 'Six-Day War', date_start: '1956-06-05', date_end: '1956-06-10',
+    aircraft_ids: [7],
+    events: [
+      { date: '1967-06-05', precision: 'day', title: 'Opération <Moked> *Focus*', title_en: 'Operation Moked' },
+      { date: '1967-06-01', precision: 'month', title: 'Mobilisation', title_en: null },
+      { date: '1967-01-01', precision: 'year', title: 'Tensions', title_en: 'Tensions' },
+    ],
+  };
+  const data = payload.buildPayload({ events: [], aircraft: AIRCRAFT, wars: [SIX_JOURS, WARS[1]] });
+
+  test('clé de cache relevée : la forme du conflit change', () => {
+    expect(payload.CACHE_KEY).toBe('vdh:timeline:v3');
+  });
+
+  test('buildPayload : dates clés gardées dans leur ordre, liste vide par défaut', () => {
+    const six = data.wars.find((w) => w.slug === 'guerre-des-six-jours');
+    expect(six.events).toEqual(SIX_JOURS.events);
+    expect(data.wars.find((w) => w.slug === 'crise-de-suez').events).toEqual([]);
+  });
+
+  test('rendu serveur (fr) : dépliant, nombre de dates, dates selon leur précision, titres échappés', () => {
+    const html = ssr.renderChaptersHtml(data, 'fr');
+    expect(html).toContain('<details class="tl-conflict-dates">');
+    expect(html).toContain('3 dates clés');
+    expect(html).toContain('<time datetime="1967-06-05">5 juin 1967</time>');
+    expect(html).toContain('<time datetime="1967-06">juin 1967</time>');
+    expect(html).toContain('<time datetime="1967">1967</time>');
+    expect(html).toContain('Opération &lt;Moked&gt; <em>Focus</em>');
+    expect(html).toContain('href="/conflits/guerre-des-six-jours"');
+    // Un conflit sans date clé n'a pas de dépliant.
+    expect(html.match(/<details class="tl-conflict-dates">/g)).toHaveLength(1);
+  });
+
+  test('rendu serveur (en) : dates et titres anglais, repli sur le titre français', () => {
+    const html = ssr.renderChaptersHtml(data, 'en');
+    expect(html).toContain('3 key dates');
+    expect(html).toContain('5 June 1967');
+    expect(html).toContain('June 1967');
+    expect(html).toContain('Operation Moked');
+    expect(html).toContain('Mobilisation');
+  });
+});
+
 describe('GET /timeline — rendu serveur', () => {
   test('la page contient le texte des chapitres', async () => {
     mockTimelineQueries();

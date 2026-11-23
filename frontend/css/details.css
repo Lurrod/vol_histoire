@@ -613,6 +613,18 @@ body.page-details { background: var(--night); }
   color: var(--hud-cyan); font-weight: 600;
 }
 .page-details .war-card p { flex: 1; color: rgba(255,255,255,0.55); line-height: 1.65; font-size: 0.92rem; margin: 0; }
+/* Rôle de l'appareil dans le conflit (remplace la description générale) et
+ * son camp, en ligne discrète sous le titre. */
+.page-details .war-role { flex: 1; }
+.page-details .war-card .war-side {
+  flex: 0 0 auto; margin: 0 0 0.6rem;
+  font-size: var(--text-xs); line-height: 1.4; color: rgba(255,255,255,0.7);
+}
+.page-details .war-side-label {
+  margin-right: 0.35rem;
+  text-transform: uppercase; letter-spacing: 0.14em; font-weight: 600;
+  color: rgba(255,255,255,0.45);
+}
 /* Carte de conflit cliquable : le lien du titre s'étire sur toute la carte. */
 .page-details .war-link { color: inherit; text-decoration: none; }
 .page-details .war-link::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }

@@ -153,9 +153,12 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
     res.json(pickLangMany(rows, req.lang, ['name', 'description']));
   }));
 
+  // Champs traduits d'une liaison appareil-conflit : rôle et camp de l'appareil.
+  const WAR_FIELDS = ['name', 'description', 'role', 'side_name'];
+
   router.get('/airplanes/:id/wars', asyncHandler(async (req, res) => {
     const rows = await airplanesRepo.findWars(getPool(), req.params.id);
-    res.json(pickLangMany(rows, req.lang, ['name', 'description']));
+    res.json(pickLangMany(rows, req.lang, WAR_FIELDS));
   }));
 
   router.get('/airplanes/:id/related', asyncHandler(async (req, res) => {
@@ -171,7 +174,7 @@ module.exports = function createAirplanesRouter(getPool, { onAirplaneChange } = 
       armament: pickLangMany(related.armament, req.lang, ['name', 'description'], ['name']),
       tech: pickLangMany(related.tech, req.lang, ['name', 'description'], ['name']),
       missions: withKeys(related.missions, pickLangMany(related.missions, req.lang, ['name', 'description']), false),
-      wars: withKeys(related.wars, pickLangMany(related.wars, req.lang, ['name', 'description']), true),
+      wars: withKeys(related.wars, pickLangMany(related.wars, req.lang, WAR_FIELDS), true),
     });
   }));
 
