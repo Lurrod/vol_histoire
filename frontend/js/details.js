@@ -29,20 +29,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     userRole: null,
   };
 
-  // Boutons d'administration selon le rôle
   const payload = auth.getPayload();
-  if (payload) {
-    state.userRole = Number(payload.role);
-    if (state.userRole === 1 || state.userRole === 2) {
-      document.getElementById('edit-btn')?.classList.remove('hidden');
-      document.getElementById('delete-btn')?.classList.remove('hidden');
-    }
-  }
+  if (payload) state.userRole = Number(payload.role);
 
   // Setup des listeners (handlers attachés une seule fois)
   VH.details.favorites.setup(state);
   VH.details.compare.setup(state);
-  VH.details.admin.setup(state);
+
+  // Administration (admin/éditeur) : boutons Modifier / Supprimer et modale,
+  // code chargé à la demande (JS-002).
+  if (VH.shared.adminLoader.isEditor(payload)) {
+    try {
+      await VH.shared.adminLoader.load('details');
+      VH.details.admin.setup(state);
+      document.getElementById('edit-btn')?.classList.remove('hidden');
+      document.getElementById('delete-btn')?.classList.remove('hidden');
+    } catch {
+      showToast(i18n.t('common.loading_error'), 'error');
+    }
+  }
   VH.details.ui.setupShareBar(state);
   VH.details.ui.setupScrollProgress();
   VH.details.ui.setupPdfExport();
@@ -65,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Raccourci Escape → ferme modale édition
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') VH.details.admin.closeEditModal();
+    if (e.key === 'Escape') VH.details.admin?.closeEditModal();
   });
 
   // Re-render sur changement de langue

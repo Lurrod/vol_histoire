@@ -16,7 +16,7 @@
       state.wars = Array.isArray(wars) ? wars : [];
       state.missions = Array.isArray(missions) ? missions : [];
       VH.hangar.filters.populateFilterOptions(state);
-      VH.hangar.admin.populateFormSelects(state);
+      VH.hangar.admin?.populateFormSelects(state);
     } catch {
       showToast(i18n.t('common.loading_error'), 'error');
     }

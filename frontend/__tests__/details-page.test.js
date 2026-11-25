@@ -24,6 +24,7 @@ function stubModules() {
   const order = [];
   const track = (name, impl) => jest.fn((...args) => { order.push(name); return impl ? impl(...args) : undefined; });
   window.VH = {
+    shared: { adminLoader: { isEditor: (p) => [1, 2].includes(Number(p && p.role)), load: jest.fn(() => Promise.resolve()) } },
     details: {
       favorites: { setup: track('favorites.setup'), updateFavoriteButton: track('favorites.update') },
       compare: { setup: track('compare.setup') },
@@ -129,7 +130,8 @@ describe('details.js — ordre d\'initialisation', () => {
     const order = load();
     await handler();
     expect(order).toEqual([
-      'favorites.setup', 'compare.setup', 'admin.setup', 'ui.share', 'ui.scroll', 'ui.pdf',
+      // Visiteur anonyme : le code d'administration n'est ni chargé ni initialisé (JS-002).
+      'favorites.setup', 'compare.setup', 'ui.share', 'ui.scroll', 'ui.pdf',
       'ui.minibarVisibility', 'photoZoom.setup', 'data.load', 'ui.sections', 'ui.syncMiniBar',
     ]);
     const state = VHd().data.loadAircraftDetails.mock.calls[0][0];
@@ -159,7 +161,21 @@ describe('details.js — interface selon la session', () => {
     await handler();
     expect(hidden('edit-btn')).toBe(adminHidden);
     expect(hidden('delete-btn')).toBe(adminHidden);
-    expect(VHd().admin.setup.mock.calls[0][0].userRole).toBe(role);
+    expect(VHd().favorites.setup.mock.calls[0][0].userRole).toBe(role);
+    // Code d'administration chargé et initialisé pour les seuls admin/éditeur (JS-002).
+    expect(window.VH.shared.adminLoader.load).toHaveBeenCalledTimes(adminHidden ? 0 : 1);
+    expect(VHd().admin.setup).toHaveBeenCalledTimes(adminHidden ? 0 : 1);
+  });
+
+  test('module d’administration indisponible : boutons masqués, message d’erreur', async () => {
+    load({ payload: { name: 'Titouan', role: '1' } });
+    window.VH.shared.adminLoader.load.mockRejectedValueOnce(new Error('réseau'));
+    global.showToast = jest.fn();
+    await handler();
+    expect(hidden('edit-btn')).toBe(true);
+    expect(VHd().admin.setup).not.toHaveBeenCalled();
+    expect(global.showToast).toHaveBeenCalledWith('t:common.loading_error', 'error');
+    delete global.showToast;
   });
 });
 

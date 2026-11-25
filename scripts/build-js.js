@@ -85,10 +85,7 @@ const BUNDLES = {
     'hangar/data.js',
     'hangar/filters.js',
     'hangar/render.js',
-    'shared/airplane-options.js',
-    'shared/airplane-fields.js',
-    'shared/airplane-form.js',
-    'hangar/admin.js',
+    'shared/admin-loader.js',
     'hangar/compare.js',
     'hangar/view-toggle.js',
     'hangar/mobile-sheet.js',
@@ -108,15 +105,28 @@ const BUNDLES = {
     'details/render.js',
     'details/radar.js',
     'details/favorites.js',
-    'shared/airplane-options.js',
-    'shared/airplane-fields.js',
-    'shared/airplane-form.js',
-    'details/admin.js',
+    'shared/admin-loader.js',
     'details/lineage.js',
     'details/compare.js',
     'details/ui.js',
     'details/photo-zoom.js',
     'details.js',
+  ],
+
+  // Administration (JS-002) : chargés par VH.shared.adminLoader pour les
+  // seuls rôles admin et éditeur, jamais par les pages elles-mêmes.
+  'admin-hangar.min.js': [
+    'shared/airplane-options.js',
+    'shared/airplane-fields.js',
+    'shared/airplane-form.js',
+    'hangar/admin.js',
+  ],
+
+  'admin-details.min.js': [
+    'shared/airplane-options.js',
+    'shared/airplane-fields.js',
+    'shared/airplane-form.js',
+    'details/admin.js',
   ],
 
   'login.min.js': [
