@@ -1,0 +1,454 @@
+{
+  "war": "Guerre du Kippour",
+  "slug": "guerre-du-kippour",
+  "outcome": {
+    "fr": "Victoire militaire israélienne après un revers initial : les cessez-le-feu des 22 et 25 octobre 1973 laissent Tsahal à l'ouest du canal de Suez et à une trentaine de kilomètres de Damas, tandis que la traversée réussie du canal offre à l'Égypte un succès politique.",
+    "en": "An Israeli military victory after initial setbacks: the ceasefires of 22 and 25 October 1973 left the IDF west of the Suez Canal and some 30 km from Damascus, while Egypt's successful canal crossing gave it a political success."
+  },
+  "context": {
+    "fr": "Depuis la guerre des Six Jours de 1967, Israël occupe le Sinaï égyptien et le plateau du Golan syrien, et la guerre d'usure menée le long du canal de Suez n'a rien réglé. Le 6 octobre 1973, jour du Kippour, l'Égypte et la Syrie attaquent simultanément : les Égyptiens franchissent le canal, les Syriens se lancent à l'assaut du Golan. Israël, surpris, doit mobiliser ses réserves sous le feu.\n\nLes deux armées arabes, réarmées par l'Union soviétique, ont appris des défaites précédentes : plutôt que de disputer le ciel à l'armée de l'air israélienne, elles s'abritent sous un réseau serré de missiles sol-air SA-2, SA-3, SA-6 et SA-7. L'Égypte aligne à elle seule quelque 150 batteries, dont 62 sur la ligne de front, et ses troupes évitent de s'aventurer au-delà de leur couverture.\n\nLa coalition reçoit le renfort de contingents irakiens, jordaniens, marocains, algériens, tunisiens, soudanais, saoudiens et koweïtiens ; des pilotes nord-coréens et pakistanais servent dans les rangs arabes, et la Libye a prêté ses Mirage 5 à l'Égypte. Les deux superpuissances s'engagent par procuration : l'URSS réapprovisionne l'Égypte et la Syrie, les États-Unis lancent un pont aérien vers Israël. Les combats prennent fin avec les cessez-le-feu des 22 et 25 octobre.",
+    "en": "Since the Six-Day War of 1967, Israel had occupied Egypt's Sinai and Syria's Golan Heights, and the War of Attrition along the Suez Canal had settled nothing. On 6 October 1973, the day of Yom Kippur, Egypt and Syria attacked simultaneously: the Egyptians crossed the canal while the Syrians stormed the Golan. Caught by surprise, Israel had to mobilise its reserves under fire.\n\nRearmed by the Soviet Union, both Arab armies had learned from earlier defeats: rather than contest the sky with the Israeli Air Force, they sheltered under a dense network of SA-2, SA-3, SA-6 and SA-7 surface-to-air missiles. Egypt alone fielded some 150 batteries, 62 of them on the front line, and its troops were reluctant to advance beyond their cover.\n\nThe coalition was reinforced by Iraqi, Jordanian, Moroccan, Algerian, Tunisian, Sudanese, Saudi and Kuwaiti contingents; North Korean and Pakistani pilots served in Arab ranks, and Libya had lent its Mirage 5s to Egypt. Both superpowers became involved by proxy: the USSR resupplied Egypt and Syria, while the United States mounted an airlift to Israel. The fighting ended with the ceasefires of 22 and 25 October."
+  },
+  "narrative": {
+    "fr": "La guerre s'ouvre par les airs. Le 6 octobre à 14 heures, plus de 200 avions égyptiens frappent les bases aériennes, les batteries Hawk, les centres de commandement et les radars israéliens du Sinaï, tandis que des Tu-16 tirent des missiles Kelt. Le bilan de ce raid reste disputé : l'Égypte reconnaît cinq appareils perdus, d'autres auteurs en comptent onze ou dix-huit. Au-dessus d'Ofira, près de Charm el-Cheikh, deux F-4E israéliens interceptent vingt MiG-17 escortés de huit MiG-21 et revendiquent sept victoires, ce que les pilotes égyptiens contestent.\n\nLe lendemain, l'armée de l'air israélienne se heurte au bouclier de missiles. L'opération *Tagar*, lancée contre les défenses égyptiennes, est interrompue après sa première vague pour secourir le Golan, au prix de deux Skyhawk. Sur le front syrien, l'opération *Dougman 5* tourne au désastre : les batteries ont changé de position, six Phantom sont abattus et une seule batterie SA-3 est détruite. Pendant les premiers jours, les pertes atteignent environ trois avions pour deux cents sorties, et les Skyhawk, chargés de l'appui au sol, paient le plus lourd tribut.\n\nIsraël reprend progressivement l'initiative. Le 9 octobre, des Phantom bombardent l'état-major syrien en plein Damas ; les aérodromes égyptiens sont attaqués à leur tour. Le 14 octobre, au-dessus du delta du Nil, la bataille aérienne de Mansourah oppose une soixantaine de MiG-21 égyptiens à des vagues de Phantom et de Skyhawk ; chaque camp en revendique la victoire. Après la traversée israélienne du canal, les forces terrestres démantèlent une partie du réseau de missiles, et l'armée de l'air israélienne annonce 32 sites SAM égyptiens détruits et 11 endommagés.\n\nLa guerre se joue aussi dans les soutes des transporteurs. L'URSS achemine par air entre 12 500 et 15 000 tonnes de matériel, pour plus de moitié vers la Syrie. Ordonné par Richard Nixon le 12 octobre, le pont aérien américain *Nickel Grass* commence le 14 : jusqu'au 14 novembre, les C-141 et les C-5 de l'US Air Force effectuent 567 missions et livrent quelque 22 300 tonnes à Lod, en faisant escale aux Açores. Des dizaines de Phantom et de Skyhawk prélevés sur les unités américaines comblent en parallèle les pertes israéliennes.\n\nLes bilans divergent fortement selon les camps et les auteurs. L'armée de l'air israélienne fait état d'une centaine d'avions perdus, essentiellement face à la défense antiaérienne, et de plus de 450 appareils arabes détruits, surtout en combat aérien. Les sources officielles israéliennes n'admettent que cinq pertes en combat aérien, quand l'Égypte et la Syrie revendiquent des dizaines de victoires pour leurs seuls MiG-21. Les fourchettes publiées vont d'une centaine à près de 400 appareils perdus pour Israël, et de quelque 340 à plus de 500 pour le camp arabe.",
+    "en": "The war opened in the air. At 2 pm on 6 October, more than 200 Egyptian aircraft struck Israeli air bases, Hawk batteries, command centres and radars in the Sinai, while Tu-16s launched Kelt missiles. The results of the raid remain disputed: Egypt admitted losing five aircraft, while other authors count eleven or eighteen. Over Ofira, near Sharm el-Sheikh, two Israeli F-4Es intercepted twenty MiG-17s escorted by eight MiG-21s and claimed seven kills, which the Egyptian pilots dispute.\n\nThe next day, the Israeli Air Force ran into the missile shield. Operation *Tagar*, launched against Egypt's defences, was called off after its first wave to rescue the Golan front, at a cost of two Skyhawks. On the Syrian front, Operation *Dougman 5* turned into a disaster: the batteries had moved, six Phantoms were shot down and only a single SA-3 battery was destroyed. In the opening days, losses ran at about three aircraft per two hundred sorties, and the Skyhawks, tasked with close support, paid the heaviest price.\n\nIsrael gradually regained the initiative. On 9 October, Phantoms bombed the Syrian General Staff in the heart of Damascus, and Egyptian airfields came under attack in turn. On 14 October, over the Nile Delta, the air battle of Mansoura pitted some sixty Egyptian MiG-21s against waves of Phantoms and Skyhawks; both sides claim victory. After the Israeli crossing of the canal, ground forces dismantled part of the missile network, and the Israeli Air Force reported 32 Egyptian SAM sites destroyed and 11 damaged.\n\nThe war was also fought in the holds of transport aircraft. The USSR airlifted between 12,500 and 15,000 tons of materiel, more than half of it to Syria. Ordered by Richard Nixon on 12 October, the American airlift *Nickel Grass* began on the 14th: until 14 November, US Air Force C-141s and C-5s flew 567 missions and delivered some 22,300 tons to Lod, staging through the Azores. Dozens of Phantoms and Skyhawks taken from American units made good Israeli losses at the same time.\n\nTallies diverge sharply between sides and authors. The Israeli Air Force reported around a hundred aircraft lost, mostly to air defences, and more than 450 Arab aircraft destroyed, mostly in air combat. Official Israeli sources admit only five air-to-air losses, while Egypt and Syria claim dozens of kills for their MiG-21s alone. Published ranges run from about a hundred to almost 400 aircraft lost for Israel, and from some 340 to more than 500 for the Arab side."
+  },
+  "sides": [
+    {
+      "key": "israel",
+      "name": {
+        "fr": "Israël",
+        "en": "Israel"
+      },
+      "members": {
+        "fr": "Israël",
+        "en": "Israel"
+      }
+    },
+    {
+      "key": "coalition-arabe",
+      "name": {
+        "fr": "Coalition arabe",
+        "en": "Arab coalition"
+      },
+      "members": {
+        "fr": "Égypte, Syrie, avec des contingents d'Irak, d'Algérie, du Maroc, de Jordanie, de Tunisie, du Soudan, d'Arabie saoudite et du Koweït, des pilotes nord-coréens et pakistanais, et des Mirage 5 prêtés par la Libye",
+        "en": "Egypt, Syria, with contingents from Iraq, Algeria, Morocco, Jordan, Tunisia, Sudan, Saudi Arabia and Kuwait, North Korean and Pakistani pilots, and Mirage 5s lent by Libya"
+      }
+    },
+    {
+      "key": "soutiens",
+      "name": {
+        "fr": "Soutiens extérieurs",
+        "en": "Foreign support"
+      },
+      "members": {
+        "fr": "États-Unis (pont aérien vers Israël), URSS (vers l'Égypte et la Syrie)",
+        "en": "United States (airlift to Israel), USSR (to Egypt and Syria)"
+      }
+    }
+  ],
+  "events": [
+    {
+      "date": "1973-10-06",
+      "precision": "day",
+      "title": {
+        "fr": "La frappe d'ouverture égyptienne",
+        "en": "Egypt's opening air strike"
+      },
+      "body": {
+        "fr": "À 14 heures, plus de 200 avions égyptiens frappent bases aériennes, batteries Hawk, centres de commandement et radars israéliens du Sinaï, tandis que des Tu-16 tirent des missiles Kelt.",
+        "en": "At 2 pm, more than 200 Egyptian aircraft strike Israeli air bases, Hawk batteries, command centres and radars in the Sinai, while Tu-16s launch Kelt missiles."
+      },
+      "aircraft": "Tu-16",
+      "source": "https://en.wikipedia.org/wiki/Yom_Kippur_War"
+    },
+    {
+      "date": "1973-10-06",
+      "precision": "day",
+      "title": {
+        "fr": "La bataille aérienne d'Ofira",
+        "en": "The Ofira air battle"
+      },
+      "body": {
+        "fr": "Deux F-4E israéliens interceptent vingt MiG-17 et huit MiG-21 qui attaquent la base d'Ofira et revendiquent sept victoires sans perte ; l'Égypte conteste ce récit.",
+        "en": "Two Israeli F-4Es intercept twenty MiG-17s and eight MiG-21s attacking Ofira air base and claim seven kills without loss; Egypt disputes this account."
+      },
+      "aircraft": "F-4E Kurnass",
+      "source": "https://en.wikipedia.org/wiki/Ofira_Air_Battle"
+    },
+    {
+      "date": "1973-10-07",
+      "precision": "day",
+      "title": {
+        "fr": "L'opération *Tagar* interrompue",
+        "en": "Operation *Tagar* called off"
+      },
+      "body": {
+        "fr": "L'armée de l'air israélienne attaque les défenses et les bases égyptiennes, puis arrête l'opération après la première vague pour secourir le Golan ; deux Skyhawk sont perdus.",
+        "en": "The Israeli Air Force strikes Egyptian defences and air bases, then halts the operation after the first wave to rescue the Golan front; two Skyhawks are lost."
+      },
+      "aircraft": "A-4 Skyhawk",
+      "source": "https://en.wikipedia.org/wiki/Operation_Tagar"
+    },
+    {
+      "date": "1973-10-07",
+      "precision": "day",
+      "title": {
+        "fr": "L'échec de *Dougman 5* sur le Golan",
+        "en": "The failure of *Dougman 5* over the Golan"
+      },
+      "body": {
+        "fr": "Lancés contre les missiles syriens, les Phantom israéliens trouvent des batteries déplacées : six F-4 sont abattus pour une seule batterie SA-3 détruite.",
+        "en": "Sent against Syrian missile sites, Israeli Phantoms find that the batteries have moved: six F-4s are shot down for a single SA-3 battery destroyed."
+      },
+      "aircraft": "F-4E Kurnass",
+      "source": "https://en.wikipedia.org/wiki/Operation_Doogman_5"
+    },
+    {
+      "date": "1973-10-09",
+      "precision": "day",
+      "title": {
+        "fr": "Raid sur l'état-major syrien à Damas",
+        "en": "Raid on the Syrian General Staff in Damascus"
+      },
+      "body": {
+        "fr": "Huit Phantom partent bombarder le quartier général syrien au cœur de Damas ; un appareil est abattu au retour, son pilote tué et son navigateur capturé.",
+        "en": "Eight Phantoms set out to bomb the Syrian headquarters in the heart of Damascus; one aircraft is shot down on the way out, its pilot killed and its navigator captured."
+      },
+      "aircraft": "F-4E Kurnass",
+      "source": "https://www.jewishvirtuallibrary.org/israel-air-force-in-the-yom-kippur-war"
+    },
+    {
+      "date": "1973-10-09",
+      "precision": "day",
+      "title": {
+        "fr": "Les escadrons algériens arrivent en Égypte",
+        "en": "Algerian squadrons arrive in Egypt"
+      },
+      "body": {
+        "fr": "Entre le 9 et le 11 octobre, l'Algérie engage un escadron de bombardiers Su-7 et un escadron de chasseurs MiG-21 aux côtés de l'Égypte.",
+        "en": "Between 9 and 11 October, Algeria commits a squadron of Su-7 fighter-bombers and a squadron of MiG-21 fighters alongside Egypt."
+      },
+      "aircraft": "Su-7",
+      "source": "https://fr.wikipedia.org/wiki/Guerre_du_Kippour"
+    },
+    {
+      "date": "1973-10-12",
+      "precision": "day",
+      "title": {
+        "fr": "Nixon ordonne le pont aérien",
+        "en": "Nixon orders the airlift"
+      },
+      "body": {
+        "fr": "Le président américain ordonne d'envoyer « tout ce qui peut voler » ; quelques heures plus tard, C-141 et C-5 font route vers Israël.",
+        "en": "The US president orders the military to send everything that can fly; within hours, C-141s and C-5s are on their way to Israel."
+      },
+      "aircraft": null,
+      "source": "https://www.jewishvirtuallibrary.org/operation-nickel-grass"
+    },
+    {
+      "date": "1973-10-14",
+      "precision": "day",
+      "title": {
+        "fr": "Début de *Nickel Grass*",
+        "en": "*Nickel Grass* begins"
+      },
+      "body": {
+        "fr": "Le premier C-5 américain se pose à Lod à 18 h 30 ; les C-141 Starlifter vont assurer la majorité des 567 missions du pont aérien.",
+        "en": "The first American C-5 lands at Lod at 6:30 pm; C-141 Starlifters would fly most of the airlift's 567 missions."
+      },
+      "aircraft": "C-141 Starlifter",
+      "source": "https://en.wikipedia.org/wiki/Operation_Nickel_Grass"
+    },
+    {
+      "date": "1973-10-14",
+      "precision": "day",
+      "title": {
+        "fr": "La bataille aérienne de Mansourah",
+        "en": "The air battle of Mansoura"
+      },
+      "body": {
+        "fr": "Pendant près d'une heure, une soixantaine de MiG-21 égyptiens défendent les bases du delta du Nil contre des vagues de Phantom et de Skyhawk ; chaque camp revendique la victoire.",
+        "en": "For almost an hour, some sixty Egyptian MiG-21s defend the Nile Delta air bases against waves of Phantoms and Skyhawks; both sides claim victory."
+      },
+      "aircraft": "MiG-21",
+      "source": "https://en.wikipedia.org/wiki/Air_battle_of_Mansoura"
+    },
+    {
+      "date": "1973-10-18",
+      "precision": "day",
+      "title": {
+        "fr": "Les Mirage 5 frappent El-Arish",
+        "en": "Mirage 5s strike El-Arish"
+      },
+      "body": {
+        "fr": "Des Mirage 5 libyens pilotés par des Égyptiens attaquent l'aérodrome d'El-Arish ; la seconde patrouille est interceptée et perd trois appareils.",
+        "en": "Libyan Mirage 5s flown by Egyptian pilots attack El-Arish airfield; the second flight is intercepted and loses three aircraft."
+      },
+      "aircraft": "Mirage 5",
+      "source": "https://acig.org/artman/publish/printer_353.shtml"
+    },
+    {
+      "date": "1973-10-19",
+      "precision": "day",
+      "title": {
+        "fr": "Retour des MiG-25 soviétiques en Égypte",
+        "en": "Soviet MiG-25s return to Egypt"
+      },
+      "body": {
+        "fr": "Les 19 et 20 octobre, des MiG-25 de reconnaissance servis par les Soviétiques reviennent en Égypte, qu'ils avaient quittée en juillet 1972.",
+        "en": "On 19 and 20 October, Soviet-operated MiG-25 reconnaissance aircraft return to Egypt, which they had left in July 1972."
+      },
+      "aircraft": "MiG-25",
+      "source": "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-25"
+    },
+    {
+      "date": "1973-10-22",
+      "precision": "day",
+      "title": {
+        "fr": "Résolution 338 et premier cessez-le-feu",
+        "en": "Resolution 338 and first ceasefire"
+      },
+      "body": {
+        "fr": "Le Conseil de sécurité de l'ONU appelle à un cessez-le-feu, qui entre en vigueur le soir même mais ne tient pas : les combats reprennent dès le lendemain.",
+        "en": "The UN Security Council calls for a ceasefire, which takes effect that evening but does not hold: fighting resumes the next day."
+      },
+      "aircraft": null,
+      "source": "https://fr.wikipedia.org/wiki/Guerre_du_Kippour"
+    },
+    {
+      "date": "1973-10-25",
+      "precision": "day",
+      "title": {
+        "fr": "Fin des combats",
+        "en": "End of the fighting"
+      },
+      "body": {
+        "fr": "Un second cessez-le-feu met officiellement fin à la guerre, alors que l'armée israélienne a franchi le canal de Suez et menace la route du Caire.",
+        "en": "A second ceasefire officially ends the war, with the Israeli army across the Suez Canal and threatening the road to Cairo."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Yom_Kippur_War"
+    },
+    {
+      "date": "1973-11-14",
+      "precision": "day",
+      "title": {
+        "fr": "Fin de *Nickel Grass*",
+        "en": "*Nickel Grass* ends"
+      },
+      "body": {
+        "fr": "Le pont aérien s'achève après 32 jours : les C-141 y ont effectué 422 missions et transporté 10 754 tonnes de fret.",
+        "en": "The airlift ends after 32 days: C-141s flew 422 of its missions and carried 10,754 tons of cargo."
+      },
+      "aircraft": "C-141 Starlifter",
+      "source": "https://en.wikipedia.org/wiki/Lockheed_C-141_Starlifter"
+    }
+  ],
+  "aircraft": [
+    {
+      "name": "MiG-17",
+      "side": "coalition-arabe",
+      "attested": true,
+      "role": {
+        "fr": "Les MiG-17 égyptiens participent à la frappe d'ouverture du 6 octobre : vingt d'entre eux, escortés de huit MiG-21, attaquent la base d'Ofira, où deux F-4E israéliens revendiquent sept victoires. L'Égypte et la Syrie les retirent peu après la guerre.",
+        "en": "Egyptian MiG-17s took part in the opening strike of 6 October: twenty of them, escorted by eight MiG-21s, attacked Ofira air base, where two Israeli F-4Es claimed seven kills. Egypt and Syria retired the type shortly after the war."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-17",
+        "https://en.wikipedia.org/wiki/Ofira_Air_Battle"
+      ],
+      "note": "Le bilan d'Ofira est contesté : Israël revendique sept MiG abattus, les pilotes égyptiens de l'escorte affirment n'avoir rencontré aucune opposition aérienne."
+    },
+    {
+      "name": "Tu-16",
+      "side": "coalition-arabe",
+      "attested": true,
+      "role": {
+        "fr": "Le 6 octobre, quatorze Tu-16 égyptiens tirent des missiles KSR-2 Kelt sur des objectifs du Sinaï et deux autres en lancent vers un radar du centre d'Israël ; un appareil israélien abat l'un des missiles. Les Tu-16 mènent aussi des bombardements.",
+        "en": "On 6 October, fourteen Egyptian Tu-16s fired KSR-2 Kelt missiles at targets in the Sinai and two more launched against a radar in central Israel; an Israeli aircraft shot down one of the missiles. Tu-16s also flew bombing missions."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Yom_Kippur_War",
+        "https://en.wikipedia.org/wiki/KSR-2",
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-16"
+      ],
+      "note": "Le nombre de missiles varie : l'article KSR-2 parle de 13 KSR-2 et 12 KSR-11 lancés pendant toute la guerre, sans détail par jour."
+    },
+    {
+      "name": "A-4 Skyhawk",
+      "side": "israel",
+      "attested": true,
+      "role": {
+        "fr": "Principal avion d'attaque israélien, le Skyhawk assure l'essentiel de l'appui au sol et subit la plupart des pertes face aux missiles ; deux sont abattus dès l'opération *Tagar*, le 7 octobre. Les États-Unis en livrent des dizaines pour combler les pertes.",
+        "en": "Israel's main attack aircraft, the Skyhawk flew most of the close-support missions and suffered most of the losses to missiles; two were shot down during Operation *Tagar* on 7 October. The United States delivered dozens more to make good the losses."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_A-4_Skyhawk",
+        "https://en.wikipedia.org/wiki/Operation_Tagar",
+        "https://en.wikipedia.org/wiki/Operation_Nickel_Grass"
+      ],
+      "note": "Nombre de Skyhawk transférés pendant Nickel Grass : 36 selon l'article sur l'opération, 46 selon l'article sur l'A-4. ACIG compte au moins neuf Skyhawk abattus par des MiG, quand les sources israéliennes n'admettent que cinq pertes en combat aérien, tous types confondus."
+    },
+    {
+      "name": "Super Mystère B2",
+      "side": "israel",
+      "attested": true,
+      "role": {
+        "fr": "Remotorisés en Sa'ar, les Super Mystère du 105e escadron frappent blindés et artillerie sur le Golan et le long du canal : 887 sorties selon l'armée de l'air israélienne, pour six appareils perdus sur vingt, dont quatre le premier jour.",
+        "en": "Re-engined as the Sa'ar, the Super Mystères of 105 Squadron struck armour and artillery on the Golan and along the canal: 887 sorties according to the Israeli Air Force, for six aircraft lost out of twenty, four of them on the first day."
+      },
+      "sources": [
+        "https://jewishvirtuallibrary.org/jsource/Society_&_Culture/iafsaar.html",
+        "https://en.wikipedia.org/wiki/Dassault_Super_Myst%C3%A8re"
+      ],
+      "note": "Chiffres de source israélienne ; Wikipédia confirme six pertes mais signale l'absence de référence."
+    },
+    {
+      "name": "Su-7",
+      "side": "coalition-arabe",
+      "attested": true,
+      "role": {
+        "fr": "Les Su-7 égyptiens attaquent les forces israéliennes dans le Sinaï dès le 6 octobre ; en Syrie, environ 80 Su-7 mènent des attaques à très basse altitude sur le Golan, au prix de lourdes pertes. L'Irak et l'Algérie en engagent aussi.",
+        "en": "Egyptian Su-7s attacked Israeli forces in the Sinai from 6 October; in Syria, some 80 Su-7s flew very low-level attacks over the Golan at the cost of heavy losses. Iraq and Algeria also committed the type."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-7",
+        "https://en.wikipedia.org/wiki/Yom_Kippur_War",
+        "https://fr.wikipedia.org/wiki/Guerre_du_Kippour"
+      ],
+      "note": ""
+    },
+    {
+      "name": "MiG-21",
+      "side": "coalition-arabe",
+      "attested": true,
+      "role": {
+        "fr": "Pilier de la chasse arabe, il est engagé par l'Égypte, la Syrie, l'Irak et l'Algérie, parfois avec des pilotes nord-coréens. Le 14 octobre, une soixantaine de MiG-21 égyptiens défendent les bases du delta lors de la bataille aérienne de Mansourah.",
+        "en": "The backbone of Arab fighter forces, it was flown by Egypt, Syria, Iraq and Algeria, sometimes with North Korean pilots. On 14 October, some sixty Egyptian MiG-21s defended the Delta air bases in the air battle of Mansoura."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-21",
+        "https://en.wikipedia.org/wiki/Air_battle_of_Mansoura",
+        "https://theaviationist.com/2013/06/24/iaf-f-4-vs-nk-mig21/"
+      ],
+      "note": "Revendications contradictoires : Israël revendique 73 MiG-21 égyptiens (65 confirmés) et 29 syriens ; l'Égypte revendique 27 victoires de ses MiG-21, la Syrie 30. À Mansourah, l'Égypte revendique 17 avions abattus, Israël ramène son chiffre de 15 à 7."
+    },
+    {
+      "name": "F-4 Phantom II",
+      "side": "israel",
+      "attested": true,
+      "role": {
+        "fr": "Nixon autorise la cession de 36 F-4 prélevés sur les 4th et 401st Tactical Fighter Wings de l'US Air Force, convoyés jusqu'en Israël, certains par des pilotes américains, pour combler les pertes. Les Phantom israéliens tirent aussi leurs premiers missiles AGM-65 Maverick.",
+        "en": "Nixon authorised the transfer of 36 F-4s taken from the US Air Force's 4th and 401st Tactical Fighter Wings, ferried to Israel, some by American pilots, to replace losses. Israeli Phantoms also fired their first AGM-65 Maverick missiles."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F-4_Phantom_II_non-U.S._operators",
+        "https://en.wikipedia.org/wiki/Operation_Nickel_Grass"
+      ],
+      "note": "Rôle centré sur l'apport américain pour ne pas doubler la fiche F-4E Kurnass, qui porte les combats de l'armée de l'air israélienne."
+    },
+    {
+      "name": "Mirage IIICJ Shahak",
+      "side": "israel",
+      "attested": true,
+      "role": {
+        "fr": "Avec le Nesher, il assure la supériorité aérienne israélienne : ses pilotes sont crédités de 106 appareils syriens et égyptiens abattus. Ses pertes restent discutées, cinq appareils en combat aérien selon Israël, au moins 26 Mirage et Nesher selon ACIG.",
+        "en": "Alongside the Nesher, it secured Israeli air superiority: its pilots were credited with 106 Syrian and Egyptian aircraft shot down. Its losses remain disputed: five aircraft in air combat according to Israel, at least 26 Mirages and Neshers according to ACIG."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Dassault_Mirage_III"
+      ],
+      "note": "Victoires créditées par Israël. Le chiffre de cinq pertes en combat aérien couvre l'ensemble de l'armée de l'air israélienne ; Wikipédia juge la source ACIG peut-être peu fiable."
+    },
+    {
+      "name": "C-141 Starlifter",
+      "side": "soutiens",
+      "attested": true,
+      "role": {
+        "fr": "Pilier du pont aérien *Nickel Grass*, les C-141 de l'US Air Force effectuent 422 missions et transportent 10 754 tonnes de matériel vers Lod entre le 14 octobre et le 14 novembre, en faisant escale aux Açores.",
+        "en": "The mainstay of the *Nickel Grass* airlift, US Air Force C-141s flew 422 missions and carried 10,754 tons of materiel to Lod between 14 October and 14 November, staging through the Azores."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_C-141_Starlifter",
+        "https://en.wikipedia.org/wiki/Operation_Nickel_Grass",
+        "https://www.jewishvirtuallibrary.org/operation-nickel-grass"
+      ],
+      "note": ""
+    },
+    {
+      "name": "MiG-25",
+      "side": "soutiens",
+      "attested": true,
+      "role": {
+        "fr": "Des MiG-25 de reconnaissance servis par les Soviétiques reviennent en Égypte les 19 et 20 octobre, en pleine guerre. Le type avait déjà survolé une vingtaine de fois le Sinaï occupé en 1971-1972.",
+        "en": "Soviet-operated MiG-25 reconnaissance aircraft returned to Egypt on 19 and 20 October, in the middle of the war. The type had already overflown the occupied Sinai some twenty times in 1971-1972."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-25",
+        "https://fr.wikipedia.org/wiki/Mikoyan-Gourevitch_MiG-25"
+      ],
+      "note": "Présence attestée pendant la guerre, mais aucune source fiable consultée ne détaille de mission en octobre 1973. Des récits secondaires (blogs) évoquent des survols du canal pour montrer à Sadate la percée israélienne : non vérifié. L'article français ne mentionne que 1971-1972."
+    },
+    {
+      "name": "Mirage 5",
+      "side": "coalition-arabe",
+      "attested": true,
+      "role": {
+        "fr": "Prêtés par la Libye mais pilotés par des Égyptiens du 69e escadron, basé à Tanta, les Mirage 5 attaquent dès le 6 octobre les positions israéliennes du Sinaï ; le 18, ils frappent l'aérodrome d'El-Arish et perdent trois appareils.",
+        "en": "Lent by Libya but flown by Egyptian pilots of 69 Squadron at Tanta, the Mirage 5s attacked Israeli positions in the Sinai from 6 October; on the 18th they struck El-Arish airfield, losing three aircraft."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Dassault_Mirage_5",
+        "https://acig.org/artman/publish/printer_353.shtml",
+        "https://fr.wikipedia.org/wiki/Guerre_du_Kippour"
+      ],
+      "note": "Effectif disputé : 21 appareils selon Wikipédia, 38 selon ACIG. Pertes au combat : au moins cinq selon les sources israéliennes, au moins neuf selon des sources américaines (ACIG). Aucun pilote libyen n'est connu pour avoir volé en mission de guerre ; Wikipédia français signale que la France a contesté ce prêt."
+    },
+    {
+      "name": "F-4E Kurnass",
+      "side": "israel",
+      "attested": true,
+      "role": {
+        "fr": "Fer de lance israélien : le 6 octobre, deux F-4E revendiquent sept MiG au-dessus d'Ofira ; le 7, six sont abattus par les missiles syriens (*Dougman 5*) ; le 9, ils frappent l'état-major syrien à Damas. À la mi-octobre, 37 Phantom ont été perdus.",
+        "en": "Israel's spearhead: on 6 October two F-4Es claimed seven MiGs over Ofira; on the 7th six were shot down by Syrian missiles (*Dougman 5*); on the 9th they struck the Syrian General Staff in Damascus. By mid-October, 37 Phantoms had been lost."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F-4_Phantom_II_non-U.S._operators",
+        "https://en.wikipedia.org/wiki/Ofira_Air_Battle",
+        "https://en.wikipedia.org/wiki/Operation_Doogman_5",
+        "https://www.jewishvirtuallibrary.org/israel-air-force-in-the-yom-kippur-war"
+      ],
+      "note": "Les 37 pertes (plus six appareils irréparables) viennent de Wikipédia ; d'autres sources donnent « plus de 30 » pour toute la guerre."
+    },
+    {
+      "name": "IAI Nesher",
+      "side": "israel",
+      "attested": true,
+      "role": {
+        "fr": "Engagé surtout en combat aérien, notamment sur le Golan où des Nesher abattent trois MiG-21 syriens dès le 6 octobre, il voit ses pilotes revendiquer plus d'une centaine de victoires. Son emploi intensif use vite les cellules.",
+        "en": "Used mainly for air combat, notably over the Golan where Neshers downed three Syrian MiG-21s on 6 October, it saw its pilots claim more than a hundred kills. Intensive use quickly wore out the airframes."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/IAI_Nesher",
+        "https://en.wikipedia.org/wiki/Dassault_Mirage_III",
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-21"
+      ],
+      "note": "Victoires revendiquées : « plus d'une centaine » selon l'article Nesher, 140 selon l'article Mirage III."
+    }
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Yom_Kippur_War",
+    "https://fr.wikipedia.org/wiki/Guerre_du_Kippour",
+    "https://en.wikipedia.org/wiki/Operation_Tagar",
+    "https://en.wikipedia.org/wiki/Operation_Doogman_5",
+    "https://en.wikipedia.org/wiki/Ofira_Air_Battle",
+    "https://en.wikipedia.org/wiki/Air_battle_of_Mansoura",
+    "https://en.wikipedia.org/wiki/Operation_Nickel_Grass",
+    "https://www.jewishvirtuallibrary.org/operation-nickel-grass",
+    "https://www.jewishvirtuallibrary.org/israel-air-force-in-the-yom-kippur-war",
+    "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-21",
+    "https://en.wikipedia.org/wiki/Dassault_Mirage_III"
+  ]
+}

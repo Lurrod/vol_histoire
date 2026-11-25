@@ -1,0 +1,49 @@
+{
+  "slug": "siege-de-marawi",
+  "name": "Siège de Marawi",
+  "name_fr": "Siège de Marawi",
+  "date_start": "2017-05-22T22:00:00.000Z",
+  "date_end": "2017-10-22T22:00:00.000Z",
+  "description": "Bataille de cinq mois entre l'armée philippine et des groupes affiliés à l'État islamique dans la ville de Marawi, sur Mindanao. Premier emploi au combat de l'avion d'armes léger FA-50.",
+  "count": 2,
+  "outcome": null,
+  "context": null,
+  "narrative": null,
+  "sources": [],
+  "sides": [],
+  "events": [],
+  "airplanes": [
+    {
+      "id": 467,
+      "name": "OV-10 Bronco",
+      "little_description": "Avion de contre-insurrection à double poutre, conçu pour les terrains sommaires",
+      "image_url": "/assets/airplanes/ov10-bronco.jpg",
+      "date_first_fly": "1965-07-15T23:00:00.000Z",
+      "date_operationel": "1968-02-22T23:00:00.000Z",
+      "country_code": "USA",
+      "country_name": "États-Unis",
+      "type_name": "Appui aérien",
+      "generation": 2,
+      "side_key": null,
+      "role": null,
+      "type_name_fr": "Appui aérien",
+      "role_sources": []
+    },
+    {
+      "id": 262,
+      "name": "KAI FA-50",
+      "little_description": "Premier avion de combat coréen exporté, et vendu à l’OTAN",
+      "image_url": "/assets/airplanes/fa50.jpg",
+      "date_first_fly": "2011-05-03T22:00:00.000Z",
+      "date_operationel": "2013-07-31T22:00:00.000Z",
+      "country_code": "ROK",
+      "country_name": "Corée du Sud",
+      "type_name": "Multirôle",
+      "generation": 4,
+      "side_key": null,
+      "role": null,
+      "type_name_fr": "Multirôle",
+      "role_sources": []
+    }
+  ]
+}

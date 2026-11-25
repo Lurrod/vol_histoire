@@ -1,0 +1,1192 @@
+{
+  "war": "Guerre d'Afghanistan",
+  "slug": "guerre-d-afghanistan",
+  "outcome": {
+    "fr": "Victoire des talibans : après vingt ans de guerre, ils reprennent Kaboul le 15 août 2021, et le dernier avion militaire américain quitte l'aéroport le 30 août, au terme d'un pont aérien qui a évacué plus de 122 000 personnes.",
+    "en": "Taliban victory: after twenty years of war they retook Kabul on 15 August 2021, and the last American military aircraft left the airport on 30 August, at the end of an airlift that had evacuated more than 122,000 people."
+  },
+  "context": {
+    "fr": "Après les attentats du 11 septembre 2001, les États-Unis exigent des talibans, maîtres de la majeure partie de l'Afghanistan, qu'ils livrent Oussama ben Laden et les chefs d'al-Qaïda. Devant leur refus, Washington lance le 7 octobre 2001 l'opération *Enduring Freedom*, avec le Royaume-Uni dès le premier jour. La campagne repose sur un trio inédit : des forces spéciales et des agents de la CIA au sol, les milices de l'Alliance du Nord et une puissance aérienne qui frappe depuis des bases lointaines et des porte-avions. Le régime taliban s'effondre en dix semaines.\n\nUne Force internationale d'assistance à la sécurité (FIAS), créée par le Conseil de sécurité à la fin de 2001, sécurise d'abord Kaboul. L'OTAN en prend la tête le 11 août 2003 et l'étend à tout le pays ; à son apogée, elle compte plus de 130 000 soldats venus de 51 pays. À la fin de 2014, les forces afghanes reprennent la responsabilité de la sécurité et la mission *Resolute Support*, plus réduite et sans rôle de combat, prend le relais le 1er janvier 2015. L'accord conclu à Doha entre les États-Unis et les talibans en février 2020 organise le retrait américain.\n\nLe déséquilibre aérien est total. L'aviation talibane, une cinquantaine d'appareils dont la moitié de vieux chasseurs, et ses missiles SA-2 et SA-3 sont détruits dès les premières nuits. La guerre devient une longue insurrection, menée par les talibans et al-Qaïda depuis les zones frontalières du Pakistan, contre une coalition et une armée afghane (jusqu'à 307 947 hommes en janvier 2021) qui dépendent de la maîtrise du ciel pour l'appui, le renseignement et le ravitaillement.",
+    "en": "After the attacks of 11 September 2001, the United States demanded that the Taliban, who controlled most of Afghanistan, hand over Osama bin Laden and the al-Qaeda leadership. When they refused, Washington launched Operation *Enduring Freedom* on 7 October 2001, with the United Kingdom alongside from the first day. The campaign rested on a novel combination: special forces and CIA officers on the ground, the Northern Alliance militias, and air power striking from distant bases and aircraft carriers. The Taliban regime collapsed within ten weeks.\n\nAn International Security Assistance Force (ISAF), created by the UN Security Council at the end of 2001, first secured Kabul. NATO took command on 11 August 2003 and extended it across the country; at its peak it numbered more than 130,000 troops from 51 nations. At the end of 2014 Afghan forces assumed full responsibility for security, and the smaller, non-combat *Resolute Support* mission took over on 1 January 2015. The agreement signed in Doha between the United States and the Taliban in February 2020 set out the American withdrawal.\n\nThe imbalance in the air was total. The Taliban air force, around fifty aircraft, half of them old fighters, and its SA-2 and SA-3 missiles were destroyed in the first nights. The war became a long insurgency, waged by the Taliban and al-Qaeda from the border areas of Pakistan, against a coalition and an Afghan army (up to 307,947 personnel in January 2021) that depended on control of the air for fire support, intelligence and supply."
+  },
+  "narrative": {
+    "fr": "La première nuit, le 7 octobre 2001, les frappes visent 31 objectifs : missiles de croisière Tomahawk tirés de navires américains et de sous-marins britanniques, B-2 partis du Missouri pour des missions de 44 heures, B-1B et B-52H basés à Diego Garcia, chasseurs embarqués des porte-avions de la mer d'Arabie. La défense aérienne et l'aviation talibanes sont anéanties, et la CIA tire pour la première fois avec un drone Predator armé. Faute de bases proches, l'aéronavale vole 75 % des missions de frappe selon la RAND, au prix de vols de cinq à sept heures ; mais les avions de l'US Air Force, avec environ 20 % des missions, délivrent à la mi-décembre 6 100 tonnes de munitions, soit les trois quarts du total, et plus de 72 % de leurs armes sont guidées. Les ravitailleurs fournissent alors la moitié des sorties de l'US Air Force.\n\nGuidées depuis le sol par les forces spéciales, les bombes ouvrent la voie à l'Alliance du Nord : Mazar-i-Charif tombe le 10 novembre, Kaboul le 13, Kunduz le 23, Kandahar le 7 décembre. À Tora Bora, bombardé du 16 novembre au 17 décembre, ben Laden parvient pourtant à s'enfuir vers le Pakistan. Les alliés rejoignent la campagne : Mirage IV de reconnaissance et C-135FR français depuis les Émirats, Super Étendard du *Charles de Gaulle* à partir du 19 décembre, Harrier italiens du *Garibaldi*. En mars 2002, l'opération *Anaconda* dans la vallée de Shah-e-Kot, où l'artillerie manque, repose sur l'appui aérien : AC-130, A-10, bombardiers, avions embarqués et Mirage 2000D français, dans une coordination souvent confuse.\n\nDe 2002 à 2014, la guerre devient une contre-insurrection, conduite depuis Bagram, Kandahar et Camp Bastion, et depuis Manas au Kirghizistan, Douchanbé au Tadjikistan ou les bases du Golfe. L'aviation y fait surtout de l'appui aérien rapproché au profit de petites unités au contact, du renseignement (U-2, P-3 et Nimrod reconvertis au survol terrestre, drones) et du brouillage (EC-130H, EA-6B). Les Européens s'y relaient : F-16 néerlandais, belges, danois et norvégiens, Tornado britanniques et allemands, Mirage, Rafale (premier tir le 28 mars 2007), AMX italiens. Parmi les pertes marquantes, le Nimrod XV230 explose en vol le 2 septembre 2006 (14 morts), et un raid taliban détruit six Harrier à Camp Bastion le 14 septembre 2012. Un pont aérien constant, des C-17 et C-5 aux An-124 affrétés par l'OTAN, ravitaille les troupes.\n\nAprès 2014, les frappes ne cessent pas. Le 13 avril 2017, un MC-130 largue sur l'État islamique la GBU-43 « MOAB », la plus grosse bombe classique américaine, employée pour la première fois au combat ; en 2019, la coalition largue 7 423 armes, le total annuel le plus élevé publié par l'AFCENT depuis 2009. La bavure la plus grave survient le 3 octobre 2015 à Kunduz, où un AC-130U détruit l'hôpital de Médecins sans frontières (42 morts selon l'ONG). Parallèlement, la coalition reconstruit une armée de l'air afghane : C-130H, Cessna 208, hélicoptères MD-530 et UH-60, et A-29 Super Tucano, arrivés le 15 janvier 2016, qui larguent leur première bombe guidée laser le 22 mars 2018.\n\nL'offensive talibane de l'été 2021 emporte le régime. Au moins 22 avions et 24 hélicoptères afghans s'enfuient en Ouzbékistan avec 585 militaires. Du 14 au 30 août, le pont aérien de Kaboul évacue plus de 122 000 personnes selon Wikipédia, environ 124 000 selon l'US Air Force, sous la menace : l'attentat du 26 août à l'aéroport tue 13 militaires américains et plus de 159 civils afghans. Le dernier C-17 décolle à 23 h 59 le 30 août. La coalition a perdu 3 579 militaires en vingt ans.",
+    "en": "On the first night, 7 October 2001, strikes hit 31 targets: Tomahawk cruise missiles from American ships and British submarines, B-2s flying 44-hour missions from Missouri, B-1Bs and B-52Hs based on Diego Garcia, and carrier fighters from the Arabian Sea. The Taliban air defences and air force were wiped out, and the CIA fired for the first time from an armed Predator drone. With no bases nearby, naval aviation flew 75 per cent of strike missions according to RAND, at the cost of five- to seven-hour sorties; yet US Air Force aircraft, with about 20 per cent of the missions, had delivered 6,100 tons of munitions by mid-December, three quarters of the total, and more than 72 per cent of their weapons were guided. Tankers accounted for half of all USAF sorties at that point.\n\nGuided from the ground by special forces, the bombs opened the way for the Northern Alliance: Mazar-i-Sharif fell on 10 November, Kabul on the 13th, Kunduz on the 23rd and Kandahar on 7 December. At Tora Bora, bombed from 16 November to 17 December, bin Laden nevertheless escaped into Pakistan. Allies joined the campaign: French Mirage IV reconnaissance aircraft and C-135FR tankers from the Emirates, Super Étendards from the *Charles de Gaulle* from 19 December, Italian Harriers from the *Garibaldi*. In March 2002, Operation *Anaconda* in the Shah-i-Kot valley, where artillery was scarce, relied on air support: AC-130s, A-10s, bombers, carrier aircraft and French Mirage 2000Ds, often amid confused coordination.\n\nFrom 2002 to 2014 the war became a counter-insurgency, fought from Bagram, Kandahar and Camp Bastion, and from Manas in Kyrgyzstan, Dushanbe in Tajikistan and the Gulf bases. Air power mostly meant close air support for small units in contact, intelligence gathering (U-2s, P-3s and Nimrods turned to overland work, drones) and jamming (EC-130Hs, EA-6Bs). The Europeans took turns: Dutch, Belgian, Danish and Norwegian F-16s, British and German Tornados, Mirages, Rafales (first weapon release on 28 March 2007) and Italian AMXs. Among the notable losses, Nimrod XV230 exploded in flight on 2 September 2006 (14 killed), and a Taliban raid destroyed six Harriers at Camp Bastion on 14 September 2012. A constant airlift, from C-17s and C-5s to An-124s chartered by NATO, kept the troops supplied.\n\nAfter 2014 the strikes did not stop. On 13 April 2017 an MC-130 dropped the GBU-43 MOAB, the largest American conventional bomb, used in combat for the first time, on Islamic State fighters; in 2019 the coalition released 7,423 weapons, the highest annual total published by AFCENT since 2009. The worst mistake came on 3 October 2015 in Kunduz, where an AC-130U destroyed the Médecins Sans Frontières hospital (42 dead according to the charity). Meanwhile the coalition rebuilt an Afghan air force: C-130Hs, Cessna 208s, MD-530 and UH-60 helicopters, and A-29 Super Tucanos, which arrived on 15 January 2016 and dropped their first laser-guided bomb on 22 March 2018.\n\nThe Taliban offensive of summer 2021 swept the government away. At least 22 Afghan aircraft and 24 helicopters fled to Uzbekistan carrying 585 military personnel. From 14 to 30 August the Kabul airlift evacuated more than 122,000 people according to Wikipedia, about 124,000 according to the US Air Force, under constant threat: the bombing at the airport on 26 August killed 13 American service members and more than 159 Afghan civilians. The last C-17 took off at 11:59 pm on 30 August. The coalition had lost 3,579 service members in twenty years."
+  },
+  "sides": [
+    {
+      "key": "coalition",
+      "name": {
+        "fr": "Coalition et gouvernement afghan",
+        "en": "Coalition and Afghan government"
+      },
+      "members": {
+        "fr": "États-Unis, Royaume-Uni, France, Allemagne, Italie, Canada, Pays-Bas, Belgique, Danemark, Norvège, Australie et les autres pays de l'OTAN et de la FIAS (51 pays), Alliance du Nord puis République islamique d'Afghanistan",
+        "en": "United States, United Kingdom, France, Germany, Italy, Canada, the Netherlands, Belgium, Denmark, Norway, Australia and the other NATO and ISAF nations (51 countries), the Northern Alliance and then the Islamic Republic of Afghanistan"
+      }
+    },
+    {
+      "key": "talibans",
+      "name": {
+        "fr": "Talibans et al-Qaïda",
+        "en": "Taliban and al-Qaeda"
+      },
+      "members": {
+        "fr": "Émirat islamique d'Afghanistan (talibans), al-Qaïda et groupes insurgés alliés",
+        "en": "Islamic Emirate of Afghanistan (Taliban), al-Qaeda and allied insurgent groups"
+      }
+    }
+  ],
+  "events": [
+    {
+      "date": "2001-10-07",
+      "precision": "day",
+      "title": {
+        "fr": "Début d'*Enduring Freedom*",
+        "en": "*Enduring Freedom* begins"
+      },
+      "body": {
+        "fr": "Bombardiers, avions embarqués et missiles de croisière frappent 31 objectifs. La défense aérienne talibane, ses MiG-21 et ses Su-22 sont détruits dès la première nuit, et la CIA mène sa première frappe avec un Predator armé.",
+        "en": "Bombers, carrier aircraft and cruise missiles hit 31 targets. The Taliban air defences, MiG-21s and Su-22s were destroyed on the first night, and the CIA carried out its first strike with an armed Predator."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/United_States_invasion_of_Afghanistan"
+    },
+    {
+      "date": "2001-11-13",
+      "precision": "day",
+      "title": {
+        "fr": "Chute de Kaboul",
+        "en": "Fall of Kabul"
+      },
+      "body": {
+        "fr": "Trois jours après Mazar-i-Charif, l'Alliance du Nord entre dans Kaboul, ouverte par des semaines de frappes guidées depuis le sol par les forces spéciales.",
+        "en": "Three days after Mazar-i-Sharif, the Northern Alliance entered Kabul, its way opened by weeks of strikes guided from the ground by special forces."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/United_States_invasion_of_Afghanistan"
+    },
+    {
+      "date": "2001-12-17",
+      "precision": "day",
+      "title": {
+        "fr": "Fin de la bataille de Tora Bora",
+        "en": "Battle of Tora Bora ends"
+      },
+      "body": {
+        "fr": "Après un mois de bombardements sur les grottes de Tora Bora, commencés le 16 novembre, la bataille s'achève, mais Oussama ben Laden a fui vers le Pakistan.",
+        "en": "After a month of bombing of the Tora Bora caves, begun on 16 November, the battle ended, but Osama bin Laden had escaped into Pakistan."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/United_States_invasion_of_Afghanistan"
+    },
+    {
+      "date": "2001-12-19",
+      "precision": "day",
+      "title": {
+        "fr": "Premières missions françaises embarquées",
+        "en": "First French carrier missions"
+      },
+      "body": {
+        "fr": "Les Super Étendard du *Charles de Gaulle* effectuent leurs premières missions de reconnaissance et de bombardement au-dessus de l'Afghanistan, à plus de 3 000 km de vol aller-retour.",
+        "en": "Super Étendards from the *Charles de Gaulle* flew their first reconnaissance and bombing missions over Afghanistan, covering more than 3,000 km per sortie."
+      },
+      "aircraft": "Super Étendard",
+      "source": "https://fr.wikipedia.org/wiki/Mission_H%C3%A9racl%C3%A8s"
+    },
+    {
+      "date": "2002-03-02",
+      "precision": "day",
+      "title": {
+        "fr": "Opération *Anaconda*",
+        "en": "Operation *Anaconda*"
+      },
+      "body": {
+        "fr": "Jusqu'au 18 mars, l'assaut contre al-Qaïda dans la vallée de Shah-e-Kot, mené presque sans artillerie, repose sur l'appui aérien : AC-130, avions de l'US Air Force et de l'US Navy, Mirage 2000D français.",
+        "en": "Until 18 March, the assault on al-Qaeda in the Shah-i-Kot valley, fought almost without artillery, relied on air support: AC-130s, US Air Force and Navy aircraft and French Mirage 2000Ds."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Operation_Anaconda"
+    },
+    {
+      "date": "2006-09-02",
+      "precision": "day",
+      "title": {
+        "fr": "Perte du Nimrod XV230",
+        "en": "Loss of Nimrod XV230"
+      },
+      "body": {
+        "fr": "Un Nimrod MR2 de la RAF qui surveillait l'opération *Medusa* prend feu après un ravitaillement en vol et s'écrase près de Kandahar : ses 14 occupants sont tués.",
+        "en": "An RAF Nimrod MR2 monitoring Operation *Medusa* caught fire after air-to-air refuelling and crashed near Kandahar, killing all 14 on board."
+      },
+      "aircraft": "Hawker Siddeley Nimrod",
+      "source": "https://en.wikipedia.org/wiki/2006_Royal_Air_Force_Nimrod_crash"
+    },
+    {
+      "date": "2007-03-28",
+      "precision": "day",
+      "title": {
+        "fr": "Premier tir d'un Rafale",
+        "en": "First Rafale weapon release"
+      },
+      "body": {
+        "fr": "Un Rafale Marine F2 de la flottille 12F largue une bombe guidée laser de 250 kg sur un groupe de talibans au contact de soldats néerlandais : premier tir de guerre du Rafale.",
+        "en": "A French Navy Rafale F2 of Flottille 12F dropped a 250 kg laser-guided bomb on a group of Taliban engaging Dutch troops: the Rafale's first use of a weapon in war."
+      },
+      "aircraft": "Rafale",
+      "source": "https://prod-site-internet-minarm-admin.cloud.defense.gouv.fr/sites/default/files/cesm/bm-59-rafale-afghanistan.pdf"
+    },
+    {
+      "date": "2012-09-14",
+      "precision": "day",
+      "title": {
+        "fr": "Raid sur Camp Bastion",
+        "en": "Raid on Camp Bastion"
+      },
+      "body": {
+        "fr": "Une quinzaine d'insurgés pénètrent dans la base du Helmand, tuent deux Marines et détruisent six Harrier du VMA-211, et en endommagent deux autres.",
+        "en": "Around fifteen insurgents broke into the Helmand base, killed two Marines and destroyed six VMA-211 Harriers, and damaged two more."
+      },
+      "aircraft": "AV-8B Harrier II",
+      "source": "https://en.wikipedia.org/wiki/September_2012_raid_on_Camp_Bastion"
+    },
+    {
+      "date": "2015-01-01",
+      "precision": "day",
+      "title": {
+        "fr": "*Resolute Support* succède à la FIAS",
+        "en": "*Resolute Support* replaces ISAF"
+      },
+      "body": {
+        "fr": "La FIAS ayant achevé sa mission à la fin de 2014, l'OTAN lance une mission plus réduite de formation et de conseil, sans rôle de combat.",
+        "en": "With ISAF's mission completed at the end of 2014, NATO launched a smaller training and advisory mission with no combat role."
+      },
+      "aircraft": null,
+      "source": "https://www.nato.int/cps/en/natohq/topics_69366.htm"
+    },
+    {
+      "date": "2015-10-03",
+      "precision": "day",
+      "title": {
+        "fr": "Bombardement de l'hôpital de Kunduz",
+        "en": "Kunduz hospital strike"
+      },
+      "body": {
+        "fr": "Un AC-130U américain frappe par erreur le centre de traumatologie de Médecins sans frontières à Kunduz pendant plus d'une heure : 42 morts selon l'ONG.",
+        "en": "An American AC-130U mistakenly struck the Médecins Sans Frontières trauma centre in Kunduz for over an hour: 42 dead according to the charity."
+      },
+      "aircraft": "AC-130 Spectre",
+      "source": "https://www.msf.org/kunduz-hospital-attack-depth"
+    },
+    {
+      "date": "2017-04-13",
+      "precision": "day",
+      "title": {
+        "fr": "La « MOAB » sur Achin",
+        "en": "The MOAB at Achin"
+      },
+      "body": {
+        "fr": "Un MC-130 des forces spéciales largue la GBU-43, bombe classique de près de 10 tonnes employée pour la première fois au combat, sur des tunnels de l'État islamique dans la province du Nangarhar.",
+        "en": "A special operations MC-130 dropped the GBU-43, a conventional bomb of nearly 10 tonnes used in combat for the first time, on Islamic State tunnels in Nangarhar province."
+      },
+      "aircraft": "C-130 Hercules",
+      "source": "https://www.militarytimes.com/flashpoints/2017/04/13/centcom-us-drops-mother-of-all-bombs-on-isis-in-afghanistan/"
+    },
+    {
+      "date": "2018-03-22",
+      "precision": "day",
+      "title": {
+        "fr": "Première bombe guidée afghane",
+        "en": "First Afghan guided bomb"
+      },
+      "body": {
+        "fr": "Un A-29 Super Tucano de l'armée de l'air afghane détruit un repaire taliban dans la province de Farah avec une GBU-58 : la première arme guidée laser tirée au combat par l'armée afghane.",
+        "en": "An Afghan Air Force A-29 Super Tucano destroyed a Taliban compound in Farah province with a GBU-58: the first laser-guided weapon ever released in combat by the Afghan military."
+      },
+      "aircraft": "Embraer EMB-314 Super Tucano",
+      "source": "https://www.military.com/dodbuzz/2018/03/27/afghan-29-drops-first-laser-guided-bomb-taliban.html"
+    },
+    {
+      "date": "2021-08-15",
+      "precision": "day",
+      "title": {
+        "fr": "Kaboul tombe, le pont aérien commence",
+        "en": "Kabul falls, the airlift begins"
+      },
+      "body": {
+        "fr": "Les talibans entrent dans Kaboul. Le même jour, un C-17 américain emporte 823 personnes : l'évacuation par l'aéroport, seule porte de sortie, durera jusqu'au 30 août.",
+        "en": "The Taliban entered Kabul. That same day an American C-17 carried 823 people out: the evacuation through the airport, the only way out, would last until 30 August."
+      },
+      "aircraft": "C-17 Globemaster III",
+      "source": "https://en.wikipedia.org/wiki/2021_Kabul_airlift"
+    },
+    {
+      "date": "2021-08-30",
+      "precision": "day",
+      "title": {
+        "fr": "Le dernier C-17 quitte Kaboul",
+        "en": "The last C-17 leaves Kabul"
+      },
+      "body": {
+        "fr": "À 23 h 59, heure de Kaboul, le dernier C-17 décolle avec le général Chris Donahue à son bord, dernier militaire américain à quitter l'Afghanistan : la guerre est finie pour les États-Unis.",
+        "en": "At 11:59 pm Kabul time the last C-17 took off with Major General Chris Donahue aboard, the last American soldier to leave Afghanistan: America's war was over."
+      },
+      "aircraft": "C-17 Globemaster III",
+      "source": "https://www.govexec.com/defense/2021/08/inside-final-hours-kabul-airport/184979/"
+    }
+  ],
+  "aircraft": [
+    {
+      "name": "English Electric Canberra",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les derniers Canberra PR9 du 39 Squadron de la RAF, déployés au Moyen-Orient, mènent des missions de reconnaissance au-dessus de l'Afghanistan pour les Américains puis les Britanniques ; leur retrait est retardé pour cela, et deux appareils rentrent à Marham le 23 juin 2006.",
+        "en": "The RAF's last Canberra PR9s, of No. 39 Squadron, deployed to the Middle East and flew reconnaissance over Afghanistan for American and then British operations; their retirement was postponed for this, and two aircraft returned to Marham on 23 June 2006."
+      },
+      "sources": [
+        "https://flightglobal.com/raf-to-extend-life-of-canberra-pr9-/61862.article",
+        "https://en.wikipedia.org/wiki/English_Electric_Canberra",
+        "https://www.defencetalk.com/curtain-comes-down-as-the-canberra-makes-its-last-operational-flight-6968"
+      ],
+      "note": "Fin du service opérationnel : 23 juin 2006 selon le ministère britannique, 22 juin selon Aviation Week. Les sources consultées ne nomment pas la base de déploiement."
+    },
+    {
+      "name": "B-52 Stratofortress",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Dix B-52H basés à Diego Garcia frappent dès octobre 2001 avec bombes Mk 82 et JDAM. Le 5 novembre, un B-52 appuie la charge de cavalerie de Dostom à Baluch ; le 5 décembre, une JDAM tombée trop près tue trois Bérets verts et cinq Afghans.",
+        "en": "Ten B-52Hs based on Diego Garcia struck from October 2001 with Mk 82 bombs and JDAMs. On 5 November a B-52 supported Dostum's cavalry charge at Baluch; on 5 December a JDAM that fell short killed three Green Berets and five Afghans."
+      },
+      "sources": [
+        "https://www.airandspaceforces.com/article/0202enduring/",
+        "https://en.wikipedia.org/wiki/United_States_invasion_of_Afghanistan"
+      ],
+      "note": "Les sources consultées donnent la part des trois bombardiers réunis (plus de 80 % du tonnage largué en Afghanistan selon l'US Air Force), pas celle du seul B-52."
+    },
+    {
+      "name": "C-130 Hercules",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "En 2001, les C-130 ravitaillent par air les forces avancées (munitions, vêtements, fourrage) et larguent les bombes géantes BLU-82. La RAF en garde cinq à Kandahar et Bastion de 2006 à 2014, et la nouvelle armée de l'air afghane reçoit des C-130H.",
+        "en": "In 2001 C-130s air-dropped supplies to forward troops (ammunition, clothing, horse feed) and released giant BLU-82 bombs. The RAF kept five at Kandahar and Bastion from 2006 to 2014, and the new Afghan Air Force received C-130Hs."
+      },
+      "sources": [
+        "https://www.airandspaceforces.com/article/0202enduring/",
+        "https://en.wikipedia.org/wiki/Operation_Herrick_aerial_order_of_battle",
+        "https://en.wikipedia.org/wiki/Afghan_Air_Force",
+        "https://www.militarytimes.com/flashpoints/2017/04/13/centcom-us-drops-mother-of-all-bombs-on-isis-in-afghanistan/"
+      ],
+      "note": "Les AC-130 et EC-130H ont leurs propres fiches. Le MC-130 qui largue la GBU-43 « MOAB » le 13 avril 2017 est une version de C-130 sans fiche propre : il est rattaché ici. Afghanistan : 3 C-130 à l'inventaire de juillet 2021."
+    },
+    {
+      "name": "U-2 Dragon Lady",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les U-2 survolent l'Afghanistan avant les premières frappes et fournissent le détail nécessaire à la planification d'octobre 2001. De janvier à mars 2010, le 99th Expeditionary Reconnaissance Squadron y vole près de 200 sorties de combat au profit de plus de 70 unités au contact.",
+        "en": "U-2s overflew Afghanistan before the first strikes and provided the detail needed to plan the October 2001 campaign. From January to March 2010 the 99th Expeditionary Reconnaissance Squadron flew nearly 200 combat sorties there, supporting more than 70 troops-in-contact events."
+      },
+      "sources": [
+        "https://www.airandspaceforces.com/article/0202enduring/",
+        "https://www.afcent.af.mil/News/Article/220502/deployed-dragon-lady-swoops-in-low-for-a-closer-look-at-counterinsurgency"
+      ],
+      "note": ""
+    },
+    {
+      "name": "KC-135 Stratotanker",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Une douzaine de KC-135 opèrent depuis la Bulgarie dès 2001 ; à partir de décembre 2001, ceux du 22nd Expeditionary Air Refueling Squadron, à Manas (Kirghizistan), assurent environ un tiers du ravitaillement en vol de la coalition au-dessus du pays. Ils soutiennent aussi le pont aérien de 2021.",
+        "en": "A dozen KC-135s operated from Bulgaria in 2001; from December 2001 those of the 22nd Expeditionary Air Refueling Squadron at Manas, Kyrgyzstan, provided about a third of coalition air refuelling over Afghanistan. They also supported the 2021 airlift."
+      },
+      "sources": [
+        "https://www.airandspaceforces.com/article/0202enduring/",
+        "https://www.amc.af.mil/News/Article-Display/Article/145616/kc-135s-keep-operation-enduring-freedom-mission-moving-from-kyrgyzstan/",
+        "https://www.af.mil/News/Article-Display/Article/3144426/one-year-later-historic-afghan-airlift-inspires-pride-and-reflection-across-the"
+      ],
+      "note": "La part d'un tiers vient d'un article de l'US Air Force sur le 22nd EARS, sans période précise."
+    },
+    {
+      "name": "P-3 Orion",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Dès la mi-octobre 2001, les P-3C des VP-9 et VP-46 surveillent le terrain jour et nuit au profit des forces spéciales : les missions les plus enfoncées dans les terres d'un patrouilleur maritime depuis 1945. Pendant *Anaconda*, un P-3 relaie les mouvements de véhicules ennemis.",
+        "en": "From mid-October 2001, P-3Cs of VP-9 and VP-46 watched the ground day and night for special forces: the furthest inland missions flown by maritime patrol aircraft since 1945. During *Anaconda*, a P-3 relayed enemy vehicle movements."
+      },
+      "sources": [
+        "https://p-3publications.com/PDF/SeapowerJune2002.pdf",
+        "https://www.washingtontimes.com/news/2002/apr/2/20020402-041635-4569r/",
+        "https://stripes.com/migration/p-3-orions-get-rare-land-patrol-in-afghanistan-1.23858"
+      ],
+      "note": "Stars and Stripes parle des missions les plus intérieures « depuis la Seconde Guerre mondiale »."
+    },
+    {
+      "name": "Breguet Atlantique",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Pendant *Héraclès* (2001-2002), les Atlantique 2 de la Marine nationale participent au volet maritime de la coalition en océan Indien : avec les sous-marins nucléaires d'attaque, ils cumulent 1 300 heures en soutien de la coalition pour interdire à al-Qaïda toute fuite par la mer.",
+        "en": "During *Héraclès* (2001-2002), French Navy Atlantique 2s took part in the coalition's maritime effort in the Indian Ocean: together with nuclear attack submarines they logged 1,300 hours in support of the coalition, denying al-Qaeda any escape by sea."
+      },
+      "sources": [
+        "https://www.cheminsdememoire.gouv.fr/sites/default/files/2022-04/Heracles.pdf"
+      ],
+      "note": "Engagement marginal et périphérique (surveillance maritime). Le chiffre de 1 300 heures réunit Atlantique 2 et sous-marins. Aucune source trouvée de vols au-dessus de l'Afghanistan même, que la fiche du catalogue affirme : à vérifier. Le document du ministère n'a pu être lu qu'à travers le moteur de recherche (site injoignable directement)."
+    },
+    {
+      "name": "Vickers VC10",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Depuis une base du Moyen-Orient, les VC10 ravitailleurs de la RAF ravitaillent en vol les avions de combat de l'OTAN au-dessus de l'Afghanistan, jusqu'à leur dernière sortie opérationnelle en septembre 2013, après 47 ans de service.",
+        "en": "Flying from a Middle East base, RAF VC10 tankers refuelled NATO combat aircraft over Afghanistan until their last operational sortie in September 2013, after 47 years of service."
+      },
+      "sources": [
+        "https://www.gov.uk/government/news/final-flight-of-the-vc10",
+        "https://www.gov.uk/government/news/article-raf-technicians-commended-for-keeping-tanker-flying-over-afghanistan"
+      ],
+      "note": "Retrait daté du 20 septembre 2013 (Wikipédia, Flight), dernière sortie ravitaillement annoncée le 23 septembre (ministère britannique), dernier vol le 25 septembre."
+    },
+    {
+      "name": "Transall C-160",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Jusqu'à huit C-160 de la Luftwaffe, basés à Termez (Ouzbékistan) puis à Mazar-i-Charif, ravitaillent le contingent allemand de la FIAS dans le nord du pays. Deux Transall français opèrent depuis Douchanbé (Tadjikistan). L'A400M les relève à partir de 2014.",
+        "en": "Up to eight Luftwaffe C-160s, based at Termez in Uzbekistan and then Mazar-i-Sharif, supplied the German ISAF contingent in the north of the country. Two French Transalls operated from Dushanbe, Tajikistan. The A400M took over from 2014."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Termez_Airport",
+        "https://www.bundeswehr.de/de/mediathek/grossgeraet-bundeswehr-afghanistan-5097728",
+        "https://en.wikipedia.org/wiki/French_forces_in_Afghanistan"
+      ],
+      "note": ""
+    },
+    {
+      "name": "C-141 Starlifter",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les C-141 participent dès 2001 au transport stratégique d'*Enduring Freedom* et emmènent en 2002 vers Guantánamo les premiers détenus talibans et d'al-Qaïda. De 2004 à 2006, ceux du 445th Airlift Wing de la réserve rapatrient les blessés d'Irak et d'Afghanistan.",
+        "en": "C-141s took part in *Enduring Freedom* strategic airlift from 2001 and in 2002 flew the first Taliban and al-Qaeda detainees to Guantánamo. From 2004 to 2006 those of the reserve 445th Airlift Wing evacuated wounded troops from Iraq and Afghanistan."
+      },
+      "sources": [
+        "https://www.afrc.af.mil/News/Article/159395/c-141-approaches-historical-conclusion-as-last-flight-nears",
+        "https://en.wikipedia.org/wiki/Lockheed_C-141_Starlifter",
+        "https://man.fas.org/dod-101/sys/ac/c-141.htm"
+      ],
+      "note": "Divergence : la FAS affirme qu'aucun C-141 n'a participé à *Enduring Freedom* (le C-17 l'ayant remplacé), tout en mentionnant les vols de détenus ; l'Air Force Reserve écrit qu'ils ont servi en Afghanistan en 2001. Retrait du type en mai 2006."
+    },
+    {
+      "name": "C-2 Greyhound",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les C-2A des escadrons VRC-30 et VRC-40 assurent la liaison logistique (pièces, courrier, passagers) des porte-avions engagés dans *Enduring Freedom*, dont les groupes aériens frappent l'Afghanistan depuis la mer d'Arabie.",
+        "en": "C-2As of squadrons VRC-30 and VRC-40 provided logistic links (parts, mail, passengers) to the carriers engaged in *Enduring Freedom*, whose air wings struck Afghanistan from the Arabian Sea."
+      },
+      "sources": [
+        "https://www.navy.mil/Resources/Fact-Files/Display-FactFiles/Article/2160705/c-2a-greyhound-logistics-aircraft",
+        "https://www.airpac.navy.mil/Organization/Fleet-Logistics-Support-Squadron-VRC-30/About-Us/History/"
+      ],
+      "note": "Engagement indirect : soutien logistique des porte-avions, mentionné par l'US Navy sans date ni chiffre précis."
+    },
+    {
+      "name": "Britten-Norman Defender",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les Defender du 651 Squadron de l'Army Air Corps, avions de surveillance et de renseignement au service notamment des forces spéciales britanniques, sont déployés en Afghanistan de novembre 2010 à 2012.",
+        "en": "Defenders of the Army Air Corps' No. 651 Squadron, surveillance and intelligence aircraft working in particular for UK special forces, were deployed to Afghanistan from November 2010 to 2012."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Britten-Norman_Defender",
+        "https://www.eliteukforces.info/air-support/651-Squadron/"
+      ],
+      "note": "Les missions détaillées restent peu documentées par des sources officielles."
+    },
+    {
+      "name": "Mirage F1",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les Mirage F1CR de reconnaissance de l'armée de l'Air rejoignent Kandahar avec les Mirage 2000D pour appuyer la FIAS dans le sud. Outre la reconnaissance, ils mènent des tirs au canon et des largages de bombes guidées laser au profit de la coalition, encore en 2010.",
+        "en": "French Air Force Mirage F1CR reconnaissance aircraft moved to Kandahar with the Mirage 2000Ds to support ISAF in the south. Besides reconnaissance, they carried out gun strafing and laser-guided bomb drops for the coalition, still in 2010."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/French_forces_in_Afghanistan",
+        "https://www.flightglobal.com/french-mirage-fighters-to-arrive-at-afghan-airbase/76254.article",
+        "https://archives.defense.gouv.fr/content/download/103891/1013352/retro_2010-web.pdf"
+      ],
+      "note": "Date d'arrivée divergente : transfert de Mirage 2000 et F1 vers Kandahar en 2007 (Flight, fin septembre 2007 ; revue de l'Air University, mars 2007) ; Wikipédia date du 20 mai 2009 la présence des trois F1CR alors en place."
+    },
+    {
+      "name": "Hawker Siddeley Nimrod",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les Nimrod MR2 de la RAF mènent de longues missions de renseignement au-dessus de l'Afghanistan. Le 2 septembre 2006, le XV230, qui surveillait l'opération *Medusa*, prend feu après un ravitaillement en vol et s'écrase près de Kandahar : ses 14 occupants sont tués.",
+        "en": "RAF Nimrod MR2s flew long intelligence-gathering missions over Afghanistan. On 2 September 2006 XV230, monitoring Operation *Medusa*, caught fire after air-to-air refuelling and crashed near Kandahar, killing all 14 on board."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hawker_Siddeley_Nimrod",
+        "https://en.wikipedia.org/wiki/2006_Royal_Air_Force_Nimrod_crash"
+      ],
+      "note": "Un second incident de fuite au ravitaillement (XV235, 2007) fait suspendre le ravitaillement en vol du type. Les sources consultées ne documentent pas le Nimrod R1 en Afghanistan."
+    },
+    {
+      "name": "AC-130 Spectre",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les AC-130 frappent dès octobre 2001 (objectif Rhino, Kunduz, révolte de Qala-i-Jangi) et appuient les forces spéciales pendant *Anaconda*. Le 3 octobre 2015, un AC-130U détruit par erreur l'hôpital de Médecins sans frontières de Kunduz : 42 morts selon l'ONG.",
+        "en": "AC-130s struck from October 2001 (Objective Rhino, Kunduz, the Qala-i-Jangi uprising) and supported special forces during *Anaconda*. On 3 October 2015 an AC-130U mistakenly destroyed the Médecins Sans Frontières hospital in Kunduz: 42 dead according to the charity."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/United_States_invasion_of_Afghanistan",
+        "https://www.airandspaceforces.com/article/0202enduring/",
+        "https://en.wikipedia.org/wiki/Operation_Anaconda",
+        "https://www.msf.org/kunduz-hospital-attack-depth"
+      ],
+      "note": "Bilan de Kunduz révisé à la hausse au fil des enquêtes ; 42 morts est le chiffre final de MSF."
+    },
+    {
+      "name": "EA-6B Prowler",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les Prowler de l'US Navy, depuis les porte-avions, et des Marines, à Bagram, brouillent les communications et émetteurs ennemis au profit des troupes au sol ; les escadrons VAQ-133 (2006), VAQ-134 (2007) et VMAQ-2 (vers 2010-2012) s'y relaient.",
+        "en": "US Navy Prowlers, from carriers, and Marine Prowlers, at Bagram, jammed enemy communications and emitters for ground troops; squadrons VAQ-133 (2006), VAQ-134 (2007) and VMAQ-2 (around 2010-2012) rotated through."
+      },
+      "sources": [
+        "https://www.military.com/dodbuzz/2010/05/25/marine-prowlers-jam-afghan-skies",
+        "https://www.afcent.af.mil/Units/455th-Air-Expeditionary-Wing/News/Display/Article/274226/marine-prowlers-provide-umbrella-of-protection/",
+        "https://www.dvidshub.net/news/516891/nimitz-prowlers-contribute-afghanistan"
+      ],
+      "note": "Brouillage des engins explosifs télécommandés en 2007 : affirmé par un historique des Marines, absent d'un reportage de 2010."
+    },
+    {
+      "name": "C-5 Galaxy",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Le C-5 participe au pont aérien stratégique vers l'Afghanistan ; le 22 septembre 2007, il se pose pour la première fois à Bagram, grâce à la piste allongée, avec près de 16 000 livres de fret. En août 2021, des C-5M partent de Dover vers Kaboul, sans être le principal avion d'évacuation.",
+        "en": "The C-5 took part in the strategic airlift to Afghanistan; on 22 September 2007 it landed at Bagram for the first time, thanks to the lengthened runway, with nearly 16,000 pounds of cargo. In August 2021 C-5Ms flew from Dover to Kabul, though they were not the main evacuation aircraft."
+      },
+      "sources": [
+        "https://www.af.mil/News/Article-Display/Article/125589/c-5-lands-at-bagram-opens-galaxy-of-capabilities",
+        "https://www.janes.com/defence-news/news-detail/us-air-force-chooses-c-17a-c-130-instead-of-c-5m-for-kabul-evacuation"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Lockheed TriStar (RAF)",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les TriStar du 216 Squadron assurent le pont aérien de la RAF vers l'Afghanistan : 1 642 vols et environ 250 000 passagers en huit ans, jusqu'au retrait du type en mars 2014.",
+        "en": "No. 216 Squadron's TriStars flew the RAF air bridge to Afghanistan: 1,642 flights and about 250,000 passengers over eight years, until the type was retired in March 2014."
+      },
+      "sources": [
+        "https://gov.uk/government/news/tristar-retires-after-30-years-service"
+      ],
+      "note": "Selon les reprises, les 250 000 passagers sont comptés au total ou « dans chaque sens »."
+    },
+    {
+      "name": "F-14 Tomcat",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Avec les F/A-18, les F-14 de l'USS Carl Vinson et de l'Enterprise assurent la plupart des frappes embarquées de 2001, avec bombes guidées laser et JDAM ; le VF-213 y emploie pour la première fois au combat le canon du Tomcat, pendant la bataille de Mazar-i-Charif.",
+        "en": "Alongside F/A-18s, F-14s from USS Carl Vinson and Enterprise flew most of the 2001 carrier strikes with laser-guided bombs and JDAMs; VF-213 used the Tomcat's gun in combat for the first time during the battle of Mazar-i-Sharif."
+      },
+      "sources": [
+        "https://www.airandspaceforces.com/article/0202enduring/",
+        "https://en.wikipedia.org/wiki/VF-213"
+      ],
+      "note": "La dernière croisière de combat du F-14 (VF-31 et VF-213, 2005-2006) concerne l'Irak, pas l'Afghanistan."
+    },
+    {
+      "name": "A-10 Thunderbolt II",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Engagés pendant *Anaconda* en mars 2002, mieux protégés que les hélicoptères contre les tirs du sol, les A-10 s'installent ensuite à Bagram et y assurent pendant des années l'appui aérien rapproché, renforcé lors des offensives d'été.",
+        "en": "Committed during *Anaconda* in March 2002, and better protected than helicopters against ground fire, A-10s then moved to Bagram and provided close air support from there for years, surging for the summer offensives."
+      },
+      "sources": [
+        "https://www2.ljworld.com/news/2002/mar/25/a10_thunderbolt_ii_jets/",
+        "https://www.af.mil/News/Article-Display/Article/130023/bagram-a-10s-surge-for-summer-offensives/"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-16 Fighting Falcon",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les F-16 américains frappent dès octobre 2001. Dix-huit F-16 danois, néerlandais et norvégiens opèrent de Manas en 2002-2003 (743 missions pour les six danois), puis Néerlandais, Belges et Norvégiens appuient la FIAS. Un F-16 néerlandais est perdu en 2006, un américain en 2013.",
+        "en": "American F-16s struck from October 2001. Eighteen Danish, Dutch and Norwegian F-16s flew from Manas in 2002-2003 (743 missions for the six Danish jets), then Dutch, Belgian and Norwegian F-16s supported ISAF. One Dutch F-16 was lost in 2006 and one American in 2013."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/General_Dynamics_F-16_Fighting_Falcon_operational_history",
+        "https://www.airandspaceforces.com/article/0202enduring/"
+      ],
+      "note": "Perte néerlandaise : 31 août 2006 dans la province de Ghazni (pilote tué) ; américaine : 3 avril 2013 près de Bagram (pilote tué)."
+    },
+    {
+      "name": "Panavia Tornado",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les Tornado GR4 de la RAF relèvent les Harrier à Kandahar en juin 2009 et y assurent appui aérien rapproché et reconnaissance jusqu'au 11 novembre 2014 : plus de 5 000 sorties par paire et 33 500 heures de vol selon le ministère britannique.",
+        "en": "RAF Tornado GR4s took over from the Harriers at Kandahar in June 2009 and flew close air support and reconnaissance until 11 November 2014: more than 5,000 paired sorties and 33,500 flying hours according to the UK Ministry of Defence."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Operation_Herrick_aerial_order_of_battle",
+        "https://flightglobal.com/tornado-departure-ends-uks-fast-jet-role-in-afghanistan/115096.article",
+        "https://www.gov.uk/government/news/raf-tornados-leave-afghanistan-for-the-last-time"
+      ],
+      "note": "Fiche générique limitée ici à la RAF : les Tornado allemands ont leur fiche, rattachée ; les Tornado italiens, remplacés par les AMX en novembre 2009, ont aussi la leur (« Panavia Tornado Italien »), non rattachée à ce conflit."
+    },
+    {
+      "name": "Panavia Tornado Allemand",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Six Tornado de reconnaissance de la Luftwaffe, basés à Mazar-i-Charif, photographient le terrain au profit de la FIAS de 2007 à 2010, sans mission de bombardement. Leur retrait est décidé le 22 septembre 2010.",
+        "en": "Six Luftwaffe reconnaissance Tornados based at Mazar-i-Sharif photographed the ground for ISAF from 2007 to 2010, with no bombing role. Their withdrawal was decided on 22 September 2010."
+      },
+      "sources": [
+        "https://www.auswaertiges-amt.de/en/newsroom/news/100923-tornados-afg-233968",
+        "https://www.bundeswehr.de/de/organisation/luftwaffe/aktuelles/ende-einer-aera-rueckkehrer-appell-fuer-heron-in-jagel-5087902"
+      ],
+      "note": "Départ des six avions attendu en novembre 2010 selon l'Auswärtiges Amt."
+    },
+    {
+      "name": "Super Étendard",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Depuis le *Charles de Gaulle*, les Super Étendard frappent l'Afghanistan à partir du 19 décembre 2001 (140 missions pendant *Héraclès*), appuient *Anaconda* en mars 2002 et désignent au laser les cibles des Rafale ; ils reviennent en 2004, 2006, 2007, 2008 et 2010-2011.",
+        "en": "Flying from the *Charles de Gaulle*, Super Étendards struck Afghanistan from 19 December 2001 (140 missions during *Héraclès*), supported *Anaconda* in March 2002 and laser-designated targets for Rafales; they returned in 2004, 2006, 2007, 2008 and 2010-2011."
+      },
+      "sources": [
+        "https://fr.wikipedia.org/wiki/Mission_H%C3%A9racl%C3%A8s",
+        "https://en.wikipedia.org/wiki/Dassault-Breguet_Super_%C3%89tendard"
+      ],
+      "note": "Effectif embarqué : 14 Super Étendard au départ, 16 en mars 2002 (Wikipédia FR) ; huit engagés dans les frappes de mars 2002 selon Wikipédia EN."
+    },
+    {
+      "name": "B-1 Lancer",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Huit B-1B de Diego Garcia détruisent d'abord les objectifs fixes, puis passent à l'appui des troupes au sol dès fin octobre 2001 ; avec 4 % des sorties, ils larguent 2 800 JDAM, plus que tous les autres avions réunis selon Flight. Un B-1B s'abîme en mer près de Diego Garcia le 12 décembre 2001.",
+        "en": "Eight B-1Bs from Diego Garcia first destroyed fixed targets, then switched to ground support by late October 2001; with 4 per cent of sorties they dropped 2,800 JDAMs, more than all other aircraft combined according to Flight. A B-1B crashed into the sea off Diego Garcia on 12 December 2001."
+      },
+      "sources": [
+        "https://www.flightglobal.com/ageing-aircraft-prove-their-worth/45870.article",
+        "https://www.ellsworth.af.mil/News/Features/Display/Article/217603/bones-over-southwest-asia-part-iii",
+        "https://www.airandspaceforces.com/this-day-in-airpower/december-12-2001"
+      ],
+      "note": "Flight ne précise pas la période couverte par le chiffre de 2 800 JDAM. L'équipage du B-1B perdu est récupéré."
+    },
+    {
+      "name": "E-3 Sentry",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les AWACS contrôlent le ciel afghan : deux appareils accompagnent le dispositif français dès mars 2002, la RAF engage ses Sentry, et ceux de l'OTAN, basés à Mazar-i-Charif de janvier 2011 à septembre 2014, y effectuent plus de 1 240 missions et 12 240 heures de vol.",
+        "en": "AWACS controlled the Afghan skies: two accompanied the French force from March 2002, the RAF committed its Sentries, and NATO's, based at Mazar-i-Sharif from January 2011 to September 2014, flew more than 1,240 missions and 12,240 hours there."
+      },
+      "sources": [
+        "https://www.nato.int/cps/en/natohq/news_113328.htm",
+        "https://en.wikipedia.org/wiki/Operation_Herrick_aerial_order_of_battle",
+        "https://fr.wikipedia.org/wiki/Mission_H%C3%A9racl%C3%A8s"
+      ],
+      "note": "Les sources consultées ne chiffrent pas l'activité des E-3 américains. Wikipédia FR cite « deux AWACS » dans le dispositif français de mars 2002 sans préciser leur nationalité exacte."
+    },
+    {
+      "name": "Mirage 2000",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les Mirage 2000D français opèrent de Manas (2002-2004), Douchanbé (2004-2007) puis Kandahar ; ils appuient *Anaconda* en mars 2002, puis les troupes de la FIAS dans le sud. Un 2000D s'écrase à l'ouest de Farah le 24 mai 2011 ; son équipage est récupéré.",
+        "en": "French Mirage 2000Ds operated from Manas (2002-2004), Dushanbe (2004-2007) and then Kandahar; they supported *Anaconda* in March 2002 and later ISAF troops in the south. A 2000D crashed west of Farah on 24 May 2011; its crew was recovered."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Dassault_Mirage_2000N/2000D",
+        "https://en.wikipedia.org/wiki/Operation_Anaconda"
+      ],
+      "note": "Wikipédia FR (Héraclès) parle de six Mirage 2000 sans préciser la version. Date de fin de l'engagement non trouvée."
+    },
+    {
+      "name": "AV-8B Harrier II",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les Harrier des Marines rejoignent les frappes dès novembre 2001, puis opèrent depuis Camp Bastion, où un raid taliban détruit six AV-8B du VMA-211 le 14 septembre 2012. Les AV-8B italiens du *Garibaldi* volent aussi en 2001-2002.",
+        "en": "Marine Harriers joined the strikes in November 2001, then operated from Camp Bastion, where a Taliban raid destroyed six VMA-211 AV-8Bs on 14 September 2012. Italian AV-8Bs from the *Garibaldi* also flew in 2001-2002."
+      },
+      "sources": [
+        "https://www.globalsecurity.org/military/library/news/2001/11/mil-011104-usmc1.htm",
+        "https://www.airandspaceforces.com/article/0202enduring/",
+        "https://en.wikipedia.org/wiki/September_2012_raid_on_Camp_Bastion",
+        "https://en.wikipedia.org/wiki/Italian_aircraft_carrier_Giuseppe_Garibaldi",
+        "https://www.strategypage.com/qnd/afghan/articles/20020215.aspx"
+      ],
+      "note": "Italiens : 288 missions et 860 heures selon Wikipédia, jusqu'au 8 janvier 2002 seulement des missions de défense et de reconnaissance selon StrategyPage. Les Harrier GR7/GR9 britanniques (Kandahar, 2004-2009) relèvent d'une version distincte, non rattachée ici."
+    },
+    {
+      "name": "F/A-18 Hornet",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Avec les F-14, les F/A-18 des porte-avions de la mer d'Arabie effectuent la plupart des frappes embarquées de 2001 : missions de cinq à sept heures, à 1 200 km du bord, avec bombes guidées laser et JDAM. L'aéronavale vole alors 75 % des missions de frappe selon la RAND.",
+        "en": "Alongside F-14s, F/A-18s from carriers in the Arabian Sea flew most of the 2001 carrier strikes: five- to seven-hour missions, 750 miles from the ship, with laser-guided bombs and JDAMs. Naval aviation flew 75 per cent of strike missions at the time according to RAND."
+      },
+      "sources": [
+        "https://www.airandspaceforces.com/article/0202enduring/",
+        "https://www.rand.org/pubs/research_briefs/RB9137.html"
+      ],
+      "note": "Les 75 % de la RAND couvrent toute l'aviation embarquée, pas le seul F/A-18. Le Super Hornet a sa propre fiche."
+    },
+    {
+      "name": "KC-10 Extender",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les KC-10 ravitaillent les avions engagés au-dessus de l'Afghanistan, notamment ceux du 908th Expeditionary Air Refueling Squadron à Al Dhafra (environ 1,2 million de livres de carburant par jour vers 2010) ; ils soutiennent encore le pont aérien de Kaboul en août 2021.",
+        "en": "KC-10s refuelled aircraft operating over Afghanistan, notably those of the 908th Expeditionary Air Refueling Squadron at Al Dhafra (about 1.2 million pounds of fuel a day around 2010); they were still supporting the Kabul airlift in August 2021."
+      },
+      "sources": [
+        "https://www.amc.af.mil/News/Article-Display/Article/146909/kc-10s-deliver-fuel-enabling-rapid-air-support-in-southwest-asia/",
+        "https://www.acc.af.mil/News/Article-Display/Article/2800206/neo-challenges-push-adab-to-new-heights/"
+      ],
+      "note": "Le chiffre quotidien de l'AMC couvre l'ensemble des opérations soutenant l'Afghanistan, sans date précise (article des années 2010)."
+    },
+    {
+      "name": "EC-130H Compass Call",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Depuis Bagram, les Compass Call du 41st Expeditionary Electronic Combat Squadron brouillent les communications des insurgés au profit des troupes au sol pendant près de vingt ans : plus de 9 200 sorties de combat et 53 000 heures à la dissolution de l'unité en 2021.",
+        "en": "From Bagram, Compass Calls of the 41st Expeditionary Electronic Combat Squadron jammed insurgent communications for ground troops for nearly twenty years: more than 9,200 combat sorties and 53,000 hours by the time the unit was deactivated in 2021."
+      },
+      "sources": [
+        "https://www.militarytimes.com/news/your-air-force/2021/10/11/this-compass-call-squadron-is-coming-home-after-20-years-of-hacking-and-jamming-enemies-in-centcom",
+        "https://www.afcent.af.mil/Units/455th-Air-Expeditionary-Wing/News/Display/Article/1714694/ec-130h-15-years-and-nearly-42000-combat-hours-in-support-of-the-coalition-miss"
+      ],
+      "note": "Chiffres divergents : 9 200 sorties et 53 000 heures pour le 41st EECS ; 14 750 sorties et plus de 90 000 heures pour l'ensemble des EC-130H depuis 2001 selon Military Times, tous théâtres du CENTCOM confondus."
+    },
+    {
+      "name": "Antonov An-124 Ruslan",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Affrétés par l'OTAN dans le cadre du contrat SALIS (2006), des An-124 de Volga-Dnepr et d'Antonov Airlines relient chaque semaine l'Allemagne à l'Afghanistan ; en 2021, la Bundeswehr en emploie pour rapatrier son matériel lors du retrait.",
+        "en": "Chartered by NATO under the SALIS contract (2006), An-124s of Volga-Dnepr and Antonov Airlines flew weekly between Germany and Afghanistan; in 2021 the Bundeswehr used them to bring its equipment home during the withdrawal."
+      },
+      "sources": [
+        "https://www.flightglobal.com/russian-ukrainian-partnership-to-provide-an-124s-for-nato-duty/66494.article",
+        "https://www.nato.int/cps/en/natohq/topics_50107.htm",
+        "https://www.bundeswehr.de/de/meldungen/an-124-gelandet-heisse-abzug-afghanistan-begonnen-5083608"
+      ],
+      "note": "Engagement logistique par des compagnies civiles sous contrat : aucun An-124 militaire n'est engagé."
+    },
+    {
+      "name": "AMX International AMX",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Quatre AMX italiens remplacent les Tornado en novembre 2009 et opèrent dans l'ouest du pays jusqu'en juin 2014 : reconnaissance, analyse de quelque 1 300 objectifs dès 2010 et frappes, comme la destruction de relais radio talibans dans les districts de Bakwa et Gulistan.",
+        "en": "Four Italian AMXs replaced the Tornados in November 2009 and operated in the west of the country until June 2014: reconnaissance, analysis of some 1,300 targets by 2010, and strikes such as the destruction of Taliban radio relays in the Bakwa and Gulistan districts."
+      },
+      "sources": [
+        "https://aviationnews.eu/news/2009/11/italian-amxs-head-to-afghanistan-on-november-4/",
+        "https://www.aeronautica.difesa.it/en/news/afghanistan-amx-distruggono-antenne-dei-ribelli/",
+        "https://archivio.blitzquotidiano.it/cronaca-mondo/afghanistan-ultima-missione-quattro-amx-1880162"
+      ],
+      "note": "Le bilan de 3 583 sorties et 10 526 heures cité par la presse italienne couvre six ans d'avions de combat italiens, Tornado compris, et non les seuls AMX."
+    },
+    {
+      "name": "Rafale",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Embarqués dès *Héraclès* sur le *Charles de Gaulle*, les Rafale M sont rejoints en mars 2007 par trois Rafale de l'armée de l'Air à Douchanbé. Le 28 mars 2007, un Rafale M F2 de la flottille 12F tire sa première bombe guidée laser, au profit de soldats néerlandais ; ils opèrent ensuite de Kandahar.",
+        "en": "Embarked on the *Charles de Gaulle* from *Héraclès* onwards, Navy Rafale Ms were joined in March 2007 by three Air Force Rafales at Dushanbe. On 28 March 2007 a Rafale M F2 of Flottille 12F dropped its first laser-guided bomb, for Dutch troops; Rafales later flew from Kandahar."
+      },
+      "sources": [
+        "https://prod-site-internet-minarm-admin.cloud.defense.gouv.fr/sites/default/files/cesm/bm-59-rafale-afghanistan.pdf",
+        "https://fr.wikipedia.org/wiki/Mission_H%C3%A9racl%C3%A8s",
+        "https://www.flightglobal.com/rafales-go-to-afghanistan-as-french-commitment-grows/72411.article",
+        "https://en.wikipedia.org/wiki/Dassault_Mirage_2000N/2000D"
+      ],
+      "note": "Wikipédia EN (French forces in Afghanistan) écrit « twenty-three Rafale » présents depuis 2007, manifestement une erreur ; les autres sources parlent de trois appareils (Douchanbé 2007, Kandahar 2008)."
+    },
+    {
+      "name": "F-15E Strike Eagle",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Dès l'automne 2001, le 391st Fighter Squadron opère depuis le Koweït : appui aérien rapproché à la demande des troupes au sol, et une mission de 15 h 30, la plus longue de l'histoire pour un chasseur. Des F-15E appuient aussi la bataille de Roberts' Ridge en 2002.",
+        "en": "From autumn 2001 the 391st Fighter Squadron flew from Kuwait, providing on-call close air support to ground troops, including a 15.5-hour sortie, the longest fighter mission ever flown. F-15Es also supported the battle of Roberts' Ridge in 2002."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F-15E_Strike_Eagle"
+      ],
+      "note": ""
+    },
+    {
+      "name": "E-8 Joint STARS",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Ses orbites de nuit suivent au radar les déplacements de véhicules et de combattants talibans, relaient les communications et guident les avions d'appui : fin 2008, un E-8C dirige deux A-10 au secours de soldats accrochés par environ 70 talibans.",
+        "en": "Its night orbits tracked Taliban vehicles and fighters on radar, relayed communications and cued strike aircraft: in late 2008 an E-8C steered two A-10s to troops pinned down by some 70 Taliban fighters."
+      },
+      "sources": [
+        "https://www.airandspaceforces.com/article/1109jstars/",
+        "https://en.wikipedia.org/wiki/Northrop_Grumman_E-8_Joint_STARS"
+      ],
+      "note": "Les totaux de sorties publiés (plus de 5 200 missions de 2001 à 2011) mêlent Irak et Afghanistan : aucun chiffre propre à l'Afghanistan n'est donné."
+    },
+    {
+      "name": "V-22 Osprey",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les MV-22 du VMM-261 arrivent en novembre 2009 ; le 4 décembre, l'opération *Cobra's Anger* dépose environ 1 000 Marines et 150 soldats afghans dans la vallée de Now Zad (Helmand). Ils servent ensuite surtout à l'évacuation sanitaire, jusqu'au retrait de 2014.",
+        "en": "VMM-261's MV-22s arrived in November 2009; on 4 December *Cobra's Anger* inserted about 1,000 Marines and 150 Afghan soldiers into the Now Zad valley in Helmand. They later flew mostly casualty evacuation until the 2014 drawdown."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Bell_Boeing_V-22_Osprey"
+      ],
+      "note": ""
+    },
+    {
+      "name": "B-2 Spirit",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Aux premiers jours d'*Enduring Freedom*, en octobre 2001, des B-2 décollent de Whiteman (Missouri) pour frapper des cibles en Afghanistan et rentrer sans escale, ravitaillés en vol : l'une de leurs plus longues missions.",
+        "en": "In the opening days of *Enduring Freedom* in October 2001, B-2s flew from Whiteman, Missouri, to strike targets in Afghanistan and back non-stop with aerial refuelling, one of the type's longest missions."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Northrop_B-2_Spirit"
+      ],
+      "note": "Engagement limité au début de la campagne de 2001."
+    },
+    {
+      "name": "RQ-7 Shadow",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Absent de la campagne de 2001-2002, il devient ensuite l'œil des brigades de l'US Army ; le VMU-2 des Marines en déploie un détachement en 2009 et l'armée australienne l'emploie à partir de mai 2012.",
+        "en": "Absent from the 2001-2002 campaign, it later became the eye of US Army brigades; Marine squadron VMU-2 deployed a detachment in 2009 and the Australian Army flew it there from May 2012."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/AAI_RQ-7_Shadow"
+      ],
+      "note": "Les 37 000 sorties et 600 000 heures de combat publiées couvrent ensemble l'Irak et l'Afghanistan."
+    },
+    {
+      "name": "C-17 Globemaster III",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Il ravitaille le théâtre dès 2001 puis porte le pont aérien de Kaboul en août 2021 : un C-17 américain y emmène 823 Afghans en un seul vol, record du type ; ceux de la RAF et de la RAAF participent aussi à l'évacuation.",
+        "en": "It supplied the theatre from 2001 and carried the Kabul airlift of August 2021: one US C-17 flew 823 Afghans out in a single flight, a record for the type, while RAF and RAAF C-17s joined the evacuation."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_C-17_Globemaster_III",
+        "https://en.wikipedia.org/wiki/Operation_Pitting",
+        "https://www.defence.gov.au/news-events/news/2021-09-10/adf-plays-vital-role-humanitarian-airlift"
+      ],
+      "note": ""
+    },
+    {
+      "name": "MQ-1 Predator",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Après des vols de repérage de Ben Laden pour la CIA dès septembre 2000, il effectue sa première mission armée le 7 octobre 2001 et reste le principal drone offensif de l'US Air Force et de la CIA en Afghanistan.",
+        "en": "After CIA flights hunting bin Laden from September 2000, it flew its first armed mission on 7 October 2001 and remained the main offensive drone of the USAF and the CIA in Afghanistan."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/General_Atomics_MQ-1_Predator"
+      ],
+      "note": ""
+    },
+    {
+      "name": "IAI Heron",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Loué par trois pays : le Canada (CU-170) depuis Kandahar de 2009 à 2011, l'Australie jusqu'au 30 novembre 2014 (27 000 heures de vol) et l'Allemagne depuis Mazar-i-Charif à partir de mars 2010, pour la surveillance et la lutte contre les engins piégés.",
+        "en": "Leased by three nations: Canada (CU-170) from Kandahar in 2009-2011, Australia until 30 November 2014 (27,000 flight hours) and Germany from Mazar-i-Sharif from March 2010, for surveillance and counter-IED work."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/IAI_Heron",
+        "https://de.wikipedia.org/wiki/IAI_Heron",
+        "https://www.shephardmedia.com/news/uv-online/cu-170-heron-unmanned-aerial-vehicle-rea"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F/A-18E Super Hornet",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Embarqué sur les porte-avions de l'US Navy, il appuie les troupes au sol : en 2006, des F/A-18F du VFA-211 bombardent des positions talibanes près de Kandahar pendant l'opération *Medusa*, première mission de combat de l'unité sur Super Hornet.",
+        "en": "Flying from US Navy carriers, it supported ground troops: in 2006 VFA-211 F/A-18Fs bombed Taliban positions near Kandahar during Operation *Medusa*, the squadron's first combat with the Super Hornet."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_F/A-18E/F_Super_Hornet"
+      ],
+      "note": "La fiche du catalogue ne raconte pas cet engagement."
+    },
+    {
+      "name": "Bombardier E-11A",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Depuis Kandahar, le 430th Expeditionary Electronic Combat Squadron l'emploie comme relais de communications (BACN) entre troupes au sol et commandement dans les vallées afghanes ; 10 000e sortie en février 2017. L'un d'eux s'écrase dans la province de Ghazni le 27 janvier 2020.",
+        "en": "From Kandahar the 430th Expeditionary Electronic Combat Squadron flew it as a communications relay (BACN) linking troops and commanders across Afghan valleys, reaching its 10,000th sortie in February 2017. One crashed in Ghazni province on 27 January 2020."
+      },
+      "sources": [
+        "https://www.afcent.af.mil/News/Article/1098523/e-11a-flies-10000th-bacn-sortie/",
+        "https://en.wikipedia.org/wiki/Bombardier_E-11A"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-22 Raptor",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "En novembre 2017, pour sa première mission de combat en Afghanistan, il frappe des laboratoires de drogue talibans avec des bombes de petit diamètre, aux côtés de B-52 et d'A-29 afghans, afin de tarir les revenus des insurgés.",
+        "en": "In November 2017, on its first combat mission over Afghanistan, it struck Taliban drug labs with small diameter bombs alongside B-52s and Afghan A-29s, in a campaign meant to cut the insurgents' revenue."
+      },
+      "sources": [
+        "https://thedefensepost.com/2017/11/20/f-22s-strike-taliban-drug-labs-afghanistan/",
+        "https://en.wikipedia.org/wiki/Lockheed_Martin_F-22_Raptor"
+      ],
+      "note": "Engagement tardif et ponctuel ; la fiche du catalogue ne le raconte pas. La date exacte varie selon les sources (nuit du 19 ou du 20 novembre 2017)."
+    },
+    {
+      "name": "RQ-4 Global Hawk",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Encore au stade de prototype, il est engagé dès novembre 2001 pour la reconnaissance à haute altitude au-dessus de l'Afghanistan ; une version de relais de communications (EQ-4B) s'écrase près de Jalalabad le 21 août 2011.",
+        "en": "Still a developmental prototype, it was committed from November 2001 to high-altitude reconnaissance over Afghanistan; a communications-relay EQ-4B crashed near Jalalabad on 21 August 2011."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Northrop_Grumman_RQ-4_Global_Hawk"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Embraer EMB-314 Super Tucano",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Avion d'attaque de l'armée de l'air afghane, livré à partir du 15 janvier 2016 et formé à Moody (États-Unis). Il ouvre en novembre 2017 la campagne contre les laboratoires de drogue et largue sa première bombe guidée laser le 22 mars 2018. En août 2021, des pilotes fuient avec leurs A-29.",
+        "en": "The Afghan Air Force's attack aircraft, delivered from 15 January 2016 with crews trained at Moody AFB. It opened the November 2017 campaign against drug labs and dropped its first laser-guided bomb on 22 March 2018. In August 2021 some pilots fled with their A-29s."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Embraer_EMB_314_Super_Tucano",
+        "https://thedefensepost.com/2017/11/20/f-22s-strike-taliban-drug-labs-afghanistan/"
+      ],
+      "note": "Nombre d'appareils divergent dans la même source : 20 achetés selon la section Afghanistan, 26 commandés selon la liste des utilisateurs. Au moins un A-29 a été capturé par les talibans à Mazar-i-Charif, sans emploi connu."
+    },
+    {
+      "name": "Alenia C-27J Spartan",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Deux C-27J italiens assurent le transport intra-théâtre de l'OTAN de septembre 2008 à janvier 2009. Puis, d'août 2011 à juin 2012, la Garde nationale américaine en déploie à Kandahar : plus de 3 200 missions, 25 000 passagers et 1 400 t de fret.",
+        "en": "Two Italian C-27Js flew NATO in-theatre airlift from September 2008 to January 2009. From August 2011 to June 2012 the US Air National Guard flew them from Kandahar: over 3,200 missions, 25,000 passengers and 1,400 tons of cargo."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Alenia_C-27J_Spartan"
+      ],
+      "note": "Les G.222 / C-27A de l'armée de l'air afghane relèvent d'un autre modèle et ne sont pas comptés ici."
+    },
+    {
+      "name": "MQ-9 Reaper",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Engagé dès l'été 2007, il obtient en octobre sa première victoire au Hellfire dans la région de Deh Rawood. La RAF (39 Squadron) l'opère depuis Kandahar à partir de 2007 et l'Italie y remplace ses Predator début 2014.",
+        "en": "Committed from summer 2007, it scored its first Hellfire kill that October in the Deh Rawood area. The RAF's 39 Squadron flew it from Kandahar from 2007, and Italy replaced its Predators with it there by early 2014."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/General_Atomics_MQ-9_Reaper",
+        "https://flightglobal.com/raf-confirms-reaper-fleets-200th-weapons-release-in-afghanistan/102319.article"
+      ],
+      "note": "Bilan britannique cité selon des dates différentes : plus de 200 armes tirées selon un article, plus de 380 et 45 000 heures de vol selon un autre plus tardif."
+    },
+    {
+      "name": "AeroVironment RQ-11 Raven",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Lancé à la main par les fantassins, il sert au niveau de la compagnie : en 2010, dans la province de Khost, des soldats du 1-187th Infantry l'envoient repérer les tireurs de mortier après une attaque contre la FOB Boris. Les Danois l'emploient aussi dans le Helmand.",
+        "en": "Hand-launched by infantrymen, it served at company level: in 2010 in Khost province, soldiers of the 1-187th Infantry flew it to spot the mortar crews behind an attack on FOB Boris. Danish troops also used it in Helmand."
+      },
+      "sources": [
+        "https://www.army.mil/article/45399/rpa_provides_soldiers_birds_eye_view_of_battlefield",
+        "https://en.wikipedia.org/wiki/AeroVironment_RQ-11_Raven"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Raytheon Sentinel R1",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Avion de surveillance du sol de la RAF (5 Squadron), il effectue le 15 novembre 2008 sa première sortie opérationnelle au-dessus de l'Afghanistan au profit de l'armée britannique, mission qui justifie son maintien en service.",
+        "en": "The RAF's ground-surveillance aircraft (No. 5 Squadron) flew its first operational sortie over Afghanistan for the British Army on 15 November 2008, a mission that justified keeping it in service."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Raytheon_Sentinel"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Boeing KC-767",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les KC-767A italiens, entrés en service en 2011, ravitaillent en vol les appareils des opérations de l'OTAN en Afghanistan.",
+        "en": "Italy's KC-767As, in service from 2011, refuelled aircraft flying NATO operations in Afghanistan."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_KC-767"
+      ],
+      "note": "Engagement marginal, attesté sans détail ; aucun KC-767J japonais engagé."
+    },
+    {
+      "name": "EADS Harfang",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "L'armée de l'air française en envoie trois à Bagram en février 2009 pour la surveillance au profit des troupes de la coalition ; l'un d'eux est accidenté au printemps, probablement à cause du givre.",
+        "en": "The French Air Force sent three to Bagram in February 2009 to provide surveillance for coalition troops; one was damaged in a crash that spring, probably due to icing."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/EADS_Harfang"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-35 Lightning II",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Le 27 septembre 2018, des F-35B du VMFA-211 partis de l'USS *Essex* frappent un objectif taliban en appui de troupes au sol, dans le cadre de *Freedom's Sentinel* : première frappe au combat d'un F-35 américain.",
+        "en": "On 27 September 2018, VMFA-211 F-35Bs flying from USS *Essex* struck a Taliban target in support of ground forces under *Freedom's Sentinel*, the first combat strike by any US F-35."
+      },
+      "sources": [
+        "https://www.militarytimes.com/news/your-military/2018/09/27/f-35-flies-first-combat-mission-in-afghanistan/",
+        "https://en.wikipedia.org/wiki/Lockheed_Martin_F-35_Lightning_II"
+      ],
+      "note": "Engagement tardif ; la fiche du catalogue ne le raconte pas."
+    },
+    {
+      "name": "Airbus A330 MRTT",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Lors de l'évacuation d'août 2021, les Voyager de la RAF ramènent les évacués du Golfe vers le Royaume-Uni (370 dès le 16 août), un KC-30A australien ravitaille en huit sorties les chasseurs qui couvrent Kaboul et le KC-330 sud-coréen participe à l'opération *Miracle*.",
+        "en": "During the August 2021 evacuation, RAF Voyagers flew evacuees from the Gulf to Britain (370 on 16 August), an Australian KC-30A refuelled the fighters covering Kabul in eight sorties, and South Korea's KC-330 joined Operation *Miracle*."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Operation_Pitting",
+        "https://www.defence.gov.au/news-events/news/2021-09-10/adf-plays-vital-role-humanitarian-airlift",
+        "https://en.wikipedia.org/wiki/Airbus_A330_MRTT"
+      ],
+      "note": "Engagement limité au pont aérien de 2021 ; la fiche du catalogue ne le raconte pas. Nombre de Voyager engagés divergent dans l'article Operation Pitting (trois ou quatre)."
+    },
+    {
+      "name": "Airbus A400M Atlas",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Pilier européen du pont aérien d'août 2021 : la Luftwaffe évacue 5 347 personnes de Kaboul vers Tachkent en 37 vols (avec ses A310), la RAF en assure 31 vols, l'armée de l'air française l'engage dans l'opération *Apagan* et la Belgique et le Luxembourg via Islamabad.",
+        "en": "The European backbone of the August 2021 airlift: the Luftwaffe flew 5,347 people from Kabul to Tashkent in 37 flights (with its A310s), the RAF flew 31 A400M flights, France used it in Operation *Apagan*, and Belgium and Luxembourg via Islamabad."
+      },
+      "sources": [
+        "https://www.bundeswehr.de/de/meldungen/evakuierung-afghanistan",
+        "https://en.wikipedia.org/wiki/Operation_Pitting",
+        "https://key.aero/article/how-france-readied-its-airbus-a400m-fleet-war",
+        "https://gouvernement.lu/fr/actualites/toutes_actualites/communiques/2021/08-aout/19-a400m-afghanistan.html"
+      ],
+      "note": "Le chiffre allemand varie : 5 347 personnes selon la Bundeswehr, « environ 5 400 » dans une autre de ses communications."
+    },
+    {
+      "name": "Boeing Insitu RQ-21 Blackjack",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Le VMU-2 des Marines le déploie fin avril 2014 en capacité opérationnelle anticipée, avant la fin des essais, pour la reconnaissance au profit des troupes au sol ; le détachement rentre le 10 septembre 2014 après près de 1 000 heures de vol.",
+        "en": "Marine squadron VMU-2 deployed it in late April 2014 as an early operational capability, before testing was complete, to scout for ground troops; the detachment came home on 10 September 2014 after nearly 1,000 flight hours."
+      },
+      "sources": [
+        "https://www.ainonline.com/aviation-news/defense/2014-06-04/us-marines-deploy-blackjack-uas-afghanistan",
+        "https://www.dote.osd.mil/Portals/97/pub/reports/FY2014/navy/2014rq21a_blackjack.pdf"
+      ],
+      "note": "Bilan divergent : 995 heures en 115 vols, fin anticipée de trois semaines selon le DOT&E ; près de 1 000 heures en 119 jours selon une autre source."
+    },
+    {
+      "name": "AeroVironment Switchblade",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Munition rôdeuse fournie en urgence : 75 exemplaires livrés fin 2012 aux soldats américains, jugés « très efficaces » contre les équipes de poseurs d'engins piégés et de mortiers ; plus de 4 000 sont déployés en Afghanistan jusqu'à la fin d'*Enduring Freedom*.",
+        "en": "A rush-fielded loitering munition: 75 were supplied to US soldiers in late 2012 and judged \"very effective\" against IED and mortar teams; more than 4,000 were deployed in Afghanistan by the end of *Enduring Freedom*."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/AeroVironment_Switchblade"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Beechcraft C-12 Huron",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Des C-12 de l'US Army volent en Afghanistan pour la surveillance et la lutte contre le narcotrafic : l'un d'eux, piloté par des contractuels, s'écrase le 13 octobre 2009 dans le Nouristan. Les Marines y déploient aussi un UC-12W de liaison.",
+        "en": "US Army C-12s flew surveillance and counter-narcotics missions in Afghanistan: one, crewed by contractors, crashed in Nuristan on 13 October 2009. The Marines also deployed a UC-12W liaison aircraft there."
+      },
+      "sources": [
+        "https://www.mprnews.org/story/2009/10/27/afghanistan-death",
+        "https://www.marforres.marines.mil/News-Photos/MARFORRES-News/Article/521636/uc-12w-huron-assists-vmr-in-overseas-deployment"
+      ],
+      "note": "Engagement réel mais peu documenté. Le MC-12W, dérivé du C-12, a sa propre fiche ; la fiche C-12 ne cite l'Afghanistan qu'à propos du MC-12W."
+    },
+    {
+      "name": "Beechcraft MC-12W Liberty",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Bimoteur de renseignement et de surveillance mis en service en urgence en juin 2009, il appuie les troupes au sol en Afghanistan comme en Irak ; l'Air Force le cède à l'Army et aux forces spéciales en octobre 2015, après sa dernière rotation pour *Enduring Freedom*.",
+        "en": "A rush-fielded intelligence and surveillance twin in service from June 2009, it supported ground troops in Afghanistan as in Iraq; the Air Force handed it to the Army and special forces in October 2015 after its last *Enduring Freedom* rotation."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Beechcraft_MC-12W_Liberty",
+        "https://en.wikipedia.org/wiki/Beechcraft_C-12_Huron"
+      ],
+      "note": "Les 79 000 sorties et 400 000 heures publiées mêlent Irak et Afghanistan."
+    },
+    {
+      "name": "Boeing RC-135",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les RC-135 Rivet Joint du 55th Wing écoutent les communications d'Al-Qaïda et des talibans dès octobre 2001 ; le 763rd Expeditionary Reconnaissance Squadron atteint sa 7 000e mission de combat au profit d'*Enduring Freedom*.",
+        "en": "The 55th Wing's RC-135 Rivet Joints eavesdropped on al-Qaeda and Taliban communications from October 2001; the 763rd Expeditionary Reconnaissance Squadron reached its 7,000th combat mission in support of *Enduring Freedom*."
+      },
+      "sources": [
+        "https://www.offutt.af.mil/News/Article/312364/rivet-joint-reaches-7000-combat-missions-in-aor/",
+        "https://www.offutt.af.mil/News/Article/312570/55th-wing-ever-vigilant/",
+        "https://en.wikipedia.org/wiki/Boeing_RC-135"
+      ],
+      "note": "Totaux divergents selon la date : 7 000 missions de combat dans la zone du CENTCOM selon l'AFCENT, plus de 8 000 depuis 1990 selon Wikipédia ; ni l'un ni l'autre n'isole l'Afghanistan."
+    },
+    {
+      "name": "Elbit Hermes 450",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Loué à partir de juillet 2007 par l'armée britannique (32nd Regiment Royal Artillery), il vole depuis Camp Bastion, jusqu'à neuf appareils et cinq vols par jour, et dépasse 70 000 heures au-dessus de l'Afghanistan en 2013 avant d'être relevé par le Watchkeeper en 2014.",
+        "en": "Leased by the British Army (32nd Regiment Royal Artillery) from July 2007, it flew from Camp Bastion, up to nine aircraft and five flights a day, passing 70,000 hours over Afghanistan in 2013 before Watchkeeper took over in 2014."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Elbit_Hermes_450"
+      ],
+      "note": ""
+    },
+    {
+      "name": "MQ-1C Gray Eagle",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "L'US Army l'envoie d'abord en détachements d'urgence de quatre appareils, dès 2010, avant même la fin des essais, puis y déploie en 2012 sa première compagnie complète de 12 drones. C'est en Afghanistan qu'il mène ses premiers engagements armés.",
+        "en": "The US Army first sent it in four-aircraft quick-reaction detachments from 2010, before testing was complete, then deployed its first full 12-aircraft company there in 2012. Its first armed engagements took place in Afghanistan."
+      },
+      "sources": [
+        "https://www.airandspaceforces.com/firstcompanyofgrayeaglesdeploystoafghanistan",
+        "https://www.dote.osd.mil/Portals/97/pub/reports/FY2010/army/2010mq1cgrayeagleuas.pdf"
+      ],
+      "note": "Dates divergentes : la compagnie F/227 entre en Afghanistan en avril 2012 selon une source, en juin 2012 selon une autre."
+    },
+    {
+      "name": "Pilatus U-28A Draco",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Avion de renseignement des forces spéciales de l'US Air Force, engagé à partir de juin 2006. En août 2021, un détachement basé à l'aéroport de Kaboul surveille sans relâche la foule et l'approche des talibans pendant l'évacuation, sous le feu.",
+        "en": "The US Air Force special operations ISR aircraft, in combat from June 2006. In August 2021 a detachment at Kabul airport kept constant watch over the crowds and approaching Taliban during the evacuation, under fire."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Pilatus_U-28_Draco"
+      ],
+      "note": ""
+    },
+    {
+      "name": "RQ-5 Hunter",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Trois compagnies de l'US Army l'emploient en rotation en Irak puis en Afghanistan ; à Kandahar, la Task Force Copperhead l'équipe d'un radar miniature pour détecter les engins piégés au profit des forces de la coalition et afghanes.",
+        "en": "Three US Army companies rotated it through Iraq and then Afghanistan; at Kandahar, Task Force Copperhead fitted it with a miniature radar to detect roadside bombs for coalition and Afghan forces."
+      },
+      "sources": [
+        "https://www.army.mil/article/56711/pioneer_platform_soars_to_battlefield_success",
+        "https://www.dvidshub.net/image/2133600/uav-mq-5b-hunter-launch-and-recovery-kandahar-airfield",
+        "https://en.wikipedia.org/wiki/IAI_RQ-5_Hunter"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Sagem Sperwer",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Drone tactique du Canada (CU-161) de 2003 au 18 avril 2009, des Pays-Bas et de la France : le 61e régiment d'artillerie l'emploie de fin 2008 à 2012 pour le renseignement et la reconnaissance d'itinéraires, avec sa 100e mission le 15 mai 2009 depuis Tora.",
+        "en": "A tactical drone flown by Canada (CU-161) from 2003 to 18 April 2009, the Netherlands and France: the 61st Artillery Regiment used it from late 2008 to 2012 for intelligence and route reconnaissance, flying its 100th mission from Tora on 15 May 2009."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sagem_Sperwer",
+        "https://theatrum-belli.com/la-dga-commande-des-drones-tactiques-sdti-sperwer-de-sagem/",
+        "https://www.shephardmedia.com/news/uv-online/french-army-completes-100th-flight-of-it/"
+      ],
+      "note": ""
+    }
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/United_States_invasion_of_Afghanistan",
+    "https://en.wikipedia.org/wiki/War_in_Afghanistan_(2001%E2%80%932021)",
+    "https://en.wikipedia.org/wiki/Operation_Anaconda",
+    "https://www.airandspaceforces.com/article/0202enduring/",
+    "https://www.rand.org/pubs/research_briefs/RB9137.html",
+    "https://www.nato.int/cps/en/natohq/topics_69366.htm",
+    "https://fr.wikipedia.org/wiki/Mission_H%C3%A9racl%C3%A8s",
+    "https://en.wikipedia.org/wiki/French_forces_in_Afghanistan",
+    "https://www.airandspaceforces.com/us-airstrike-total-in-afghanistan-hits-new-record-in-2019/",
+    "https://en.wikipedia.org/wiki/Afghan_Air_Force",
+    "https://en.wikipedia.org/wiki/2021_Kabul_airlift",
+    "https://www.militarytimes.com/news/your-air-force/2021/09/24/the-air-force-evacuated-124000-people-from-afghanistan-but-its-work-still-isnt-done/",
+    "https://www.govexec.com/defense/2021/08/inside-final-hours-kabul-airport/184979/"
+  ]
+}

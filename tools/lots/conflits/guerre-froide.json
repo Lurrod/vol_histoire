@@ -1,0 +1,2427 @@
+{
+  "war": "Guerre froide",
+  "slug": "guerre-froide",
+  "outcome": {
+    "fr": "La guerre froide s'achève sans affrontement direct entre les deux blocs : le mur de Berlin tombe en novembre 1989, le pacte de Varsovie se défait et l'Union soviétique est dissoute le 26 décembre 1991.",
+    "en": "The Cold War ended without a direct clash between the two blocs: the Berlin Wall fell in November 1989, the Warsaw Pact unravelled and the Soviet Union was dissolved on 26 December 1991."
+  },
+  "context": {
+    "fr": "Au lendemain de la Seconde Guerre mondiale, l'alliance entre les vainqueurs se défait. Le 12 mars 1947, le président Truman annonce que les États-Unis soutiendront les « peuples libres » menacés d'asservissement par des minorités armées ou des pressions extérieures : cette doctrine de l'endiguement du communisme marque, par convention, le début de la guerre froide. L'Europe se coupe en deux, de part et d'autre du « rideau de fer ». Le blocus de Berlin, en 1948, précipite la signature du traité de l'Atlantique Nord en avril 1949 ; le bloc soviétique répond par le pacte de Varsovie en 1955.\n\nEn août 1949, l'Union soviétique fait exploser sa première bombe atomique à Semipalatinsk et met fin au monopole américain. Commence alors une confrontation sans bataille entre les deux Grands, fondée sur la dissuasion : chacun doit pouvoir détruire l'autre pour ne jamais avoir à le faire. Jusqu'à l'arrivée des missiles balistiques, à la fin des années 1950, l'avion est le seul vecteur de la bombe, et l'aviation devient le premier instrument de cette rivalité : bombardiers stratégiques en alerte, ravitailleurs qui allongent leur rayon d'action, intercepteurs chargés de les arrêter, avions de reconnaissance qui épient l'adversaire.\n\nFace à face se tiennent les États-Unis et leurs alliés de l'OTAN, dont le Royaume-Uni et la France qui se dotent de leur propre force de frappe aérienne, et l'Union soviétique avec ses alliés du pacte de Varsovie. Des neutres comme la Suède surveillent jalousement leur ciel. Les affrontements armés de la période, de la Corée au Vietnam et à l'Afghanistan, ont leurs propres pages : celle-ci raconte la confrontation elle-même, de la doctrine Truman à la dissolution de l'URSS.",
+    "en": "In the aftermath of the Second World War, the alliance between the victors fell apart. On 12 March 1947 President Truman announced that the United States would support \"free peoples\" resisting subjugation by armed minorities or outside pressure: this doctrine of containing communism marks the conventional start of the Cold War. Europe split in two on either side of the \"Iron Curtain\". The Berlin Blockade of 1948 hastened the signing of the North Atlantic Treaty in April 1949; the Soviet bloc answered with the Warsaw Pact in 1955.\n\nIn August 1949 the Soviet Union detonated its first atomic bomb at Semipalatinsk, ending the American monopoly. A confrontation without battles began between the two superpowers, built on deterrence: each had to be able to destroy the other so as never to have to. Until ballistic missiles arrived in the late 1950s, the aircraft was the only means of delivering the bomb, and air power became the main instrument of the rivalry: strategic bombers on alert, tankers to extend their reach, interceptors to stop them, and reconnaissance aircraft to spy on the other side.\n\nOn one side stood the United States and its NATO allies, including Britain and France, which built their own airborne nuclear forces; on the other, the Soviet Union and its Warsaw Pact allies. Neutral countries such as Sweden guarded their airspace closely. The armed conflicts of the period, from Korea to Vietnam and Afghanistan, have their own pages: this one covers the confrontation itself, from the Truman Doctrine to the dissolution of the USSR."
+  },
+  "narrative": {
+    "fr": "La première épreuve de force se joue dans les airs. Le 24 juin 1948, les Soviétiques coupent les accès terrestres de Berlin-Ouest ; deux jours plus tard, Américains et Britanniques lancent un pont aérien pour ravitailler la ville. Jusqu'au 30 septembre 1949, 278 228 vols y apportent 2 334 374 tonnes de fret, aux deux tiers du charbon ; à Pâques 1949, 1 383 vols livrent 12 941 tonnes en vingt-quatre heures. Une centaine de personnes y perdent la vie, surtout dans des accidents d'avion. Pendant la crise, Washington envoie des B-29 en Angleterre ; Moscou lève le blocus le 12 mai 1949.\n\nLa dissuasion repose ensuite sur les bombardiers. Le Strategic Air Command, confié au général LeMay en octobre 1948, aligne des B-36, puis des B-47 et des B-52 ; ses avions tiennent l'alerte armée au sol à partir du 1er octobre 1957, et le président Kennedy en porte la part à 50 % en 1961. De novembre 1961 à janvier 1968, l'opération *Chrome Dome* garde des B-52 armés en vol en permanence, jusqu'aux accidents de Palomares (1966) et de Thulé (1968). En face, l'aviation à long rayon d'action soviétique passe du Tu-4, copie du B-29, aux Tu-16, M-4 et Tu-95 ; en juillet 1955, à Touchino, les passages répétés des mêmes M-4 font croire à l'Occident à un « bomber gap », que les vols des U-2 démentent ensuite. Le 30 octobre 1961, un Tu-95 largue la « Tsar Bomba », la bombe la plus puissante jamais essayée. Le Royaume-Uni bâtit sa force V (Valiant, Vulcan, Victor) et la France ses Forces aériennes stratégiques, dont les Mirage IV deviennent opérationnels en 1964.\n\nEncore faut-il voir chez l'adversaire. Les avions de reconnaissance et d'écoute longent les frontières du bloc soviétique, et parfois les franchissent : RB-45C de la RAF, RB-47, RB-57 et, à partir de 1956, U-2 de la CIA. Cette guerre de l'ombre a ses victimes : le DC-3 d'écoute suédois abattu par un MiG-15 au-dessus de la Baltique le 13 juin 1952 avec ses huit hommes, le Lincoln britannique abattu au-dessus de l'Allemagne le 12 mars 1953, l'U-2 de Francis Gary Powers abattu par un missile S-75 près de Sverdlovsk le 1er mai 1960, qui fait échouer le sommet de Paris, le RB-47H abattu en mer de Barents le 1er juillet 1960, l'EC-121 de l'US Navy abattu par des MiG-21 nord-coréens le 15 avril 1969 avec ses 31 hommes. Les intercepteurs de l'OTAN escortent de leur côté les bombardiers soviétiques venus sonder leurs défenses : selon Air & Space Forces Magazine, environ 3 000 interceptions ont lieu au large de l'Islande entre 1962 et 1991, surtout de Tu-95. Le 1er septembre 1983, un Su-15 soviétique abat le Boeing 747 du vol Korean Air Lines 007 près de Sakhaline : 269 morts.\n\nLes crises placent l'aviation en première ligne. Le 14 octobre 1962, un U-2 photographie les missiles soviétiques en cours d'installation à Cuba ; le SAC maintient en vol un huitième de ses bombardiers, niveau d'alerte atteint cette seule fois, et le 27 octobre un U-2 est abattu au-dessus de l'île, son pilote Rudolf Anderson tué. Le blocus naval n'est levé que le 20 novembre, quand Moscou accepte de rapatrier aussi ses bombardiers Il-28. Le 6 septembre 1976, le lieutenant Viktor Belenko pose son MiG-25 à Hakodate, au Japon, et livre à l'Occident un intercepteur soviétique, démonté et examiné avant d'être rendu en caisses. Du 7 au 11 novembre 1983, l'exercice *Able Archer 83* de l'OTAN fait craindre à Moscou une attaque nucléaire surprise : des avions à capacité nucléaire sont mis en alerte en RDA et en Pologne, un épisode dont la gravité reste débattue par les historiens.\n\nLa course technologique ne s'arrête jamais : bombardiers supersoniques (B-58, Tu-22), à géométrie variable (Tu-22M, Tu-160), avions furtifs (F-117), ravitailleurs toujours plus gros. Avec le traité sur les forces nucléaires intermédiaires de décembre 1987 et la chute du mur de Berlin en novembre 1989, la tension retombe. Le 27 septembre 1991, le président George H. W. Bush retire les bombardiers et ravitailleurs du SAC de l'alerte nucléaire permanente ; trois mois plus tard, l'Union soviétique disparaît. Les guerres « chaudes » de la période ont leurs propres pages : guerre de Corée, guerre du Vietnam, crise de Suez ou guerre soviéto-afghane, entre autres.",
+    "en": "The first trial of strength was fought in the air. On 24 June 1948 the Soviets cut the land routes into West Berlin; two days later the Americans and British launched an airlift to supply the city. By 30 September 1949, 278,228 flights had carried in 2,334,374 tons of cargo, two thirds of it coal; over Easter 1949, 1,383 flights delivered 12,941 tons in twenty-four hours. Around a hundred people died, mostly in air accidents. During the crisis Washington sent B-29s to England; Moscow lifted the blockade on 12 May 1949.\n\nDeterrence then rested on the bombers. Strategic Air Command, placed under General LeMay in October 1948, fielded B-36s, then B-47s and B-52s; its aircraft stood armed ground alert from 1 October 1957, and President Kennedy raised the share on alert to 50 percent in 1961. From November 1961 to January 1968 Operation *Chrome Dome* kept armed B-52s permanently airborne, until the Palomares (1966) and Thule (1968) accidents. Facing them, Soviet Long Range Aviation moved from the Tu-4, a copy of the B-29, to the Tu-16, M-4 and Tu-95; in July 1955 at Tushino, repeated passes by the same M-4s led the West to believe in a \"bomber gap\", which U-2 flights later disproved. On 30 October 1961 a Tu-95 dropped the \"Tsar Bomba\", the most powerful bomb ever tested. Britain built its V-force (Valiant, Vulcan, Victor) and France its Strategic Air Forces, whose Mirage IVs became operational in 1964.\n\nEach side also had to see into the other's camp. Reconnaissance and signals intelligence aircraft skirted the borders of the Soviet bloc, and sometimes crossed them: RAF RB-45Cs, RB-47s, RB-57s and, from 1956, CIA U-2s. This shadow war had its victims: the Swedish signals intelligence DC-3 shot down by a MiG-15 over the Baltic on 13 June 1952 with its eight crew; the British Lincoln shot down over Germany on 12 March 1953; Francis Gary Powers's U-2, brought down by an S-75 missile near Sverdlovsk on 1 May 1960, which wrecked the Paris summit; the RB-47H shot down over the Barents Sea on 1 July 1960; and the US Navy EC-121 shot down by North Korean MiG-21s on 15 April 1969 with all 31 aboard. For their part, NATO interceptors escorted the Soviet bombers that came to probe their defences: according to Air & Space Forces Magazine, some 3,000 interceptions took place off Iceland between 1962 and 1991, mostly of Tu-95s. On 1 September 1983 a Soviet Su-15 shot down the Korean Air Lines Flight 007 Boeing 747 near Sakhalin, killing 269 people.\n\nCrises put air power in the front line. On 14 October 1962 a U-2 photographed the Soviet missiles being installed in Cuba; SAC kept one eighth of its bombers airborne, the only time that alert level was ever reached, and on 27 October a U-2 was shot down over the island, killing its pilot Rudolf Anderson. The naval quarantine was lifted only on 20 November, once Moscow had agreed to take its Il-28 bombers home as well. On 6 September 1976 Lieutenant Viktor Belenko landed his MiG-25 at Hakodate in Japan, handing the West a Soviet interceptor, which was dismantled and examined before being returned in crates. From 7 to 11 November 1983 NATO's *Able Archer 83* exercise led Moscow to fear a surprise nuclear attack: nuclear-capable aircraft were put on alert in East Germany and Poland, and historians still debate how dangerous the episode really was.\n\nThe technological race never let up: supersonic bombers (B-58, Tu-22), swing-wing bombers (Tu-22M, Tu-160), stealth aircraft (F-117) and ever larger tankers. With the Intermediate-Range Nuclear Forces Treaty of December 1987 and the fall of the Berlin Wall in November 1989, tension subsided. On 27 September 1991 President George H. W. Bush took SAC's bombers and tankers off continuous nuclear alert; three months later the Soviet Union ceased to exist. The \"hot\" wars of the period have their own pages, including the Korean War, the Vietnam War, the Suez Crisis and the Soviet-Afghan War."
+  },
+  "sides": [
+    {
+      "key": "occident",
+      "name": {
+        "fr": "Occident",
+        "en": "Western bloc"
+      },
+      "members": {
+        "fr": "États-Unis, Royaume-Uni, France, Canada, Allemagne de l'Ouest et autres membres de l'OTAN, Japon et alliés occidentaux",
+        "en": "United States, United Kingdom, France, Canada, West Germany and other NATO members, Japan and Western allies"
+      }
+    },
+    {
+      "key": "bloc-sovietique",
+      "name": {
+        "fr": "Bloc soviétique",
+        "en": "Soviet bloc"
+      },
+      "members": {
+        "fr": "Union soviétique, Allemagne de l'Est, Pologne, Tchécoslovaquie, Hongrie, Roumanie, Bulgarie et autres alliés de Moscou",
+        "en": "Soviet Union, East Germany, Poland, Czechoslovakia, Hungary, Romania, Bulgaria and Moscow's other allies"
+      }
+    },
+    {
+      "key": "neutres",
+      "name": {
+        "fr": "Pays neutres",
+        "en": "Neutral countries"
+      },
+      "members": {
+        "fr": "Suède et autres pays non alignés dont l'aviation a fait face aux deux blocs",
+        "en": "Sweden and other non-aligned countries whose air arms faced both blocs"
+      }
+    }
+  ],
+  "events": [
+    {
+      "date": "1948-06-26",
+      "precision": "day",
+      "title": {
+        "fr": "Début du pont aérien de Berlin",
+        "en": "The Berlin Airlift begins"
+      },
+      "body": {
+        "fr": "Deux jours après le blocus soviétique de Berlin-Ouest, Américains et Britanniques ravitaillent la ville par avion. Jusqu'au 30 septembre 1949, 278 228 vols y apportent plus de 2,3 millions de tonnes de fret.",
+        "en": "Two days after the Soviet blockade of West Berlin, the Americans and British began supplying the city by air. By 30 September 1949, 278,228 flights had brought in more than 2.3 million tons of cargo."
+      },
+      "aircraft": "Douglas C-54 Skymaster",
+      "source": "https://en.wikipedia.org/wiki/Berlin_Blockade"
+    },
+    {
+      "date": "1951-10-18",
+      "precision": "day",
+      "title": {
+        "fr": "Première bombe atomique soviétique larguée d'avion",
+        "en": "First Soviet atomic bomb dropped from an aircraft"
+      },
+      "body": {
+        "fr": "Un Tu-4A, copie soviétique du B-29, largue la bombe RDS-3 : l'URSS dispose désormais d'un vecteur aérien pour son arme atomique.",
+        "en": "A Tu-4A, the Soviet copy of the B-29, dropped the RDS-3 bomb: the USSR now had an aircraft able to deliver its atomic weapon."
+      },
+      "aircraft": "Tupolev Tu-4",
+      "source": "https://en.wikipedia.org/wiki/RDS-3"
+    },
+    {
+      "date": "1953-03-12",
+      "precision": "day",
+      "title": {
+        "fr": "Un Lincoln de la RAF abattu au-dessus de l'Allemagne",
+        "en": "RAF Lincoln shot down over Germany"
+      },
+      "body": {
+        "fr": "Le Lincoln RF531 de la Central Gunnery School, en route vers Berlin, est abattu par des MiG-15 soviétiques au nord-est de Lunebourg. Ses sept hommes d'équipage sont tués.",
+        "en": "Lincoln RF531 of the Central Gunnery School, flying towards Berlin, was shot down by Soviet MiG-15s north-east of Lüneburg. All seven crew were killed."
+      },
+      "aircraft": "Avro Lincoln",
+      "source": "https://en.wikipedia.org/wiki/Avro_Lincoln"
+    },
+    {
+      "date": "1955-07-01",
+      "precision": "month",
+      "title": {
+        "fr": "Touchino et le « bomber gap »",
+        "en": "Tushino and the \"bomber gap\""
+      },
+      "body": {
+        "fr": "Au défilé aérien de Touchino, les mêmes bombardiers M-4 repassent devant la tribune et donnent l'illusion d'une flotte bien plus nombreuse. Washington croit à un retard sur l'URSS et accélère la production du B-52.",
+        "en": "At the Tushino air display, the same M-4 bombers flew past the stand again, creating the illusion of a much larger fleet. Washington believed it was falling behind the USSR and speeded up B-52 production."
+      },
+      "aircraft": "Myasishchev M-4",
+      "source": "https://en.wikipedia.org/wiki/Bomber_gap"
+    },
+    {
+      "date": "1960-05-01",
+      "precision": "day",
+      "title": {
+        "fr": "L'U-2 de Powers abattu au-dessus de l'Oural",
+        "en": "Powers's U-2 shot down over the Urals"
+      },
+      "body": {
+        "fr": "Parti de Peshawar pour rejoindre Bodø, l'U-2 de la CIA piloté par Francis Gary Powers est abattu par un missile S-75 près de Sverdlovsk. L'affaire fait échouer le sommet de Paris.",
+        "en": "Flying from Peshawar towards Bodø, the CIA U-2 piloted by Francis Gary Powers was shot down by an S-75 missile near Sverdlovsk. The affair wrecked the Paris summit."
+      },
+      "aircraft": "U-2 Dragon Lady",
+      "source": "https://en.wikipedia.org/wiki/1960_U-2_incident"
+    },
+    {
+      "date": "1960-07-01",
+      "precision": "day",
+      "title": {
+        "fr": "Un RB-47H abattu en mer de Barents",
+        "en": "RB-47H shot down over the Barents Sea"
+      },
+      "body": {
+        "fr": "Parti de Brize Norton, un RB-47H d'écoute du 55th Strategic Reconnaissance Wing est abattu par un MiG-19 au large de la presqu'île de Kola. Quatre hommes meurent, deux sont faits prisonniers.",
+        "en": "Flying from Brize Norton, a 55th Strategic Reconnaissance Wing RB-47H signals intelligence aircraft was shot down by a MiG-19 off the Kola Peninsula. Four crew died and two were taken prisoner."
+      },
+      "aircraft": "B-47 Stratojet",
+      "source": "https://en.wikipedia.org/wiki/1960_RB-47_shootdown_incident"
+    },
+    {
+      "date": "1961-10-30",
+      "precision": "day",
+      "title": {
+        "fr": "La « Tsar Bomba »",
+        "en": "The \"Tsar Bomba\""
+      },
+      "body": {
+        "fr": "Parti d'Olenya, le Tu-95V du major Andreï Dournovtsev largue au-dessus de la Nouvelle-Zemble une bombe d'environ 50 mégatonnes, la plus puissante jamais essayée.",
+        "en": "Flying from Olenya, Major Andrei Durnovtsev's Tu-95V dropped a bomb of about 50 megatons over Novaya Zemlya, the most powerful ever tested."
+      },
+      "aircraft": "Tu-95",
+      "source": "https://en.wikipedia.org/wiki/Tsar_Bomba"
+    },
+    {
+      "date": "1962-11-20",
+      "precision": "day",
+      "title": {
+        "fr": "Fin de la crise de Cuba : les Il-28 repartent",
+        "en": "End of the Cuban crisis: the Il-28s go home"
+      },
+      "body": {
+        "fr": "Après le retrait des missiles, Washington exige aussi celui des bombardiers Il-28 livrés à Cuba. Moscou s'y engage et le blocus naval est levé le 20 novembre ; les avions sont rembarqués début décembre.",
+        "en": "After the missiles were withdrawn, Washington also demanded the removal of the Il-28 bombers delivered to Cuba. Moscow agreed and the naval quarantine was lifted on 20 November; the aircraft were shipped out in early December."
+      },
+      "aircraft": "Il-28",
+      "source": "https://en.wikipedia.org/wiki/Cuban_Missile_Crisis"
+    },
+    {
+      "date": "1964-10-01",
+      "precision": "day",
+      "title": {
+        "fr": "La dissuasion française prend l'air",
+        "en": "France's deterrent takes to the air"
+      },
+      "body": {
+        "fr": "Le premier escadron de Mirage IV des Forces aériennes stratégiques est déclaré opérationnel avec la bombe atomique AN-11 : la France dispose de sa propre force de frappe nucléaire.",
+        "en": "The first Mirage IV squadron of the Strategic Air Forces was declared operational with the AN-11 atomic bomb: France now had its own nuclear strike force."
+      },
+      "aircraft": "Mirage IV",
+      "source": "https://en.wikipedia.org/wiki/Dassault_Mirage_IV"
+    },
+    {
+      "date": "1966-01-17",
+      "precision": "day",
+      "title": {
+        "fr": "Accident de Palomares",
+        "en": "The Palomares accident"
+      },
+      "body": {
+        "fr": "Au-dessus de l'Espagne, un B-52G de *Chrome Dome* heurte le KC-135 qui le ravitaille. Sept aviateurs meurent ; deux des quatre bombes H dispersent du plutonium au sol, une autre n'est repêchée en mer que le 7 avril.",
+        "en": "Over Spain, a *Chrome Dome* B-52G collided with the KC-135 refuelling it. Seven airmen died; two of the four H-bombs scattered plutonium on the ground, and another was only recovered from the sea on 7 April."
+      },
+      "aircraft": "KC-135 Stratotanker",
+      "source": "https://en.wikipedia.org/wiki/1966_Palomares_B-52_crash"
+    },
+    {
+      "date": "1966-04-06",
+      "precision": "day",
+      "title": {
+        "fr": "Un Yak-28 tombe dans Berlin-Ouest",
+        "en": "A Yak-28 falls into West Berlin"
+      },
+      "body": {
+        "fr": "En perdition, un Yak-28 soviétique s'abîme dans le lac Stößensee, à Berlin-Ouest ; ses deux pilotes périssent en évitant les habitations. Des plongeurs britanniques récupèrent l'épave, examinée par l'OTAN avant d'être rendue.",
+        "en": "A stricken Soviet Yak-28 crashed into Lake Stößensee in West Berlin; its two pilots died steering clear of housing. British divers recovered the wreck, which NATO examined before handing it back."
+      },
+      "aircraft": "Yak-28",
+      "source": "https://en.wikipedia.org/wiki/Yakovlev_Yak-28"
+    },
+    {
+      "date": "1976-09-06",
+      "precision": "day",
+      "title": {
+        "fr": "Belenko passe à l'Ouest en MiG-25",
+        "en": "Belenko defects in a MiG-25"
+      },
+      "body": {
+        "fr": "Le lieutenant Viktor Belenko quitte Tchougouïevka et pose son MiG-25 à Hakodate, au Japon. L'appareil est démonté et examiné, puis rendu à l'URSS en trente caisses.",
+        "en": "Lieutenant Viktor Belenko left Chuguyevka and landed his MiG-25 at Hakodate, Japan. The aircraft was dismantled and examined, then returned to the USSR in thirty crates."
+      },
+      "aircraft": "MiG-25",
+      "source": "https://en.wikipedia.org/wiki/Viktor_Belenko"
+    },
+    {
+      "date": "1983-11-07",
+      "precision": "day",
+      "title": {
+        "fr": "Able Archer 83",
+        "en": "Able Archer 83"
+      },
+      "body": {
+        "fr": "Pendant cinq jours, l'exercice nucléaire de l'OTAN fait craindre à Moscou une attaque surprise : des avions à capacité nucléaire sont mis en alerte en RDA et en Pologne. La gravité de l'épisode reste débattue.",
+        "en": "For five days NATO's nuclear exercise led Moscow to fear a surprise attack: nuclear-capable aircraft were put on alert in East Germany and Poland. How dangerous the episode was is still debated."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Able_Archer_83"
+    },
+    {
+      "date": "1991-09-27",
+      "precision": "day",
+      "title": {
+        "fr": "Fin de l'alerte nucléaire des bombardiers",
+        "en": "Bombers stand down from nuclear alert"
+      },
+      "body": {
+        "fr": "Le président George H. W. Bush retire les B-52 et les ravitailleurs du Strategic Air Command de l'alerte nucléaire permanente qu'ils tenaient depuis 1957. L'URSS disparaît trois mois plus tard.",
+        "en": "President George H. W. Bush took Strategic Air Command's B-52s and tankers off the continuous nuclear alert they had stood since 1957. The USSR ceased to exist three months later."
+      },
+      "aircraft": "B-52 Stratofortress",
+      "source": "https://en.wikipedia.org/wiki/Strategic_Air_Command"
+    }
+  ],
+  "aircraft": [
+    {
+      "name": "A-26 Invader",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "En 1958, des B-26 de la CIA appuient en secret les rebelles indonésiens de Permesta (opération *Haik*) ; le 18 mai, le pilote contractuel Allen Pope est abattu. Des RB-26 assurent aussi la reconnaissance du SAC en 1949-1950, puis en Europe jusqu'en 1957.",
+        "en": "In 1958 CIA B-26s covertly supported Indonesia's Permesta rebels (Operation *Haik*); on 18 May contract pilot Allen Pope was shot down. RB-26s also flew reconnaissance for SAC in 1949-1950 and in Europe until 1957."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_A-26_Invader",
+        "https://en.wikipedia.org/wiki/Permesta"
+      ],
+      "note": "Engagement marginal dans la confrontation elle-même (opération clandestine de la CIA, reconnaissance). Les autres engagements sont racontés dans les pages Guerre de Corée, Guerre d'Indochine, Guerre d'Algérie, Guerre du Vietnam, Invasion de la baie des Cochons et Crise congolaise. B-26 fournis à Permesta : « au moins une douzaine » selon l'article Invader, 15 selon l'article Permesta (dont le tableau n'en compte que 8)."
+    },
+    {
+      "name": "B-29 Superfortress",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Seul porteur de la bombe atomique du SAC à ses débuts, le B-29 est envoyé en Grande-Bretagne pendant le blocus de Berlin en 1948. Ses versions de reconnaissance longent les côtes soviétiques : le 7 octobre 1952, l'un d'eux est abattu près des îles Habomai, ses huit hommes disparus.",
+        "en": "SAC's only atomic bomb carrier in its early years, the B-29 was sent to Britain during the 1948 Berlin blockade. Reconnaissance versions probed the Soviet coast: on 7 October 1952 one was shot down near the Habomai Islands and its eight crew were lost."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_B-29_Superfortress",
+        "https://history.state.gov/milestones/1945-1952/berlin-airlift",
+        "https://avalon.law.yale.edu/20th_century/airpl003.asp"
+      ],
+      "note": "Capacité nucléaire des B-29 envoyés en Angleterre en 1948 : affirmée par le Département d'État, démentie par GlobalSecurity (appareils non modifiés « Silverplate », page non consultable, citée par une recherche). Version de l'appareil du 7 octobre 1952 : « B-29 » dans la requête américaine à la CIJ, RB-29A selon d'autres récits. Les Washington de la RAF (B-29 prêtés, 1950-1954) s'entraînaient à frapper l'URSS. Combats de Corée : page Guerre de Corée."
+    },
+    {
+      "name": "Avro Lincoln",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Bombardier lourd de la RAF jusqu'à l'arrivée des bombardiers V. Le 12 mars 1953, le Lincoln RF531 de la Central Gunnery School est abattu par des MiG-15 soviétiques à 32 km au nord-est de Lunebourg, lors d'un vol vers Berlin : ses sept hommes d'équipage sont tués.",
+        "en": "RAF heavy bomber until the V-bombers arrived. On 12 March 1953 Lincoln RF531 of the Central Gunnery School was shot down by Soviet MiG-15s 20 miles north-east of Lüneburg during a flight to Berlin, killing all seven crew."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Avro_Lincoln"
+      ],
+      "note": "Lincoln argentins sans rôle dans la confrontation."
+    },
+    {
+      "name": "B-36 Peacemaker",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Pilier de la dissuasion du Strategic Air Command de 1948 à 1959, seul porteur des premières bombes thermonucléaires avant le B-52. Ses RB-36, depuis Sculthorpe en Angleterre ou Yokota au Japon, sondent l'Arctique soviétique dès 1951, notamment le site d'essais de Nouvelle-Zemble.",
+        "en": "Mainstay of Strategic Air Command's deterrent from 1948 to 1959 and the only carrier of the first thermonuclear bombs before the B-52. From 1951 its RB-36s, flying from Sculthorpe in England or Yokota in Japan, probed the Soviet Arctic, notably the Novaya Zemlya test site."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Convair_B-36_Peacemaker"
+      ],
+      "note": "N'a jamais combattu. Des survols des territoires soviétique et chinois par des RB-36 sont seulement « supposés » par la source."
+    },
+    {
+      "name": "B-45 Tornado",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "En 1952, des B-45 à capacité nucléaire du 47th Bomb Group s'installent à Sculthorpe, en Angleterre, face au bloc soviétique. Des RB-45C prêtés à la RAF survolent l'URSS : le 17 avril 1952, l'équipage de John Crampton pousse jusqu'à Kiev sous le feu de la défense antiaérienne.",
+        "en": "In 1952 nuclear-capable B-45s of the 47th Bomb Group settled at Sculthorpe, England, facing the Soviet bloc. RB-45Cs loaned to the RAF overflew the USSR: on 17 April 1952 John Crampton's crew pushed as far as Kyiv under anti-aircraft fire."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_B-45_Tornado"
+      ],
+      "note": "Nombre de B-45 déployés en 1952 : 40 ou 55 selon deux passages du même article. Survols britanniques révélés en 1994 seulement. RB-45C abattu au-dessus de la Chine le 4 décembre 1950 : page Guerre de Corée."
+    },
+    {
+      "name": "Tupolev Tu-4",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Copie soviétique du B-29, le Tu-4 équipe d'abord le 185e régiment de bombardement de la Garde, à Poltava. Un Tu-4A largue la bombe RDS-3 le 18 octobre 1951, premier largage d'une arme nucléaire par un avion soviétique. Le Tu-16 et le Tu-95 le remplacent à partir de 1954.",
+        "en": "The Soviet copy of the B-29, the Tu-4 first equipped the 185th Guards Bomber Regiment at Poltava. A Tu-4A dropped the RDS-3 bomb on 18 October 1951, the first nuclear weapon dropped by a Soviet aircraft. The Tu-16 and Tu-95 replaced it from 1954."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-4",
+        "https://en.wikipedia.org/wiki/RDS-3"
+      ],
+      "note": "Les Tu-4 chinois (Tibet, 1956) n'ont pas de rôle dans la confrontation Est-Ouest."
+    },
+    {
+      "name": "B-50 Superfortress",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Bombardier nucléaire du SAC dès 1948 ; le *Lucky Lady II* boucle en 1949 le premier tour du monde sans escale. Ses RB-50 longent les frontières soviétiques : le 29 juillet 1953, des MiG-15 en abattent un au large du cap Povorotny, un seul survivant sur dix-sept.",
+        "en": "SAC nuclear bomber from 1948; *Lucky Lady II* made the first non-stop round-the-world flight in 1949. Its RB-50s skirted the Soviet borders: on 29 July 1953 MiG-15s shot one down off Cape Povorotny, with a single survivor among seventeen crew."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_B-50_Superfortress",
+        "https://avalon.law.yale.edu/20th_century/airpl005.asp",
+        "https://avalon.law.yale.edu/20th_century/airpl004.asp"
+      ],
+      "note": "Lieu du 29 juillet 1953 : « environ 40 milles au sud du cap Povorotny » selon la note américaine de 1954, près de l'île Askold selon d'autres récits. La note américaine parle d'un « B-50 » ; les récits ultérieurs d'un RB-50G. Survivant : le copilote John E. Roche ; treize hommes jamais retrouvés."
+    },
+    {
+      "name": "B-47 Stratojet",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Premier bombardier à réaction du SAC, en alerte nucléaire depuis des bases avancées au Maroc, en Espagne et en Angleterre (opération *Reflex*, 1957-1966). Ses RB-47 espionnent l'URSS : survol de la presqu'île de Kola le 8 mai 1954, RB-47H abattu en mer de Barents le 1er juillet 1960.",
+        "en": "SAC's first jet bomber, on nuclear alert from forward bases in Morocco, Spain and England (Operation *Reflex*, 1957-1966). Its RB-47s spied on the USSR: an overflight of the Kola Peninsula on 8 May 1954, and an RB-47H shot down over the Barents Sea on 1 July 1960."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_B-47_Stratojet",
+        "https://en.wikipedia.org/wiki/Strategic_Air_Command",
+        "https://avalon.law.yale.edu/subject_menus/airplane.asp"
+      ],
+      "note": "RB-47H 53-4281 abattu par un MiG-19 en espace aérien international : quatre morts, deux prisonniers libérés en 1961."
+    },
+    {
+      "name": "North American AJ Savage",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Premier bombardier nucléaire embarqué de l'US Navy. À partir de février 1951, des détachements de la VC-5 puis de la VC-6 stationnent à Port-Lyautey, au Maroc, pour la VIe Flotte ; leur plan d'attaque passe à basse altitude au-dessus de la Bulgarie et de la Roumanie.",
+        "en": "The US Navy's first carrier-based nuclear bomber. From February 1951 detachments of VC-5 and then VC-6 were based at Port Lyautey, Morocco, for the Sixth Fleet, with an attack plan flown at low level over Bulgaria and Romania."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_AJ_Savage"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Il-28",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Bombardier tactique du pacte de Varsovie. En 1962, l'URSS en envoie à Cuba avec des bombes nucléaires tactiques ; leur retrait devient une exigence américaine après la crise des missiles. Khrouchtchev l'accepte le 20 novembre 1962 et les appareils repartent en URSS.",
+        "en": "Warsaw Pact tactical bomber. In 1962 the USSR sent some to Cuba with tactical nuclear bombs; their removal became a US demand after the missile crisis. Khrushchev agreed on 20 November 1962 and the aircraft went back to the USSR."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Ilyushin_Il-28",
+        "https://en.wikipedia.org/wiki/Operation_Anadyr",
+        "https://declassified.library.utoronto.ca/exhibits/show/cuban-missile-crisis/november-20---november-21--196"
+      ],
+      "note": "Nombre envoyé à Cuba : 42 selon l'article Il-28, six (avec six bombes 407N) selon l'article Operation Anadyr. Suez, Six Jours et Kippour sont racontés dans leurs pages."
+    },
+    {
+      "name": "English Electric Canberra",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les quatre escadrons de Canberra de la RAF Germany emportent des bombes nucléaires américaines de 1960 à 1972. En reconnaissance, ils auraient survolé Kapustin Yar en 1953 et longé l'URSS en 1954 (*Project Robin*) ; les PR.9 photographient l'Europe de l'Est depuis la frontière interallemande.",
+        "en": "RAF Germany's four Canberra squadrons carried US nuclear bombs from 1960 to 1972. As reconnaissance aircraft they reportedly overflew Kapustin Yar in 1953 and skirted the USSR in 1954 (*Project Robin*); PR.9s photographed Eastern Europe from the inner German border."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/English_Electric_Canberra"
+      ],
+      "note": "Le survol de Kapustin Yar n'a jamais été reconnu par le gouvernement britannique. Suez et d'autres guerres sont racontées dans leurs pages. La version américaine a sa propre fiche (Martin B-57 Canberra)."
+    },
+    {
+      "name": "KC-97 Stratofreighter",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Ravitailleur du Strategic Air Command à partir de 1950, essentiel aux opérations mondiales des B-47. Un EC-97G mène pour la CIA du renseignement électronique dans les couloirs aériens de Berlin ; de 1967 à 1977, la Garde nationale ravitaille les unités de l'OTAN en Europe (*Creek Party*).",
+        "en": "Strategic Air Command tanker from 1950, vital to the B-47's worldwide operations. An EC-97G flew covert electronic intelligence for the CIA in the Berlin air corridors, and from 1967 to 1977 Air National Guard tankers refuelled NATO units in Europe (*Creek Party*)."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_KC-97_Stratofreighter"
+      ],
+      "note": "L'EC-97G est un KC-97G converti ; les « Eager Beaver » des couloirs de Berlin sont des C-97G. Fin de *Creek Party* donnée « vers 1977 »."
+    },
+    {
+      "name": "Vickers Valiant",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Premier bombardier V, pilier de la dissuasion britannique de 1956 à 1965. Le 11 octobre 1956, un Valiant du 49 Squadron largue la première bombe atomique britannique à Maralinga ; le 15 mai 1957, celui de Kenneth Hubbard lâche la première bombe H (*Grapple*). Quatre escadrons passent au SACEUR.",
+        "en": "The first V-bomber, mainstay of Britain's deterrent from 1956 to 1965. On 11 October 1956 a No. 49 Squadron Valiant dropped the first British atomic bomb at Maralinga; on 15 May 1957 Kenneth Hubbard's dropped the first H-bomb (*Grapple*). Four squadrons were assigned to SACEUR."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Vickers_Valiant"
+      ],
+      "note": "L'article dit la dissuasion tenue « jusqu'au début de 1966 » mais la flotte est interdite de vol le 26 janvier 1965 (fatigue des longerons). Bombardements de Suez racontés dans la page Crise de Suez."
+    },
+    {
+      "name": "B-52 Stratofortress",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Pilier du SAC de 1955 à 1991, en alerte au sol et en vol près des frontières soviétiques (*Chrome Dome*, 1961-1968). L'accident de Thulé, le 21 janvier 1968, après celui de Palomares en 1966, met fin aux patrouilles armées ; l'alerte permanente cesse le 27 septembre 1991.",
+        "en": "SAC's mainstay from 1955 to 1991, on ground alert and airborne near Soviet borders (*Chrome Dome*, 1961-1968). The Thule accident of 21 January 1968, after Palomares in 1966, ended armed patrols; the continuous alert stood down on 27 September 1991."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_B-52_Stratofortress",
+        "https://en.wikipedia.org/wiki/Operation_Chrome_Dome",
+        "https://en.wikipedia.org/wiki/1968_Thule_Air_Base_B-52_crash",
+        "https://en.wikipedia.org/wiki/1966_Palomares_B-52_crash",
+        "https://en.wikipedia.org/wiki/Strategic_Air_Command"
+      ],
+      "note": "Palomares : 17 janvier 1966, collision avec un KC-135 au ravitaillement. Fin de *Chrome Dome* : 22 janvier 1968 selon l'article de l'opération. Vietnam et Golfe racontés dans leurs pages."
+    },
+    {
+      "name": "Tu-16",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Bombardier de l'armée de l'air et de l'aviation navale soviétiques, décliné en porte-missiles destinés d'abord aux porte-avions américains. Le 25 mai 1968, un Tu-16 qui frôle l'USS *Essex* en mer de Norvège touche l'eau de l'aile au quatrième passage et s'abîme sans survivant.",
+        "en": "Bomber of the Soviet Air Force and Naval Aviation, developed into missile carriers aimed above all at US carriers. On 25 May 1968 a Tu-16 buzzing USS *Essex* in the Norwegian Sea clipped the water with a wing on its fourth pass and crashed with no survivors."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-16"
+      ],
+      "note": "Date de l'incident de l'*Essex* : 25 mai 1968 selon Wikipédia, 27 mai selon la base ASN qu'il cite. Les engagements égyptiens et irakiens relèvent des pages de ces guerres."
+    },
+    {
+      "name": "Avro Vulcan",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Pilier de la force V de la RAF à partir de 1957, le Vulcan tient l'alerte nucléaire (QRA) dès 1962, prêt à décoller en quinze minutes, et emporte le missile Blue Steel de 1963 à 1970. En octobre 1962, la crise de Cuba place le Bomber Command en alerte 3.",
+        "en": "A mainstay of the RAF's V-force from 1957, the Vulcan stood nuclear Quick Reaction Alert from 1962, ready to launch within fifteen minutes, and carried the Blue Steel missile from 1963 to 1970. In October 1962 the Cuban crisis put Bomber Command on Alert Condition 3."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Avro_Vulcan"
+      ],
+      "note": "Après 1970, rôle nucléaire tactique au profit de l'OTAN (WE.177) ; de 1973 à 1982, le No. 27 Squadron (Scampton) en fait un avion de reconnaissance radar maritime."
+    },
+    {
+      "name": "A-3 Skywarrior",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Bombardier nucléaire embarqué en service dès le 31 mars 1956, il est l'élément clé de la dissuasion de l'US Navy avant les sous-marins Polaris. Ses EA-3B du VQ-2 (Rota) écoutent la frontière est-allemande et tchécoslovaque pendant la crise de Berlin (1961) et le printemps de Prague (1968).",
+        "en": "A carrier-based nuclear bomber in squadron service from 31 March 1956, it was the key element of the Navy's deterrent before the Polaris submarines. VQ-2's EA-3Bs from Rota monitored the East German and Czechoslovak border during the 1961 Berlin crisis and the 1968 Prague Spring."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_A-3_Skywarrior",
+        "https://en.wikipedia.org/wiki/VQ-2"
+      ],
+      "note": "En octobre 1962, le VQ-2 envoie aussi des EA-3B à Key West pour la reconnaissance autour de Cuba."
+    },
+    {
+      "name": "Tu-95",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Bombardier stratégique de l'aviation à long rayon d'action dès 1956. Le 30 octobre 1961, le Tu-95V du major Andreï Dournovtsev, parti d'Olenya, largue la « Tsar Bomba » sur la Nouvelle-Zemble. Venus de Mourmansk, les Tu-95 sont les appareils les plus souvent interceptés au large de l'Islande.",
+        "en": "A Long Range Aviation strategic bomber from 1956. On 30 October 1961 Major Andrei Durnovtsev's Tu-95V, flying from Olenya, dropped the Tsar Bomba over Novaya Zemlya. Flying out of Murmansk, Tu-95s were the aircraft most often intercepted off Iceland."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-95",
+        "https://en.wikipedia.org/wiki/Tsar_Bomba",
+        "https://www.airandspaceforces.com/article/intercepting-the-bear/"
+      ],
+      "note": "Air & Space Forces Magazine compte environ 3 000 interceptions au large de l'Islande entre 1962 et 1991, surtout des Tu-95. La version navale Tu-95RTs (« Bear-D », 1966) guide les missiles antinavires de la marine soviétique."
+    },
+    {
+      "name": "Handley Page Victor",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Dernier bombardier de la force V, en service au No. 10 Squadron de Cottesmore dès avril 1958 ; à Wittering, les Victor B.2 emportent le missile nucléaire Blue Steel. De 1965 à 1974, les SR.2 du No. 543 Squadron (Wyton) surveillent l'Atlantique et la Méditerranée.",
+        "en": "The last of the V-bombers, in service with No. 10 Squadron at Cottesmore from April 1958; at Wittering, Victor B.2s carried the Blue Steel nuclear missile. From 1965 to 1974 No. 543 Squadron's SR.2s at Wyton patrolled the Atlantic and the Mediterranean."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Handley_Page_Victor"
+      ],
+      "note": "Converti en ravitailleur à partir de 1965 ; ses missions des Malouines (1982) et du Golfe (1991) relèvent d'autres pages."
+    },
+    {
+      "name": "Myasishchev M-4",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Premier bombardier stratégique à réaction soviétique, révélé sur la place Rouge le 1er mai 1954, le « Bison » fait craindre aux États-Unis un « bomber gap » en 1955. Trop court pour frapper l'Amérique, il ne compte que 19 appareils en alerte nucléaire, puis sert surtout de ravitailleur.",
+        "en": "The first Soviet strategic jet bomber, unveiled over Red Square on 1 May 1954, the \"Bison\" fed American fears of a \"bomber gap\" in 1955. Lacking the range to strike America, it had only 19 aircraft on nuclear alert and went on to serve mostly as a tanker."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Myasishchev_M-4"
+      ],
+      "note": "Divergences internes à Wikipédia EN : mise en service en 1955 (texte) ou 1956 (infobox) ; production de 93, 123 ou 125 exemplaires. Ravitailleurs (régiment d'Engels) en service jusqu'en 1994."
+    },
+    {
+      "name": "Martin B-57 Canberra",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les RB-57D du 4025th SRS du SAC survolent Vladivostok le 15 décembre 1956 ; d'autres, basés à Rhein-Main, longent la RDA et la Baltique jusqu'en 1964. Le 7 octobre 1959, un RB-57D taïwanais est abattu au-dessus de la Chine par un SA-2, premier avion détruit par un missile sol-air.",
+        "en": "SAC's 4025th SRS RB-57Ds overflew Vladivostok on 15 December 1956; others, based at Rhein-Main, flew along East Germany and the Baltic until 1964. On 7 October 1959 a Taiwanese RB-57D was shot down over China by an SA-2, the first aircraft ever downed by a surface-to-air missile."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Martin_RB-57D_Canberra",
+        "https://en.wikipedia.org/wiki/Martin_B-57_Canberra"
+      ],
+      "note": "Un RB-57A-1 taïwanais avait été abattu par un MiG-17 le 18 février 1958. L'engagement au Vietnam et au Pakistan relève d'autres pages. Les missions le long de la RDA sont qualifiées de « présumées » par Wikipédia."
+    },
+    {
+      "name": "B-66 Destroyer",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les RB-66 de reconnaissance de l'USAFE, basés en Allemagne de l'Ouest, en Angleterre et en France, opèrent au plus près de l'espace soviétique. Le 10 mars 1964, un RB-66 du 19th TRS (Toul-Rosières) égaré au-dessus de la RDA est abattu par un MiG soviétique ; son équipage est libéré le 27 mars.",
+        "en": "USAFE's RB-66 reconnaissance aircraft, based in West Germany, England and France, operated close to Soviet airspace. On 10 March 1964 a 19th TRS RB-66 from Toul-Rosières strayed over East Germany and was shot down by a Soviet MiG; its crew was released on 27 March."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_B-66_Destroyer",
+        "https://history.state.gov/historicaldocuments/frus1964-68v14/d16",
+        "https://aviation-safety.net/wikibase/259824"
+      ],
+      "note": "Version abattue : RB-66C selon Wikipédia, RB-66B 54-541 selon Aviation Safety Network ; chasseur MiG-19 selon les deux, près de Gardelegen selon ASN. Des RB-66C ont aussi opéré près de Cuba pendant la crise d'octobre 1962."
+    },
+    {
+      "name": "F-105 Thunderchief",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Conçu pour la frappe nucléaire, le F-105 équipe en 1961 le 36th TFW de Bitburg (mai) et le 49th TFW de Spangdahlem (octobre), voués à la frappe nucléaire tactique de l'OTAN. En Asie, des escadrons tiennent l'alerte nucléaire à Osan (Corée du Sud) et à Okinawa.",
+        "en": "Designed for nuclear strike, the F-105 equipped the 36th TFW at Bitburg (May 1961) and the 49th TFW at Spangdahlem (October 1961), both assigned to NATO's tactical nuclear strike role. In Asia, squadrons stood nuclear alert at Osan, South Korea, and on Okinawa."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Republic_F-105_Thunderchief",
+        "https://www.airandspaceforces.com/article/0311victor/",
+        "https://en.wikipedia.org/wiki/Spangdahlem_Air_Base"
+      ],
+      "note": "Son engagement au Vietnam est raconté dans la page « Guerre du Vietnam »."
+    },
+    {
+      "name": "KC-135 Stratotanker",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Livré au SAC à Castle AFB dès juin 1957, il tient l'alerte au sol aux côtés des bombardiers (85 KC-135 en alerte le 30 juin 1960) et ravitaille les B-52 de *Chrome Dome* ; le 17 janvier 1966, l'un d'eux heurte un B-52G au-dessus de Palomares. Ses dérivés EC-135 assurent *Looking Glass*.",
+        "en": "Delivered to SAC at Castle AFB from June 1957, it stood ground alert alongside the bombers (85 KC-135s on alert on 30 June 1960) and refuelled the Chrome Dome B-52s; on 17 January 1966 one collided with a B-52G over Palomares. Its EC-135 derivatives flew Looking Glass."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_KC-135_Stratotanker",
+        "https://en.wikipedia.org/wiki/Strategic_Air_Command",
+        "https://en.wikipedia.org/wiki/Operation_Looking_Glass"
+      ],
+      "note": "Poste de commandement volant Looking Glass en l'air en permanence du 3 février 1961 au 24 juillet 1990 (EC-135 tirés du KC-135A). Divergence : l'article KC-135 de Wikipédia EN date l'exploitation des EC-135 Looking Glass de 1963 à 1992."
+    },
+    {
+      "name": "B-58 Hustler",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Premier bombardier supersonique du SAC, il arme de 1960 à 1970 les 43rd (Carswell puis Little Rock) et 305th Bomb Wings (Bunker Hill) pour la frappe nucléaire stratégique. Le 30 octobre 1962, un B-58 effectue une mission de reconnaissance au-dessus de Cuba.",
+        "en": "SAC's first supersonic bomber, it equipped the 43rd (Carswell, then Little Rock) and 305th Bomb Wings (Bunker Hill) for strategic nuclear strike from 1960 to 1970. On 30 October 1962 a B-58 flew a reconnaissance mission over Cuba."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Convair_B-58_Hustler",
+        "https://b-58.com/bw43.php",
+        "https://en.wikipedia.org/wiki/Strategic_Air_Command"
+      ],
+      "note": "Premier B-58 opérationnel : au 43rd BW le 1er août 1960 selon Wikipédia et b-58.com ; premier B-58 livré au SAC le 11 mai 1961 (305th BW) selon l'article Strategic Air Command de Wikipédia. Le 8 décembre 1964, un B-58 chargé d'armes nucléaires brûle à Bunker Hill lors d'un exercice d'alerte."
+    },
+    {
+      "name": "Yak-28",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Version Yak-28P, intercepteur de la défense aérienne soviétique (PVO) de 1964 au début des années 1980. Le 6 avril 1966, un Yak-28 en perdition s'abîme dans le lac Stößensee, à Berlin-Ouest : des plongeurs britanniques en récupèrent l'épave, examinée par l'OTAN avant sa restitution.",
+        "en": "As the Yak-28P it served as a Soviet air defence (PVO) interceptor from 1964 to the early 1980s. On 6 April 1966 a stricken Yak-28 crashed into Lake Stößensee in West Berlin; British divers raised the wreck, which NATO engineers examined before handing it back."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Yakovlev_Yak-28"
+      ],
+      "note": "L'épave et les moteurs, examinés à RAF Gatow, ont été rendus aux Soviétiques le 2 mai 1966 ; l'équipage (Kapoustine et Ianov) a péri en évitant un quartier d'habitation."
+    },
+    {
+      "name": "Blackburn Buccaneer",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Conçu pour couler les croiseurs soviétiques de la classe Sverdlov, il est qualifié pour l'arme nucléaire en 1965. Les 15 et 16 Squadrons de la RAF, à Laarbruch (RFA), tiennent la frappe nucléaire (WE.177) face au pacte de Varsovie ; les 12 et 208 Squadrons, à Lossiemouth, l'attaque antinavire.",
+        "en": "Designed to sink the Soviet Sverdlov-class cruisers, it was cleared for nuclear weapons in 1965. RAF Nos. 15 and 16 Squadrons at Laarbruch, West Germany, held the nuclear strike (WE.177) role against the Warsaw Pact, while Nos. 12 and 208 Squadrons at Lossiemouth flew maritime strike."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Blackburn_Buccaneer"
+      ],
+      "note": "Entrée en service dans la Fleet Air Arm : 17 juillet 1962 selon l'infobox de Wikipédia EN, janvier 1963 selon le corps de l'article."
+    },
+    {
+      "name": "Tu-22",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Révélé à l'Occident au défilé de Touchino le 9 juillet 1961 (dix appareils), le « Blinder » équipe dès 1962 les régiments lourds de l'aviation à long rayon d'action, en Biélorussie notamment, et la reconnaissance navale des flottes de la Baltique (Tchkalovsk) et de la mer Noire.",
+        "en": "Revealed to the West at the Tushino air parade on 9 July 1961 (ten aircraft), the \"Blinder\" equipped Long Range Aviation heavy bomber regiments from 1962, notably in Belarus, as well as the naval reconnaissance units of the Baltic (Chkalovsk) and Black Sea Fleets."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-22",
+        "https://fr.wikipedia.org/wiki/Tupolev_Tu-22"
+      ],
+      "note": "Rôle décrit par les sources à l'échelle des unités ; aucun incident daté face à l'OTAN trouvé. Ses combats en Iran-Irak, au Tchad et en Afghanistan (couverture du retrait, 1988) relèvent d'autres pages."
+    },
+    {
+      "name": "Mirage IV",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Vecteur de la première dissuasion nucléaire française : premier escadron opérationnel le 1er octobre 1964 dans les Forces aériennes stratégiques, dispersé sur neuf bases, en alerte permanente avec la bombe AN-11 puis AN-22 contre villes et bases soviétiques. Le Mirage IV P emporte l'ASMP dès 1986.",
+        "en": "The carrier of France's first nuclear deterrent: its first squadron became operational on 1 October 1964 within the Strategic Air Forces, dispersed over nine bases and kept on permanent alert with AN-11 then AN-22 bombs, aimed at Soviet cities and bases. The Mirage IV P carried the ASMP from May 1986."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Dassault_Mirage_IV",
+        "https://fr.wikipedia.org/wiki/Dassault_Mirage_IV"
+      ],
+      "note": "Les effectifs en alerte divergent : 12 en vol, 12 à quatre minutes et 12 à 45 minutes selon Wikipédia EN ; en 1968, neuf appareils décollables en cinq minutes selon Wikipédia FR. Remise en service du IV P : 1er mai 1986 (EN) ou mai 1986 (FR)."
+    },
+    {
+      "name": "Vickers VC10",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Reformé le 1er mai 1984 à Brize Norton comme unité de ravitaillement en vol sur VC10, le 101 Squadron de la RAF ravitaille régulièrement, dans les dernières années de la guerre froide, les chasseurs qui interceptent les appareils soviétiques approchant l'espace aérien britannique.",
+        "en": "Re-formed at Brize Norton on 1 May 1984 as a VC10 air-to-air refuelling unit, RAF No. 101 Squadron regularly refuelled the fighters intercepting Soviet aircraft approaching UK airspace in the last years of the Cold War."
+      },
+      "sources": [
+        "https://101squadronassociation.org.uk/101-squadron/101-squadron-royal-airforce",
+        "https://en.wikipedia.org/wiki/Vickers_VC10"
+      ],
+      "note": "Engagement attesté par l'association du 101 Squadron seulement ; Wikipédia ne décrit pas ce rôle. Le pont aérien vers l'Ascension (Malouines, 1982) et le Golfe (1991) relèvent d'autres pages."
+    },
+    {
+      "name": "Tu-22M",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Bombardier lance-missiles de l'aviation à long rayon d'action et de l'aviation navale, enjeu des négociations SALT II. En juin 1981, quatre Tu-22M sont interceptés par des avions norvégiens en mer de Norvège ; en 1982, huit simulent l'attaque de porte-avions américains dans le Pacifique Nord.",
+        "en": "Missile-carrying bomber of Long Range Aviation and Naval Aviation, and a bone of contention in the SALT II talks. In June 1981 Norwegian aircraft intercepted four Tu-22Ms over the Norwegian Sea; in 1982 eight simulated attacks on US carrier groups in the North Pacific."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-22M"
+      ],
+      "note": "Approche de 1982 à moins de 200 km (120 milles) des groupes aéronavals selon Wikipédia EN. L'emploi en Afghanistan (Mary-2, 1987-1988) relève de la page guerre-sovieto-afghane."
+    },
+    {
+      "name": "Tu-160",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Dernier bombardier stratégique soviétique, nucléaire ou conventionnel, armé de missiles de croisière Kh-55 : il entre en service en avril 1987 au 184e régiment de bombardiers lourds de la Garde, à Priluki (Ukraine) ; l'Ukraine en hérite 19 à la dislocation de l'URSS.",
+        "en": "The last Soviet strategic bomber, nuclear or conventional, armed with Kh-55 cruise missiles: it entered service in April 1987 with the 184th Guards Heavy Bomber Regiment at Pryluky, Ukraine; Ukraine inherited 19 of them when the USSR broke up."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-160"
+      ],
+      "note": "Rôle de dissuasion décrit à l'échelle de l'unité ; aucune interception par l'OTAN avant 1991 n'est documentée (la première citée date de 2007)."
+    },
+    {
+      "name": "Iliouchine Il-78 Midas",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Ravitailleur dérivé de l'Il-76MD, il remplace au milieu des années 1980 les Tu-16 et M-4 ravitailleurs de l'aviation à long rayon d'action ; le régiment d'Uzin, près de Kiev (409e régiment de ravitailleurs), soutient les bombardiers stratégiques soviétiques.",
+        "en": "A tanker derived from the Il-76MD, it replaced Long Range Aviation's Tu-16 and M-4 tankers in the mid-1980s; the regiment at Uzin, near Kyiv (409th Tanker Regiment), supported the Soviet strategic bombers."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Ilyushin_Il-78",
+        "https://migflug.com/afterburner/aircraft/il-78-midas/"
+      ],
+      "note": "Engagement marginal et peu daté. Mise en service : juin 1987 selon le corps de l'article Wikipédia EN, 1984 selon son infobox, « milieu des années 1980 » selon Migflug. Le rattachement du 409e régiment à Uzin se déduit de la 106e division (Wikipédia) et du régiment d'Uzin hérité par l'Ukraine (Migflug)."
+    },
+    {
+      "name": "P-2 Neptune",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les P2V de l'US Navy patrouillent au large de l'URSS : l'un du VP-6 est abattu par des MiG-15 près de Vladivostok le 6 novembre 1951, un autre au-dessus du détroit de Béring le 22 juin 1955. En octobre 1962, ils pistent et photographient les sous-marins soviétiques autour de Cuba.",
+        "en": "US Navy P2Vs patrolled off the Soviet coast: a VP-6 aircraft was shot down by MiG-15s near Vladivostok on 6 November 1951, another over the Bering Strait on 22 June 1955. In October 1962 they tracked and photographed Soviet submarines around Cuba."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_P-2_Neptune",
+        "https://nsarchive2.gwu.edu/NSAEBB/NSAEBB75/subchron.htm",
+        "https://en.wikipedia.org/wiki/VP-5"
+      ],
+      "note": "Wikipédia signale aussi un P2V-5 contraint d'amerrir après une attaque de MiG-15 en mer du Japon (4 septembre 1954) et trois RB-69A (Neptune de la CIA) taïwanais abattus au-dessus de la Chine (1961-1964). La mission « météo » du 6 novembre 1951 est marquée « citation nécessaire »."
+    },
+    {
+      "name": "Martin P4M Mercator",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Converti en avion d'écoute (P4M-1Q), il longe de nuit les côtes chinoises, nord-coréennes et soviétiques avec les escadrons VQ-1 et VQ-2 ; le 22 août 1956, l'un d'eux est abattu près de Shanghai par la chasse chinoise (16 morts), un autre est criblé par des MiG-17 nord-coréens le 16 juin 1959.",
+        "en": "Converted for signals intelligence (P4M-1Q), it flew night missions along the Chinese, North Korean and Soviet coasts with VQ-1 and VQ-2; on 22 August 1956 one was shot down near Shanghai by Chinese fighters (16 killed), and another was badly damaged by North Korean MiG-17s on 16 June 1959."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Martin_P4M_Mercator"
+      ],
+      "note": ""
+    },
+    {
+      "name": "HU-16 Albatross",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le 4 septembre 1954, un SA-16 de l'USAF repêche neuf membres d'équipage d'un P2V abattu par des MiG-15 soviétiques au large de la Sibérie ; le 9 janvier 1966, un HU-16 taïwanais qui transporte des transfuges est abattu par des MiG communistes au-dessus du détroit de Taïwan.",
+        "en": "On 4 September 1954 a USAF SA-16 picked up nine crewmen of a P2V shot down by Soviet MiG-15s off Siberia; on 9 January 1966 a Taiwanese HU-16 carrying defectors was shot down by communist MiGs over the Taiwan Strait."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_P-2_Neptune",
+        "https://en.wikipedia.org/wiki/Grumman_HU-16_Albatross"
+      ],
+      "note": "Sauvetages en Corée et au Viêt Nam racontés dans les pages de ces guerres."
+    },
+    {
+      "name": "P5M Marlin",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Pendant la crise de Cuba, les Marlin pistent les sous-marins soviétiques : le VP-45 reçoit cette mission « en permanence » et, le 25 octobre 1962, un P5M repère un sous-marin de classe Foxtrot en surface ; d'autres suivent les cargos soviétiques à l'aller et au retour de l'île.",
+        "en": "During the Cuban crisis Marlins hunted Soviet submarines: VP-45 was given the task on a continuing basis, and on 25 October 1962 a P5M sighted a Foxtrot-class boat on the surface; others shadowed Soviet freighters to and from the island."
+      },
+      "sources": [
+        "https://nsarchive2.gwu.edu/NSAEBB/NSAEBB75/",
+        "https://nsarchive2.gwu.edu/NSAEBB/NSAEBB75/subchron.htm",
+        "https://en.wikipedia.org/wiki/VP-45",
+        "https://en.wikipedia.org/wiki/Martin_P5M_Marlin"
+      ],
+      "note": "Patrouilles Market Time au Viêt Nam : page guerre du Vietnam."
+    },
+    {
+      "name": "Beriev Be-6",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Hydravion de patrouille maritime de l'aviation navale soviétique (et de la marine chinoise) ; en 1964, un Be-6 qui approche la flotte américaine est intercepté au large du Japon par un A-4B de l'US Navy.",
+        "en": "Maritime patrol flying boat of Soviet (and Chinese) naval aviation; in 1964 a Be-6 approaching the US fleet was intercepted off Japan by a US Navy A-4B."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Beriev_Be-6"
+      ],
+      "note": "Engagement marginal : seule une photo de l'US Navy (1964) documente une rencontre ; « approche la flotte » est déduit de l'interception par un avion embarqué."
+    },
+    {
+      "name": "Avro Shackleton",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Conçu contre la flotte sous-marine soviétique, il équipe le Coastal Command dans l'Atlantique Nord dès 1951, avec des grenades anti-sous-marines nucléaires à partir de 1966 ; de 1972 au 1er juillet 1991, la version AEW.2 du 8e escadron (Lossiemouth) assure le guet aérien lointain britannique.",
+        "en": "Designed to counter the Soviet submarine fleet, it equipped Coastal Command over the North Atlantic from 1951, carrying nuclear depth charges from 1966; from 1972 to 1 July 1991 No. 8 Squadron's AEW.2s (Lossiemouth) provided Britain's airborne early warning."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Avro_Shackleton"
+      ],
+      "note": "Wikipédia donne 1972 (texte) ou 1973 (légende) pour le début de l'AEW.2 au 8e escadron."
+    },
+    {
+      "name": "EC-121 Warning Star",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les EC-121 de l'USAF et de l'US Navy tiennent les barrières radar de l'Atlantique et du Pacifique face aux bombardiers soviétiques (1954-1965) et suivent les U-2 au-dessus de Cuba après 1962. Le 15 avril 1969, des MiG-21 nord-coréens abattent un EC-121M du VQ-1 : 31 morts.",
+        "en": "USAF and US Navy EC-121s manned the Atlantic and Pacific radar barriers against Soviet bombers (1954-1965) and tracked U-2 flights over Cuba after 1962. On 15 April 1969 North Korean MiG-21s shot down a VQ-1 EC-121M, killing all 31 aboard."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_EC-121_Warning_Star",
+        "https://en.wikipedia.org/wiki/1969_EC-121_shootdown_incident"
+      ],
+      "note": "Missions Big Eye / College Eye : page guerre du Vietnam."
+    },
+    {
+      "name": "Ryan Firebee",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Version de reconnaissance (Model 147 « Lightning Bug ») : à partir du 20 août 1964, des drones largués de DC-130 survolent la Chine, qui en abat un premier le 15 novembre 1964. De 1970 à 1975, près de 500 missions *Combat Dawn* écoutent la Corée du Nord le long de sa frontière.",
+        "en": "Reconnaissance version (Model 147 Lightning Bug): from 20 August 1964 drones launched from DC-130s overflew China, which downed the first one on 15 November 1964. From 1970 to 1975 nearly 500 Combat Dawn sorties eavesdropped on North Korea along its border."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Ryan_Model_147"
+      ],
+      "note": "Les missions au-dessus du Nord-Viêt Nam relèvent de la page guerre du Vietnam. Le décompte total (3 435 sorties) mêle Chine, Nord-Viêt Nam et Corée du Nord."
+    },
+    {
+      "name": "S-2 Tracker",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Chasseur de sous-marins de l'US Navy (embarqué), du Canada, des Pays-Bas et du Japon ; en novembre 1960, un S-2F de l'USS *Essex* survole à basse altitude le navire de recherche soviétique *Vitiaz* en mer d'Arabie.",
+        "en": "Submarine hunter of the US Navy (carrier-based), Canada, the Netherlands and Japan; in November 1960 an S-2F from USS *Essex* buzzed the Soviet research ship *Vityaz* in the Arabian Sea."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/USS_Essex_(CV-9)",
+        "https://en.wikipedia.org/wiki/Grumman_S-2_Tracker"
+      ],
+      "note": "Engagement documenté marginal. Son rôle contre les sous-marins soviétiques pendant la crise de Cuba (groupes de l'Essex et du Randolph) est probable, mais aucune source consultée ne nomme le type."
+    },
+    {
+      "name": "U-2 Dragon Lady",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les U-2 de la CIA survolent l'URSS à partir du 4 juillet 1956 ; Francis Gary Powers est abattu par un missile près de Sverdlovsk le 1er mai 1960. En octobre 1962, le 4080th SRW découvre les missiles soviétiques à Cuba ; le commandant Rudolf Anderson y est abattu le 27 octobre.",
+        "en": "CIA U-2s overflew the USSR from 4 July 1956; Francis Gary Powers was shot down by a missile near Sverdlovsk on 1 May 1960. In October 1962 the 4080th SRW found the Soviet missiles in Cuba, where Major Rudolf Anderson was shot down on 27 October."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_U-2",
+        "https://en.wikipedia.org/wiki/Rudolf_Anderson"
+      ],
+      "note": "Les U-2 taïwanais (« Black Cat ») au-dessus de la Chine n'ont pas été vérifiés dans les sources consultées."
+    },
+    {
+      "name": "Canadair CP-107 Argus",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Avion anti-sous-marin des escadrons 404 et 405 (Greenwood) et 415 (Summerside), conçu pour pister les nouveaux sous-marins soviétiques ; pendant la crise de Cuba, ses équipages volent six heures jusqu'à leur zone au milieu de l'Atlantique et y patrouillent huit heures.",
+        "en": "Anti-submarine aircraft of 404 and 405 Squadrons (Greenwood) and 415 Squadron (Summerside), built to track new Soviet submarines; during the Cuban crisis its crews flew six hours to their mid-Atlantic station and patrolled there for eight."
+      },
+      "sources": [
+        "https://legionmagazine.com/rcaf-welcomes-the-argus/",
+        "https://en.wikipedia.org/wiki/Canadair_CP-107_Argus"
+      ],
+      "note": ""
+    },
+    {
+      "name": "A-5 Vigilante",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Bombardier nucléaire embarqué : l'A3J-1 du VAH-7 fait ses débuts opérationnels sur l'*Enterprise* en août 1962 ; en octobre, sa croisière est prolongée pour une démonstration de force dans les eaux cubaines pendant la crise des missiles.",
+        "en": "Carrier-based nuclear bomber: VAH-7's A3J-1s made their operational debut aboard Enterprise in August 1962; in October the cruise was extended for a show of force in Cuban waters during the missile crisis."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/RVAH-7",
+        "https://en.wikipedia.org/wiki/North_American_A-5_Vigilante",
+        "https://en.wikipedia.org/wiki/USS_Enterprise_(CVN-65)"
+      ],
+      "note": "Reconnaissance RA-5C au-dessus du Nord-Viêt Nam : page guerre du Vietnam."
+    },
+    {
+      "name": "OV-1 Mohawk",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les premiers Mohawk déployés outre-mer rejoignent la 7e armée américaine en Allemagne de l'Ouest en 1961 ; à partir de 1963, leurs radars latéraux surveillent la zone démilitarisée de Corée. Ils quittent l'Europe en 1992.",
+        "en": "The first Mohawks deployed overseas joined the US Seventh Army in West Germany in 1961; from 1963 their side-looking radars watched the Korean Demilitarized Zone. They left Europe in 1992."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Grumman_OV-1_Mohawk"
+      ],
+      "note": "Rôle au Viêt Nam : page guerre du Vietnam. La surveillance de la frontière interallemande, souvent citée, n'est pas décrite dans la source consultée."
+    },
+    {
+      "name": "P-3 Orion",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Entrés en flotte en 1962, les P-3A patrouillent autour de Cuba dès octobre. Toute la guerre froide, les Orion localisent les sous-marins soviétiques signalés par les hydrophones, comme un Charlie II pisté en mer Tyrrhénienne en janvier 1987, avant d'être relayés par les S-3.",
+        "en": "Entering the fleet in 1962, P-3As flew quarantine patrols around Cuba that October. Throughout the Cold War Orions localized Soviet submarines detected by undersea sensors, such as a Charlie II tracked in the Tyrrhenian Sea in January 1987."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_P-3_Orion",
+        "https://www.twz.com/30525/confessions-of-a-submarine-hunting-s-3-viking-crewman-during-the-twilight-of-the-cold-war"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Beriev Be-12 Chaïka",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Hydravion anti-sous-marin de l'aviation navale soviétique à partir du début des années 1960 ; vers 1970, des Be-12 aux couleurs égyptiennes mais à équipages soviétiques surveillent la 6e flotte américaine en Méditerranée.",
+        "en": "Soviet naval aviation anti-submarine amphibian from the early 1960s; around 1970, Be-12s in Egyptian markings but with Soviet crews monitored the US Sixth Fleet in the Mediterranean."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Beriev_Be-12"
+      ],
+      "note": ""
+    },
+    {
+      "name": "E-2 Hawkeye",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Radar volant des groupes aéronavals américains, conçu contre les bombardiers soviétiques porteurs de missiles ; début 1991, des Hawkeye du VAW-116 pistent des Tu-95 au départ de Subic Bay (Philippines), interceptés ensuite par les F-14.",
+        "en": "Airborne radar of US carrier groups, designed against Soviet missile-carrying bombers; in early 1991 VAW-116 Hawkeyes tracked Tu-95 Bears while leaving Subic Bay in the Philippines, which F-14s then intercepted."
+      },
+      "sources": [
+        "https://www.twz.com/25572/confessions-of-an-e-2c-hawkeye-radar-operator"
+      ],
+      "note": "Engagement documenté tardif et ponctuel (témoignage d'un ancien opérateur radar). Golfe de Syrte (1981) et Liban (1982) hors confrontation Est-Ouest."
+    },
+    {
+      "name": "Iliouchine Il-38",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Conçu contre les sous-marins lanceurs d'engins américains, il sert dans les flottes du Nord, du Pacifique et de la Baltique ; une escadrille opère depuis Le Caire de mars 1968 à 1972 aux couleurs égyptiennes, puis depuis Aden, Asmara, la Libye et la Syrie.",
+        "en": "Designed to counter US ballistic missile submarines, it served with the Northern, Pacific and Baltic fleets; a squadron flew from Cairo in Egyptian markings from March 1968 to 1972, then from Aden, Asmara, Libya and Syria."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Ilyushin_Il-38"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Breguet Atlantique",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les Atlantic allemands de renseignement électronique sillonnent la Baltique et longent la RDA ; en janvier 1981, un Atlantic néerlandais qui suit le porte-aéronefs soviétique *Kiev* s'abîme en mer. Les Atlantic italiens emportent des bombes nucléaires de l'OTAN.",
+        "en": "German signals-intelligence Atlantics flew over the Baltic and along the East German border; in January 1981 a Dutch Atlantic shadowing the Soviet carrier Kiev ditched in foul weather. Italian Atlantics carried NATO nuclear bombs."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Breguet_Atlantic"
+      ],
+      "note": "Rôle des Atlantic français face aux sous-marins soviétiques non décrit dans la source consultée."
+    },
+    {
+      "name": "Tupolev Tu-126",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Radar volant soviétique basé à Šiauliai (Lituanie) : il complète les radars au sol et guide les intercepteurs contre les avions intrus. En 1973, un A-4 de l'USS *Intrepid* en intercepte un au-dessus de la Méditerranée. L'A-50 le remplace en 1984.",
+        "en": "Soviet airborne radar based at Šiauliai, Lithuania, supplementing ground radars and directing interceptors against intruding aircraft. In 1973 an A-4 from USS Intrepid intercepted one over the Mediterranean. The A-50 replaced it in 1984."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-126",
+        "https://www.historyofwar.org/articles/weapons_tu126.html"
+      ],
+      "note": "Divergence : mise en service en 1965 selon Wikipédia EN, en 1971 selon Wikipédia FR et historyofwar.org ; retrait en 1984 (EN) ou 1990 (FR). L'interception de 1973 n'est connue que par une légende de photo."
+    },
+    {
+      "name": "Lockheed A-12",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Après la capture du *Pueblo*, les A-12 de la CIA basés à Kadena survolent la Corée du Nord : le 26 janvier 1968, Jack Weeks localise le navire dans la baie de Changjahwan ; le dernier vol opérationnel du type a lieu au-dessus du Nord le 8 mai 1968.",
+        "en": "After the Pueblo seizure, Kadena-based CIA A-12s overflew North Korea: on 26 January 1968 Jack Weeks located the ship in Changjahwan Bay, and the type's last operational sortie was flown over the North on 8 May 1968."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_A-12"
+      ],
+      "note": "Les missions Black Shield au-dessus du Nord-Viêt Nam (1967-1968) relèvent de la page guerre du Vietnam."
+    },
+    {
+      "name": "Lockheed D-21",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Lancés depuis des B-52 (programme *Senior Bowl*), quatre D-21B visent le site d'essais nucléaires chinois de Lop Nor de 1969 à 1971 : le premier, le 9 novembre 1969, file tout droit et s'écrase en URSS ; aucune photo n'est récupérée.",
+        "en": "Launched from B-52s (Senior Bowl), four D-21Bs targeted China's Lop Nur nuclear test site between 1969 and 1971: the first, on 9 November 1969, failed to turn and crashed in the Soviet Union; no photographs were ever recovered."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_D-21"
+      ],
+      "note": ""
+    },
+    {
+      "name": "SR-71 Blackbird",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Depuis Mildenhall (détachement 4, 1976-1990), les SR-71 longent la Baltique et la péninsule de Kola, souvent pris en chasse par des MiG-25 ; le 29 juin 1987, un SR-71 en panne est escorté par des Viggen suédois alors que des MiG-25 ont l'ordre de l'abattre.",
+        "en": "From Mildenhall (Detachment 4, 1976-1990) SR-71s flew along the Baltic and the Kola Peninsula, often chased by MiG-25s; on 29 June 1987 a crippled SR-71 was escorted by Swedish Viggens while MiG-25s had orders to shoot it down."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_SR-71_Blackbird"
+      ],
+      "note": "Selon l'armée de l'air suédoise, 322 sorties enregistrées dans le corridor balte de 1977 à 1988. Missions au-dessus du Nord-Viêt Nam : page guerre du Vietnam."
+    },
+    {
+      "name": "Hawker Siddeley Nimrod",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Depuis Kinloss, les Nimrod pistent les sous-marins soviétiques dans l'Atlantique Nord et protègent les sous-marins nucléaires britanniques ; à partir de mai 1974, trois Nimrod R1 du 51e escadron font du renseignement électromagnétique, officiellement de la « calibration radar ».",
+        "en": "From Kinloss, Nimrods tracked Soviet submarines in the North Atlantic and protected Britain's ballistic missile submarines; from May 1974 three Nimrod R1s of No. 51 Squadron gathered signals intelligence, officially described as radar calibration aircraft."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hawker_Siddeley_Nimrod"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Iliouchine Il-20",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Avion d'écoute électronique rattaché aux états-majors de flotte ou de district, il mène la reconnaissance le long des frontières ; pendant la guerre froide, les Il-20M sont fréquemment observés au-dessus des eaux européennes.",
+        "en": "Electronic intelligence aircraft attached to fleet or district headquarters, it flew reconnaissance along the borders; during the Cold War Il-20Ms were frequently seen over European waters."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Ilyushin_Il-20M"
+      ],
+      "note": "Rôle documenté de façon générale seulement ; les interceptions détaillées dans la source sont postérieures à 1991."
+    },
+    {
+      "name": "Tu-142",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Chasseur de sous-marins de l'aviation navale soviétique (Kipelovo, Kamenny Routcheï) : du 19 au 22 août 1974, quatre Tu-142 suivent un sous-marin étranger en mer de Barents ; le 10 octobre 1977, cinq pistent un sous-marin américain en mer des Philippines.",
+        "en": "Soviet naval aviation submarine hunter (Kipelovo, Kamenny Ruchey): on 19-22 August 1974 four Tu-142s shadowed a foreign submarine in the Barents Sea; on 10 October 1977 five tracked a US submarine in the Philippine Sea."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-142"
+      ],
+      "note": "Déployé aussi depuis l'Angola, Cuba, l'Éthiopie, le Viêt Nam et le Yémen du Sud (dates non précisées)."
+    },
+    {
+      "name": "S-3 Viking",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Chasseur de sous-marins des porte-avions américains à partir de 1974 ; en janvier 1987, un S-3A du VS-24 (USS *Nimitz*) relaie un P-3 en mer Tyrrhénienne et reprend brièvement le contact avec un sous-marin soviétique Charlie II venu de la flotte du Nord.",
+        "en": "Submarine hunter aboard US carriers from 1974; in January 1987 a VS-24 S-3A from USS Nimitz relieved a P-3 in the Tyrrhenian Sea and briefly regained contact with a Soviet Charlie II submarine from the Northern Fleet."
+      },
+      "sources": [
+        "https://www.twz.com/30525/confessions-of-a-submarine-hunting-s-3-viking-crewman-during-the-twilight-of-the-cold-war",
+        "https://en.wikipedia.org/wiki/Lockheed_S-3_Viking"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Boeing E-4",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Poste de commandement national aéroporté (NEACP) déployé en 1974 pour diriger les États-Unis pendant une guerre nucléaire : un E-4 est en alerte permanente, équipage prêt à décoller, et l'un d'eux stationne à Andrews, près de Washington.",
+        "en": "National Emergency Airborne Command Post deployed in 1974 to run the United States during a nuclear war: one E-4 was always on alert with its crew ready to launch, and one was kept at Andrews, near Washington."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_E-4"
+      ],
+      "note": ""
+    },
+    {
+      "name": "E-3 Sentry",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Radar volant de l'USAF (552e escadre, 1977) et de l'OTAN (Geilenkirchen, 1982) ; dans les années 1980, des E-3 déployés en Islande (960e escadron, Keflavik) et en Alaska détectent et suivent les bombardiers soviétiques, dont les approches ne surprennent plus.",
+        "en": "Airborne radar of the USAF (552nd Wing, 1977) and NATO (Geilenkirchen, 1982); in the 1980s E-3s deployed to Iceland (960th squadron, Keflavik) and Alaska detected and tracked Soviet bombers, whose approaches were seldom a surprise any more."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_E-3_Sentry",
+        "https://www.airandspaceforces.com/article/intercepting-the-bear/"
+      ],
+      "note": ""
+    },
+    {
+      "name": "EF-111 Raven",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le 42e escadron de guerre électronique, réactivé à Upper Heyford (Royaume-Uni) en 1983 et dissous en 1992, assure le brouillage électronique au profit des avions de l'OTAN.",
+        "en": "The 42nd Electronic Combat Squadron, reactivated at RAF Upper Heyford in 1983 and inactivated in 1992, provided electronic jamming for NATO aircraft."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/42d_Electronic_Combat_Squadron",
+        "https://en.wikipedia.org/wiki/General_Dynamics%E2%80%93Grumman_EF-111A_Raven"
+      ],
+      "note": "Engagement marginal : déploiement avancé en Europe seulement. Raid sur la Libye (1986) et guerre du Golfe hors confrontation Est-Ouest."
+    },
+    {
+      "name": "Beriev A-50",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Entré en service en 1984 au 67e escadron indépendant de Šiauliai (Lituanie), avec des détachements à Vitebsk et en Transbaïkalie ; pendant la crise du Golfe (1990-1991), deux A-50 tournent jour et nuit au-dessus de la mer Noire pour surveiller l'aviation américaine en Turquie.",
+        "en": "Entered service in 1984 with the 67th Independent Squadron at Šiauliai, Lithuania, with detachments at Vitebsk and in Transbaikalia; during the Gulf crisis (1990-1991) two A-50s orbited round the clock over the Black Sea to watch US air operations from Turkey."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Beriev_A-50"
+      ],
+      "note": "Wikipédia donne 1984 (texte) ou 1985 (infobox) pour la mise en service."
+    },
+    {
+      "name": "Boeing E-6 Mercury",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Relais volant des ordres de tir vers les sous-marins lanceurs d'engins (mission TACAMO), l'E-6A entre en service au VQ-3 en août 1989, puis au VQ-4 en janvier 1991, ce qui permet de retirer l'EC-130Q en juin 1991.",
+        "en": "Airborne relay of launch orders to ballistic missile submarines (TACAMO), the E-6A entered service with VQ-3 in August 1989 and with VQ-4 in January 1991, allowing the EC-130Q to be retired in June 1991."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_E-6_Mercury"
+      ],
+      "note": "Mise en service à la toute fin de la guerre froide ; Wikipédia donne juillet ou août 1989."
+    },
+    {
+      "name": "Boeing EC-135",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Poste de commandement volant du Strategic Air Command (*Looking Glass*, Offutt) : du 3 février 1961 au 24 juillet 1990, un EC-135 est en l'air à toute heure ; d'autres servent les commandements d'Europe (*Silk Purse*, Mildenhall), de l'Atlantique et du Pacifique.",
+        "en": "Strategic Air Command airborne command post (Looking Glass, Offutt): from 3 February 1961 to 24 July 1990 an EC-135 was airborne around the clock; others served the European (Silk Purse, Mildenhall), Atlantic and Pacific commands."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_EC-135"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Boeing RC-135",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Avions d'écoute du Strategic Air Command : à partir de 1963, ils longent la frontière nord de l'URSS entre l'Alaska et l'Angleterre ; depuis Shemya, ils observent les essais de missiles soviétiques au Kamtchatka et photographient le 4 octobre 1968 les premières têtes multiples.",
+        "en": "Strategic Air Command reconnaissance aircraft: from 1963 they flew along the USSR's northern border between Alaska and England; from Shemya they watched Soviet missile tests on Kamchatka and on 4 October 1968 photographed the first multiple re-entry vehicles."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_RC-135"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Lockheed EP-3",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Avion d'écoute de l'US Navy : depuis Rota (Espagne), les EP-3E du VQ-2 (à partir de juillet 1971) suivent les forces navales soviétiques en Méditerranée et, dans les années 1980, en Baltique, jusqu'au cap Nord.",
+        "en": "US Navy signals-intelligence aircraft: from Rota, Spain, VQ-2's EP-3Es (from July 1971) monitored Soviet naval forces in the Mediterranean and, in the 1980s, the Baltic, ranging as far as the North Cape."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/VQ-2",
+        "https://hushkit.net/2020/05/18/flying-fighting-in-the-lockheed-ep-3e-aries-ii-interview-with-cold-war-spy/",
+        "https://en.wikipedia.org/wiki/Lockheed_EP-3"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Yakovlev Yak-27",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Le Yak-27R équipe à partir de 1959 des régiments soviétiques de reconnaissance à haute altitude, dont certains sont avancés face à l'OTAN : à Brzeg en Pologne (1961-1973) et à Neu-Welzow en RDA (1966-1970).",
+        "en": "From 1959 the Yak-27R equipped Soviet high-altitude reconnaissance regiments, some forward-based facing NATO: at Brzeg in Poland (1961-1973) and Neu-Welzow in East Germany (1966-1970)."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Yakovlev_Yak-27"
+      ],
+      "note": "Engagement marginal : déploiement avancé documenté, aucune mission ni incident décrit. Dates de retrait divergentes dans Wikipédia (début, milieu ou fin des années 1970)."
+    },
+    {
+      "name": "F-80 Shooting Star",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Pendant le blocus de Berlin, seize F-80 du 56th Fighter Group de Selfridge traversent l’Atlantique en juillet 1948 (*Fox Able I*) jusqu’à Fürstenfeldbruck, premiers chasseurs à réaction de l’USAFE ; le type équipe aussi l’Air Defense Command et l’Alaska.",
+        "en": "During the Berlin blockade, sixteen F-80s of the 56th Fighter Group from Selfridge crossed the Atlantic in July 1948 (*Fox Able I*) to Fürstenfeldbruck, the first jet fighters under USAFE; the type also served with Air Defense Command and in Alaska."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_P-80_Shooting_Star",
+        "https://www.127wg.ang.af.mil/Media/Photos/igphoto/2000067686/",
+        "https://archive.dartmouthalumnimagazine.com/article/1948/10/1/leads-first-jet-flight-to-germany"
+      ],
+      "note": "Wikipédia marque la mention du blocus « citation nécessaire » ; la date de départ (20 juillet 1948) vient d’une légende de l’USAF."
+    },
+    {
+      "name": "F-82 Twin Mustang",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Premier chasseur tous temps de l’Air Defense Command à partir de 1948 ; en Alaska, les F-82H du 449th Fighter (All Weather) Squadron, à Adak puis Ladd, patrouillent le Grand Nord et reconnaissent les pistes soviétiques de la péninsule des Tchouktches.",
+        "en": "Air Defense Command’s first all-weather fighter from 1948; in Alaska, the F-82Hs of the 449th Fighter (All Weather) Squadron, at Adak then Ladd, patrolled the far north and flew reconnaissance near Soviet airstrips on the Chukchi Peninsula."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_F-82_Twin_Mustang"
+      ],
+      "note": "Wikipédia précise que les interceptions d’avions soviétiques étaient rares et n’en attribue aucune au F-82."
+    },
+    {
+      "name": "F-84 Thunderjet",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Premier monoplace capable d’emporter une bombe nucléaire (Mk 7), le F-84G équipe les escadres de chasse stratégique du SAC et 2 236 exemplaires vont aux alliés de l’OTAN ; le 10 mars 1953, des MiG-15 tchécoslovaques en abattent un au-dessus de la Bavière.",
+        "en": "The first single-seater able to carry a nuclear bomb (Mk 7), the F-84G equipped SAC’s strategic fighter wings and 2,236 went to NATO allies; on 10 March 1953 Czechoslovak MiG-15s shot one down over Bavaria."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Republic_F-84_Thunderjet",
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-15"
+      ],
+      "note": "Les deux articles divergent sur la version abattue le 10 mars 1953 (F-84E selon l’article du F-84, F-84G selon celui du MiG-15)."
+    },
+    {
+      "name": "F2H Banshee",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "En 1955, les F2H-2P du Corps des Marines survolent 27 fois les zones de rassemblement chinoises face à Taïwan ; de 1955 à 1962, les 39 F2H-3 de la Marine royale canadienne servent d’intercepteurs du NORAD depuis la terre ou le *Bonaventure*.",
+        "en": "In 1955 Marine Corps F2H-2Ps flew 27 overflights of Chinese staging areas facing Taiwan; from 1955 to 1962 the Royal Canadian Navy’s 39 F2H-3s served as NORAD interceptors from shore bases or HMCS *Bonaventure*."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_F2H_Banshee"
+      ],
+      "note": "Le F2H-2B pouvait aussi emporter une bombe nucléaire Mk 7 ou Mk 8."
+    },
+    {
+      "name": "F-86 Sabre",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "En août 1953, les F-86F des 50th et 36th Fighter Wings s’installent à Hahn et Bitburg, face au bloc de l’Est ; en 1958, pendant la deuxième crise du détroit de Taïwan, les Sabre nationalistes armés en secret de Sidewinder affrontent les MiG chinois.",
+        "en": "In August 1953 the F-86Fs of the 50th and 36th Fighter Wings settled at Hahn and Bitburg, facing the Eastern bloc; in 1958, during the Second Taiwan Strait Crisis, Nationalist Sabres secretly armed with Sidewinders fought Chinese MiGs."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_F-86_Sabre",
+        "https://www.usafe.af.mil/News/Article-Display/Article/4572609/historical-highlights-75-years-of-forward-airpower-in-europe/",
+        "https://www.af.mil/News/Photos/igphoto/2000480846/"
+      ],
+      "note": "Doublons partiels : les Sabre de l’ARC et de la RAF relèvent de la fiche « Canadair Sabre », l’intercepteur de la fiche « F-86D Sabre », les Sabre australiens de « CAC CA-27 Sabre ». Wikipédia date la crise d’août 1958 sans donner la date des combats."
+    },
+    {
+      "name": "F9F Panther",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le 18 novembre 1952, au large de Vladivostok, deux Panther de l’*Oriskany* livrent un long combat contre des MiG-15 de l’aviation navale soviétique, un affrontement direct américano-soviétique tenu secret pendant des décennies.",
+        "en": "On 18 November 1952, off Vladivostok, two Panthers from USS *Oriskany* fought a long engagement with Soviet Naval Aviation MiG-15s, a direct US–Soviet clash kept secret for decades."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Grumman_F9F_Panther"
+      ],
+      "note": "Engagement marginal : ce combat a lieu pendant la guerre de Corée (page dédiée), mais contre des pilotes soviétiques, hors du théâtre coréen. Le reste de sa carrière de combat relève de la page guerre de Corée."
+    },
+    {
+      "name": "F3D Skyknight",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les F3D-2Q (EF-10B) de l’escadron VMCJ-2 des Marines écoutent dès 1961 les radars de défense aérienne soviétiques installés à Cuba, puis pendant la crise d’octobre 1962 ; l’unité reçoit une Navy Unit Commendation pour ces missions.",
+        "en": "Marine squadron VMCJ-2’s F3D-2Qs (EF-10Bs) monitored the Soviet air defence radars set up in Cuba from 1961 and through the October 1962 crisis; the unit received a Navy Unit Commendation for these missions."
+      },
+      "sources": [
+        "https://www.cherrypoint.marines.mil/News/Article/525436/cherry-point-pilots-played-pivotal-role-in-cuban-missile-crisis/",
+        "https://mcara.us/EF-10B_history.php",
+        "https://vfp62.com/VMCJ2.html"
+      ],
+      "note": "Sources d’unité et d’anciens (MCARA, vfp62.com) ; l’article Wikipédia du F3D n’en parle pas. Elles divergent sur la date de la désignation EF-10B (1962 ou septembre 1962)."
+    },
+    {
+      "name": "F-89 Scorpion",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Intercepteur de l’Air Defense Command intégré au réseau SAGE jusqu’en 1959, il tient l’alerte de Thulé (Groenland) et de Keflavik (57th FIS, dès 1954) ; le 19 juillet 1957, un F-89J tire la seule roquette air-air nucléaire Genie jamais mise à feu (tir *John*).",
+        "en": "An Air Defense Command interceptor tied into SAGE until 1959, it stood alert at Thule (Greenland) and Keflavik (57th FIS, from 1954); on 19 July 1957 an F-89J fired the only live Genie nuclear air-to-air rocket ever launched (shot *John*)."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Northrop_F-89_Scorpion",
+        "https://en.wikipedia.org/wiki/Lockheed_F-94_Starfire",
+        "https://www.airandspaceforces.com/article/intercepting-the-bear/"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-94 Starfire",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Premier intercepteur à réaction tous temps de l’Air Defense Command (26 escadrons) à partir de 1950 ; en Alaska, le 449th FIS le pousse vers Nome, King Salmon et Galena pour répondre aux alertes, et un détachement du 59th FIS défend Thulé dès 1952.",
+        "en": "Air Defense Command’s first all-weather jet interceptor (26 squadrons) from 1950; in Alaska the 449th FIS pushed it forward to Nome, King Salmon and Galena to answer intruder alerts, and a 59th FIS detachment defended Thule from 1952."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_F-94_Starfire"
+      ],
+      "note": "Wikipédia donne deux dates d’arrivée au 449th FIS (1950 et « milieu des années 1950 ») ; aucune interception d’avion soviétique documentée. Ses combats nocturnes relèvent de la page guerre de Corée."
+    },
+    {
+      "name": "F-86D Sabre",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Intercepteur radar de l’Air Defense Command à partir de 1953, armé de 24 roquettes Mighty Mouse contre les bombardiers ; le 449th FIS l’aligne en Alaska fin 1954, et sa version F-86K tient la défense aérienne OTAN aux Pays-Bas, en Norvège, en France, en Italie et en RFA.",
+        "en": "A radar interceptor with Air Defense Command from 1953, armed with 24 Mighty Mouse rockets against bombers; the 449th FIS fielded it in Alaska from late 1954, and its F-86K version held NATO air defence in the Netherlands, Norway, France, Italy and West Germany."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_F-86D_Sabre",
+        "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/198076",
+        "https://en.wikipedia.org/wiki/Lockheed_F-94_Starfire"
+      ],
+      "note": "Les sources divergent sur la production (2 504 ou 2 506 F-86D, 2 847 selon une autre)."
+    },
+    {
+      "name": "Avro Canada CF-100 Canuck",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Pilier du NORAD contre les bombardiers soviétiques (neuf escadrons de l’ARC au milieu des années 1950), il équipe de 1956 à 1962 quatre escadrons de la 1re Division aérienne en Europe, dont le 423e à Grostenquin, seul chasseur tous temps de l’OTAN.",
+        "en": "A NORAD mainstay against Soviet bombers (nine RCAF squadrons in the mid-1950s), it equipped four No. 1 Air Division squadrons in Europe from 1956 to 1962, including No. 423 at Grostenquin, NATO’s only all-weather fighter at the time."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Avro_Canada_CF-100_Canuck"
+      ],
+      "note": "Utilisé ensuite pour la guerre électronique (414e escadron, North Bay) jusqu’en 1981."
+    },
+    {
+      "name": "F-84F Thunderstreak",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Chasseur-bombardier nucléaire (système LABS) de l’USAF et de huit aviations de l’OTAN ; pendant la crise de Berlin, les F-84F de la Garde nationale rappelés traversent l’Atlantique en novembre 1961 (*Stair Step*) vers Étain et Chambley, en France.",
+        "en": "A nuclear fighter-bomber (LABS system) with the USAF and eight NATO air forces; during the Berlin crisis, recalled Air National Guard F-84Fs crossed the Atlantic in November 1961 (*Stair Step*) to Étain and Chambley in France."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Republic_F-84F_Thunderstreak",
+        "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/195908/tactical-air-command-and-the-berlin-crisis/",
+        "https://en.wikipedia.org/wiki/List_of_Cold_War_Air_National_Guard_Mobilizations"
+      ],
+      "note": "Effectif de *Stair Step* : « plus de 200 » appareils selon le musée de l’USAF, 216 selon Wikipédia (tous types). Le 14 septembre 1961, deux F-84F ouest-allemands égarés se posent à Berlin-Tegel."
+    },
+    {
+      "name": "Canadair Sabre",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les douze escadrons de Sabre de la 1re Division aérienne de l’ARC (Marville, Grostenquin, Zweibrücken, Baden-Soellingen) tiennent la défense aérienne de l’OTAN dans les années 1950 ; les Sabre F.4 de la RAF équipent ses escadrons d’Allemagne jusqu’en 1956.",
+        "en": "The twelve Sabre squadrons of RCAF No. 1 Air Division (Marville, Grostenquin, Zweibrücken, Baden-Soellingen) held NATO air defence through the 1950s; the RAF’s Sabre F.4s equipped its squadrons in Germany until 1956."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Canadair_Sabre"
+      ],
+      "note": "Wikipédia annonce onze escadrons de la RAF mais en liste douze."
+    },
+    {
+      "name": "F4D Skyray",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Seul escadron de chasse de l’US Navy rattaché au NORAD, le VFAW-3, basé à North Island (San Diego), tient avec ses Skyray l’alerte de défense aérienne continentale contre les bombardiers soviétiques, une mission d’ordinaire réservée à l’Air Force.",
+        "en": "The only US Navy fighter squadron assigned to NORAD, VFAW-3, based at North Island (San Diego), stood continental air defence alert with its Skyrays against Soviet bombers, a mission normally left to the Air Force."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_F4D_Skyray"
+      ],
+      "note": "Wikipédia ne date pas l’affectation au NORAD (la fiche du catalogue la place en 1958)."
+    },
+    {
+      "name": "F3H Demon",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Intercepteur tous temps de première ligne de l’US Navy de 1956 à 1962, il survole le Liban et Quemoy pendant les crises de 1958, et ses canons sont remis en œuvre lors de la crise des missiles de Cuba.",
+        "en": "The US Navy’s front-line all-weather interceptor from 1956 to 1962, it flew over Lebanon and Quemoy during the 1958 crises, and its cannon were reinstalled and armed for the Cuban Missile Crisis."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_F3H_Demon"
+      ],
+      "note": "Engagement marginal : présence dans les crises, sans combat ni interception documentée."
+    },
+    {
+      "name": "F-100 Super Sabre",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le 15 juillet 1958, 29 F-100 du 354th TFW gagnent Incirlik pour la crise du Liban ; en 1961, pendant la crise de Berlin, le 614th TFS est envoyé à Ramstein, et en octobre 1962, 181 F-100 se massent à Homestead face à Cuba.",
+        "en": "On 15 July 1958, 29 F-100s of the 354th TFW deployed to Incirlik for the Lebanon crisis; in 1961, during the Berlin crisis, the 614th TFS was sent to Ramstein, and in October 1962, 181 F-100s massed at Homestead facing Cuba."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_F-100_Super_Sabre"
+      ],
+      "note": "Également envoyé à Taïwan en août 1958. Ses missions au Vietnam relèvent de la page guerre du Vietnam."
+    },
+    {
+      "name": "F-102 Delta Dagger",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Il intercepte les patrouilles soviétiques au-dessus de l’Atlantique avec l’ADC (33 escadrons), l’USAFE et le 57th FIS de Keflavik (1962-1973) ; le 27 octobre 1962, des F-102 de Galena armés de Falcon nucléaires partent couvrir le U-2 de Maultsby égaré en URSS.",
+        "en": "It intercepted Soviet patrols over the Atlantic with ADC (33 squadrons), USAFE and Keflavik’s 57th FIS (1962-1973); on 27 October 1962, nuclear Falcon-armed F-102s from Galena launched to cover Maultsby’s U-2 lost over the USSR."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Convair_F-102_Delta_Dagger",
+        "https://nsarchive.gwu.edu/node/2994",
+        "https://www.arctictoday.com/?p=6200",
+        "https://www.airandspaceforces.com/article/dragon-lady-down/"
+      ],
+      "note": "L’épisode Maultsby vient de sources secondaires (National Security Archive, Arctic Today) ; elles divergent sur le type exact de Falcon nucléaire (GAR-11 / tête W54)."
+    },
+    {
+      "name": "F-104 Starfighter",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le 83rd FIS de l’USAF tient l’alerte à Taïwan en septembre-octobre 1958 face à la Chine ; pendant la crise de Berlin, une soixantaine de F-104A de la Garde nationale rejoignent Ramstein fin 1961 ; quinze aviations de l’OTAN et alliées l’alignent ensuite.",
+        "en": "The USAF’s 83rd FIS stood alert on Taiwan in September–October 1958 facing China; during the Berlin crisis some sixty Air National Guard F-104As reached Ramstein in late 1961; fifteen NATO and allied air forces went on to fly it."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_F-104_Starfighter"
+      ],
+      "note": "Doublons partiels : les usages allemand, japonais et italien ont leurs fiches (« F-104 Starfighter Allemand », « Mitsubishi F-104J », « F-104S Starfighter Italien ») ; la fiche générique garde l’USAF, le Canada et les autres alliés. Ses combats pakistanais relèvent des pages des guerres indo-pakistanaises."
+    },
+    {
+      "name": "F-101 Voodoo",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "En octobre 1962, les RF-101A du 363rd TRW photographient Cuba à basse altitude ; les F-101A/C du 81st TFW (Bentwaters) tiennent une force de frappe nucléaire en Angleterre, et les F-101B de l’ADC (dès 1959) puis CF-101 canadiens servent le NORAD jusqu’en 1984.",
+        "en": "In October 1962, RF-101As of the 363rd TRW photographed Cuba at low level; the F-101A/Cs of the 81st TFW (Bentwaters) formed a nuclear strike force in England, and ADC F-101Bs (from 1959) then Canadian CF-101s served NORAD until 1984."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_F-101_Voodoo"
+      ],
+      "note": "Huit RF-101A livrés à Taïwan en 1959 survolent la Chine continentale ; deux abattus selon Wikipédia, mention « citation nécessaire »."
+    },
+    {
+      "name": "FJ-4 Fury",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "La version FJ-4B, équipée du système de bombardement LABS et d’un point d’emport nucléaire, donne à l’US Navy une capacité de frappe nucléaire embarquée : elle équipe dix escadrons de la Marine et trois des Marines à la fin des années 1950.",
+        "en": "The FJ-4B version, fitted with the LABS bombing system and a nuclear store station, gave the US Navy a carrier-borne nuclear strike capability: it equipped ten Navy and three Marine squadrons in the late 1950s."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_FJ-4_Fury"
+      ],
+      "note": "Engagement marginal : rôle de dissuasion nucléaire documenté, mais aucun déploiement de crise ni date d’alerte précise dans la source."
+    },
+    {
+      "name": "F-8 Crusader",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "À partir du 23 octobre 1962, les RF-8A des escadrons VFP-62, VFP-63 et VMCJ-2 photographient à basse altitude les sites de missiles soviétiques de Cuba pendant environ six semaines ; en 1974, un F-8J de l’*Oriskany* intercepte un Tu-95.",
+        "en": "From 23 October 1962, RF-8As of squadrons VFP-62, VFP-63 and VMCJ-2 photographed Cuba’s Soviet missile sites at low level for about six weeks; in 1974 an F-8J from USS *Oriskany* intercepted a Tu-95."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Vought_F-8_Crusader",
+        "https://vfp62.com/cuban.html"
+      ],
+      "note": "L’interception de 1974 vient d’une légende de photo (Wikipédia). Les F-8 philippins interceptent aussi des bombardiers soviétiques. Ses combats au Vietnam relèvent de la page guerre du Vietnam."
+    },
+    {
+      "name": "F-106 Delta Dart",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Principal intercepteur tous temps de l’Air Defense Command de 1959 aux années 1980, armé de la roquette nucléaire Genie et guidé par le réseau SAGE ; il tient l’alerte aux États-Unis, en Alaska et en Islande, et intercepte un Tu-95 au large du cap Cod en 1982.",
+        "en": "Air Defense Command’s main all-weather interceptor from 1959 into the 1980s, armed with the Genie nuclear rocket and guided by SAGE; it stood alert in the US, Alaska and Iceland, and intercepted a Tu-95 off Cape Cod in 1982."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Convair_F-106_Delta_Dart"
+      ],
+      "note": "Brefs déploiements en Allemagne et en Corée du Sud selon Wikipédia, sans détail."
+    },
+    {
+      "name": "F-15 Eagle",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le 27 avril 1977, 23 F-15 quittent Langley pour Bitburg, où le 36th TFW devient la première escadre d’Eagle face au pacte de Varsovie ; à Keflavik, le 57th FIS, passé au F-15 en 1985, intercepte les Tu-95 dans le passage GIUK.",
+        "en": "On 27 April 1977, 23 F-15s left Langley for Bitburg, where the 36th TFW became the first Eagle wing facing the Warsaw Pact; at Keflavik, the 57th FIS, converted to the F-15 in 1985, intercepted Tu-95s in the GIUK gap."
+      },
+      "sources": [
+        "https://www.globalsecurity.org/military/systems/aircraft/f-15-chron2.htm",
+        "https://www.airandspaceforces.com/article/intercepting-the-bear/",
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F-15_Eagle"
+      ],
+      "note": "Doublon partiel : l’usage japonais a sa fiche (« Mitsubishi F-15J »). Arrivée à Bitburg : un vol de 23 appareils selon la chronologie GlobalSecurity, des vagues de 12 selon un pilote. Deux F-15A ont aussi servi de lanceurs du missile antisatellite ASM-135 (1984-1986)."
+    },
+    {
+      "name": "La-11",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Le 8 avril 1950, quatre La-11 soviétiques abattent au-dessus de la Baltique un PB4Y-2 Privateer de l’US Navy et ses dix hommes d’équipage ; la même année, deux La-11 abattent un P2V Neptune américain près de Vladivostok.",
+        "en": "On 8 April 1950, four Soviet La-11s shot down a US Navy PB4Y-2 Privateer and its ten crew over the Baltic; the same year two La-11s downed an American P2V Neptune near Vladivostok."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lavochkin_La-11"
+      ],
+      "note": "En 1954, des La-11 chinois abattent un C-54 de Cathay Pacific au large de Hainan, puis deux sont abattus par des Skyraider américains."
+    },
+    {
+      "name": "Yak-23",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "En novembre 1953, le Yak-23 du pilote roumain Mihail Diaconu, passé à l’Ouest, parvient par la Yougoslavie au renseignement américain : démonté et évalué en secret à Wright Field (*Project Alpha*), il y vole sous cocardes américaines, déguisé en Bell X-5.",
+        "en": "In November 1953 the Yak-23 of defecting Romanian pilot Mihail Diaconu reached US intelligence via Yugoslavia: shipped to Wright Field and secretly evaluated (*Project Alpha*), it flew in US markings disguised as a Bell X-5."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Yakovlev_Yak-23"
+      ],
+      "note": "Engagement marginal (exploitation d’une défection). Le 28 octobre 1952, un Yak-23 roumain intercepte aussi un Il-28 soviétique égaré, première interception de l’aviation roumaine."
+    },
+    {
+      "name": "MiG-15",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Les MiG-15 soviétiques abattent des RB-29 et un RB-50 au large de l’Extrême-Orient (1950-1953) et un Lincoln de la RAF dans le couloir de Berlin le 12 mars 1953 ; le 5 mars 1953, le Polonais Franciszek Jarecki passe à l’Ouest avec le sien à Bornholm.",
+        "en": "Soviet MiG-15s shot down RB-29s and an RB-50 off the Soviet Far East (1950-1953) and an RAF Lincoln in the Berlin corridor on 12 March 1953; on 5 March 1953 Polish pilot Franciszek Jarecki defected with his to Bornholm."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-15"
+      ],
+      "note": "Ses combats en Corée relèvent de la page guerre de Corée. Le 10 mars 1953, des MiG-15 tchécoslovaques abattent aussi un F-84 au-dessus de la Bavière."
+    },
+    {
+      "name": "MiG-17",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Le 2 septembre 1958, quatre MiG-17 soviétiques abattent près d’Erevan un C-130 américain en mission de renseignement électromagnétique, dont les dix-sept occupants sont présumés tués ; la même année, les MiG-17 chinois affrontent les Sabre nationalistes au-dessus du détroit de Taïwan.",
+        "en": "On 2 September 1958, four Soviet MiG-17s shot down a US C-130 on a signals intelligence mission near Yerevan, its seventeen occupants presumed killed; that same year Chinese MiG-17s fought Nationalist Sabres over the Taiwan Strait."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-17",
+        "https://en.wikipedia.org/wiki/1958_C-130_shootdown_incident"
+      ],
+      "note": "L’article du MiG-17 ne donne que l’année ; la date vient de l’article sur l’incident, qui confirme six membres d’équipage tués et onze spécialistes du renseignement jamais reconnus par Moscou. Ses combats au Vietnam et au Proche-Orient relèvent des pages dédiées."
+    },
+    {
+      "name": "Yak-25",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Intercepteur tous temps de la défense aérienne soviétique (PVO) de 1955 aux années 1960, il escorte régulièrement les avions de reconnaissance de l’OTAN qui longent les frontières et chasse les ballons espions ; en juillet 1968, un équipage en abat un au-dessus de Iaroslavl.",
+        "en": "An all-weather interceptor of Soviet air defence (PVO) from 1955 into the 1960s, it routinely shadowed NATO reconnaissance aircraft flying along the borders and hunted spy balloons; in July 1968 a crew shot one down over Yaroslavl."
+      },
+      "sources": [
+        "https://ru.wikipedia.org/wiki/Як-25",
+        "https://en.wikipedia.org/wiki/Yakovlev_Yak-25"
+      ],
+      "note": "Wikipédia (EN) juge son plafond trop bas pour intercepter les RB-47. Fin de service : 1967 (infobox) ou 1968 (texte) selon Wikipédia (RU)."
+    },
+    {
+      "name": "MiG-19",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Le 1er juillet 1960, un MiG-19 abat au-dessus de la mer de Barents un RB-47H américain (quatre morts, deux prisonniers) ; le 1er mai 1960, un MiG-19 lancé contre le U-2 de Powers est détruit par un missile SA-2 ; le 28 janvier 1964, un autre abat un T-39 en RDA.",
+        "en": "On 1 July 1960 a MiG-19 shot down a US RB-47H over the Barents Sea (four killed, two captured); on 1 May 1960 a MiG-19 sent after Powers’s U-2 was destroyed by an SA-2; on 28 January 1964 another downed a T-39 over East Germany."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-19",
+        "https://en.wikipedia.org/wiki/1960_U-2_incident"
+      ],
+      "note": "Les Américains affirment que le RB-47H volait dans l’espace aérien international (Wikipédia)."
+    },
+    {
+      "name": "Su-9",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Le 9 avril 1960, des Su-9 du Turkménistan ne parviennent pas à intercepter un U-2 ; le 1er mai 1960, le capitaine Igor Mentioukov, sur un Su-9 désarmé, reçoit l’ordre d’éperonner le U-2 de Powers et le manque, l’écart de vitesse étant trop grand.",
+        "en": "On 9 April 1960, Su-9s from Turkmenistan failed to intercept a U-2; on 1 May 1960 Captain Igor Mentyukov, in an unarmed Su-9, was ordered to ram Powers’s U-2 and missed it because of the speed difference."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-9",
+        "https://en.wikipedia.org/wiki/1960_U-2_incident"
+      ],
+      "note": "Mentioukov a ensuite affirmé que son souffle avait brisé le U-2, contre la version officielle du missile SA-2."
+    },
+    {
+      "name": "Tu-128",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Le plus gros intercepteur de la PVO, mis en service vers 1964, garde l’immense Nord soviétique contre les bombardiers de l’OTAN comme le B-52 ; son seul fait d’armes connu est la destruction de ballons de reconnaissance de l’OTAN.",
+        "en": "The PVO’s largest interceptor, in service from about 1964, guarded the vast Soviet north against NATO bombers such as the B-52; its only publicly known combat action was shooting down NATO reconnaissance balloons."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-128"
+      ],
+      "note": "Mise en service en 1964 ou 1966 selon les sources (Wikipédia) ; aucune date pour les ballons abattus."
+    },
+    {
+      "name": "MiG-25",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "En 1971-1972, les MiG-25R soviétiques du détachement 63, basés en Égypte, survolent une vingtaine de fois le Sinaï occupé ; le 6 septembre 1976, Viktor Belenko passe à l’Ouest et pose son MiG-25P à Hakodate, livrant l’avion aux analystes occidentaux.",
+        "en": "In 1971-1972 the Soviet MiG-25Rs of Detachment 63, based in Egypt, overflew occupied Sinai some twenty times; on 6 September 1976 Viktor Belenko defected, landing his MiG-25P at Hakodate and handing the aircraft to Western analysts."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-25"
+      ],
+      "note": "Dans les années 1980, les radars suédois observent des MiG-25 de la PVO effectuant des interceptions régulières de SR-71 au-dessus de la Baltique (Wikipédia)."
+    },
+    {
+      "name": "Su-15",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Le 20 avril 1978, un Su-15 tire sur le vol KAL 902 égaré près de Mourmansk ; le 1er septembre 1983, le major Guennadi Ossipovitch, parti de Dolinsk-Sokol (Sakhaline), abat le Boeing 747 du vol KAL 007 : 269 morts, l’une des crises majeures de la fin de la guerre froide.",
+        "en": "On 20 April 1978 a Su-15 fired on stray flight KAL 902 near Murmansk; on 1 September 1983 Major Gennadi Osipovich, from Dolinsk-Sokol (Sakhalin), shot down KAL 007’s Boeing 747: 269 dead, one of the late Cold War’s major crises."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-15",
+        "https://en.wikipedia.org/wiki/Korean_Air_Lines_Flight_007"
+      ],
+      "note": "L’article du Su-15 ne donne que l’année du vol KAL 902. Un MiG-23 participe aussi à l’interception du KAL 007. En 1981, un Su-15 percute un CL-44 argentin au-dessus de l’Arménie : abordage accidentel ou délibéré selon les versions."
+    },
+    {
+      "name": "MiG-31",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Entré en service dans la PVO en 1981, il donne enfin aux Soviétiques un moyen de suivre les SR-71 au-dessus de la mer de Barents : le 31 janvier 1986, l’équipage du capitaine Mikhaïl Miagki accroche un Blackbird au radar, sans pouvoir l’atteindre.",
+        "en": "Entering PVO service in 1981, it finally gave the Soviets a way to track SR-71s over the Barents Sea: on 31 January 1986 Captain Mikhail Myagkiy’s crew locked a Blackbird on radar, without being able to reach it."
+      },
+      "sources": [
+        "https://theaviationist.com/2013/12/11/sr-71-vs-mig-31/",
+        "https://en.wikipedia.org/wiki/Mikoyan_MiG-31",
+        "https://www.vfp62.com/MiGs_vs_Blackbird.html"
+      ],
+      "note": "Sources secondaires reposant sur le carnet de vol de Miagki : l’interception par six MiG-31 est datée du 3 juin 1986 (vfp62.com), de juin 1986 ou du 31 janvier 1986 selon les articles. Aucun SR-71 n’a été abattu."
+    },
+    {
+      "name": "Su-27",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Le 13 septembre 1987, au-dessus de la mer de Barents, le Su-27 « 36 rouge » du 941e IAP (Kilpiavr), piloté par Vassili Tsymbal, frôle à trois reprises un P-3B Orion norvégien et touche une de ses hélices ; les deux avions rentrent à leur base.",
+        "en": "On 13 September 1987, over the Barents Sea, Su-27 \"Red 36\" of the 941st IAP (Kilpyavr), flown by Vasily Tsymbal, made three close passes on a Norwegian P-3B Orion and clipped one of its propellers; both aircraft returned to base."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-27",
+        "https://acig.org/artman/publish/article_287.shtml",
+        "https://aviation-safety.net/wikibase/549355"
+      ],
+      "note": "Mise en service : juin 1985 selon Wikipédia, officiellement août 1990. Les sources divergent sur la base de l’Orion (Andøya ou Bodø) et sur les responsabilités (excuses soviétiques, mais rapport soviétique concluant à une faute partagée)."
+    },
+    {
+      "name": "Gloster Meteor",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Pilier du Fighter Command de 1950 à 1955, le Meteor F.8 défend le ciel britannique ; en Allemagne de l’Ouest, les FR.9 des 2 et 79 Squadrons (Bückeburg, Gütersloh) assurent la reconnaissance tactique de 1951 à 1956, et des chasseurs de nuit tiennent encore Geilenkirchen et Laarbruch en 1959.",
+        "en": "The Meteor F.8 was the mainstay of Fighter Command from 1950 to 1955, defending British skies; in West Germany the FR.9s of Nos 2 and 79 Squadrons (Bückeburg, Gütersloh) flew tactical reconnaissance from 1951 to 1956, and night fighters still held Geilenkirchen and Laarbruch in 1959."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Gloster_Meteor",
+        "https://www.rafweb.org/Members%20Pages/Orders%20of%20Battle/1959/01_Jan/1959_01_2TAF.htm"
+      ],
+      "note": "Aucune interception d’avion soviétique documentée. Les Meteor belges, néerlandais et danois n’ont pas été recherchés en détail."
+    },
+    {
+      "name": "de Havilland Vampire",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Dès 1946, le Vampire équipe les escadrons de la Second Tactical Air Force stationnés en Allemagne de l’Ouest, renforcés face à la tension naissante entre les deux Europe et au blocus de Berlin : c’est la première chasse à réaction britannique au contact du bloc soviétique.",
+        "en": "From 1946 the Vampire equipped the Second Tactical Air Force squadrons based in West Germany, reinforced as tension grew between Western and Eastern Europe and during the Berlin Blockade: Britain’s first jet fighter force facing the Soviet bloc."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/De_Havilland_Vampire"
+      ],
+      "note": "Wikipédia ne nomme pas les escadrons de Vampire en Allemagne ; aucun rôle documenté pour le J 28 suédois ni pour les autres utilisateurs."
+    },
+    {
+      "name": "de Havilland Venom",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les chasseurs-bombardiers Venom forment en 1953 une escadre à Fassberg (14, 98 et 118 Squadrons), puis en 1954 une seconde à Celle (16, 94 et 145 Squadrons), en Allemagne de l’Ouest, au sein de la 2nd Tactical Air Force ; le Hunter les relève de 1955 à 1957.",
+        "en": "Venom fighter-bombers formed a wing at Fassberg in 1953 (Nos 14, 98 and 118 Squadrons) and a second at Celle in 1954 (Nos 16, 94 and 145 Squadrons), in West Germany, within the 2nd Tactical Air Force; the Hunter replaced them from 1955 to 1957."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/De_Havilland_Venom"
+      ],
+      "note": "Rôle de déploiement avancé ; Wikipédia ne relie pas explicitement les chasseurs de nuit ni les Venom suédois et suisses à la menace soviétique."
+    },
+    {
+      "name": "Hawker Hunter",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Intercepteur du Fighter Command de 1954 à 1963, le Hunter arme aussi la RAF en Allemagne : en janvier 1959, cinq escadrons en volent à Gütersloh (14, 20, 26) et Jever (4, 93), face au pacte de Varsovie, au sein de la 2e force aérienne tactique alliée de l’OTAN.",
+        "en": "A Fighter Command interceptor from 1954 to 1963, the Hunter also equipped the RAF in Germany: in January 1959 five squadrons flew it from Gütersloh (Nos 14, 20, 26) and Jever (Nos 4, 93), facing the Warsaw Pact within NATO’s Second Allied Tactical Air Force."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hawker_Hunter",
+        "https://www.rafweb.org/Members%20Pages/Orders%20of%20Battle/1959/01_Jan/1959_01_2TAF.htm",
+        "https://en.wikipedia.org/wiki/RAF_Germany"
+      ],
+      "note": "Aucun rôle documenté pour les Hunter belges, danois, néerlandais, suédois et suisses."
+    },
+    {
+      "name": "Supermarine Swift",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "De 1956 à 1961, le Swift FR.5 assure à basse altitude la reconnaissance tactique de la RAF en Allemagne de l’Ouest ; en janvier 1959, il équipe le 2 Squadron à Jever et le 79 Squadron à Gütersloh.",
+        "en": "From 1956 to 1961 the Swift FR.5 flew the RAF’s low-level tactical reconnaissance in West Germany; in January 1959 it equipped No. 2 Squadron at Jever and No. 79 Squadron at Gütersloh."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Supermarine_Swift",
+        "https://www.rafweb.org/Members%20Pages/Orders%20of%20Battle/1959/01_Jan/1959_01_2TAF.htm"
+      ],
+      "note": "Wikipédia annonce deux escadrons puis en liste trois (2, 4 et 79)."
+    },
+    {
+      "name": "Gloster Javelin",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Conçu contre les bombardiers soviétiques, le Javelin assure la défense aérienne tous temps du Royaume-Uni de 1956 aux années 1960 ; en Allemagne de l’Ouest, les 3, 5 et 11 Squadrons en volent à Geilenkirchen et Laarbruch de 1959 à 1966.",
+        "en": "Designed against Soviet bombers, the Javelin provided Britain’s all-weather air defence from 1956 into the 1960s; in West Germany Nos 3, 5 and 11 Squadrons flew it from Geilenkirchen and Laarbruch between 1959 and 1966."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Gloster_Javelin",
+        "https://www.rafweb.org/Members%20Pages/Orders%20of%20Battle/1959/01_Jan/1959_01_2TAF.htm"
+      ],
+      "note": "Aucune interception d’avion soviétique documentée."
+    },
+    {
+      "name": "English Electric Lightning",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Intercepteur de la RAF de 1960 à 1988, le Lightning tient la Quick Reaction Alert Nord à Leuchars et intercepte les Tu-95 « Bear » soviétiques ; en Allemagne, les 19 et 92 Squadrons assurent la défense aérienne à basse altitude depuis Gütersloh de 1962-1963 à 1977.",
+        "en": "The RAF’s interceptor from 1960 to 1988, the Lightning held Northern Quick Reaction Alert at Leuchars and intercepted Soviet Tu-95 “Bears”; in Germany Nos 19 and 92 Squadrons flew low-level air defence from Gütersloh from 1962-1963 to 1977."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/English_Electric_Lightning",
+        "https://historylearning.com/modern-world-history/coldwar/english-electric-lightning",
+        "https://film.iwmcollections.org.uk/record/5379"
+      ],
+      "note": "Le film IWM AMY 875 (1965) montre l’interception d’un « Bear » par un Lightning. En septembre 1962, des Lightning interceptent à 65 000 pieds des U-2 américains en essai (Wikipédia)."
+    },
+    {
+      "name": "Saab 35 Draken",
+      "side": "neutres",
+      "attested": true,
+      "role": {
+        "fr": "Intercepteur suédois en service de 1960 à 1999 : quand les SR-71 américains commencent leurs vols de renseignement au large, au-dessus de la Baltique, les J 35F Draken de la Flygvapnet tentent de les intercepter, sans en avoir les performances, avant que le Viggen ne prenne le relais.",
+        "en": "A Swedish interceptor in service from 1960 to 1999: when US SR-71s began their intelligence flights over the Baltic, the Flygvapnet’s J 35F Drakens attempted to intercept them but lacked the performance, before the Viggen took over."
+      },
+      "sources": [
+        "https://www.19fortyfive.com/2026/02/radar-locked-how-a-mach-3-sr-71-blackbird-was-defeated-five-separate-times-not-by-russia/",
+        "https://en.wikipedia.org/wiki/Saab_35_Draken"
+      ],
+      "note": "Engagement marginal, attesté par le témoignage d’un pilote suédois rapporté par 19FortyFive (presse de vulgarisation). Aucun rôle documenté pour les Draken danois, finlandais et autrichiens."
+    },
+    {
+      "name": "MiG-21 Allemand",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Livré à partir de 1962, le MiG-21 forme l’essentiel de la chasse est-allemande, intégrée depuis 1961 au système d’alerte permanente de la défense aérienne du pacte de Varsovie ; JG-1 (Holzdorf), JG-2 (Trollenhagen), JG-3 (Preschen) et JG-8 (Marxwalde) en volent face à l’OTAN.",
+        "en": "Delivered from 1962, the MiG-21 made up most of the East German fighter force, integrated from 1961 into the Warsaw Pact’s permanent air defence duty system; JG-1 (Holzdorf), JG-2 (Trollenhagen), JG-3 (Preschen) and JG-8 (Marxwalde) flew it facing NATO."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Air_Forces_of_the_National_People%27s_Army",
+        "https://de.wikipedia.org/wiki/Luftstreitkr%C3%A4fte_der_NVA",
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-21_operators"
+      ],
+      "note": "Aucune interception d’avion de l’OTAN documentée dans les sources consultées. Selon Wikipédia, 251 MiG-21 passent à la Luftwaffe en 1990 et sont vite retirés."
+    },
+    {
+      "name": "F-104 Starfighter Allemand",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "De 1960 à 1991, 916 F-104G servent la Bundeswehr : chasse (JG 71, JG 74), reconnaissance (AG 51, AG 52), attaque antinavire (MFG 1, MFG 2) et frappe, y compris nucléaire, dans le cadre de l’OTAN (JaboG 31, opérationnelle dès 1962, à JaboG 36) ; 269 sont perdus par accident.",
+        "en": "From 1960 to 1991, 916 F-104Gs served the Bundeswehr: fighters (JG 71, JG 74), reconnaissance (AG 51, AG 52), anti-ship strike (MFG 1, MFG 2) and strike, including nuclear, within NATO (JaboG 31, operational from 1962, to JaboG 36); 269 were lost in crashes."
+      },
+      "sources": [
+        "https://de.wikipedia.org/wiki/Lockheed_F-104"
+      ],
+      "note": "La Wikipédia allemande présente le Starfighter comme porteur d’armes nucléaires au titre de la participation nucléaire de l’OTAN sans dire quelles escadres la tenaient ; elle parle ailleurs d’« un tiers » d’appareils perdus (269 sur 916, soit 29,4 %)."
+    },
+    {
+      "name": "Mitsubishi F-104J",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Choisi face aux bombardiers soviétiques, le F-104J équipe de 1963 à 1966 sept escadrons (201e à 207e) de la Force aérienne d’autodéfense japonaise ; il prend l’alerte contre les violations de l’espace aérien dès octobre 1964 et la tient jusqu’à la dissolution du 207e, à Naha, en 1986.",
+        "en": "Chosen with Soviet bombers in mind, the F-104J equipped seven Japan Air Self-Defense Force squadrons (201st to 207th) from 1963 to 1966; it stood alert against airspace violations from October 1964 until the 207th at Naha disbanded in 1986."
+      },
+      "sources": [
+        "https://ja.wikipedia.org/wiki/F-104_(%E6%88%A6%E9%97%98%E6%A9%9F)",
+        "https://en.wikipedia.org/wiki/Violations_of_Japanese_airspace"
+      ],
+      "note": "Aucune interception datée dans les sources consultées ; la Wikipédia japonaise donne ailleurs 1995 comme date de retrait (appareils hors des unités de combat)."
+    },
+    {
+      "name": "Saab 37 Viggen",
+      "side": "neutres",
+      "attested": true,
+      "role": {
+        "fr": "Pilier de la défense aérienne suédoise, le JA 37 Viggen obtient au milieu des années 1980 plusieurs accrochages radar sur les SR-71 américains au-dessus de la Baltique ; le 29 juin 1987, des Viggen escortent un SR-71 privé d’un moteur, qui se pose en Allemagne de l’Ouest.",
+        "en": "The mainstay of Swedish air defence, the JA 37 Viggen achieved several radar locks on US SR-71s over the Baltic in the mid-1980s; on 29 June 1987 Viggens escorted an SR-71 that had lost an engine, which landed in West Germany."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Saab_37_Viggen",
+        "https://www.sandboxx.us/news/the-only-foreign-jet-ever-to-lock-onto-the-the-sr-71-came-to-its-rescue/",
+        "https://www.19fortyfive.com/2026/02/radar-locked-how-a-mach-3-sr-71-blackbird-was-defeated-five-separate-times-not-by-russia/"
+      ],
+      "note": "Le pilote Per-Olof Eldh revendique cinq interceptions « chaudes » de SR-71 ; d’autres chiffres (51 accrochages sur 322 vols entre 1977 et 1988) circulent sans source primaire consultée. La présence de MiG-25 soviétiques le 29 juin 1987, avancée par certains médias, n’est pas reprise par Sandboxx."
+    },
+    {
+      "name": "MiG-23 Allemand",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Introduits dans les années 1970, les MiG-23MF et ML d’interception arment le JG-9 de Peenemünde, sur la Baltique, et les MiG-23BN d’attaque le JBG-37 de Drewitz, dans la défense aérienne intégrée du pacte de Varsovie, jusqu’à la dissolution de l’armée est-allemande en 1990.",
+        "en": "Introduced in the 1970s, MiG-23MF and ML interceptors equipped JG-9 at Peenemünde on the Baltic and MiG-23BN attack aircraft equipped JBG-37 at Drewitz, within the Warsaw Pact’s integrated air defence, until the East German army was dissolved in 1990."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Air_Forces_of_the_National_People%27s_Army",
+        "https://de.wikipedia.org/wiki/Jagdfliegergeschwader_9",
+        "https://de.wikipedia.org/wiki/Luftstreitkr%C3%A4fte_der_NVA"
+      ],
+      "note": "Inventaire de 1989 : 43 MiG-23MF/ML/UB et 22 MiG-23BN selon Wikipédia anglais ; 47 et 18 selon Wikipédia allemand. Aucune interception documentée."
+    },
+    {
+      "name": "F-104S Starfighter Italien",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "En alerte QRA, les F-104S de l’Aeronautica Militare (12e Gruppo à Gioia del Colle, 10e Gruppo à Grazzanise…) décollent pour escorter les Tu-16, Tu-95 et Il-76 soviétiques au-dessus de l’Adriatique, de la mer Ionienne et de la Tyrrhénienne, notamment au large de l’Albanie.",
+        "en": "On QRA, the Aeronautica Militare’s F-104S (12° Gruppo at Gioia del Colle, 10° Gruppo at Grazzanise and others) scrambled to escort Soviet Tu-16s, Tu-95s and Il-76s over the Adriatic, Ionian and Tyrrhenian seas, notably off Albania."
+      },
+      "sources": [
+        "https://theaviationist.com/2020/06/16/f-104-starfighter-pilot-recalls-his-life-intercepting-soviet-bombers-during-the-cold-war/",
+        "https://de.wikipedia.org/wiki/Lockheed_F-104"
+      ],
+      "note": "Source principale : témoignage d’un pilote publié par The Aviationist, sans nombre d’interceptions. Les Tu-22 escortés en 1983 au-dessus du canal d’Otrante étaient libyens."
+    },
+    {
+      "name": "F-4EJ Kai",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les F-4EJ japonais tiennent l’alerte face à l’aviation soviétique : le 6 septembre 1976, ceux de Chitose ne repèrent pas le MiG-25 de Belenko avant Hakodate ; le 9 décembre 1987, ceux du 302e escadron tirent les tout premiers coups de semonce japonais sur un Tu-16 au-dessus d’Okinawa.",
+        "en": "Japan’s F-4EJs stood alert against Soviet aircraft: on 6 September 1976 those from Chitose failed to find Belenko’s MiG-25 before Hakodate; on 9 December 1987 those of the 302nd Squadron fired the JASDF’s first-ever warning shots at a Tu-16 over Okinawa."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/1987_Okinawan_Tu-16_airspace_violation",
+        "https://ja.wikipedia.org/wiki/%E3%83%99%E3%83%AC%E3%83%B3%E3%82%B3%E4%B8%AD%E5%B0%89%E4%BA%A1%E5%91%BD%E4%BA%8B%E4%BB%B6"
+      ],
+      "note": "Ces épisodes concernent le F-4EJ ; la modernisation Kai date des années 1980. La Wikipédia japonaise ne parle pas d’échec formel en 1976 : le MiG-25, volant bas, n’est vu qu’à Hakodate."
+    },
+    {
+      "name": "F-4 Phantom II Allemand",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "À partir de 1974, les F-4F de la Luftwaffe deviennent les intercepteurs de l’OTAN au-dessus de l’Allemagne de l’Ouest (JG 71 à Wittmund, JG 74 à Neuburg) et des chasseurs-bombardiers (JaboG 35 et 36), dans un dispositif où deux avions armés restent prêts à décoller face au pacte de Varsovie.",
+        "en": "From 1974 the Luftwaffe’s F-4Fs became NATO interceptors over West Germany (JG 71 at Wittmund, JG 74 at Neuburg) and fighter-bombers (JaboG 35 and 36), within a system that kept two armed jets ready to launch facing the Warsaw Pact."
+      },
+      "sources": [
+        "https://de.wikipedia.org/wiki/McDonnell_F-4",
+        "https://en.wikipedia.org/wiki/Taktisches_Luftwaffengeschwader_71_%22Richthofen%22",
+        "https://www.bundeswehr.de/de/selbstverstaendnis/geschichte-bundeswehr/geschichte-luftwaffe/luftwaffe-kalter-krieg"
+      ],
+      "note": "La page de la Bundeswehr décrit l’alerte de la guerre froide sans nommer d’appareil (le F-4F n’y figure qu’en légende) ; aucune interception datée trouvée. Le F-4F n’avait pas de rôle nucléaire."
+    },
+    {
+      "name": "Panavia Tornado Allemand",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Conçu pour frapper à très basse altitude, avec des armes classiques ou nucléaires, les forces du pacte de Varsovie, le Tornado de la Luftwaffe peut emporter la bombe américaine B61, mission de la JaboG 33 de Büchel dès 1985 ; ceux de la Marine visent les navires avec le missile Kormoran.",
+        "en": "Designed to strike Warsaw Pact forces at very low level with conventional or nuclear weapons, the Luftwaffe Tornado could carry the US B61 bomb, the mission of JaboG 33 at Büchel from 1985; the Navy’s Tornados targeted ships with the Kormoran missile."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Panavia_Tornado",
+        "https://en.wikipedia.org/wiki/B%C3%BCchel_Air_Base",
+        "https://en.wikipedia.org/wiki/Nuclear_sharing"
+      ],
+      "note": "Les sources consultées décrivent la mission et l’équipement, pas une alerte nucléaire datée."
+    },
+    {
+      "name": "Panavia Tornado Italien",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Arrivés en 1982 au 6e Stormo de Ghedi, escadre qualifiée « Strike » (bombardement nucléaire) depuis 1964, les Tornado IDS italiens reprennent l’emport des bombes américaines B61 de la participation nucléaire de l’OTAN, gardées en zone d’alerte par des Italiens et des Américains.",
+        "en": "Arriving in 1982 with 6° Stormo at Ghedi, a wing qualified for nuclear “Strike” since 1964, Italy’s Tornado IDS took over the carriage of US B61 bombs under NATO nuclear sharing, kept in an alert area guarded by Italian and American personnel."
+      },
+      "sources": [
+        "https://it.wikipedia.org/wiki/6%C2%BA_Stormo",
+        "https://en.wikipedia.org/wiki/Panavia_Tornado",
+        "https://en.wikipedia.org/wiki/Nuclear_sharing"
+      ],
+      "note": "La Wikipédia anglaise date la première livraison italienne du 25 septembre 1981 ; la Wikipédia italienne fait arriver les Tornado à Ghedi en 1982."
+    },
+    {
+      "name": "MiG-29 Allemand",
+      "side": null,
+      "attested": true,
+      "role": {
+        "fr": "Dernier chasseur reçu par l’armée est-allemande, en 1988 : 20 MiG-29A et 4 MiG-29UB arment le JG-3 de Preschen au sein du pacte de Varsovie ; repris par la Luftwaffe le 3 octobre 1990, ils passent à l’OTAN, en défense aérienne et comme plastron pour les pilotes occidentaux.",
+        "en": "The last fighter received by the East German forces, in 1988: 20 MiG-29As and 4 MiG-29UBs equipped JG-3 at Preschen within the Warsaw Pact; taken over by the Luftwaffe on 3 October 1990, they moved to NATO, in air defence and as adversary aircraft for Western pilots."
+      },
+      "sources": [
+        "https://de.wikipedia.org/wiki/Jagdfliegergeschwader_3",
+        "https://en.wikipedia.org/wiki/Air_Forces_of_the_National_People%27s_Army"
+      ],
+      "note": "Engagement marginal : deux ans de service est-allemand sans interception documentée, puis un an de service ouest-allemand avant la fin de la guerre froide. Deux camps, d’où side null."
+    },
+    {
+      "name": "Mitsubishi F-15J",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "En service depuis décembre 1981, le F-15J remplace en mars 1984 le F-104J au 203e escadron de Chitose, base qui fait face, par-delà le détroit de La Pérouse, à la base de chasse soviétique de Sakhaline.",
+        "en": "In service from December 1981, the F-15J replaced the F-104J in March 1984 with the 203rd Squadron at Chitose, which faces the Soviet fighter base on Sakhalin across the La Pérouse Strait."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mitsubishi_F-15J"
+      ],
+      "note": "Aucune interception datée d’avion soviétique par un F-15J trouvée dans les sources consultées."
+    },
+    {
+      "name": "Douglas C-54 Skymaster",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Plus de 300 C-54 de l'US Air Force et R5D de l'US Navy forment l'ossature de la contribution américaine au pont aérien de Berlin (*Vittles*, juin 1948-septembre 1949), acheminant charbon et vivres depuis Rhein-Main et Wiesbaden.",
+        "en": "More than 300 US Air Force C-54s and US Navy R5Ds formed the backbone of the American contribution to the Berlin Airlift (*Vittles*, June 1948-September 1949), hauling coal and food from Rhein-Main and Wiesbaden."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_C-54_Skymaster",
+        "https://en.wikipedia.org/wiki/Berlin_Blockade"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Avro York",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les York de sept escadrons de la RAF effectuent plus de 58 000 vols pendant le pont aérien de Berlin (*Plainfare*, 1948-1949) et livrent plus de 230 000 tonnes, soit 43 % de la contribution britannique.",
+        "en": "Yorks from seven RAF squadrons flew more than 58,000 sorties during the Berlin Airlift (*Plainfare*, 1948-1949) and delivered over 230,000 tons, 43 per cent of the British contribution."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Avro_York",
+        "https://en.wikipedia.org/wiki/Berlin_Blockade"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Fairchild C-82 Packet",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "À l'automne 1948, pendant le pont aérien de Berlin, cinq C-82 de l'US Air Force apportent démontés dans la ville les engins de terrassement qui permettent de construire l'aérodrome de Tegel.",
+        "en": "In the autumn of 1948, during the Berlin Airlift, five US Air Force C-82s flew dismantled earthmoving equipment into the city, making it possible to build Tegel airfield."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Fairchild_C-82_Packet",
+        "https://en.wikipedia.org/wiki/Berlin_Blockade"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Douglas C-74 Globemaster",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Un unique C-74, arrivé à Rhein-Main le 14 août 1948, se pose à Gatow le 17 avec 20 tonnes de farine ; en six semaines du pont aérien de Berlin, il y effectue 24 rotations et livre environ 560 tonnes.",
+        "en": "A single C-74 reached Rhein-Main on 14 August 1948 and landed at Gatow on the 17th with 20 tons of flour; over six weeks of the Berlin Airlift it flew 24 missions into the city and delivered about 560 tonnes."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_C-74_Globemaster",
+        "https://en.wikipedia.org/wiki/Berlin_Blockade"
+      ],
+      "note": "Tonnage : 1 234 000 livres (559,7 t) selon Wikipédia EN ; la fiche du catalogue dit 559 tonnes."
+    },
+    {
+      "name": "Handley Page Hastings",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Mis en service à marche forcée, les Hastings des 47e, 297e et 53e escadrons de la RAF volent vers Berlin dès le 11 novembre 1948 ; 32 appareils y livrent quelque 55 000 tonnes, et c'est un Hastings qui clôt le pont aérien le 6 octobre 1949.",
+        "en": "Rushed into service, Hastings of Nos 47, 297 and 53 Squadrons RAF flew to Berlin from 11 November 1948; 32 aircraft delivered some 55,000 tons, and a Hastings flew the airlift's final sortie on 6 October 1949."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Handley_Page_Hastings",
+        "https://en.wikipedia.org/wiki/Berlin_Blockade"
+      ],
+      "note": "Deux Hastings perdus pendant le pont aérien (Wikipédia EN). La fiche du catalogue situe l'entrée en service en septembre 1948, Wikipédia le premier vol vers Berlin au 11 novembre 1948."
+    },
+    {
+      "name": "Lockheed C-121 Constellation",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Huit des C-121A commandés en 1948 rejoignent la division Atlantique du Military Air Transport Service et assurent en 1949 la liaison transatlantique du pont aérien de Berlin, avant d'être transformés en avions de personnalités.",
+        "en": "Eight of the C-121As ordered in 1948 joined the Atlantic Division of the Military Air Transport Service and flew the transatlantic route of the Berlin Airlift in 1949, before being converted into VIP transports."
+      },
+      "sources": [
+        "https://www.historyofwar.org/articles/weapons_lockheed_C-121_constellation.html",
+        "https://en.wikipedia.org/wiki/Lockheed_C-121_Constellation"
+      ],
+      "note": "Wikipédia EN se borne à dire que les C-121A « servent pendant le pont aérien de Berlin » ; le nombre (huit) et l'année (1949) viennent de historyofwar.org. Le radar volant EC-121 (abattu par la Corée du Nord en 1969) n'est pas décrit par cette fiche de transport."
+    },
+    {
+      "name": "C-119 Flying Boxcar",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les C-119 du 6593rd Test Squadron, basés à Hickam (Hawaï), récupèrent en vol les capsules de film des satellites espions Corona ; le 19 août 1960, l'un d'eux saisit celle de Discoverer XIV, porteuse des premières photos de l'URSS prises depuis l'espace.",
+        "en": "C-119s of the 6593rd Test Squadron at Hickam, Hawaii, caught the film capsules of Corona spy satellites in mid-air; on 19 August 1960 one of them snagged Discoverer XIV's capsule, which held the first photographs of the Soviet Union taken from space."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Fairchild_C-119_Flying_Boxcar",
+        "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/198108/discoverer-xiv/",
+        "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/197556/fairchild-c-119j-flying-boxcar/"
+      ],
+      "note": "Numéro de l'appareil divergent selon les sources (51-8037 le plus souvent, 51-8039 ou 51-8041 dans des légendes). Wikipédia EN signale aussi environ 150 C-119 en Allemagne puis en France avec l'USAFE de 1951 à 1962."
+    },
+    {
+      "name": "de Havilland Comet",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Des Comet 2R modifiés servent au 192e escadron, renuméroté 51e escadron le 21 août 1958 à Watton puis basé à Wyton, pour le renseignement électromagnétique de la RAF face au bloc soviétique, jusqu'à leur remplacement par le Nimrod en 1974.",
+        "en": "Modified Comet 2Rs served with No. 192 Squadron, renumbered No. 51 Squadron at Watton on 21 August 1958 and later based at Wyton, flying RAF signals intelligence against the Soviet bloc until the Nimrod replaced them in 1974."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/No._51_Squadron_RAF",
+        "https://en.wikipedia.org/wiki/De_Havilland_Comet"
+      ],
+      "note": "Le rôle d'écoute du 51e escadron n'a été reconnu publiquement qu'après la guerre froide ; les sources consultées ne détaillent ni les cibles ni les itinéraires. La fiche parle de trois Comet 2R et d'écoute du pacte de Varsovie."
+    },
+    {
+      "name": "Nord Noratlas",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "À partir de 1962, les Noratlas Gabriel de l'escadron électronique 54 (Lahr, puis Metz) écoutent les forces du pacte de Varsovie dans les couloirs aériens de Berlin et le long des frontières de la RDA et de la Tchécoslovaquie, jusqu'en octobre 1989.",
+        "en": "From 1962, Noratlas Gabriel aircraft of Electronic Squadron 54 (Lahr, then Metz) eavesdropped on Warsaw Pact forces from the Berlin air corridors and along the East German and Czechoslovak borders, until October 1989."
+      },
+      "sources": [
+        "https://16va.be/gabriel_part1_eng.html"
+      ],
+      "note": "Huit Noratlas convertis en Gabriel. Dates divergentes : première mission le 29 ou le 31 octobre 1962 (16va.be), alors qu'une autre source place des Gabriel dans les couloirs de Berlin dès décembre 1957 ; dernier vol le 26 octobre 1989 (16va.be) ou le 5 octobre 1989. La fiche du catalogue ne mentionne pas les Gabriel."
+    },
+    {
+      "name": "C-123 Provider",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le 5 octobre 1986, un C-123 qui livre des armes aux Contras pour un réseau lié à la CIA est abattu au-dessus du Nicaragua par un missile soviétique SA-7 des sandinistes ; le survivant, Eugene Hasenfus, prouve l'implication américaine.",
+        "en": "On 5 October 1986 a C-123 flying weapons to the Contras for a CIA-linked network was shot down over Nicaragua by a Sandinista Soviet-made SA-7 missile; the survivor, Eugene Hasenfus, exposed US involvement."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Eugene_Hasenfus"
+      ],
+      "note": "Engagement marginal, dans la guerre par procuration d'Amérique centrale (aucune page dédiée au Nicaragua) ; trois membres d'équipage tués. L'essentiel de la carrière du C-123 est raconté dans la page guerre du Vietnam, et sa fiche ne mentionne pas cet épisode."
+    },
+    {
+      "name": "Douglas C-124 Globemaster II",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le Strategic Air Command aligne une cinquantaine de C-124 de 1950 à 1962, d'abord pour déplacer ses armes nucléaires entre bases ; de 1959 à 1961, les C-124 transportent aussi à travers l'Atlantique les missiles Thor déployés en Angleterre.",
+        "en": "Strategic Air Command flew some fifty C-124s from 1950 to 1962, chiefly to move its nuclear weapons between bases; from 1959 to 1961 C-124s also carried the Thor missiles deployed in England across the Atlantic."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_C-124_Globemaster_II"
+      ],
+      "note": ""
+    },
+    {
+      "name": "C-130 Hercules",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le 2 septembre 1958, un C-130A-II d'écoute électronique du 7406th Support Squadron, parti d'Incirlik pour longer la frontière turco-soviétique, est abattu par quatre MiG-17 près d'Erevan ; ses 17 occupants sont présumés morts.",
+        "en": "On 2 September 1958 a C-130A-II electronic intelligence aircraft of the 7406th Support Squadron, flying from Incirlik along the Turkish-Soviet border, was shot down by four MiG-17s near Yerevan; all 17 aboard are presumed dead."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/1958_C-130_shootdown_incident"
+      ],
+      "note": "Seuls les restes des six membres d'équipage ont été rendus ; l'URSS n'a jamais reconnu la présence des onze spécialistes du renseignement. La fiche du C-130 ne raconte pas cet épisode."
+    },
+    {
+      "name": "Antonov An-8",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Lors de l'invasion de la Tchécoslovaquie par le pacte de Varsovie (opération *Danube*, 20-21 août 1968), deux An-8 soviétiques déposent les forces spéciales chargées de s'emparer de l'aéroport de Plzeň.",
+        "en": "During the Warsaw Pact invasion of Czechoslovakia (Operation *Danube*, 20-21 August 1968), two Soviet An-8s landed the special forces tasked with seizing Plzeň airport."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Antonov_An-8",
+        "https://en.wikipedia.org/wiki/Warsaw_Pact_invasion_of_Czechoslovakia"
+      ],
+      "note": "Intervention à l'intérieur du bloc soviétique (aucune page dédiée) : à valider comme engagement de guerre froide. Wikipédia EN mentionne aussi des An-8 de renseignement électronique, sans détail, et un prélèvement d'air après un essai nucléaire chinois en 1966 (hors confrontation Est-Ouest)."
+    },
+    {
+      "name": "Douglas C-133 Cargomaster",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les C-133 de l'US Air Force transportent vers et depuis leurs bases plusieurs centaines de missiles intercontinentaux Atlas, Titan et Minuteman, pièces maîtresses de la dissuasion nucléaire américaine.",
+        "en": "US Air Force C-133s airlifted several hundred Atlas, Titan and Minuteman intercontinental missiles to and from their operational bases, the core of America's nuclear deterrent."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_C-133_Cargomaster"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Antonov An-12",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Le 21 août 1968, une fois l'aéroport de Prague-Ruzyně saisi, les An-12 de l'aviation de transport soviétique s'y posent à la chaîne pour débarquer les troupes aéroportées, leur artillerie et leurs blindés légers, lors de l'invasion de la Tchécoslovaquie.",
+        "en": "On 21 August 1968, once Prague's Ruzyně airport had been seized, Soviet transport aviation An-12s landed one after another to unload airborne troops with their artillery and light tanks during the invasion of Czechoslovakia."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Warsaw_Pact_invasion_of_Czechoslovakia"
+      ],
+      "note": "Intervention à l'intérieur du bloc soviétique (aucune page dédiée) : à valider comme engagement de guerre froide. Le rythme des atterrissages diverge selon les sources (un par minute, toutes les 50 ou toutes les 30 secondes). La fiche de l'An-12 ne mentionne pas l'épisode ; ses ponts aériens (Afghanistan, Inde 1971, Angola) relèvent d'autres pages."
+    },
+    {
+      "name": "Transall C-160",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le C-160H Astarté de l'escadron 00.059 (Évreux), opérationnel le 21 novembre 1988, relaie les ordres de tir aux sous-marins nucléaires français ; en 1989, les deux Transall Gabriel de l'EE 54 écoutent le pacte de Varsovie dans les couloirs de Berlin.",
+        "en": "The C-160H Astarté of Squadron 00.059 at Évreux, operational on 21 November 1988, relayed firing orders to French nuclear submarines; in 1989 Squadron EE 54's two Transall Gabriels eavesdropped on the Warsaw Pact from the Berlin corridors."
+      },
+      "sources": [
+        "https://www.irsem.fr/storage/file_manager_files/2025/03/1-septembre-1987-astarte.pdf",
+        "https://16va.be/gabriel_part2_eng.html"
+      ],
+      "note": "Engagement tardif : Gabriel livrés le 3 janvier 1989, premier vol dans les couloirs de Berlin le 21 mars 1989, interrompu par la chute du Mur (16va.be). L'Astarté relaie aussi les ordres vers le poste de commandement des missiles du plateau d'Albion (IRSEM)."
+    },
+    {
+      "name": "C-141 Starlifter",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "En janvier 1969, 63 C-141 du Military Airlift Command amènent en deux jours quelque 5 000 soldats à Nuremberg pour *Reforger I*, premier exercice de renforcement rapide des forces américaines en Allemagne de l'Ouest.",
+        "en": "In January 1969, 63 Military Airlift Command C-141s flew some 5,000 soldiers into Nuremberg in two days for *Reforger I*, the first exercise in rapidly reinforcing US forces in West Germany."
+      },
+      "sources": [
+        "https://www.stripes.com/history/2023-03-08/reforger-debut-germany-1969-9402523.html"
+      ],
+      "note": "La fiche du C-141 ne raconte pas Reforger. Wikipédia EN indique aussi qu'il pouvait transporter un missile Minuteman complet dans son conteneur."
+    },
+    {
+      "name": "C-5 Galaxy",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le 24 octobre 1974, un C-5A largue sous parachute un missile Minuteman I tiré en plein vol : l'essai prouve qu'un missile intercontinental peut partir d'un avion, capacité jamais déployée mais avancée comme monnaie d'échange dans les négociations SALT.",
+        "en": "On 24 October 1974 a C-5A dropped a Minuteman I missile by parachute and it was fired in mid-air: the test proved an ICBM could be air-launched, a capability never deployed but used as a bargaining chip in the SALT talks."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_C-5_Galaxy"
+      ],
+      "note": "Engagement d'essai, non opérationnel. Aucune source consultée ne détaille la part du C-5 dans les exercices Reforger. La fiche du C-5 ne raconte pas cet essai."
+    },
+    {
+      "name": "Short C-23 Sherpa",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "De 1985 à novembre 1990, les 18 C-23A du Military Airlift Command basés à Zweibrücken font la navette des pièces de rechange entre les bases américaines d'Europe pour accroître le rythme de sortie des chasseurs ; les réductions de l'après-guerre froide y mettent fin.",
+        "en": "From 1985 to November 1990 the 18 Military Airlift Command C-23As based at Zweibrücken shuttled spare parts between US bases in Europe to raise fighter sortie rates; post-Cold War force cuts ended the mission."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Short_C-23_Sherpa",
+        "https://www.airandspaceforces.com/article/1084airlift/"
+      ],
+      "note": "Engagement marginal : soutien logistique du dispositif avancé de l'USAFE en Allemagne de l'Ouest, sans mission de confrontation directe. Dates divergentes : livraisons de novembre 1984 à novembre 1985 selon des sites d'histoire, mise en œuvre du système en mars 1986 avec six appareils selon un rapport du GAO."
+    },
+    {
+      "name": "Beechcraft C-12 Huron",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "À partir de 1984, les RC-12 Guardrail de l'US Army remplacent en Allemagne de l'Ouest les RU-21 qui surveillent depuis 1971 les mouvements des troupes du bloc soviétique en RDA et en Tchécoslovaquie, par l'écoute de leurs émissions.",
+        "en": "From 1984 the US Army's RC-12 Guardrail aircraft replaced, in West Germany, the RU-21s that had been monitoring Soviet bloc troop movements in East Germany and Czechoslovakia since 1971 by intercepting their emissions."
+      },
+      "sources": [
+        "https://www.army.mil/article/61251/guardrail_turns_40_modernization_keeps_it_going"
+      ],
+      "note": "Seule la version de renseignement RC-12 est engagée ; les sources ne détaillent pas les unités ni les itinéraires de vol."
+    },
+    {
+      "name": "Martin AM Mauler",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Le Carrier Air Group 8, créé le 15 septembre 1948 en réponse au blocus de Berlin, équipe de Mauler ses flottilles VA-84 et VA-85 ; il est dissous en novembre 1949, une fois le blocus levé.",
+        "en": "Carrier Air Group 8, formed on 15 September 1948 in response to the Berlin Blockade, equipped its VA-84 and VA-85 squadrons with Maulers; it was disbanded in November 1949 once the blockade had been lifted."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Martin_AM_Mauler",
+        "https://en.wikipedia.org/wiki/VA-84_(U.S._Navy)"
+      ],
+      "note": "Engagement marginal : renfort constitué pendant la crise de Berlin, sans déploiement outre-mer documenté (une croisière le long de la côte Est seulement)."
+    },
+    {
+      "name": "Yak-11",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "L'aviation est-allemande emploie des Yak-11 pour intercepter les ballons de reconnaissance américains lâchés au-dessus du bloc de l'Est.",
+        "en": "The East German air arm used Yak-11s to intercept American reconnaissance balloons drifting over the Eastern bloc."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Yakovlev_Yak-11"
+      ],
+      "note": "Engagement marginal, source unique et non datée (Wikipédia EN) ; aucune source allemande trouvée pour le dater. La Corée et le Yémen (Égypte) relèvent d'autres pages."
+    },
+    {
+      "name": "DHC-1 Chipmunk",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "De 1956 à 1990, les Chipmunk du Station Flight de RAF Gatow, à Berlin-Ouest, mènent pour la mission militaire britannique BRIXMIS des vols de reconnaissance discrète au-dessus de la région de Berlin.",
+        "en": "From 1956 to 1990, the Chipmunks of the RAF Gatow Station Flight in West Berlin flew covert reconnaissance sorties over the Berlin area for the British military mission BRIXMIS."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/De_Havilland_Canada_DHC-1_Chipmunk"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Vickers Varsity",
+      "side": "neutres",
+      "attested": true,
+      "role": {
+        "fr": "La Suède achète un Varsity, le Tp 82, pour remplacer le Dakota de renseignement électronique abattu par la chasse soviétique au-dessus de la Baltique en juin 1952 ; de 1953 à 1973, il sert surtout au renseignement électronique.",
+        "en": "Sweden bought a single Varsity, the Tp 82, to replace the signals-intelligence Dakota shot down by Soviet fighters over the Baltic in June 1952; from 1953 to 1973 it flew mainly electronic intelligence missions."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Vickers_Varsity",
+        "https://avrosys.nu/aircraft/Transport/274tp82/274Tp82.htm",
+        "https://hhogman.se/warplanes-sigint-swe.htm"
+      ],
+      "note": "Seul l'usage suédois est retenu : la formation des équipages de V-bombers par la RAF reste de l'instruction. Les sources ne détaillent ni les cibles ni les zones des missions du Tp 82."
+    },
+    {
+      "name": "Saab 32 Lansen",
+      "side": "neutres",
+      "attested": true,
+      "role": {
+        "fr": "De 1958 à l'automne 1978, les S 32C de la flottille F 11 de Nyköping surveillent chaque semaine la Baltique pour repérer et identifier les navires de guerre du pacte de Varsovie ; en août 1968, l'invasion de la Tchécoslovaquie place un S 32C en alerte à Ronneby.",
+        "en": "From 1958 to autumn 1978, the S 32Cs of the F 11 wing at Nyköping flew weekly Baltic surveillance sorties to locate and identify Warsaw Pact warships; in August 1968 the invasion of Czechoslovakia put an S 32C on alert at Ronneby."
+      },
+      "sources": [
+        "https://saab.com/newsroom/stories/2022/november/saabs-first-supersonic-aircraft-is-70-years-old",
+        "https://www.f11museum.se/spaning/overall/pdf/spaningsflygets_underrattelseinhamtning_under_kalla_kriget.pdf"
+      ],
+      "note": "Rythme hebdomadaire selon l'ordre de flottille F11 BH 8/69 ; vols tenus à 50 km au moins des côtes étrangères. Aucun incident daté avec un appareil soviétique trouvé pour les chasseurs J 32B."
+    },
+    {
+      "name": "Su-7",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Les Su-7BM du 559e régiment soviétique de Finsterwalde, en RDA, tiennent la ligne de front jusqu'en 1975 ; en Tchécoslovaquie, les 20e et 28e régiments reçoivent de 1964 à 1967 des Su-7 qui donnent à la 10e armée aérienne une capacité de frappe nucléaire.",
+        "en": "The Su-7BMs of the Soviet 559th regiment at Finsterwalde, East Germany, held the front line until 1975; in Czechoslovakia the 20th and 28th regiments received Su-7s from 1964 to 1967, giving the 10th Air Army a nuclear strike capability."
+      },
+      "sources": [
+        "https://16va.be/3.3_appui_tactique_part4_eng.html",
+        "https://easternorbat.com/html/czechoslovak_tactical_air_forc1.html",
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-7",
+        "https://migflug.com/air-bases/namest/"
+      ],
+      "note": "Les guerres israélo-arabes et indo-pakistanaises ont leurs pages. Aucune source ne dit si des armes nucléaires ont été stockées en Tchécoslovaquie."
+    },
+    {
+      "name": "OV-10 Bronco",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "De 1974 à 1984, les OV-10A du 601st Tactical Control Wing (20th puis 704th TASS), basés à Wiesbaden puis Sembach, assurent le contrôle aérien avancé de l'USAF en Allemagne de l'Ouest ; les 45 appareils rentrent aux États-Unis en 1984.",
+        "en": "From 1974 to 1984, the OV-10As of the 601st Tactical Control Wing (20th, then 704th TASS), based at Wiesbaden and then Sembach, flew forward air control for the USAF in West Germany; all 45 aircraft returned to the United States in 1984."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/601st_Tactical_Control_Wing"
+      ],
+      "note": "Déploiement avancé en Allemagne de l'Ouest ; le retrait de 1984 découle d'un plafond d'effectifs en Europe imposé par le Congrès. Le Vietnam a sa propre page ; les OV-10B allemands ne servaient qu'au remorquage de cibles."
+    },
+    {
+      "name": "A-7 Corsair II",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "Les A-7D de l'Air National Guard se déploient en Allemagne de l'Ouest et au Danemark lors des exercices REFORGER ; dès 1981, ceux de Tonopah, laissés exprès à découvert, trompent les satellites espions soviétiques pour cacher le programme F-117.",
+        "en": "Air National Guard A-7Ds deployed to West Germany and Denmark during REFORGER exercises; from 1981 those at Tonopah were deliberately left in the open to mislead Soviet spy satellites and hide the F-117 programme."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/LTV_A-7_Corsair_II"
+      ],
+      "note": "Vietnam, Grenade, Liban et Golfe ont leurs pages. La mission nucléaire embarquée de l'A-7E n'a pas été confirmée par les sources consultées."
+    },
+    {
+      "name": "Hawker Siddeley Harrier",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "La RAF Germany aligne ses Harrier à Wildenrath dès 1970, puis à Gütersloh en 1977, au plus près du front : dispersés loin des bases vulnérables sur des terrains camouflés, ils doivent frapper les colonnes blindées du pacte de Varsovie.",
+        "en": "RAF Germany based its Harriers at Wildenrath from 1970 and moved them to Gütersloh in 1977, closer to the front: dispersed to camouflaged sites away from vulnerable airfields, they were to strike Warsaw Pact armoured columns."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hawker_Siddeley_Harrier"
+      ],
+      "note": "Les Malouines ont leur page (Harrier GR.3 de la RAF)."
+    },
+    {
+      "name": "Yak-38",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "En service dès 1976 sur les croiseurs porte-aéronefs de la classe Kiev, le Yak-38 suit leurs déploiements ; le 16 décembre 1982, deux Yak-38 armés du Minsk interceptent des avions de l'USS Enterprise au-dessus de la mer d'Arabie.",
+        "en": "In service from 1976 aboard the Kiev-class aircraft-carrying cruisers, the Yak-38 followed their deployments; on 16 December 1982, two armed Yak-38s from Minsk intercepted aircraft from USS Enterprise over the Arabian Sea."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Yakovlev_Yak-38",
+        "https://en.wikipedia.org/wiki/Soviet_aircraft_carrier_Kiev"
+      ],
+      "note": "Les essais en Afghanistan relèvent de la page Guerre soviéto-afghane. Les sources consultées ne détaillent pas d'interception d'avions de l'OTAN en Méditerranée (essais du Kiev au large de la Crète en juillet 1976 avec des Yak-36M de présérie)."
+    },
+    {
+      "name": "MiG-27",
+      "side": "bloc-sovietique",
+      "attested": true,
+      "role": {
+        "fr": "Chasseur-bombardier à capacité nucléaire, le MiG-27 remplace dès 1975 les Su-7 du 559e régiment à Finsterwalde, en RDA, puis équipe les régiments de Lärz et d'Altenburg ; il est aussi stationné en Pologne, Hongrie, Tchécoslovaquie et Mongolie.",
+        "en": "A nuclear-capable fighter-bomber, the MiG-27 replaced the Su-7s of the 559th regiment at Finsterwalde, East Germany, from 1975, then equipped the Lärz and Altenburg regiments; it was also based in Poland, Hungary, Czechoslovakia and Mongolia."
+      },
+      "sources": [
+        "https://16va.be/3.3_appui_tactique_part4_eng.html",
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-27"
+      ],
+      "note": "L'Afghanistan et Kargil ont leurs pages."
+    },
+    {
+      "name": "Alpha Jet Allemand",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "De 1980 au début des années 1990, les 175 Alpha Jet A de la Luftwaffe équipent les escadres JaboG 41, 43 et 49, chargées de l'appui rapproché à très basse altitude face à une percée blindée du pacte de Varsovie.",
+        "en": "From 1980 to the early 1990s, the Luftwaffe's 175 Alpha Jet As equipped fighter-bomber wings JaboG 41, 43 and 49, tasked with low-level close air support against a Warsaw Pact armoured thrust."
+      },
+      "sources": [
+        "https://migflug.com/afterburner/aircraft/alpha-jet/",
+        "https://www.fzt.haw-hamburg.de/pers/Scholz/dglr/hh/text_2015_01_22_Alpha-Jet.pdf",
+        "https://en.wikipedia.org/wiki/Dassault/Dornier_Alpha_Jet"
+      ],
+      "note": "Rôle de posture face au pacte, sans incident ; la source allemande (HAW Hamburg) donne JaboG 49 de 1980 à 1994, JaboG 41 et 43 jusqu'en 1993."
+    },
+    {
+      "name": "BAE Hawk",
+      "side": "occident",
+      "attested": true,
+      "role": {
+        "fr": "De 1983 à 1986, des Hawk T1 de la RAF sont modifiés en Hawk T1A pour emporter deux Sidewinder et un canon : en guerre, guidés par le radar des Tornado F3, ils devaient défendre en dernier recours le ciel britannique.",
+        "en": "From 1983 to 1986, RAF Hawk T1s were converted to T1A standard to carry two Sidewinders and a gun pod: in wartime, cued by Tornado F3 radar, they were to act as a last-ditch defence of British airspace."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/BAE_Systems_Hawk",
+        "https://www.forcesnews.com/analysis/why-has-mod-withdrawn-hawk-jet-service-now",
+        "https://api.parliament.uk/historic-hansard/written-answers/1979/feb/13/hawk-aircraft"
+      ],
+      "note": "Avion d'école armé pour la guerre. Nombre d'appareils modifiés divergent : 88 ou 89 selon Wikipédia, « environ 70 » selon Forces News. Selon Forces News, le Hawk n'a jamais été déployé formellement comme chasseur."
+    }
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Cold_War",
+    "https://fr.wikipedia.org/wiki/Guerre_froide",
+    "https://en.wikipedia.org/wiki/Berlin_Blockade",
+    "https://en.wikipedia.org/wiki/Strategic_Air_Command",
+    "https://en.wikipedia.org/wiki/Operation_Chrome_Dome",
+    "https://en.wikipedia.org/wiki/Bomber_gap",
+    "https://en.wikipedia.org/wiki/Tsar_Bomba",
+    "https://en.wikipedia.org/wiki/RDS-1",
+    "https://en.wikipedia.org/wiki/1960_U-2_incident",
+    "https://en.wikipedia.org/wiki/1960_RB-47_shootdown_incident",
+    "https://en.wikipedia.org/wiki/Catalina_affair",
+    "https://en.wikipedia.org/wiki/1969_EC-121_shootdown_incident",
+    "https://en.wikipedia.org/wiki/Korean_Air_Lines_Flight_007",
+    "https://en.wikipedia.org/wiki/Cuban_Missile_Crisis",
+    "https://en.wikipedia.org/wiki/Viktor_Belenko",
+    "https://en.wikipedia.org/wiki/Able_Archer_83",
+    "https://en.wikipedia.org/wiki/1966_Palomares_B-52_crash",
+    "https://en.wikipedia.org/wiki/1968_Thule_Air_Base_B-52_crash",
+    "https://www.airandspaceforces.com/article/intercepting-the-bear/",
+    "https://history.state.gov/milestones/1945-1952/berlin-airlift"
+  ]
+}

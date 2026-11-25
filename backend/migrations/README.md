@@ -74,7 +74,7 @@ ordre alphabétique.
 
 `zz_conflits.sql` juste après : il écrit le camp et le rôle de chaque appareil
 sur les liaisons appareil-conflit existantes (`airplane_wars`), qu'il ne crée
-jamais. Il est généré (`.lots/tools/conflits_build.py`) et n'écrit rien au
+jamais. Il est généré (`tools/lots/conflits_build.py`, contrôlé en CI) et n'écrit rien au
 second passage.
 
 Les `UPDATE` de `001` qui ne trouvent pas leur cible sont sans effet : il peut

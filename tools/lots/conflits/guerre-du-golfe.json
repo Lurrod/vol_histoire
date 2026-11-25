@@ -1,0 +1,989 @@
+{
+  "war": "Guerre du Golfe",
+  "slug": "guerre-du-golfe",
+  "outcome": {
+    "fr": "Victoire de la coalition : le Koweït est libéré et un cessez-le-feu est proclamé le 28 février 1991, après six semaines de campagne aérienne et cent heures d'offensive terrestre, mais Saddam Hussein reste au pouvoir à Bagdad.",
+    "en": "Coalition victory: Kuwait was liberated and a ceasefire declared on 28 February 1991, after six weeks of air campaign and a hundred-hour ground offensive, but Saddam Hussein remained in power in Baghdad."
+  },
+  "context": {
+    "fr": "Endetté par sa guerre contre l'Iran, l'Irak de Saddam Hussein doit quelque 14 milliards de dollars au Koweït, qui refuse, comme l'Arabie saoudite, d'effacer la dette. Bagdad accuse en outre l'émirat de dépasser ses quotas de l'OPEP et de faire chuter les cours : le baril tombe jusqu'à 10 dollars, ce qui coûte à l'Irak environ 7 milliards de dollars par an. Le 2 août 1990, l'armée irakienne envahit le Koweït en quelques heures. Le jour même, la résolution 660 du Conseil de sécurité exige son retrait ; quatre jours plus tard, la résolution 661 impose un embargo total.\n\nPour protéger l'Arabie saoudite, les États-Unis lancent l'opération *Desert Shield* : dès le 8 août, les F-15 de la base de Langley se posent dans le royaume. Une coalition de 42 pays se forme, la plus large depuis la Seconde Guerre mondiale ; les États-Unis, l'Arabie saoudite, le Royaume-Uni et l'Égypte en fournissent les plus gros contingents, la France y engage l'opération *Daguet*, le Royaume-Uni l'opération *Granby*. Le 29 novembre 1990, la résolution 678 autorise le recours à la force si l'Irak n'a pas évacué le Koweït au 15 janvier 1991.\n\nÀ la veille de la guerre, la coalition aligne 2 430 avions à voilure fixe sur le théâtre, dont environ 60 % d'avions de combat ; ils seront plus de 2 780 le 24 février. En face, l'armée de l'air irakienne compte entre 700 et 750 avions de combat selon les sources, parmi lesquels des MiG-29, MiG-25, MiG-23 et Mirage F1, adossés à un réseau intégré de défense antiaérienne.",
+    "en": "Saddled with debt from its war with Iran, Saddam Hussein's Iraq owed Kuwait some 14 billion dollars, and both Kuwait and Saudi Arabia refused to write it off. Baghdad also accused the emirate of exceeding its OPEC quotas and driving prices down: oil fell as low as 10 dollars a barrel, costing Iraq about 7 billion dollars a year. On 2 August 1990 the Iraqi army overran Kuwait in a matter of hours. That same day UN Security Council Resolution 660 demanded its withdrawal; four days later Resolution 661 imposed a total embargo.\n\nTo protect Saudi Arabia, the United States launched Operation *Desert Shield*: on 8 August F-15s from Langley Air Force Base were already landing in the kingdom. A coalition of 42 countries took shape, the broadest since the Second World War; the United States, Saudi Arabia, the United Kingdom and Egypt sent the largest contingents, while France committed Operation *Daguet* and Britain Operation *Granby*. On 29 November 1990 Resolution 678 authorised the use of force if Iraq had not left Kuwait by 15 January 1991.\n\nOn the eve of the war the coalition had 2,430 fixed-wing aircraft in theatre, about 60 per cent of them combat types, rising to more than 2,780 by 24 February. Facing them, the Iraqi Air Force fielded between 700 and 750 combat aircraft depending on the source, including MiG-29s, MiG-25s, MiG-23s and Mirage F1s, backed by an integrated air defence network."
+  },
+  "narrative": {
+    "fr": "L'opération *Desert Storm* commence le 17 janvier 1991 à 2 h 38, heure de Bagdad, lorsque des hélicoptères de la Task Force Normandy détruisent des radars à la frontière saoudo-irakienne. À 3 heures, dix F-117 furtifs bombardent Bagdad sous la protection des brouilleurs EF-111 ; des leurres BQM-74 tournent au-dessus de la capitale pour attirer les défenses, et sept B-52G partis de Louisiane la veille tirent 35 missiles de croisière. Le premier jour, la coalition effectue 2 775 sorties contre les postes de commandement, la défense aérienne, les sites de Scud, les communications et les aérodromes. Le plan prévoit trois phases : frappes en profondeur, puis réseau de commandement et de communication, enfin la plus vaste, contre les forces militaires en Irak et au Koweït.\n\nLa supériorité aérienne est acquise en trois jours. L'essentiel des victoires aériennes revient aux F-15C, guidés par les AWACS dont les contrôleurs participent à 38 des 41 victoires aériennes recensées par l'article consacré à l'E-3. Une seule perte de la coalition est due au combat aérien : le F/A-18 de Scott Speicher, la première nuit. Fin janvier, l'aviation irakienne fuit vers l'Iran, une décision qui surprend la coalition : entre 115 et 140 appareils, selon les décomptes, y sont internés et ne reviendront pas.\n\nLes défenses à basse altitude se révèlent plus coriaces que prévu. Après les premières nuits, les Tornado britanniques abandonnent leurs attaques d'aérodromes au ras du sol pour la moyenne altitude, avec des bombes guidées désignées par des Buccaneer, et les B-52 montent eux aussi en altitude. Les Scud tirés sur Israël et l'Arabie saoudite détournent environ un tiers de la puissance aérienne alliée vers leur traque, menée par les F-15E, les A-10, les U-2, les deux E-8 Joint STARS et des forces spéciales au sol.\n\nDu 29 janvier au 1er février, l'aviation pèse lourd dans l'échec de l'offensive irakienne sur Khafji : repérées par les E-8, les colonnes sont frappées par les A-10, les Harrier et les AC-130, dont l'un, Spirit 03, est abattu avec ses 14 hommes. Commence alors la destruction méthodique de l'armée irakienne au Koweït : les F-111F détruisent des blindés un par un à la bombe guidée, les B-52 écrasent les positions sous des tapis de bombes qui poussent de nombreux soldats à se rendre. Le 13 février, deux F-117 frappent l'abri d'Amiriyah, à Bagdad, que les planificateurs américains avaient inscrit parmi les cibles militaires : au moins 408 civils y meurent.\n\nL'offensive terrestre, lancée le 24 février, rencontre une armée déjà disloquée. Dans la nuit du 26 au 27 février, l'aviation américaine bloque puis pilonne la colonne irakienne qui fuit le Koweït par la route 80, au nord d'Al Jahra, sur ce que l'on appellera la « route de la mort » ; le cessez-le-feu est proclamé le 28 février. La coalition a effectué plus de 100 000 sorties et largué 88 500 tonnes de bombes, dont 40 % par les seuls B-52. Elle a perdu 75 aéronefs, 52 avions et 23 hélicoptères, dont 42 du fait de l'adversaire. L'Irak a perdu 36 appareils en combat aérien et environ 407 au total, détruits ou internés en Iran.",
+    "en": "Operation *Desert Storm* began on 17 January 1991 at 2:38 a.m. Baghdad time, when Task Force Normandy helicopters destroyed radar sites on the Saudi-Iraqi border. At 3:00 a.m. ten F-117 stealth fighters bombed Baghdad under the cover of EF-111 jammers; BQM-74 decoys circled the capital to draw the defences, and seven B-52Gs that had left Louisiana the day before fired 35 cruise missiles. On that first day the coalition flew 2,775 sorties against command posts, air defences, Scud sites, communications and airfields. The plan unfolded in three phases: deep strikes, then the command and communications network, and finally the largest, against military forces across Iraq and Kuwait.\n\nAir superiority was won within three days. Most air-to-air kills went to F-15Cs directed by AWACS, whose controllers took part in 38 of the 41 air-to-air kills counted by the E-3's article. Only one coalition aircraft fell in air combat: Scott Speicher's F/A-18, on the first night. In late January the Iraqi Air Force fled to Iran, a move that took the coalition by surprise: between 115 and 140 aircraft, depending on the count, were interned there and never returned.\n\nLow-level defences proved tougher than expected. After the first nights the British Tornados gave up their very low-level airfield attacks for medium altitude, dropping guided bombs designated by Buccaneers, and the B-52s also climbed higher. The Scuds fired at Israel and Saudi Arabia diverted about a third of allied air power into the hunt for their launchers, carried out by F-15Es, A-10s, U-2s, the two E-8 Joint STARS and special forces on the ground.\n\nFrom 29 January to 1 February, air power weighed heavily in the defeat of the Iraqi thrust on Khafji: spotted by the E-8s, the columns were hit by A-10s, Harriers and AC-130s, one of which, Spirit 03, was shot down with its 14 crew. Then came the methodical destruction of the Iraqi army in Kuwait: F-111Fs picked off armour one vehicle at a time with guided bombs, and B-52 carpet bombing drove many soldiers to surrender. On 13 February two F-117s struck the Amiriyah shelter in Baghdad, which US planners had added to the list of military targets: at least 408 civilians died.\n\nThe ground offensive, launched on 24 February, met an army that was already falling apart. On the night of 26-27 February US aircraft blocked and then pounded the Iraqi column fleeing Kuwait along Highway 80 north of Al Jahra, on what became known as the Highway of Death; the ceasefire was declared on 28 February. The coalition had flown more than 100,000 sorties and dropped 88,500 tons of bombs, 40 per cent of the weapons coming from B-52s alone. It lost 75 aircraft, 52 fixed-wing and 23 helicopters, 42 of them to enemy action. Iraq lost 36 aircraft in air combat and about 407 in all, destroyed or interned in Iran."
+  },
+  "sides": [
+    {
+      "key": "coalition",
+      "name": {
+        "fr": "Coalition",
+        "en": "Coalition"
+      },
+      "members": {
+        "fr": "États-Unis, Royaume-Uni, France, Arabie saoudite, Koweït, Italie, Canada, Qatar, Bahreïn, Émirats arabes unis, Égypte… (42 pays)",
+        "en": "United States, United Kingdom, France, Saudi Arabia, Kuwait, Italy, Canada, Qatar, Bahrain, United Arab Emirates, Egypt… (42 countries)"
+      }
+    },
+    {
+      "key": "irak",
+      "name": {
+        "fr": "Irak",
+        "en": "Iraq"
+      },
+      "members": {
+        "fr": "Irak",
+        "en": "Iraq"
+      }
+    }
+  ],
+  "events": [
+    {
+      "date": "1990-08-02",
+      "precision": "day",
+      "title": {
+        "fr": "Invasion du Koweït",
+        "en": "Invasion of Kuwait"
+      },
+      "body": {
+        "fr": "L'armée irakienne envahit le Koweït en quelques heures. Le Conseil de sécurité exige son retrait le jour même par la résolution 660.",
+        "en": "The Iraqi army overruns Kuwait in a matter of hours. The UN Security Council demands its withdrawal the same day in Resolution 660."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Gulf_War"
+    },
+    {
+      "date": "1990-08-08",
+      "precision": "day",
+      "title": {
+        "fr": "Premiers F-15 en Arabie saoudite",
+        "en": "First F-15s in Saudi Arabia"
+      },
+      "body": {
+        "fr": "Les F-15 du 1st Tactical Fighter Wing, partis de Langley, se posent en Arabie saoudite au terme d'un vol sans escale : *Desert Shield* commence à prendre forme dans le ciel.",
+        "en": "F-15s of the 1st Tactical Fighter Wing, flying nonstop from Langley, touch down in Saudi Arabia: *Desert Shield* takes shape in the air."
+      },
+      "aircraft": "F-15 Eagle",
+      "source": "https://www.airandspaceforces.com/this-day-in-airpower/august-08-1990/"
+    },
+    {
+      "date": "1991-01-16",
+      "precision": "day",
+      "title": {
+        "fr": "Décollage de l'opération Senior Surprise",
+        "en": "Operation Senior Surprise takes off"
+      },
+      "body": {
+        "fr": "Sept B-52G décollent de Barksdale, en Louisiane, pour tirer 35 missiles de croisière CALCM sur l'Irak et revenir sans escale : la plus longue mission de combat jamais menée à l'époque.",
+        "en": "Seven B-52Gs take off from Barksdale, Louisiana, to fire 35 CALCM cruise missiles at Iraq and fly home nonstop, the longest combat mission ever flown at the time."
+      },
+      "aircraft": "B-52 Stratofortress",
+      "source": "https://www.barksdale.af.mil/News/Display/Article/1054069/celebrating-the-26th-anniversary-of-secret-squirrel/"
+    },
+    {
+      "date": "1991-01-17",
+      "precision": "day",
+      "title": {
+        "fr": "Première nuit de Desert Storm",
+        "en": "First night of Desert Storm"
+      },
+      "body": {
+        "fr": "À 2 h 38, des hélicoptères détruisent des radars frontaliers ; à 3 heures, dix F-117 bombardent Bagdad sous la protection des EF-111. La coalition effectue 2 775 sorties dans la journée.",
+        "en": "At 2:38 a.m. helicopters destroy border radars; at 3:00 a.m. ten F-117s bomb Baghdad under EF-111 cover. The coalition flies 2,775 sorties that day."
+      },
+      "aircraft": "F-117 Nighthawk",
+      "source": "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+    },
+    {
+      "date": "1991-01-17",
+      "precision": "day",
+      "title": {
+        "fr": "Deux MiG-21 abattus, Speicher perdu",
+        "en": "Two MiG-21s downed, Speicher lost"
+      },
+      "body": {
+        "fr": "Deux F/A-18 du porte-avions Saratoga, chargés de bombarder l'aérodrome H-3, abattent deux MiG-21 puis reprennent leur attaque. La même nuit, le F/A-18 de Scott Speicher est abattu, probablement par un MiG-25 : seule perte de la coalition en combat aérien.",
+        "en": "Two F/A-18s from the carrier Saratoga, sent to bomb the H-3 airfield, shoot down two MiG-21s and then resume their attack. The same night Scott Speicher's F/A-18 is downed, probably by a MiG-25: the coalition's only air-to-air loss."
+      },
+      "aircraft": "F/A-18 Hornet",
+      "source": "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War"
+    },
+    {
+      "date": "1991-01-18",
+      "precision": "day",
+      "title": {
+        "fr": "Un Tornado italien abattu",
+        "en": "An Italian Tornado shot down"
+      },
+      "body": {
+        "fr": "Dès la première mission italienne, dans la nuit du 17 au 18 janvier, le Tornado de Gianmarco Bellini et Maurizio Cocciolone est abattu par la DCA ; les deux hommes restent 47 jours prisonniers.",
+        "en": "On Italy's very first mission, on the night of 17-18 January, the Tornado of Gianmarco Bellini and Maurizio Cocciolone is shot down by anti-aircraft fire; both men spend 47 days as prisoners."
+      },
+      "aircraft": "Panavia Tornado Italien",
+      "source": "https://it.wikipedia.org/wiki/Operazione_Locusta"
+    },
+    {
+      "date": "1991-01-24",
+      "precision": "day",
+      "title": {
+        "fr": "Doublé d'un pilote saoudien",
+        "en": "A Saudi pilot's double"
+      },
+      "body": {
+        "fr": "Au-dessus des eaux saoudiennes du Golfe, le capitaine Ayedh al-Shamrani, sur F-15C, abat à la Sidewinder deux Mirage F1 irakiens qui filaient vers le sud, armés selon Riyad de missiles Exocet.",
+        "en": "Over Saudi waters in the Gulf, Captain Ayedh al-Shamrani, flying an F-15C, downs with Sidewinders two Iraqi Mirage F1s heading south, armed with Exocet missiles according to Riyadh."
+      },
+      "aircraft": "Mirage F1",
+      "source": "https://www.upi.com/Archives/1991/01/25/Saudi-plane-shoots-down-two-Iraqi-jets/3365664779600/"
+    },
+    {
+      "date": "1991-01-25",
+      "precision": "day",
+      "title": {
+        "fr": "Début de la fuite vers l'Iran",
+        "en": "The flight to Iran begins"
+      },
+      "body": {
+        "fr": "Sept Su-25 irakiens quittent l'Irak et se posent en Iran. Ils ouvrent un exode qui emmènera, selon les décomptes, entre 115 et 140 appareils irakiens, jamais rendus.",
+        "en": "Seven Iraqi Su-25s leave Iraq and land in Iran. They open an exodus that will take between 115 and 140 Iraqi aircraft there, depending on the count, never to return."
+      },
+      "aircraft": "Su-25",
+      "source": "https://en.wikipedia.org/wiki/Sukhoi_Su-25"
+    },
+    {
+      "date": "1991-01-29",
+      "precision": "day",
+      "title": {
+        "fr": "Bataille de Khafji",
+        "en": "Battle of Khafji"
+      },
+      "body": {
+        "fr": "L'Irak lance une offensive sur la ville saoudienne de Khafji, reprise le 1er février. Les deux E-8 Joint STARS suivent les mouvements irakiens et l'aviation frappe les colonnes blindées.",
+        "en": "Iraq attacks the Saudi town of Khafji, retaken on 1 February. The two E-8 Joint STARS track Iraqi movements and aircraft strike the armoured columns."
+      },
+      "aircraft": "E-8 Joint STARS",
+      "source": "https://en.wikipedia.org/wiki/Battle_of_Khafji"
+    },
+    {
+      "date": "1991-01-31",
+      "precision": "day",
+      "title": {
+        "fr": "Perte de Spirit 03",
+        "en": "Loss of Spirit 03"
+      },
+      "body": {
+        "fr": "Resté sur zone au lever du jour pour protéger les Marines à Khafji, l'AC-130H Spirit 03 est abattu par un missile portatif Strela : ses 14 membres d'équipage sont tués.",
+        "en": "Staying on station into daylight to protect the Marines at Khafji, the AC-130H Spirit 03 is shot down by a shoulder-fired Strela missile, killing all 14 crew."
+      },
+      "aircraft": "AC-130 Spectre",
+      "source": "https://en.wikipedia.org/wiki/Lockheed_AC-130"
+    },
+    {
+      "date": "1991-02-13",
+      "precision": "day",
+      "title": {
+        "fr": "Bombardement de l'abri d'Amiriyah",
+        "en": "Amiriyah shelter bombing"
+      },
+      "body": {
+        "fr": "À 4 h 30, deux F-117 larguent chacun une bombe guidée GBU-27 sur un abri de Bagdad inscrit deux jours plus tôt parmi les cibles militaires : au moins 408 civils sont tués.",
+        "en": "At 4:30 a.m. two F-117s each drop a GBU-27 guided bomb on a Baghdad shelter added to the military target list two days earlier: at least 408 civilians are killed."
+      },
+      "aircraft": "F-117 Nighthawk",
+      "source": "https://en.wikipedia.org/wiki/Amiriyah_shelter_bombing"
+    },
+    {
+      "date": "1991-02-24",
+      "precision": "day",
+      "title": {
+        "fr": "Offensive terrestre",
+        "en": "Ground offensive"
+      },
+      "body": {
+        "fr": "Après cinq semaines de bombardements, la coalition lance son offensive terrestre au Koweït et dans le sud de l'Irak.",
+        "en": "After five weeks of bombing, the coalition launches its ground offensive into Kuwait and southern Iraq."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Gulf_War"
+    },
+    {
+      "date": "1991-02-26",
+      "precision": "day",
+      "title": {
+        "fr": "La « route de la mort »",
+        "en": "The Highway of Death"
+      },
+      "body": {
+        "fr": "Des A-6 des Marines bloquent la tête et la queue de la colonne irakienne qui fuit Koweït City, puis des dizaines d'avions la pilonnent pendant dix heures : entre 1 400 et 2 000 véhicules sont touchés ou abandonnés.",
+        "en": "Marine A-6s block the head and tail of the Iraqi column fleeing Kuwait City, then scores of aircraft pound it for ten hours: between 1,400 and 2,000 vehicles are hit or abandoned."
+      },
+      "aircraft": "A-6 Intruder",
+      "source": "https://en.wikipedia.org/wiki/Highway_of_Death"
+    },
+    {
+      "date": "1991-02-28",
+      "precision": "day",
+      "title": {
+        "fr": "Cessez-le-feu",
+        "en": "Ceasefire"
+      },
+      "body": {
+        "fr": "Une centaine d'heures après le début de l'offensive terrestre, George H. W. Bush proclame le cessez-le-feu : le Koweït est libéré.",
+        "en": "About a hundred hours after the ground offensive began, George H. W. Bush declares a ceasefire: Kuwait is liberated."
+      },
+      "aircraft": null,
+      "source": "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Temp%C3%AAte_du_d%C3%A9sert"
+    }
+  ],
+  "aircraft": [
+    {
+      "name": "B-52 Stratofortress",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Sept B-52G partis de Barksdale ouvrent la guerre en tirant 35 missiles de croisière CALCM. Depuis Diego Garcia, Djeddah, Fairford et Morón, les B-52 effectuent ensuite environ 1 620 sorties et larguent 40 % des armes de la coalition, souvent en tapis de bombes sur les troupes irakiennes.",
+        "en": "Seven B-52Gs from Barksdale opened the war by firing 35 CALCM cruise missiles. Flying from Diego Garcia, Jeddah, Fairford and Morón, B-52s then flew about 1,620 sorties and delivered 40 per cent of coalition weapons, often carpet-bombing Iraqi troops."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_B-52_Stratofortress",
+        "https://www.barksdale.af.mil/News/Display/Article/1054069/celebrating-the-26th-anniversary-of-secret-squirrel/",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": "Durée de la mission Senior Surprise : 35 heures selon Wikipédia, plus de 36 heures selon la base de Barksdale. Un B-52G est perdu par accident au retour vers Diego Garcia (3 morts sur 6). L'Irak affirme qu'un MiG-29 a endommagé un B-52G la première nuit ; l'USAF attribue les dégâts à un missile antiradar HARM ami."
+    },
+    {
+      "name": "A-3 Skywarrior",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les derniers EA-3B de l'US Navy, une poignée d'appareils de l'escadron VQ-2, y effectuent leur ultime service de renseignement électronique (écoute et localisation des émetteurs irakiens), quelques mois avant le retrait définitif du type en septembre 1991.",
+        "en": "The US Navy's last EA-3Bs, a handful of VQ-2 aircraft, flew their final electronic intelligence missions here, listening for and locating Iraqi emitters, a few months before the type was finally retired in September 1991."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_A-3_Skywarrior",
+        "https://vintageflyingmuseum.org/douglas-ea-3b-skywarrior/"
+      ],
+      "note": "Seule la version de renseignement électronique EA-3B est engagée ; les sources ne donnent ni nombre exact ni détail des missions. Date de retrait : 27 septembre 1991 le plus souvent, 20 septembre selon une légende photo."
+    },
+    {
+      "name": "Handley Page Victor",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Huit Victor K.2 ravitailleurs ravitaillent en vol les Tornado de la RAF et d'autres avions de la coalition avant leurs raids sur l'Irak : c'est la dernière guerre du dernier bombardier V encore en service, retiré en 1993.",
+        "en": "Eight Victor K.2 tankers refuelled RAF Tornados and other coalition aircraft before their raids on Iraq: the last war of the last V-bomber still in service, retired in 1993."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Handley_Page_Victor",
+        "https://en.wikipedia.org/wiki/Operation_Granby"
+      ],
+      "note": "Base : Bahreïn selon l'article du Victor, base navale de Jubail selon l'article Operation Granby."
+    },
+    {
+      "name": "C-130 Hercules",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Pilier du transport tactique, il vole pour l'USAF, l'US Navy et les Marines, la RAF, l'Arabie saoudite, le Canada, l'Australie ou la Nouvelle-Zélande. Sa version MC-130 Combat Talon largue les premières bombes BLU-82 « Daisy Cutter » pour dégager zones d'atterrissage et champs de mines.",
+        "en": "The backbone of tactical airlift, it flew for the USAF, US Navy and Marines, the RAF, Saudi Arabia, Canada, Australia and New Zealand. Its MC-130 Combat Talon variant dropped the first BLU-82 Daisy Cutter bombs to clear landing zones and minefields."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_C-130_Hercules",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": ""
+    },
+    {
+      "name": "U-2 Dragon Lady",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Arrivés à Taïf dès le 17 août 1990, les U-2R et TR-1 surveillent l'Irak avec leurs radars et capteurs optiques ; le 17 janvier 1991, l'un d'eux mène la première mission au-delà de la frontière, et dès le lendemain ils participent à la traque des Scud.",
+        "en": "Arriving at Taif on 17 August 1990, U-2Rs and TR-1s watched Iraq with their radars and optical sensors; on 17 January 1991 one flew the first mission across the border, and from the next day they joined the hunt for Scuds."
+      },
+      "sources": [
+        "https://irp.fas.org/program/collect/u2ds/part01.htm",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": "Les totaux de sorties divergent selon les documents (étude de l'historien de l'USAF contre chronologies d'unité) ; aucun chiffre retenu."
+    },
+    {
+      "name": "MiG-21",
+      "side": "irak",
+      "attested": true,
+      "role": {
+        "fr": "Engagé par l'aviation irakienne, il subit de lourdes pertes : deux sont abattus le 17 janvier par des F/A-18 de l'US Navy en pleine mission de bombardement, deux autres le 6 février par un F-15C. Selon une source, 35 MiG-21 se réfugient en Iran.",
+        "en": "Flown by the Iraqi Air Force, it suffered heavily: two were shot down on 17 January by US Navy F/A-18s in the middle of a bombing mission, and two more on 6 February by an F-15C. According to one source, 35 MiG-21s fled to Iran."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War",
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F/A-18_Hornet",
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-21_operators"
+      ],
+      "note": ""
+    },
+    {
+      "name": "KC-135 Stratotanker",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Avec le KC-10, il porte l'essentiel du ravitaillement en vol de la coalition : environ 51 700 ravitaillements et 475 millions de litres de carburant transférés sans manquer un seul rendez-vous. La France engage aussi ses C-135FR.",
+        "en": "Together with the KC-10, it carried most of the coalition's air refuelling: some 51,700 refuellings and 475 million litres of fuel delivered without missing a single rendezvous. France also committed its C-135FRs."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_KC-10_Extender",
+        "https://en.wikipedia.org/wiki/Boeing_KC-135_Stratotanker",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": "Chiffres communs au KC-10 et au KC-135 ; les totaux de sorties de ravitailleurs varient selon les sources (GAO, USAF), aucun n'est retenu."
+    },
+    {
+      "name": "Blackburn Buccaneer",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Envoyés en urgence depuis Lossiemouth à partir du 26 janvier 1991, les Buccaneer désignent au laser les cibles des Tornado, en formations de quatre Tornado et deux Buccaneer : 218 missions, 48 bombes guidées larguées par eux-mêmes et une vingtaine de ponts routiers détruits.",
+        "en": "Rushed out from Lossiemouth from 26 January 1991, the Buccaneers laser-designated targets for the Tornados, in formations of four Tornados and two Buccaneers: 218 missions, 48 guided bombs dropped themselves and some 20 road bridges destroyed."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Blackburn_Buccaneer",
+        "https://en.wikipedia.org/wiki/Panavia_Tornado",
+        "https://en.wikipedia.org/wiki/Operation_Granby"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-4 Phantom II",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Seul appareil de l'USAF voué à la suppression des défenses antiaériennes, le F-4G Wild Weasel opère depuis Cheikh Issa, à Bahreïn, aux côtés de RF-4C de reconnaissance photographique à longue portée. Un F-4G est perdu, à court de carburant après des dégâts au combat.",
+        "en": "The only USAF aircraft dedicated to suppressing enemy air defences, the F-4G Wild Weasel flew from Shaikh Isa in Bahrain alongside long-range photographic RF-4Cs. One F-4G was lost, running out of fuel after combat damage."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F-4_Phantom_II",
+        "https://en.wikipedia.org/wiki/General_Dynamics_F-16_Fighting_Falcon_operational_history"
+      ],
+      "note": "Effectif à Bahreïn : 24 F-4G et 6 RF-4C selon l'article du F-4, 48 F-4G selon l'article sur l'histoire opérationnelle du F-16 (dates différentes possibles)."
+    },
+    {
+      "name": "OV-1 Mohawk",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les OV-1D de l'US Army surveillent le champ de bataille avec leur radar latéral, qui détecte les véhicules en mouvement et permet d'appeler des frappes par mauvais temps. *Desert Storm* est le chant du cygne du type ; la dernière éjection d'un Mohawk en zone de combat a lieu la nuit du 28 février.",
+        "en": "US Army OV-1Ds watched the battlefield with their side-looking radar, which picked up moving vehicles and allowed strikes to be called in bad weather. *Desert Storm* was the type's swan song; the last Mohawk ejection in a combat zone took place on the night of 28 February."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Grumman_OV-1_Mohawk",
+        "https://www.historynet.com/silent-warrior-grummans-ov-1-mohawk/"
+      ],
+      "note": "Nombre d'appareils et unités engagés non trouvés dans une source officielle."
+    },
+    {
+      "name": "P-3 Orion",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Parmi les premières forces américaines sur place, 48 heures après l'invasion, les P-3C surveillent les côtes irakiennes et koweïtiennes ; ils repèrent la flottille attaquée près de l'île de Boubiyan et ciblent 55 des 108 navires irakiens détruits pendant le conflit.",
+        "en": "Among the first US forces on the scene, 48 hours after the invasion, P-3Cs watched the Iraqi and Kuwaiti coasts; they spotted the flotilla attacked near Bubiyan Island and targeted 55 of the 108 Iraqi vessels destroyed in the conflict."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_P-3_Orion"
+      ],
+      "note": ""
+    },
+    {
+      "name": "A-6 Intruder",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Principal porteur de bombes guidées laser de l'US Navy, il opère depuis six porte-avions et, pour les Marines, depuis Cheikh Issa : plus de 4 700 sorties d'appui, d'attaque des défenses et des navires, trois appareils abattus. Des A-6 des Marines ouvrent l'attaque de la « route de la mort ».",
+        "en": "The US Navy's main laser-guided bomb carrier, it flew from six carriers and, for the Marines, from Shaikh Isa: more than 4,700 sorties of close support, air defence and naval strikes, with three aircraft shot down. Marine A-6s opened the attack on the Highway of Death."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Grumman_A-6_Intruder",
+        "https://en.wikipedia.org/wiki/Highway_of_Death"
+      ],
+      "note": ""
+    },
+    {
+      "name": "E-2 Hawkeye",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Radars volants des groupes aéronavals, les E-2C assurent le commandement et le contrôle des missions aériennes et des frappes de l'US Navy ; un équipage guide les deux F/A-18 qui abattent deux MiG-21 le 17 janvier 1991.",
+        "en": "The airborne radars of the carrier groups, E-2Cs provided command and control for US Navy air and strike missions; one crew directed the two F/A-18s that shot down two MiG-21s on 17 January 1991."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Northrop_Grumman_E-2_Hawkeye",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": "Le passage de Wikipédia sur Desert Storm est marqué « citation nécessaire »."
+    },
+    {
+      "name": "Vickers VC10",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Neuf VC10 K.2 et K.3 déployés à Bahreïn, en Arabie saoudite et à Oman ravitaillent en vol et transportent fret et personnel pour la coalition : 381 sorties et 5 000 heures de vol sur le théâtre.",
+        "en": "Nine VC10 K.2s and K.3s based in Bahrain, Saudi Arabia and Oman refuelled coalition aircraft and flew logistics missions: 381 sorties and 5,000 flight hours in theatre."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Vickers_VC10",
+        "https://en.wikipedia.org/wiki/Operation_Granby"
+      ],
+      "note": ""
+    },
+    {
+      "name": "C-141 Starlifter",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Bête de somme du pont aérien vers le Golfe, qualifié de plus grand de l'histoire : pendant *Desert Shield* et *Desert Storm*, les C-141 effectuent 8 536 missions et transportent environ 144 700 tonnes de fret et 93 126 passagers.",
+        "en": "The workhorse of an airlift to the Gulf described as the largest in history: during *Desert Shield* and *Desert Storm*, C-141s flew 8,536 missions carrying some 159,000 short tons of cargo and 93,126 passengers."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_C-141_Starlifter"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Short Belfast",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Retirés de la RAF en 1976 et revendus à la compagnie HeavyLift, des Belfast civils sont affrétés pour soutenir la RAF : ils transportent vers le Golfe des véhicules et des hélicoptères trop gros pour les Hercules.",
+        "en": "Retired by the RAF in 1976 and sold to HeavyLift, civilian Belfasts were chartered to support the RAF, flying vehicles and helicopters too large for the Hercules to the Gulf."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Short_Belfast"
+      ],
+      "note": "Engagement indirect, sous immatriculation civile et par affrètement. L'affirmation de Wikipédia est marquée « citation nécessaire » ; aucune source officielle trouvée (nombre d'appareils et dates inconnus). Rattachement à garder avec prudence."
+    },
+    {
+      "name": "Canadair CL-89",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Sous le nom de Midge, le drone de l'armée britannique est engagé au Koweït en 1991 pour confirmer la position des forces irakiennes, en particulier de leur artillerie, avec un certain effet lorsqu'il est combiné aux raids d'artillerie.",
+        "en": "As the Midge, the British Army's drone was used in Kuwait in 1991 to confirm the positions of Iraqi forces, especially their artillery, with some effect when combined with artillery raids."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Canadair_CL-89"
+      ],
+      "note": "Une seule source (Wikipédia), sans unité, nombre ni dates précises."
+    },
+    {
+      "name": "MiG-25",
+      "side": "irak",
+      "attested": true,
+      "role": {
+        "fr": "La première nuit, un MiG-25 abat très probablement le F/A-18 de Scott Speicher, seule perte de la coalition en combat aérien. Deux MiG-25 sont abattus par des F-15C le 19 janvier ; la plupart des autres sont détruits au sol.",
+        "en": "On the first night a MiG-25 most likely shot down Scott Speicher's F/A-18, the coalition's only loss in air combat. Two MiG-25s were downed by F-15Cs on 19 January; most of the rest were destroyed on the ground."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-25",
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F/A-18_Hornet",
+        "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War"
+      ],
+      "note": "Attribution de la perte de Speicher fondée sur un résumé d'un rapport de la CIA de 2001 (« most likely a MiG-25 »). Les récits du combat de Samarra et la prétendue victoire du 30 janvier sur un F-15C sont contestés ; l'USAF ne recense aucun F-15 perdu ce jour-là."
+    },
+    {
+      "name": "F-111 Aardvark",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les 66 F-111F larguent près de 80 % des bombes guidées laser de la guerre, dont la GBU-28 antibunker, et s'illustrent dans le « tank plinking » : l'USAF leur attribue plus de 1 500 blindés détruits. Dix-huit F-111E sont aussi engagés.",
+        "en": "The 66 F-111Fs dropped almost 80 per cent of the war's laser-guided bombs, including the GBU-28 bunker buster, and made their name in tank plinking: the USAF credited them with more than 1,500 armoured vehicles destroyed. Eighteen F-111Es also took part."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/General_Dynamics_F-111_Aardvark",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": "Le chiffre de 1 500 blindés est une revendication de l'USAF."
+    },
+    {
+      "name": "Northrop BQM-74 Chukar",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Lors des premières attaques, 37 des 38 BQM-74C prévus sont lancés depuis le sol, en vagues minutées, comme leurres pour la deuxième vague de frappes ; ils tournent jusqu'à vingt minutes au-dessus de Bagdad. Un seul groupe de trois est intercepté.",
+        "en": "During the opening attacks, 37 of the 38 BQM-74Cs assigned were ground-launched in precisely timed waves as decoys for the second wave of strikes; they circled Baghdad for up to twenty minutes. Only one group of three was intercepted."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Northrop_BQM-74_Chukar"
+      ],
+      "note": "Lancement par une équipe de 40 personnes dotée de 44 BQM-74C de l'US Navy, sous la direction du programme Big Safari de l'USAF, selon Wikipédia."
+    },
+    {
+      "name": "OV-10 Bronco",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les OV-10 des Marines coordonnent l'appui aérien des forces terrestres et repèrent les forces irakiennes pendant l'avance : c'est leur dernier grand engagement. Deux sont abattus, victimes de leur lenteur, du vol à basse altitude et de l'absence de contre-mesures infrarouges.",
+        "en": "Marine OV-10s coordinated air support for ground forces and tracked Iraqi units during the advance: their last major combat deployment. Two were shot down, victims of their slow speed, low-altitude flying and lack of infrared countermeasures."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_Rockwell_OV-10_Bronco",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": ""
+    },
+    {
+      "name": "A-7 Corsair II",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les escadrons VA-46 et VA-72 du porte-avions John F. Kennedy, en mer Rouge, mènent les dernières sorties de combat de l'A-7 : interdiction profonde en Irak et « kill boxes » au Koweït, à la bombe planante Walleye et au missile antiradar HARM, ainsi que du ravitaillement en vol.",
+        "en": "Squadrons VA-46 and VA-72 aboard the carrier John F. Kennedy in the Red Sea flew the A-7's last combat sorties: deep interdiction in Iraq and kill boxes in Kuwait, with Walleye glide bombs and HARM anti-radar missiles, plus air refuelling."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/LTV_A-7_Corsair_II"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Mirage F1",
+      "side": null,
+      "attested": true,
+      "role": {
+        "fr": "Irak : 23 des 88 F1EQ sont détruits, dont six abattus par des F-15 américains et deux par un F-15C saoudien, et 24 finissent internés en Iran. France : les F1CR mènent 114 sorties de reconnaissance et des F1C défendent le Qatar. Le Koweït engage ses F1 rescapés depuis l'Arabie saoudite.",
+        "en": "Iraq: 23 of 88 F1EQs were destroyed, six shot down by US F-15s and two by a Saudi F-15C, and 24 ended up interned in Iran. France: F1CRs flew 114 reconnaissance sorties and F1Cs defended Qatar. Kuwait flew its surviving F1s from Saudi Arabia."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Dassault_Mirage_F1",
+        "https://www.upi.com/Archives/1991/01/25/Saudi-plane-shoots-down-two-Iraqi-jets/3365664779600/",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign",
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Daguet"
+      ],
+      "note": "Les F1CR français sont d'abord interdits de vol pour ne pas être confondus avec les F1 irakiens. Le tableau de l'article Gulf War air campaign range aussi des Mirage F1 parmi les appareils du Qatar. Une victoire non officielle d'un EF-111 sur un F1 irakien (17 janvier) est contestée. Opération Daguet : un F1 français perdu par accident."
+    },
+    {
+      "name": "Hawker Siddeley Nimrod",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Depuis Seeb, à Oman, trois puis cinq Nimrod MR2 patrouillent le golfe d'Oman et le golfe Persique et guident hélicoptères Lynx et A-6 contre les patrouilleurs irakiens, contribuant à couler ou endommager 16 navires. Les Nimrod R1 d'écoute opèrent depuis Chypre.",
+        "en": "From Seeb in Oman, three and then five Nimrod MR2s patrolled the Gulf of Oman and the Persian Gulf, guiding Lynx helicopters and A-6s against Iraqi patrol boats and helping to sink or damage 16 vessels. Nimrod R1 eavesdroppers flew from Cyprus."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hawker_Siddeley_Nimrod",
+        "https://en.wikipedia.org/wiki/Operation_Granby"
+      ],
+      "note": ""
+    },
+    {
+      "name": "MiG-23",
+      "side": "irak",
+      "attested": true,
+      "role": {
+        "fr": "Les F-15 de l'USAF abattent huit MiG-23 irakiens en combat aérien ; selon des documents irakiens, 43 sont détruits toutes causes confondues, dix endommagés et douze s'enfuient en Iran.",
+        "en": "USAF F-15s shot down eight Iraqi MiG-23s in air combat; according to Iraqi documents, 43 were destroyed from all causes, ten damaged and twelve fled to Iran."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-23",
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F-15_Eagle"
+      ],
+      "note": "Wikipédia mentionne aussi deux EF-111A qu'auraient endommagés des MiG-23 ; non retenu faute de confirmation."
+    },
+    {
+      "name": "AC-130 Spectre",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les AC-130 assurent appui rapproché et interdiction, visant surtout les sites radar de la frontière sud de l'Irak. À Khafji, ils aident à stopper une colonne blindée ; le 31 janvier, Spirit 03, resté sur zone pour protéger les Marines, est abattu par un missile Strela : 14 morts.",
+        "en": "AC-130s flew close support and interdiction, mainly against radar sites along Iraq's southern border. At Khafji they helped stop an armoured column; on 31 January Spirit 03, staying on station to protect the Marines, was downed by a Strela missile, killing 14."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_AC-130",
+        "https://en.wikipedia.org/wiki/Battle_of_Khafji"
+      ],
+      "note": ""
+    },
+    {
+      "name": "EA-6B Prowler",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "39 Prowler, 27 répartis sur six porte-avions et 12 des Marines basés à terre, brouillent la défense antiaérienne irakienne : 1 648 sorties (1 132 pour la Navy, 516 pour les Marines) et plus de 150 missiles antiradar HARM tirés sur radars et nœuds de communication, sans aucune perte.",
+        "en": "Thirty-nine Prowlers, 27 spread over six carriers and 12 Marine aircraft ashore, jammed Iraq's air defences: 1,648 sorties (1,132 Navy, 516 Marine) and more than 150 HARM anti-radar missiles fired at radars and communications nodes, without a single loss."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Northrop_Grumman_EA-6B_Prowler"
+      ],
+      "note": ""
+    },
+    {
+      "name": "C-5 Galaxy",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Pièce maîtresse du pont aérien de 1990-1991, il achemine vers le Golfe le matériel le plus lourd. Pendant *Desert Shield*, un C-5A d'un équipage de réserve s'écrase au décollage de Ramstein après le déploiement intempestif d'un inverseur de poussée : 13 des 17 personnes à bord sont tuées.",
+        "en": "A mainstay of the 1990-1991 airlift, it carried the heaviest equipment to the Gulf. During *Desert Shield*, a C-5A flown by a reserve crew crashed on take-off from Ramstein after a thrust reverser deployed: 13 of the 17 people aboard were killed."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_C-5_Galaxy"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Jaguar",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les Jaguar français d'Al-Ahsa mènent 615 sorties ; le 17 janvier, douze attaquent la base koweïtienne d'Ahmad al-Jaber et trois rentrent endommagés. Les 12 Jaguar de la RAF, basés à Bahreïn et Oman, volent 612 sorties sans perte, contre batteries Silkworm et navires irakiens.",
+        "en": "French Jaguars from Al-Ahsa flew 615 sorties; on 17 January twelve attacked Kuwait's Ahmad al-Jaber air base and three came back damaged. The RAF's 12 Jaguars, based in Bahrain and Oman, flew 612 sorties without loss against Silkworm batteries and Iraqi ships."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/SEPECAT_Jaguar",
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Daguet",
+        "https://en.wikipedia.org/wiki/Operation_Granby"
+      ],
+      "note": "Effectif français : 24 Jaguar à Al-Ahsa selon l'article Opération Daguet, jusqu'à 28 selon l'article SEPECAT Jaguar. Daguet : quatre Jaguar légèrement touchés par la DCA ; article Jaguar : un touché par un missile sol-air, aucun perdu."
+    },
+    {
+      "name": "Lockheed TriStar (RAF)",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Un TriStar K1 basé à l'aéroport King Khalid de Riyad ravitaille en vol les avions de la coalition (plus de 90 missions), pendant que le reste de la flotte fait la navette entre le Royaume-Uni et le Golfe ; deux appareils repeints en camouflage désert sont surnommés « Pinky » et « Perky ».",
+        "en": "A single TriStar K1 based at King Khalid International Airport flew more than 90 air refuelling missions, while the rest of the fleet shuttled between the United Kingdom and the Gulf; two aircraft repainted in desert camouflage were nicknamed Pinky and Perky."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_TriStar_(RAF)",
+        "https://en.wikipedia.org/wiki/Operation_Granby"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-14 Tomcat",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les F-14 de l'US Navy assurent les patrouilles de combat au-dessus de la mer Rouge et du golfe Persique, l'escorte des frappes et la reconnaissance. Un F-14A du VF-103 est abattu par un missile SA-2 le 21 janvier ; un F-14 du VF-1 signe en février la dernière victoire du type, un hélicoptère Mi-8.",
+        "en": "US Navy F-14s flew combat air patrols over the Red Sea and the Persian Gulf, strike escort and reconnaissance. A VF-103 F-14A was shot down by an SA-2 on 21 January; in February a VF-1 Tomcat scored the type's last US kill, a Mi-8 helicopter."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Grumman_F-14_Tomcat",
+        "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War"
+      ],
+      "note": "Victoire sur le Mi-8 datée du 7 février par l'article Air engagements of the Gulf War ; date non précisée par l'article du F-14."
+    },
+    {
+      "name": "S-3 Viking",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les S-3B assurent attaque, ravitaillement en vol et écoute électronique : un Viking du Theodore Roosevelt détruit un site de missiles antinavires Silkworm, d'autres traquent les lanceurs de Scud et ciblent navires, radars côtiers et pièces antiaériennes irakiens.",
+        "en": "S-3Bs flew attack, tanker and electronic intelligence missions: a Viking from the Theodore Roosevelt destroyed a Silkworm anti-ship missile site, while others hunted Scud launchers and targeted Iraqi vessels, coastal radars and anti-aircraft guns."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_S-3_Viking",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": ""
+    },
+    {
+      "name": "A-10 Thunderbolt II",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Pour son baptême du feu, l'A-10 est déployé à 132 exemplaires : 8 100 sorties, 90 % des missiles Maverick tirés pendant le conflit, chasse aux Scud et deux hélicoptères irakiens abattus au canon. Quatre sont abattus par des missiles sol-air.",
+        "en": "In its combat debut, 132 A-10s were deployed: 8,100 sorties, 90 per cent of the Maverick missiles fired in the conflict, Scud hunting and two Iraqi helicopters shot down with the cannon. Four were downed by surface-to-air missiles."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Fairchild_Republic_A-10_Thunderbolt_II",
+        "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-15 Eagle",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Arrivés en Arabie saoudite dès le 8 août 1990, les F-15C dominent le combat aérien : 34 victoires confirmées, dont cinq MiG-29, huit MiG-23 et deux Su-25. Côté saoudien, un F-15C abat deux Mirage F1 le 24 janvier 1991 et un autre est perdu par accident.",
+        "en": "In Saudi Arabia from 8 August 1990, F-15Cs dominated the air war: 34 confirmed kills, including five MiG-29s, eight MiG-23s and two Su-25s. On the Saudi side, one F-15C downed two Mirage F1s on 24 January 1991 and another was lost in a crash."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F-15_Eagle",
+        "https://www.airandspaceforces.com/this-day-in-airpower/august-08-1990/",
+        "https://www.upi.com/Archives/1991/01/25/Saudi-plane-shoots-down-two-Iraqi-jets/3365664779600/"
+      ],
+      "note": "Le même article Wikipédia donne 34 victoires confirmées des F-15C et « 36 des 39 victoires de l'USAF » pour le F-15 (F-15E compris) ; l'article de l'E-3 parle de 41 victoires au total."
+    },
+    {
+      "name": "F-16 Fighting Falcon",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "249 F-16 de l'USAF effectuent 13 340 sorties de frappe, le plus haut total de la coalition. Ils forment le gros du plus grand raid de la guerre, 72 appareils lancés de jour sur Bagdad le 19 janvier, où deux F-16 sont abattus ; sept sont perdus au total.",
+        "en": "249 USAF F-16s flew 13,340 strike sorties, the most of any coalition aircraft. They made up the bulk of the war's largest strike package, 72 aircraft sent against Baghdad in daylight on 19 January, when two F-16s were shot down; seven were lost in all."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/General_Dynamics_F-16_Fighting_Falcon_operational_history",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": "Sur les sept F-16 perdus, trois le sont par action ennemie confirmée selon Wikipédia."
+    },
+    {
+      "name": "Panavia Tornado",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les Tornado GR1 de la RAF ouvrent la guerre par des attaques au ras du sol contre les aérodromes irakiens, à la JP233, puis passent à la moyenne altitude avec des bombes guidées désignées par des Buccaneer. Tornado F3 de défense aérienne et Tornado saoudiens IDS et ADV sont aussi engagés.",
+        "en": "RAF Tornado GR1s opened the war with very low-level JP233 attacks on Iraqi airfields, then switched to medium altitude with guided bombs designated by Buccaneers. Tornado F3 air defence fighters and Saudi IDS and ADV Tornados also took part."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Panavia_Tornado",
+        "https://en.wikipedia.org/wiki/Operation_Granby",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": "Pertes britanniques : six Tornado selon l'article Panavia Tornado, huit selon l'article Operation Granby ; 49 GR1 déployés selon le premier."
+    },
+    {
+      "name": "Panavia Tornado Italien",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Huit Tornado IDS de l'opération *Locusta*, basés à Al Dhafra (Abou Dhabi) depuis l'automne 1990, effectuent 226 sorties. Dès la première mission, dans la nuit du 17 au 18 janvier, l'équipage Bellini-Cocciolone est abattu par la DCA et reste 47 jours prisonnier.",
+        "en": "Eight Tornado IDS of Operation *Locusta*, based at Al Dhafra near Abu Dhabi since autumn 1990, flew 226 sorties. On the very first mission, on the night of 17-18 January, the Bellini-Cocciolone crew was shot down by anti-aircraft fire and held prisoner for 47 days."
+      },
+      "sources": [
+        "https://it.wikipedia.org/wiki/Operazione_Locusta",
+        "https://en.wikipedia.org/wiki/Panavia_Tornado"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Su-25",
+      "side": "irak",
+      "attested": true,
+      "role": {
+        "fr": "La plupart des Su-25 irakiens ne décollent jamais. Le 25 janvier 1991, sept s'enfuient en Iran ; le 6 février, deux autres, accompagnés de deux MiG-21, sont abattus par des F-15C : c'est leur unique combat aérien de la guerre.",
+        "en": "Most Iraqi Su-25s never got airborne. On 25 January 1991 seven fled to Iran; on 6 February two more, flying with two MiG-21s, were shot down by F-15Cs in their only air combat of the war."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-25",
+        "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War"
+      ],
+      "note": ""
+    },
+    {
+      "name": "E-3 Sentry",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Les AWACS de l'USAF, aux côtés des E-3 saoudiens, orchestrent la guerre aérienne : 379 missions et 5 052 heures sur zone, et leurs contrôleurs participent à 38 des 41 victoires aériennes du conflit.",
+        "en": "USAF AWACS, alongside Saudi E-3s, orchestrated the air war: 379 missions and 5,052 hours on station, and their controllers took part in 38 of the 41 air-to-air kills of the conflict."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_E-3_Sentry",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": ""
+    },
+    {
+      "name": "EF-111 Raven",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Dix-huit EF-111A brouillent les radars irakiens devant les raids en profondeur, dès les premières frappes sur Bagdad. Le 17 janvier, un équipage se voit attribuer officieusement un Mirage F1 écrasé au sol pendant la poursuite ; un EF-111A est perdu le 13 février avec ses deux hommes.",
+        "en": "Eighteen EF-111As jammed Iraqi radars ahead of deep strikes, starting with the first raids on Baghdad. On 17 January one crew was unofficially credited with a Mirage F1 that flew into the ground during the chase; one EF-111A was lost on 13 February with both crew."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/General_Dynamics%E2%80%93Grumman_EF-111A_Raven",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign",
+        "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War"
+      ],
+      "note": "Victoire du 17 janvier contestée : un pilote irakien affirme que c'est l'EF-111 qui a failli s'écraser en esquivant son missile. Perte du 13 février : la présence d'un adversaire est discutée."
+    },
+    {
+      "name": "MiG-29",
+      "side": "irak",
+      "attested": true,
+      "role": {
+        "fr": "Sur 37 MiG-29 livrés à l'Irak, cinq sont abattus par des F-15 de l'USAF, dont trois dès le 17 janvier, et quatre à neuf sont envoyés en Iran. L'Irak revendique un Tornado britannique et un B-52 touché, attribués côté occidental à un accident et à un tir ami.",
+        "en": "Of the 37 MiG-29s delivered to Iraq, five were shot down by USAF F-15s, three of them on 17 January, and between four and nine were flown to Iran. Iraq claimed a British Tornado and a damaged B-52, put down by Western sources to a crash and friendly fire."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan_MiG-29",
+        "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War",
+        "https://en.wikipedia.org/wiki/Boeing_B-52_Stratofortress"
+      ],
+      "note": "Revendications irakiennes non confirmées (Tornado ZA467, B-52G). Les Américains estiment qu'un F-111 a été touché par un missile de MiG-29 mais est rentré à sa base."
+    },
+    {
+      "name": "Mirage 2000",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Pour son baptême du feu, le Mirage 2000C français (douze appareils) patrouille au-dessus de l'Arabie saoudite et escorte les missions de frappe et de reconnaissance au-dessus du Koweït et du sud de l'Irak. Les Mirage 2000 des Émirats arabes unis volent aussi, avec peu d'action.",
+        "en": "In its combat debut, the French Mirage 2000C (twelve aircraft) flew combat air patrols over Saudi Arabia and escorted strike and reconnaissance missions over Kuwait and southern Iraq. United Arab Emirates Mirage 2000s also flew, but saw little action."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Dassault_Mirage_2000",
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Daguet"
+      ],
+      "note": ""
+    },
+    {
+      "name": "AV-8B Harrier II",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Depuis les navires d'assaut Nassau et Tarawa et des bases à terre, 86 AV-8B des Marines effectuent 3 380 vols, appuyant les troupes au plus près, notamment à Khafji ; cinq sont abattus par des missiles sol-air et deux pilotes sont tués.",
+        "en": "Flying from the assault ships Nassau and Tarawa and from shore bases, 86 Marine AV-8Bs logged 3,380 flights in close support of the troops, including at Khafji; five were downed by surface-to-air missiles and two pilots killed."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_AV-8B_Harrier_II",
+        "https://en.wikipedia.org/wiki/Battle_of_Khafji"
+      ],
+      "note": "L'article sur Khafji parle de « Harrier » sans préciser la version ; les Harrier des Marines en 1991 sont des AV-8B."
+    },
+    {
+      "name": "F/A-18 Hornet",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "106 Hornet de l'US Navy et 84 des Marines effectuent 4 551 sorties. Le 17 janvier, deux F/A-18 en mission de bombardement abattent deux MiG-21, mais Scott Speicher est abattu et tué. Les 26 CF-18 canadiens, basés au Qatar, assurent surtout des patrouilles de combat.",
+        "en": "106 Navy and 84 Marine Hornets flew 4,551 sorties. On 17 January two F/A-18s on a bombing mission shot down two MiG-21s, but Scott Speicher was shot down and killed. Canada's 26 CF-18s, based in Qatar, mainly flew combat air patrols."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F/A-18_Hornet",
+        "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War"
+      ],
+      "note": ""
+    },
+    {
+      "name": "KC-10 Extender",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Ravitailleur gros-porteur, il alimente les patrouilles de chasse et les raids de la coalition, jusqu'aux F-14 de l'US Navy ; avec le KC-135, il réalise environ 51 700 ravitaillements et transfère 475 millions de litres de carburant.",
+        "en": "A wide-body tanker, it fuelled coalition fighter patrols and strikes, even US Navy F-14s; together with the KC-135 it carried out about 51,700 refuellings and delivered 475 million litres of fuel."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_KC-10_Extender",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": "Chiffres communs au KC-10 et au KC-135."
+    },
+    {
+      "name": "F-117 Nighthawk",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Dès 3 heures le 17 janvier, dix F-117 frappent Bagdad, protégés par les EF-111. Ils effectuent environ 1 300 sorties sans aucune perte et visent les cibles les plus défendues ; le 13 février, deux d'entre eux détruisent l'abri d'Amiriyah, tuant au moins 408 civils.",
+        "en": "At 3:00 a.m. on 17 January ten F-117s struck Baghdad, covered by EF-111s. They flew some 1,300 sorties without a single loss against the most heavily defended targets; on 13 February two of them destroyed the Amiriyah shelter, killing at least 408 civilians."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_F-117_Nighthawk",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign",
+        "https://en.wikipedia.org/wiki/Amiriyah_shelter_bombing"
+      ],
+      "note": "Taux de coups au but annoncé d'abord à 80 %, ramené ensuite à 41-60 %."
+    },
+    {
+      "name": "F-15E Strike Eagle",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Le 17 janvier, 24 F-15E attaquent cinq sites fixes de Scud dans l'ouest de l'Irak, puis chassent de nuit les lanceurs mobiles ; le 14 février, l'un d'eux détruit un hélicoptère Mi-24 d'une bombe guidée. Deux F-15E sont abattus par la défense irakienne.",
+        "en": "On 17 January, 24 F-15Es attacked five fixed Scud sites in western Iraq, then hunted mobile launchers by night; on 14 February one destroyed a Mi-24 helicopter with a guided bomb. Two F-15Es were shot down by Iraqi defences."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_Douglas_F-15E_Strike_Eagle",
+        "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War"
+      ],
+      "note": ""
+    },
+    {
+      "name": "E-8 Joint STARS",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Encore en développement, les deux E-8A sont envoyés dans le Golfe en 1991 : 49 sorties de combat et plus de 500 heures à suivre les chars et lanceurs de Scud irakiens. Ils repèrent les mouvements irakiens avant l'attaque de Khafji.",
+        "en": "Still in development, the two E-8As were sent to the Gulf in 1991: 49 combat sorties and more than 500 hours tracking Iraqi tanks and Scud launchers. They spotted Iraqi movements ahead of the attack on Khafji."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Northrop_Grumman_E-8_Joint_STARS",
+        "https://en.wikipedia.org/wiki/Battle_of_Khafji"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Boeing EC-135",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Un EC-135L de relais radio, aujourd'hui exposé au musée de Grissom, vole pendant *Desert Shield* et *Desert Storm* ; selon le musée, ses relais contribuent à la destruction de deux avions irakiens, de plus de 60 chars et à 27 frappes contre des Scud.",
+        "en": "An EC-135L radio relay aircraft, now displayed at the Grissom Air Museum, flew during *Desert Shield* and *Desert Storm*; according to the museum, its relays contributed to the destruction of two Iraqi aircraft, more than 60 tanks and to 27 Scud strikes."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_EC-135",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": "Source faible : notice du Grissom Air Museum reprise par Wikipédia (« citation nécessaire »), chiffres non vérifiés indépendamment ; l'EC-135 figure aussi dans le tableau des appareils de l'USAF de l'article Gulf War air campaign. Le poste de commandement Looking Glass décrit par la fiche n'a pas été trouvé dans les sources du conflit."
+    },
+    {
+      "name": "Boeing RC-135",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Le premier RC-135 Rivet Joint se pose à Riyad le 11 août 1990 ; il assure une écoute continue 24 heures sur 24 le long de la frontière saoudo-irakienne, puis deux appareils restent en l'air en permanence pendant la guerre, repérant les tirs de Scud et appuyant les sauvetages, sans aucune perte.",
+        "en": "The first RC-135 Rivet Joint landed in Riyadh on 11 August 1990; it kept up round-the-clock listening along the Saudi-Iraqi border, then two aircraft stayed airborne at all times during the war, locating Scud launches and supporting rescues, without a single loss."
+      },
+      "sources": [
+        "https://www.airandspaceforces.com/article/0292ears/",
+        "https://en.wikipedia.org/wiki/Boeing_RC-135"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Dassault HU-25 Guardian",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Deux HU-25B des garde-côtes américains, dotés du radar de détection des pollutions AIREYE, arrivent à Bahreïn le 16 février 1991 pour cartographier la marée noire provoquée par l'Irak : deux missions par jour, 427 heures de vol en 84 jours de déploiement.",
+        "en": "Two US Coast Guard HU-25Bs fitted with the AIREYE pollution-detection radar reached Bahrain on 16 February 1991 to map the oil spill unleashed by Iraq: two missions a day and 427 flight hours over an 84-day deployment."
+      },
+      "sources": [
+        "https://cgaviationhistory.org/1991-desert-storm-coast-guard-aviation-participation/",
+        "https://en.wikipedia.org/wiki/Dassault_HU-25_Guardian"
+      ],
+      "note": "Mission environnementale, non combattante, qui se prolonge jusqu'à fin avril 1991. Variante HU-25A ou HU-25B et base (Bahreïn ou Arabie saoudite) diffèrent selon les sources ; l'association historique de l'aviation des garde-côtes indique deux HU-25B à Bahreïn."
+    },
+    {
+      "name": "RQ-2 Pioneer",
+      "side": "coalition",
+      "attested": true,
+      "role": {
+        "fr": "Embarqué sur les cuirassés de la classe Iowa, il règle le tir de leurs canons ; des soldats irakiens de l'île de Faïlaka se rendent devant un Pioneer lancé par le Wisconsin. Les Marines et un peloton de l'US Army l'emploient aussi pour la surveillance et l'acquisition d'objectifs.",
+        "en": "Carried aboard the Iowa-class battleships, it spotted for their guns; Iraqi soldiers on Failaka Island surrendered to a Pioneer launched by the Wisconsin. The Marines and a US Army platoon also used it for surveillance and target acquisition."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/AAI_RQ-2_Pioneer",
+        "https://en.wikipedia.org/wiki/Gulf_War_air_campaign"
+      ],
+      "note": ""
+    }
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Gulf_War",
+    "https://fr.wikipedia.org/wiki/Guerre_du_Golfe",
+    "https://en.wikipedia.org/wiki/Gulf_War_air_campaign",
+    "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Temp%C3%AAte_du_d%C3%A9sert",
+    "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Daguet",
+    "https://en.wikipedia.org/wiki/Operation_Granby",
+    "https://it.wikipedia.org/wiki/Operazione_Locusta",
+    "https://en.wikipedia.org/wiki/Air_engagements_of_the_Gulf_War",
+    "https://en.wikipedia.org/wiki/Battle_of_Khafji",
+    "https://en.wikipedia.org/wiki/Highway_of_Death",
+    "https://en.wikipedia.org/wiki/Amiriyah_shelter_bombing",
+    "https://www.airandspaceforces.com/this-day-in-airpower/august-08-1990/",
+    "https://www.barksdale.af.mil/News/Display/Article/1054069/celebrating-the-26th-anniversary-of-secret-squirrel/",
+    "https://www.airandspaceforces.com/article/0292ears/"
+  ]
+}

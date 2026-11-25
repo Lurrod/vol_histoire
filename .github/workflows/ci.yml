@@ -51,6 +51,19 @@ jobs:
       - name: html-validate
         run: npx --yes html-validate@11.21.0 "frontend/*.html"
 
+      # zz_conflits.sql est généré par tools/lots/conflits_build.py depuis
+      # tools/lots/conflits/*.json : il doit correspondre exactement à ses
+      # sources (une retouche à la main serait écrasée au prochain build).
+      - name: Pages de conflit conformes à leurs sources
+        run: |
+          python3 -X utf8 tools/lots/conflits_build.py > /dev/null
+          if ! git diff --quiet -- backend/db_backup/zz_conflits.sql; then
+            echo "::error::zz_conflits.sql ne correspond pas à tools/lots/conflits/*.json : lancer « python tools/lots/conflits_build.py » et committer le résultat."
+            git --no-pager diff --stat -- backend/db_backup/zz_conflits.sql
+            exit 1
+          fi
+          echo "✓ zz_conflits.sql conforme à ses sources"
+
       # La version de package.json doit se retrouver partout où elle est
       # recopiée (backend, e2e, verrou, service worker, OpenAPI, badge) et
       # avoir son entrée datée dans CHANGELOG.md.

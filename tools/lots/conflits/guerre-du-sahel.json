@@ -1,0 +1,446 @@
+{
+  "war": "Guerre du Sahel",
+  "slug": "guerre-du-sahel",
+  "outcome": {
+    "fr": "Conflit en cours : après le départ des forces françaises du Mali (2022) puis du Niger (2023), les juntes de l’Alliance des États du Sahel, appuyées par l’Africa Corps russe et des drones turcs, combattent toujours le JNIM, l’État islamique et les rebelles touaregs du FLA, et l’armée malienne a repris Kidal en octobre 2026.",
+    "en": "Ongoing conflict: since French forces left Mali (2022) and then Niger (2023), the juntas of the Alliance of Sahel States, backed by Russia’s Africa Corps and Turkish drones, are still fighting JNIM, Islamic State and the Tuareg rebels of the FLA; the Malian army retook Kidal in October 2026."
+  },
+  "context": {
+    "fr": "Le nord du Mali connaît des rébellions touarègues à répétition depuis l’indépendance de 1960. À partir de février 2011, l’effondrement de la Libye de Kadhafi renvoie au Mali des centaines de combattants touaregs, souvent vétérans des soulèvements précédents, avec d’importants stocks d’armes. Le 16 janvier 2012, le Mouvement national de libération de l’Azawad (MNLA) prend les armes pour l’indépendance du nord, d’abord allié aux jihadistes d’Ansar Dine, d’Al-Qaïda au Maghreb islamique (AQMI) et du MUJAO. Le coup d’État du 22 mars 2012 à Bamako désorganise l’armée : Kidal, Gao et Tombouctou tombent en trois jours, le MNLA proclame l’indépendance de l’Azawad le 6 avril, puis les jihadistes évincent leurs alliés et tiennent presque tout le nord. Début janvier 2013, leur poussée vers Konna, au centre du pays, conduit le président par intérim Dioncounda Traoré à appeler la France.\n\nParis lance l’opération *Serval* le 11 janvier 2013 avec quelque 4 000 soldats. Le 1er août 2014, l’opération *Barkhane* lui succède et étend la lutte aux cinq États du G5 Sahel (Mauritanie, Mali, Burkina Faso, Niger, Tchad) : 3 000 à 5 000 militaires, six ou sept avions de chasse et une vingtaine d’hélicoptères, avec des bases aériennes à N’Djamena et Niamey. Les casques bleus de la MINUSMA, des contingents européens (puis la force spéciale *Takuba*) et le renseignement américain complètent le dispositif. En face, les trois groupes jihadistes réunissent environ 3 000 combattants en janvier 2013 ; en 2017, Ansar Dine, la branche saharienne d’AQMI, la katiba Macina et Al-Mourabitoun fusionnent dans le JNIM, rattaché à al-Qaïda, tandis que l’État islamique au Grand Sahara s’implante dans la zone des trois frontières.\n\nLes coups d’État renversent ensuite les alliances. Au Mali, les putschs de 2020 et 2021 portent au pouvoir des officiers favorables à la Russie : fin 2021, des centaines de mercenaires du groupe Wagner se déploient dans le pays. La France quitte le Mali le 15 août 2022, met fin à *Barkhane* le 9 novembre 2022, puis doit quitter le Niger après le coup d’État du 26 juillet 2023. Les juntes du Mali, du Burkina Faso et du Niger, réunies dans l’Alliance des États du Sahel, s’appuient désormais sur Wagner, remplacé en juin 2025 par l’Africa Corps contrôlé par l’État russe, et sur des drones achetés à la Turquie.",
+    "en": "Northern Mali has seen repeated Tuareg rebellions since independence in 1960. From February 2011, the collapse of Gaddafi’s Libya sent hundreds of Tuareg fighters back to Mali, many of them veterans of earlier uprisings, with large stockpiles of weapons. On 16 January 2012 the National Movement for the Liberation of Azawad (MNLA) took up arms for the independence of the north, initially allied with the jihadists of Ansar Dine, al-Qaeda in the Islamic Maghreb (AQIM) and MOJWA. The coup of 22 March 2012 in Bamako threw the army into disarray: Kidal, Gao and Timbuktu fell within three days, the MNLA declared Azawad independent on 6 April, and the jihadists then pushed their allies aside and took almost the whole north. In early January 2013, their advance on Konna, in central Mali, led interim president Dioncounda Traoré to call on France.\n\nParis launched Operation *Serval* on 11 January 2013 with some 4,000 troops. On 1 August 2014 Operation *Barkhane* replaced it and widened the fight to the five G5 Sahel states (Mauritania, Mali, Burkina Faso, Niger, Chad): 3,000 to 5,000 personnel, six or seven fighter jets and about twenty helicopters, with air bases at N’Djamena and Niamey. UN peacekeepers of MINUSMA, European contingents (later the *Takuba* special forces task force) and US intelligence rounded out the effort. On the other side, the three jihadist groups had about 3,000 fighters in January 2013; in 2017 Ansar Dine, AQIM’s Saharan branch, the Katiba Macina and Al-Mourabitoun merged into JNIM, affiliated with al-Qaeda, while Islamic State in the Greater Sahara took root in the tri-border area.\n\nA wave of coups then turned the alliances upside down. In Mali, the putsches of 2020 and 2021 brought pro-Russian officers to power, and by the end of 2021 hundreds of Wagner Group mercenaries were deploying across the country. France left Mali on 15 August 2022, ended *Barkhane* on 9 November 2022, and then had to leave Niger after the coup of 26 July 2023. The juntas of Mali, Burkina Faso and Niger, grouped in the Alliance of Sahel States, now rely on Wagner, replaced in June 2025 by the Russian state-controlled Africa Corps, and on drones bought from Turkey."
+  },
+  "narrative": {
+    "fr": "La guerre aérienne de *Serval* s’ouvre dans la nuit du 11 au 12 janvier 2013 : quatre Mirage 2000D du dispositif *Épervier*, partis de N’Djamena et ravitaillés par des C-135FR, frappent au GBU-12 les colonnes jihadistes, guidés par un Atlantique 2 venu de Dakar. Le 13 janvier, quatre Rafale décollent de Saint-Dizier, frappent Gao au terme de 9 h 35 de vol puis se posent à N’Djamena, où leur détachement, porté à six appareils, enchaîne en moyenne quatre sorties par jour. Deux Mirage F1 CR de reconnaissance rejoignent Bamako, deux drones Harfang Niamey, cinq Atlantique 2 Dakar et un avion radar E-3F le Sénégal, tandis qu’un Sentinel R1 britannique surveille le terrain au radar. Au 20 juillet 2013, l’aviation française a largué 280 bombes.\n\nCette campagne repose sur un pont aérien allié qu’aucune autre armée européenne ne pourrait assurer seule. Des C-17 américains, britanniques, canadiens et émiriens, des C-130 belges et danois, des Transall allemands et les Transall et C-130 français acheminent troupes et blindés vers Bamako ; jusqu’à cinq KC-135 américains réalisent une centaine de sorties de ravitaillement en moins de deux mois. Lors de la prise de Tombouctou, les légionnaires du 2e REP sont parachutés sur la ville ; la traque se déplace dans l’Adrar des Ifoghas, où Mirage 2000D, hélicoptères Tigre et, à partir de 2014, drones Reaper basés à Niamey traquent les katibas. Le 29 décembre 2013, l’A400M effectue à Bamako sa toute première mission opérationnelle.\n\nSous *Barkhane* (2014-2022), six ou sept avions de chasse, surtout des Mirage 2000 basés à N’Djamena et Niamey, couvrent un territoire grand comme l’Europe : raids et frappes visent à empêcher l’ennemi de reconstituer ses bases, en appui de troupes françaises, maliennes ou nigériennes souvent très éloignées. Les drones deviennent l’arme centrale : armés le 19 décembre 2019, les Reaper français frappent pour la première fois le 21 décembre dans la forêt de Wagadou, et le Sénat les dit présents dans « absolument toutes les missions ». Les drones américains, basés à Niamey puis à Agadez, fournissent selon France 24 environ la moitié du renseignement utilisé par les Français. La frappe de deux Mirage 2000 près de Bounti, le 3 janvier 2021, tue 19 civils réunis pour un mariage selon l’enquête de l’ONU, conclusion que Paris conteste. Côté transport, l’A400M, le C-130J et l’A330 Phénix relèvent progressivement le Transall, sans éviter le recours à des avions affrétés. L’opération coûte la vie à 58 militaires français.\n\nAprès le départ des Occidentaux — les Français quittent Gao le 15 août 2022 et Niamey le 22 décembre 2023, les Américains leur base d’Agadez le 5 août 2024 —, la guerre aérienne change de visage. Entre décembre 2022 et décembre 2024, le Mali aligne 17 Bayraktar TB2 et au moins deux Akıncı turcs ; les frappes de TB2 contribuent à la reprise de Kidal par l’armée et Wagner en novembre 2023. Les drones frappent aussi les rebelles touaregs jusqu’à Tinzaouaten, près de l’Algérie, qui dit avoir abattu un Akıncı malien le 1er avril 2025. En avril 2026, l’offensive conjointe du FLA et du JNIM chasse l’armée de Kidal, que les forces maliennes et l’Africa Corps reprennent en octobre ; des frappes aériennes tuent aussi des civils, comme à Kirni en juin 2026, où Human Rights Watch dément le bilan avancé par l’Africa Corps.",
+    "en": "The air war of *Serval* opened on the night of 11-12 January 2013: four Mirage 2000Ds of the *Épervier* force, flying from N’Djamena and refuelled by C-135FRs, struck the jihadist columns with GBU-12s, guided by an Atlantique 2 from Dakar. On 13 January four Rafales took off from Saint-Dizier, hit Gao after a 9 hour 35 minute flight and landed at N’Djamena, where their detachment, raised to six aircraft, flew an average of four sorties a day. Two Mirage F1 CR reconnaissance jets moved to Bamako, two Harfang drones to Niamey, five Atlantique 2s to Dakar and an E-3F radar aircraft to Senegal, while a British Sentinel R1 watched the ground with its radar. By 20 July 2013 French aircraft had dropped 280 bombs.\n\nThe campaign rested on an allied air bridge that no single European air force could have provided alone. American, British, Canadian and Emirati C-17s, Belgian and Danish C-130s, German Transalls and French Transalls and C-130s carried troops and armour to Bamako; up to five US KC-135s flew about a hundred refuelling sorties in under two months. Legionnaires of the 2nd Foreign Parachute Regiment jumped over Timbuktu when it was taken; the hunt then moved into the Adrar des Ifoghas mountains, where Mirage 2000Ds, Tiger helicopters and, from 2014, Reaper drones based at Niamey tracked the katibas. On 29 December 2013 the A400M flew its very first operational mission, to Bamako.\n\nUnder *Barkhane* (2014-2022), six or seven fighters, mostly Mirage 2000s based at N’Djamena and Niamey, covered an area the size of Europe: raids and strikes aimed to stop the enemy rebuilding its bases, in support of French, Malian or Nigerien troops often far apart. Drones became the central weapon: armed on 19 December 2019, French Reapers made their first strike on 21 December in the Wagadou forest, and the French Senate described them as part of \"absolutely every mission\". US drones, based at Niamey and later Agadez, supplied about half of the intelligence used by French forces, according to France 24. A strike by two Mirage 2000s near Bounti on 3 January 2021 killed 19 civilians gathered for a wedding, according to the UN investigation, a finding Paris disputes. For transport, the A400M, C-130J and A330 Phénix gradually took over from the Transall, though chartered aircraft were still needed. The operation cost the lives of 58 French soldiers.\n\nAfter the Western forces left (the French departed Gao on 15 August 2022 and Niamey on 22 December 2023, the Americans their Agadez base on 5 August 2024), the air war changed shape. Between December 2022 and December 2024 Mali fielded 17 Bayraktar TB2s and at least two Turkish Akıncıs; TB2 strikes helped the army and Wagner retake Kidal in November 2023. Drones also struck Tuareg rebels as far as Tinzaouaten, on the Algerian border, where Algeria said it shot down a Malian Akıncı on 1 April 2025. In April 2026 a joint FLA and JNIM offensive drove the army out of Kidal, which Malian forces and the Africa Corps retook in October; air strikes have also killed civilians, as at Kirni in June 2026, where Human Rights Watch rejected the Africa Corps account."
+  },
+  "sides": [
+    {
+      "key": "france-allies",
+      "name": {
+        "fr": "France, alliés et États du G5 Sahel",
+        "en": "France, allies and the G5 Sahel states"
+      },
+      "members": {
+        "fr": "France ; Mali, Niger, Burkina Faso, Tchad et Mauritanie jusqu’aux coups d’État ; Royaume-Uni, Allemagne, États-Unis, Canada, Belgique, Danemark, Pays-Bas, Espagne, Émirats arabes unis et autres soutiens ; casques bleus de la MINUSMA (2013-2023)",
+        "en": "France; Mali, Niger, Burkina Faso, Chad and Mauritania until the coups; United Kingdom, Germany, United States, Canada, Belgium, Denmark, Netherlands, Spain, United Arab Emirates and other supporters; MINUSMA peacekeepers (2013-2023)"
+      }
+    },
+    {
+      "key": "juntes-russie",
+      "name": {
+        "fr": "Juntes sahéliennes et Russie",
+        "en": "Sahel juntas and Russia"
+      },
+      "members": {
+        "fr": "Juntes du Mali (depuis 2021), du Burkina Faso et du Niger (depuis 2023), réunies dans l’Alliance des États du Sahel ; groupe Wagner puis Africa Corps russe",
+        "en": "Juntas of Mali (since 2021), Burkina Faso and Niger (since 2023), grouped in the Alliance of Sahel States; Wagner Group, then Russia’s Africa Corps"
+      }
+    }
+  ],
+  "events": [
+    {
+      "date": "2012-01-16",
+      "precision": "day",
+      "title": {
+        "fr": "Début de la rébellion touarègue",
+        "en": "Tuareg rebellion begins"
+      },
+      "body": {
+        "fr": "Le MNLA attaque l’armée malienne dans le nord pour obtenir l’indépendance de l’Azawad ; fin mars, Kidal, Gao et Tombouctou tombent aux mains des rebelles et des jihadistes.",
+        "en": "The MNLA attacks the Malian army in the north to win independence for Azawad; by late March Kidal, Gao and Timbuktu have fallen to rebels and jihadists."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Mali_War"
+    },
+    {
+      "date": "2013-01-11",
+      "precision": "day",
+      "title": {
+        "fr": "Premières frappes de *Serval*",
+        "en": "First *Serval* strikes"
+      },
+      "body": {
+        "fr": "Dans la nuit du 11 au 12 janvier, quatre Mirage 2000D partis de N’Djamena bombardent au GBU-12 les colonnes jihadistes qui menacent le centre du Mali.",
+        "en": "On the night of 11-12 January, four Mirage 2000Ds from N’Djamena strike with GBU-12s the jihadist columns threatening central Mali."
+      },
+      "aircraft": "Mirage 2000",
+      "source": "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval"
+    },
+    {
+      "date": "2013-01-13",
+      "precision": "day",
+      "title": {
+        "fr": "Raid des Rafale de Saint-Dizier sur Gao",
+        "en": "Rafale raid from Saint-Dizier on Gao"
+      },
+      "body": {
+        "fr": "Quatre Rafale décollent de France, frappent Gao après 9 h 35 de vol puis se posent à N’Djamena, d’où ils opèrent ensuite.",
+        "en": "Four Rafales take off from France, strike Gao after a 9 hour 35 minute flight and land at N’Djamena, their base from then on."
+      },
+      "aircraft": "Rafale",
+      "source": "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval"
+    },
+    {
+      "date": "2013-01-18",
+      "precision": "day",
+      "title": {
+        "fr": "Premier vol de guerre du Harfang au Mali",
+        "en": "Harfang’s first combat flight over Mali"
+      },
+      "body": {
+        "fr": "Déployés à Niamey deux jours plus tôt, les drones Harfang commencent leurs missions de renseignement et de désignation d’objectifs au-dessus du Mali.",
+        "en": "Deployed to Niamey two days earlier, the Harfang drones begin intelligence and target designation missions over Mali."
+      },
+      "aircraft": "EADS Harfang",
+      "source": "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval"
+    },
+    {
+      "date": "2013-01-25",
+      "precision": "day",
+      "title": {
+        "fr": "Un Sentinel R1 britannique rejoint l’opération",
+        "en": "A British Sentinel R1 joins the operation"
+      },
+      "body": {
+        "fr": "Londres annonce l’envoi d’un avion de surveillance radar Sentinel R1 en Afrique de l’Ouest pour appuyer les forces françaises.",
+        "en": "London announces the deployment of a Sentinel R1 radar surveillance aircraft to West Africa to support French forces."
+      },
+      "aircraft": "Raytheon Sentinel R1",
+      "source": "https://www.gov.uk/government/news/raf-sentinel-aircraft-deploys-to-africa"
+    },
+    {
+      "date": "2013-12-29",
+      "precision": "day",
+      "title": {
+        "fr": "Première mission opérationnelle de l’A400M",
+        "en": "A400M’s first operational mission"
+      },
+      "body": {
+        "fr": "Un A400M français relie Orléans à Bamako en 6 h 40 avec environ 22 tonnes de matériel pour *Serval*.",
+        "en": "A French A400M flies from Orléans to Bamako in 6 hours 40 minutes with about 22 tonnes of equipment for *Serval*."
+      },
+      "aircraft": "Airbus A400M Atlas",
+      "source": "https://armyrecognition.com/archives/archives-aerospace-defense/aerospace-defense-2014/first-operational-deployement-for-an-a400m-atlas-french-air-force-in-mali"
+    },
+    {
+      "date": "2014-08-01",
+      "precision": "day",
+      "title": {
+        "fr": "*Barkhane* succède à *Serval*",
+        "en": "*Barkhane* replaces *Serval*"
+      },
+      "body": {
+        "fr": "L’opération s’étend aux cinq pays du G5 Sahel, avec à son lancement six avions de combat, une dizaine d’avions de transport, quatre drones et une vingtaine d’hélicoptères.",
+        "en": "The operation extends to the five G5 Sahel countries, starting with six combat aircraft, about ten transport aircraft, four drones and some twenty helicopters."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Operation_Barkhane"
+    },
+    {
+      "date": "2019-12-21",
+      "precision": "day",
+      "title": {
+        "fr": "Première frappe d’un drone armé français",
+        "en": "First strike by a French armed drone"
+      },
+      "body": {
+        "fr": "Armés deux jours plus tôt, les Reaper de *Barkhane* frappent pour la première fois lors d’une opération contre la katiba Macina dans la forêt de Wagadou, au centre du Mali.",
+        "en": "Armed two days earlier, *Barkhane*’s Reapers strike for the first time during an operation against the Katiba Macina in the Wagadou forest, central Mali."
+      },
+      "aircraft": "MQ-9 Reaper",
+      "source": "https://fr.wikipedia.org/wiki/General_Atomics_MQ-9_Reaper"
+    },
+    {
+      "date": "2021-01-03",
+      "precision": "day",
+      "title": {
+        "fr": "Frappe de Bounti",
+        "en": "Bounti strike"
+      },
+      "body": {
+        "fr": "Deux Mirage 2000 bombardent un rassemblement près de Bounti ; l’enquête de l’ONU conclut à 19 civils tués lors d’un mariage, ce que l’armée française conteste.",
+        "en": "Two Mirage 2000s bomb a gathering near Bounti; the UN investigation concludes that 19 civilians attending a wedding were killed, which the French military disputes."
+      },
+      "aircraft": "Mirage 2000",
+      "source": "https://news.un.org/en/story/2021/03/1088722"
+    },
+    {
+      "date": "2022-08-15",
+      "precision": "day",
+      "title": {
+        "fr": "Les derniers soldats français quittent le Mali",
+        "en": "The last French troops leave Mali"
+      },
+      "body": {
+        "fr": "La base de Gao est évacuée et aussitôt investie par le groupe Wagner ; le dispositif français se replie sur Niamey.",
+        "en": "The Gao base is evacuated and immediately taken over by the Wagner Group; French forces fall back on Niamey."
+      },
+      "aircraft": null,
+      "source": "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Barkhane"
+    },
+    {
+      "date": "2023-11-01",
+      "precision": "month",
+      "title": {
+        "fr": "Reprise de Kidal par l’armée malienne et Wagner",
+        "en": "Malian army and Wagner retake Kidal"
+      },
+      "body": {
+        "fr": "Des frappes de drones Bayraktar TB2 désorganisent les défenses des rebelles touaregs, qui abandonnent leurs positions sans combat prolongé.",
+        "en": "Bayraktar TB2 drone strikes disrupt the Tuareg rebels’ defences, and they abandon their positions without sustained fighting."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Mali_War"
+    },
+    {
+      "date": "2023-12-22",
+      "precision": "day",
+      "title": {
+        "fr": "Fin de la présence militaire française au Niger",
+        "en": "End of the French military presence in Niger"
+      },
+      "body": {
+        "fr": "Après le coup d’État du 26 juillet, les derniers des quelque 1 500 soldats et aviateurs français quittent la base aérienne de Niamey.",
+        "en": "After the coup of 26 July, the last of some 1,500 French soldiers and airmen leave the Niamey air base."
+      },
+      "aircraft": null,
+      "source": "https://www.aljazeera.com/news/2023/12/22/last-set-of-french-troops-exit-niger-as-sahel-sheds-parisian-influence"
+    },
+    {
+      "date": "2025-04-01",
+      "precision": "day",
+      "title": {
+        "fr": "Un Akıncı malien perdu près de Tinzaouaten",
+        "en": "Malian Akıncı lost near Tinzaouaten"
+      },
+      "body": {
+        "fr": "L’Algérie affirme avoir abattu un drone de reconnaissance armé malien entré dans son espace aérien ; le FLA revendique aussi sa destruction et la crise diplomatique éclate entre Bamako et Alger.",
+        "en": "Algeria says it shot down an armed Malian reconnaissance drone that entered its airspace; the FLA also claims it, and a diplomatic crisis breaks out between Bamako and Algiers."
+      },
+      "aircraft": "Bayraktar Akıncı",
+      "source": "https://en.wikipedia.org/wiki/Baykar_Bayraktar_Ak%C4%B1nc%C4%B1"
+    },
+    {
+      "date": "2026-04-25",
+      "precision": "day",
+      "title": {
+        "fr": "Offensive conjointe du FLA et du JNIM",
+        "en": "Joint FLA and JNIM offensive"
+      },
+      "body": {
+        "fr": "Attaques coordonnées contre l’aéroport de Bamako, Kati et Gao : le FLA reprend Kidal et le ministre de la Défense Sadio Camara est tué ; l’armée malienne et l’Africa Corps reprennent Kidal en octobre.",
+        "en": "Coordinated attacks hit Bamako airport, Kati and Gao: the FLA retakes Kidal and defence minister Sadio Camara is killed; the Malian army and the Africa Corps recapture Kidal in October."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Mali_War"
+    }
+  ],
+  "aircraft": [
+    {
+      "name": "Pilatus PC-6 Porter",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "L’aviation légère de l’armée de Terre engage un PC-6 Porter avec le 9e bataillon de soutien aéromobile dès l’opération *Serval*, au sein du groupement aéromobile déployé au Mali.",
+        "en": "French Army Light Aviation committed a PC-6 Porter with the 9th Airmobile Support Battalion from the start of Operation *Serval*, as part of the airmobile group deployed to Mali."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Operation_Serval",
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval"
+      ],
+      "note": "Engagement marginal : les ordres de bataille de *Serval* citent un seul Pilatus, sans détailler ses missions. Un article du Journal de l’Aviation (2017) dirait que deux PC-6 sont alors stationnés au Mali pour *Barkhane*, mais la page n’a pas pu être ouverte (404) : non retenu."
+    },
+    {
+      "name": "Breguet Atlantique",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "Les Atlantique 2 de l’aviation navale, cinq à Dakar dès le 18 janvier 2013, sont la clé de voûte du renseignement de *Serval* : l’un guide les premières frappes, et leurs GBU-12 s’ajoutent à celles de l’armée de l’air. Ils servent encore ponctuellement sous *Barkhane*.",
+        "en": "The Navy’s Atlantique 2s, five of them at Dakar from 18 January 2013, were the keystone of *Serval*’s intelligence: one guided the first strikes, and their GBU-12s added to the Air Force’s. They still served on occasion under *Barkhane*."
+      },
+      "sources": [
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval",
+        "https://en.wikipedia.org/wiki/Operation_Serval",
+        "https://www.senat.fr/rap/r22-708/r22-7081.pdf"
+      ],
+      "note": "Wikipédia EN parle de « Breguet Atlantic » sans préciser la version ; Wikipédia FR et le rapport du Sénat nomment l’Atlantique 2."
+    },
+    {
+      "name": "Transall C-160",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "Les Transall des escadrons *Béarn* et *Anjou* acheminent troupes et matériel vers Bamako puis Gao dès janvier 2013 ; l’Allemagne en engage aussi, dont deux basés à Niamey pour *Barkhane*, et le C-160G de renseignement électronique survole le Sahel.",
+        "en": "Transalls of the *Béarn* and *Anjou* squadrons carried troops and equipment to Bamako and then Gao from January 2013; Germany also committed some, two of them based at Niamey for *Barkhane*, and the C-160G electronic intelligence version flew over the Sahel."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Operation_Serval",
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval",
+        "https://en.wikipedia.org/wiki/Operation_Barkhane",
+        "https://www.senat.fr/rap/r22-708/r22-7081.pdf"
+      ],
+      "note": "Nombre d’appareils allemands divergent pour *Serval* : trois selon Wikipédia EN, deux selon Wikipédia FR."
+    },
+    {
+      "name": "Mirage F1",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "Deux Mirage F1 CR de l’escadron de reconnaissance 2/33 *Savoie*, en alerte à N’Djamena, sont engagés dès janvier 2013 dans *Serval* ; transférés à Bamako le 15 janvier, ils y assurent les missions de reconnaissance des premières semaines.",
+        "en": "Two Mirage F1 CRs of the 2/33 *Savoie* reconnaissance squadron, on alert at N’Djamena, joined *Serval* in January 2013; moved to Bamako on 15 January, they flew reconnaissance missions there in the first weeks."
+      },
+      "sources": [
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval",
+        "https://en.wikipedia.org/wiki/Operation_Serval"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Mirage 2000",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "Les Mirage 2000D d’*Épervier* ouvrent les frappes de *Serval* le 11 janvier 2013. Pilier de *Barkhane* depuis N’Djamena et Niamey, le Mirage 2000 appuie les troupes au sol ; à Bounti, le 3 janvier 2021, une de ses frappes tue 19 civils selon l’ONU.",
+        "en": "*Épervier*’s Mirage 2000Ds opened *Serval*’s strikes on 11 January 2013. The backbone of *Barkhane* from N’Djamena and Niamey, the Mirage 2000 supported ground troops; at Bounti on 3 January 2021 one of its strikes killed 19 civilians, according to the UN."
+      },
+      "sources": [
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval",
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Barkhane",
+        "https://en.wikipedia.org/wiki/Operation_Barkhane",
+        "https://news.un.org/en/story/2021/03/1088722"
+      ],
+      "note": "Bounti : l’armée française affirme avoir visé une trentaine de jihadistes et conteste le rapport de la MINUSMA (19 civils sur 22 morts) ; le communiqué de l’ONU écrit par erreur « Mirage 3000 »."
+    },
+    {
+      "name": "Rafale",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "Le 13 janvier 2013, quatre Rafale du 1/7 *Provence* partis de Saint-Dizier frappent Gao après 9 h 35 de vol, puis se posent à N’Djamena ; le détachement, porté à six appareils, y assure en moyenne quatre sorties par jour d’interdiction, d’appui et de reconnaissance.",
+        "en": "On 13 January 2013 four Rafales of the 1/7 *Provence* squadron, flying from Saint-Dizier, struck Gao after a 9 hour 35 minute flight and landed at N’Djamena; the detachment, raised to six aircraft, flew an average of four interdiction, support and reconnaissance sorties a day."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Operation_Serval",
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval"
+      ],
+      "note": "Wikipédia FR précise trois Rafale B et un Rafale C, dont trois seulement larguent leurs 18 GBU-12 (le quatrième garde ses AASM) ; Wikipédia EN parle de quatre Rafale du 1/7 Provence sans ce détail."
+    },
+    {
+      "name": "IAI Heron",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "L’Allemagne déploie à partir de 2016 des Heron 1 à Gao au profit de la MINUSMA, la mission de l’ONU : trois drones sur place, dont deux peuvent voler en même temps, en reconnaissance au-dessus des troupes au sol.",
+        "en": "From 2016 Germany deployed Heron 1 drones at Gao for MINUSMA, the UN mission: three drones on site, two of which could fly at the same time, flying reconnaissance over troops on the ground."
+      },
+      "sources": [
+        "https://www.bundeswehr.de/de/auftrag/einsaetze/missionen/abgeschlossene-einsaetze-der-bundeswehr/minusma/heron-1-einsatz-minusma-gao-5256618"
+      ],
+      "note": "Emploi onusien (MINUSMA), rangé dans le camp des alliés. Pas un doublon : le Harfang français, dérivé du Heron, a sa propre fiche ; la fiche générique couvre ici l’utilisateur allemand."
+    },
+    {
+      "name": "MQ-9 Reaper",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "Arrivés à Niamey en janvier 2014, les Reaper français deviennent l’outil central du renseignement ; armés le 19 décembre 2019, ils frappent pour la première fois le 21 décembre en forêt de Wagadou. Des Reaper américains opèrent depuis Niamey et Agadez jusqu’en 2024.",
+        "en": "Arriving at Niamey in January 2014, French Reapers became the core intelligence tool; armed on 19 December 2019, they made their first strike on 21 December in the Wagadou forest. US Reapers operated from Niamey and Agadez until 2024."
+      },
+      "sources": [
+        "https://fr.wikipedia.org/wiki/General_Atomics_MQ-9_Reaper",
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Barkhane",
+        "https://en.wikipedia.org/wiki/Escadron_de_Drones_1/33_Belfort",
+        "https://tribune.com.pk/story/2123566/french-army-carries-first-ever-drone-strike-mali-operations",
+        "https://www.senat.fr/rap/r22-708/r22-7081.pdf",
+        "https://www.airandspaceforces.com/us-closes-last-drone-base-niger/"
+      ],
+      "note": "Wikipédia EN (Barkhane) évoque un « Reaper armé » dès février 2019, contredit par toutes les autres sources (armement en décembre 2019, « première frappe opérationnelle » selon l’armée française). Janes situe les tirs d’essai du 15 au 17 décembre, Wikipédia FR l’armement le 19."
+    },
+    {
+      "name": "Raytheon Sentinel R1",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "Annoncé le 25 janvier 2013, un Sentinel R1 du 5e escadron de la RAF opère depuis Dakar pour les forces françaises : en quatre mois, il vole 697 heures en 66 sorties et remet une centaine de rapports de renseignement radar.",
+        "en": "Announced on 25 January 2013, a Sentinel R1 of No. 5 Squadron RAF operated from Dakar for French forces: in four months it flew 697 hours on 66 sorties and delivered about a hundred radar intelligence reports."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Operation_Newcombe",
+        "https://www.gov.uk/government/news/raf-sentinel-aircraft-deploys-to-africa",
+        "https://en.wikipedia.org/wiki/Operation_Serval"
+      ],
+      "note": ""
+    },
+    {
+      "name": "EADS Harfang",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "Deux Harfang de l’escadron 1/33 *Belfort*, déployés le 16 janvier 2013, volent au-dessus du Mali dès le 18 en renseignement et désignation d’objectifs ; l’un y bat le record d’endurance du type (26 h 10). Le Reaper les relève ensuite.",
+        "en": "Two Harfangs of the 1/33 *Belfort* squadron, deployed on 16 January 2013, flew over Mali from the 18th on intelligence and target designation; one set the type’s endurance record there (26 hours 10 minutes). The Reaper later took over."
+      },
+      "sources": [
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval",
+        "https://fr.wikipedia.org/wiki/EADS_Harfang",
+        "https://en.wikipedia.org/wiki/Operation_Serval",
+        "https://www.senat.fr/rap/r22-708/r22-7081.pdf"
+      ],
+      "note": "Base divergente : Niamey selon Wikipédia FR, N’Djamena selon Wikipédia EN. Record d’endurance daté des 25-26 janvier 2013 par l’article Harfang."
+    },
+    {
+      "name": "Airbus A330 MRTT",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "Sous *Barkhane*, les A330 MRTT Phénix français assurent avec les A400M une partie du transport stratégique entre la métropole et le Sahel, sans suffire à éviter l’affrètement d’avions privés, selon le Sénat.",
+        "en": "Under *Barkhane*, France’s A330 MRTT Phénix tankers handled, alongside the A400M, part of the strategic airlift between France and the Sahel, though chartered civilian aircraft were still needed, according to the French Senate."
+      },
+      "sources": [
+        "https://www.senat.fr/rap/r22-708/r22-7081.pdf"
+      ],
+      "note": "Engagement marginal et seulement logistique : aucune source consultée ne décrit de ravitaillement en vol au profit de *Barkhane*. Une seule source (rapport du Sénat n° 708, 7 juin 2023)."
+    },
+    {
+      "name": "Airbus A400M Atlas",
+      "side": "france-allies",
+      "attested": true,
+      "role": {
+        "fr": "L’A400M fait sa première mission opérationnelle le 29 décembre 2013 : 22 tonnes de fret d’Orléans à Bamako pour *Serval*. Sous *Barkhane*, il décuple la capacité de transport et largue par exemple près de 40 tonnes de vivres, d’eau, de carburant et de munitions au Niger en mars 2020.",
+        "en": "The A400M flew its first operational mission on 29 December 2013: 22 tonnes of cargo from Orléans to Bamako for *Serval*. Under *Barkhane* it greatly increased airlift capacity, for instance airdropping nearly 40 tonnes of food, water, fuel and ammunition in Niger in March 2020."
+      },
+      "sources": [
+        "https://armyrecognition.com/archives/archives-aerospace-defense/aerospace-defense-2014/first-operational-deployement-for-an-a400m-atlas-french-air-force-in-mali",
+        "https://thedefensepost.com/2020/03/10/france-a400m-airdrop-supplies-troops-niger-sahel/",
+        "https://www.senat.fr/rap/r22-708/r22-7081.pdf"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Bayraktar Akıncı",
+      "side": "juntes-russie",
+      "attested": true,
+      "role": {
+        "fr": "Le Mali reçoit ses premiers Akıncı fin 2024 pour compenser par les drones la faiblesse de ses effectifs face aux rebelles et aux jihadistes. Dans la nuit du 31 mars au 1er avril 2025, l’un d’eux tombe près de Tinzaouaten : l’Algérie dit l’avoir abattu, le FLA le revendique aussi.",
+        "en": "Mali received its first Akıncıs in late 2024 to make up with drones for its limited manpower against rebels and jihadists. On the night of 31 March to 1 April 2025 one came down near Tinzaouaten: Algeria said it shot it down, and the FLA also claimed it."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Baykar_Bayraktar_Ak%C4%B1nc%C4%B1",
+        "https://en.wikipedia.org/wiki/Mali_War",
+        "https://militarnyi.com/en/news/mali-turkish-bayraktar-akinci-strike-drones/"
+      ],
+      "note": "Engagement attesté surtout par sa perte : aucune frappe précise d’Akıncı n’est documentée par les sources consultées. Livraison en novembre 2024 selon l’article Akıncı, en décembre selon l’article sur la guerre du Mali ; un premier appareil perdu à l’entraînement en janvier 2025 ; Militarnyi estime huit drones livrés à l’été 2026. Le Burkina Faso figure aussi parmi les utilisateurs, sans emploi documenté."
+    }
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Mali_War",
+    "https://en.wikipedia.org/wiki/Operation_Serval",
+    "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Serval",
+    "https://en.wikipedia.org/wiki/Operation_Barkhane",
+    "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Barkhane",
+    "https://www.senat.fr/rap/r22-708/r22-7081.pdf",
+    "https://en.wikipedia.org/wiki/Operation_Newcombe",
+    "https://www.airandspaceforces.com/us-closes-last-drone-base-niger/",
+    "https://www.aljazeera.com/news/2023/12/22/last-set-of-french-troops-exit-niger-as-sahel-sheds-parisian-influence",
+    "https://news.un.org/en/story/2021/03/1088722"
+  ]
+}

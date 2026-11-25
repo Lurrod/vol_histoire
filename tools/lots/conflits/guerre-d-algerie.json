@@ -1,0 +1,418 @@
+{
+  "war": "Guerre d'Algérie",
+  "slug": "guerre-d-algerie",
+  "outcome": {
+    "fr": "Les accords d’Évian, signés le 18 mars 1962, instaurent un cessez-le-feu le lendemain à midi et ouvrent la voie à l’indépendance de l’Algérie, proclamée le 3 juillet 1962.",
+    "en": "The Évian Accords, signed on 18 March 1962, brought a ceasefire at noon the next day and opened the way to Algerian independence, proclaimed on 3 July 1962."
+  },
+  "context": {
+    "fr": "Colonie française depuis 1830, l’Algérie est organisée en départements, mais la population musulmane y reste privée de l’égalité politique. Dans la nuit du 1er novembre 1954, le Front de libération nationale (FLN) et sa branche armée, l’Armée de libération nationale (ALN), lancent une série d’attaques coordonnées, la « Toussaint rouge » : c’est le début de huit années de guerre que la France présente alors comme des opérations de « maintien de l’ordre ».\n\nLe déséquilibre des forces est considérable. Entre 1954 et 1962, plus de 1,4 million de militaires français, appelés du contingent et soldats d’active, sont envoyés en Algérie. L’ALN mène une guérilla dans les massifs montagneux, découpés en wilayas, et s’appuie à partir de 1956 sur des bases arrière en Tunisie et au Maroc devenus indépendants. Elle ne possède aucune aviation : le ciel appartient tout entier aux Français, qui en font l’outil central de la contre-guérilla.\n\nLa guerre déborde vite le seul terrain militaire. Le bombardement de Sakiet Sidi Youssef, en Tunisie, en février 1958, internationalise le conflit et contribue à la chute de la IVe République et au retour du général de Gaulle. Celui-ci se rallie à l’autodétermination, ce qui provoque le putsch des généraux d’avril 1961, puis la violence de l’OAS. Les historiens français estiment à environ 250 000 le nombre d’Algériens tués ; l’armée française compte près de 25 000 morts, dont 8 000 par accident ou maladie.",
+    "en": "A French colony since 1830, Algeria was organised into départements, yet its Muslim population was denied political equality. On the night of 1 November 1954, the National Liberation Front (FLN) and its armed wing, the National Liberation Army (ALN), launched a wave of coordinated attacks, the \"Red All Saints' Day\". It opened eight years of war that France then described as \"maintaining order\".\n\nThe balance of forces was deeply uneven. Between 1954 and 1962, more than 1.4 million French servicemen, conscripts and regulars alike, were sent to Algeria. The ALN waged a guerrilla war in the mountains, divided into wilayas, and from 1956 relied on rear bases in newly independent Tunisia and Morocco. It had no air force at all: the sky belonged entirely to the French, who made it the core of their counter-insurgency.\n\nThe war soon spilled beyond the battlefield. The bombing of Sakiet Sidi Youssef, in Tunisia, in February 1958 internationalised the conflict and helped bring down the Fourth Republic and return General de Gaulle to power. His turn towards self-determination triggered the generals' putsch of April 1961 and then the violence of the OAS. French historians put the number of Algerians killed at around 250,000; the French army lost nearly 25,000 dead, 8,000 of them through accidents or illness."
+  },
+  "narrative": {
+    "fr": "En 1954, l’armée de l’Air arrive en Algérie avec des avions conçus pour une autre guerre. Elle improvise une « aviation légère d’appui » : avions d’école Morane MS.733 Alcyon et SIPA armés, Flamant équipés de mitrailleuses et de roquettes, vieux P-47 Thunderbolt et Junkers Ju 52 ressortis des hangars, surtout des centaines de North American T-6G blindés et armés, réunis dans les escadrilles d’aviation légère d’appui (EALA). À partir de l’automne 1956, deux groupes de bombardiers B-26 Invader s’installent à Oran et à Bône. Au total, plus de 1 600 avions et 250 hélicoptères sont affectés à l’Algérie, plus de la moitié de l’aviation militaire française. Le nombre d’hélicoptères passe de 75 en juin 1956 à 257 deux ans plus tard : Sikorsky H-34, Vertol H-21 « Banane », H-19 et Alouette II, absents de ce catalogue, déposent les troupes au cœur des massifs et inventent l’assaut héliporté.\n\nLes trois armées volent. Après l’expédition de Suez, les flottilles de Corsair de l’Aéronavale s’installent à Télergma et à Oran, rejointes par les Aquilon. L’aviation légère de l’Armée de terre (ALAT), créée le 22 novembre 1954, aligne près de 700 avions légers en 1960 : Piper et Cessna d’observation, qui piquent pour marquer les objectifs, et Broussard de liaison. Les Nord Noratlas, que les équipages surnomment « la Grise », larguent les parachutistes et ravitaillent les postes isolés. Contre des maquisards insaisissables, la mission type mêle reconnaissance à vue armée, protection de convoi et appui-feu, souvent au napalm, que les journaux de marche désignent par le code de « bidons spéciaux » alors que les autorités en nient l’emploi.\n\nÀ partir de juillet 1957, la ligne Morice ferme sur 460 km la frontière tunisienne : barbelés électrifiés, mines et surveillance permanente, avec un appui léger en T-6 ou lourd en Corsair sur simple demande depuis Bône et Tébessa. Pour bloquer les infiltrations par les airs, des B-26 sont transformés en chasseurs de nuit à radar ; selon un article de 1998 cité par Wikipédia, ils interceptent en 1961 trente-huit avions légers et hélicoptères et en abattent neuf. Par crainte d’une intervention de volontaires égyptiens ou libyens, Ouragan, Mystère IV puis Super Mystère se relaient en détachements de défense aérienne dans l’Est algérien. Le 8 février 1958, un Ouragan en patrouille sur le barrage est touché par une mitrailleuse tirant de Sakiet Sidi Youssef. Deux heures plus tard, onze B-26, six Corsair et huit Mistral bombardent le village tunisien : on compte plus de 70 morts et 148 blessés, parmi lesquels des écoliers. La crise diplomatique qui suit renverse le gouvernement Gaillard le 15 avril.\n\nNommé à la tête des forces en Algérie, le général d’aviation Maurice Challe lance en février 1959 une série d’offensives qui ratissent un massif après l’autre, d’ouest en est : *Couronne* en Oranie, *Courroie* dans l’Ouarsenis, puis *Jumelles* en Kabylie à partir de juillet 1959. La coopération entre l’air et le sol y atteint son sommet : jusqu’à 300 T-6 sont engagés au combat, les T-28 Fennec remplacent les Alcyon à partir de 1959, les Skyraider de la 20e escadre de chasse succèdent aux P-47 en 1960, et les hélicoptères permettent de jeter des bataillons entiers dans la bataille en quelques minutes. Les katibas de l’intérieur sortent très affaiblies de ces opérations.\n\nLa décision se joue pourtant sur le terrain politique. Lors du putsch d’avril 1961, l’armée de l’Air et la Marine restent fidèles au gouvernement. L’activité aérienne décline ensuite jusqu’au cessez-le-feu du 19 mars 1962. La guerre d’Algérie a fait naître les tactiques aéromobiles de l’armée française, et l’expérience du Fennec inspire aux Américains leur T-28D de contre-guérilla, bientôt engagé en Asie du Sud-Est.",
+    "en": "In 1954 the French Air Force arrived in Algeria with aircraft built for a different kind of war. It improvised a \"light support aviation\": armed Morane MS.733 Alcyon and SIPA trainers, Flamants fitted with machine guns and rockets, old P-47 Thunderbolts and Junkers Ju 52s brought back into service, and above all hundreds of armoured, armed North American T-6Gs grouped in light air support squadrons (EALA). From autumn 1956, two B-26 Invader bomber groups settled at Oran and Bône. In all, more than 1,600 aircraft and 250 helicopters were assigned to Algeria, over half of France's military aviation. The helicopter fleet grew from 75 in June 1956 to 257 two years later: Sikorsky H-34s, Vertol H-21 \"Bananas\", H-19s and Alouette IIs, none of them in this catalogue, flew troops into the heart of the mountains and pioneered the heliborne assault.\n\nAll three services flew. After the Suez expedition, the Navy's Corsair flotillas moved to Télergma and Oran, joined by the Aquilons. Army aviation (ALAT), created on 22 November 1954, fielded nearly 700 light aircraft by 1960: Piper and Cessna spotters, which dived to mark targets, and Broussard liaison aircraft. The Nord Noratlas, nicknamed \"la Grise\" (the grey one) by its crews, dropped paratroopers and supplied isolated posts. Against elusive guerrillas, the standard sortie combined armed visual reconnaissance, convoy escort and close support, often with napalm, which unit war diaries called \"special canisters\" while the authorities denied using it.\n\nFrom July 1957, the Morice Line sealed 460 km of the Tunisian border with electrified fences, minefields and constant watch, backed on request by light support from T-6s or heavy support from Corsairs flying out of Bône and Tébessa. To stop infiltration by air, some B-26s were turned into radar-equipped night fighters; according to a 1998 article cited by Wikipedia, in 1961 they intercepted 38 light aircraft and helicopters and shot down nine. Fearing intervention by Egyptian or Libyan volunteers, Ouragans, Mystère IVs and later Super Mystères rotated through air defence detachments in eastern Algeria. On 8 February 1958, an Ouragan patrolling the barrier was hit by a machine gun firing from Sakiet Sidi Youssef. Two hours later, eleven B-26s, six Corsairs and eight Mistrals bombed the Tunisian village, killing more than 70 people and wounding 148, schoolchildren among them. The diplomatic crisis that followed brought down the Gaillard government on 15 April.\n\nAppointed to command in Algeria, the airman General Maurice Challe launched a series of offensives in February 1959 that swept one mountain range after another, from west to east: *Couronne* in Oranie, *Courroie* in the Ouarsenis, then *Jumelles* in Kabylia from July 1959. Air-ground cooperation peaked: up to 300 T-6s flew in combat, T-28 Fennecs replaced the Alcyons from 1959, the Skyraiders of the 20th Fighter Wing took over from the P-47s in 1960, and helicopters could throw whole battalions into action within minutes. The ALN's units inside Algeria emerged badly weakened.\n\nThe outcome, however, was decided on political ground. During the April 1961 putsch, the Air Force and the Navy stayed loyal to the government. Air activity then wound down until the ceasefire of 19 March 1962. The Algerian War gave birth to the French army's airmobile tactics, and the Fennec experience led the Americans to build their own counter-insurgency T-28D, soon committed in Southeast Asia."
+  },
+  "sides": [
+    {
+      "key": "france",
+      "name": {
+        "fr": "France",
+        "en": "France"
+      },
+      "members": {
+        "fr": "Armée de l’Air, Aéronautique navale, Aviation légère de l’Armée de terre (ALAT)",
+        "en": "French Air Force, Naval Aviation, Army Light Aviation (ALAT)"
+      }
+    },
+    {
+      "key": "fln-aln",
+      "name": {
+        "fr": "FLN et ALN",
+        "en": "FLN and ALN"
+      },
+      "members": {
+        "fr": "Front de libération nationale et Armée de libération nationale, sans aviation, avec des bases arrière en Tunisie et au Maroc",
+        "en": "National Liberation Front and National Liberation Army, with no air arm, relying on rear bases in Tunisia and Morocco"
+      }
+    }
+  ],
+  "events": [
+    {
+      "date": "1954-11-01",
+      "precision": "day",
+      "title": {
+        "fr": "La « Toussaint rouge »",
+        "en": "The \"Red All Saints' Day\""
+      },
+      "body": {
+        "fr": "Dans la nuit, le FLN déclenche une série d’attentats et d’attaques, dont celle de la caserne de Batna : c’est le début de l’insurrection.",
+        "en": "During the night, the FLN launched a wave of bombings and attacks, including one on the Batna barracks: the uprising had begun."
+      },
+      "aircraft": null,
+      "source": "https://fr.wikipedia.org/wiki/Guerre_d%27Alg%C3%A9rie"
+    },
+    {
+      "date": "1955-08-20",
+      "precision": "day",
+      "title": {
+        "fr": "Soulèvement du Constantinois",
+        "en": "Constantinois uprising"
+      },
+      "body": {
+        "fr": "Après les massacres d’El Halia, la répression est massive : l’aviation bombarde les douars des environs, et le nombre de victimes se compte par milliers.",
+        "en": "After the El Halia massacre, the repression was massive: aircraft bombed the surrounding villages, and the victims numbered in the thousands."
+      },
+      "aircraft": null,
+      "source": "https://fr.wikipedia.org/wiki/Guerre_d%27Alg%C3%A9rie"
+    },
+    {
+      "date": "1956-01-01",
+      "precision": "year",
+      "title": {
+        "fr": "Premiers missiles filoguidés tirés d’un avion",
+        "en": "First wire-guided missiles fired from an aircraft"
+      },
+      "body": {
+        "fr": "Des Flamant MD 311 du GOM 86 tirent des missiles antichars SS.11 contre des grottes fortifiées au fond des gorges : un premier emploi au combat qui ouvre la voie aux hélicoptères antichars.",
+        "en": "Flamant MD 311s of GOM 86 fired SS.11 anti-tank missiles at fortified caves deep in mountain gorges, a combat first that paved the way for anti-tank helicopters."
+      },
+      "aircraft": "Dassault MD 315 Flamant",
+      "source": "https://en.wikipedia.org/wiki/Dassault_MD_315_Flamant"
+    },
+    {
+      "date": "1956-10-22",
+      "precision": "day",
+      "title": {
+        "fr": "Détournement de l’avion des chefs du FLN",
+        "en": "FLN leaders' aircraft diverted"
+      },
+      "body": {
+        "fr": "Le DC-3 marocain qui conduit Ben Bella et quatre autres dirigeants du FLN de Rabat à Tunis est contraint de se poser à Alger ; ils restent emprisonnés jusqu’à la fin de la guerre.",
+        "en": "The Moroccan DC-3 carrying Ben Bella and four other FLN leaders from Rabat to Tunis was forced to land in Algiers; they were held prisoner until the end of the war."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Algerian_War"
+    },
+    {
+      "date": "1957-07-01",
+      "precision": "month",
+      "title": {
+        "fr": "Début de la ligne Morice",
+        "en": "Morice Line begins"
+      },
+      "body": {
+        "fr": "Un barrage électrifié et miné est édifié le long de la frontière tunisienne ; l’aviation, basée à Bône et à Tébessa, intervient sur chaque tentative de franchissement.",
+        "en": "An electrified, mined barrier went up along the Tunisian border; aircraft based at Bône and Tébessa responded to each crossing attempt."
+      },
+      "aircraft": null,
+      "source": "https://fr.wikipedia.org/wiki/Ligne_Morice"
+    },
+    {
+      "date": "1958-01-21",
+      "precision": "day",
+      "title": {
+        "fr": "Début de la bataille des frontières",
+        "en": "Battle of the Frontiers begins"
+      },
+      "body": {
+        "fr": "Jusqu’au 28 mai 1958, l’ALN tente en vain de faire franchir les barrages à ses unités venues de Tunisie ; parachutistes, blindés et aviation les interceptent.",
+        "en": "Until 28 May 1958, the ALN tried in vain to push its units from Tunisia across the barriers; paratroopers, armour and aircraft intercepted them."
+      },
+      "aircraft": null,
+      "source": "https://fr.wikipedia.org/wiki/Guerre_d%27Alg%C3%A9rie"
+    },
+    {
+      "date": "1958-02-08",
+      "precision": "day",
+      "title": {
+        "fr": "Bombardement de Sakiet Sidi Youssef",
+        "en": "Bombing of Sakiet Sidi Youssef"
+      },
+      "body": {
+        "fr": "Onze B-26, six Corsair de la flottille 12F et huit Mistral frappent ce village tunisien qui abrite l’ALN ; le raid fait plus de 70 morts civils et déclenche une crise internationale.",
+        "en": "Eleven B-26s, six Corsairs of Flotilla 12F and eight Mistrals struck this Tunisian village sheltering the ALN; the raid killed more than 70 civilians and sparked an international crisis."
+      },
+      "aircraft": "F4U Corsair",
+      "source": "https://fr.wikipedia.org/wiki/Bombardement_de_Sakiet_Sidi_Youssef"
+    },
+    {
+      "date": "1959-01-01",
+      "precision": "year",
+      "title": {
+        "fr": "Arrivée des T-28 Fennec",
+        "en": "T-28 Fennecs arrive"
+      },
+      "body": {
+        "fr": "Remotorisés et armés en France, les T-28 Fennec rejoignent les escadrilles d’aviation légère d’appui, où ils remplacent les Alcyon jusqu’à la fin de la guerre.",
+        "en": "Re-engined and armed in France, T-28 Fennecs joined the light air support squadrons, replacing the Alcyons until the end of the war."
+      },
+      "aircraft": "T-28 Trojan",
+      "source": "https://fr.wikipedia.org/wiki/North_American_T-28_Trojan"
+    },
+    {
+      "date": "1959-02-06",
+      "precision": "day",
+      "title": {
+        "fr": "Lancement du plan Challe",
+        "en": "Challe Plan launched"
+      },
+      "body": {
+        "fr": "Le général d’aviation Maurice Challe engage les réserves générales en Oranie : la première d’une série d’offensives qui ratissent les massifs d’ouest en est.",
+        "en": "Air Force General Maurice Challe committed the general reserve in Oranie, the first of a series of offensives sweeping the mountain ranges from west to east."
+      },
+      "aircraft": null,
+      "source": "https://fr.wikipedia.org/wiki/Plan_Challe"
+    },
+    {
+      "date": "1959-07-22",
+      "precision": "day",
+      "title": {
+        "fr": "Début de l’opération *Jumelles*",
+        "en": "Operation *Jumelles* begins"
+      },
+      "body": {
+        "fr": "Plus de 60 000 hommes, appuyés par les avions et les hélicoptères, investissent la Kabylie (wilaya III) : c’est la plus vaste opération de la guerre.",
+        "en": "Over 60,000 troops, backed by aircraft and helicopters, moved into Kabylia (Wilaya III), the largest operation of the war."
+      },
+      "aircraft": null,
+      "source": "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Jumelles"
+    },
+    {
+      "date": "1960-02-04",
+      "precision": "day",
+      "title": {
+        "fr": "Premier Skyraider à Boufarik",
+        "en": "First Skyraider at Boufarik"
+      },
+      "body": {
+        "fr": "Le premier Skyraider de l’armée de l’Air arrive sur la base 142 de Boufarik ; la 20e escadre de chasse en alignera trois escadrons pour l’appui rapproché.",
+        "en": "The French Air Force's first Skyraider reached Air Base 142 at Boufarik; the 20th Fighter Wing would field three squadrons of them for close support."
+      },
+      "aircraft": "A-1 Skyraider",
+      "source": "https://fr.wikipedia.org/wiki/Douglas_AD_Skyraider"
+    },
+    {
+      "date": "1960-10-28",
+      "precision": "day",
+      "title": {
+        "fr": "Les Vautour à Oran",
+        "en": "Vautours at Oran"
+      },
+      "body": {
+        "fr": "Rééquipé de Vautour IIN à Oran-La Sénia, l’escadron Normandie-Niemen devient l’ECTT 2/6, chargé de la chasse de nuit au-dessus de l’Algérie.",
+        "en": "Re-equipped with Vautour IINs at Oran-La Sénia, the Normandie-Niemen squadron became ECTT 2/6, tasked with night fighting over Algeria."
+      },
+      "aircraft": "Vautour II",
+      "source": "https://avions-de-la-guerre-d-algerie.over-blog.com/article-le-sncaso-so-4050-vautour-105853155.html"
+    },
+    {
+      "date": "1962-03-19",
+      "precision": "day",
+      "title": {
+        "fr": "Cessez-le-feu",
+        "en": "Ceasefire"
+      },
+      "body": {
+        "fr": "Au lendemain de la signature des accords d’Évian, le cessez-le-feu entre en vigueur à midi sur tout le territoire algérien.",
+        "en": "The day after the Évian Accords were signed, the ceasefire came into force at noon across Algeria."
+      },
+      "aircraft": null,
+      "source": "https://fr.wikipedia.org/wiki/Accords_d%27%C3%89vian"
+    }
+  ],
+  "aircraft": [
+    {
+      "name": "F4U Corsair",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Les flottilles 12F, 14F, 15F puis 17F de l’Aéronavale opèrent depuis Télergma et Oran dès la fin de 1956 : appui-feu, escorte d’hélicoptères, frappes depuis le *Bois Belleau* en 1958. Le 8 février 1958, six Corsair de la 12F neutralisent la DCA de Sakiet Sidi Youssef.",
+        "en": "Naval Flotillas 12F, 14F, 15F and later 17F flew from Télergma and Oran from late 1956: close support, helicopter escort and strikes from the carrier *Bois Belleau* in 1958. On 8 February 1958, six Corsairs of 12F knocked out the anti-aircraft guns at Sakiet Sidi Youssef."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Vought_F4U_Corsair",
+        "https://fr.wikipedia.org/wiki/Chance_Vought_F4U_Corsair",
+        "https://fr.wikipedia.org/wiki/Bombardement_de_Sakiet_Sidi_Youssef",
+        "https://fr.wikipedia.org/wiki/Ligne_Morice"
+      ],
+      "note": "L’article Corsair (EN) situe les missions des flottilles « entre 1955 et 1962 » tout en datant de la fin de 1956 leur installation à Télergma et Oran, après Suez."
+    },
+    {
+      "name": "A-1 Skyraider",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Achetés pour remplacer les P-47, les Skyraider de la 20e escadre de chasse (escadrons 1/20 « Aurès-Nementcha », 2/20 « Ouarsenis », 3/20 « Oranie ») assurent l’appui rapproché aux roquettes, aux bombes et au napalm de 1960 à la fin de la guerre.",
+        "en": "Bought to replace the P-47s, the Skyraiders of the 20th Fighter Wing (squadrons 1/20 \"Aurès-Nementcha\", 2/20 \"Ouarsenis\" and 3/20 \"Oranie\") flew close support with rockets, bombs and napalm from 1960 until the end of the war."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_A-1_Skyraider",
+        "https://fr.wikipedia.org/wiki/Douglas_AD_Skyraider",
+        "https://www.oocities.org/zvika47.geo/fr-af-1960.htm"
+      ],
+      "note": "Dates divergentes : selon Wikipédia EN, commande en 1956 et premier avion remis le 6 février 1958 ; selon Wikipédia FR, commande de 113 appareils en 1959, premier arrivé à Boufarik le 4 février 1960, 51 en ligne au 1er janvier 1961, dernier livré le 30 mars 1962. Wikipédia EN cite aussi l’EC 21."
+    },
+    {
+      "name": "Dassault MD 315 Flamant",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Des Flamant MD 311 et MD 315 armés de mitrailleuses, de bombes et de roquettes mènent attaques légères et observation. En 1956, des MD 311 du GOM 86 tirent des missiles filoguidés SS.11 contre des grottes fortifiées, premier emploi de cette arme au combat depuis un avion.",
+        "en": "Flamant MD 311s and MD 315s armed with machine guns, bombs and rockets flew light attack and observation sorties. In 1956, MD 311s of GOM 86 fired SS.11 wire-guided missiles at fortified caves, the first combat use of such a weapon from an aircraft."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Dassault_MD_315_Flamant",
+        "https://fr.wikipedia.org/wiki/Dassault_MD_311-312-315_Flamant",
+        "http://anfas.free.fr/escadron/guyenne-chapitre-05.pdf"
+      ],
+      "note": "Les tirs de SS.11 sont attribués à des MD 311 (version d’entraînement au bombardement), la fiche du catalogue couvrant la famille Flamant."
+    },
+    {
+      "name": "Ouragan",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Faute de pistes adaptées, il sert surtout en détachements de défense aérienne et en patrouilles sur le barrage. Le 8 février 1958, un Ouragan en patrouille sur la ligne Morice, touché par une mitrailleuse tirant de Sakiet, se pose moteur en feu à Tébessa, deux heures avant le raid.",
+        "en": "Lacking suitable airstrips, it served mainly in air defence detachments and on patrols over the barrier. On 8 February 1958, an Ouragan patrolling the Morice Line was hit by a machine gun firing from Sakiet and landed at Tébessa with its engine on fire, two hours before the raid."
+      },
+      "sources": [
+        "http://anfas.free.fr/escadron/guyenne-chapitre-05.pdf",
+        "https://avions-de-la-guerre-d-algerie.over-blog.com/article-les-md-450-ouragan-et-le-barougan-64975683.html",
+        "https://avions-de-la-guerre-d-algerie.over-blog.com/article-le-gamd-smb-2-super-mystere-b2-87495659.html",
+        "https://fr.wikipedia.org/wiki/Guerre_d%27Alg%C3%A9rie"
+      ],
+      "note": "Engagement marginal. Jacques Moulin écrit qu’il « ne fut pas systématiquement utilisé en AFN, sauf exceptionnellement pour des opérations ponctuelles » et surtout pour la défense aérienne, alors que Wikipédia FR (Guerre d’Algérie) le cite parmi les avions à réaction engagés dans les combats. Le type de l’avion touché le 8 février 1958 vient de l’historique du GB 2/91 Guyenne ; l’article Wikipédia sur Sakiet parle seulement d’« un avion ». La version « Barougan », essayée en Algérie, est abandonnée en 1958."
+    },
+    {
+      "name": "Morane-Saulnier MS.733 Alcyon",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Entre 1956 et 1958, des Alcyon d’école modifiés en MS.733A, armés de mitrailleuses, de roquettes et de bombes antipersonnel, font de l’appui-feu dans les escadrilles d’aviation légère d’appui. Peu à l’aise dans la chaleur, ils sont remplacés par les T-28 Fennec.",
+        "en": "Between 1956 and 1958, Alcyon trainers converted to MS.733A standard, armed with machine guns, rockets and anti-personnel bombs, flew close support with the light air support squadrons. Struggling in the heat, they gave way to T-28 Fennecs."
+      },
+      "sources": [
+        "https://fr.wikipedia.org/wiki/Morane-Saulnier_MS.733_Alcyon",
+        "https://en.wikipedia.org/wiki/Morane-Saulnier_Alcyon",
+        "https://avions-de-la-guerre-d-algerie.over-blog.com/article-morane-saulnier-ms-733-alcyon-50567528.html"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Nord Noratlas",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Engagé de novembre 1954 à la fin de la guerre, « la Grise » – surnom né en Algérie – largue les parachutistes et transporte vivres et munitions. Plusieurs appareils sont perdus sur le territoire, près de Miliana en 1956 ou de Blida en 1957, et l’un est détruit par un attentat à Alger en mai 1962.",
+        "en": "Committed from November 1954 to the end of the war, \"la Grise\", a nickname born in Algeria, dropped paratroopers and carried food and ammunition. Several were lost there, near Miliana in 1956 and Blida in 1957, and one was destroyed by a bomb at Algiers in May 1962."
+      },
+      "sources": [
+        "https://fr.wikipedia.org/wiki/Nord_2501",
+        "https://en.wikipedia.org/wiki/Nord_Noratlas",
+        "https://www.oocities.org/zvika47.geo/fr-af-1960.htm"
+      ],
+      "note": "La destruction au sol à Alger (25 mai 1962) est postérieure au cessez-le-feu."
+    },
+    {
+      "name": "T-28 Trojan",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Quelque 150 T-28A rachetés aux États-Unis sont remotorisés et armés par Sud-Aviation sous le nom de Fennec. De 1959 à 1962, ils remplacent les MS.733A et une partie des T-6 dans les escadrilles d’aviation légère d’appui, avec mitrailleuses, roquettes et bombes.",
+        "en": "Some 150 T-28As bought from the United States were re-engined and armed by Sud-Aviation as the Fennec. From 1959 to 1962 they replaced the MS.733As and some of the T-6s in the light air support squadrons, carrying machine guns, rockets and bombs."
+      },
+      "sources": [
+        "https://fr.wikipedia.org/wiki/North_American_T-28_Trojan",
+        "https://en.wikipedia.org/wiki/North_American_T-28_Trojan"
+      ],
+      "note": ""
+    },
+    {
+      "name": "de Havilland Sea Venom",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Construits sous licence sous le nom d’Aquilon, les Sea Venom des flottilles 11F et 16F opèrent depuis des terrains algériens comme Télergma : chasse de nuit et appui rapproché avec leurs quatre canons de 20 mm et leurs roquettes.",
+        "en": "Built under licence as the Aquilon, the Sea Venoms of Flotillas 11F and 16F flew from Algerian airfields such as Télergma, as night fighters and in close support with their four 20 mm cannon and rockets."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/De_Havilland_Sea_Venom",
+        "https://fr.wikipedia.org/wiki/De_Havilland_Sea_Venom",
+        "https://avions-de-la-guerre-d-algerie.over-blog.com/article-le-sncase-aquilon-39422912.html"
+      ],
+      "note": "Dates divergentes : de 1957 à 1961 selon Wikipédia EN ; « immédiatement » après la mise en service de 1955 selon Wikipédia FR, qui cite missions air-air et appui rapproché. Jacques Moulin insiste sur la chasse de nuit, en remplacement des Meteor NF 11."
+    },
+    {
+      "name": "Mystère IV",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Des Mystère IVA des 2e, 5e, 8e et 12e escadres viennent en détachement en Algérie pour protéger l’espace aérien contre une éventuelle intrusion égyptienne ou libyenne ; en 1958, une force d’intervention de Mystère IVA est installée à Tébessa.",
+        "en": "Mystère IVAs of the 2nd, 5th, 8th and 12th Fighter Wings rotated through Algeria to guard its airspace against possible Egyptian or Libyan intrusions; in 1958, a Mystère IVA intervention force was set up at Tébessa."
+      },
+      "sources": [
+        "https://avions-de-la-guerre-d-algerie.over-blog.com/article-gamd-454-mystere-iv-90188337.html",
+        "https://avions-de-la-guerre-d-algerie.over-blog.com/article-le-gamd-smb-2-super-mystere-b2-87495659.html",
+        "https://fr.wikipedia.org/wiki/Guerre_d%27Alg%C3%A9rie"
+      ],
+      "note": "Engagement marginal, en défense aérienne. Jacques Moulin écrit qu’il « ne semble pas qu’en AFN ces appareils aient été utilisés pour l’appui feu », alors que Wikipédia FR (Guerre d’Algérie) le range parmi les avions à réaction engagés dans les combats. Les escadres sont identifiées par les légendes de photos du même auteur."
+    },
+    {
+      "name": "Vautour II",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "À partir d’octobre 1960, les Vautour IIN de l’escadron Normandie-Niemen (ECTT 2/6), basés à Oran-La Sénia, assurent la police du ciel de nuit et par tous les temps et mènent des reconnaissances armées sur le barrage algéro-marocain, jusqu’à leur départ en mars 1962.",
+        "en": "From October 1960, the Vautour IINs of the Normandie-Niemen squadron (ECTT 2/6), based at Oran-La Sénia, policed the skies at night and in all weathers and flew armed reconnaissance over the Algerian-Moroccan barrier until they left in March 1962."
+      },
+      "sources": [
+        "https://avions-de-la-guerre-d-algerie.over-blog.com/article-le-sncaso-so-4050-vautour-105853155.html",
+        "https://fr.wikipedia.org/wiki/SNCASO_SO-4050_Vautour"
+      ],
+      "note": "Engagement tardif et limité. Les Vautour servent aussi à partir de 1960 à prélever les particules des essais nucléaires français au Sahara, ce qui ne relève pas des opérations contre l’ALN."
+    },
+    {
+      "name": "Max Holste Broussard",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Plus de 150 Broussard servent à partir de 1957 au réglage d’artillerie, à l’observation, à la liaison, au ravitaillement et à l’évacuation des blessés. Pierre Clostermann en pilote un à l’escadrille ELO 3/45. Leur moteur bruyant annonce toutefois leur venue aux maquisards.",
+        "en": "More than 150 Broussards served from 1957 in artillery spotting, observation, liaison, supply and casualty evacuation. Pierre Clostermann flew one with Escadrille ELO 3/45. Their noisy engine, however, warned the guerrillas of their approach."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Max_Holste_MH.1521_Broussard",
+        "https://fr.wikipedia.org/wiki/Max-Holste_MH-1521_Broussard"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Super Mystère B2",
+      "side": "france",
+      "attested": true,
+      "role": {
+        "fr": "Jamais basé en permanence en Algérie, il y vient à partir de 1959 en détachements de quelques jours, relevés chaque mois à Bône, Boufarik et Télergma, pour la défense aérienne de l’Est algérien contre d’éventuels chasseurs venus de Libye ou d’Égypte.",
+        "en": "Never permanently based in Algeria, it came from 1959 in detachments of a few days, relieved monthly at Bône, Boufarik and Télergma, to defend the airspace of eastern Algeria against possible fighters from Libya or Egypt."
+      },
+      "sources": [
+        "https://fr.wikipedia.org/wiki/Dassault_Super_Myst%C3%A8re_B2",
+        "https://avions-de-la-guerre-d-algerie.over-blog.com/article-le-gamd-smb-2-super-mystere-b2-87495659.html"
+      ],
+      "note": "Engagement marginal, en défense aérienne uniquement : aucune source consultée ne mentionne de mission d’appui."
+    }
+  ],
+  "sources": [
+    "https://fr.wikipedia.org/wiki/Guerre_d%27Alg%C3%A9rie",
+    "https://en.wikipedia.org/wiki/Algerian_War",
+    "https://www.defense.gouv.fr/chemins-memoire/histoire-memoires/ressources-historiques/guerre-dalgerie/combattre-algerie-combattre-metropole-3",
+    "https://en.wikipedia.org/wiki/History_of_the_Arm%C3%A9e_de_l%27Air_in_the_colonies_(1939%E2%80%931962)",
+    "https://fr.wikipedia.org/wiki/Bombardement_de_Sakiet_Sidi_Youssef",
+    "https://fr.wikipedia.org/wiki/Ligne_Morice",
+    "https://fr.wikipedia.org/wiki/Plan_Challe",
+    "https://en.wikipedia.org/wiki/Challe_Plan",
+    "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Jumelles",
+    "https://fr.wikipedia.org/wiki/Aviation_l%C3%A9g%C3%A8re_de_l%27Arm%C3%A9e_de_terre",
+    "https://fr.wikipedia.org/wiki/Accords_d%27%C3%89vian",
+    "http://anfas.free.fr/escadron/guyenne-chapitre-05.pdf"
+  ]
+}

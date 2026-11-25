@@ -1,0 +1,49 @@
+{
+  "slug": "guerre-de-l-ogaden",
+  "name": "Guerre de l'Ogaden",
+  "name_fr": "Guerre de l'Ogaden",
+  "date_start": "1977-07-12T22:00:00.000Z",
+  "date_end": "1978-03-14T23:00:00.000Z",
+  "description": "Invasion somalienne de l'Ogaden éthiopien, repoussée avec l'aide soviétique et cubaine. Les F-5E éthiopiens y obtiennent la supériorité aérienne face aux MiG somaliens.",
+  "count": 2,
+  "outcome": null,
+  "context": null,
+  "narrative": null,
+  "sources": [],
+  "sides": [],
+  "events": [],
+  "airplanes": [
+    {
+      "id": 414,
+      "name": "MiG-21",
+      "little_description": "Chasseur soviétique de 3e génération",
+      "image_url": "/assets/airplanes/mig21.jpg",
+      "date_first_fly": "1956-06-13T23:00:00.000Z",
+      "date_operationel": "1958-12-31T23:00:00.000Z",
+      "country_code": "RUS",
+      "country_name": "Russie",
+      "type_name": "Chasseur",
+      "generation": 3,
+      "side_key": null,
+      "role": null,
+      "type_name_fr": "Chasseur",
+      "role_sources": []
+    },
+    {
+      "id": 241,
+      "name": "F-5 Freedom Fighter",
+      "little_description": "Chasseur léger américain de 3e génération",
+      "image_url": "/assets/airplanes/f5-freedom-fighter.jpg",
+      "date_first_fly": "1959-07-29T23:00:00.000Z",
+      "date_operationel": "1964-02-29T23:00:00.000Z",
+      "country_code": "USA",
+      "country_name": "États-Unis",
+      "type_name": "Chasseur",
+      "generation": 3,
+      "side_key": null,
+      "role": null,
+      "type_name_fr": "Chasseur",
+      "role_sources": []
+    }
+  ]
+}
