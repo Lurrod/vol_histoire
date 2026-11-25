@@ -203,17 +203,24 @@ describe('Échap', () => {
 });
 
 describe('attente de la session', () => {
-  test('met à jour l’en-tête dès que auth.init() a fourni un payload', () => {
+  test('met à jour l’en-tête quand auth émet « vh:auth-ready » (JS-008)', () => {
     loadNav();
     const header = document.querySelector('header');
     expect(header.classList.contains('is-auth')).toBe(false);
     auth.getPayload.mockReturnValue({ id: 2, name: 'Grace', role: 2 });
-    jest.advanceTimersByTime(100);
-    expect(header.classList.contains('is-auth')).toBe(true);
-    // Intervalle arrêté une fois la session vue.
-    auth.getPayload.mockClear();
+    // Plus de sondage : rien ne change tant que l'événement n'est pas émis.
     jest.advanceTimersByTime(500);
-    expect(auth.getPayload).not.toHaveBeenCalled();
+    expect(header.classList.contains('is-auth')).toBe(false);
+    document.dispatchEvent(new window.CustomEvent('vh:auth-ready'));
+    expect(header.classList.contains('is-auth')).toBe(true);
+  });
+
+  test('session déjà initialisée au chargement de nav.js : en-tête mis à jour tout de suite', () => {
+    auth.isReady = jest.fn(() => true);
+    auth.getPayload.mockReturnValue({ id: 2, name: 'Grace', role: 2 });
+    loadNav();
+    expect(document.querySelector('header').classList.contains('is-auth')).toBe(true);
+    delete auth.isReady;
   });
 
   test('abandon après 5 s sans session', () => {

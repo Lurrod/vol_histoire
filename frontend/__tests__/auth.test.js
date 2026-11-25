@@ -178,3 +178,20 @@ describe('fetchWithTimeout — langue des appels /api', () => {
     expect(calledUrl()).toBe('/api/stats?lang=fr');
   });
 });
+
+describe('vh:auth-ready (JS-008)', () => {
+  test('émis une seule fois à la fin de init(), isReady() passe à vrai', async () => {
+    jest.resetModules();
+    const fresh = require('../js/auth');
+    const seen = jest.fn();
+    document.addEventListener('vh:auth-ready', seen);
+    // Pas de cookie vh_session : initialisation immédiate, sans réseau.
+    document.cookie = 'vh_session=; Max-Age=0; path=/';
+    expect(fresh.isReady()).toBe(false);
+    await fresh.init();
+    await fresh.init();
+    expect(fresh.isReady()).toBe(true);
+    expect(seen).toHaveBeenCalledTimes(1);
+    document.removeEventListener('vh:auth-ready', seen);
+  });
+});

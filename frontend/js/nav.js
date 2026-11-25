@@ -190,15 +190,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // -------------------------------------------------------------------
   updateAuthUI();
 
-  // Re-appeler updateAuthUI quand auth.init() termine (après refresh token)
-  // Les scripts de page appellent auth.init() dans leur propre DOMContentLoaded,
-  // qui s'exécute après celui de nav.js. On re-vérifie périodiquement au cas où.
-  const authReady = setInterval(() => {
-    if (typeof auth !== 'undefined' && auth.getPayload()) {
-      updateAuthUI();
-      clearInterval(authReady);
-    }
-  }, 100);
-  // Arrêter après 5s max
-  setTimeout(() => clearInterval(authReady), 5000);
+  // Re-appeler updateAuthUI quand auth.init() termine (après refresh token) :
+  // les scripts de page l'appellent dans leur propre DOMContentLoaded, après
+  // celui-ci. auth émet « vh:auth-ready » une fois l'initialisation finie
+  // (JS-008, à la place d'un sondage toutes les 100 ms pendant 5 s).
+  if (typeof auth !== 'undefined' && typeof auth.isReady === 'function' && auth.isReady()) {
+    updateAuthUI();
+  } else {
+    document.addEventListener('vh:auth-ready', () => updateAuthUI(), { once: true });
+  }
 });
