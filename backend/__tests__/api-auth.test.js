@@ -40,9 +40,9 @@ describe('POST /api/register', () => {
     const insertCall = mockPool.query.mock.calls[1];
     expect(insertCall[1][1]).toBe('jean@example.com');
     // Vérifier que l'email de vérification a bien été envoyé, avec un code
-    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('jean@example.com', 'Jean Dupont', expect.stringMatching(/^[0-9]{6}$/));
+    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('jean@example.com', expect.stringMatching(/^[0-9]{6}$/));
     // Le code part par email, seule son empreinte est stockée
-    const code = mailer.sendVerificationEmail.mock.calls.at(-1)[2];
+    const code = mailer.sendVerificationEmail.mock.calls.at(-1)[1];
     const tokenInsert = mockPool.query.mock.calls.find(c => /INSERT INTO email_tokens/.test(c[0]));
     expect(tokenInsert[1]).not.toContain(code);
     expect(tokenInsert[1][1]).toMatch(/^[a-f0-9]{64}$/);
@@ -978,7 +978,7 @@ describe('POST /api/auth/resend-verification', () => {
     expect(res.status).toBe(200);
     await new Promise(r => setTimeout(r, 0));
     expect(findSql(/DELETE FROM email_tokens/)[1]).toEqual([1, 'verify']);
-    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('jean@test.com', 'Jean', expect.stringMatching(/^[0-9]{6}$/));
+    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('jean@test.com', expect.stringMatching(/^[0-9]{6}$/));
   });
 
   test('200 — compte déjà activé : aucun code (même réponse)', async () => {
@@ -1267,7 +1267,7 @@ describe('POST /api/register — réponse avant le travail, gestion échec maile
     expect(mockPool.query.mock.calls.some(c => /INSERT INTO users/.test(c[0]))).toBe(false);
     const token = mockPool.query.mock.calls.find(c => /INSERT INTO email_tokens/.test(c[0]));
     expect(token[1][0]).toBe(42);
-    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('marie@example.com', 'Marie Curie', expect.stringMatching(/^[0-9]{6}$/));
+    expect(mailer.sendVerificationEmail).toHaveBeenCalledWith('marie@example.com', expect.stringMatching(/^[0-9]{6}$/));
   });
 });
 

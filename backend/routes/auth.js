@@ -147,10 +147,10 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
       const verifyCode = await issueEmailCode(userId, 'verify', VERIFY_CODE_TTL_MS);
       try {
-        await mailer.sendVerificationEmail(email, name, verifyCode);
+        await mailer.sendVerificationEmail(email, verifyCode);
       } catch (mailErr) {
         logger.warn('Premier envoi email échoué, retry...', { error: mailErr.message });
-        await mailer.sendVerificationEmail(email, name, verifyCode);
+        await mailer.sendVerificationEmail(email, verifyCode);
       }
     } catch (err) {
       logger.error('Erreur inscription (après réponse)', { error: err.message, route: 'POST /register' });
@@ -430,7 +430,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       const user = await findCodeOwner(email, 'verify');
       if (!user) return;
       const verifyCode = await issueEmailCode(user.id, 'verify', VERIFY_CODE_TTL_MS);
-      await mailer.sendVerificationEmail(email, user.name, verifyCode);
+      await mailer.sendVerificationEmail(email, verifyCode);
     } catch (err) {
       logger.error('Erreur resend-verification', { error: err.message, route: 'POST /resend-verification' });
     }

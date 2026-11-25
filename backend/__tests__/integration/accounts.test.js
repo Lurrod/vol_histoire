@@ -51,7 +51,7 @@ describeIt('Intégration SQL — comptes et sessions', () => {
     ctx.mailer.sendVerificationEmail,
     ctx.mailer.sendPasswordResetEmail,
     ctx.mailer.sendEmailChangeConfirmation,
-  ].flatMap((fn) => fn.mock.calls.map((args) => args[2]));
+  ].flatMap((fn) => fn.mock.calls.map((args) => args[args.length - 1])); // le code est le dernier argument
   const openCode = async (userId, type) => {
     const row = (await ctx.pool.query(
       'SELECT id, token_hash, new_email, attempts FROM email_tokens WHERE user_id = $1 AND type = $2 AND used_at IS NULL',
@@ -76,7 +76,7 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       expect(user.email_verified).toBe(false);
       expect(user.role_id).toBe(3);
       const open = await waitFor(() => openCode(user.id, 'verify'));
-      expect(ctx.mailer.sendVerificationEmail).toHaveBeenCalledWith(email, 'Nouveau IT', expect.stringMatching(/^[0-9]{6}$/));
+      expect(ctx.mailer.sendVerificationEmail).toHaveBeenCalledWith(email, expect.stringMatching(/^[0-9]{6}$/));
       // SEC-008 : seule l'empreinte est en base, jamais le code envoyé.
       expect(open.token_hash).toMatch(/^[a-f0-9]{64}$/);
       expect(open.token_hash).not.toBe(open.code);
