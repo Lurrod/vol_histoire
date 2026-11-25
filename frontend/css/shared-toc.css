@@ -54,7 +54,7 @@
 .toc-link.is-active { color: var(--white); }
 
 .toc-link:focus-visible {
-  outline: 2px solid var(--hud-cyan);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -73,7 +73,7 @@
 
 .toc-rail--active {
   height: var(--toc-y, 0px);
-  border-color: var(--hud-cyan);
+  border-color: var(--gold);
   transition: height var(--dur-slow) var(--ease-out);
 }
 
@@ -166,7 +166,7 @@
   .toc-toggle .icon {
     width: 0.75rem;
     height: 0.75rem;
-    color: var(--hud-cyan);
+    color: var(--gold);
     transition: rotate var(--dur-base) var(--ease-out);
   }
 

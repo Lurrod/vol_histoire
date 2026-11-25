@@ -62,7 +62,7 @@
 
 .wm-nation-active:hover,
 .wm-nation-active:focus {
-  fill: var(--hud-cyan);
+  fill: var(--gold);
   stroke: var(--white);
   stroke-width: 1;
   outline: none;
@@ -91,7 +91,7 @@
 
 .nations-map-tooltip.is-visible { opacity: 1; }
 .nations-map-tooltip strong { color: var(--text-primary); font-size: 0.85rem; }
-.nations-map-tooltip span { color: var(--hud-cyan); font-size: var(--text-xs); }
+.nations-map-tooltip span { color: var(--gold); font-size: var(--text-xs); }
 
 /* Pied : synthèse à gauche, échelle à droite. */
 .nations-map-footer {
@@ -136,7 +136,7 @@
 }
 
 .nm-chip:hover { border-color: var(--border-cyan-md); background: var(--gold-a06); }
-.nm-chip-count { color: var(--hud-cyan); font-variant-numeric: tabular-nums; font-weight: 600; }
+.nm-chip-count { color: var(--gold); font-variant-numeric: tabular-nums; font-weight: 600; }
 
 .nations-map-legend {
   display: flex;
@@ -209,7 +209,7 @@
 
 /* Pays actuellement filtré : il reste plein, même après repli du panneau. */
 .wm-nation-active.is-selected {
-  fill: var(--hud-cyan);
+  fill: var(--gold);
   stroke: var(--white);
   stroke-width: 1;
 }

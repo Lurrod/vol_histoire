@@ -60,7 +60,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--hud-cyan, var(--hud-cyan));
+  color: var(--gold);
   font-size: 0.75rem;
   flex-shrink: 0;
 }
@@ -77,7 +77,7 @@
 .page-details .radar-stat-pct {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--hud-cyan, var(--hud-cyan));
+  color: var(--gold);
   font-variant-numeric: tabular-nums;
   text-align: right;
   white-space: nowrap;
@@ -92,7 +92,7 @@
 
 .page-details .radar-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--gold-a50), var(--hud-cyan));
+  background: linear-gradient(90deg, var(--gold-a50), var(--gold));
   border-radius: 2px;
   width: 0%;
   transition: width var(--dur-slower) var(--ease-out);

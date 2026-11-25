@@ -157,7 +157,7 @@
     background-color var(--dur-base) var(--ease-out);
 }
 .ob-dot.is-done   { background: var(--gold-a45); }
-.ob-dot.is-active { width: 20px; background: var(--hud-cyan); }
+.ob-dot.is-active { width: 20px; background: var(--gold); }
 
 .ob-actions {
   display: flex;
@@ -186,7 +186,7 @@
 .ob-btn[hidden] { display: none; }
 
 .ob-primary {
-  background: var(--hud-cyan);
+  background: var(--gold);
   color: var(--night);
   font-weight: 600;
 }

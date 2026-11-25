@@ -159,7 +159,7 @@
   .cfm-yes:hover { background: var(--alert-a22); color: var(--white); }
   .cfm-no:hover { background: var(--white-a08); color: var(--white); }
   .cfm-yes:focus-visible,
-  .cfm-no:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 1px; }
+  .cfm-no:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
   .cfm-yes:active, .cfm-no:active { scale: var(--press-scale); }
   .cfm-panel .icon,
   .cfm-panel i { font-size: 0.8rem; }
@@ -328,7 +328,7 @@
   .cselect-chevron {
     flex-shrink: 0;
     font-size: 0.7rem;
-    color: var(--hud-cyan);
+    color: var(--gold);
     transition: rotate var(--dur-base) var(--ease-out);
   }
   .cselect.is-open .cselect-chevron { rotate: 180deg; }
@@ -391,13 +391,13 @@
     background: var(--white-a07);
     color: var(--white);
   }
-  .cselect-option[aria-selected="true"] { color: var(--hud-cyan); }
+  .cselect-option[aria-selected="true"] { color: var(--gold); }
   .cselect-option[aria-selected="true"].is-active { background: var(--gold-a10); }
   .cselect-option[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }
   .cselect-check {
     flex-shrink: 0;
     font-size: 0.75rem;
-    color: var(--hud-cyan);
+    color: var(--gold);
     opacity: 0;
     scale: 0.8;
     transition: opacity var(--dur-fast) var(--ease-out), scale var(--dur-fast) var(--ease-out);
@@ -491,7 +491,7 @@
   color: var(--white-a70);
 }
 .breadcrumb a:focus-visible {
-  outline: 2px solid var(--hud-cyan);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
   border-radius: 2px;
 }

@@ -84,12 +84,12 @@ header.is-auth .nav-auth { display: block; }
 
 .nav-links li a:hover {
   background: var(--gold-a08);
-  color: var(--hud-cyan);
+  color: var(--gold);
 }
 
 .nav-links li a.active,
 .nav-links li a.active:hover {
-  background: var(--hud-cyan);
+  background: var(--gold);
   color: var(--night);
 }
 

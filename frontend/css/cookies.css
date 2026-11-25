@@ -22,7 +22,7 @@
   transform: translateY(100%);
   /* Fermeture : le bandeau redescend (l'ouverture est portée par slideUp). */
   transition: transform var(--dur-fast) var(--ease-in);
-  border-top: 3px solid var(--secondary);
+  border-top: 3px solid var(--gold);
 }
 
 .cookie-banner.show {
@@ -250,7 +250,7 @@
 }
 
 .cookie-intro a {
-  color: var(--hud-cyan, var(--hud-cyan));
+  color: var(--gold);
   text-decoration: underline;
   text-decoration-color: var(--gold-a15);
   text-underline-offset: 0.2em;
@@ -337,7 +337,7 @@
   align-items: center;
   gap: 0.35rem;
   min-height: 24px;
-  color: var(--hud-cyan, var(--hud-cyan));
+  color: var(--gold);
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -350,7 +350,7 @@
 }
 
 .cookie-category-details summary:focus-visible {
-  outline: 2px solid var(--hud-cyan, var(--hud-cyan));
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
 
@@ -399,7 +399,7 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--hud-cyan, var(--hud-cyan));
+  background: var(--gold);
   opacity: 0.6;
 }
 
@@ -415,7 +415,7 @@
 .cookie-duration .icon {
   width: 0.8rem;
   height: 0.8rem;
-  color: var(--hud-cyan, var(--hud-cyan));
+  color: var(--gold);
   flex-shrink: 0;
 }
 
@@ -535,7 +535,7 @@ html.vh-reduce-motion :is(.cookie-toggle, .toggle-switch):not(:has(.pref-reduce-
 
 /* Anneau de focus clavier sur la piste de l'interrupteur */
 .cookie-toggle input[type="checkbox"]:focus-visible + label {
-  outline: 2px solid var(--hud-cyan, var(--hud-cyan));
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
 

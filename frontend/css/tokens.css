@@ -44,7 +44,10 @@
   /* ============================================================
      COULEURS — PALETTE MINIMALISTE PREMIUM
      ============================================================ */
-  --hud-cyan:   #C8A96E;   /* or champagne — accent unique et retenu */
+  --gold:       #C8A96E;   /* or champagne — accent unique et retenu */
+  /* Ancien nom (palette « HUD » d'origine, rien de cyan) : alias déprécié,
+     ne plus l'employer (CSS-009). */
+  --hud-cyan:   var(--gold);
   --hud-green:  #5A8A6A;   /* vert militaire désaturé */
   --hud-amber:  #B8956A;   /* ambre secondaire */
   --accent:     #C0392B;   /* rouge danger — fonds, bordures, icônes */
@@ -90,7 +93,6 @@
      BORDURES
      ============================================================ */
   --border-subtle:  rgba(255, 255, 255, 0.12);
-  --border-mid:     rgba(255, 255, 255, 0.10);
   --border-cyan:    rgba(200, 169, 110, 0.16);
   --border-cyan-md: rgba(200, 169, 110, 0.28);
   /* Limite d'un champ de saisie au repos : 3,2:1 contre le fond (WCAG
@@ -98,8 +100,6 @@
   --border-field:   rgba(240, 237, 232, 0.38);
 
   /* Alias (utilisé dans plusieurs pages) */
-  --border:       var(--border-subtle);
-  --border-light: rgba(255, 255, 255, 0.04);
 
   /* ============================================================
      VOILES — opacités récurrentes du blanc et du champagne
@@ -124,8 +124,8 @@
      empêche le nombre de couleurs en dur de remonter. */
   --alert-text-soft: #FF8A7A;  /* texte rouge clair sur fond d'alerte */
   --black: #000000;  /* noir pur */
-  --hud-cyan-hover: #D4B87E;  /* survol des boutons principaux (or éclairci) */
-  --hud-cyan-pale: #E4D5B0;  /* or pâle : texte d'accent sur verre translucide (4,5:1) */
+  --gold-hover: #D4B87E;  /* survol des boutons principaux (or éclairci) */
+  --gold-pale: #E4D5B0;  /* or pâle : texte d'accent sur verre translucide (4,5:1) */
   --notice-text: #F39C12;  /* texte d'avis orangé (email non vérifié) */
   --print-grey-444: #444444;  /* impression : texte secondaire foncé */
   --print-grey-555: #555555;  /* impression : intertitres */
@@ -171,7 +171,7 @@
   --black-a75: rgba(0, 0, 0, 0.75);
   --black-a80: rgba(0, 0, 0, 0.8);
   --black-a85: rgba(0, 0, 0, 0.85);
-  /* or champagne (--hud-cyan) */
+  /* or champagne (--gold) */
   --gold-a015: rgba(200, 169, 110, 0.015);
   --gold-a02: rgba(200, 169, 110, 0.02);
   --gold-a025: rgba(200, 169, 110, 0.025);
@@ -339,7 +339,7 @@
   --shadow:      0 2px 8px  rgba(0, 0, 0, 0.35);
   --shadow-lg:   0 6px 20px rgba(0, 0, 0, 0.45);
   --shadow-xl:   0 12px 40px rgba(0, 0, 0, 0.55);
-  --focus-ring:  0 0 0 2px var(--hud-cyan);
+  --focus-ring:  0 0 0 2px var(--gold);
 
   /* ============================================================
      MOUVEMENT — système unique (v4.16.0)
@@ -496,13 +496,4 @@
   --z-hud:      5000;   /* HUD plein ecran de la frise */
   --z-overlay:  9999;   /* bandeau de consentement, toasts */
   --z-modal:    10000;  /* modales — toujours au-dessus */
-
-  /* ============================================================
-     VARIABLES DE COMPATIBILITÉ
-     Utilisées dans les anciens CSS de page. Résolues vers le thème dark.
-     ============================================================ */
-  --primary:         var(--night-mid);
-  --primary-dark:    var(--text-primary);
-  --secondary:       var(--hud-cyan);
-  --secondary-dark:  #B8956A;
 }

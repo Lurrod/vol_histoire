@@ -55,7 +55,7 @@
   text-wrap: pretty;
 }
 .page-home .hero-split-title .gradient-text {
-  background: linear-gradient(135deg, #E8C98A 0%, var(--hud-cyan) 50%, var(--white-a90) 100%);
+  background: linear-gradient(135deg, #E8C98A 0%, var(--gold) 50%, var(--white-a90) 100%);
   background-size: 220% 100%;
   background-position: 100% 0;
   -webkit-background-clip: text;
@@ -79,7 +79,7 @@
   letter-spacing: 0.4px;
 }
 .page-home .hero-split-meta strong {
-  color: var(--hud-cyan);
+  color: var(--gold);
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 1.2rem;
   font-weight: 700;
@@ -182,7 +182,7 @@
   text-transform: uppercase;
   /* Champagne plus clair (#E4D5B0) pour garantir 4.5:1 sur glass-card translucide
      dont l'arrière-plan effectif varie selon le hero background. */
-  color: var(--hud-cyan-pale);
+  color: var(--gold-pale);
   /* Orbitron n'a jamais ete hebergee ni chargee : la pile retombait
      silencieusement sur DM Sans. On declare ce qui est reellement rendu. */
   font-family: 'DM Sans', sans-serif;
@@ -197,7 +197,7 @@
   font-weight: 700;
   letter-spacing: 1.2px;
   text-transform: uppercase;
-  color: var(--hud-cyan);
+  color: var(--gold);
   padding: 0.15rem 0.45rem;
   background: var(--gold-a14);
   border: 1px solid var(--gold-a28);
@@ -226,11 +226,11 @@
 .page-home .hero-aside-reroll:focus-visible {
   background: var(--gold-a12);
   border-color: var(--gold-a40);
-  color: var(--hud-cyan);
+  color: var(--gold);
 }
 .page-home .hero-aside-reroll:active { transform: rotate(180deg); }
 .page-home .hero-aside-reroll:focus-visible {
-  outline: 2px solid var(--hud-cyan);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 /* display: flex ci-dessus l'emporte sur la regle [hidden] du navigateur : sans
@@ -241,7 +241,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.85rem;
-  color: var(--hud-cyan);
+  color: var(--gold);
   text-decoration: none;
   font-size: 0.82rem;
   font-weight: 600;
@@ -273,14 +273,14 @@
 .page-home .hero-fact-body.is-fading-in {
   animation: vh-enter var(--dur-slower) var(--ease-out) both;
 }
-.page-home .hero-fact-body strong { color: var(--hud-cyan); font-weight: 700; }
+.page-home .hero-fact-body strong { color: var(--gold); font-weight: 700; }
 .page-home .hero-fact-year {
   display: inline-block;
   vertical-align: 2px;
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--hud-cyan);
+  color: var(--gold);
   letter-spacing: 1.5px;
   margin-right: 0.55rem;
   padding: 0.15rem 0.5rem;
@@ -328,7 +328,7 @@
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--hud-cyan);
+  color: var(--gold);
   opacity: 0.45;
   letter-spacing: 1px;
   text-shadow: 0 0 14px rgba(232, 201, 138, 0.6);
@@ -366,7 +366,7 @@
   transform: translateY(-1px);
 }
 .page-home .hero-quiz-option:focus-visible {
-  outline: 2px solid var(--hud-cyan);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .page-home .hero-quiz-option.is-correct {

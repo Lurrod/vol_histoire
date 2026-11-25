@@ -111,7 +111,7 @@
   border-radius: 50%;
   background: var(--night-a72);
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  color: var(--hud-cyan);
+  color: var(--gold);
   font-size: 0.75rem;
 }
 .page-favorites .gate-card:not(.is-filled) .gate-card-heart {
@@ -134,7 +134,7 @@
   align-items: center;
   gap: 0.5rem;
   margin: 0 0 1.25rem;
-  color: var(--hud-cyan);
+  color: var(--gold);
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -175,7 +175,7 @@
 }
 
 .page-favorites .gate-feature i, .page-favorites .gate-feature .icon {
-  color: var(--hud-cyan);
+  color: var(--gold);
   font-size: 0.9rem;
 }
 
@@ -200,13 +200,13 @@
 }
 .page-favorites .gate-browse .icon { font-size: 0.75rem; transition: translate var(--dur-base) var(--ease-out); }
 .page-favorites .gate-browse:hover,
-.page-favorites .gate-browse:focus-visible { color: var(--hud-cyan); }
+.page-favorites .gate-browse:focus-visible { color: var(--gold); }
 .page-favorites .gate-browse:hover .icon { translate: 3px 0; }
 
 /* BUTTONS */
 .page-favorites .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.875rem 1.75rem; border-radius: 12px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; text-decoration: none; border: none; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); }
-.page-favorites .btn-primary { background: var(--hud-cyan); color: var(--night); border: 1px solid transparent; font-weight: 700; }
-.page-favorites .btn-primary:hover { background: var(--hud-cyan-hover); }
+.page-favorites .btn-primary { background: var(--gold); color: var(--night); border: 1px solid transparent; font-weight: 700; }
+.page-favorites .btn-primary:hover { background: var(--gold-hover); }
 .page-favorites .btn-secondary { background: var(--white-a04); color: var(--white-a70); border: 1px solid var(--white-a12); }
 .page-favorites .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
 .page-favorites .btn-ghost { background: transparent; color: var(--white-a70); border: 1px solid var(--white-a15); }
@@ -293,7 +293,7 @@
 .page-favorites .fav-del[data-state="confirm"] .favorite-remove { background: var(--alert-a16); color: var(--alert-text-soft); }
 .page-favorites .favorite-remove:focus-visible,
 .page-favorites .fav-del .cfm-yes:focus-visible,
-.page-favorites .fav-del .cfm-no:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 1px; }
+.page-favorites .fav-del .cfm-no:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 .page-favorites .favorite-remove:disabled { cursor: default; }
 
 /* La poubelle : trois tracés animés séparément. */

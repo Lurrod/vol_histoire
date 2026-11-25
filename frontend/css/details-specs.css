@@ -24,7 +24,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--hud-cyan);
+  color: var(--gold);
 }
 .page-details .spec-list { margin: 0; }
 /* Production : deux colonnes de lignes sur grand écran. */
@@ -140,7 +140,7 @@
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: var(--night);
-  background: var(--hud-cyan);
+  background: var(--gold);
   border-radius: 999px;
   font-weight: 700;
   box-shadow: 0 4px 12px var(--black-a30);
@@ -170,7 +170,7 @@
   transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out);
 }
 .page-details .related-card:hover .related-arrow {
-  background: var(--hud-cyan);
+  background: var(--gold);
   color: var(--night);
   transform: translateX(3px);
 }
@@ -196,7 +196,7 @@
 }
 .page-details .source-link:hover {
   border-color: var(--gold-a30);
-  color: var(--hud-cyan);
+  color: var(--gold);
   background: var(--gold-a04);
 }
 .page-details .source-link .source-arrow { font-size: 0.75rem; opacity: 0.6; }
@@ -206,7 +206,7 @@
   font-family: 'DM Sans', sans-serif;
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--hud-cyan);
+  color: var(--gold);
   margin: 1.75rem 0 0.75rem;
   letter-spacing: -0.01em;
 }
@@ -219,7 +219,7 @@
 .page-details .markdown-body p { color: var(--white-a55); line-height: 1.8; margin-bottom: 1rem; }
 .page-details .markdown-body ul { color: var(--white-a55); padding-left: 1.5rem; margin-bottom: 1rem; }
 .page-details .markdown-body ul li { margin-bottom: 0.35rem; line-height: 1.7; }
-.page-details .markdown-body a { color: var(--hud-cyan); text-decoration: underline; text-underline-offset: 3px; }
+.page-details .markdown-body a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
 .page-details .markdown-body strong { color: var(--white); font-weight: 700; }
 
 /* État d'erreur transitoire de la fiche (SEO-005) : texte en <div> (pas de
@@ -243,6 +243,6 @@
   transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
 .det-report a:hover { color: var(--white); background: var(--white-a04); }
-.det-report a:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
-.det-report .icon { width: 0.8rem; height: 0.8rem; color: var(--hud-cyan); }
+.det-report a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.det-report .icon { width: 0.8rem; height: 0.8rem; color: var(--gold); }
 @media print { .det-report { display: none !important; } }

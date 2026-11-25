@@ -218,7 +218,7 @@
 
   .toast-info {
     background: linear-gradient(var(--gold-a12), var(--gold-a12)), var(--night-mid);
-    color: var(--hud-cyan);
+    color: var(--gold);
     border: 1px solid var(--gold-a25);
   }
 
@@ -285,9 +285,9 @@
     flex-shrink: 0;
     min-height: 44px;
     padding: 0 var(--sp-4);
-    background: var(--hud-cyan);
+    background: var(--gold);
     color: var(--night);
-    border: 1px solid var(--hud-cyan);
+    border: 1px solid var(--gold);
     border-radius: var(--r-md);
     font: inherit;
     font-weight: 700;
@@ -296,9 +296,9 @@
       background-color var(--dur-fast) var(--ease-out),
       color var(--dur-fast) var(--ease-out);
   }
-  .toast .sw-update-reload:hover { background: transparent; color: var(--hud-cyan); }
+  .toast .sw-update-reload:hover { background: transparent; color: var(--gold); }
   .toast .sw-update-reload:focus-visible {
-    outline: 2px solid var(--hud-cyan);
+    outline: 2px solid var(--gold);
     outline-offset: 2px;
   }
   .toast .sw-update-reload:disabled { opacity: 0.6; cursor: progress; }
@@ -407,7 +407,7 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
-  .offline-group-title .icon { color: var(--hud-cyan); }
+  .offline-group-title .icon { color: var(--gold); }
 
   /* Fiches : cartes photo */
   .offline-cards {
@@ -435,7 +435,7 @@
   }
   .offline-card:hover,
   .offline-card:focus-visible { border-color: var(--gold-a20); translate: 0 var(--hover-lift); }
-  .offline-card:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
+  .offline-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   .offline-card-media {
     display: grid;
     place-items: center;
@@ -448,7 +448,7 @@
   .offline-card-body { display: grid; gap: 2px; padding: var(--sp-3) var(--sp-4) var(--sp-4); }
   .offline-card-name { color: var(--text-primary); font-weight: 600; }
   .offline-card-meta { color: var(--text-ghost); font-size: var(--text-sm); }
-  .offline-card:hover .offline-card-name { color: var(--hud-cyan); }
+  .offline-card:hover .offline-card-name { color: var(--gold); }
 
   /* Conflits et pages : listes côte à côte */
   .offline-lists {

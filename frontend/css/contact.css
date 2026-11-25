@@ -60,7 +60,7 @@ body.page-contact { background: var(--night); }
   color: var(--text-ghost);
   margin: 0 0 0.75rem;
 }
-.contact-card h2 .icon { width: 0.8rem; height: 0.8rem; color: var(--hud-cyan); }
+.contact-card h2 .icon { width: 0.8rem; height: 0.8rem; color: var(--gold); }
 .contact-card p { margin: 0; font-size: 0.875rem; line-height: 1.55; color: var(--white-a66); }
 
 .contact-address {
@@ -82,7 +82,7 @@ body.page-contact { background: var(--night); }
   font-size: 0.9rem;
   text-decoration: none;
 }
-.contact-address a:hover { color: var(--hud-cyan); }
+.contact-address a:hover { color: var(--gold); }
 .contact-copy {
   flex-shrink: 0;
   width: 2.25rem;
@@ -92,12 +92,12 @@ body.page-contact { background: var(--night); }
   border: 0;
   border-radius: 9px;
   background: transparent;
-  color: var(--hud-cyan);
+  color: var(--gold);
   cursor: pointer;
   transition: background-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
 }
 .contact-copy:hover { background: var(--gold-a15); }
-.contact-copy:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 1px; }
+.contact-copy:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 /* Copie → coche, en fondu croisé : deux icônes superposées, aucune n'est
    remplacée (icons.js a converti les deux <i> au chargement). */
 .contact-copy .icon {
@@ -123,7 +123,7 @@ body.page-contact { background: var(--night); }
 .contact-delays dt { color: var(--white-a66); transition: color var(--dur-base) var(--ease-out); }
 .contact-delays dd { margin: 0; color: var(--white); font-weight: 600; font-variant-numeric: tabular-nums; }
 .contact-delays > .is-active { background: var(--gold-a12); }
-.contact-delays > .is-active dt { color: var(--hud-cyan); }
+.contact-delays > .is-active dt { color: var(--gold); }
 
 /* ── Sujet en pastilles ────────────────────────────────────────────── */
 .contact-topics { border: 0; margin: 0 0 1.5rem; padding: 0; min-width: 0; }
@@ -155,8 +155,8 @@ body.page-contact { background: var(--night); }
 .topic .icon { width: 0.9rem; height: 0.9rem; color: var(--text-ghost); transition: color var(--dur-fast) var(--ease-out); }
 .topic:hover { border-color: var(--gold-a20); color: var(--white); }
 .topic:has(input:checked) { border-color: var(--gold-a55); background: var(--gold-a12); color: var(--white); }
-.topic:has(input:checked) .icon { color: var(--hud-cyan); }
-.topic:has(input:focus-visible) { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
+.topic:has(input:checked) .icon { color: var(--gold); }
+.topic:has(input:focus-visible) { outline: 2px solid var(--gold); outline-offset: 2px; }
 .topic:active { scale: var(--press-scale); }
 
 /* ── Fiche concernée ───────────────────────────────────────────────── */
@@ -172,10 +172,10 @@ body.page-contact { background: var(--night); }
   animation: vh-enter var(--dur-base) var(--ease-out);
 }
 .contact-aircraft[hidden] { display: none; }
-.contact-aircraft > .icon { width: 0.9rem; height: 0.9rem; color: var(--hud-cyan); flex-shrink: 0; }
+.contact-aircraft > .icon { width: 0.9rem; height: 0.9rem; color: var(--gold); flex-shrink: 0; }
 .contact-aircraft-label { color: var(--text-ghost); }
 .contact-aircraft-name { flex: 1; min-width: 0; color: var(--white); font-weight: 600; text-decoration: none; overflow-wrap: anywhere; }
-.contact-aircraft-name:hover { color: var(--hud-cyan); }
+.contact-aircraft-name:hover { color: var(--gold); }
 .contact-aircraft-remove {
   flex-shrink: 0;
   width: 2.25rem;
@@ -190,14 +190,14 @@ body.page-contact { background: var(--night); }
   transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
 }
 .contact-aircraft-remove:hover { background: var(--white-a06); color: var(--white); }
-.contact-aircraft-remove:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 1px; }
+.contact-aircraft-remove:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 .contact-aircraft-remove .icon { width: 0.8rem; height: 0.8rem; }
 
 /* ── Champs ────────────────────────────────────────────────────────── */
 .form-optional { color: var(--text-ghost); font-weight: 400; }
 .form-label-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
 .contact-count { font-size: 0.75rem; color: var(--text-ghost); font-variant-numeric: tabular-nums; transition: color var(--dur-fast) var(--ease-out); }
-.contact-count.is-near { color: var(--hud-cyan); }
+.contact-count.is-near { color: var(--gold); }
 
 @media (max-width: 64em) {
   .contact-layout { grid-template-columns: 1fr; max-width: 760px; }
@@ -289,7 +289,7 @@ body.page-contact { background: var(--night); }
   align-items: center;
   gap: 0.6rem;
   padding: 0.8rem 2rem;
-  background: var(--hud-cyan);
+  background: var(--gold);
   color: var(--night);
   font-weight: 600;
   font-size: 0.9rem;
@@ -362,7 +362,7 @@ body.page-contact { background: var(--night); }
 }
 
 .form-rgpd-notice a {
-  color: var(--hud-cyan);
+  color: var(--gold);
   text-decoration: underline;
   text-decoration-color: var(--gold-a35);
   text-underline-offset: 2px;
@@ -372,7 +372,7 @@ body.page-contact { background: var(--night); }
 .form-rgpd-notice a:hover,
 .form-rgpd-notice a:focus-visible {
   color: var(--white);
-  text-decoration-color: var(--hud-cyan);
+  text-decoration-color: var(--gold);
 }
 
 .form-success-msg {
@@ -382,7 +382,7 @@ body.page-contact { background: var(--night); }
   background: var(--gold-a06);
   border: 1px solid var(--gold-a20);
   border-radius: 12px;
-  color: var(--hud-cyan);
+  color: var(--gold);
   font-size: 0.9rem;
 }
 

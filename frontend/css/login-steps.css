@@ -104,7 +104,7 @@
 .page-login .flow-back:hover .icon { transform: translateX(-3px); }
 
 .page-login .code-email {
-  color: var(--hud-cyan);
+  color: var(--gold);
   font-weight: 600;
   overflow-wrap: anywhere;
 }

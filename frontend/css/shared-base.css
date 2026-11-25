@@ -17,7 +17,7 @@
   padding: 12px 24px;
   /* Or de la charte et texte nuit : 8,7:1. L'ancien noir sur rouge --accent
      plafonnait à 3,9:1 (16 px gras n'est pas un « grand texte »). */
-  background: var(--hud-cyan);
+  background: var(--gold);
   color: var(--night);
   font-weight: 700;
   font-size: 1rem;
@@ -64,7 +64,7 @@
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: var(--hud-cyan);
+  background: var(--gold);
   background-clip: padding-box;
 }
 
@@ -234,7 +234,7 @@
 
   .logo i, .logo .icon {
     font-size: 1.75rem;
-    color: var(--hud-cyan);
+    color: var(--gold);
   }
 
   /* Voile du menu mobile : n'existe qu'au palier burger (shared-responsive). */
@@ -310,7 +310,7 @@
 
   /* Survol : traits et mot passent à l'or de la charte. */
   .hamburger:hover,
-  .hamburger:focus-visible { color: var(--hud-cyan); background: var(--white-a06); }
+  .hamburger:focus-visible { color: var(--gold); background: var(--white-a06); }
 
   /* ============================================================
      LANGUE — SÉLECTEUR (même famille que le menu flottant et les icônes
@@ -360,7 +360,7 @@
 
   .lang-btn:hover, .lang-btn:focus-visible, .lang-btn.open {
     background: var(--white-a06);
-    color: var(--hud-cyan);
+    color: var(--gold);
   }
 
   .lang-btn:active { scale: var(--press-scale); }
@@ -525,7 +525,7 @@
   .lang-option:focus-visible { color: var(--white); }
   .lang-option:focus-visible { outline-offset: -2px; }
 
-  .lang-option.active { color: var(--hud-cyan); font-weight: 600; }
+  .lang-option.active { color: var(--gold); font-weight: 600; }
 
   .lang-option-flag {
     flex: none;
@@ -535,7 +535,7 @@
     object-fit: cover;
     box-shadow: 0 0 0 1px var(--white-a18);
   }
-  .lang-option.active .lang-option-flag { box-shadow: 0 0 0 1.5px var(--hud-cyan); }
+  .lang-option.active .lang-option-flag { box-shadow: 0 0 0 1.5px var(--gold); }
 
   /* Coche de la langue courante : tracée une fois la liste dépliée. */
   .lang-check {

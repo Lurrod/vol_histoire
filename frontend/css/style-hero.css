@@ -75,7 +75,7 @@ body.page-home::after {
 /* @keyframes fadeInUp → shared.css (dédupliqué) */
 
 .page-home .gradient-text {
-  background: linear-gradient(135deg, #E8C98A 0%, var(--hud-cyan) 50%, var(--white-a90) 100%);
+  background: linear-gradient(135deg, #E8C98A 0%, var(--gold) 50%, var(--white-a90) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -108,14 +108,14 @@ body.page-home::after {
 }
 
 .page-home .btn-primary {
-  background: var(--hud-cyan);
+  background: var(--gold);
   color: var(--night);
   border: none;
   font-weight: 700;
 }
 
 .page-home .btn-primary:hover {
-  background: var(--hud-cyan-hover);
+  background: var(--gold-hover);
   box-shadow: 0 8px 24px var(--gold-a25);
 }
 

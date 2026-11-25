@@ -34,14 +34,14 @@
   }
 
   .btn-primary {
-    background: var(--hud-cyan);
+    background: var(--gold);
     color: var(--night);
     border: 1px solid transparent;
     font-weight: 700;
   }
 
   .btn-primary:hover {
-    background: var(--hud-cyan-hover);
+    background: var(--gold-hover);
     box-shadow: 0 4px 16px var(--black-a35);
     transform: translateY(-2px);
   }
@@ -90,7 +90,7 @@
   .btn-favorite {
     background: var(--gold-a06);
     backdrop-filter: blur(10px);
-    color: var(--hud-cyan);
+    color: var(--gold);
     border: 1px solid var(--gold-a20);
   }
 
@@ -118,7 +118,7 @@
   /* Variants boutons admin (settings) */
   .btn-edit {
     background: var(--gold-a08);
-    color: var(--hud-cyan);
+    color: var(--gold);
     border: 1px solid var(--gold-a15);
     padding: var(--sp-2) var(--sp-4);
     border-radius: var(--r-md);
@@ -131,7 +131,7 @@
 
   .btn-edit:hover {
     background: var(--gold-a15);
-    border-color: var(--hud-cyan);
+    border-color: var(--gold);
   }
 
   .btn-delete {
@@ -208,7 +208,7 @@
   }
 
   .form-group label i, .form-group label .icon {
-    color: var(--hud-cyan);
+    color: var(--gold);
     width: 20px;
   }
 

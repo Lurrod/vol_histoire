@@ -203,7 +203,7 @@ html.ul-on body::after {
   }
 
   .nav-panel .nav-close:hover,
-  .nav-panel .nav-close:focus-visible { color: var(--hud-cyan); background: var(--white-a06); }
+  .nav-panel .nav-close:focus-visible { color: var(--gold); background: var(--white-a06); }
 
   /* Les traits rejoignent l'axe et pivotent en croix. */
   .nav-close .hamburger-bar {

@@ -547,13 +547,13 @@
   function barHtml(value, max, color) {
     if (value == null || isNaN(value) || max == null || max === 0) return '';
     const pct = Math.min(Math.round((value / max) * 100), 100);
-    return '<div class="cmp-bar-track"><div class="cmp-bar-fill" data-pct="' + pct + '" data-bg="' + escapeHtml(color || 'var(--hud-cyan)') + '"></div></div>';
+    return '<div class="cmp-bar-track"><div class="cmp-bar-fill" data-pct="' + pct + '" data-bg="' + escapeHtml(color || 'var(--gold)') + '"></div></div>';
   }
 
   function applyCssVars(root) {
     root.querySelectorAll('.cmp-bar-fill[data-pct]').forEach((el) => {
       el.style.width = el.dataset.pct + '%';
-      el.style.background = el.dataset.bg || 'var(--hud-cyan)';
+      el.style.background = el.dataset.bg || 'var(--gold)';
     });
     root.querySelectorAll('[data-cmp-cols]').forEach((el) => {
       el.style.setProperty('--cmp-cols', el.dataset.cmpCols);
@@ -651,7 +651,7 @@
         const v = numeric(a[key]);
         const cls = bestClass(items, a, key, higherIsBetter);
         const valStr = isNaN(v) ? '<span class="cmp-dash">—</span>' : fmt(a[key], unit);
-        const barStr = isNaN(v) ? '' : barHtml(v, max, cls ? 'var(--hud-cyan)' : 'rgba(255,255,255,0.12)');
+        const barStr = isNaN(v) ? '' : barHtml(v, max, cls ? 'var(--gold)' : 'rgba(255,255,255,0.12)');
         return '<div class="cmp-cell cmp-cell-perf' + cls + '" data-cmp-id="' + a.id + '">' + valStr + barStr + '</div>';
       }).join('');
       return '<div class="cmp-row" data-cmp-cols="' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';

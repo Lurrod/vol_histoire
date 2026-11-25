@@ -70,7 +70,7 @@ body.page-login::after { display: none; }
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--hud-cyan);
+  color: var(--gold);
 }
 
 .page-login .visual-title {
@@ -96,7 +96,7 @@ body.page-login::after { display: none; }
   font-family: 'DM Sans', sans-serif;
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--hud-cyan);
+  color: var(--gold);
   line-height: 1.2;
 }
 .page-login .stat-label {
@@ -134,9 +134,9 @@ body.page-login::after { display: none; }
 }
 .page-login .auth-photo-country { font-weight: 400; color: var(--white-a60); }
 .page-login .auth-photo-country::before { content: '· '; }
-.page-login .auth-photo-link .icon { align-self: center; font-size: 0.7rem; color: var(--hud-cyan); transition: translate var(--dur-base) var(--ease-out); }
+.page-login .auth-photo-link .icon { align-self: center; font-size: 0.7rem; color: var(--gold); transition: translate var(--dur-base) var(--ease-out); }
 .page-login .auth-photo-link:hover,
-.page-login .auth-photo-link:focus-visible { color: var(--hud-cyan); }
+.page-login .auth-photo-link:focus-visible { color: var(--gold); }
 .page-login .auth-photo-link:hover .icon { translate: 3px 0; }
 .page-login .auth-photo-credit { font-size: var(--text-xs); color: var(--white-a50); }
 .page-login .auth-photo-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
@@ -171,7 +171,7 @@ body.page-login::after { display: none; }
   background: linear-gradient(
     180deg,
     transparent 0%,
-    var(--hud-cyan) 50%,
+    var(--gold) 50%,
     transparent 100%
   );
   opacity: 0.35;
@@ -222,12 +222,12 @@ body.page-login::after { display: none; }
 }
 .page-login .form-tab.active,
 .page-login .form-tab[aria-selected="true"] {
-  color: var(--hud-cyan);
+  color: var(--gold);
   background: var(--gold-a06);
   border-color: var(--gold-a22);
 }
 .page-login .form-tab:focus-visible {
-  outline: 2px solid var(--hud-cyan);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 
@@ -320,7 +320,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   height: 52px;
   border-radius: 14px;
   background: var(--gold-a08);
-  color: var(--hud-cyan);
+  color: var(--gold);
   font-size: 1.25rem;
   margin-bottom: 1.25rem;
   border: 1px solid var(--gold-a18);
@@ -331,7 +331,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   font-size: 1.75rem;
   font-weight: 700;
   letter-spacing: -0.5px;
-  color: var(--primary-dark);
+  color: var(--text-primary);
   margin-bottom: 0.375rem;
 }
 .page-login .form-header p {
@@ -363,7 +363,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   letter-spacing: 0.06em;
 }
 .page-login .form-group label i, .page-login .form-group label .icon {
-  color: var(--secondary);
+  color: var(--gold);
   width: 16px;
   font-size: 0.75rem;
 }
@@ -377,7 +377,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   font-family: 'DM Sans', sans-serif;
   font-size: 0.95rem;
   color: var(--text-primary);
-  caret-color: var(--secondary);
+  caret-color: var(--gold);
   background: var(--white-a03);
   transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
@@ -387,14 +387,14 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
 .page-login .form-group input:focus,
 .page-login .form-group input:focus-visible {
   outline: none;
-  border-color: var(--secondary);
+  border-color: var(--gold);
   background: var(--gold-a05);
   /* Un seul indicateur, DANS le champ : bordure dorée doublée vers
      l'intérieur (2 px d'or, contraste largement > 3:1 sur l'anthracite —
      WCAG 1.4.11 / 2.4.7). Halo 3 px + anneau 2 px + contour 3 px décalé de
      2 px s'empilaient à plus de 5 px du champ et se faisaient rogner par
      le panneau. */
-  box-shadow: inset 0 0 0 1px var(--secondary);
+  box-shadow: inset 0 0 0 1px var(--gold);
 }
 .page-login .form-group input::placeholder {
   color: var(--text-secondary);
@@ -411,14 +411,14 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
 .page-login .form-group input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--text-primary);
   -webkit-box-shadow: 0 0 0 1000px var(--night-mid) inset;
-  caret-color: var(--secondary);
+  caret-color: var(--gold);
   /* Astuce autoremplissage : durée volontairement démesurée, pas un mouvement. */
   transition: background-color 9999s var(--ease-out) 0s;
 }
 /* Focus d'un champ autorempli : l'ombre de fond ci-dessus écraserait
    l'indicateur ; on les cumule. */
 .page-login .form-group input:-webkit-autofill:focus {
-  -webkit-box-shadow: inset 0 0 0 1px var(--secondary), 0 0 0 1000px var(--night-mid) inset;
+  -webkit-box-shadow: inset 0 0 0 1px var(--gold), 0 0 0 1000px var(--night-mid) inset;
 }
 
 /* Password wrapper */
@@ -448,7 +448,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   border-radius: 12px;
 }
 .page-login .toggle-password:hover {
-  color: var(--secondary);
+  color: var(--gold);
   background: var(--gold-a08);
 }
 
@@ -456,7 +456,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
 .page-login .password-strength { margin-top: 0.5rem; }
 .page-login .strength-bar {
   height: 3px;
-  background: var(--border);
+  background: var(--border-subtle);
   border-radius: 3px;
   overflow: hidden;
   margin-bottom: 0.25rem;
@@ -510,7 +510,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   justify-content: center;
   width: 20px;
   height: 20px;
-  border: 2px solid var(--border);
+  border: 2px solid var(--border-subtle);
   border-radius: 5px;
   transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
   flex-shrink: 0;
@@ -523,8 +523,8 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
 .page-login .checkbox-wrapper input:checked + .custom-check {
-  background: var(--secondary);
-  border-color: var(--secondary);
+  background: var(--gold);
+  border-color: var(--gold);
 }
 .page-login .checkbox-wrapper input:checked + .custom-check i, .page-login .checkbox-wrapper input:checked + .custom-check .icon {
   opacity: 1;
@@ -536,7 +536,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   user-select: none;
 }
 .page-login .checkbox-label a {
-  color: var(--secondary);
+  color: var(--gold);
   text-decoration: none;
   font-weight: 600;
 }
@@ -544,12 +544,12 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
 
 .page-login .forgot-password {
   font-size: 0.8rem;
-  color: var(--secondary);
+  color: var(--gold);
   text-decoration: none;
   font-weight: 600;
   transition: color var(--dur-fast) var(--ease-out);
 }
-.page-login .forgot-password:hover { color: var(--secondary-dark); }
+.page-login .forgot-password:hover { color: var(--hud-amber); }
 
 /* Mention RGPD sous le formulaire d'inscription */
 .page-login .form-rgpd-notice {
@@ -560,7 +560,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   text-align: center;
 }
 .page-login .form-rgpd-notice a {
-  color: var(--secondary);
+  color: var(--gold);
   text-decoration: underline;
   text-decoration-color: var(--gold-a35);
   text-underline-offset: 2px;
@@ -569,7 +569,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
 .page-login .form-rgpd-notice a:hover,
 .page-login .form-rgpd-notice a:focus-visible {
   color: var(--text-primary);
-  text-decoration-color: var(--secondary);
+  text-decoration-color: var(--gold);
 }
 
 /* Submit Button */
@@ -592,7 +592,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   margin-top: 0.5rem;
 }
 .page-login .btn-submit:hover:not(:disabled) {
-  background: var(--primary);
+  background: var(--night-mid);
 }
 .page-login .btn-submit i, .page-login .btn-submit .icon {
   transition: transform var(--dur-base) var(--ease-out);
@@ -620,7 +620,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   text-align: center;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-subtle);
 }
 .page-login .form-footer p {
   color: var(--text-secondary);
@@ -630,7 +630,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
 .page-login .switch-form {
   background: transparent;
   border: none;
-  color: var(--secondary);
+  color: var(--gold);
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
@@ -735,8 +735,8 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
 }
 
 /* Accessibility */
-.page-login :focus-visible { outline: 3px solid var(--secondary); outline-offset: 2px; }
-.page-login button:focus-visible, .page-login a:focus-visible { outline: 3px solid var(--secondary); outline-offset: 2px; }
+.page-login :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.page-login button:focus-visible, .page-login a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 /* Champs : leur indicateur est la bordure doublée (plus haut), pas un contour. */
 .page-login .form-group input:focus-visible { outline: none; }
 

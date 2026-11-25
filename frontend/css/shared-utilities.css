@@ -36,7 +36,7 @@
     background: var(--gold-a08);
     border-color: var(--gold-a20);
   }
-  .edit-modal-icon-champagne i, .edit-modal-icon-champagne .icon { color: var(--hud-cyan); }
+  .edit-modal-icon-champagne i, .edit-modal-icon-champagne .icon { color: var(--gold); }
   .edit-modal-body { width: 100%; margin: 1.25rem 0 1.5rem; text-align: left; }
   .edit-modal-form-group { margin-bottom: 1rem; }
 
@@ -54,7 +54,7 @@
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus-visible,
   select:focus-visible,
   textarea:focus-visible {
-    outline: 2px solid var(--hud-cyan);
+    outline: 2px solid var(--gold);
     outline-offset: 2px;
   }
   /* Connexion / inscription : les champs portent leur propre indicateur,

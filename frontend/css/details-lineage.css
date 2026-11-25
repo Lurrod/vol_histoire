@@ -59,7 +59,7 @@
 }
 
 .page-details a.lineage-link:focus-visible {
-  outline: 2px solid var(--hud-cyan);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 
@@ -84,7 +84,7 @@
   cursor: default;
 }
 
-.page-details .lineage-node.is-current .lineage-name { color: var(--hud-cyan); }
+.page-details .lineage-node.is-current .lineage-name { color: var(--gold); }
 .page-details .lineage-node.is-current .lineage-year { color: var(--gold-a75); }
 
 .page-details .lineage-note {
