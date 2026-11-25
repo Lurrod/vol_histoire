@@ -91,6 +91,16 @@ describe('VH.home.heroHelpers', () => {
     expect(h.airplaneHref(null, 'F-15 Eagle')).toBe('/hangar?q=f-15%2Beagle');
   });
 
+  test('SEO-007 : adresse propre de la fiche quand shared/card.js est chargé', () => {
+    const { heroHelpers: h } = loadModules();
+    window.VH.shared = { ...(window.VH.shared || {}), buildDetailsPath: (id, name) => `/details/${name.toLowerCase()}-${id}` };
+    try {
+      expect(h.airplaneHref(12, 'Rafale')).toBe('/details/rafale-12');
+    } finally {
+      delete window.VH.shared.buildDetailsPath;
+    }
+  });
+
   test('getHeroLang : i18n puis attribut lang du document', () => {
     const { heroHelpers: h } = loadModules();
     expect(h.getHeroLang()).toBe('fr');

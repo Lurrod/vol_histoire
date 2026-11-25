@@ -126,7 +126,7 @@
 
       if (link) {
         link.setAttribute('href', fact.airplane_id
-          ? '/details?id=' + encodeURIComponent(fact.airplane_id)
+          ? VH.home.heroHelpers.detailsHref(fact.airplane_id, fact.airplane_name || name)
           : (name ? '/hangar?q=' + encodeURIComponent(nameToSearchSlug(name)) : '#'));
       }
     }
