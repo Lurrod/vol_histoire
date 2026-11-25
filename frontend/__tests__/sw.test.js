@@ -196,6 +196,44 @@ describe('stratégies', () => {
     expect((await s.handle('page', req('/details/x-1', { mode: 'navigate' }))).body).toBe('page hors ligne');
   });
 
+  // MOB-003 — réseau muet : la page en cache après le délai, le réseau
+  // continuant en arrière-plan ; réponse préchargée utilisée si présente.
+  test('page : réseau lent → page en cache après le délai, cache rafraîchi ensuite', async () => {
+    let release;
+    const slow = new Promise((resolve) => { release = () => resolve(res('réseau tardif')); });
+    const caches = fakeCaches();
+    const fetchFn = jest.fn(() => slow);
+    const kept = [];
+    const s = sw.createStrategies({ fetchFn, cacheStorage: caches, names, navTimeoutMs: 20 });
+    await (await caches.open(names.pages)).put('/hangar', res('hangar en cache'));
+    const out = await s.handle('page', req('/hangar', { mode: 'navigate' }), (p) => kept.push(p));
+    expect(out.body).toBe('hangar en cache');
+    release();
+    await Promise.all(kept);
+    expect((await (await caches.open(names.pages)).match('/hangar')).body).toBe('réseau tardif');
+  });
+
+  test('page : réseau lent sans page en cache → on attend le réseau', async () => {
+    const caches = fakeCaches();
+    const fetchFn = jest.fn(() => new Promise((resolve) => setTimeout(() => resolve(res('enfin')), 40)));
+    const s = sw.createStrategies({ fetchFn, cacheStorage: caches, names, navTimeoutMs: 10 });
+    expect((await s.handle('page', req('/details/x-1', { mode: 'navigate' }))).body).toBe('enfin');
+  });
+
+  test('page : réponse préchargée (Navigation Preload) utilisée sans second fetch', async () => {
+    const { s, fetchFn } = setup();
+    const out = await s.handle('page', req('/hangar', { mode: 'navigate' }), undefined, Promise.resolve(res('préchargée')));
+    expect(out.body).toBe('préchargée');
+    expect(fetchFn).not.toHaveBeenCalled();
+    // Préchargement absent (undefined) : fetch normal.
+    const out2 = await s.handle('page', req('/hangar', { mode: 'navigate' }), undefined, Promise.resolve(undefined));
+    expect(out2.body).toBe('net');
+  });
+
+  test('délai par défaut : 3,5 s', () => {
+    expect(sw.NAV_TIMEOUT_MS).toBe(3500);
+  });
+
   test('page en erreur HTTP : transmise, jamais mise en cache', async () => {
     const { caches, s, keep, settle } = setup(async () => res('boom', { status: 500 }));
     const out = await s.handle('page', req('/hangar', { mode: 'navigate' }), keep);
