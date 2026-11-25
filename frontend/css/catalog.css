@@ -423,3 +423,12 @@ body:is(.page-hangar, .page-favorites) {
   margin-bottom: 0.75rem;
   font-weight: 600;
 }
+
+/* Cibles tactiles de 44 px sans changer le dessin (MOB-002) : même procédé
+   que .share-btn de la fiche, un pseudo-élément transparent qui déborde du
+   contrôle. Un appui qui manquait la case ou la poubelle, posées sur une
+   carte entièrement cliquable, ouvrait la fiche au lieu d'agir. */
+@media (max-width: 48em), (pointer: coarse) {
+  :is(.page-hangar, .page-favorites) .close-dropdown { position: relative; }
+  :is(.page-hangar, .page-favorites) .close-dropdown::after { content: ''; position: absolute; inset: -8px; }
+}

@@ -564,3 +564,13 @@ html:not(.vh-hangar-morph) .page-hangar .airplanes-container > .aircraft-card { 
 
 /* lang-switch → shared.css */
 
+
+/* Cibles tactiles de 44 px sans changer le dessin (MOB-002) : même procédé
+   que .share-btn de la fiche, un pseudo-élément transparent qui déborde du
+   contrôle. Un appui qui manquait la case ou la poubelle, posées sur une
+   carte entièrement cliquable, ouvrait la fiche au lieu d'agir. */
+@media (max-width: 48em), (pointer: coarse) {
+  .page-hangar .compare-check::after { content: ''; position: absolute; inset: -8px -4px; }
+  .page-hangar .modal-close { position: relative; }
+  .page-hangar .modal-close::after { content: ''; position: absolute; inset: -4px; }
+}
