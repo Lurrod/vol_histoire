@@ -45,6 +45,21 @@ function isStale(source, target) {
   return fs.statSync(source).mtimeMs > fs.statSync(target).mtimeMs;
 }
 
+/* WebP au plus aussi lourd que la source (PERF-002) : sur certaines photos
+ * déjà très compressées, la qualité 82 donnait un WebP plus gros que le JPEG
+ * (20 cas). On redescend alors la qualité par paliers. */
+const WEBP_FALLBACK_QUALITIES = [76, 70, 64, 58];
+
+async function encodeWebpNotLarger(srcPath, webpPath, srcSize) {
+  let buf = await sharp(srcPath).webp(WEBP_OPTS).toBuffer();
+  for (const quality of WEBP_FALLBACK_QUALITIES) {
+    if (buf.length < srcSize) break;
+    buf = await sharp(srcPath).webp({ ...WEBP_OPTS, quality }).toBuffer();
+  }
+  fs.writeFileSync(webpPath, buf);
+  return buf.length;
+}
+
 async function convertOne(filename) {
   const srcPath = path.join(SOURCE_DIR, filename);
   const base = filename.replace(SOURCE_EXT, '');
@@ -56,11 +71,9 @@ async function convertOne(filename) {
   const results = { file: filename, srcSize, skipped: [] };
 
   if (isStale(srcPath, webpPath)) {
-    tasks.push(
-      sharp(srcPath).webp(WEBP_OPTS).toFile(webpPath).then(info => {
-        results.webp = info.size;
-      })
-    );
+    tasks.push(encodeWebpNotLarger(srcPath, webpPath, srcSize).then(size => {
+      results.webp = size;
+    }));
   } else {
     results.skipped.push('webp');
     results.webp = fs.statSync(webpPath).size;

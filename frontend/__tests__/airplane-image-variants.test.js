@@ -22,3 +22,12 @@ test.each([
   const missing = photos.filter((name) => !fs.existsSync(path.join(DIR, sub, name + ext)));
   expect(missing).toEqual([]);
 });
+
+test('aucun WebP pleine taille plus lourd que sa source (PERF-002)', () => {
+  const heavier = photos.filter((name) => {
+    const src = ['.jpg', '.jpeg', '.png'].map((e) => path.join(DIR, name + e)).find((f) => fs.existsSync(f));
+    const webp = path.join(DIR, name + '.webp');
+    return src && fs.existsSync(webp) && fs.statSync(webp).size > fs.statSync(src).size;
+  });
+  expect(heavier).toEqual([]);
+});
