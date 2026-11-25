@@ -141,7 +141,8 @@
   letter-spacing: 0.14em;
 }
 
-.page-favorites .auth-gate-info h2 {
+/* h1 : seul titre principal affiché sans session (le héros est masqué, A11Y-006). */
+.page-favorites .auth-gate-info h1 {
   font-family: 'DM Sans', sans-serif;
   font-size: 1.75rem;
   font-weight: 700;
@@ -414,7 +415,7 @@
   .page-favorites .results-bar { margin-bottom: 1.5rem; }
   .page-favorites .fav-del { opacity: 1; }
   .page-favorites .auth-gate-info { padding: 2.5rem 2rem; }
-  .page-favorites .auth-gate-info h2 { font-size: 1.5rem; }
+  .page-favorites .auth-gate-info h1 { font-size: 1.5rem; }
 }
 
 @media (max-width: 30em) {
@@ -432,7 +433,7 @@
   .page-favorites .gate-showcase { --card-w: 8.75rem; --spread: 2.9rem; height: 12rem; }
   .page-favorites .gate-card-body { padding: 0.55rem 0.65rem 0.6rem; }
   .page-favorites .auth-gate-info { padding: 2rem 1.5rem; }
-  .page-favorites .auth-gate-info h2 { font-size: 1.3rem; }
+  .page-favorites .auth-gate-info h1 { font-size: 1.3rem; }
   .page-favorites .gate-actions { flex-direction: column; }
   .page-favorites .gate-actions .btn { width: 100%; }
 }
