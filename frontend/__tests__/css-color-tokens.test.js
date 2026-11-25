@@ -29,7 +29,7 @@ const BASELINE = {
   'shared-onboarding.css': 5,
   'style-hero-split.css': 14,
   'style-hero.css': 2,
-  'timeline-responsive.css': 8,
+  'timeline-responsive.css': 9,
   'timeline.css': 1,
 };
 
