@@ -36,12 +36,6 @@
     display: block;
   }
 
-  *:focus-visible {
-    box-shadow: var(--focus-ring);
-    outline: none;
-    border-radius: var(--r-sm);
-  }
-
   button {
     font-family: inherit;
     cursor: pointer;
@@ -102,6 +96,9 @@
   /* ============================================================
      FOCUS ACCESSIBLE
      ============================================================ */
+  /* Indicateur unique : un contour (outline), qui survit au mode couleurs
+     forcées, contrairement à une ombre. Une règle « *:focus-visible » plus
+     haut ajoutait une ombre --focus-ring : les deux se cumulaient (CSS-004). */
   :focus-visible {
     outline: 2px solid var(--hud-cyan);
     outline-offset: 3px;
