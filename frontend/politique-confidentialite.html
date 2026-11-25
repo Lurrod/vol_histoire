@@ -109,24 +109,24 @@
           <h2 data-i18n="legal.pc_sec2_title"><i class="fas fa-database"></i> 2. Données collectées</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec2_body">
             <h3>2.1 Données de compte</h3>
-            <p>Lors de la création d'un compte, nous collectons :</p>
+            <p>Lors de la création d'un compte, nous collectons :</p>
             <ul>
             <li>Nom ou pseudonyme</li>
             <li>Adresse email</li>
             <li>Mot de passe (stocké après hachage bcrypt, jamais en clair)</li>
             <li>Date d'inscription et statut de vérification de l'adresse</li>
             <li>Rôle assigné (utilisateur, éditeur ou administrateur)</li>
-            <li>Données de sécurité : nombre d'échecs de connexion, verrouillage temporaire, sessions actives</li>
+            <li>Données de sécurité : nombre d'échecs de connexion, verrouillage temporaire, sessions actives</li>
             </ul>
             <h3>2.2 Favoris</h3>
             <p>Les appareils que vous ajoutez à vos favoris, rattachés à votre compte.</p>
             <h3>2.3 Formulaire de contact</h3>
-            <p>Prénom et nom (facultatifs), adresse email, sujet et message. Le message nous est transmis par email ; il n'est pas enregistré dans la base de données du site. Le journal du serveur garde la trace de l'envoi (adresse de l'expéditeur et sujet).</p>
+            <p>Prénom et nom (facultatifs), adresse email, sujet et message. Le message nous est transmis par email ; il n'est pas enregistré dans la base de données du site. Le journal du serveur garde la trace de l'envoi (adresse de l'expéditeur et sujet).</p>
             <h3>2.4 Données techniques</h3>
             <ul>
-            <li>Journaux du serveur : adresse IP, navigateur, page demandée, date et heure</li>
+            <li>Journaux du serveur : adresse IP, navigateur, page demandée, date et heure</li>
             <li>Rapports d'erreurs techniques (Sentry)</li>
-            <li>Sur les formulaires d'inscription, de connexion, de mot de passe oublié et de contact : données techniques analysées par hCaptcha pour distinguer un humain d'un robot</li>
+            <li>Sur les formulaires d'inscription, de connexion, de mot de passe oublié et de contact : données techniques analysées par hCaptcha pour distinguer un humain d'un robot</li>
             </ul>
             <h3>2.5 Mesure d'audience (avec votre consentement)</h3>
             <p>Si vous l'acceptez, Google Analytics collecte un identifiant pseudonyme de navigateur, les pages consultées et la durée de visite, le type d'appareil et de navigateur, la page de provenance et une localisation approximative déduite de l'adresse IP.</p>
@@ -138,14 +138,14 @@
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec3_title"><i class="fas fa-bullseye"></i> 3. Finalités du traitement</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec3_body">
-            <p>Vos données sont traitées pour les finalités suivantes :</p>
+            <p>Vos données sont traitées pour les finalités suivantes :</p>
             <ul>
-            <li><strong>Gestion du compte</strong> (inscription, connexion, vérification de l'adresse, réinitialisation du mot de passe, favoris) — base légale : exécution du contrat (CGU)</li>
-            <li><strong>Emails de service</strong> (vérification, réinitialisation, changement d'adresse) — base légale : exécution du contrat</li>
-            <li><strong>Sécurité du service</strong> (limitation des tentatives, verrouillage temporaire, journaux du serveur, hCaptcha sur l'inscription, la connexion, le mot de passe oublié et le contact) — base légale : intérêt légitime</li>
-            <li><strong>Réponse à vos demandes de contact</strong> — base légale : intérêt légitime</li>
-            <li><strong>Suivi des erreurs techniques</strong> (Sentry) — base légale : intérêt légitime</li>
-            <li><strong>Mesure d'audience</strong> (Google Analytics, données pseudonymes) — base légale : consentement</li>
+            <li><strong>Gestion du compte</strong> (inscription, connexion, vérification de l'adresse, réinitialisation du mot de passe, favoris) — base légale : exécution du contrat (CGU)</li>
+            <li><strong>Emails de service</strong> (vérification, réinitialisation, changement d'adresse) — base légale : exécution du contrat</li>
+            <li><strong>Sécurité du service</strong> (limitation des tentatives, verrouillage temporaire, journaux du serveur, hCaptcha sur l'inscription, la connexion, le mot de passe oublié et le contact) — base légale : intérêt légitime</li>
+            <li><strong>Réponse à vos demandes de contact</strong> — base légale : intérêt légitime</li>
+            <li><strong>Suivi des erreurs techniques</strong> (Sentry) — base légale : intérêt légitime</li>
+            <li><strong>Mesure d'audience</strong> (Google Analytics, données pseudonymes) — base légale : consentement</li>
             </ul>
             <p>Vos données ne servent à aucune publicité ni à aucun profilage.</p>
           </div>
@@ -155,17 +155,17 @@
           <h2 data-i18n="legal.pc_sec4_title"><i class="fas fa-clock"></i> 4. Durée de conservation</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec4_body">
             <ul>
-            <li><strong>Compte et favoris :</strong> jusqu'à la suppression du compte. La suppression, depuis vos paramètres ou sur demande, est immédiate et définitive.</li>
-            <li><strong>Compte dont l'adresse n'a pas été vérifiée :</strong> supprimé automatiquement 7 jours après l'inscription.</li>
-            <li><strong>Codes envoyés par email :</strong> activation du compte 30 minutes, changement d'adresse 30 minutes, réinitialisation du mot de passe 15 minutes ; chaque code ne sert qu'une fois et n'admet que 5 essais.</li>
-            <li><strong>Jeton d'accès :</strong> 15 minutes.</li>
-            <li><strong>Session (refresh token) :</strong> 7 jours au plus (jusqu'à la fermeture du navigateur si « Se souvenir de moi » n'est pas coché), révoquée à la déconnexion et au changement de mot de passe. Une session révoquée reste en base jusqu'à son expiration, pour détecter une réutilisation frauduleuse.</li>
-            <li><strong>Verrouillage après 10 échecs de connexion :</strong> 15 minutes.</li>
-            <li><strong>Demandes de contact :</strong> 12 mois dans la messagerie de l'éditeur, puis supprimées.</li>
-            <li><strong>Journaux du serveur :</strong> 12 mois au plus.</li>
-            <li><strong>Rapports d'erreurs (Sentry) :</strong> 30 jours.</li>
-            <li><strong>Mesure d'audience :</strong> cookies Google Analytics 13 mois au plus ; données conservées 14 mois dans Google Analytics.</li>
-            <li><strong>Votre choix sur les cookies :</strong> 6 mois, puis il vous est redemandé.</li>
+            <li><strong>Compte et favoris :</strong> jusqu'à la suppression du compte. La suppression, depuis vos paramètres ou sur demande, est immédiate et définitive.</li>
+            <li><strong>Compte dont l'adresse n'a pas été vérifiée :</strong> supprimé automatiquement 7 jours après l'inscription.</li>
+            <li><strong>Codes envoyés par email :</strong> activation du compte 30 minutes, changement d'adresse 30 minutes, réinitialisation du mot de passe 15 minutes ; chaque code ne sert qu'une fois et n'admet que 5 essais.</li>
+            <li><strong>Jeton d'accès :</strong> 15 minutes.</li>
+            <li><strong>Session (refresh token) :</strong> 7 jours au plus (jusqu'à la fermeture du navigateur si « Se souvenir de moi » n'est pas coché), révoquée à la déconnexion et au changement de mot de passe. Une session révoquée reste en base jusqu'à son expiration, pour détecter une réutilisation frauduleuse.</li>
+            <li><strong>Verrouillage après 10 échecs de connexion :</strong> 15 minutes.</li>
+            <li><strong>Demandes de contact :</strong> 12 mois dans la messagerie de l'éditeur, puis supprimées.</li>
+            <li><strong>Journaux du serveur :</strong> 12 mois au plus.</li>
+            <li><strong>Rapports d'erreurs (Sentry) :</strong> 30 jours.</li>
+            <li><strong>Mesure d'audience :</strong> cookies Google Analytics 13 mois au plus ; données conservées 14 mois dans Google Analytics.</li>
+            <li><strong>Votre choix sur les cookies :</strong> 6 mois, puis il vous est redemandé.</li>
             </ul>
           </div>
         </div>
@@ -174,15 +174,15 @@
           <h2 data-i18n="legal.pc_sec5_title"><i class="fas fa-share-nodes"></i> 5. Partage des données</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec5_body">
             <p>Vos données personnelles ne sont <strong>jamais vendues</strong>. Elles ne sont communiquées aux autorités que sur réquisition légale.</p>
-            <p>Les prestataires suivants traitent certaines données pour notre compte :</p>
+            <p>Les prestataires suivants traitent certaines données pour notre compte :</p>
             <ul>
             <li><strong>OVHcloud</strong> (OVH SAS, France) — hébergement du serveur et de la base de données, envoi des emails. Données hébergées en France, dans l'Union européenne.</li>
-            <li><strong>Google</strong> (Google Ireland Limited ; Google LLC, États-Unis) — Google Analytics et Google Tag Manager, uniquement si vous acceptez la mesure d'audience.</li>
+            <li><strong>Google</strong> (Google Ireland Limited ; Google LLC, États-Unis) — Google Analytics et Google Tag Manager, uniquement si vous acceptez la mesure d'audience.</li>
             <li><strong>Functional Software, Inc. (Sentry)</strong> (États-Unis) — rapports d'erreurs techniques, stockés dans la région Union européenne de Sentry (Allemagne).</li>
             <li><strong>Intuition Machines, Inc. (hCaptcha)</strong> (États-Unis) — protection anti-robot des formulaires d'inscription, de connexion, de mot de passe oublié et de contact.</li>
             </ul>
             <h3>Transferts hors de l'Union européenne</h3>
-            <p>Les données traitées par Google, Sentry et hCaptcha peuvent être transférées aux États-Unis. Ces transferts reposent sur la décision d'adéquation de la Commission européenne du 10 juillet 2023 (cadre de protection des données UE–États-Unis, « Data Privacy Framework ») : Google LLC, Functional Software, Inc. (Sentry) et Intuition Machines, Inc. (hCaptcha) y sont certifiés, avec une participation active vérifiée le 10 novembre 2026 sur la liste officielle (<a href="https://www.dataprivacyframework.gov/list" target="_blank" rel="noopener">dataprivacyframework.gov</a>). Pour toute question sur ces garanties, écrivez à <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a>.</p>
+            <p>Les données traitées par Google, Sentry et hCaptcha peuvent être transférées aux États-Unis. Ces transferts reposent sur la décision d'adéquation de la Commission européenne du 10 juillet 2023 (cadre de protection des données UE–États-Unis, « Data Privacy Framework ») : Google LLC, Functional Software, Inc. (Sentry) et Intuition Machines, Inc. (hCaptcha) y sont certifiés, avec une participation active vérifiée le 10 novembre 2026 sur la liste officielle (<a href="https://www.dataprivacyframework.gov/list" target="_blank" rel="noopener">dataprivacyframework.gov</a>). Pour toute question sur ces garanties, écrivez à <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a>.</p>
           </div>
         </div>
 
@@ -193,19 +193,19 @@
             <div class="cookie-types">
             <div class="cookie-card essential">
             <i class="fas fa-check-circle"></i><h4>Essentiels et fonctionnels</h4>
-            <p>Nécessaires au service que vous demandez : session, sécurité, choix des cookies, langue, comparateur, affichage</p>
+            <p>Nécessaires au service que vous demandez : session, sécurité, choix des cookies, langue, comparateur, affichage</p>
             <span class="cookie-consent">Pas de consentement requis</span></div>
             <div class="cookie-card analytics">
             <i class="fas fa-chart-pie"></i><h4>Mesure d'audience</h4>
-            <p>Google Analytics : fréquentation du site, avec un identifiant pseudonyme</p>
+            <p>Google Analytics : fréquentation du site, avec un identifiant pseudonyme</p>
             <span class="cookie-consent">Consentement requis</span></div>
             </div>
             <h3>6.2 Inventaire détaillé</h3>
-            <p>Liste des cookies et autres traceurs utilisés par le site, conformément à la délibération CNIL n° 2020-091 :</p>
-            <section class="cookies-inventory-wrap" tabindex="0" aria-label="Inventaire des cookies"><table class="cookies-inventory"><caption class="sr-only">Inventaire détaillé des cookies et traceurs : nom, type, durée, finalité, stockage et exigence de consentement.</caption><thead><tr><th scope="col">Nom</th><th scope="col">Type</th><th scope="col">Durée</th><th scope="col">Finalité</th><th scope="col">Stockage</th><th scope="col">Consentement</th></tr>
+            <p>Liste des cookies et autres traceurs utilisés par le site, conformément à la délibération CNIL n° 2020-091 :</p>
+            <section class="cookies-inventory-wrap" tabindex="0" aria-label="Inventaire des cookies"><table class="cookies-inventory"><caption class="sr-only">Inventaire détaillé des cookies et traceurs : nom, type, durée, finalité, stockage et exigence de consentement.</caption><thead><tr><th scope="col">Nom</th><th scope="col">Type</th><th scope="col">Durée</th><th scope="col">Finalité</th><th scope="col">Stockage</th><th scope="col">Consentement</th></tr>
             </thead><tbody>
             <tr><td><code>refreshToken</code></td><td>Essentiel</td><td>7 jours avec « Se souvenir de moi », sinon jusqu'à la fermeture du navigateur</td><td>Maintien de la session connectée (renouvellement du jeton d'accès)</td><td>Cookie HttpOnly · Secure · SameSite=Strict · Path=/api</td><td>Exempté</td></tr>
-            <tr><td><code>vh_session</code></td><td>Essentiel</td><td>7 jours avec « Se souvenir de moi », sinon jusqu'à la fermeture du navigateur</td><td>Signale au navigateur qu'une session existe ; ne contient aucune donnée personnelle</td><td>Cookie · SameSite=Strict</td><td>Exempté</td></tr>
+            <tr><td><code>vh_session</code></td><td>Essentiel</td><td>7 jours avec « Se souvenir de moi », sinon jusqu'à la fermeture du navigateur</td><td>Signale au navigateur qu'une session existe ; ne contient aucune donnée personnelle</td><td>Cookie · SameSite=Strict</td><td>Exempté</td></tr>
             <tr><td><code>voldhistoire_cookie_consent</code></td><td>Essentiel</td><td>6 mois</td><td>Mémorisation de votre choix sur les cookies et de sa date</td><td>Cookie + localStorage</td><td>Exempté</td></tr>
             <tr><td><code>vol-histoire-lang</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Langue d'affichage (FR / EN)</td><td>localStorage</td><td>Exempté</td></tr>
             <tr><td><code>vh_hangar_view</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Affichage du hangar en grille ou en liste</td><td>localStorage</td><td>Exempté</td></tr>
@@ -214,7 +214,7 @@
             <tr><td><code>vh-morph</code></td><td>Fonctionnel</td><td>Fermeture de l'onglet</td><td>Appareil dont la carte vient d'être ouverte, pour l'animation de transition vers sa fiche</td><td>sessionStorage</td><td>Exempté</td></tr>
             <tr><td><code>vh-toast</code></td><td>Fonctionnel</td><td>Jusqu'à l'affichage sur la page suivante</td><td>Message de confirmation à montrer après un changement de page (ex. sessions fermées)</td><td>sessionStorage</td><td>Exempté</td></tr>
             <tr><td><code>vh-onboarding-done</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Visite guidée déjà vue (évite de la réafficher)</td><td>localStorage</td><td>Exempté</td></tr>
-            <tr><td><code>vh-reduce-motion</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Réglage « Réduire les animations »</td><td>localStorage</td><td>Exempté</td></tr>
+            <tr><td><code>vh-reduce-motion</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Réglage « Réduire les animations »</td><td>localStorage</td><td>Exempté</td></tr>
             <tr><td><code>vh-last-viewed</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Dernière fiche consultée, proposée dans vos paramètres (identifiant, nom et photo de l'appareil)</td><td>localStorage</td><td>Exempté</td></tr>
             <tr><td><code>hangar_filters</code></td><td>Fonctionnel</td><td>Fermeture de l'onglet</td><td>Filtres du hangar, pour retrouver la même liste depuis une fiche</td><td>sessionStorage</td><td>Exempté</td></tr>
             <tr><td>Cache du site</td><td>Fonctionnel</td><td>Jusqu'à la version suivante du site</td><td>Fichiers du site gardés par le service worker pour un affichage plus rapide</td><td>Cache du navigateur</td><td>Exempté</td></tr>
@@ -223,13 +223,13 @@
             <tr><td>hCaptcha</td><td>Sécurité</td><td>Fixée par hCaptcha</td><td>Distinguer un humain d'un robot sur les formulaires d'inscription, de connexion, de mot de passe oublié et de contact</td><td>Traceurs d'hCaptcha sur son propre domaine</td><td>Exempté (sécurité)</td></tr>
             </tbody></table>
             </section>
-            <p class="cookies-marketing-note"><strong>Cookies publicitaires :</strong> aucun. Sentry, utilisé pour le suivi des erreurs, ne dépose pas de cookie.</p>
+            <p class="cookies-marketing-note"><strong>Cookies publicitaires :</strong> aucun. Sentry, utilisé pour le suivi des erreurs, ne dépose pas de cookie.</p>
             <h3>6.3 Gérer vos choix</h3>
             <ul>
             <li>Votre choix est conservé 6 mois, puis vous est redemandé.</li>
-            <li>Vous pouvez le modifier à tout moment via le lien « Cookies » en bas de chaque page ou, si vous avez un compte, dans Paramètres › Confidentialité.</li>
+            <li>Vous pouvez le modifier à tout moment via le lien « Cookies » en bas de chaque page ou, si vous avez un compte, dans Paramètres › Confidentialité.</li>
             <li>Refuser ou retirer votre consentement efface les cookies de Google Analytics et interrompt la mesure d'audience.</li>
-            <li>Vous pouvez aussi effacer les données du site depuis les réglages de votre navigateur : langue, comparateur et affichage reviennent alors à leur état par défaut.</li>
+            <li>Vous pouvez aussi effacer les données du site depuis les réglages de votre navigateur : langue, comparateur et affichage reviennent alors à leur état par défaut.</li>
             </ul>
             <div class="info-box">
             <i class="fas fa-exclamation-triangle"></i><p>Bloquer les traceurs essentiels dans votre navigateur empêche la connexion à votre compte.</p>
@@ -240,15 +240,15 @@
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec7_title"><i class="fas fa-lock"></i> 7. Sécurité des données</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec7_body">
-            <p>Nous mettons en œuvre des mesures techniques et organisationnelles pour protéger vos données :</p>
+            <p>Nous mettons en œuvre des mesures techniques et organisationnelles pour protéger vos données :</p>
             <ul>
-            <li><strong>Chiffrement en transit :</strong> HTTPS sur toutes les connexions, HSTS activé</li>
-            <li><strong>En-têtes de sécurité :</strong> Content-Security-Policy (CSP), X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy</li>
-            <li><strong>Mots de passe :</strong> hachage bcrypt avec sel unique, jamais stockés en clair. Politique : 8 à 128 caractères, au moins 1 majuscule, 1 minuscule et 1 chiffre</li>
-            <li><strong>Sessions :</strong> jetons signés à durée courte, sessions stockées en base et révocables, toutes les sessions coupées au changement de mot de passe</li>
-            <li><strong>Limitation de débit :</strong> protection des routes sensibles (inscription, connexion, mot de passe oublié, contact) contre les attaques par force brute</li>
-            <li><strong>hCaptcha :</strong> protection anti-robot des formulaires publics</li>
-            <li><strong>Requêtes SQL paramétrées :</strong> protection contre les injections SQL</li>
+            <li><strong>Chiffrement en transit :</strong> HTTPS sur toutes les connexions, HSTS activé</li>
+            <li><strong>En-têtes de sécurité :</strong> Content-Security-Policy (CSP), X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy</li>
+            <li><strong>Mots de passe :</strong> hachage bcrypt avec sel unique, jamais stockés en clair. Politique : 8 à 128 caractères, au moins 1 majuscule, 1 minuscule et 1 chiffre</li>
+            <li><strong>Sessions :</strong> jetons signés à durée courte, sessions stockées en base et révocables, toutes les sessions coupées au changement de mot de passe</li>
+            <li><strong>Limitation de débit :</strong> protection des routes sensibles (inscription, connexion, mot de passe oublié, contact) contre les attaques par force brute</li>
+            <li><strong>hCaptcha :</strong> protection anti-robot des formulaires publics</li>
+            <li><strong>Requêtes SQL paramétrées :</strong> protection contre les injections SQL</li>
             <li><strong>Sauvegardes</strong> de la base de données</li>
             <li><strong>Mises à jour régulières</strong> des dépendances et correctifs de sécurité</li>
             </ul>
@@ -259,18 +259,18 @@
         <div class="legal-section">
           <h2 data-i18n="legal.pc_sec8_title"><i class="fas fa-hand-paper"></i> 8. Vos droits</h2>
           <div class="legal-text" data-i18n-html="legal.pc_sec8_body">
-            <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+            <p>Conformément au RGPD, vous disposez des droits suivants :</p>
             <ul>
             <li><strong>Droit d'accès</strong> — consulter les données que nous détenons sur vous</li>
             <li><strong>Droit de rectification</strong> — corriger des données inexactes ou incomplètes</li>
-            <li><strong>Droit à l'effacement</strong> (« droit à l'oubli »)</li>
+            <li><strong>Droit à l'effacement</strong> (« droit à l'oubli »)</li>
             <li><strong>Droit d'opposition</strong> aux traitements fondés sur l'intérêt légitime</li>
             <li><strong>Droit à la limitation</strong> du traitement</li>
             <li><strong>Droit à la portabilité</strong> — récupérer vos données dans un format lisible par une machine</li>
             <li><strong>Droit de retirer votre consentement</strong> à tout moment, pour la mesure d'audience</li>
             </ul>
             <h3>Exercer vos droits</h3>
-            <p>Depuis votre compte, dans vos <a href="/settings">paramètres</a> :</p>
+            <p>Depuis votre compte, dans vos <a href="/settings">paramètres</a> :</p>
             <ul>
             <li><strong>Compte</strong> — corriger votre nom ou votre adresse email</li>
             <li><strong>Confidentialité › Télécharger mes données</strong> — fichier JSON contenant votre profil et vos favoris (accès et portabilité)</li>
@@ -278,9 +278,9 @@
             </ul>
             <p>Pour tout autre droit, ou si vous n'avez pas de compte, écrivez à <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a>. Nous répondons dans un délai d'un mois. Une preuve d'identité peut être demandée en cas de doute raisonnable.</p>
             <h3>Réclamation auprès de la CNIL</h3>
-            <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la CNIL :</p>
+            <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la CNIL :</p>
             <p><strong>CNIL</strong> — 3 Place de Fontenoy, TSA 80715, 75334 PARIS CEDEX 07</p>
-            <p>Site web : <a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a></p>
+            <p>Site web : <a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a></p>
           </div>
         </div>
 
@@ -302,10 +302,10 @@
             <p>Cette politique peut évoluer avec le site ou la réglementation. La date de la dernière mise à jour figure en haut de page. En cas de modification substantielle, nous vous en informerons par un message sur le site et, si vous avez un compte, par email.</p>
             <h3>Historique des versions</h3>
             <ul class="version-history">
-            <li><strong>Version 2.1 — 19 novembre 2026 :</strong> les liens envoyés par email sont remplacés par des codes à 6 chiffres, saisis sur le site (mêmes durées, 5 essais par code).</li>
-            <li><strong>Version 2.0 — 10 novembre 2026 :</strong> durées alignées sur le fonctionnement réel (suppression immédiate du compte, liens de 30 et 15 minutes), choix des cookies conservé 6 mois, catégorie « préférence » supprimée, inventaire des traceurs refait, formulaire de contact décrit, transferts hors UE précisés, téléchargement des données depuis les paramètres.</li>
-            <li><strong>Version 1.1 — 8 septembre 2026 :</strong> la mesure d'audience repose sur le consentement ; durées des jetons de session corrigées.</li>
-            <li><strong>Version 1.0 — avril 2026 :</strong> première publication.</li>
+            <li><strong>Version 2.1 — 19 novembre 2026 :</strong> les liens envoyés par email sont remplacés par des codes à 6 chiffres, saisis sur le site (mêmes durées, 5 essais par code).</li>
+            <li><strong>Version 2.0 — 10 novembre 2026 :</strong> durées alignées sur le fonctionnement réel (suppression immédiate du compte, liens de 30 et 15 minutes), choix des cookies conservé 6 mois, catégorie « préférence » supprimée, inventaire des traceurs refait, formulaire de contact décrit, transferts hors UE précisés, téléchargement des données depuis les paramètres.</li>
+            <li><strong>Version 1.1 — 8 septembre 2026 :</strong> la mesure d'audience repose sur le consentement ; durées des jetons de session corrigées.</li>
+            <li><strong>Version 1.0 — avril 2026 :</strong> première publication.</li>
             </ul>
           </div>
         </div>
