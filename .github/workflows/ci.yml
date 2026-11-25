@@ -80,7 +80,7 @@ jobs:
 
       - name: Generated files match the sources
         run: |
-          GENERATED=(frontend/js/dist frontend/js/vendor frontend/css frontend/js/app-version.js frontend/js/shared/airplane-fields.js)
+          GENERATED=(frontend/js/dist frontend/js/vendor frontend/css frontend/js/app-version.js frontend/js/shared/airplane-fields.js frontend/js/shared/meta-description.js)
           CHANGES=$(git status --porcelain -- "${GENERATED[@]}")
           if [ -n "$CHANGES" ]; then
             echo "::error::Fichiers générés périmés : lancer « npm run build » et committer le résultat."

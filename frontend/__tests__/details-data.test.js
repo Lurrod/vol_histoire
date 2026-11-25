@@ -7,6 +7,7 @@
  */
 global.i18n = { t: (k) => ({ 'nav.home': 'Accueil', 'nav.hangar': 'Hangar' }[k] || k), currentLang: 'fr' };
 window.i18n = global.i18n;
+require('../js/shared/meta-description');
 require('../js/details/data');
 
 const { updateSeoMeta } = window.VH.details.data;
@@ -167,7 +168,8 @@ describe('updateSeoMeta — balises absentes et description', () => {
   test('markdownToText / plainDescription exposés', () => {
     const { markdownToText, plainDescription } = window.VH.details.data;
     expect(markdownToText('- *un* `deux`')).toBe('un deux');
-    expect(plainDescription('Fini !', '')).toBe('Fini !');
+    // Typographie française du rendu serveur : espace fine insécable avant « ! ».
+    expect(plainDescription('Fini !', '')).toBe('Fini\u202f!');
     expect(plainDescription('', '')).toBe('');
   });
 

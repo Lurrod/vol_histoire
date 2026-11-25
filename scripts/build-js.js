@@ -101,6 +101,7 @@ const BUNDLES = {
     'shared/compare-morph.js',
     'shared/compare.js',
     'details/markdown.js',
+    'shared/meta-description.js',
     'details/data.js',
     'shared/photo-credit.js',
     'details/key-dates.js',
@@ -264,6 +265,36 @@ function writeAirplaneFields() {
   return AIRPLANE_FIELDS.length;
 }
 
+/* Meta description d'une fiche (ARCH-003) : backend/utils/meta-description.js
+ * est la source unique du rendu serveur et du navigateur. Son corps, entre les
+ * repères « >>> / <<< partagé avec le navigateur », est recopié dans
+ * shared/meta-description.js (versionné, régénéré à chaque build) ;
+ * frontend/__tests__/meta-description.test.js compare les deux. */
+function writeMetaDescription() {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'backend', 'utils', 'meta-description.js'), 'utf8')
+    .replace(/\r\n/g, '\n');
+  const match = source.match(/\/\/ >>> partagé avec le navigateur\n([\s\S]*?)\/\/ <<< partagé avec le navigateur/);
+  if (!match) throw new Error('meta-description.js : repères « partagé avec le navigateur » introuvables');
+  const body = match[1].replace(/\n+$/, '').split('\n').map(l => (l ? `  ${l}` : l)).join('\n');
+  const out = [
+    '/* Généré par scripts/build-js.js depuis backend/utils/meta-description.js — ne pas éditer.',
+    ' * Meta description d\'une fiche : même règle que le rendu serveur. */',
+    '(function () {',
+    body,
+    '',
+    '  const api = { truncate, markdownToText, buildDescription, typographyFr };',
+    '  window.VH = window.VH || {};',
+    '  window.VH.shared = window.VH.shared || {};',
+    '  window.VH.shared.metaDescription = api;',
+    '  if (typeof module !== \'undefined\' && module.exports) module.exports = api;',
+    '})();',
+    '',
+  ].join('\n');
+  const file = path.join(JS, 'shared', 'meta-description.js');
+  const current = fs.existsSync(file) ? fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n') : null;
+  if (current !== out) fs.writeFileSync(file, out, 'utf8');
+}
+
 // ── Bibliothèques tierces (frontend/js/vendor/) ────────────────────────
 
 /* DOMPurify et @sentry/browser étaient recopiés à la main dans vendor/ :
@@ -342,6 +373,8 @@ async function build() {
   const version = writeAppVersion();
   console.log(`  app-version.js         ${version}`);
   console.log(`  airplane-fields.js     ${writeAirplaneFields()} champs`);
+  writeMetaDescription();
+  console.log('  meta-description.js    copie de backend/utils/meta-description.js');
   await buildVendor();
   console.log('');
 
