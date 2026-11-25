@@ -94,7 +94,7 @@ describe('HTML-001 — langue des rendus serveur', () => {
   };
 
   test('/conflits/:slug avec Accept-Language anglais : titre, h1, lang et Vary', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [war] });
+    mockPool.query.mockResolvedValueOnce({ rows: [war] }).mockResolvedValueOnce({ rows: [] }).mockResolvedValueOnce({ rows: [] });
     const res = await request(app).get('/conflits/annexion-de-goa').set('Accept-Language', 'en-US,en;q=0.9');
     expect(res.status).toBe(200);
     expect(res.text).toContain('<html lang="en">');
@@ -106,7 +106,7 @@ describe('HTML-001 — langue des rendus serveur', () => {
   });
 
   test('/conflits/:slug?lang=fr l\'emporte sur Accept-Language', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [war] });
+    mockPool.query.mockResolvedValueOnce({ rows: [war] }).mockResolvedValueOnce({ rows: [] }).mockResolvedValueOnce({ rows: [] });
     const res = await request(app).get('/conflits/annexion-de-goa?lang=fr').set('Accept-Language', 'en');
     expect(res.text).toContain('<h1 id="page-hero-heading">Annexion de Goa</h1>');
   });
@@ -134,7 +134,8 @@ describe('SEC-003 — pages à nonce CSP jamais en cache partagé', () => {
     ['/conflits/annexion-de-goa', { rows: [{ id: 1, name: 'Annexion de Goa', date_start: '1961-12-17' }] }],
     ['/details/sr-71-blackbird-31', { rows: [{ id: 31, name: 'SR-71 Blackbird', image_url: '/assets/airplanes/sr71.jpg' }] }],
   ])('%s : cache privé, nonce de l’en-tête présent dans la page', async (url, rows) => {
-    mockPool.query.mockResolvedValueOnce(rows);
+    // Page de conflit : appareils et camps lus ensuite (SEO-005).
+    mockPool.query.mockResolvedValueOnce(rows).mockResolvedValueOnce({ rows: [] }).mockResolvedValueOnce({ rows: [] });
     const res = await request(app).get(url);
     expect(res.status).toBe(200);
     expect(res.headers['cache-control']).toBe('private, max-age=3600');

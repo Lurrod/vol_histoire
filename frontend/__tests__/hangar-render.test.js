@@ -83,14 +83,18 @@ describe('pagination', () => {
     render.renderPagination(makeState({ total: 13, currentPage: 1 }));
     const c = document.getElementById('pagination-container');
     expect(c.querySelector('.page-info .sr-only').textContent).toBe('hangar.page_info:{"current":1,"total":3}');
-    expect(c.querySelector('.prev-page-btn').disabled).toBe(true);
-    expect(c.querySelector('.next-page-btn').disabled).toBe(false);
+    expect(c.querySelector('.prev-page-btn').getAttribute('aria-disabled') === 'true').toBe(true);
+    expect(c.querySelector('.next-page-btn').getAttribute('aria-disabled') === 'true').toBe(false);
     expect(c.querySelector('.prev-page-btn').textContent).toContain('hangar.prev_page');
     expect(c.querySelector('.next-page-btn').textContent).toContain('hangar.next_page');
+    // SEO-005 : liens suivables, sans href en bout de liste.
+    expect(c.querySelector('.next-page-btn').tagName).toBe('A');
+    expect(c.querySelector('.next-page-btn').getAttribute('href')).toMatch(/[?&]page=2(&|$)/);
+    expect(c.querySelector('.prev-page-btn').hasAttribute('href')).toBe(false);
 
     render.renderPagination(makeState({ total: 13, currentPage: 3 }));
-    expect(c.querySelector('.next-page-btn').disabled).toBe(true);
-    expect(c.querySelector('.prev-page-btn').disabled).toBe(false);
+    expect(c.querySelector('.next-page-btn').getAttribute('aria-disabled') === 'true').toBe(true);
+    expect(c.querySelector('.prev-page-btn').getAttribute('aria-disabled') === 'true').toBe(false);
   });
 
   test("le compteur de page persiste d'un rendu à l'autre (le chiffre qui change tourne)", async () => {
@@ -108,7 +112,7 @@ describe('pagination', () => {
     expect(removed).not.toContain(info);
     expect(c.querySelector('.page-info')).toBe(info);
     expect(info.querySelector('.sr-only').textContent).toBe('hangar.page_info:{"current":2,"total":4}');
-    expect(c.querySelector('.prev-page-btn').disabled).toBe(false);
+    expect(c.querySelector('.prev-page-btn').getAttribute('aria-disabled') === 'true').toBe(false);
   });
 
   test('total nul ou non numérique : pagination vide', () => {

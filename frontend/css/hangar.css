@@ -94,13 +94,17 @@
 
 /* Pagination */
 .page-hangar .pagination { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin: 6rem 0 5rem; }
-.page-hangar .pagination button { padding: 0.75rem 1.25rem; background: var(--white-a03); border: 1px solid var(--white-a08); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); color: var(--white-a70); }
-.page-hangar .pagination button:hover:not(:disabled) { border-color: var(--white-a20); background: var(--white-a07); color: var(--white); }
-.page-hangar .pagination button:disabled { opacity: 0.3; cursor: not-allowed; }
+/* « Précédent » / « Suivant » sont des liens (SEO-005) : les robots suivent
+   la pagination. Ils reprennent l'apparence des anciens boutons, y compris
+   ce que le navigateur donnait d'office à un <button>. */
+.page-hangar .pagination a.page-link { display: inline-block; box-sizing: border-box; font-size: 0.8333rem; line-height: normal; text-align: center; text-decoration: none; }
+.page-hangar .pagination button, .page-hangar .pagination a.page-link { padding: 0.75rem 1.25rem; background: var(--white-a03); border: 1px solid var(--white-a08); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); color: var(--white-a70); }
+.page-hangar .pagination button:hover:not(:disabled), .page-hangar .pagination a.page-link:not([aria-disabled="true"]):hover { border-color: var(--white-a20); background: var(--white-a07); color: var(--white); }
+.page-hangar .pagination button:disabled, .page-hangar .pagination a.page-link[aria-disabled="true"] { opacity: 0.3; cursor: not-allowed; }
 .page-hangar .pagination .page-info { padding: 0.75rem 1.25rem; font-weight: 600; color: var(--text-ghost); transition: opacity var(--dur-fast) var(--ease-out); }
 /* Chargement en cours (lockPagination) : boutons désactivés, page estompée. */
 .page-hangar .pagination[aria-busy="true"] .page-info { opacity: 0.45; }
-.page-hangar .pagination[aria-busy="true"] button { cursor: progress; }
+.page-hangar .pagination[aria-busy="true"] button, .page-hangar .pagination[aria-busy="true"] a.page-link { cursor: progress; }
 
 /* ======================================================================
    MODAL
@@ -197,7 +201,7 @@ body.page-hangar.modal-open { overflow: hidden; }
   .page-hangar .modal-form, .page-hangar .modal-footer { padding: 1.5rem 1rem; }
   .page-hangar .form-section { padding: 1.25rem; }
   .page-hangar .pagination { gap: 0.5rem; }
-  .page-hangar .pagination button { padding: 0.65rem 1rem; font-size: 0.9rem; min-height: 44px; }
+  .page-hangar .pagination button, .page-hangar .pagination a.page-link { padding: 0.65rem 1rem; font-size: 0.9rem; min-height: 44px; }
 }
 
 @media (max-width: 30em) {
@@ -216,7 +220,7 @@ body.page-hangar.modal-open { overflow: hidden; }
   .page-hangar .aircraft-content { padding: 1rem; }
   /* Une seule ligne : précédent · page · suivant. */
   .page-hangar .pagination { margin: 2.5rem 0 3rem; gap: 0.35rem; }
-  .page-hangar .pagination button { padding: 0.65rem 0.75rem; font-size: 0.85rem; white-space: nowrap; }
+  .page-hangar .pagination button, .page-hangar .pagination a.page-link { padding: 0.65rem 0.75rem; font-size: 0.85rem; white-space: nowrap; }
   .page-hangar .pagination .page-info { padding: 0.5rem 0.25rem; font-size: 0.85rem; white-space: nowrap; flex: 1; text-align: center; justify-content: center; }
   .page-hangar .modal { padding: 0; align-items: flex-end; }
   .page-hangar .modal-container { max-height: 90vh; border-radius: 16px 16px 0 0; margin: 0; width: 100%; }

@@ -1799,6 +1799,16 @@ describe('Audit sécurité — cardinalité des métriques', () => {
 
 
 describe('SSR /conflits et /conflits/:slug', () => {
+  // Liste des conflits, appareils et camps (SEO-005) : vides par défaut.
+  beforeEach(() => { mockPool.query.mockResolvedValue({ rows: [] }); });
+
+  test('/conflits : base indisponible → page servie quand même, sans grille', async () => {
+    mockPool.query.mockRejectedValueOnce(new Error('connexion perdue'));
+    const res = await request(app).get('/conflits');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<div id="conflicts-list" class="conflicts-grid hidden"></div>');
+  });
+
   test('/conflits sert la page avec ses balises par défaut', async () => {
     const res = await request(app).get('/conflits');
     expect(res.status).toBe(200);

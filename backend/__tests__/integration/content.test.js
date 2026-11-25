@@ -251,6 +251,25 @@ describeIt('Intégration SQL — contenus', () => {
     });
   });
 
+  describe('GET /conflits — liens explorables écrits par le serveur (SEO-005)', () => {
+    test('liste : un lien par conflit engagé ; page de conflit : liens vers les appareils engagés', async () => {
+      const list = await api().get('/conflits');
+      expect(list.status).toBe(200);
+      const warLinks = new Set(list.text.match(/href="\/conflits\/[a-z0-9-]+"/g) || []);
+      const { rows: [{ n }] } = await ctx.pool.query('SELECT count(DISTINCT id_wars)::int AS n FROM airplane_wars');
+      expect(warLinks.size).toBe(n);
+
+      const { rows: [war] } = await ctx.pool.query(`
+        SELECT w.name, count(*)::int AS roles FROM wars w JOIN airplane_wars aw ON aw.id_wars = w.id
+        WHERE aw.role IS NOT NULL GROUP BY w.id ORDER BY roles DESC LIMIT 1`);
+      const { slugify } = require('../../utils/url');
+      const page = await api().get(`/conflits/${slugify(war.name)}`);
+      expect(page.status).toBe(200);
+      const planeLinks = new Set((page.text.match(/<h4 class="role-name"><a href="\/details\/[^"]+">/g) || []));
+      expect(planeLinks.size).toBe(war.roles);
+    });
+  });
+
   describe('GET /sitemap.xml', () => {
     test('pages fixes, conflits et fiches', async () => {
       require('../../utils/cache')._resetForTests();

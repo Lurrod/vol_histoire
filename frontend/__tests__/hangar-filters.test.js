@@ -152,11 +152,12 @@ describe('pagination du hangar', () => {
     const state = makeState({ total: 30, currentPage: 2 });
     render.renderPagination(state);
     const container = document.getElementById('pagination-container');
-    expect(container.querySelector('.next-page-btn').disabled).toBe(false);
+    const off = (el) => el.getAttribute('aria-disabled') === 'true';
+    expect(off(container.querySelector('.next-page-btn'))).toBe(false);
 
     render.lockPagination();
     expect(container.getAttribute('aria-busy')).toBe('true');
-    container.querySelectorAll('button').forEach(b => expect(b.disabled).toBe(true));
+    container.querySelectorAll('.page-link').forEach(a => expect(off(a)).toBe(true));
 
     // Un changement de page demandé pendant le chargement est ignoré.
     render.changePage(state, 3);
@@ -164,7 +165,7 @@ describe('pagination du hangar', () => {
 
     render.renderPagination(state);
     expect(container.hasAttribute('aria-busy')).toBe(false);
-    expect(container.querySelector('.prev-page-btn').disabled).toBe(false);
-    expect(container.querySelector('.next-page-btn').disabled).toBe(false);
+    expect(off(container.querySelector('.prev-page-btn'))).toBe(false);
+    expect(off(container.querySelector('.next-page-btn'))).toBe(false);
   });
 });

@@ -21,6 +21,9 @@ const {
   applyHeadMeta, replaceJsonLd, sendSsrHtml,
 } = require('../utils/ssr-head');
 const { listEngagedWars } = require('../repositories/ssr-conflicts');
+const warsRepo = require('../repositories/wars');
+const logger = require('../logger');
+const { applyList, applySides } = require('../utils/conflicts-links-ssr');
 
 const FRONTEND_DIR = path.join(__dirname, '../../frontend');
 const MAX_DESC = 160;
@@ -178,10 +181,24 @@ function createConflictsSsrRouter(getPool) {
   };
   const templateFor = (req) => templates[req.lang === 'en' ? 'en' : 'fr'];
 
-  router.get('/conflits', (req, res, next) => {
-    const template = templateFor(req);
-    if (!template) return next();
-    sendSsrHtml(req, res, renderHtml(template, buildConflictsIndexMeta(req.lang)));
+  // Liste : grille de liens vers chaque conflit écrite dans le HTML (SEO-005).
+  router.get('/conflits', async (req, res, next) => {
+    try {
+      const template = templateFor(req);
+      if (!template) return next();
+      const lang = req.lang === 'en' ? 'en' : 'fr';
+      // Base indisponible : la page part sans la grille, que le navigateur
+      // remplira par l'API comme avant ; seule la liste manque aux robots.
+      let wars = [];
+      try {
+        wars = await warsRepo.listWithCounts(getPool());
+      } catch (err) {
+        logger.warn('Grille des conflits non rendue par le serveur', { error: err.message, route: 'GET /conflits' });
+      }
+      sendSsrHtml(req, res, applyList(renderHtml(template, buildConflictsIndexMeta(req.lang)), wars, lang));
+    } catch (err) {
+      next(err);
+    }
   });
 
   router.get('/conflits/:slug', async (req, res, next) => {
@@ -196,7 +213,14 @@ function createConflictsSsrRouter(getPool) {
       if (!war) return next(); // 404 standard
 
       const meta = buildConflictMeta(war, slug, req.lang);
-      sendSsrHtml(req, res, renderHtml(template, meta, meta.name));
+      // Appareils engagés, par camp, en liens vers leurs fiches (SEO-005).
+      const pool = getPool();
+      const [airplanes, sides] = await Promise.all([
+        warsRepo.findAirplanes(pool, war.id),
+        warsRepo.findSides(pool, war.id),
+      ]);
+      const lang = req.lang === 'en' ? 'en' : 'fr';
+      sendSsrHtml(req, res, applySides(renderHtml(template, meta, meta.name), airplanes, sides, lang));
     } catch (err) {
       next(err);
     }
