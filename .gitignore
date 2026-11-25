@@ -57,3 +57,5 @@ list.md
 .playwright-mcp/
 
 audit/
+# Cartes de source des bundles JS (scripts/build-js.js) : jamais servies ni versionnées
+build/

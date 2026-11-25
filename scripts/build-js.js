@@ -317,6 +317,8 @@ function writeMetaDescription() {
  * sentry-init.js charge js/vendor/sentry.min.js à la demande : chemins
  * inchangés. Prérequis : `cd frontend && npm install`. */
 const FRONTEND = path.join(__dirname, '..', 'frontend');
+// Cartes de source des bundles : hors du dossier servi (JS-009).
+const SOURCEMAPS = path.join(__dirname, '..', 'build', 'sourcemaps');
 const VENDOR = path.join(JS, 'vendor');
 
 function frontendPackage(name) {
@@ -402,19 +404,29 @@ async function build() {
       return fs.readFileSync(full, 'utf8');
     });
 
-    const concat = parts.join('\n;\n');
+    // Repère du fichier d'origine avant chaque module : visible dans la carte
+    // de source (sourcesContent), retiré du bundle par la minification.
+    const concat = parts.map((code, i) => `// ── ${files[i]} ──\n${code}`).join('\n;\n');
     totalSrc += Buffer.byteLength(concat, 'utf8');
 
     // Minifier via esbuild (pas de bundling, juste transform)
     // Pas de format: 'iife' — les scripts utilisent des globals (auth, i18n, etc.)
     // qui doivent rester accessibles entre bundles.
-    const { code } = await esbuild.transform(concat, {
+    // Carte de source externe (JS-009) : écrite hors de frontend/ (jamais
+    // servie, ignorée par git), sans commentaire sourceMappingURL dans le
+    // bundle. À téléverser dans Sentry (sentry-cli sourcemaps upload) le jour
+    // où Sentry navigateur reçoit un DSN : les piles se liront alors en clair.
+    const { code, map } = await esbuild.transform(concat, {
       minify: true,
       target: 'es2020',
+      sourcemap: 'external',
+      sourcefile: `js/dist/${outName.replace(/\.min\.js$/, '.src.js')}`,
     });
 
     const outPath = path.join(DIST, outName);
     fs.writeFileSync(outPath, code, 'utf8');
+    fs.mkdirSync(SOURCEMAPS, { recursive: true });
+    fs.writeFileSync(path.join(SOURCEMAPS, `${outName}.map`), map, 'utf8');
 
     const srcKB = (Buffer.byteLength(concat, 'utf8') / 1024).toFixed(1);
     const minKB = (Buffer.byteLength(code, 'utf8') / 1024).toFixed(1);
