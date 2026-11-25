@@ -242,3 +242,24 @@ describe('attente de la session', () => {
     expect(auth.getPayload).not.toHaveBeenCalled();
   });
 });
+
+describe('lien d’évitement (A11Y-004)', () => {
+  test('pose le focus sur le contenu principal sans suivre l’ancre', () => {
+    loadNav('<header><a href="#main-content" class="skip-link">Aller au contenu</a></header><main id="main-content"><p>x</p></main>');
+    const main = document.getElementById('main-content');
+    main.scrollIntoView = jest.fn();
+    const ev = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+    document.querySelector('.skip-link').dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(true);
+    expect(main.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(main);
+    expect(main.scrollIntoView).toHaveBeenCalled();
+  });
+
+  test('sans contenu principal, le lien garde son comportement natif', () => {
+    loadNav('<header><a href="#main-content" class="skip-link">Aller au contenu</a></header>');
+    const ev = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+    document.querySelector('.skip-link').dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(false);
+  });
+});

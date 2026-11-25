@@ -7,7 +7,8 @@
   root.VH.home = root.VH.home || {};
 
   function smoothAnchors() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    // Le lien d'évitement a son propre gestionnaire (nav.js) : il déplace le focus.
+    document.querySelectorAll('a[href^="#"]:not(.skip-link)').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         const href = this.getAttribute('href');
         // Le href peut avoir été muté vers un chemin après le parse (widgets

@@ -26,6 +26,10 @@
   transition: top var(--dur-fast) var(--ease-out);
 }
 
+/* Cible du lien d'évitement : focalisable par script seulement
+   (tabindex="-1"), sans anneau autour de toute la page. */
+main[tabindex="-1"]:focus { outline: none; }
+
 .skip-link:focus {
   top: 0;
   outline: 3px solid var(--white);

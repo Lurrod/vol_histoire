@@ -172,6 +172,22 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDropdownKeyboard(document.getElementById('lang-dropdown'), '.lang-option');
 
   // -------------------------------------------------------------------
+  // Lien d'évitement (A11Y-004) : il vit dans l'en-tête partagé. Suivre
+  // l'ancre ne suffit pas : sous <base href="/"> (fiche, conflits),
+  // « #main-content » mènerait à l'accueil, et un simple défilement
+  // laisserait le focus dans l'en-tête. On défile et on pose le focus sur
+  // le contenu principal.
+  // -------------------------------------------------------------------
+  document.querySelector('.skip-link')?.addEventListener('click', (e) => {
+    const target = document.getElementById('main-content');
+    if (!target) return;
+    e.preventDefault();
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ block: 'start' });
+  });
+
+  // -------------------------------------------------------------------
   // ESC pour tout fermer
   // -------------------------------------------------------------------
   document.addEventListener('keydown', (e) => {
