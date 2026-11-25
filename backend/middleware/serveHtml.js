@@ -178,6 +178,45 @@ function escapeAttr(str) {
   }[c]));
 }
 
+// Types de page dont le nom est celui de la page (le WebSite garde le nom du site).
+const JSONLD_PAGE_TYPES = new Set(['WebPage', 'CollectionPage', 'ContactPage', 'AboutPage']);
+
+/**
+ * Libellés de navigation français → anglais (fil d'Ariane des JSON-LD :
+ * « Accueil » → « Home », « Conflits » → « Conflicts »…).
+ */
+function navLabels(frDict, enDict) {
+  const map = new Map();
+  const fr = (frDict && frDict.nav) || {};
+  const en = (enDict && enDict.nav) || {};
+  Object.keys(fr).forEach((k) => { if (typeof en[k] === 'string') map.set(fr[k], en[k]); });
+  return map;
+}
+
+/**
+ * Données structurées en anglais (HTML-003) : inLanguage, nom et description
+ * de la page, libellés du fil d'Ariane. Un bloc illisible reste tel quel.
+ */
+function localizeJsonLd(html, { title, description, labels }) {
+  const translate = (node, isRoot) => {
+    if (Array.isArray(node)) return node.map((n) => translate(n, false));
+    if (!node || typeof node !== 'object') return node;
+    const out = {};
+    Object.entries(node).forEach(([k, v]) => { out[k] = translate(v, false); });
+    if (out.inLanguage === 'fr') out.inLanguage = 'en';
+    if (isRoot && description && typeof out.description === 'string') out.description = description;
+    if (isRoot && title && JSONLD_PAGE_TYPES.has(out['@type'])) out.name = title;
+    if (out['@type'] === 'ListItem' && labels.has(out.name)) out.name = labels.get(out.name);
+    return out;
+  };
+  return html.replace(/(<script type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g, (match, open, body, close) => {
+    let data;
+    try { data = JSON.parse(body); } catch { return match; }
+    const json = JSON.stringify(translate(data, true), null, 2).replace(/</g, '\\u003c');
+    return `${open}\n${json}\n  ${close}`;
+  });
+}
+
 /**
  * Réécrit la tête d'une page dans une langue. Tous les remplacements passent
  * par une fonction (un « $& » d'une traduction reste du texte).
@@ -186,7 +225,7 @@ function escapeAttr(str) {
  * @param {'fr'|'en'} lang
  * @param {object} dict - traductions de la langue (locales/<lang>.json)
  */
-function localizeHead(html, pageName, lang, dict) {
+function localizeHead(html, pageName, lang, dict, frDict = {}) {
   let out = html;
   const canonical = /<link rel="canonical" href="([^"?#]+)">/.exec(out);
   const base = canonical ? canonical[1] : null;
@@ -220,7 +259,7 @@ function localizeHead(html, pageName, lang, dict) {
     out = out.replace(/<meta property="og:description" content="[^"]*">/, () => `<meta property="og:description" content="${d}">`);
     out = out.replace(/<meta name="twitter:description" content="[^"]*">/, () => `<meta name="twitter:description" content="${d}">`);
   }
-  return out;
+  return localizeJsonLd(out, { title, description, labels: navLabels(frDict, dict) });
 }
 
 /**
@@ -247,7 +286,7 @@ function renderTemplate(frontendDir, fileName, version) {
 function buildHtmlCache(frontendDir, version) {
   const cache = new Map();
   const partials = loadPartials(frontendDir);
-  const dictionaries = { en: loadDictionary(frontendDir, 'en') };
+  const dictionaries = { en: loadDictionary(frontendDir, 'en'), fr: loadDictionary(frontendDir, 'fr') };
   const warnings = [];
   let count = 0;
 
@@ -272,7 +311,7 @@ function buildHtmlCache(frontendDir, version) {
         const html = injectHeadExtras(rewrite(resolveIncludes(raw, pageName, partials, warnings), version));
         cache.set(full, {
           fr: localizeHead(html, pageName, 'fr', {}),
-          en: localizeHead(html, pageName, 'en', dictionaries.en),
+          en: localizeHead(html, pageName, 'en', dictionaries.en, dictionaries.fr),
         });
         count++;
       } catch { /* ignore */ }
@@ -296,6 +335,6 @@ function buildHtmlCache(frontendDir, version) {
 }
 
 module.exports = {
-  buildHtmlCache, rewrite, resolveIncludes, loadPartials, renderTemplate, localizeHead, PAGE_OPTIONS,
+  buildHtmlCache, rewrite, resolveIncludes, loadPartials, renderTemplate, localizeHead, localizeJsonLd, PAGE_OPTIONS,
   injectMorphOptIn, MORPH_OPT_IN, injectOpenSearchLink, OPENSEARCH_LINK, injectHeadExtras,
 };

@@ -6,7 +6,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const {
-  buildHtmlCache, rewrite, resolveIncludes, loadPartials, renderTemplate, localizeHead,
+  buildHtmlCache, rewrite, resolveIncludes, loadPartials, renderTemplate, localizeHead, localizeJsonLd,
   injectMorphOptIn, MORPH_OPT_IN,
 } = require('../middleware/serveHtml');
 
@@ -235,6 +235,33 @@ describe('SEO-001 — versions linguistiques des pages statiques', () => {
   test('localizeHead en sans traduction ni canonical : rien n\'est inventé', () => {
     const html = localizeHead('<html lang="fr"><title>T</title>', 'x', 'en', {});
     expect(html).toBe('<html lang="en"><title>T</title>');
+  });
+
+  test('localizeHead en : JSON-LD traduit (inLanguage, nom et description, fil d\'Ariane) — HTML-003', () => {
+    const page = [
+      '<html lang="fr"><title data-i18n="t.hangar">Hangar FR</title>',
+      '<meta name="description" content="FR">',
+      '<script type="application/ld+json">{"@type":"CollectionPage","name":"Hangar FR","description":"FR","inLanguage":"fr",',
+      '"isPartOf":{"@type":"WebSite","name":"Vol d\'Histoire","inLanguage":"fr"}}</script>',
+      '<script type="application/ld+json">{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","name":"Accueil"}]}</script>',
+    ].join('\n');
+    const en = { t: { hangar: 'Hangar EN' }, seo: { description: { hangar: 'EN description' } }, nav: { home: 'Home' } };
+    const html = localizeHead(page, 'hangar', 'en', en, { nav: { home: 'Accueil' } });
+    const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
+    expect(blocks[0]).toMatchObject({ name: 'Hangar EN', description: 'EN description', inLanguage: 'en' });
+    expect(blocks[0].isPartOf).toEqual({ '@type': 'WebSite', name: "Vol d'Histoire", inLanguage: 'en' });
+    expect(blocks[1].itemListElement[0].name).toBe('Home');
+  });
+
+  test('localizeJsonLd : le WebSite garde son nom, un bloc illisible reste tel quel, « < » échappé', () => {
+    const html = [
+      '<script type="application/ld+json">{"@type":"WebSite","name":"Vol d\'Histoire","description":"FR"}</script>',
+      '<script type="application/ld+json">{ cassé</script>',
+    ].join('');
+    const out = localizeJsonLd(html, { title: 'Titre', description: 'EN <b>', labels: new Map() });
+    expect(out).toContain('"name": "Vol d\'Histoire"');
+    expect(out).toContain('"description": "EN \\u003cb>"');
+    expect(out).toContain('{ cassé</script>');
   });
 
   test('buildHtmlCache : get(page, lang) sert la variante, français par défaut', () => {
