@@ -1146,3 +1146,18 @@ CREATE INDEX IF NOT EXISTS idx_airplane_wars_side   ON airplane_wars (side_id) W
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON war_sides, war_events TO vol_user;
 GRANT USAGE, SELECT ON SEQUENCE war_sides_id_seq, war_events_id_seq TO vol_user;
+
+-- Suivi des migrations (DEVOPS-003) : une installation neuve est à jour de
+-- toutes les migrations de backend/migrations/, inscrites ici d'emblée.
+CREATE TABLE IF NOT EXISTS schema_migrations (
+  name       TEXT PRIMARY KEY,
+  applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+GRANT SELECT ON schema_migrations TO vol_user;
+INSERT INTO schema_migrations (name) VALUES
+  ('001_mise_a_niveau'),
+  ('002_securite_sessions'),
+  ('003_jetons_haches'),
+  ('004_codes_email'),
+  ('005_suivi_migrations')
+ON CONFLICT (name) DO NOTHING;

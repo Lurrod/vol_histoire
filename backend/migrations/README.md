@@ -11,6 +11,9 @@ pas besoin : `db_backup/db.sql` puis les fiches contiennent déjà le résultat.
 | `002_securite_sessions.sql` | `users.token_version`, compteur d'échecs de connexion, rotation des refresh tokens (v4.11.1) | oui (additive) |
 | `003_jetons_haches.sql` | `email_tokens.token` → `token_hash` (SHA-256), jetons en cours hachés sur place (v4.14.0) | **non** : à jouer au moment du déploiement du code qui l'attend |
 | `004_codes_email.sql` | Codes à 6 chiffres au lieu des liens : `email_tokens.attempts` (essais manqués), liens encore ouverts clos | oui (additive) : à jouer **avant** le déploiement, le nouveau code lit `attempts` |
+| `005_suivi_migrations.sql` | Table `schema_migrations` : 001 à 005 inscrites (DEVOPS-003) | oui (additive) : à jouer **avant** la fusion du code qui la vérifie |
+
+**Suivi.** Chaque migration s'inscrit dans `schema_migrations` (`INSERT … ON CONFLICT DO NOTHING` à la fin du script) et s'ajoute à `REQUIRED_MIGRATIONS` (`backend/utils/schema-migrations.js` ; un test compare la liste aux fichiers de ce dossier). Au démarrage en production, une migration absente de la table empêche le serveur de démarrer : les tests de fumée du déploiement échouent et le retour arrière se déclenche, au lieu d'un code qui lit une colonne absente. `db_backup/db.sql` inscrit d'emblée toutes les migrations.
 
 En production, les tables appartiennent à `postgres` : jouer les scripts en
 `postgres`, par l'entrée standard (`sudo -u postgres psql -d vol_histoire < fichier.sql`),

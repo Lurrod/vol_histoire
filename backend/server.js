@@ -53,8 +53,10 @@ const pool = new Pool({
 require('./db').watchPoolErrors(pool, logger);
 app.setPool(pool);
 
-// Init Redis rate-limiter (si REDIS_URL défini et Redis joignable)
-app.initRedis().then(() => {
+// Init Redis rate-limiter (si REDIS_URL défini et Redis joignable), puis
+// contrôle des migrations : en production, une migration non jouée empêche
+// le démarrage, donc déclenche le retour arrière du déploiement (DEVOPS-003).
+app.initRedis().then(() => require('./utils/schema-migrations').checkSchema(pool, { logger })).then(() => {
   const port = process.env.PORT || 3000;
   const host = resolveListenHost();
   const server = app.listen(port, host, () => {
