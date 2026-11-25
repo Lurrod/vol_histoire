@@ -27,7 +27,7 @@ body.page-contact { background: var(--night); }
   background: var(--white-a04);
   -webkit-backdrop-filter: blur(18px) saturate(1.1);
   backdrop-filter: blur(18px) saturate(1.1);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--white-a09);
   border-radius: 16px;
 }
 .contact-panel { padding: 2.5rem; }
@@ -38,7 +38,7 @@ body.page-contact { background: var(--night); }
   color: var(--white);
   margin: 0 0 0.35rem;
 }
-.contact-lead { color: rgba(255, 255, 255, 0.66); margin: 0 0 2rem; }
+.contact-lead { color: var(--white-a66); margin: 0 0 2rem; }
 
 /* ── Colonne d'appoint ─────────────────────────────────────────────── */
 .contact-aside {
@@ -61,7 +61,7 @@ body.page-contact { background: var(--night); }
   margin: 0 0 0.75rem;
 }
 .contact-card h2 .icon { width: 0.8rem; height: 0.8rem; color: var(--hud-cyan); }
-.contact-card p { margin: 0; font-size: 0.875rem; line-height: 1.55; color: rgba(255, 255, 255, 0.66); }
+.contact-card p { margin: 0; font-size: 0.875rem; line-height: 1.55; color: var(--white-a66); }
 
 .contact-address {
   display: flex;
@@ -120,7 +120,7 @@ body.page-contact { background: var(--night); }
   font-size: 0.875rem;
   transition: background-color var(--dur-base) var(--ease-out);
 }
-.contact-delays dt { color: rgba(255, 255, 255, 0.66); transition: color var(--dur-base) var(--ease-out); }
+.contact-delays dt { color: var(--white-a66); transition: color var(--dur-base) var(--ease-out); }
 .contact-delays dd { margin: 0; color: var(--white); font-weight: 600; font-variant-numeric: tabular-nums; }
 .contact-delays > .is-active { background: var(--gold-a12); }
 .contact-delays > .is-active dt { color: var(--hud-cyan); }
@@ -132,7 +132,7 @@ body.page-contact { background: var(--night); }
   margin-bottom: 0.75rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--white-a70);
 }
 .topic-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .topic {
@@ -145,7 +145,7 @@ body.page-contact { background: var(--night); }
   border: 1px solid var(--white-a08);
   border-radius: 999px;
   background: var(--white-a02);
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--white-a75);
   font-size: 0.875rem;
   cursor: pointer;
   transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out),
@@ -154,7 +154,7 @@ body.page-contact { background: var(--night); }
 .topic input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
 .topic .icon { width: 0.9rem; height: 0.9rem; color: var(--text-ghost); transition: color var(--dur-fast) var(--ease-out); }
 .topic:hover { border-color: var(--gold-a20); color: var(--white); }
-.topic:has(input:checked) { border-color: rgba(200, 169, 110, 0.55); background: var(--gold-a12); color: var(--white); }
+.topic:has(input:checked) { border-color: var(--gold-a55); background: var(--gold-a12); color: var(--white); }
 .topic:has(input:checked) .icon { color: var(--hud-cyan); }
 .topic:has(input:focus-visible) { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
 .topic:active { scale: var(--press-scale); }
@@ -239,7 +239,7 @@ body.page-contact { background: var(--night); }
 .form-group label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--white-a70);
 }
 
 .form-group input,
@@ -262,12 +262,12 @@ body.page-contact { background: var(--night); }
 .form-group input:focus:not(:focus-visible),
 .form-group textarea:focus:not(:focus-visible) {
   outline: none;
-  border-color: rgba(200, 169, 110, 0.4);
+  border-color: var(--gold-a40);
 }
 .form-group input:focus-visible,
 .form-group textarea:focus-visible {
   outline: none;
-  border-color: rgba(200, 169, 110, 0.7);
+  border-color: var(--gold-a70);
   box-shadow: var(--focus-ring);
 }
 
@@ -364,7 +364,7 @@ body.page-contact { background: var(--night); }
 .form-rgpd-notice a {
   color: var(--hud-cyan);
   text-decoration: underline;
-  text-decoration-color: rgba(200, 169, 110, 0.35);
+  text-decoration-color: var(--gold-a35);
   text-underline-offset: 2px;
   transition: color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out);
 }
@@ -379,8 +379,8 @@ body.page-contact { background: var(--night); }
   display: none;
   margin-top: 1.5rem;
   padding: 1rem 1.5rem;
-  background: rgba(200, 169, 110, 0.06);
-  border: 1px solid rgba(200, 169, 110, 0.2);
+  background: var(--gold-a06);
+  border: 1px solid var(--gold-a20);
   border-radius: 12px;
   color: var(--hud-cyan);
   font-size: 0.9rem;

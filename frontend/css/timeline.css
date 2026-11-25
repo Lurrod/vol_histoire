@@ -75,7 +75,7 @@ body.page-timeline.tl-has-cinematic::before {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(ellipse at 30% 40%, rgba(200, 169, 110, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 40%, var(--gold-a10) 0%, transparent 50%),
     radial-gradient(ellipse at 70% 60%, rgba(74, 127, 160, 0.08) 0%, transparent 55%),
     linear-gradient(180deg, var(--night) 0%, var(--night-mid) 100%);
 }
@@ -84,8 +84,8 @@ body.page-timeline.tl-has-cinematic::before {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(200, 169, 110, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200, 169, 110, 0.025) 1px, transparent 1px);
+    linear-gradient(var(--gold-a025) 1px, transparent 1px),
+    linear-gradient(90deg, var(--gold-a025) 1px, transparent 1px);
   background-size: 80px 80px;
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
@@ -227,8 +227,8 @@ body.page-timeline.tl-has-cinematic::before {
   inset: 0;
   z-index: -1;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    linear-gradient(var(--white-a015) 1px, transparent 1px),
+    linear-gradient(90deg, var(--white-a015) 1px, transparent 1px);
   background-size: 60px 60px;
   pointer-events: none;
 }
@@ -463,7 +463,7 @@ body.page-timeline.tl-has-cinematic::before {
 .page-timeline .tl-event-kind {
   display: inline-block;
   padding: 0.2rem 0.55rem;
-  background: rgba(13, 13, 13, 0.7);
+  background: var(--night-a70);
   border: 1px solid var(--era-color, var(--border-cyan-md));
   color: var(--era-color, var(--hud-cyan));
   font-family: 'Courier New', monospace;
@@ -481,7 +481,7 @@ body.page-timeline.tl-has-cinematic::before {
 
 .page-timeline .tl-event-body {
   position: relative;
-  background: rgba(20, 20, 20, 0.55);
+  background: var(--night-mid-a55);
   border: 1px solid var(--border-subtle);
   border-radius: var(--r-lg);
   padding: 1.5rem 1.75rem;
@@ -523,7 +523,7 @@ body.page-timeline.tl-has-cinematic::before {
   gap: 1rem;
   margin-top: 1.25rem;
   padding: 0.6rem;
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--black-a35);
   border: 1px solid var(--border-subtle);
   border-radius: var(--r-md);
   text-decoration: none;
@@ -533,7 +533,7 @@ body.page-timeline.tl-has-cinematic::before {
 .page-timeline .tl-event-plane:hover,
 .page-timeline .tl-event-plane:focus-visible {
   border-color: var(--era-color, var(--hud-cyan));
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--black-a55);
 }
 .page-timeline .tl-event-plane:focus-visible {
   outline: 2px solid var(--era-color, var(--hud-cyan));
@@ -592,7 +592,7 @@ body.page-timeline.tl-has-cinematic::before {
 
 .page-timeline .tl-plane-card {
   position: relative;
-  background: rgba(20, 20, 20, 0.72);
+  background: var(--night-mid-a72);
   border: 1px solid var(--border-subtle);
   border-radius: var(--r-lg);
   overflow: hidden;
@@ -639,14 +639,14 @@ body.page-timeline.tl-has-cinematic::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(13, 13, 13, 0.9) 100%);
+  background: linear-gradient(180deg, transparent 50%, var(--night-a90) 100%);
   pointer-events: none;
 }
 .page-timeline .tl-plane-year {
   position: absolute;
   top: 0.75rem;
   left: 0.75rem;
-  background: rgba(13, 13, 13, 0.85);
+  background: var(--night-a85);
   backdrop-filter: blur(8px);
   color: var(--era-color, var(--hud-cyan));
   padding: 0.25rem 0.6rem;
@@ -661,7 +661,7 @@ body.page-timeline.tl-has-cinematic::before {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  background: rgba(13, 13, 13, 0.85);
+  background: var(--night-a85);
   backdrop-filter: blur(8px);
   color: var(--text-primary);
   padding: 0.25rem 0.6rem;

@@ -174,7 +174,7 @@
 .page-timeline .tl-chapter[data-decade="1950"] { --era-color: #3aff6e; }
 .page-timeline .tl-chapter[data-decade="1960"] { --era-color: #ff8c00; }
 .page-timeline .tl-chapter[data-decade="1970"] { --era-color: #ff4500; }
-.page-timeline .tl-chapter[data-decade="1980"] { --era-color: #C8A96E; }
+.page-timeline .tl-chapter[data-decade="1980"] { --era-color: var(--hud-cyan); }
 .page-timeline .tl-chapter[data-decade="1990"] { --era-color: #8f75f5; }
 .page-timeline .tl-chapter[data-decade="2000"] { --era-color: #2979ff; }
 .page-timeline .tl-chapter[data-decade="2010"] { --era-color: #e040fb; }

@@ -28,7 +28,7 @@
 
 .skip-link:focus {
   top: 0;
-  outline: 3px solid #fff;
+  outline: 3px solid var(--white);
   outline-offset: 2px;
 }
 
@@ -39,7 +39,7 @@
    Couche « shared » : garde la priorite sur base et components. */
 :root {
   scrollbar-width: thin;
-  scrollbar-color: rgba(200, 169, 110, 0.35) transparent;
+  scrollbar-color: var(--gold-a35) transparent;
 }
 
 ::-webkit-scrollbar {
@@ -52,14 +52,14 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(200, 169, 110, 0.28);
+  background: var(--gold-a28);
   border-radius: 4px;
   border: 2px solid transparent;
   background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(200, 169, 110, 0.55);
+  background: var(--gold-a55);
   background-clip: padding-box;
 }
 
@@ -86,7 +86,7 @@
     position: fixed;
     inset-block-start: 0;
     inset-inline: 0;
-    background: rgba(13, 13, 13, 0.92);
+    background: var(--night-a92);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     padding-block: var(--sp-4);
@@ -100,7 +100,7 @@
 
   body > header.scrolled {
     padding-block: var(--sp-3);
-    background: rgba(13, 13, 13, 0.98);
+    background: var(--night-a98);
     border-bottom-color: var(--white-a08);
   }
 
@@ -170,8 +170,8 @@
   body.page-hangar::after,
   body.page-login::after {
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(var(--white-a015) 1px, transparent 1px),
+      linear-gradient(90deg, var(--white-a015) 1px, transparent 1px),
       radial-gradient(ellipse at 20% 20%, rgba(255, 140, 0, 0.45) 0%, transparent 55%);
     background-size: 60px 60px, 60px 60px, 100% 100%;
   }
@@ -328,7 +328,7 @@
        rognerait une box-shadow. */
     transition: filter var(--dur-base) var(--ease-out);
   }
-  .lang-switch.open { filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.45)); }
+  .lang-switch.open { filter: drop-shadow(0 12px 22px var(--black-a45)); }
 
   /* Même style que le bouton « Menu » du menu flottant : sans fond ni
      bordure au repos, voile clair au survol et à l'ouverture, coins
@@ -389,7 +389,7 @@
     border-radius: 50%;
     object-fit: cover;
     backface-visibility: hidden;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 0 1px var(--white-a18);
   }
   .lang-flag--en { rotate: y 180deg; }
 
@@ -473,7 +473,7 @@
     height: var(--lang-hl-h, 0px);
     translate: 0 var(--lang-hl-y, 0px);
     border-radius: var(--r-lg);
-    background: rgba(200, 169, 110, 0.10);
+    background: var(--gold-a10);
     opacity: 0;
     pointer-events: none;
     transition:
@@ -533,7 +533,7 @@
     height: 20px;
     border-radius: 50%;
     object-fit: cover;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 0 1px var(--white-a18);
   }
   .lang-option.active .lang-option-flag { box-shadow: 0 0 0 1.5px var(--hud-cyan); }
 

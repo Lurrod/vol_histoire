@@ -205,21 +205,21 @@
   /* Fonds teintés mais opaques (calque teinté sur --night-mid) : dans le
      paquet, des cartes translucides se mélangeaient. */
   .toast-success {
-    background: linear-gradient(rgba(0, 230, 118, 0.12), rgba(0, 230, 118, 0.12)), var(--night-mid);
+    background: linear-gradient(var(--ok-a12), var(--ok-a12)), var(--night-mid);
     color: var(--hud-green-text);
-    border: 1px solid rgba(0, 230, 118, 0.25);
+    border: 1px solid var(--ok-a25);
   }
 
   .toast-error {
-    background: linear-gradient(rgba(231, 76, 60, 0.12), rgba(231, 76, 60, 0.12)), var(--night-mid);
+    background: linear-gradient(var(--alert-a12), var(--alert-a12)), var(--night-mid);
     color: var(--accent-text);
-    border: 1px solid rgba(231, 76, 60, 0.25);
+    border: 1px solid var(--alert-a25);
   }
 
   .toast-info {
     background: linear-gradient(var(--gold-a12), var(--gold-a12)), var(--night-mid);
     color: var(--hud-cyan);
-    border: 1px solid rgba(200, 169, 110, 0.25);
+    border: 1px solid var(--gold-a25);
   }
 
   .toast i, .toast .icon { font-size: var(--text-2xl); }
@@ -535,7 +535,7 @@
   }
 
   .skeleton-card {
-    background: rgba(20, 20, 20, 0.70);
+    background: var(--night-mid-a70);
     border-radius: var(--r-xl);
     overflow: hidden;
     border: 1px solid var(--border-subtle);

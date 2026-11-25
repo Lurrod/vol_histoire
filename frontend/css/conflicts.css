@@ -22,7 +22,7 @@
   padding: 1.5rem 1.6rem;
   border: 1px solid var(--white-a07);
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01));
+  background: linear-gradient(135deg, var(--white-a025), var(--white-a01));
   color: inherit;
   text-decoration: none;
   transition: transform var(--dur-base) var(--ease-out), border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-base) var(--ease-out), scale var(--dur-instant) var(--ease-out);
@@ -45,9 +45,9 @@
 .page-conflicts .conflict-card:nth-child(10) { --i: 9; }
 .page-conflicts .conflict-card:hover {
   transform: translateY(var(--hover-lift));
-  border-color: rgba(200, 169, 110, 0.28);
-  background: linear-gradient(135deg, rgba(200, 169, 110, 0.05), rgba(200, 169, 110, 0.015));
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.3);
+  border-color: var(--gold-a28);
+  background: linear-gradient(135deg, var(--gold-a05), var(--gold-a015));
+  box-shadow: 0 14px 32px var(--black-a30);
 }
 /* Silhouettes de chargement (shimmer de shared-base.css) */
 .page-conflicts .skeleton-conflict { min-height: 9.5rem; pointer-events: none; }
@@ -79,7 +79,7 @@
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--white-a55);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -93,7 +93,7 @@
   padding-top: 0.4rem;
   font-size: 0.8rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--white-a70);
 }
 .page-conflicts .conflict-count .icon { color: var(--hud-cyan); font-size: 0.75rem; }
 

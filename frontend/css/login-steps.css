@@ -20,7 +20,7 @@
   gap: 0.75rem;
 }
 .ev-notice-icon {
-  color: #f39c12;
+  color: var(--notice-text);
   margin-top: 2px;
   flex-shrink: 0;
 }
@@ -28,7 +28,7 @@
 .ev-notice-title {
   margin: 0 0 0.4rem;
   font-weight: 600;
-  color: #f39c12;
+  color: var(--notice-text);
   font-size: 0.88rem;
 }
 .ev-notice-desc {
@@ -42,7 +42,7 @@
   border: 1px solid rgba(243, 156, 18, 0.3);
   border-radius: 7px;
   padding: 0.45rem 0.9rem;
-  color: #f39c12;
+  color: var(--notice-text);
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;

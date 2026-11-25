@@ -96,7 +96,7 @@ header.is-auth .nav-auth { display: block; }
 /* Déconnexion en rouge (variante claire, lisible sur fond sombre). */
 .nav-links li a.nav-logout,
 .nav-links li a.nav-logout:hover { color: var(--accent-text); }
-.nav-links li a.nav-logout:hover { background: rgba(231, 76, 60, 0.10); }
+.nav-links li a.nav-logout:hover { background: var(--alert-a10); }
 
 /* Le masque rognerait l'anneau de focus : il passe à l'intérieur. */
 .nav-links li a:focus-visible { outline-offset: -2px; }
@@ -119,7 +119,7 @@ header.is-auth .nav-auth { display: block; }
       inset-inline: var(--menu-gap);
       border: 1px solid var(--gold-a08);
       border-radius: var(--r-xl);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 8px 24px var(--black-a35);
       transition:
         inset-block-start var(--menu-dur) var(--menu-ease) calc(var(--menu-total) - var(--menu-dur)),
         inset-inline      var(--menu-dur) var(--menu-ease) calc(var(--menu-total) - var(--menu-dur)),
@@ -134,7 +134,7 @@ header.is-auth .nav-auth { display: block; }
       inset-inline: 0;
       border-start-start-radius: 0;
       border-start-end-radius: 0;
-      background: rgb(13, 13, 13);
+      background: var(--night);
       transition:
         inset-block-start var(--menu-dur) var(--menu-ease),
         inset-inline      var(--menu-dur) var(--menu-ease),
@@ -263,7 +263,7 @@ header.is-auth .nav-auth { display: block; }
       display: block;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
+      background: var(--black-a60);
       z-index: calc(var(--z-header) - 1);
       opacity: 0;
       visibility: hidden;

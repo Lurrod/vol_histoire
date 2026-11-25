@@ -55,7 +55,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 
 /* « Copier le lien » : maillon de chaîne qui se replie, coche qui se trace. */
 .compare-bar #compare-share { display: inline-flex; align-items: center; gap: 0.45rem; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
-.compare-bar #compare-share.is-copied { background: rgba(200,169,110,0.14); border-color: var(--hud-cyan); color: var(--hud-cyan); }
+.compare-bar #compare-share.is-copied { background: var(--gold-a14); border-color: var(--hud-cyan); color: var(--hud-cyan); }
 .compare-bar .cmp-share-ico {
   width: 16px; height: 16px; flex-shrink: 0; overflow: visible;
   fill: none; stroke: currentColor; stroke-width: 2;
@@ -93,7 +93,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 .compare-bar .cmp-clear .cfm-yes,
 .compare-bar .cmp-clear .cfm-no { min-height: 0; }
 .compare-bar .cmp-clear:not([data-state="idle"]) #compare-clear {
-  background: rgba(231,76,60,0.15); border-color: var(--accent); color: #ff8a7a;
+  background: var(--alert-a15); border-color: var(--accent); color: var(--alert-text-soft);
 }
 .compare-bar .cmp-clear[data-state="done"] #compare-clear { pointer-events: none; }
 /* Jamais plus large que l'écran, quelle que soit la largeur. */
@@ -189,9 +189,9 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   /* Aligné sur .modal-container du modal add/edit avion */
   background: var(--night-mid);
   color: var(--text-primary);
-  border: 1px solid rgba(255,255,255,0.09);
+  border: 1px solid var(--white-a09);
   border-radius: 16px;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  box-shadow: 0 24px 64px var(--black-a60);
   padding: 0;
   max-width: 1100px;
   width: 92vw;
@@ -206,7 +206,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 }
 .compare-modal[open] { display: flex; }
 .compare-modal::backdrop {
-  background: rgba(0,0,0,0.8);
+  background: var(--black-a80);
   backdrop-filter: blur(6px);
   /* Repli en dur : ::backdrop n'hérite des propriétés de :root que dans
      les navigateurs récents (Chrome 122, Firefox 120, Safari 17.4). */
@@ -331,7 +331,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   right: 6px;
   width: 24px;
   height: 24px;
-  background: rgba(13,13,13,0.85);
+  background: var(--night-a85);
   border: 1px solid var(--border-subtle);
   color: var(--text-muted);
   border-radius: 50%;
@@ -405,7 +405,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 .cmp-chip-accent {
   color: var(--hud-cyan);
   border-color: var(--border-cyan-md);
-  background: rgba(200,169,110,0.06);
+  background: var(--gold-a06);
 }
 
 /* Spec groups */
@@ -422,8 +422,8 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   gap: 0.5rem;
   padding: 1rem 1.25rem 0.75rem;
   background: transparent;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  color: rgba(255,255,255,0.6);
+  border-bottom: 1px solid var(--white-a05);
+  color: var(--white-a60);
   font-family: 'DM Sans', sans-serif;
   font-weight: 700;
   font-size: 0.8rem;
@@ -442,7 +442,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   transition: background-color var(--dur-fast) var(--ease-out);
 }
 .cmp-row:last-child { border-bottom: none; }
-.cmp-row:hover { background: rgba(200,169,110,0.02); }
+.cmp-row:hover { background: var(--gold-a02); }
 .cmp-row-label {
   color: var(--text-muted);
   font-size: 0.78rem;
@@ -485,7 +485,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 .cmp-bar-track {
   width: 100%;
   height: 4px;
-  background: rgba(255,255,255,0.05);
+  background: var(--white-a05);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -495,7 +495,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   transition: width var(--dur-slower) var(--ease-out);
 }
 .cmp-cell-perf.cmp-best .cmp-bar-fill {
-  box-shadow: 0 0 6px rgba(200,169,110,0.3);
+  box-shadow: 0 0 6px var(--gold-a30);
 }
 
 /* Tags (armement / tech) */
@@ -504,7 +504,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   display: inline-block;
   padding: 0.2rem 0.5rem;
   font-size: var(--text-xs);
-  background: rgba(200,169,110,0.06);
+  background: var(--gold-a06);
   border: 1px solid var(--gold-a15);
   color: var(--text-secondary);
   border-radius: var(--r-sm);

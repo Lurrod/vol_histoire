@@ -132,7 +132,7 @@
     border: 1px solid var(--white-a08);
     border-radius: 9px;
     background: var(--white-a04);
-    color: rgba(255, 255, 255, 0.82);
+    color: var(--white-a82);
     font-family: 'DM Sans', sans-serif;
     font-size: 0.8rem;
     font-weight: 600;
@@ -155,8 +155,8 @@
   }
   /* Le second bouton arrive un pas après le premier. */
   .cfm[data-state="confirm"] .cfm-no { transition-delay: var(--stagger-step), var(--stagger-step), 0s, 0s, 0s, 0s; }
-  .cfm-yes { color: #ff8a7a; border-color: rgba(231, 76, 60, 0.32); background: rgba(231, 76, 60, 0.08); }
-  .cfm-yes:hover { background: rgba(231, 76, 60, 0.22); color: var(--white); }
+  .cfm-yes { color: var(--alert-text-soft); border-color: var(--alert-a32); background: var(--alert-a08); }
+  .cfm-yes:hover { background: var(--alert-a22); color: var(--white); }
   .cfm-no:hover { background: var(--white-a08); color: var(--white); }
   .cfm-yes:focus-visible,
   .cfm-no:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 1px; }
@@ -290,7 +290,7 @@
     background: var(--white-a04);
     border: 1px solid var(--border-field);
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--white-a75);
     font-family: 'DM Sans', sans-serif;
     font-size: 0.875rem;
     font-weight: 500;
@@ -304,14 +304,14 @@
                 scale var(--dur-instant) var(--ease-out);
   }
   .cselect-trigger:hover {
-    border-color: rgba(200, 169, 110, 0.28);
+    border-color: var(--gold-a28);
     background-color: var(--white-a06);
     color: var(--white);
   }
   .cselect-trigger:focus-visible,
   .cselect.is-open .cselect-trigger {
     outline: none;
-    border-color: rgba(200, 169, 110, 0.6);
+    border-color: var(--gold-a60);
     color: var(--white);
   }
   .cselect-trigger:focus-visible { box-shadow: var(--focus-ring); }
@@ -381,7 +381,7 @@
     gap: 1rem;
     padding: 0.6rem 0.75rem;
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--white-a70);
     font-size: 0.875rem;
     cursor: pointer;
     transition: background-color var(--dur-fast) var(--ease-out),
@@ -392,7 +392,7 @@
     color: var(--white);
   }
   .cselect-option[aria-selected="true"] { color: var(--hud-cyan); }
-  .cselect-option[aria-selected="true"].is-active { background: rgba(200, 169, 110, 0.1); }
+  .cselect-option[aria-selected="true"].is-active { background: var(--gold-a10); }
   .cselect-option[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }
   .cselect-check {
     flex-shrink: 0;
@@ -488,7 +488,7 @@
 }
 .breadcrumb a:hover,
 .breadcrumb a:focus-visible {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--white-a70);
 }
 .breadcrumb a:focus-visible {
   outline: 2px solid var(--hud-cyan);
@@ -498,14 +498,14 @@
 .breadcrumb > i,
 .breadcrumb > .icon {
   font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.15);
+  color: var(--white-a15);
 }
 .breadcrumb span {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--white-a70);
 }
 /* Maillon qui porte son propre chevron (conflits : #crumb-current). */
 .breadcrumb > span:has(> .icon) { display: inline-flex; align-items: center; gap: 0.75rem; }
-.breadcrumb > span > .icon:first-child { font-size: 0.6rem; color: rgba(255, 255, 255, 0.15); }
+.breadcrumb > span > .icon:first-child { font-size: 0.6rem; color: var(--white-a15); }
 .breadcrumb > span.hidden { display: none; }
 /* En-tête centré (sans chiffres à droite, voir HERO COMMUN) : fil d'Ariane
    centré aussi. Ici et non là-haut : cette couche l'emporte sur la sienne. */

@@ -17,7 +17,7 @@
   background: rgba(26, 38, 47, 0.98);
   backdrop-filter: blur(10px);
   padding: 1.5rem;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 -4px 20px var(--black-a20);
   z-index: var(--z-overlay);
   transform: translateY(100%);
   /* Fermeture : le bandeau redescend (l'ouverture est portée par slideUp). */
@@ -112,7 +112,7 @@
 }
 
 .cookie-message p {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--white-a80);
   font-size: 0.95rem;
   line-height: 1.6;
   margin: 0;
@@ -166,13 +166,13 @@
 .cookie-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: var(--black-a75);
   backdrop-filter: blur(4px);
 }
 
 .cookie-modal-container {
   position: relative;
-  background: var(--night-mid, #141414);
+  background: var(--night-mid, var(--night-mid));
   border: 1px solid var(--gold-a15);
   border-radius: 16px;
   max-width: 34rem;
@@ -181,7 +181,7 @@
   max-height: 90dvh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 60px var(--black-a50);
   transform: scale(0.96);
   transition: transform var(--modal-close-dur) var(--ease-in);
 }
@@ -203,7 +203,7 @@
   font-family: var(--font-display, 'Barlow Condensed', sans-serif);
   font-size: 1.5rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--white);
   margin: 0;
 }
 
@@ -232,7 +232,7 @@
 
 .cookie-modal-close:hover {
   background: var(--white-a06);
-  color: #fff;
+  color: var(--white);
 }
 
 .cookie-modal-content {
@@ -250,7 +250,7 @@
 }
 
 .cookie-intro a {
-  color: var(--hud-cyan, #C8A96E);
+  color: var(--hud-cyan, var(--hud-cyan));
   text-decoration: underline;
   text-decoration-color: var(--gold-a15);
   text-underline-offset: 0.2em;
@@ -295,7 +295,7 @@
 .cookie-category-info h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--white);
   margin: 0 0 0.2rem;
 }
 
@@ -337,7 +337,7 @@
   align-items: center;
   gap: 0.35rem;
   min-height: 24px;
-  color: var(--hud-cyan, #C8A96E);
+  color: var(--hud-cyan, var(--hud-cyan));
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -350,7 +350,7 @@
 }
 
 .cookie-category-details summary:focus-visible {
-  outline: 2px solid var(--hud-cyan, #C8A96E);
+  outline: 2px solid var(--hud-cyan, var(--hud-cyan));
   outline-offset: 3px;
 }
 
@@ -399,7 +399,7 @@
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: var(--hud-cyan, #C8A96E);
+  background: var(--hud-cyan, var(--hud-cyan));
   opacity: 0.6;
 }
 
@@ -415,7 +415,7 @@
 .cookie-duration .icon {
   width: 0.8rem;
   height: 0.8rem;
-  color: var(--hud-cyan, #C8A96E);
+  color: var(--hud-cyan, var(--hud-cyan));
   flex-shrink: 0;
 }
 
@@ -482,7 +482,7 @@ body.cookie-modal-open {
   right: var(--switch-out);
   background: var(--white);
   border-radius: 50px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px var(--black-a30);
   /* vers la gauche (décoché) : le bord gauche mène */
   transition:
     left var(--dur-base) var(--ease-out),
@@ -535,7 +535,7 @@ html.vh-reduce-motion :is(.cookie-toggle, .toggle-switch):not(:has(#pref-reduce-
 
 /* Anneau de focus clavier sur la piste de l'interrupteur */
 .cookie-toggle input[type="checkbox"]:focus-visible + label {
-  outline: 2px solid var(--hud-cyan, #C8A96E);
+  outline: 2px solid var(--hud-cyan, var(--hud-cyan));
   outline-offset: 3px;
 }
 
@@ -551,7 +551,7 @@ html.vh-reduce-motion :is(.cookie-toggle, .toggle-switch):not(:has(#pref-reduce-
 }
 
 .cookie-toggle input[type="checkbox"]:checked + label {
-  background: var(--success, #2E7D52);
+  background: var(--success, var(--success));
 }
 
 /* Responsive Design */

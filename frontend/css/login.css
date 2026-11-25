@@ -31,7 +31,7 @@ body.page-login::after { display: none; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 30% 40%, rgba(200, 169, 110, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse at 30% 40%, var(--gold-a07) 0%, transparent 60%),
     linear-gradient(160deg, var(--night) 0%, var(--night-mid) 50%, var(--night-soft) 100%);
 }
 
@@ -51,8 +51,8 @@ body.page-login::after { display: none; }
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(to top, rgba(13, 13, 13, 0.96) 0%, rgba(13, 13, 13, 0.86) 30%, rgba(13, 13, 13, 0.5) 50%, rgba(13, 13, 13, 0.1) 70%, rgba(13, 13, 13, 0.35) 100%),
-    linear-gradient(to right, transparent 70%, rgba(13, 13, 13, 0.45) 100%);
+    linear-gradient(to top, var(--night-a96) 0%, var(--night-a86) 30%, var(--night-a50) 50%, var(--night-a10) 70%, var(--night-a35) 100%),
+    linear-gradient(to right, transparent 70%, var(--night-a45) 100%);
 }
 
 .page-login .visual-content {
@@ -101,14 +101,14 @@ body.page-login::after { display: none; }
 }
 .page-login .stat-label {
   font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.62);
+  color: var(--white-a62);
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 .page-login .stat-divider {
   width: 1px;
   height: 36px;
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--white-a14);
 }
 
 /* Légende de la photo : quel appareil, lien vers sa fiche, crédit. */
@@ -118,7 +118,7 @@ body.page-login::after { display: none; }
   gap: 0.2rem;
   margin: 2.25rem 0 0;
   padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid var(--white-a12);
 }
 .page-login .auth-photo-caption[hidden] { display: none; }
 .page-login .auth-photo-link {
@@ -132,13 +132,13 @@ body.page-login::after { display: none; }
   text-decoration: none;
   transition: color var(--dur-fast) var(--ease-out);
 }
-.page-login .auth-photo-country { font-weight: 400; color: rgba(255, 255, 255, 0.6); }
+.page-login .auth-photo-country { font-weight: 400; color: var(--white-a60); }
 .page-login .auth-photo-country::before { content: '· '; }
 .page-login .auth-photo-link .icon { align-self: center; font-size: 0.7rem; color: var(--hud-cyan); transition: translate var(--dur-base) var(--ease-out); }
 .page-login .auth-photo-link:hover,
 .page-login .auth-photo-link:focus-visible { color: var(--hud-cyan); }
 .page-login .auth-photo-link:hover .icon { translate: 3px 0; }
-.page-login .auth-photo-credit { font-size: 0.72rem; color: rgba(255, 255, 255, 0.5); }
+.page-login .auth-photo-credit { font-size: 0.72rem; color: var(--white-a50); }
 .page-login .auth-photo-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
 /* ---- RIGHT: Form Panel ---- */
@@ -157,7 +157,7 @@ body.page-login::after { display: none; }
   padding: 2rem;
   position: relative;
   overflow-x: clip;
-  border-left: 1px solid rgba(200, 169, 110, 0.10);
+  border-left: 1px solid var(--gold-a10);
 }
 
 /* Subtle left-edge accent */
@@ -195,7 +195,7 @@ body.page-login::after { display: none; }
   gap: 0.5rem;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(200, 169, 110, 0.1);
+  border-bottom: 1px solid var(--gold-a10);
 }
 .page-login .form-tab {
   flex: 1;
@@ -218,13 +218,13 @@ body.page-login::after { display: none; }
   font-size: 0.9rem;
 }
 .page-login .form-tab:hover {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--white-a85);
 }
 .page-login .form-tab.active,
 .page-login .form-tab[aria-selected="true"] {
   color: var(--hud-cyan);
-  background: rgba(200, 169, 110, 0.06);
-  border-color: rgba(200, 169, 110, 0.22);
+  background: var(--gold-a06);
+  border-color: var(--gold-a22);
 }
 .page-login .form-tab:focus-visible {
   outline: 2px solid var(--hud-cyan);
@@ -323,7 +323,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   color: var(--hud-cyan);
   font-size: 1.25rem;
   margin-bottom: 1.25rem;
-  border: 1px solid rgba(200, 169, 110, 0.18);
+  border: 1px solid var(--gold-a18);
 }
 .page-login .form-header h1,
 .page-login .form-header h2 {
@@ -378,17 +378,17 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   font-size: 0.95rem;
   color: var(--text-primary);
   caret-color: var(--secondary);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--white-a03);
   transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
 }
 .page-login .form-group input:hover {
-  border-color: rgba(200, 169, 110, 0.32);
+  border-color: var(--gold-a32);
 }
 .page-login .form-group input:focus,
 .page-login .form-group input:focus-visible {
   outline: none;
   border-color: var(--secondary);
-  background: rgba(200, 169, 110, 0.05);
+  background: var(--gold-a05);
   /* Un seul indicateur, DANS le champ : bordure dorée doublée vers
      l'intérieur (2 px d'or, contraste largement > 3:1 sur l'anthracite —
      WCAG 1.4.11 / 2.4.7). Halo 3 px + anneau 2 px + contour 3 px décalé de
@@ -562,7 +562,7 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
 .page-login .form-rgpd-notice a {
   color: var(--secondary);
   text-decoration: underline;
-  text-decoration-color: rgba(200, 169, 110, 0.35);
+  text-decoration-color: var(--gold-a35);
   text-underline-offset: 2px;
   transition: color var(--dur-fast) var(--ease-out), text-decoration-color var(--dur-fast) var(--ease-out);
 }
@@ -686,11 +686,11 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
     min-width: auto;
     max-width: 520px;
     /* Carte translucide comme celles des réglages : le fond se devine dessous. */
-    background: rgba(20, 20, 20, 0.7);
+    background: var(--night-mid-a70);
     border-radius: 16px;
     margin: 1rem;
     border: 1px solid var(--gold-a12);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 60px var(--black-a50);
   }
   .page-login .auth-form-panel::before { display: none; }
 }
@@ -745,6 +745,6 @@ html.vh-login-back::view-transition-new(vh-login-frame.vh-login) { animation-nam
   /* header/footer print → shared.css */
   .page-login .auth-visual { display: none !important; }
   .page-login .auth-section { min-height: auto; padding: 0; }
-  .page-login .auth-form-panel { box-shadow: none; border: 1px solid #000; }
+  .page-login .auth-form-panel { box-shadow: none; border: 1px solid var(--black); }
 }
 /* lang-switch → shared.css */

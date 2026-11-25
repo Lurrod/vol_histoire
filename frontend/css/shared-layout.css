@@ -27,7 +27,7 @@
     color: var(--white);
     border-top: 1px solid var(--white-a06);
     /* la page « passe par-dessus » : ombre de son bord */
-    box-shadow: inset 0 28px 36px -28px rgba(0, 0, 0, 0.85);
+    box-shadow: inset 0 28px 36px -28px var(--black-a85);
   }
 
   .footer-reveal {
@@ -85,7 +85,7 @@
     font-size: 0.75rem;
     font-weight: 700;
     margin: 0 0 var(--sp-4);
-    color: rgba(255, 255, 255, 0.66);
+    color: var(--white-a66);
     text-transform: uppercase;
     letter-spacing: 0.12em;
   }
@@ -146,7 +146,7 @@
     letter-spacing: -0.01em;
     white-space: nowrap;
     color: transparent;
-    background: linear-gradient(180deg, rgba(200, 169, 110, 0.7), rgba(200, 169, 110, 0.05) 90%);
+    background: linear-gradient(180deg, var(--gold-a70), var(--gold-a05) 90%);
     -webkit-background-clip: text;
     background-clip: text;
     translate: 0 12%;
@@ -203,7 +203,7 @@
   .hero-background {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 80% 20%, rgba(200,169,110,0.04) 0%, transparent 55%);
+    background: radial-gradient(ellipse at 80% 20%, var(--gold-a04) 0%, transparent 55%);
     z-index: 0;
     pointer-events: none;
   }
@@ -241,7 +241,7 @@
 
   .hero-text > p {
     font-size: var(--text-md);
-    color: rgba(255, 255, 255, 0.62);
+    color: var(--white-a62);
     max-width: 420px;
     line-height: var(--leading-loose);
   }
@@ -329,7 +329,7 @@
   /* Confirmation : un anneau part du bord et s'efface. L'élément lui-même
      ne bouge pas. Couleur réglable par --confirm-ring. */
   @keyframes vh-confirm {
-    from { box-shadow: 0 0 0 0 var(--confirm-ring, rgba(200, 169, 110, 0.45)); }
+    from { box-shadow: 0 0 0 0 var(--confirm-ring, var(--gold-a45)); }
     to   { box-shadow: 0 0 0 10px transparent; }
   }
 
