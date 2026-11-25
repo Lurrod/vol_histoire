@@ -12,6 +12,7 @@ describe('getSources', () => {
   test('dérive les jumeaux AVIF et WebP d\'un asset local', () => {
     expect(getSources('/assets/airplanes/rafale.jpg')).toEqual({
       avif: '/assets/airplanes/rafale.avif',
+      avifMedium: '/assets/airplanes/m800/rafale.avif',
       webp: '/assets/airplanes/rafale.webp',
       fallback: '/assets/airplanes/rafale.jpg',
     });
@@ -63,10 +64,17 @@ describe('thumbHtml', () => {
 });
 
 describe('pictureHtml (inchangé par la factorisation)', () => {
-  test('sources pleine taille', () => {
+  test('sources pleine taille, AVIF en 800 px et pleine taille (PERF-001)', () => {
     const html = pictureHtml('/assets/airplanes/rafale.jpg', { alt: '' });
-    expect(html).toContain('srcset="/assets/airplanes/rafale.avif"');
+    expect(html).toContain('srcset="/assets/airplanes/m800/rafale.avif 800w, /assets/airplanes/rafale.avif 1600w" sizes="100vw"');
+    expect(html).toContain('<source type="image/webp" srcset="/assets/airplanes/rafale.webp">');
     expect(html).not.toContain('thumbs/');
+  });
+
+  test('sizes porté par la source AVIF, jamais par l’<img>', () => {
+    const html = pictureHtml('/assets/airplanes/rafale.jpg', { alt: '', sizes: '400px' });
+    expect(html).toContain('sizes="400px"');
+    expect(html).not.toMatch(/<img[^>]*sizes=/);
   });
 });
 
@@ -77,6 +85,7 @@ describe('PERF-010 — URL versionnées', () => {
     window.APP_VERSION = '4.14.0';
     expect(getSources('/assets/airplanes/rafale.jpg')).toEqual({
       avif: '/assets/airplanes/rafale.avif?v=4.14.0',
+      avifMedium: '/assets/airplanes/m800/rafale.avif?v=4.14.0',
       webp: '/assets/airplanes/rafale.webp?v=4.14.0',
       fallback: '/assets/airplanes/rafale.jpg?v=4.14.0',
     });

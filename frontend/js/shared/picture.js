@@ -50,14 +50,17 @@
       .replace(/>/g, '&gt;');
   }
 
-  /* Retourne { avif, webp, fallback } si l'URL est un asset local convertible,
-   * sinon null. */
+  /* Retourne { avif, avifMedium, webp, fallback } si l'URL est un asset local
+   * convertible, sinon null. avifMedium : version 800 px
+   * (assets/airplanes/m800/, scripts/convert-images.js — PERF-001). */
   function getSources(url) {
     if (!url || typeof url !== 'string') return null;
     if (!LOCAL_IMG_RE.test(url)) return null;
     var base = url.replace(EXT_RE, '');
+    var name = base.replace(/^\/assets\/airplanes\//, '');
     return {
       avif: withVersion(base + '.avif'),
+      avifMedium: withVersion('/assets/airplanes/m800/' + name + '.avif'),
       webp: withVersion(base + '.webp'),
       fallback: withVersion(url)
     };
@@ -65,7 +68,10 @@
 
   /* Génère le HTML d'un <picture> (ou <img> si URL non convertible).
    *
-   * attrs : { alt, width, height, loading, class, id, fetchpriority, ... }
+   * attrs : { alt, width, height, loading, class, id, fetchpriority, sizes, ... }
+   * La source AVIF propose la version 800 px et la photo pleine (srcset en
+   * descripteurs w, PERF-001) ; attrs.sizes indique la largeur affichée
+   * (défaut 100vw : jamais un choix plus lourd qu'avant, plus léger sur mobile).
    * L'attribut `class` est posé sur l'élément <img> final (pas sur <picture>),
    * pour conserver le styling existant qui cible `.aircraft-image img`.
    * Les gestionnaires `on*` sont ignorés : la CSP bloque tout gestionnaire en
@@ -79,7 +85,7 @@
     var alt = attrs.alt != null ? attrs.alt : '';
     var attrStr = Object.keys(attrs)
       .filter(function (k) {
-        return k !== 'alt' && !/^on/i.test(k) && attrs[k] != null && attrs[k] !== false;
+        return k !== 'alt' && k !== 'sizes' && !/^on/i.test(k) && attrs[k] != null && attrs[k] !== false;
       })
       .map(function (k) { return k + '="' + esc(attrs[k]) + '"'; })
       .join(' ');
@@ -89,8 +95,12 @@
              (attrStr ? ' ' + attrStr : '') + '>';
     }
 
+    var avifSource = sources.avifMedium
+      ? '<source type="image/avif" srcset="' + esc(sources.avifMedium) + ' 800w, ' + esc(sources.avif) +
+        ' 1600w" sizes="' + esc(attrs.sizes || '100vw') + '">'
+      : '<source type="image/avif" srcset="' + esc(sources.avif) + '">';
     return '<picture>' +
-      '<source type="image/avif" srcset="' + esc(sources.avif) + '">' +
+      avifSource +
       '<source type="image/webp" srcset="' + esc(sources.webp) + '">' +
       '<img src="' + esc(sources.fallback) + '" alt="' + esc(alt) + '"' +
       (attrStr ? ' ' + attrStr : '') + '>' +

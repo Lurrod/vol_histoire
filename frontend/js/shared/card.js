@@ -82,6 +82,9 @@
       loading: 'lazy',
       width: '400',
       height: '300',
+      // Largeur affichée des cartes (220 à 400 px) : version 800 px suffisante
+      // jusqu'en écran 2x (PERF-001).
+      sizes: '(max-width: 40em) 92vw, (max-width: 64em) 45vw, 400px',
     });
     const href = buildDetailsPath(aircraft.id, aircraft.name);
     return `
