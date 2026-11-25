@@ -187,8 +187,9 @@ body.page-timeline.tl-has-cinematic::before {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   opacity: 0;
-  /* Indice « défiler » : seule boucle d'appel conservée (tl-bounce), en ease-in-out. */
-  animation: vh-enter var(--dur-slower) var(--ease-out) calc(var(--stagger-step) * 20) forwards, tl-bounce 2.2s var(--ease-in-out) 1.8s infinite;
+  /* Indice « défiler » : trois appels (tl-bounce) puis repos — WCAG 2.2.2,
+     A11Y-010 : aucun mouvement de plus de 5 s sans commande d'arrêt. */
+  animation: vh-enter var(--dur-slower) var(--ease-out) calc(var(--stagger-step) * 20) forwards, tl-bounce 2.2s var(--ease-in-out) 1.8s 3;
 }
 .page-timeline .tl-scroll-hint i, .page-timeline .tl-scroll-hint .icon {
   font-size: 0.85rem;
