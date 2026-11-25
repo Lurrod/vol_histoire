@@ -22,7 +22,7 @@
   "conflicts": {
     "title": "Conflits | Vol d'Histoire",
     "breadcrumb": "Conflits",
-    "hero_title": "Les<span class=\"hero-muted\">Conflits</span>",
+    "hero_title": "Les <span class=\"hero-muted\">Conflits</span>",
     "hero_desc": "Les guerres et les crises armées depuis 1945, et les appareils du catalogue qui y ont été engagés.",
     "stat_conflicts": "Conflits",
     "stat_aircraft": "Engagements",
