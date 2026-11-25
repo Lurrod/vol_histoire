@@ -5,7 +5,8 @@
  *  - le temps de lecture est calculé sur le texte affiché (.legal-container),
  *    recalculé au changement de langue : 230 mots par minute, au moins 1 ;
  *  - le bouton [data-print] ouvre l'impression (« Enregistrer en PDF » du
- *    navigateur) ; la mise en page d'impression est dans legal.css.
+ *    navigateur) ; la mise en page d'impression est dans legal.css ;
+ *  - initialise la session (auth.init) pour l'état connecté de l'en-tête.
  */
 (function () {
   const root = typeof window !== 'undefined' ? window : globalThis;
@@ -36,6 +37,10 @@
     const btn = head.querySelector('[data-print]');
     if (btn) btn.addEventListener('click', () => root.print());
     updateReadingTime(d);
+    // État connecté de l'en-tête : les pages légales chargeaient le bundle de
+    // l'accueil pour cet appel (et une requête /api/hero inutile, JS-001).
+    // auth.init() est idempotent (la page des crédits l'appelle aussi).
+    if (typeof auth !== 'undefined' && auth && typeof auth.init === 'function') auth.init();
     // Le texte traduit arrive après le chargement de la langue
     root.addEventListener('i18nReady', () => updateReadingTime(d));
     root.addEventListener('langChanged', () => updateReadingTime(d));
