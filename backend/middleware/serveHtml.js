@@ -295,6 +295,9 @@ function buildHtmlCache(frontendDir, version) {
   const partials = loadPartials(frontendDir);
   const dictionaries = { en: loadDictionary(frontendDir, 'en'), fr: loadDictionary(frontendDir, 'fr') };
   const warnings = [];
+  // Pages impossibles à préparer (lecture, inclusions, localisation) : elles
+  // ne sont pas mises en cache et seraient servies brutes (JS-006).
+  const errors = [];
   let count = 0;
 
   function walk(dir) {
@@ -321,7 +324,9 @@ function buildHtmlCache(frontendDir, version) {
           en: localizeHead(html, pageName, 'en', dictionaries.en, dictionaries.fr),
         });
         count++;
-      } catch { /* ignore */ }
+      } catch (err) {
+        errors.push({ file: path.relative(frontendDir, full), message: err.message });
+      }
     }
   }
 
@@ -331,6 +336,7 @@ function buildHtmlCache(frontendDir, version) {
     version,
     count,
     warnings,
+    errors,
     has: (p) => cache.has(p),
     get: (p, lang) => {
       const variants = cache.get(p);

@@ -27,6 +27,16 @@ function createHtmlPages({ frontendRoot, assetVersion }) {
   // Marqueur <!-- @include x --> sans fragment frontend/partials/x.html : la
   // page est servie avec le marqueur, l'oubli doit se voir au démarrage.
   htmlCache.warnings.forEach((w) => logger.warn && logger.warn('Inclusion HTML non résolue', { detail: w }));
+  // Page impossible à préparer : elle partirait brute (sans inclusions, sans
+  // ?v=, sans version anglaise). Journalisée ; en production le démarrage est
+  // refusé, ce qui fait échouer les tests de fumée et déclenche le retour
+  // arrière du déploiement (JS-006).
+  if (htmlCache.errors && htmlCache.errors.length) {
+    htmlCache.errors.forEach((e) => logger.error && logger.error('Page HTML non préparée', e));
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(`Pages HTML non préparées : ${htmlCache.errors.map((e) => e.file).join(', ')}`);
+    }
+  }
 
   function sendCachedHtml(res, filePath) {
     // Variante anglaise (lang, title, description, og, canonical) si req.lang === 'en' :

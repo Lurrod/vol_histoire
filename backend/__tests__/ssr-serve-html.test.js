@@ -300,3 +300,23 @@ describe('SEO-001 — versions linguistiques des pages statiques', () => {
     }
   });
 });
+
+describe('buildHtmlCache — pages en échec (JS-006)', () => {
+  test('une page qui ne peut être préparée est signalée dans errors', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vh-html-'));
+    fs.writeFileSync(path.join(dir, 'ok.html'), '<html lang="fr"><title>OK</title></html>');
+    fs.writeFileSync(path.join(dir, 'casse.html'), '<html lang="fr"></html>');
+    const real = fs.readFileSync;
+    const spy = jest.spyOn(fs, 'readFileSync').mockImplementation((file, ...rest) => {
+      if (String(file).endsWith('casse.html')) throw new Error('EACCES: permission refusée');
+      return real.call(fs, file, ...rest);
+    });
+    try {
+      const cache = buildHtmlCache(dir, '1');
+      expect(cache.count).toBe(1);
+      expect(cache.errors).toEqual([{ file: 'casse.html', message: 'EACCES: permission refusée' }]);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+});

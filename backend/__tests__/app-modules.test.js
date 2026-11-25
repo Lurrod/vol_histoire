@@ -85,3 +85,41 @@ describe('routes/api-docs', () => {
     expect(res.headers['content-security-policy']).not.toContain('strict-dynamic');
   });
 });
+
+describe('utils/html-pages — page non préparée (JS-006)', () => {
+  const fs = require('fs');
+  const os = require('os');
+  const path = require('path');
+  const { createHtmlPages } = require('../utils/html-pages');
+
+  function brokenFrontend() {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'vh-pages-'));
+    fs.writeFileSync(path.join(dir, 'casse.html'), '<html lang="fr"></html>');
+    const real = fs.readFileSync;
+    const spy = jest.spyOn(fs, 'readFileSync').mockImplementation((file, ...rest) => {
+      if (String(file).endsWith('casse.html')) throw new Error('lecture impossible');
+      return real.call(fs, file, ...rest);
+    });
+    return { dir, spy };
+  }
+
+  test('journalisée hors production, sans bloquer', () => {
+    const { dir, spy } = brokenFrontend();
+    try {
+      expect(() => createHtmlPages({ frontendRoot: dir, assetVersion: '1' })).not.toThrow();
+      expect(logger.error).toHaveBeenCalledWith('Page HTML non préparée', { file: 'casse.html', message: 'lecture impossible' });
+    } finally { spy.mockRestore(); }
+  });
+
+  test('en production : démarrage refusé', () => {
+    const { dir, spy } = brokenFrontend();
+    const env = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+    try {
+      expect(() => createHtmlPages({ frontendRoot: dir, assetVersion: '1' })).toThrow('casse.html');
+    } finally {
+      process.env.NODE_ENV = env;
+      spy.mockRestore();
+    }
+  });
+});
