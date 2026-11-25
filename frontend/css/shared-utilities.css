@@ -115,7 +115,8 @@
   /* Touch targets */
   @media (hover: none) and (pointer: coarse) {
     .btn          { min-height: 44px; }
-    .nav-links li a { min-height: 48px; }
+    .nav-links li a,
+    .nav-links li button.nav-logout { min-height: 48px; }
     .hamburger      { min-width: 48px; min-height: 48px; }
     /* Sélecteur de langue au même gabarit que le bouton « Menu » (la pastille
        d'ouverture de la liste suit la même variable). */

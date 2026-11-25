@@ -62,7 +62,20 @@ header.is-auth .nav-auth { display: block; }
 .nav-group-list > li { margin-inline: calc(-1 * var(--sp-3)); }
 .nav-group-title { margin-block-end: var(--sp-2); }
 
-.nav-links li a {
+/* « Déconnexion » est une action, donc un <button> (A11Y-012) : il
+   reprend l'apparence des liens du menu, sans les styles natifs. */
+.nav-links li button.nav-logout {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+  appearance: none;
+}
+
+.nav-links li a,
+.nav-links li button.nav-logout {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -80,9 +93,12 @@ header.is-auth .nav-auth { display: block; }
 
 /* Le mot seul, sans icône. */
 .nav-links li a .icon,
-.nav-links li a i { display: none; }
+.nav-links li button.nav-logout .icon,
+.nav-links li a i,
+.nav-links li button.nav-logout i { display: none; }
 
-.nav-links li a:hover {
+.nav-links li a:hover,
+.nav-links li button.nav-logout:hover {
   background: var(--gold-a08);
   color: var(--gold);
 }
@@ -94,12 +110,13 @@ header.is-auth .nav-auth { display: block; }
 }
 
 /* Déconnexion en rouge (variante claire, lisible sur fond sombre). */
-.nav-links li a.nav-logout,
-.nav-links li a.nav-logout:hover { color: var(--accent-text); }
-.nav-links li a.nav-logout:hover { background: var(--alert-a10); }
+.nav-links li button.nav-logout,
+.nav-links li button.nav-logout:hover { color: var(--accent-text); }
+.nav-links li button.nav-logout:hover { background: var(--alert-a10); }
 
 /* Le masque rognerait l'anneau de focus : il passe à l'intérieur. */
-.nav-links li a:focus-visible { outline-offset: -2px; }
+.nav-links li a:focus-visible,
+.nav-links li button.nav-logout:focus-visible { outline-offset: -2px; }
 
 /* ── sous le palier laptop (< 64em) ─── */
 /* 63.99em et non 64em : dès 1024 px (tablette paysage), le bouton Menu
@@ -228,7 +245,8 @@ header.is-auth .nav-auth { display: block; }
 
     /* Chaque lien monte de son masque (son li), en cascade ; la fermeture
        rejoue la cascade à l'envers. */
-    .nav-links li a {
+    .nav-links li a,
+    .nav-links li button.nav-logout {
       translate: 0 100%;
       opacity: 0;
       transition:
@@ -247,7 +265,8 @@ header.is-auth .nav-auth { display: block; }
       overscroll-behavior: contain;
     }
 
-    header.menu-open .nav-links li a {
+    header.menu-open .nav-links li a,
+    header.menu-open .nav-links li button.nav-logout {
       translate: 0 0;
       opacity: 1;
       transition:

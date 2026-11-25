@@ -15,7 +15,7 @@ const HEADER = `
   <header>
     <nav>
       <button class="hamburger"></button>
-      <ul class="nav-links"><li><a href="#accueil">Accueil</a></li><li><a href="#hangar">Hangar</a></li><li><a href="#" class="nav-logout">Déconnexion</a></li></ul>
+      <ul class="nav-links"><li><a href="#accueil">Accueil</a></li><li><a href="#hangar">Hangar</a></li><li><button type="button" class="nav-logout">Déconnexion</button></li></ul>
       <div class="nav-actions">
         <div class="lang-switch">
           <button type="button" id="lang-toggle"></button>

@@ -193,7 +193,7 @@
      se ferme sans animation. En @layer pour que le !important prime sur les
      règles de shared-responsive. */
   @media (prefers-reduced-motion: reduce) {
-    body > header, .nav-panel, .nav-links li a, .hamburger-bar, .nav-scrim { transition: none !important; }
+    body > header, .nav-panel, .nav-links li a, .nav-links li button.nav-logout, .hamburger-bar, .nav-scrim { transition: none !important; }
   }
 
   /* Écran très étroit : le mot « Menu » cède la place, les traits restent. */
