@@ -287,3 +287,29 @@ describe('compare — retrait d\'une colonne', () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 });
+
+describe('compare — lecteurs d\'écran (A11Y-003)', () => {
+  beforeEach(() => { resetPage(); });
+
+  test('chaque valeur est attribuée à son appareil, la meilleure est annoncée', () => {
+    compare.init({ urlSync: false });
+    [1, 2].forEach(id => compare.toggle(id));
+    const body = document.getElementById('compare-modal-body');
+    compare.renderModal(body, [
+      { id: 1, name: 'Rafale', max_speed: 1900 },
+      { id: 2, name: 'Typhoon', max_speed: 2100 },
+    ]);
+    const speedCells = [...body.querySelectorAll('.cmp-cell-perf')].slice(0, 2);
+    expect(speedCells[0].querySelector('.sr-only').textContent).toBe('Rafale : ');
+    expect(speedCells[1].textContent).toMatch(/^Typhoon : .*\(meilleure valeur\)/);
+    expect(speedCells[0].textContent).not.toContain('meilleure valeur');
+  });
+
+  test('bouton de retrait nommé d\'après l\'appareil', () => {
+    compare.init({ urlSync: false });
+    compare.toggle(1);
+    const body = document.getElementById('compare-modal-body');
+    compare.renderModal(body, [{ id: 1, name: 'Rafale' }]);
+    expect(body.querySelector('.cmp-remove').getAttribute('aria-label')).toBe('Retirer Rafale du comparateur');
+  });
+});

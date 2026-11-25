@@ -480,6 +480,8 @@
     "compare_clear_group": "Clear the selection?",
     "compare_clear_confirm": "Clear",
     "compare_clear_keep": "Keep",
+    "compare_best": "best value",
+    "compare_remove_named": "Remove {name} from the comparison",
     "compare_view": "View comparison",
     "compare_eyebrow": "Comparative analysis",
     "compare_title": "Comparison",

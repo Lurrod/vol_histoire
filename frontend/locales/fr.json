@@ -480,6 +480,8 @@
     "compare_clear_group": "Effacer la sélection ?",
     "compare_clear_confirm": "Effacer",
     "compare_clear_keep": "Garder",
+    "compare_best": "meilleure valeur",
+    "compare_remove_named": "Retirer {name} du comparateur",
     "compare_view": "Voir la comparaison",
     "compare_eyebrow": "Analyse comparée",
     "compare_title": "Comparaison",
