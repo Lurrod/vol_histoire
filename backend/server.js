@@ -49,6 +49,8 @@ const pool = new Pool({
      :                                      { rejectUnauthorized: true },
 });
 
+// Une connexion inactive coupée ne doit pas arrêter le processus (JS-003).
+require('./db').watchPoolErrors(pool, logger);
 app.setPool(pool);
 
 // Init Redis rate-limiter (si REDIS_URL défini et Redis joignable)
