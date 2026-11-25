@@ -325,4 +325,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { minify, countDescendantPseudo, brokenCalcPlus };
+module.exports = { minify, countDescendantPseudo, brokenCalcPlus, BUNDLES };
