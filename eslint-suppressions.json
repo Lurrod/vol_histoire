@@ -24,11 +24,6 @@
       "count": 1
     }
   },
-  "backend/validators.js": {
-    "complexity": {
-      "count": 1
-    }
-  },
   "frontend/js/conflicts.js": {
     "no-unsanitized/property": {
       "count": 2

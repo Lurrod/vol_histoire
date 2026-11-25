@@ -123,134 +123,105 @@ function isValidRoleId(value) {
   return /^[123]$/.test(String(value));
 }
 
-function validateAirplaneData(body) {
-  const errors = [];
+// Champs de la strate 1 contrôlés comme nombres positifs, avec leur libellé.
+const POSITIVE_FIELDS = [
+  ['length', 'La longueur'],
+  ['wingspan', "L'envergure"],
+  ['height', 'La hauteur'],
+  ['wing_area', 'La surface alaire'],
+  ['empty_weight', 'Le poids à vide'],
+  ['mtow', 'Le MTOW'],
+  ['climb_rate', 'Le taux de montée'],
+  ['combat_radius', 'Le rayon de combat'],
+];
+const STEALTH_LEVELS = ['aucune', 'reduite', 'moderee', 'elevee', 'tres_elevee'];
+const MEDIA_URL_FIELDS = ['wikipedia_fr', 'wikipedia_en', 'youtube_showcase', 'manufacturer_page'];
 
-  if (!isValidString(body.name, 255)) {
-    errors.push('Le nom est requis (max 255 caractères).');
-  }
-  if (!isOptionalString(body.complete_name, 255)) {
-    errors.push('Le nom complet ne doit pas dépasser 255 caractères.');
-  }
-  if (!isOptionalString(body.little_description, 255)) {
-    errors.push('La description courte ne doit pas dépasser 255 caractères.');
-  }
-  if (!isOptionalImageUrl(body.image_url)) {
-    errors.push("L'URL de l'image doit être une URL valide (http/https, max 2048 caractères).");
-  }
-  if (!isOptionalText(body.description, 10000)) {
-    errors.push('La description ne doit pas dépasser 10 000 caractères.');
-  }
-  if (!isOptionalId(body.country_id)) {
-    errors.push("L'ID du pays doit être un entier positif.");
-  }
-  if (!isOptionalDate(body.date_concept)) {
-    errors.push('La date de conception doit être une date valide.');
-  }
-  if (!isOptionalDate(body.date_first_fly)) {
-    errors.push('La date du premier vol doit être une date valide.');
-  }
-  if (!isOptionalDate(body.date_operationel)) {
-    errors.push('La date opérationnelle doit être une date valide.');
-  }
-  if (!isOptionalPositiveNumber(body.max_speed)) {
-    errors.push('La vitesse max doit être un nombre positif.');
-  }
-  if (!isOptionalPositiveNumber(body.max_range)) {
-    errors.push('La portée max doit être un nombre positif.');
-  }
-  if (!isOptionalId(body.id_manufacturer)) {
-    errors.push("L'ID du fabricant doit être un entier positif.");
-  }
-  if (!isOptionalId(body.id_generation)) {
-    errors.push("L'ID de la génération doit être un entier positif.");
-  }
-  if (!isOptionalId(body.type)) {
-    errors.push("L'ID du type doit être un entier positif.");
-  }
-  if (!isOptionalString(body.image_credit, 255)) {
-    errors.push('Le crédit photo ne doit pas dépasser 255 caractères.');
-  }
-  if (!isOptionalString(body.image_licence, 100)) {
-    errors.push('La licence photo ne doit pas dépasser 100 caractères.');
-  }
-  if (!isOptionalString(body.status, 50)) {
-    errors.push('Le statut ne doit pas dépasser 50 caractères.');
-  }
+const isBlank = (value) => value == null || value === '';
+const isOptionalMach = (value) => isOptionalPositiveNumber(value)
+  && (isBlank(value) || (Number(value) >= 0.1 && Number(value) <= 10));
+const isOptionalHardpoints = (value) => isOptionalNonNegativeInt(value) && !(Number(value) > 30);
+const isOptionalStealth = (value) => isBlank(value) || STEALTH_LEVELS.includes(value);
+const isUrlWithinLimit = (value) => !(typeof value === 'string' && value.length > 500);
+const maxString = (max) => (value) => isOptionalString(value, max);
+const maxText = (max) => (value) => isOptionalText(value, max);
+
+/**
+ * Règles d'une fiche appareil, dans l'ordre des messages renvoyés :
+ * [champ, contrôle (vrai = valide), message]. Les règles croisées (Mach,
+ * points d'emport, discrétion, médias) sont des contrôles comme les autres.
+ */
+const AIRPLANE_RULES = [
+  ['name', (value) => isValidString(value, 255), 'Le nom est requis (max 255 caractères).'],
+  ['complete_name', maxString(255), 'Le nom complet ne doit pas dépasser 255 caractères.'],
+  ['little_description', maxString(255), 'La description courte ne doit pas dépasser 255 caractères.'],
+  ['image_url', isOptionalImageUrl, "L'URL de l'image doit être une URL valide (http/https, max 2048 caractères)."],
+  ['description', maxText(10000), 'La description ne doit pas dépasser 10 000 caractères.'],
+  ['country_id', isOptionalId, "L'ID du pays doit être un entier positif."],
+  ['date_concept', isOptionalDate, 'La date de conception doit être une date valide.'],
+  ['date_first_fly', isOptionalDate, 'La date du premier vol doit être une date valide.'],
+  ['date_operationel', isOptionalDate, 'La date opérationnelle doit être une date valide.'],
+  ['max_speed', isOptionalPositiveNumber, 'La vitesse max doit être un nombre positif.'],
+  ['max_range', isOptionalPositiveNumber, 'La portée max doit être un nombre positif.'],
+  ['id_manufacturer', isOptionalId, "L'ID du fabricant doit être un entier positif."],
+  ['id_generation', isOptionalId, "L'ID de la génération doit être un entier positif."],
+  ['type', isOptionalId, "L'ID du type doit être un entier positif."],
+  ['image_credit', maxString(255), 'Le crédit photo ne doit pas dépasser 255 caractères.'],
+  ['image_licence', maxString(100), 'La licence photo ne doit pas dépasser 100 caractères.'],
+  ['status', maxString(50), 'Le statut ne doit pas dépasser 50 caractères.'],
 
   // ── Strate 1 : fiche technique étendue ─────────────────────────
-  const positiveFields = [
-    ['length', 'La longueur'],
-    ['wingspan', "L'envergure"],
-    ['height', 'La hauteur'],
-    ['wing_area', 'La surface alaire'],
-    ['empty_weight', 'Le poids à vide'],
-    ['mtow', 'Le MTOW'],
-    ['climb_rate', 'Le taux de montée'],
-    ['combat_radius', 'Le rayon de combat'],
-  ];
-  for (const [key, label] of positiveFields) {
-    if (!isOptionalPositiveNumber(body[key])) {
-      errors.push(`${label} doit être un nombre positif.`);
-    }
-  }
-  if (!isOptionalNonNegativeInt(body.service_ceiling)) {
-    errors.push('Le plafond opérationnel doit être un entier positif.');
-  }
-  if (!isOptionalNumber(body.g_limit_pos)) errors.push('g_limit_pos invalide.');
-  if (!isOptionalNumber(body.g_limit_neg)) errors.push('g_limit_neg invalide.');
-  if (!isOptionalNonNegativeInt(body.crew)) errors.push('Le nombre de pilotes doit être un entier positif.');
+  ...POSITIVE_FIELDS.map(([key, label]) => [key, isOptionalPositiveNumber, `${label} doit être un nombre positif.`]),
+  ['service_ceiling', isOptionalNonNegativeInt, 'Le plafond opérationnel doit être un entier positif.'],
+  ['g_limit_pos', isOptionalNumber, 'g_limit_pos invalide.'],
+  ['g_limit_neg', isOptionalNumber, 'g_limit_neg invalide.'],
+  ['crew', isOptionalNonNegativeInt, 'Le nombre de pilotes doit être un entier positif.'],
 
   // ── Strate 2 : motorisation ───────────────────────────────────
-  if (!isOptionalString(body.engine_name, 255)) errors.push("Nom du moteur > 255 caractères.");
-  if (!isOptionalString(body.engine_type, 100)) errors.push("Type du moteur > 100 caractères.");
-  if (!isOptionalString(body.engine_type_en, 100)) errors.push("Type du moteur (EN) > 100 caractères.");
-  if (!isOptionalNonNegativeInt(body.engine_count)) errors.push('Le nombre de moteurs doit être un entier ≥ 0.');
-  if (!isOptionalPositiveNumber(body.thrust_dry)) errors.push('La poussée sèche doit être un nombre positif.');
-  if (!isOptionalPositiveNumber(body.thrust_wet)) errors.push('La poussée PC doit être un nombre positif.');
+  ['engine_name', maxString(255), 'Nom du moteur > 255 caractères.'],
+  ['engine_type', maxString(100), 'Type du moteur > 100 caractères.'],
+  ['engine_type_en', maxString(100), 'Type du moteur (EN) > 100 caractères.'],
+  ['engine_count', isOptionalNonNegativeInt, 'Le nombre de moteurs doit être un entier ≥ 0.'],
+  ['thrust_dry', isOptionalPositiveNumber, 'La poussée sèche doit être un nombre positif.'],
+  ['thrust_wet', isOptionalPositiveNumber, 'La poussée PC doit être un nombre positif.'],
 
   // ── Strate 7 : fiche technique avancée ────────────────────────
-  if (!isOptionalPositiveNumber(body.mach_max) || (body.mach_max != null && body.mach_max !== '' && (Number(body.mach_max) < 0.1 || Number(body.mach_max) > 10))) {
-    errors.push('Le Mach max doit être compris entre 0,1 et 10.');
-  }
-  if (!isOptionalPositiveNumber(body.ferry_range)) errors.push('La distance de convoyage doit être un nombre positif.');
-  if (!isOptionalPositiveNumber(body.internal_fuel)) errors.push('Le carburant interne doit être un nombre positif.');
-  if (!isOptionalNonNegativeInt(body.hardpoints) || Number(body.hardpoints) > 30) {
-    errors.push("Le nombre de points d'emport doit être un entier entre 0 et 30.");
-  }
-  if (!isOptionalBoolean(body.supercruise)) errors.push('supercruise doit valoir true, false ou null.');
-  if (!isOptionalBoolean(body.internal_weapons_bay)) errors.push('internal_weapons_bay doit valoir true, false ou null.');
-  if (!isOptionalString(body.radar_model, 255)) errors.push('Modèle de radar > 255 caractères.');
+  ['mach_max', isOptionalMach, 'Le Mach max doit être compris entre 0,1 et 10.'],
+  ['ferry_range', isOptionalPositiveNumber, 'La distance de convoyage doit être un nombre positif.'],
+  ['internal_fuel', isOptionalPositiveNumber, 'Le carburant interne doit être un nombre positif.'],
+  ['hardpoints', isOptionalHardpoints, "Le nombre de points d'emport doit être un entier entre 0 et 30."],
+  ['supercruise', isOptionalBoolean, 'supercruise doit valoir true, false ou null.'],
+  ['internal_weapons_bay', isOptionalBoolean, 'internal_weapons_bay doit valoir true, false ou null.'],
+  ['radar_model', maxString(255), 'Modèle de radar > 255 caractères.'],
 
   // ── Strate 3 : production ─────────────────────────────────────
-  if (!isOptionalYear(body.production_start)) errors.push("Année de début de production invalide.");
-  if (!isOptionalYear(body.production_end)) errors.push("Année de fin de production invalide.");
-  if (!isOptionalNonNegativeInt(body.units_built)) errors.push('Unités produites doit être un entier ≥ 0.');
-  if (!isOptionalNonNegativeInt(body.unit_cost_usd)) errors.push('Coût unitaire doit être un entier ≥ 0.');
-  if (!isOptionalYear(body.unit_cost_year)) errors.push("Année de référence du coût invalide.");
-  if (!isOptionalNonNegativeInt(body.operators_count)) errors.push('Nombre d\'opérateurs doit être un entier ≥ 0.');
-  if (!isOptionalText(body.variants, 5000)) errors.push('Variantes > 5000 caractères.');
-  if (!isOptionalText(body.variants_en, 5000)) errors.push('Variants (EN) > 5000 caractères.');
+  ['production_start', isOptionalYear, 'Année de début de production invalide.'],
+  ['production_end', isOptionalYear, 'Année de fin de production invalide.'],
+  ['units_built', isOptionalNonNegativeInt, 'Unités produites doit être un entier ≥ 0.'],
+  ['unit_cost_usd', isOptionalNonNegativeInt, 'Coût unitaire doit être un entier ≥ 0.'],
+  ['unit_cost_year', isOptionalYear, 'Année de référence du coût invalide.'],
+  ['operators_count', isOptionalNonNegativeInt, "Nombre d'opérateurs doit être un entier ≥ 0."],
+  ['variants', maxText(5000), 'Variantes > 5000 caractères.'],
+  ['variants_en', maxText(5000), 'Variants (EN) > 5000 caractères.'],
 
   // ── Strate 4 : qualitatif ─────────────────────────────────────
-  const stealthEnum = ['aucune', 'reduite', 'moderee', 'elevee', 'tres_elevee'];
-  if (body.stealth_level != null && body.stealth_level !== '' && !stealthEnum.includes(body.stealth_level)) {
-    errors.push('stealth_level doit être l\'une des valeurs : ' + stealthEnum.join(', '));
-  }
-  if (!isOptionalString(body.nickname, 255)) errors.push('Surnom > 255 caractères.');
-  if (!isOptionalId(body.predecessor_id)) errors.push("predecessor_id doit être un entier positif.");
-  if (!isOptionalId(body.successor_id)) errors.push("successor_id doit être un entier positif.");
-  if (!isOptionalId(body.rival_id)) errors.push("rival_id doit être un entier positif.");
+  ['stealth_level', isOptionalStealth, "stealth_level doit être l'une des valeurs : " + STEALTH_LEVELS.join(', ')],
+  ['nickname', maxString(255), 'Surnom > 255 caractères.'],
+  ['predecessor_id', isOptionalId, 'predecessor_id doit être un entier positif.'],
+  ['successor_id', isOptionalId, 'successor_id doit être un entier positif.'],
+  ['rival_id', isOptionalId, 'rival_id doit être un entier positif.'],
 
-  // ── Strate 6 : médias externes ────────────────────────────────
-  for (const key of ['wikipedia_fr', 'wikipedia_en', 'youtube_showcase', 'manufacturer_page']) {
-    if (!isOptionalUrl(body[key])) errors.push(`${key} doit être une URL http/https valide (max 500).`);
-    if (body[key] != null && typeof body[key] === 'string' && body[key].length > 500) {
-      errors.push(`${key} > 500 caractères.`);
-    }
-  }
+  // ── Strate 6 : médias externes (URL valide, puis longueur) ────
+  ...MEDIA_URL_FIELDS.flatMap((key) => [
+    [key, isOptionalUrl, `${key} doit être une URL http/https valide (max 500).`],
+    [key, isUrlWithinLimit, `${key} > 500 caractères.`],
+  ]),
+];
 
-  return errors;
+function validateAirplaneData(body) {
+  return AIRPLANE_RULES
+    .filter(([key, isValid]) => !isValid(body[key]))
+    .map(([, , message]) => message);
 }
 
 module.exports = {
