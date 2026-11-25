@@ -196,7 +196,7 @@ describe('landing — familles de missions', () => {
 
     auth.fetchWithTimeout = jest.fn(() => jsonResponse({}, false));
     await landing.loadFacets();
-    expect(document.getElementById('missions-status').textContent).toBe('Les catégories n\'ont pas pu être chargées.');
+    expect(document.getElementById('missions-status').textContent).toBe('Les catégories n’ont pas pu être chargées.');
   });
 });
 

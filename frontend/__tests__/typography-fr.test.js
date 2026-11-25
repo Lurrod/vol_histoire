@@ -45,3 +45,31 @@ const pages = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html') && !f.start
 test.each(pages)('%s : aucune espace ordinaire avant : ; ? ! ni dans les « »', (page) => {
   expect(faults(fs.readFileSync(path.join(ROOT, page), 'utf8'))).toEqual([]);
 });
+
+/* CONT-004 : apostrophe typographique ’ et points de suspension … dans le
+ * texte visible. Restent droites : <head> (titres, métadonnées, JSON-LD) et
+ * les clés de titre d'onglet qui le réécrivent, pour que le nom du site y
+ * garde une seule graphie. */
+const TITLE_KEYS = new Set(pages.flatMap((page) =>
+  [...fs.readFileSync(path.join(ROOT, page), 'utf8').matchAll(/<title data-i18n="([^"]+)"/g)].map((m) => m[1])));
+
+function apostropheFaults(text) {
+  return textSegments(text.replace(/<head\b[\s\S]*?<\/head>/g, ' '))
+    .flatMap((seg) => seg.match(/.{0,15}(?:\p{L}'\p{L}|(?<!\.)\.\.\.(?!\.)).{0,10}/gu) || []);
+}
+
+function entries(o, prefix = '', out = []) {
+  if (typeof o === 'string') out.push([prefix, o]);
+  else if (o && typeof o === 'object') Object.entries(o).forEach(([k, v]) => entries(v, prefix ? `${prefix}.${k}` : k, out));
+  return out;
+}
+
+test('fr.json : apostrophes ’ et points de suspension … (hors titres d’onglet)', () => {
+  const fr = require('../locales/fr.json');
+  const found = entries(fr).filter(([k]) => !TITLE_KEYS.has(k)).flatMap(([, v]) => apostropheFaults(v));
+  expect(found).toEqual([]);
+});
+
+test.each(pages)('%s : apostrophes ’ et points de suspension … dans le texte visible', (page) => {
+  expect(apostropheFaults(fs.readFileSync(path.join(ROOT, page), 'utf8'))).toEqual([]);
+});

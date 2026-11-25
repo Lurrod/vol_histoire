@@ -40,9 +40,9 @@ describe('descriptionBody', () => {
 
 describe('applyDescription', () => {
   test('remplace le texte d’attente, retire data-i18n, garde l’identifiant', () => {
-    expect(TEMPLATE).toContain('Chargement de la description...');
+    expect(TEMPLATE).toContain('Chargement de la description…');
     const out = applyDescription(TEMPLATE, { description: MD }, 'fr');
-    expect(out).not.toContain('Chargement de la description...');
+    expect(out).not.toContain('Chargement de la description…');
     expect(out).toMatch(/<div id="aircraft-description" class="description-body markdown-body"><h3 class="md-section">Genèse<\/h3>/);
     expect(out).not.toMatch(/id="aircraft-description"[^>]*data-i18n/);
   });

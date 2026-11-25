@@ -31,7 +31,7 @@
     count_other: '{n} fiches',
     gen_short_1: '1re gén.',
     gen_short_other: '{n}e gén.',
-    types_error: 'Les catégories n\'ont pas pu être chargées.',
+    types_error: 'Les catégories n’ont pas pu être chargées.',
     family_combat: 'Combat',
     family_support: 'Soutien',
     family_training: 'Formation et essais',

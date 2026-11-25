@@ -155,7 +155,7 @@ describe('SEO-001 — récit de la fiche écrit par le serveur', () => {
     expect(res.status).toBe(200);
     expect(res.text).toContain('<h3 class="md-section">Genèse</h3>');
     expect(res.text).toContain('Le <strong>SR-71</strong> vole à Mach 3.');
-    expect(res.text).not.toContain('Chargement de la description...');
+    expect(res.text).not.toContain('Chargement de la description…');
   });
 });
 
@@ -173,7 +173,7 @@ describe('SEO-002 — textes d’interface traduits par le serveur en anglais', 
     mockPool.query.mockResolvedValueOnce({ rows: [{ id: 31, name: 'SR-71 Blackbird', image_url: '/assets/airplanes/sr71.jpg' }] });
     const res = await request(app).get('/details/sr-71-blackbird-31?lang=en');
     expect(res.text).toContain(`data-i18n="details.description">${en.details.description}<`);
-    expect(res.text).not.toContain('Chargement de la description...');
+    expect(res.text).not.toContain('Chargement de la description…');
   });
 
   test('/conflits/:slug?lang=en : titres de section en anglais ; français intact sans ?lang', async () => {

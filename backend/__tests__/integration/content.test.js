@@ -241,7 +241,7 @@ describeIt('Intégration SQL — contenus', () => {
       try {
         const res = await api().get(`/details/rafale-${id}`);
         expect(res.status).toBe(200);
-        expect(res.text).not.toContain('Chargement de la description...');
+        expect(res.text).not.toContain('Chargement de la description…');
         expect(res.text).toMatch(/<div id="aircraft-description" class="description-body[^"]*"><(h3|p)/);
         expect(res.text).toContain(`href="/details/mirage-2000-${rival}"`);
         expect(res.text).toContain('<section class="content-section related-section" id="related-aircraft-section">');

@@ -408,6 +408,6 @@ describe('home/text — langue et attente', () => {
     expect(text.tr('search_all', {})).toContain('{q}');
     window.i18n = { t: (k) => (k === 'home.landing.search_empty' ? 'No aircraft' : k) };
     expect(text.tr('search_empty')).toBe('No aircraft');
-    expect(text.tr('types_error')).toBe('Les catégories n\'ont pas pu être chargées.');
+    expect(text.tr('types_error')).toBe('Les catégories n’ont pas pu être chargées.');
   });
 });
