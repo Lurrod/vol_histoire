@@ -6865,6 +6865,22 @@ UPDATE airplanes SET variants = replace(variants,
     'six prototypes, first hover in October 1960',
     'six prototypes, first tethered hover on 21 October 1960, first free hover on 19 November 1960'));
 
+-- Su-35 (audit du 2026-11-25, CONT-001) : l'Ukraine n'a jamais mis en œuvre de
+-- F-15 ; pertes et exportations reprises du rôle sourcé de la page du conflit
+-- et de l'état des livraisons (IISS 2025, TWZ, The Insider). Le nouveau texte
+-- ne contient pas l'ancien : rejouable sans effet.
+UPDATE airplanes SET description = replace(description,
+    'Engagé en Syrie (depuis 2016) et en Ukraine (2022+). Plusieurs pertes en combat aérien face aux F-15/F-16 ukrainiens modernisés et aux défenses sol-air. Exporté en Chine, Égypte, Iran.',
+    'Engagé en Syrie à partir de janvier 2016, premier déploiement au combat du type, puis en Ukraine depuis 2022, où il compte parmi les chasseurs russes les plus efficaces près du front. Plusieurs y sont perdus, dont deux abattus par des Patriot au-dessus de la région de Briansk en mai 2023. Seule la Chine en a reçu (24 appareils commandés en 2015) : la commande égyptienne de 2018 est abandonnée sous la menace de sanctions américaines, certains de ses appareils réapparaissant en Algérie, et l''Iran a confirmé un achat sans livraison vérifiée.'),
+  description_en = replace(description_en,
+    'Used in Syria (since 2016) and Ukraine (2022+). Several air-combat losses against upgraded Ukrainian F-15/F-16s and surface-to-air defences. Exported to China, Egypt, Iran.',
+    'Deployed to Syria from January 2016, the type''s first combat deployment, then to Ukraine from 2022, where it has been one of the most effective Russian fighters near the front. Several have been lost there, including two shot down by Patriots over the Bryansk region in May 2023. Only China has received it (24 aircraft ordered in 2015): Egypt''s 2018 order was abandoned under the threat of US sanctions, some of its aircraft later appearing in Algeria, and Iran has confirmed a purchase with no verified delivery.')
+ WHERE name = 'Su-35'
+   AND (description, description_en)
+      IS DISTINCT FROM
+      (replace(description, 'Engagé en Syrie (depuis 2016) et en Ukraine (2022+). Plusieurs pertes en combat aérien face aux F-15/F-16 ukrainiens modernisés et aux défenses sol-air. Exporté en Chine, Égypte, Iran.', 'Engagé en Syrie à partir de janvier 2016, premier déploiement au combat du type, puis en Ukraine depuis 2022, où il compte parmi les chasseurs russes les plus efficaces près du front. Plusieurs y sont perdus, dont deux abattus par des Patriot au-dessus de la région de Briansk en mai 2023. Seule la Chine en a reçu (24 appareils commandés en 2015) : la commande égyptienne de 2018 est abandonnée sous la menace de sanctions américaines, certains de ses appareils réapparaissant en Algérie, et l''Iran a confirmé un achat sans livraison vérifiée.'),
+       replace(description_en, 'Used in Syria (since 2016) and Ukraine (2022+). Several air-combat losses against upgraded Ukrainian F-15/F-16s and surface-to-air defences. Exported to China, Egypt, Iran.', 'Deployed to Syria from January 2016, the type''s first combat deployment, then to Ukraine from 2022, where it has been one of the most effective Russian fighters near the front. Several have been lost there, including two shot down by Patriots over the Bryansk region in May 2023. Only China has received it (24 aircraft ordered in 2015): Egypt''s 2018 order was abandoned under the threat of US sanctions, some of its aircraft later appearing in Algeria, and Iran has confirmed a purchase with no verified delivery.'));
+
 -- Photo du MiG-29 (LEGAL-002) : l'ancienne portait « © 2007 Katsuhiko
 -- TOKUNAGA/DACT, All Rights Reserved ». Même nom de fichier, nouvelle photo libre.
 UPDATE airplanes SET image_credit = 'Tim Felce (Airwolfhound)', image_licence = 'CC BY-SA 2.0'
