@@ -88,6 +88,34 @@ describe('clé secrète posée : jeton exigé sur les quatre formulaires', () =>
   });
 });
 
+describe('SEC-008 — hCaptcha qui ne répond pas', () => {
+  test('le fetch porte un délai d’expiration', async () => {
+    global.fetch.mockResolvedValue({ ok: true, json: async () => ({ success: true }) });
+    await verify('tok');
+    expect(global.fetch.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+  });
+
+  test('délai dépassé → refus « timeout », compté dans les métriques', async () => {
+    const { register } = require('../middleware/observability');
+    const count = async () => {
+      const m = (await register.getMetricsAsJSON()).find((x) => x.name === 'voh_captcha_unavailable_total');
+      const v = m && m.values.find((x) => x.labels.reason === 'timeout');
+      return v ? v.value : 0;
+    };
+    const before = await count();
+    const err = new Error('The operation was aborted due to timeout');
+    err.name = 'TimeoutError';
+    global.fetch.mockRejectedValue(err);
+    expect(await verify('tok')).toEqual({ ok: false, reason: 'timeout', error: err.message });
+    expect(await count()).toBe(before + 1);
+  });
+
+  test('réponse HTTP en erreur : refus, raison conservée', async () => {
+    global.fetch.mockResolvedValue({ ok: false, status: 503 });
+    expect(await verify('tok')).toEqual({ ok: false, reason: 'http-503' });
+  });
+});
+
 describe('vérification liée à la clé publique du site', () => {
   test('la sitekey est transmise à siteverify quand elle est configurée', async () => {
     process.env.HCAPTCHA_SITEKEY = 'site-key-123';

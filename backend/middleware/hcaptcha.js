@@ -23,6 +23,9 @@
  */
 
 const HCAPTCHA_VERIFY_URL = 'https://api.hcaptcha.com/siteverify';
+// Délai maximal de siteverify (SEC-008).
+const HCAPTCHA_TIMEOUT_MS = 5000;
+const { captchaUnavailableTotal } = require('./observability');
 
 /**
  * Clés effectives. En développement (ni production ni test), le captcha est
@@ -79,15 +82,26 @@ async function verify(token, remoteIp) {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params.toString(),
+      // Sans délai, le fetch de Node attend jusqu'à 300 s les en-têtes : une
+      // panne d'hCaptcha suspendait connexion, inscription, contact et mot de
+      // passe oublié (SEC-008). Au-delà, refus (fermé par défaut).
+      signal: AbortSignal.timeout(HCAPTCHA_TIMEOUT_MS),
     });
     if (!res.ok) {
-      return { ok: false, reason: 'http-' + res.status };
+      return unavailable('http-' + res.status);
     }
     const data = await res.json();
     return { ok: !!data.success, raw: data };
   } catch (err) {
-    return { ok: false, reason: 'network-error', error: err.message };
+    const timedOut = err && (err.name === 'TimeoutError' || err.name === 'AbortError');
+    return unavailable(timedOut ? 'timeout' : 'network-error', err && err.message);
   }
+}
+
+/** Échec dû au fournisseur, compté dans /metrics (voh_captcha_unavailable_total). */
+function unavailable(reason, error) {
+  captchaUnavailableTotal.inc({ reason: reason.startsWith('http-') ? 'http' : reason });
+  return error === undefined ? { ok: false, reason } : { ok: false, reason, error };
 }
 
 /**

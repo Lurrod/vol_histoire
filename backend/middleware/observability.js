@@ -49,6 +49,16 @@ const dbPoolWaiting = new promClient.Gauge({
 });
 
 // Compteur erreurs non gérées
+// Vérifications hCaptcha échouées faute de réponse exploitable du fournisseur
+// (délai dépassé, erreur réseau, statut HTTP) : une hausse signale une panne
+// d'hCaptcha, pas des robots (SEC-008).
+const captchaUnavailableTotal = new promClient.Counter({
+  name: 'voh_captcha_unavailable_total',
+  help: 'Vérifications hCaptcha sans réponse exploitable (timeout, réseau, HTTP)',
+  labelNames: ['reason'],
+  registers: [register],
+});
+
 const errorsTotal = new promClient.Counter({
   name: 'voh_errors_total',
   help: 'Nombre total d\'erreurs serveur (5xx + non gérées)',
@@ -139,4 +149,5 @@ module.exports = {
   routeLabel,
   startDbPoolMetrics,
   errorsTotal,
+  captchaUnavailableTotal,
 };
