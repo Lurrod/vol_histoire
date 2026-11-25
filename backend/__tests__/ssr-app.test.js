@@ -185,6 +185,28 @@ describe('SEO-002 — textes d’interface traduits par le serveur en anglais', 
   });
 });
 
+describe('SEO-004 — URL nue servie en anglais par Accept-Language', () => {
+  const SITE = 'https://vol-histoire.titouan-borde.com';
+
+  test('/hangar + Accept-Language anglais : canonical et og:url restent sur l’URL nue', async () => {
+    const res = await request(app).get('/hangar').set('Accept-Language', 'en-US,en;q=0.9');
+    expect(res.text).toContain('<html lang="en">');
+    expect(res.text).toContain(`<link rel="canonical" href="${SITE}/hangar">`);
+    expect(res.text).toContain(`<meta property="og:url" content="${SITE}/hangar">`);
+  });
+
+  test('/hangar?lang=en : la version anglaise se canonicalise sur elle-même', async () => {
+    const res = await request(app).get('/hangar?lang=en');
+    expect(res.text).toContain(`<link rel="canonical" href="${SITE}/hangar?lang=en">`);
+  });
+
+  test('/details/:slug + Accept-Language anglais : canonical sur l’URL nue', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 31, name: 'SR-71 Blackbird', image_url: '/assets/airplanes/sr71.jpg' }] });
+    const res = await request(app).get('/details/sr-71-blackbird-31').set('Accept-Language', 'en');
+    expect(res.text).toContain(`<link rel="canonical" href="${SITE}/details/sr-71-blackbird-31">`);
+  });
+});
+
 describe('SEO-009 — /details sans fiche : 404 réel, jamais 200 indexable', () => {
   test.each([
     ['/details'],

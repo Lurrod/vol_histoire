@@ -143,6 +143,20 @@ function replaceJsonLd(html, scripts) {
   return out.replace(/<\/head>/, () => `  ${block}\n</head>`);
 }
 
+/**
+ * URL nue servie en anglais par Accept-Language (SEO-004) : la page garde
+ * son canonical et son og:url sur l'URL nue. Sinon une URL que le sitemap et
+ * les hreflang déclarent française désignait ?lang=en comme canonique — la
+ * contradiction que les aperçus de partage reprenaient. La version anglaise
+ * propre reste ?lang=en, qui se canonicalise sur elle-même.
+ */
+function keepBareCanonical(html, req) {
+  if (!req || req.lang !== 'en' || (req.query && req.query.lang)) return html;
+  return html
+    .replace(/(<link rel="canonical" href="[^"?]*)\?lang=en(")/, '$1$2')
+    .replace(/(<meta property="og:url" content="[^"?]*)\?lang=en(")/, '$1$2');
+}
+
 /** Envoie un rendu SSR : nonce CSP, cache du seul navigateur, variant selon la langue. */
 function sendSsrHtml(req, res, html) {
   res.set('Content-Type', 'text/html; charset=utf-8');
@@ -156,10 +170,12 @@ function sendSsrHtml(req, res, html) {
   // doit pas resservir la version anglaise après un changement de langue.
   res.vary('Accept-Language');
   const inject = req.app.injectCspNonce;
-  res.send(typeof inject === 'function' ? inject(html, res.locals.cspNonce) : html);
+  const page = keepBareCanonical(html, req);
+  res.send(typeof inject === 'function' ? inject(page, res.locals.cspNonce) : page);
 }
 
 module.exports = {
+  keepBareCanonical,
   SITE_URL,
   DEFAULT_OG_IMAGE,
   PUBLISHER_LOGO,

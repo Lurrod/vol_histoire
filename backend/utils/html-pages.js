@@ -4,6 +4,7 @@ const path = require('path');
 const logger = require('../logger');
 const { buildHtmlCache } = require('../middleware/serveHtml');
 const { injectCspNonce } = require('../middleware/security-headers');
+const { keepBareCanonical } = require('./ssr-head');
 
 // Réponse 404 unique, deux formats seulement : JSON sous /api, page 404 du
 // site partout ailleurs (fichiers de dev bloqués, ressources absentes, méthodes
@@ -45,7 +46,7 @@ function createHtmlPages({ frontendRoot, assetVersion }) {
     if (cached !== null) {
       res.vary('Accept-Language');
       res.set('Content-Type', 'text/html; charset=utf-8');
-      return res.send(injectCspNonce(cached, res.locals.cspNonce));
+      return res.send(injectCspNonce(keepBareCanonical(cached, res.req), res.locals.cspNonce));
     }
     // Fallback : fichier ajouté après le boot. Lu puis nonçé comme les autres :
     // servi brut, ses scripts seraient bloqués par 'strict-dynamic'.
@@ -69,7 +70,7 @@ function createHtmlPages({ frontendRoot, assetVersion }) {
   function sendRenderedPage(res, html) {
     res.vary('Accept-Language');
     res.set('Content-Type', 'text/html; charset=utf-8');
-    res.send(injectCspNonce(html, res.locals.cspNonce));
+    res.send(injectCspNonce(keepBareCanonical(html, res.req), res.locals.cspNonce));
   }
 
   return { htmlCache, sendCachedHtml, sendNotFound, sendRenderedPage };
