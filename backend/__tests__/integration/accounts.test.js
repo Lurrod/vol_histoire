@@ -464,7 +464,13 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       const rafale = await airplaneId(ctx.pool, 'Rafale');
       await ctx.pool.query('INSERT INTO favorites (user_id, airplane_id) VALUES ($1, $2)', [id, rafale]);
       const token = await ctx.login('partant@it.local');
-      const res = await api().delete(`/api/users/${id}`).set('Authorization', `Bearer ${token}`);
+      // SEC-005 : sans le bon mot de passe actuel, rien n'est supprimé et l'échec est compté.
+      const refused = await api().delete(`/api/users/${id}`).set('Authorization', `Bearer ${token}`)
+        .send({ currentPassword: 'Mauvais123' });
+      expect(refused.status).toBe(403);
+      expect((await userByEmail('partant@it.local')).failed_login_count).toBe(1);
+      const res = await api().delete(`/api/users/${id}`).set('Authorization', `Bearer ${token}`)
+        .send({ currentPassword: IT_PASSWORD });
       expect(res.status).toBe(200);
       const fav = await ctx.pool.query('SELECT 1 FROM favorites WHERE user_id = $1', [id]);
       expect(fav.rows).toHaveLength(0);
