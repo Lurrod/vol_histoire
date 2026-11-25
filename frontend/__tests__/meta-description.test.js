@@ -50,3 +50,8 @@ describe('shared/meta-description.js', () => {
     expect(out.endsWith('…')).toBe(true);
   });
 });
+
+test('CONT-005 : guillemets droits → « » dans la meta description française', () => {
+  expect(front.typographyFr('Surnommé "Witwenmacher".')).toBe('Surnommé « Witwenmacher ».');
+  expect(front.typographyFr('Surnommé "Witwenmacher".')).toBe(backend.typographyFr('Surnommé "Witwenmacher".'));
+});

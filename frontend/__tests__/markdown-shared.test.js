@@ -35,6 +35,14 @@ describe('details/markdown.js', () => {
     expect(front.parse(NARRATIVE, { lang })).toBe(backend.parse(NARRATIVE, { lang }));
   });
 
+  test('CONT-005 : guillemets droits → « » en français, intacts en anglais et dans les URL', () => {
+    const md = 'Le Viggen ("Foudre") vole, voir [lien](https://x.fr/a"b).';
+    const fr = front.parse(md, { lang: 'fr' });
+    expect(fr).toContain('« Foudre »');
+    expect(fr).toBe(backend.parse(md, { lang: 'fr' }));
+    expect(front.parse(md, { lang: 'en' })).toContain('&quot;Foudre&quot;');
+  });
+
   test('isMarkdown : titres et listes oui, texte simple non', () => {
     expect(front.isMarkdown('## Titre')).toBe(true);
     expect(front.isMarkdown('Texte\n- puce')).toBe(true);

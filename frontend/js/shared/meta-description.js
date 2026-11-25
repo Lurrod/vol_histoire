@@ -64,6 +64,8 @@
 
   function typographyFr(text) {
     return String(text || '').split(URL_RE).map((part, i) => (i % 2 ? part : part
+      // Guillemets droits "x" → « x », comme les récits (CONT-005).
+      .replace(/"([^"\n]+)"/g, `«${NBSP}$1${NBSP}»`)
       .replace(/[ \t]+(?=[;!?])/g, NNBSP)
       .replace(/[ \t]+(?=:)/g, NBSP)
       .replace(/«[ \t\u00A0\u202F]*/g, `«${NBSP}`)

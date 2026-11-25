@@ -49,6 +49,9 @@ const PROTECTED = /(`[^`\n]*`|\]\([^)\n]*\)|\bhttps?:\/\/[^\s)\]]+|\bwww\.[^\s)\
 
 function typographyFrText(text) {
   return text
+    // Guillemets droits "x" → « x » (CONT-005) ; le code et les URL sont
+    // déjà mis de côté par typographyFr.
+    .replace(/"([^"\n]+)"/g, '«' + NBSP + '$1' + NBSP + '»')
     .replace(/[ \t]+(?=[;!?])/g, NNBSP)
     .replace(/[ \t]+(?=:)/g, NBSP)
     .replace(/«[ \t  ]*/g, '«' + NBSP)
