@@ -264,7 +264,7 @@ describe('PUT /api/users/:id', () => {
     // Lecture du compte, puis l'échec compté comme un échec de connexion
     // (SEC-005) ; aucune écriture du profil.
     expect(mockPool.query).toHaveBeenCalledTimes(2);
-    expect(mockPool.query.mock.calls[1][0]).toMatch(/failed_login_count = failed_login_count \+ 1/);
+    expect(mockPool.query.mock.calls[1][0]).toMatch(/ELSE failed_login_count \+ 1/);
   });
 
   test('200 — changement de mot de passe : sessions révoquées, token_version incrémenté, nouvelle session émise', async () => {
@@ -395,7 +395,7 @@ describe('DELETE /api/users/:id', () => {
     const res = await del(3, tokenMember, { currentPassword: 'Mauvais1' });
     expect(res.status).toBe(403);
     expect(res.body.code).toBe('CURRENT_PASSWORD_INVALID');
-    const failed = mockPool.query.mock.calls.find(c => /failed_login_count = failed_login_count \+ 1/.test(c[0]));
+    const failed = mockPool.query.mock.calls.find(c => /ELSE failed_login_count \+ 1/.test(c[0]));
     expect(failed).toBeDefined();
     expect(mockPool.query.mock.calls.some(c => /DELETE FROM users/.test(c[0]))).toBe(false);
   });

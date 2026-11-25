@@ -202,7 +202,7 @@ describe('POST /api/login', () => {
     const res = await request(app).post('/api/login').send({ email: 'jean@test.com', password: 'Wrong1pass' });
     expect(res.status).toBe(400);
     expect(res.body).toEqual({ message: 'Email ou mot de passe incorrect' });
-    expect(mockPool.query.mock.calls[1][0]).toMatch(/failed_login_count = failed_login_count \+ 1/);
+    expect(mockPool.query.mock.calls[1][0]).toMatch(/ELSE failed_login_count \+ 1/);
   });
 });
 
@@ -1851,8 +1851,10 @@ describe('Audit sécurité — verrouillage du login', () => {
     const res = await request(app).post('/api/login').set('X-Forwarded-For', '10.9.0.1').send({ email: 'u@test.com', password: 'Wrong1pass' });
     expect(res.status).toBe(400);
     const upd = mockPool.query.mock.calls[1];
-    expect(upd[0]).toMatch(/failed_login_count = failed_login_count \+ 1/);
+    expect(upd[0]).toMatch(/ELSE failed_login_count \+ 1/);
     expect(upd[0]).toMatch(/WHEN failed_login_count \+ 1 >= \$1/);
+    // SEC-006 : un verrou expiré fait repartir le décompte de 1.
+    expect(upd[0]).toMatch(/WHEN locked_until <= NOW\(\) THEN 1/);
     // Aucune valeur de compteur calculée en JS n'est envoyée
     expect(upd[1]).toEqual([10, '15', 9]);
   });

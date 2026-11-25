@@ -242,6 +242,34 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       expect(blocked.status).toBe(400);
     });
 
+    test('SEC-006 : verrou expiré → le décompte repart de zéro, un échec ne reverrouille pas', async () => {
+      const email = 'verrou-expire@it.local';
+      const hash = (await userByEmail('member@it.local')).password;
+      await ctx.pool.query(
+        "INSERT INTO users (name, email, password, email_verified, failed_login_count, locked_until) VALUES ('Expiré', $1, $2, TRUE, 10, NOW() - interval '1 minute')",
+        [email, hash]
+      );
+      const res = await api().post('/api/login').send({ email, password: 'Mauvais123' });
+      expect(res.status).toBe(400);
+      const user = await userByEmail(email);
+      expect(user.failed_login_count).toBe(1);
+      expect(user.locked_until).toBeNull();
+      const ok = await api().post('/api/login').send({ email, password: IT_PASSWORD });
+      expect(ok.status).toBe(200);
+    });
+
+    test('verrou en cours : le compteur ne bouge pas, la connexion reste refusée', async () => {
+      const email = 'verrou-actif@it.local';
+      const hash = (await userByEmail('member@it.local')).password;
+      await ctx.pool.query(
+        "INSERT INTO users (name, email, password, email_verified, failed_login_count, locked_until) VALUES ('Actif', $1, $2, TRUE, 10, NOW() + interval '10 minutes')",
+        [email, hash]
+      );
+      const res = await api().post('/api/login').send({ email, password: IT_PASSWORD });
+      expect(res.status).toBe(400);
+      expect((await userByEmail(email)).failed_login_count).toBe(10);
+    });
+
     test('une connexion réussie remet le compteur à zéro', async () => {
       const email = 'reset-count@it.local';
       const hash = (await userByEmail('member@it.local')).password;
