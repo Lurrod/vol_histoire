@@ -1,0 +1,216 @@
+/* ======================================================================
+   FICHE — PROFIL DE CAPACITÉS
+   (découpé de details.css — ARCH-004 ; l'ordre des fichiers dans
+   scripts/build-css.js reproduit l'ordre d'origine)
+   ====================================================================== */
+
+/* ======================================================================
+   PROFIL DE CAPACITÉS (radar.js) — section du contenu depuis qu'il a
+   quitté sa bande pleine largeur : même carte, même titre, même sommaire
+   que les autres. Profil seul : les valeurs brutes sont dans les chiffres
+   clés, la fiche technique et les capacités.
+   ====================================================================== */
+
+.page-details .radar-subtitle {
+  margin: -0.75rem 0 1.75rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-ghost);
+}
+
+.page-details .radar-body {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.page-details .radar-chart-area {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 260px;
+  /* Les libellés d'axes débordent du SVG (overflow visible) : la marge
+     les garde à l'intérieur de la carte. */
+  margin-inline: 2.25rem;
+}
+.page-details .radar-chart-area svg { overflow: visible; }
+
+.page-details .radar-legend-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.page-details .radar-stat-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+}
+
+.page-details .radar-stat-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  background: var(--gold-a08);
+  border: 1px solid rgba(200,169,110,0.18);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hud-cyan, #C8A96E);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.page-details .radar-stat-label {
+  flex: 1;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0.02em;
+}
+
+/* Police de la fiche (DM Sans) : ce pourcentage était seul en Barlow Condensed. */
+.page-details .radar-stat-pct {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--hud-cyan, #C8A96E);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.page-details .radar-bar {
+  height: 3px;
+  background: var(--white-a07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.page-details .radar-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(200,169,110,0.5), #C8A96E);
+  border-radius: 2px;
+  width: 0%;
+  transition: width var(--dur-slower) var(--ease-out);
+}
+
+/* Radar et barres côte à côte tant qu'il y a la place (768 px compris). */
+@media (max-width: 47.99em) {
+  .page-details .radar-body { flex-direction: column; gap: 1.75rem; }
+  .page-details .radar-chart-area { width: 230px; }
+  .page-details .radar-legend-area { width: 100%; }
+}
+@media (max-width: 30em) {
+  .page-details .radar-chart-area { width: 200px; }
+}
+
+/* RESPONSIVE */
+/* Deux colonnes jusqu'à 1024 px : en dessous de 1200, l'image passait
+   au-dessus du titre à pleine largeur (960 × 640 à 1024 px), repoussant
+   nom, actions et chiffres clés sous la ligne de flottaison. */
+@media (max-width: 75em) { .page-details .hero-main { gap: 3rem; } .page-details .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 63.99em) {
+  .page-details .hero-main { grid-template-columns: 1fr; gap: 2rem; }
+  .page-details .hero-right { order: -1; }
+  /* Photo en bandeau : pleine largeur mais hauteur bornée. */
+  .page-details .aircraft-image-container { aspect-ratio: 16 / 9; max-height: 60vh; }
+  .page-details .aircraft-image-container picture,
+  .page-details .aircraft-image { width: 100%; height: 100%; object-fit: cover; }
+}
+@media (max-width: 64em) { .page-details .hero-left h1 { font-size: clamp(2rem, 4vw, 3rem); } }
+@media (max-width: 64em) {
+  /* hamburger/nav-links → shared.css */
+  .page-details .btn { min-height: 44px; }
+  .page-details .form-grid { grid-template-columns: 1fr; }
+  .page-details .form-group.span-2 { grid-column: span 1; }
+}
+@media (max-width: 48em) {
+  .page-details .container { padding: 0 1.5rem; }
+  .page-details .aircraft-hero { padding: 3rem 0 3rem; }
+  .page-details .breadcrumb { font-size: 0.85rem; margin-bottom: 2rem; }
+  .page-details .aircraft-subtitle { font-size: 1.05rem; }
+  /* Une seule ligne : le cœur garde sa taille, « Comparer » et « PDF » se
+     partagent le reste (ils s'empilaient sur trois lignes). Les boutons
+     d'administration passent dessous, en pleine largeur. */
+  .page-details .hero-actions { flex-wrap: wrap; gap: 0.625rem; }
+  .page-details .hero-actions .det-fav { flex: 0 0 auto; }
+  .page-details .hero-actions > #compare-btn,
+  .page-details .hero-actions > #pdf-btn { flex: 1 1 0; min-width: 0; }
+  .page-details .hero-actions > #edit-btn,
+  .page-details .hero-actions > .det-del { flex: 1 1 100%; }
+  /* En colonne, « Supprimer » occupe toute la largeur : il se resserre pour
+     laisser sortir la paire, réduite à ses icônes (noms accessibles gardés). */
+  .page-details .hero-actions .det-del { display: flex; }
+  .page-details .hero-actions .det-del > .btn { flex: 1 1 auto; min-width: 0; }
+  .page-details .hero-actions .det-del .cfm-panel { flex-shrink: 0; }
+  .page-details .det-del .cfm-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .page-details .det-del .cfm-yes,
+  .page-details .det-del .cfm-no { width: 44px; padding: 0; }
+  /* Pas les boutons du bandeau cookies : pleine largeur, ils s'empilaient
+     sur trois lignes et le bandeau masquait le bas de la fiche. */
+  .page-details .btn:not(.cookie-banner .btn) { min-height: 44px; }
+  .page-details .hero-actions .btn { padding-inline: 1rem; }
+  .page-details .hero-actions .btn > span { overflow: hidden; text-overflow: ellipsis; }
+  /* Les quatre chiffres clés restent en 2 × 2 : en une colonne ils
+     occupaient un écran entier. */
+  .page-details .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .page-details .stat-card { padding: 1.25rem; }
+  .page-details .content-section { padding: 1.5rem; }
+  .page-details .section-header h2 { font-size: 1.3rem; }
+  /* Jalons empilés : l'icône à gauche, le texte à côté. */
+  .page-details .milestones { grid-template-columns: 1fr; gap: 0.75rem; }
+  .page-details .milestone { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; row-gap: 0.15rem; padding: 1rem 1.1rem; }
+  .page-details .milestone-icon { grid-row: 1 / span 3; margin: 0; }
+  .page-details .modal-container { max-height: 95vh; }
+  .page-details .modal-header, .page-details .modal-form, .page-details .modal-footer { padding: 1.5rem; }
+  .page-details .modal-header h2 { font-size: 1.3rem; }
+  /* footer-content, #toast-container, .toast → shared.css */
+}
+@media (max-width: 48em) { .page-details .hero-meta { gap: 0.75rem; } .page-details .stat-card { padding: 1.25rem; gap: 1rem; } .page-details .stat-icon { width: 48px; height: 48px; font-size: 1.25rem; } }
+@media (max-width: 48em) {
+  .page-details .capabilities-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .page-details .capability-column { padding-left: 1rem; }
+}
+@media (max-width: 30em) {
+  /* .logo, header → shared.css */
+  .page-details .container { padding: 0 1rem; }
+  .page-details .aircraft-hero { padding: 2rem 0 2.5rem; }
+  .page-details .breadcrumb { font-size: 0.8rem; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .page-details .hero-left h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); }
+  .page-details .aircraft-subtitle { font-size: 1rem; margin-bottom: 1.5rem; }
+  /* Quatre éléments courts : en ligne, repliés au besoin (empilés, ils
+     prenaient quatre lignes). */
+  .page-details .hero-meta { gap: 0.5rem 1.25rem; margin-bottom: 1.5rem; padding: 1rem 0; }
+  .page-details .meta-item { border-right: none; margin-right: 0; padding-right: 0; }
+  .page-details .meta-item { font-size: 0.9rem; }
+  .page-details .btn { padding: 0.75rem 1.5rem; font-size: 0.9rem; }
+  .page-details .quick-stats { padding: 2rem 0; }
+  .page-details .stats-grid { gap: 0.75rem; }
+  .page-details .stat-card { padding: 1rem; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .page-details .stat-icon { width: 36px; height: 36px; font-size: 1rem; border-radius: 10px; }
+  .page-details .stat-label { font-size: var(--text-xs); }
+  .page-details .stat-value { font-size: 1.2rem; }
+  .page-details .content-section { padding: 1.25rem 1rem; border-radius: 12px; }
+  .page-details .section-header { margin-bottom: 1.5rem; }
+  .page-details .section-header h2 { font-size: 1.15rem; }
+  .page-details .description-section p { font-size: 1rem; }
+  .page-details .war-card { padding: 1.25rem; }
+  .page-details .war-card h3 { font-size: 1rem; }
+  .page-details .modal { padding: 0; align-items: flex-end; }
+  .page-details .modal-container { border-radius: 16px 16px 0 0; max-height: 90vh; }
+  .page-details .modal-header { padding: 1.25rem; }
+  .page-details .modal-header h2 { font-size: 1.15rem; }
+  .page-details .modal-form, .page-details .modal-footer { padding: 1.25rem; }
+  .page-details .form-section { padding: 1.25rem; }
+  .page-details .form-section h3 { font-size: 0.9rem; }
+  /* footer → shared.css */
+}
+@media (hover: none) and (pointer: coarse) {
+  .page-details .btn { min-height: 48px; }
+  /* .hamburger → shared.css */
+  .page-details .modal-close { min-width: 48px; min-height: 48px; }
+}

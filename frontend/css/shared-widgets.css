@@ -1,0 +1,527 @@
+/* ======================================================================
+   COMPOSANTS — ODOMÈTRE, CONFIRMATION, LISTES, ŒIL ; FIL D'ARIANE
+   (découpé de shared-base.css — ARCH-004 ; l'ordre des fichiers dans
+   scripts/build-css.js reproduit l'ordre d'origine)
+   ====================================================================== */
+
+@layer components {
+
+  /* ============================================================
+     COMPTEUR « ODOMÈTRE » (js/shared/rolling-number.js, v4.17.0)
+     Une colonne par chiffre ; sa bande (vide, 0…9) glisse jusqu'au
+     chiffre voulu (data-d). Une colonne qui entre ou sort passe par
+     l'emplacement vide et sa largeur s'ouvre ou se replie.
+     DM Sans n'a pas de chiffres à chasse fixe : chaque colonne prend la
+     largeur de SON chiffre (mesurée en gras, approche -1px comprise), et
+     cette largeur glisse avec lui — l'espacement reste celui du texte.
+     ============================================================ */
+  /* --roll-h (hauteur d'un emplacement) se règle sur le compteur OU sur un
+     parent (héritage) ; défaut 1,15 em. Emplacement arrondi au pixel : à
+     1,15 em, une bande s'arrêtait sur des positions fractionnaires
+     (−82,8 px) et ses chiffres étaient dessinés entre deux pixels, donc
+     flous à côté du texte voisin. */
+  .t-roll {
+    --roll-slot: var(--roll-h, 1.15em);
+    display: inline-flex;
+  }
+  @supports (height: round(1.5px, 1px)) {
+    .t-roll { --roll-slot: round(var(--roll-h, 1.15em), 1px); }
+  }
+  /* Étai de ligne de base (voir rolling-number.js) : même hauteur de ligne
+     que les chiffres des colonnes, sans largeur ni rendu. */
+  .t-roll-strut {
+    display: inline-block;
+    width: 0;
+    overflow: visible;
+    visibility: hidden;
+    line-height: var(--roll-slot);
+  }
+  /* Sonde de mesure des chiffres (rolling-number.js), retirée aussitôt. */
+  .t-roll-probe { position: absolute; visibility: hidden; white-space: pre; pointer-events: none; }
+  .t-roll-probe > span { display: inline-block; }
+  /* Bandes non sélectionnables : copier la page ne colle pas « 0123456789 »
+     par colonne ; le nombre lisible est dans le .sr-only. */
+  .t-roll-cols { display: inline-flex; line-height: var(--roll-slot); user-select: none; }
+  .t-roll-col {
+    display: inline-block;
+    width: 0.6em;
+    height: var(--roll-slot);
+    overflow: hidden;
+    transition: width var(--dur-slower) var(--ease-out);
+  }
+  .t-roll-col[data-d=""] { width: 0; }
+  /* Largeur de CHAQUE chiffre, mesurée dans la police réelle (--roll-w*,
+     posées par le JS) ; repli : DM Sans gras. */
+  .t-roll-col[data-d="0"] { width: var(--roll-w0, 0.68em); }
+  .t-roll-col[data-d="1"] { width: var(--roll-w1, 0.34em); }
+  .t-roll-col[data-d="2"] { width: var(--roll-w2, 0.55em); }
+  .t-roll-col[data-d="3"] { width: var(--roll-w3, 0.58em); }
+  .t-roll-col[data-d="4"] { width: var(--roll-w4, 0.62em); }
+  .t-roll-col[data-d="5"] { width: var(--roll-w5, 0.59em); }
+  .t-roll-col[data-d="6"] { width: var(--roll-w6, 0.61em); }
+  .t-roll-col[data-d="7"] { width: var(--roll-w7, 0.51em); }
+  .t-roll-col[data-d="8"] { width: var(--roll-w8, 0.61em); }
+  .t-roll-col[data-d="9"] { width: var(--roll-w9, 0.61em); }
+  .t-roll-col.is-leaving { transition-timing-function: var(--ease-in); }
+  .t-roll-strip {
+    display: flex;
+    flex-direction: column;
+    transition: translate var(--dur-slower) var(--ease-out);
+  }
+  .t-roll-strip > span { display: block; height: var(--roll-slot); text-align: center; }
+  .t-roll-col.is-leaving .t-roll-strip { transition-timing-function: var(--ease-in); }
+  .t-roll-col[data-d="0"] .t-roll-strip { translate: 0 calc(var(--roll-slot) * -1); }
+  .t-roll-col[data-d="1"] .t-roll-strip { translate: 0 calc(var(--roll-slot) * -2); }
+  .t-roll-col[data-d="2"] .t-roll-strip { translate: 0 calc(var(--roll-slot) * -3); }
+  .t-roll-col[data-d="3"] .t-roll-strip { translate: 0 calc(var(--roll-slot) * -4); }
+  .t-roll-col[data-d="4"] .t-roll-strip { translate: 0 calc(var(--roll-slot) * -5); }
+  .t-roll-col[data-d="5"] .t-roll-strip { translate: 0 calc(var(--roll-slot) * -6); }
+  .t-roll-col[data-d="6"] .t-roll-strip { translate: 0 calc(var(--roll-slot) * -7); }
+  .t-roll-col[data-d="7"] .t-roll-strip { translate: 0 calc(var(--roll-slot) * -8); }
+  .t-roll-col[data-d="8"] .t-roll-strip { translate: 0 calc(var(--roll-slot) * -9); }
+  .t-roll-col[data-d="9"] .t-roll-strip { translate: 0 calc(var(--roll-slot) * -10); }
+  .t-roll-sep { display: inline-block; line-height: var(--roll-slot); white-space: pre; }
+
+  /* ============================================================
+     CONFIRMATION SUR PLACE (js/shared/confirm-action.js, v4.17.0)
+     .cfm enveloppe le déclencheur ; .cfm-panel (confirmer / annuler)
+     s'ouvre à côté de lui. data-state : idle → confirm → done ;
+     data-side : right (défaut) ou left. Les pages ajoutent leur classe
+     (ex. .fav-del) pour l'animation propre du déclencheur.
+     ============================================================ */
+  .cfm {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+  }
+  .cfm[data-side="left"] { flex-direction: row-reverse; }
+  .cfm-panel {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    white-space: nowrap;
+    transition: max-width var(--dur-fast) var(--ease-in),
+                opacity var(--dur-fast) var(--ease-in),
+                margin var(--dur-fast) var(--ease-in);
+  }
+  /* Plafond proche du contenu réel (deux boutons libellés ≈ 15 rem) : trop
+     large, la largeur visible cesserait de croître à mi-transition. */
+  .cfm[data-state="confirm"] .cfm-panel {
+    max-width: 16rem;
+    opacity: 1;
+    margin-inline-start: 6px;
+    transition: max-width var(--dur-base) var(--ease-out),
+                opacity var(--dur-base) var(--ease-out),
+                margin var(--dur-base) var(--ease-out);
+  }
+  .cfm[data-side="left"][data-state="confirm"] .cfm-panel { margin-inline-start: 0; margin-inline-end: 6px; }
+
+  .cfm-yes,
+  .cfm-no {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-width: 34px;
+    min-height: 34px;
+    padding: 0 0.65rem;
+    border: 1px solid var(--white-a08);
+    border-radius: 9px;
+    background: var(--white-a04);
+    color: rgba(255, 255, 255, 0.82);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    translate: -6px 0;
+    opacity: 0;
+    transition: translate var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in),
+                background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+                border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+  }
+  .cfm[data-side="left"] .cfm-yes,
+  .cfm[data-side="left"] .cfm-no { translate: 6px 0; }
+  .cfm[data-state="confirm"] .cfm-yes,
+  .cfm[data-state="confirm"] .cfm-no {
+    translate: 0 0;
+    opacity: 1;
+    transition: translate var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out),
+                background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+                border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+  }
+  /* Le second bouton arrive un pas après le premier. */
+  .cfm[data-state="confirm"] .cfm-no { transition-delay: var(--stagger-step), var(--stagger-step), 0s, 0s, 0s, 0s; }
+  .cfm-yes { color: #ff8a7a; border-color: rgba(231, 76, 60, 0.32); background: rgba(231, 76, 60, 0.08); }
+  .cfm-yes:hover { background: rgba(231, 76, 60, 0.22); color: var(--white); }
+  .cfm-no:hover { background: var(--white-a08); color: var(--white); }
+  .cfm-yes:focus-visible,
+  .cfm-no:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 1px; }
+  .cfm-yes:active, .cfm-no:active { scale: var(--press-scale); }
+  .cfm-panel .icon,
+  .cfm-panel i { font-size: 0.8rem; }
+
+  /* BOUTON D'ENVOI (VH.busyButton, js/shared/busy-button.js) : largeur
+     figée par le JS ; le libellé monte et s'efface, l'anneau apparaît à sa
+     place ; au succès, l'anneau cède la place à une coche tracée et à son
+     texte, qui montent à leur tour ; puis le libellé revient. */
+  .bb { position: relative; }
+  .bb-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: inherit;
+    transition: opacity var(--dur-fast) var(--ease-out), translate var(--dur-base) var(--ease-out);
+  }
+  .bb[data-bb] .bb-label { opacity: 0; translate: 0 -0.6em; }
+  .bb-spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.1em;
+    height: 1.1em;
+    margin: -0.55em 0 0 -0.55em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    opacity: 0;
+    scale: 0.6;
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease-out), scale var(--dur-base) var(--ease-out);
+    animation: spin 0.7s linear infinite; /* boucle */
+  }
+  .bb[data-bb="busy"] .bb-spin { opacity: 0.9; scale: 1; }
+  .bb-done {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    opacity: 0;
+    translate: 0 0.6em;
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease-out), translate var(--dur-base) var(--ease-out);
+  }
+  .bb[data-bb="done"] .bb-done { opacity: 1; translate: 0 0; }
+  .bb-check {
+    width: 1.1em; height: 1.1em; flex-shrink: 0;
+    fill: none; stroke: currentColor; stroke-width: 2.4;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .bb-check path { stroke-dasharray: 20; stroke-dashoffset: 20; }
+  .bb[data-bb="done"] .bb-check path {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant);
+  }
+  .bb[data-bb="busy"] { cursor: progress; }
+
+  /* POUBELLE (VH.confirmAction.binIcon) : couvercle, cuve et coche animés
+     séparément. Le couvercle pivote sur la charnière OPPOSÉE au côté où
+     s'ouvre le panneau : il se soulève vers la confirmation. Il s'entrouvre
+     au survol, s'ouvre pendant la confirmation ; à la confirmation,
+     couvercle et cuve s'effacent et une coche se trace. */
+  .cfm-bin {
+    width: 1.2em; height: 1.2em; flex-shrink: 0; overflow: visible;
+    fill: none; stroke: currentColor; stroke-width: 1.8;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+  .cfm-bin-lid {
+    transform-box: view-box;
+    transform-origin: 4.5px 7px;
+    transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+  }
+  .cfm-bin-can { transition: opacity var(--dur-fast) var(--ease-out); }
+  .cfm[data-state="idle"] > :hover .cfm-bin-lid { transform: translateY(-0.8px) rotate(-7deg); }
+  .cfm[data-state="confirm"] .cfm-bin-lid { transform: translate(-0.4px, -2.4px) rotate(-24deg); }
+  /* Panneau à gauche : charnière à droite. */
+  .cfm[data-side="left"] .cfm-bin-lid { transform-origin: 19.5px 7px; }
+  .cfm[data-side="left"][data-state="idle"] > :hover .cfm-bin-lid { transform: translateY(-0.8px) rotate(7deg); }
+  .cfm[data-side="left"][data-state="confirm"] .cfm-bin-lid { transform: translate(0.4px, -2.4px) rotate(24deg); }
+  .cfm-bin-check { stroke-dasharray: 20; stroke-dashoffset: 20; opacity: 0; }
+  .cfm[data-state="done"] .cfm-bin-lid,
+  .cfm[data-state="done"] .cfm-bin-can { opacity: 0; }
+  .cfm[data-state="done"] .cfm-bin-check {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant),
+                opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
+  }
+
+  /* ============================================================
+     LISTES DÉROULANTES PERSONNALISÉES (js/shared/custom-select.js)
+     Le <select> natif reste dans .cselect, masqué mais focalisable
+     (validation, label) ; le déclencheur et la liste reprennent le
+     style des champs et des listes de filtres du hangar.
+     ============================================================ */
+  .cselect {
+    position: relative;
+    display: inline-block;
+    min-width: 12rem;
+    vertical-align: middle;
+  }
+  :where(.form-group) > .cselect { display: block; width: 100%; min-width: 0; }
+
+  /* Étiré sous toute la largeur du champ (1 px de haut) : la bulle de
+     validation du navigateur (`required`) pointe le champ visible. */
+  .cselect-native {
+    position: absolute !important;
+    inset: auto 0 0 0 !important;
+    width: 100% !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .cselect-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    background: var(--white-a04);
+    border: 1px solid var(--border-field);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.75);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color var(--dur-fast) var(--ease-out),
+                background-color var(--dur-fast) var(--ease-out),
+                color var(--dur-fast) var(--ease-out),
+                box-shadow var(--dur-fast) var(--ease-out),
+                scale var(--dur-instant) var(--ease-out);
+  }
+  .cselect-trigger:hover {
+    border-color: rgba(200, 169, 110, 0.28);
+    background-color: var(--white-a06);
+    color: var(--white);
+  }
+  .cselect-trigger:focus-visible,
+  .cselect.is-open .cselect-trigger {
+    outline: none;
+    border-color: rgba(200, 169, 110, 0.6);
+    color: var(--white);
+  }
+  .cselect-trigger:focus-visible { box-shadow: var(--focus-ring); }
+  .cselect-trigger:active:not([aria-disabled="true"]) { scale: var(--press-scale); }
+  .cselect-trigger[aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
+  .cselect-trigger[aria-invalid="true"],
+  .cselect:has(.cselect-native[aria-invalid="true"]) .cselect-trigger { border-color: var(--accent); }
+
+  .cselect-value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cselect-chevron {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    color: var(--hud-cyan);
+    transition: rotate var(--dur-base) var(--ease-out);
+  }
+  .cselect.is-open .cselect-chevron { rotate: 180deg; }
+
+  .cselect-list {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 0;
+    z-index: 20;
+    min-width: 100%;
+    width: max-content;
+    max-width: min(24rem, calc(100vw - 2rem));
+    max-height: 18rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    margin: 0;
+    padding: 0.35rem;
+    list-style: none;
+    background: var(--night-mid);
+    border: 1px solid var(--white-a08);
+    border-radius: 12px;
+    box-shadow: var(--shadow-xl);
+    transform-origin: top center;
+  }
+  .cselect-list[hidden] { display: none; }
+  .cselect.is-above .cselect-list {
+    top: auto;
+    bottom: calc(100% + 0.4rem);
+    transform-origin: bottom center;
+  }
+  .cselect-list.is-open { animation: cselect-in var(--dropdown-open-dur) var(--dropdown-ease); }
+  .cselect-list.is-closing {
+    animation: cselect-out var(--dropdown-close-dur) var(--ease-in) forwards;
+    pointer-events: none;
+  }
+  @keyframes cselect-in {
+    from { opacity: 0; scale: var(--dropdown-pre-scale); }
+    to   { opacity: 1; scale: 1; }
+  }
+  @keyframes cselect-out {
+    from { opacity: 1; scale: 1; }
+    to   { opacity: 0; scale: var(--dropdown-pre-scale); }
+  }
+
+  .cselect-option-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cselect-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-out),
+                color var(--dur-fast) var(--ease-out);
+  }
+  .cselect-option.is-active {
+    background: var(--white-a07);
+    color: var(--white);
+  }
+  .cselect-option[aria-selected="true"] { color: var(--hud-cyan); }
+  .cselect-option[aria-selected="true"].is-active { background: rgba(200, 169, 110, 0.1); }
+  .cselect-option[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; }
+  .cselect-check {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: var(--hud-cyan);
+    opacity: 0;
+    scale: 0.8;
+    transition: opacity var(--dur-fast) var(--ease-out), scale var(--dur-fast) var(--ease-out);
+  }
+  .cselect-option[aria-selected="true"] .cselect-check { opacity: 1; scale: 1; }
+
+  /* ============================================================
+     ŒIL DES MOTS DE PASSE (setupPasswordToggle, utils.js)
+     Masqué (aria-pressed="false") : la paupière supérieure retombe sur la
+     paupière inférieure et la pupille disparaît. Visible : elle se relève.
+     Mouvement court, sans rebond.
+     ============================================================ */
+  .pw-eye {
+    width: 1.25em;
+    height: 1.25em;
+    overflow: visible;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .pw-eye-lid {
+    transform-box: view-box;
+    transform-origin: 12px 12px;
+    transform: scaleY(-1);
+    transition: transform var(--dur-base) var(--ease-in-out);
+  }
+  .pw-eye-pupil {
+    fill: currentColor;
+    stroke: none;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: scale(0.4);
+    opacity: 0;
+    transition: transform var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in);
+  }
+  /* Cils : visibles œil fermé (ils se déplient une fois la paupière
+     retombée), repliés vers la paupière et effacés œil ouvert. */
+  .pw-eye-lashes {
+    transform-box: view-box;
+    transform-origin: 12px 16px;
+    transition: transform var(--dur-base) var(--ease-out) var(--dur-fast),
+                opacity var(--dur-base) var(--ease-out) var(--dur-fast);
+  }
+  [aria-pressed="true"] > .pw-eye .pw-eye-lashes {
+    transform: translateY(-1.5px) scaleY(0.3);
+    opacity: 0;
+    transition: transform var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in);
+  }
+  [aria-pressed="true"] > .pw-eye .pw-eye-lid { transform: scaleY(1); }
+  [aria-pressed="true"] > .pw-eye .pw-eye-pupil {
+    transform: scale(1);
+    opacity: 1;
+    transition: transform var(--dur-base) var(--ease-out) var(--dur-instant),
+                opacity var(--dur-base) var(--ease-out) var(--dur-instant);
+  }
+
+} /* fin @layer components */
+
+@layer shared {
+
+/* Label langue masqué par défaut, visible uniquement en mobile (≤ 64em) */
+.lang-btn-label { display: none; }
+
+/* ======================================================================
+   BREADCRUMB — fil d'Ariane partagé (aligné sur .page-details)
+   ====================================================================== */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-ghost);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.breadcrumb a:hover,
+.breadcrumb a:focus-visible {
+  color: rgba(255, 255, 255, 0.7);
+}
+.breadcrumb a:focus-visible {
+  outline: 2px solid var(--hud-cyan);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.breadcrumb > i,
+.breadcrumb > .icon {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.15);
+}
+.breadcrumb span {
+  color: rgba(255, 255, 255, 0.7);
+}
+/* Maillon qui porte son propre chevron (conflits : #crumb-current). */
+.breadcrumb > span:has(> .icon) { display: inline-flex; align-items: center; gap: 0.75rem; }
+.breadcrumb > span > .icon:first-child { font-size: 0.6rem; color: rgba(255, 255, 255, 0.15); }
+.breadcrumb > span.hidden { display: none; }
+/* En-tête centré (sans chiffres à droite, voir HERO COMMUN) : fil d'Ariane
+   centré aussi. Ici et non là-haut : cette couche l'emporte sur la sienne. */
+.page-hero:not(:has(.hero-data)) .breadcrumb { justify-content: center; }
+@media (max-width: 1024px) {
+  .breadcrumb {
+    font-size: 0.85rem;
+    margin-bottom: 2rem;
+  }
+}
+@media (max-width: 640px) {
+  .breadcrumb {
+    font-size: 0.8rem;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+} /* fin @layer shared (pied) */

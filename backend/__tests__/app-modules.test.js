@@ -1,7 +1,7 @@
 /**
  * Modules extraits de app.js (ARCH-002) : purges périodiques et documentation
  * de l'API. Le reste (en-têtes, limiteurs, fichiers statiques, pages) est
- * couvert par les tests de bout en bout de l'application (api.test.js…).
+ * couvert par les tests de bout en bout de l'application (api-platform.test.js…).
  */
 process.env.NODE_ENV = 'test';
 

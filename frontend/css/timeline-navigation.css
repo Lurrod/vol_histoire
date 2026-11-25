@@ -1,0 +1,494 @@
+/* ======================================================================
+   TIMELINE — RÈGLE DES ANNÉES, CONFLITS, APPAREILS
+   (découpé de timeline.css — ARCH-004 ; l'ordre des fichiers dans
+   scripts/build-css.js reproduit l'ordre d'origine)
+   ====================================================================== */
+
+/* ============================================================
+   RÈGLE DES ANNÉES — barre fixe sous l'en-tête
+   ------------------------------------------------------------
+   Remplace le repère de décennie, la mini-carte et la barre de
+   progression. --tl-bar-top = hauteur réelle de l'en-tête (posée par
+   ruler.js : il se resserre au défilement). --era-color suit le
+   chapitre actif (era.js).
+   ============================================================ */
+.page-timeline .tl-bar {
+  position: sticky;
+  top: var(--tl-bar-top, var(--header-h));
+  z-index: var(--z-raised);
+  background: rgba(13, 13, 13, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-block: 1px solid var(--border-subtle);
+}
+.page-timeline .tl-bar-inner {
+  max-width: 75em;
+  margin: 0 auto;
+  padding: 0.55rem 2rem 0.35rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "now ruler lens";
+  align-items: center;
+  column-gap: 2rem;
+}
+.page-timeline .tl-bar-now {
+  grid-area: now;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 7.5rem;
+}
+.page-timeline .tl-bar-year {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--era-color, var(--hud-cyan));
+  transition: color var(--dur-slow) var(--ease-out);
+  --roll-h: 1em;
+}
+.page-timeline .tl-bar-era {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 13rem;
+  min-height: 1.2em;
+}
+
+.page-timeline .tl-ruler {
+  grid-area: ruler;
+  /* Une règle globale met les <nav> en flex : piste et graduations
+     s'y réduisaient à une largeur nulle. */
+  display: block;
+  position: relative;
+  min-width: 0;
+  padding-inline: 1rem;
+}
+.page-timeline .tl-ruler-track {
+  position: relative;
+  height: 14px;
+  border-bottom: 1px solid var(--text-faint);
+}
+.page-timeline .tl-ruler-war {
+  position: absolute;
+  left: var(--x, 0%);
+  width: var(--w, 1%);
+  height: 2px;
+  border-radius: 1px;
+  background: rgba(200, 169, 110, 0.45);
+}
+.page-timeline .tl-ruler-war[data-lane="0"] { top: 2px; }
+.page-timeline .tl-ruler-war[data-lane="1"] { top: 6px; }
+.page-timeline .tl-ruler-war[data-lane="2"] { top: 10px; }
+.page-timeline .tl-ruler-cursor {
+  position: absolute;
+  left: var(--x, 0%);
+  top: -6px;
+  bottom: -7px;
+  width: 2px;
+  translate: -50% 0;
+  background: var(--era-color, var(--hud-cyan));
+  box-shadow: 0 0 8px var(--era-color, var(--hud-cyan));
+  transition: left var(--dur-fast) var(--ease-out), background-color var(--dur-slow) var(--ease-out);
+}
+.page-timeline .tl-ruler-ticks {
+  position: relative;
+  height: 1.9rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.page-timeline .tl-tick-item {
+  position: absolute;
+  left: var(--x, 0%);
+  top: 0;
+  translate: -50% 0;
+}
+.page-timeline .tl-tick {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 1.75rem;
+  padding: 0.3rem 0.2rem 0.1rem;
+  background: none;
+  border: 0;
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+}
+.page-timeline .tl-tick::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: 1px;
+  height: 5px;
+  background: var(--text-faint);
+  translate: -50% 0;
+}
+.page-timeline .tl-tick:hover,
+.page-timeline .tl-tick:focus-visible { color: var(--text-primary); }
+.page-timeline .tl-tick:focus-visible {
+  outline: 2px solid var(--hud-cyan);
+  outline-offset: 1px;
+}
+.page-timeline .tl-tick.active {
+  color: var(--era-color, var(--hud-cyan));
+  font-weight: 700;
+}
+.page-timeline .tl-tick.active::before {
+  height: 7px;
+  background: var(--era-color, var(--hud-cyan));
+}
+.page-timeline .tl-tick-short { display: none; }
+
+/* Filtres « par nation » / « par type » */
+.page-timeline .tl-lens {
+  grid-area: lens;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.page-timeline .tl-lens .cselect,
+.page-timeline .tl-lens-select { width: 11.5rem; min-width: 0; }
+.page-timeline .tl-lens-reset,
+.page-timeline .tl-lens-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0.4rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+}
+.page-timeline .tl-lens-reset:hover,
+.page-timeline .tl-lens-reset:focus-visible,
+.page-timeline .tl-lens-toggle:hover,
+.page-timeline .tl-lens-toggle:focus-visible {
+  border-color: var(--era-color, var(--hud-cyan));
+  color: var(--text-primary);
+}
+.page-timeline .tl-lens-reset[hidden] { display: none; }
+.page-timeline .tl-lens-toggle { display: none; grid-area: toggle; }
+.page-timeline .tl-bar.is-filtered .tl-lens-toggle {
+  border-color: var(--era-color, var(--hud-cyan));
+  color: var(--text-primary);
+}
+
+/* ============================================================
+   CONFLITS — ceux qui éclatent dans la décennie, avec leur durée
+   ============================================================ */
+.page-timeline .tl-conflicts {
+  max-width: 62em;
+  margin: 0 auto 5rem;
+  padding: 0 2rem;
+}
+.page-timeline .tl-conflict-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.page-timeline .tl-conflict {
+  display: grid;
+  grid-template-columns: minmax(13rem, 21rem) minmax(0, 1fr);
+  align-items: center;
+  /* Écart vertical serré : la ligne des dates clés suit sa carte. */
+  gap: 0.1rem 1.5rem;
+}
+.page-timeline .tl-conflict-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-height: 44px;
+  justify-content: center;
+  padding: 0.55rem 0.85rem;
+  background: rgba(20, 20, 20, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+}
+.page-timeline .tl-conflict-link:hover,
+.page-timeline .tl-conflict-link:focus-visible {
+  border-color: var(--era-color, var(--hud-cyan));
+  background: rgba(20, 20, 20, 0.85);
+}
+.page-timeline .tl-conflict-link:focus-visible {
+  outline: 2px solid var(--era-color, var(--hud-cyan));
+  outline-offset: 2px;
+}
+.page-timeline .tl-conflict-name {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+.page-timeline .tl-conflict-meta {
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+}
+/* Piste de la décennie : un trait par année, la barre couvre la durée. */
+.page-timeline .tl-conflict-track {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), rgba(255, 255, 255, 0.06) calc(10% - 1px) 10%),
+    rgba(255, 255, 255, 0.03);
+}
+.page-timeline .tl-conflict-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--x, 0%);
+  width: var(--w, 10%);
+  border-radius: 4px;
+  background: var(--era-color, var(--hud-cyan));
+  opacity: 0.75;
+}
+.page-timeline .tl-conflict.continues .tl-conflict-bar {
+  border-radius: 4px 0 0 4px;
+  -webkit-mask-image: linear-gradient(90deg, #000 70%, transparent);
+  mask-image: linear-gradient(90deg, #000 70%, transparent);
+}
+
+/* Dates clés de la page du conflit : dépliant natif (<details>), fermé par
+ * défaut, sur toute la largeur de la ligne. Pas de filet ni de points : une
+ * liste date / titre, dans la police des années de la frise. */
+.page-timeline .tl-conflict-dates {
+  grid-column: 1 / -1;
+  margin-top: -0.2rem;
+}
+.page-timeline .tl-conflict-dates > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 0.85rem;
+  list-style: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  border-radius: var(--r-md);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.page-timeline .tl-conflict-dates > summary::-webkit-details-marker { display: none; }
+.page-timeline .tl-conflict-dates > summary::before {
+  content: '';
+  width: 0.4rem;
+  height: 0.4rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  rotate: -45deg;
+  transition: rotate var(--dur-fast) var(--ease-out);
+}
+.page-timeline .tl-conflict-dates[open] > summary::before { rotate: 45deg; }
+.page-timeline .tl-conflict-dates > summary:hover,
+.page-timeline .tl-conflict-dates[open] > summary { color: var(--era-color, var(--hud-cyan)); }
+.page-timeline .tl-conflict-dates > summary:focus-visible {
+  outline: 2px solid var(--era-color, var(--hud-cyan));
+  outline-offset: 2px;
+}
+.page-timeline .tl-conflict-date-list {
+  list-style: none;
+  margin: 0.2rem 0 0.4rem;
+  padding: 0 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.page-timeline .tl-conflict-date-list li {
+  display: grid;
+  grid-template-columns: 10rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: baseline;
+}
+.page-timeline .tl-conflict-date-list time {
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.page-timeline .tl-conflict-date-title {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.page-timeline .tl-conflict-dates-more {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.85rem;
+  color: var(--era-color, var(--hud-cyan));
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.page-timeline .tl-conflict-dates-more:hover { text-decoration: underline; }
+.page-timeline .tl-conflict-dates-more:focus-visible {
+  outline: 2px solid var(--era-color, var(--hud-cyan));
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   APPAREILS — marquants (cartes) puis piste année par année
+   ============================================================ */
+.page-timeline .tl-plane-card.is-proto .tl-plane-img img { filter: grayscale(0.35); }
+.page-timeline .tl-plane-tag,
+.page-timeline .tl-chip-tag {
+  color: var(--era-color, var(--hud-cyan));
+}
+
+.page-timeline .tl-runway { margin-top: 3rem; }
+.page-timeline .tl-sub-label {
+  margin: 0 0 0.75rem;
+  color: var(--text-muted);
+  font-family: 'Courier New', monospace;
+  font-size: var(--text-xs);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.page-timeline .tl-runway-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.page-timeline .tl-runway-row {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.page-timeline .tl-runway-year {
+  padding-top: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--era-color, var(--hud-cyan));
+}
+.page-timeline .tl-chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.page-timeline .tl-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0.3rem 0.8rem 0.3rem 0.3rem;
+  background: rgba(20, 20, 20, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+}
+.page-timeline .tl-chip:hover,
+.page-timeline .tl-chip:focus-visible {
+  border-color: var(--era-color, var(--hud-cyan));
+  background: rgba(20, 20, 20, 0.9);
+}
+.page-timeline .tl-chip:focus-visible {
+  outline: 2px solid var(--era-color, var(--hud-cyan));
+  outline-offset: 2px;
+}
+.page-timeline .tl-chip-img {
+  flex-shrink: 0;
+  width: 48px;
+  height: 32px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--night-soft);
+}
+.page-timeline .tl-chip-img img,
+.page-timeline .tl-chip-img picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.page-timeline .tl-chip-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+.page-timeline .tl-chip-name {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.page-timeline .tl-chip-meta {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+/* Appareil placé à son premier vol (prototype, projet annulé) : un chemin
+   abandonné ou pas encore ouvert, en trait tireté. */
+.page-timeline .tl-chip.is-proto { border-style: dashed; background: rgba(20, 20, 20, 0.4); }
+.page-timeline .tl-chip.is-proto .tl-chip-img { opacity: 0.75; filter: grayscale(0.4); }
+
+.page-timeline .tl-hangar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 2rem;
+  min-height: 44px;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--era-color, var(--hud-cyan));
+  border-radius: 2px;
+  color: var(--era-color, var(--hud-cyan));
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+}
+.page-timeline .tl-hangar-link:hover,
+.page-timeline .tl-hangar-link:focus-visible {
+  background: var(--era-color, var(--hud-cyan));
+  color: var(--night);
+}
+.page-timeline .tl-hangar-link:focus-visible {
+  outline: 2px solid var(--era-color, var(--hud-cyan));
+  outline-offset: 3px;
+}
+.page-timeline .tl-lens-empty {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0;
+}

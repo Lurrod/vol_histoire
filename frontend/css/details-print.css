@@ -1,0 +1,225 @@
+/* ======================================================================
+   FICHE — EXPORT PDF (impression)
+   (découpé de details.css — ARCH-004 ; l'ordre des fichiers dans
+   scripts/build-css.js reproduit l'ordre d'origine)
+   ====================================================================== */
+
+/* ============================================================
+   EXPORT PDF (bouton « Exporter en PDF » → window.print())
+   Un document texte, pas une copie de l'écran : une seule colonne de
+   lecture, titres soulignés d'un filet, valeurs en listes « libellé —
+   valeur ». Ni cartes, ni tuiles, ni graphique : rien qui puisse déborder
+   d'une marge, quelle que soit la largeur du papier ou les marges choisies
+   dans la boîte d'impression. Seule la photo reste, en petit.
+   ============================================================ */
+/* Marge totale ≈ 18 mm : 12 mm de page + 6 mm dans le document. La part
+   intérieure reste si la boîte d'impression est réglée sur « Marges :
+   aucune » ou « minimum » (elle remplace alors celle de @page) : le texte
+   ne touche jamais le bord. */
+@page { size: A4; margin: 14mm 12mm; }
+@media print {
+  /* color-scheme: dark (tokens.css + meta) fait peindre les marges de page
+     en sombre ; hauteurs d'écran neutralisées (page blanche en fin). */
+  html:has(body.page-details) { color-scheme: light !important; background: #fff !important; height: auto !important; min-height: 0 !important; }
+  body.page-details {
+    background: #fff !important; color: #1a1a1a;
+    font-size: 10.5pt; line-height: 1.5;
+    height: auto !important; min-height: 0 !important;
+    margin: 0 !important; padding: 4mm 6mm !important;
+  }
+  body.page-details::before, body.page-details::after { content: none !important; display: none !important; }
+  .page-details *, .page-details *::before, .page-details *::after {
+    background: transparent !important;
+    box-shadow: none !important; text-shadow: none !important;
+    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+    animation: none !important; transition: none !important;
+    opacity: 1 !important; translate: none !important; transform: none !important;
+  }
+  .page-details * {
+    color: #1a1a1a !important;
+    border: 0 !important; border-radius: 0 !important;
+    box-sizing: border-box;
+    max-width: 100% !important;
+    overflow-wrap: anywhere;
+  }
+
+  /* Tout ce qui n'est pas du contenu de fiche. */
+  .page-details > header, .page-details footer, .page-details .skip-link,
+  .page-details .breadcrumb, .page-details .hero-actions, .page-details .share-bar,
+  .page-details .hero-background, .page-details .image-overlay,
+  .page-details .det-zoom-btn, .page-details .det-zoom,
+  .page-details .mini-bar, .page-details .scroll-progress, .page-details .nav-scrim,
+  .page-details #compare-bar, .page-details .compare-bar, .page-details .compare-modal,
+  .page-details #toast-container, .page-details #edit-modal, .page-details .modal,
+  .page-details .cookie-banner, .page-details .cookie-modal,
+  .page-details .hamburger, .page-details .lang-switch,
+  .page-details .stat-icon, .page-details .milestone-icon,
+  .page-details .section-header .icon, .page-details .capability-head .icon,
+  .page-details .meta-item .icon,
+  .page-details .war-more, .page-details .related-img, .page-details .related-arrow,
+  .page-details .source-link .icon, .page-details .source-arrow,
+  .page-details .hidden {
+    display: none !important;
+  }
+
+  /* Une colonne, sans les marges ni largeurs de l'écran. */
+  .page-details .container, .page-details main, .page-details .content-layout,
+  .page-details .hero-content, .page-details .aircraft-hero, .page-details .quick-stats,
+  .page-details .content-section, .page-details .section-content {
+    display: block !important;
+    width: auto !important; min-height: 0 !important; height: auto !important;
+    margin: 0 !important; padding: 0 !important;
+  }
+  .page-details .content-section, .page-details .quick-stats { margin-bottom: 6mm !important; }
+
+  /* Titres de section : texte gras, filet fin dessous, jamais seuls en bas. */
+  .page-details .section-header { margin: 0 0 2.5mm !important; padding: 0 0 1mm !important; border-bottom: 0.6pt solid #999 !important; break-after: avoid; page-break-after: avoid; }
+  .page-details .section-header h2 { display: block !important; margin: 0 !important; font-family: 'DM Sans', sans-serif !important; font-size: 13pt !important; font-weight: 700 !important; letter-spacing: 0 !important; text-transform: none !important; }
+
+  /* En-tête : nom, désignation, origine, puis la photo. */
+  .page-details .aircraft-hero { margin-bottom: 6mm !important; break-inside: avoid; page-break-inside: avoid; }
+  .page-details .aircraft-hero::before {
+    content: 'Vol d\'Histoire — Fiche technique';
+    display: block; margin-bottom: 3mm;
+    font-size: 8pt; letter-spacing: 0.15em; text-transform: uppercase; color: #777 !important;
+  }
+  .page-details .hero-main, .page-details .hero-left, .page-details .hero-right { display: block !important; margin: 0 !important; padding: 0 !important; text-align: left !important; }
+  .page-details .hero-left h1 { margin: 0 !important; font-size: 24pt !important; line-height: 1.1 !important; letter-spacing: -0.01em !important; color: #000 !important; }
+  .page-details .aircraft-subtitle { margin: 0.5mm 0 1.5mm !important; font-size: 11.5pt !important; color: #444 !important; }
+  .page-details .hero-meta { display: block !important; margin: 0 0 4mm !important; padding: 0 !important; font-size: 10pt !important; color: #444 !important; }
+  .page-details .meta-item { display: inline !important; margin: 0 !important; padding: 0 !important; }
+  .page-details .meta-item + .meta-item::before { content: ' · '; }
+  .page-details .aircraft-image-container { display: block !important; margin: 0 !important; height: auto !important; aspect-ratio: auto !important; overflow: visible !important; }
+  .page-details .aircraft-image-container img { display: block !important; width: auto !important; height: auto !important; max-width: 100% !important; max-height: 60mm !important; object-fit: contain !important; }
+  .page-details .image-credit { margin: 1mm 0 0 !important; font-size: 7.5pt !important; color: #777 !important; text-align: left !important; }
+
+  /* Listes « libellé — valeur » sur deux colonnes : chiffres clés, fiche
+     technique, production. Une ligne par donnée, aucun cadre. */
+  .page-details .stats-grid, .page-details .specs-grid, .page-details .production-grid .spec-list {
+    display: grid !important; grid-template-columns: 1fr 1fr !important;
+    column-gap: 10mm !important; row-gap: 0 !important;
+  }
+  .page-details .spec-group-title { margin: 0 0 1mm !important; font-size: 8.5pt !important; color: #555 !important; }
+  /* Un groupe (dix lignes au plus) ne se coupe pas : son titre restait
+     seul en bas de page, ses lignes en haut de la suivante. */
+  .page-details .spec-group { margin: 0 0 3mm !important; break-inside: avoid; }
+  .page-details .spec-group-title { break-after: avoid; }
+
+  /* Profil de capacités sur papier blanc : la grille et les libellés du
+     radar sont dessinés en blanc pour l'écran ; les barres doivent
+     s'imprimer même sans « graphiques d'arrière-plan ». */
+  .page-details .radar-section { break-inside: avoid; }
+  .page-details .radar-subtitle { margin: 0 0 2mm !important; font-size: 9pt !important; color: #555 !important; }
+  .page-details .radar-body { gap: 10mm !important; }
+  .page-details .radar-chart-area { width: 55mm !important; margin-inline: 12mm !important; }
+  .page-details .radar-svg text { fill: #444 !important; }
+  .page-details .radar-svg line,
+  .page-details .radar-svg polygon:not(.radar-polygon) { stroke: #d6d6d6 !important; fill: none !important; }
+  .page-details .radar-svg circle { stroke: #fff !important; }
+  .page-details .radar-legend-area { gap: 2.5mm !important; }
+  .page-details .radar-stat-icon { display: none !important; }
+  .page-details .radar-stat-head { margin-bottom: 1mm !important; }
+  .page-details .radar-stat-label { font-size: 9.5pt !important; color: #333 !important; }
+  .page-details .radar-stat-pct { font-size: 9.5pt !important; color: #000 !important; }
+  .page-details .radar-bar { background: #e6e6e6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page-details .radar-bar-fill { background: #b08d4f !important; transition: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .page-details .stat-card, .page-details .spec-row {
+    display: flex !important; justify-content: space-between; align-items: baseline; gap: 4mm;
+    margin: 0 !important; padding: 0.9mm 0 !important; min-height: 0 !important;
+    border-bottom: 0.4pt solid #e2e2e2 !important;
+    text-align: left !important;
+    break-inside: avoid;
+  }
+  .page-details .stat-content { display: contents !important; }
+  .page-details .stat-label, .page-details .spec-label {
+    margin: 0 !important; padding: 0 !important;
+    font-size: 9.5pt !important; font-weight: 400 !important; letter-spacing: 0 !important; text-transform: none !important;
+    color: #555 !important;
+  }
+  .page-details .stat-value, .page-details .spec-value {
+    margin: 0 !important; padding: 0 !important;
+    font-size: 10pt !important; font-weight: 600 !important; text-align: right !important;
+    color: #000 !important;
+  }
+  .page-details .variants-block { margin: 3mm 0 0 !important; padding: 0 !important; }
+  .page-details .variants-block h3 { margin: 0 0 1mm !important; font-size: 10.5pt !important; letter-spacing: 0 !important; text-transform: none !important; }
+
+  /* Texte courant. */
+  .page-details .description-section .section-content { max-width: none !important; }
+  .page-details p, .page-details li { orphans: 3; widows: 3; }
+  .page-details .description-section p, .page-details .markdown-body p, .page-details .markdown-body li,
+  .page-details .variants-content p, .page-details .variants-content li { font-size: 10.5pt !important; line-height: 1.55 !important; }
+  .page-details .markdown-body h3.md-section { margin: 3.5mm 0 1mm !important; font-size: 11pt !important; color: #000 !important; break-after: avoid; page-break-after: avoid; }
+  .page-details .markdown-body h4.md-subsection { font-size: 10.5pt !important; break-after: avoid; }
+  .page-details .markdown-body ul, .page-details .variants-content ul { margin: 1mm 0 !important; padding-left: 5mm !important; }
+  .page-details a { text-decoration: none !important; }
+
+  /* Dates clés : trois lignes. */
+  .page-details .milestones { display: block !important; margin: 0 !important; padding: 0 !important; list-style: none; }
+  .page-details .milestone { display: block !important; margin: 0 0 1mm !important; padding: 0 !important; }
+  .page-details .milestone h3, .page-details .milestone .timeline-date, .page-details .milestone-span { display: inline !important; margin: 0 !important; font-size: 10.5pt !important; letter-spacing: 0 !important; text-transform: none !important; }
+  .page-details .milestone h3 { font-weight: 400 !important; color: #555 !important; }
+  .page-details .milestone h3::after { content: ' : '; }
+  .page-details .milestone .timeline-date { font-weight: 600 !important; }
+  .page-details .milestone-span { color: #666 !important; font-size: 9.5pt !important; }
+  .page-details .milestone-span::before { content: ' (' }
+  .page-details .milestone-span::after { content: ')' }
+  .page-details .milestone-span[hidden] { display: none !important; }
+
+  /* Capacités : trois listes à la suite. */
+  .page-details .capabilities-grid { display: block !important; }
+  .page-details .capability-column { display: block !important; margin: 0 0 3mm !important; padding: 0 !important; }
+  .page-details .capability-head { display: block !important; margin: 0 0 1mm !important; padding: 0 !important; }
+  .page-details .capability-head h3 { display: inline !important; font-size: 11pt !important; }
+  .page-details .capability-count { display: inline !important; color: #777 !important; font-size: 9.5pt !important; }
+  .page-details .capability-count::before { content: ' ('; }
+  .page-details .capability-count::after { content: ')'; }
+  .page-details .capability-column ul, .page-details .capability-column ol { display: block !important; margin: 0 !important; padding-left: 5mm !important; list-style: disc !important; }
+  .page-details .capability-item { display: list-item !important; margin: 0 0 0.6mm !important; padding: 0 !important; break-inside: avoid; }
+  .page-details .capability-name { display: inline !important; font-size: 10pt !important; font-weight: 600 !important; }
+  .page-details .capability-desc { display: inline !important; font-size: 9.5pt !important; color: #444 !important; }
+  .page-details .capability-desc::before { content: ' — '; }
+
+  /* Conflits : une entrée par conflit. */
+  .page-details .wars-timeline { display: block !important; }
+  .page-details .war-card { display: block !important; margin: 0 0 2.5mm !important; padding: 0 !important; break-inside: avoid; page-break-inside: avoid; }
+  .page-details .war-period { display: inline !important; margin: 0 !important; font-size: 9.5pt !important; font-weight: 600 !important; letter-spacing: 0 !important; text-transform: none !important; color: #555 !important; }
+  .page-details .war-period::after { content: ' · '; }
+  .page-details .war-card h3 { display: inline !important; margin: 0 !important; font-size: 10.5pt !important; }
+  .page-details .war-card p { margin: 0.5mm 0 0 !important; font-size: 9.5pt !important; line-height: 1.45 !important; color: #444 !important; }
+
+  /* Filiation : « Ouragan (1952) → Mystère IV (1955) → … » */
+  .page-details .lineage-chain { display: block !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; list-style: none; }
+  .page-details .lineage-node { display: inline !important; margin: 0 !important; padding: 0 !important; }
+  /* !important : la règle d'écran (details-lineage.css, chargée après) vide
+     le contenu du séparateur. */
+  .page-details .lineage-node + .lineage-node::before { content: ' → ' !important; position: static !important; display: inline !important; width: auto !important; height: auto !important; }
+  /* Année après le nom, entre parenthèses (elle le précède dans le DOM). */
+  .page-details .lineage-link { display: inline-flex !important; flex-direction: row-reverse !important; align-items: baseline !important; gap: 1mm !important; margin: 0 !important; padding: 0 !important; min-width: 0 !important; }
+  .page-details .lineage-name { font-size: 10pt !important; font-weight: 600 !important; }
+  .page-details .lineage-year { display: inline !important; font-size: 9pt !important; color: #666 !important; }
+  .page-details .lineage-year::before { content: '('; }
+  .page-details .lineage-year::after { content: ')'; }
+  .page-details .lineage-note { margin: 1.5mm 0 0 !important; font-size: 8.5pt !important; color: #666 !important; }
+
+  /* Appareils liés : « Prédécesseur : Mirage 2000 ». */
+  .page-details .related-grid { display: block !important; }
+  .page-details .related-card { display: block !important; margin: 0 0 0.8mm !important; padding: 0 !important; }
+  .page-details .related-card::after { content: none !important; }
+  .page-details .related-relation { position: static !important; display: inline !important; margin: 0 !important; padding: 0 !important; font-size: 10pt !important; font-weight: 400 !important; letter-spacing: 0 !important; text-transform: none !important; color: #555 !important; }
+  .page-details .related-relation::after { content: ' : '; }
+  .page-details .related-card h3 { display: inline !important; margin: 0 !important; padding: 0 !important; font-size: 10.5pt !important; }
+
+  /* Sources : le papier n'a pas de lien, l'adresse est imprimée. */
+  .page-details .sources-list { display: block !important; }
+  .page-details .source-link { display: block !important; margin: 0 0 0.8mm !important; padding: 0 !important; font-size: 10pt !important; }
+  .page-details .source-link::after { content: ' — ' attr(href); font-size: 8.5pt; color: #666 !important; }
+
+  /* Fin de document. */
+  .page-details main::after {
+    content: 'vol-histoire.titouan-borde.com';
+    display: block; margin-top: 6mm; padding-top: 2mm;
+    border-top: 0.4pt solid #ccc !important;
+    font-size: 8pt; color: #777 !important;
+  }
+}

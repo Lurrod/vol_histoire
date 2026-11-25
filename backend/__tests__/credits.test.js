@@ -1,6 +1,6 @@
 /**
  * GET /api/credits — crédits photo de toutes les fiches (page /credits).
- * Base simulée, comme api.test.js.
+ * Base simulée, comme les suites api-*.test.js.
  */
 
 process.env.NODE_ENV = 'test';

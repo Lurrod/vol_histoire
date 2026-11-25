@@ -21,15 +21,21 @@ const CSS_DIR = path.join(__dirname, '..', 'frontend', 'css');
 
 const BUNDLES = {
   // Core partagé — chargé sur toutes les pages
-  // shared.css a été éclaté en 4 fichiers pour passer sous le budget 800 lignes
-  // de CLAUDE.md (1833 → 4 chunks). L'ordre est CRITIQUE : shared-base contient
-  // @layer components, suivi du @media responsive, puis @layer utilities, puis
-  // l'onboarding hors-layer.
+  // Les composants partagés sont répartis en feuilles de moins de 800 lignes
+  // (ARCH-004). L'ordre est CRITIQUE : shared-base ouvre @layer shared puis
+  // @layer components, que shared-controls, -feedback, -layout et -widgets
+  // poursuivent dans l'ordre d'origine (shared-widgets referme sur une
+  // dernière @layer shared) ; viennent ensuite le @media responsive,
+  // @layer utilities et l'onboarding.
   'core.min.css': [
     'tokens.css',
     'icons.css',
     'base.css',
     'shared-base.css',
+    'shared-controls.css',
+    'shared-feedback.css',
+    'shared-layout.css',
+    'shared-widgets.css',
     'shared-responsive.css',
     'shared-underlay.css',
     'shared-utilities.css',
@@ -54,12 +60,12 @@ const BUNDLES = {
   // catalog.css : bandeau, recherche, filtres et cartes communs au hangar, aux
   // favoris et aux conflits (73 règles autrefois copiées dans deux feuilles).
   'hangar.min.css': ['catalog.css', 'hangar.css', 'compare.css', 'nations-map.css'],
-  'details.min.css': ['details.css', 'details-lineage.css', 'compare.css'],
-  'timeline.min.css': ['timeline.css'],
+  'details.min.css': ['details.css', 'details-profile.css', 'details-print.css', 'details-specs.css', 'details-lineage.css', 'compare.css'],
+  'timeline.min.css': ['timeline.css', 'timeline-navigation.css', 'timeline-responsive.css'],
   'favorites.min.css': ['catalog.css', 'favorites.css'],
   // La page des conflits reprend le bandeau et les cartes de favorites.css.
   'conflicts.min.css': ['catalog.css', 'favorites.css', 'conflicts.css'],
-  'login.min.css': ['otp-input.css', 'login.css'],
+  'login.min.css': ['otp-input.css', 'login.css', 'login-steps.css'],
   'settings.min.css': ['otp-input.css', 'settings.css', 'settings-sections.css'],
   'legal.min.css': ['legal.css'],
   'contact.min.css': ['contact.css'],

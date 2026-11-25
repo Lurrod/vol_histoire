@@ -80,7 +80,8 @@ vol_histoire/
 │   │   └── ssr-head.js            Meta, JSON-LD et en-tetes communs du SSR
 │   ├── __tests__/
 │   │   ├── integration/           Suite sur vraie base PostgreSQL (IT_DATABASE_URL, base *_it)
-│   │   ├── api.test.js            Tests des routes (Jest + Supertest, base simulee)
+│   │   ├── api-*.test.js          Tests des routes par domaine (Jest + Supertest, base simulee)
+│   │   ├── helpers/               Banc commun des suites d'API (api-harness.js, mailer-mock.js)
 │   │   ├── ssr-*.test.js          SSR, partials, redirections
 │   │   ├── validators.test.js     Tests unitaires validators
 │   │   ├── mailer / logger / cache Tests des gabarits d'email, du logger, du cache

@@ -209,7 +209,9 @@ describe('util', () => {
 /* ====================================================================== */
 
 describe('era', () => {
-  const css = fs.readFileSync(path.join(__dirname, '..', 'css', 'timeline.css'), 'utf8');
+  // Les feuilles sources de la frise, dans l'ordre du bundle (scripts/build-css.js).
+  const css = ['timeline.css', 'timeline-navigation.css', 'timeline-responsive.css']
+    .map((f) => fs.readFileSync(path.join(__dirname, '..', 'css', f), 'utf8')).join('\n');
 
   beforeEach(() => {
     document.head.innerHTML = `<style>${css}</style>`;
