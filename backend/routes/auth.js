@@ -17,7 +17,6 @@ const {
   getRefreshTokenState,
   revokeRefreshToken,
   rotateRefreshToken,
-  revokeAllUserRefreshTokens,
   setRefreshCookie,
   clearRefreshCookie,
   REFRESH_COOKIE_NAME,
@@ -75,13 +74,25 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
    * journalisé en erreur (donc remonté à Sentry) avec l'utilisateur concerné.
    * La réponse au client reste 401 REFRESH_REPLAY : son cookie est effacé dans
    * tous les cas, et un code distinct n'apprendrait rien d'utile à un attaquant.
+   *
+   * Comme « Se déconnecter de tous les appareils » (SEC-002) : révoquer les
+   * refresh tokens ne suffit pas, l'access token obtenu par le voleur lors de
+   * sa rotation resterait valide jusqu'à expiration. L'incrément de
+   * token_version, dans la même transaction, le fait refuser par authorize().
    */
+  function revokeAllSessions(userId) {
+    return withTransaction(getPool(), async (client) => {
+      await refreshTokensRepo.revokeAllForUser(client, userId);
+      await usersRepo.bumpTokenVersion(client, userId);
+    });
+  }
+
   async function revokeAllAfterReplay(userId, jti) {
     try {
-      await revokeAllUserRefreshTokens(userId);
+      await revokeAllSessions(userId);
     } catch {
       try {
-        await revokeAllUserRefreshTokens(userId);
+        await revokeAllSessions(userId);
       } catch (err) {
         logger.error('Échec de la révocation des sessions après rejeu de refresh token', {
           error: err, userId, jti, route: 'POST /refresh',

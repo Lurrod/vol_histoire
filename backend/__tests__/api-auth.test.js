@@ -433,7 +433,8 @@ describe('POST /api/refresh', () => {
   test('401 REFRESH_REPLAY — jeton déjà rotaté rejoué → toutes les sessions révoquées', async () => {
     mockPool.query
       .mockResolvedValueOnce({ rows: [{ user_id: 1, revoked: true, rotated_at: new Date(), live: true }] }) // état : rotaté
-      .mockResolvedValueOnce({ rows: [], rowCount: 2 });       // revokeAllUserRefreshTokens
+      .mockResolvedValueOnce({ rows: [], rowCount: 2 })        // revokeAllForUser
+      .mockResolvedValueOnce({ rows: [{ token_version: 1 }] }); // bumpTokenVersion (SEC-002)
 
     const res = await request(app)
       .post('/api/refresh')
@@ -445,6 +446,10 @@ describe('POST /api/refresh', () => {
     const revokeAll = mockPool.query.mock.calls.find(c => /UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = \$1/.test(c[0]));
     expect(revokeAll).toBeDefined();
     expect(revokeAll[1]).toEqual([1]);
+    // SEC-002 : les access tokens déjà émis (dont celui du voleur) sont refusés.
+    const bump = mockPool.query.mock.calls.find(c => /token_version = token_version \+ 1/.test(c[0]));
+    expect(bump).toBeDefined();
+    expect(bump[1]).toEqual([1]);
     const cookies = res.headers['set-cookie'];
     expect(cookies.find(c => c.startsWith('refreshToken=;'))).toBeDefined();
   });
@@ -467,7 +472,8 @@ describe('POST /api/refresh', () => {
       .mockResolvedValueOnce(TOKEN_ROW_VALID)                  // état : valide (l'autre requête n'a pas encore commité)
       .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1, token_version: 0 }] })
       .mockResolvedValueOnce({ rows: [], rowCount: 0 })         // rotateRefreshToken: UPDATE ne révoque rien
-      .mockResolvedValueOnce({ rows: [] });                    // revokeAllUserRefreshTokens
+      .mockResolvedValueOnce({ rows: [] })                     // revokeAllForUser
+      .mockResolvedValueOnce({ rows: [{ token_version: 1 }] }); // bumpTokenVersion (SEC-002)
 
     const res = await request(app)
       .post('/api/refresh')
@@ -475,6 +481,9 @@ describe('POST /api/refresh', () => {
 
     expect(res.status).toBe(401);
     expect(res.body.code).toBe('REFRESH_REPLAY');
+    const bump = mockPool.query.mock.calls.find(c => /token_version = token_version \+ 1/.test(c[0]));
+    expect(bump).toBeDefined();
+    expect(bump[1]).toEqual([1]);
   });
 
   // JS-007 — la révocation totale qui suit un rejeu ne doit jamais échouer en
@@ -488,7 +497,7 @@ describe('POST /api/refresh', () => {
     test('jeton rotaté rejoué, base indisponible → 401 REFRESH_REPLAY et logger.error', async () => {
       mockPool.query
         .mockResolvedValueOnce({ rows: [{ user_id: 1, revoked: true, rotated_at: new Date(), live: true }] })
-        .mockRejectedValueOnce(new Error('connexion perdue'))   // revokeAllUserRefreshTokens
+        .mockRejectedValueOnce(new Error('connexion perdue'))   // revokeAllForUser
         .mockRejectedValueOnce(new Error('connexion perdue'));  // nouvelle tentative
 
       const res = await request(app)
@@ -508,7 +517,7 @@ describe('POST /api/refresh', () => {
         .mockResolvedValueOnce(TOKEN_ROW_VALID)
         .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1, token_version: 0 }] })
         .mockResolvedValueOnce({ rows: [], rowCount: 0 })        // rotation : UPDATE ne révoque rien
-        .mockRejectedValueOnce(new Error('timeout'))             // revokeAllUserRefreshTokens
+        .mockRejectedValueOnce(new Error('timeout'))             // revokeAllForUser
         .mockRejectedValueOnce(new Error('timeout'));            // nouvelle tentative
 
       const res = await request(app)
@@ -527,7 +536,8 @@ describe('POST /api/refresh', () => {
       mockPool.query
         .mockResolvedValueOnce({ rows: [{ user_id: 1, revoked: true, rotated_at: new Date(), live: true }] })
         .mockRejectedValueOnce(new Error('connexion perdue'))
-        .mockResolvedValueOnce({ rows: [], rowCount: 3 });
+        .mockResolvedValueOnce({ rows: [], rowCount: 3 })
+        .mockResolvedValueOnce({ rows: [{ token_version: 1 }] });
 
       const res = await request(app)
         .post('/api/refresh')
