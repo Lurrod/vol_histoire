@@ -1,5 +1,6 @@
 /* Paramètres — zone danger : suppression définitive du compte, confirmée par
- * la saisie d'un mot (traduit, « SUPPRIMER » en français). */
+ * le mot de passe actuel (exigé par le serveur, SEC-005) puis par la saisie
+ * d'un mot (traduit, « SUPPRIMER » en français). */
 (function () {
   const root = typeof window !== 'undefined' ? window : globalThis;
   root.VH = root.VH || {};
@@ -20,13 +21,18 @@
     return userInput.trim() === confirmText ? 'confirmed' : 'mismatch';
   }
 
+  const passwordInput = () => document.getElementById('delete-current-password');
+
   async function deleteAccount(state, button) {
     const { API_BASE, tr, setButtonLoading } = VH.settings.ui;
+    const input = passwordInput();
     setButtonLoading(button, true);
 
     try {
       const response = await auth.authFetch(`${API_BASE}/users/${state.currentUser.id}`, {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword: input ? input.value : '' }),
       });
 
       if (response.ok) {
@@ -35,7 +41,12 @@
         setTimeout(() => { window.location.href = '/'; }, REDIRECT_AFTER_DELETE_MS);
       } else {
         const data = await response.json();
-        showToast(data.message || tr('settings.toast_delete_error', 'Erreur lors de la suppression'), 'error');
+        if (input && VH.settings.profile?.CURRENT_PASSWORD_ERRORS?.includes(data.code)) {
+          setFieldError(input, i18n.t('settings.toast_current_password_invalid'));
+          input.focus();
+        } else {
+          showToast(data.message || tr('settings.toast_delete_error', 'Erreur lors de la suppression'), 'error');
+        }
         setButtonLoading(button, false);
       }
     } catch {
@@ -45,6 +56,15 @@
   }
 
   async function onDeleteClick(state, button) {
+    const input = passwordInput();
+    if (input) {
+      clearFieldError(input);
+      if (!input.value) {
+        setFieldError(input, i18n.t('settings.toast_current_password_required'));
+        input.focus();
+        return;
+      }
+    }
     const answer = askConfirmation();
     if (answer === 'confirmed') {
       await deleteAccount(state, button);
@@ -56,6 +76,11 @@
   function setup(state) {
     const button = document.getElementById('delete-account-btn');
     button?.addEventListener('click', () => onDeleteClick(state, button));
+    // Entrée dans le champ du mot de passe : même parcours que le bouton.
+    document.getElementById('delete-account-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      onDeleteClick(state, button);
+    });
   }
 
   VH.settings.dangerZone = { askConfirmation, deleteAccount, onDeleteClick, setup };

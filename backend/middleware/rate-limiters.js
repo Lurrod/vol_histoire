@@ -26,9 +26,13 @@ const LIMITER_DEFS = [
   { key: 'dataExport',    max: 10,  msg: "Trop de demandes d'export, réessayez dans 15 minutes." },
   // « Se déconnecter de tous les appareils » : action rare, qui écrit en base.
   { key: 'sessions',      max: 10,  msg: 'Trop de demandes, réessayez dans 15 minutes.' },
+  // Vérification du mot de passe actuel (changement d'adresse ou de mot de
+  // passe, suppression du compte, SEC-005) : seuls les échecs comptent, par
+  // compte connecté (le limiteur est monté après authorize).
+  { key: 'currentPassword', max: 10, msg: 'Trop de tentatives, réessayez dans 15 minutes.', perUser: true, failuresOnly: true },
 ];
 
-function buildLimiter({ max, msg }, store) {
+function buildLimiter({ max, msg, perUser = false, failuresOnly = false }, store) {
   return rateLimit({
     windowMs: 15 * 60 * 1000,
     // v8 a renommé `max` → `limit` ; on garde un alias pour la lisibilité.
@@ -37,7 +41,10 @@ function buildLimiter({ max, msg }, store) {
     standardHeaders: true,
     legacyHeaders: false,
     // ipKeyGenerator normalise les IPv6 (sinon v8 bloque au boot : ERR_ERL_KEY_GEN_IPV6).
-    keyGenerator: (req) => ipKeyGenerator(req.ip),
+    keyGenerator: (req) => (perUser && req.user && req.user.id != null
+      ? `user:${req.user.id}`
+      : ipKeyGenerator(req.ip)),
+    skipSuccessfulRequests: failuresOnly,
     skip: () => process.env.NODE_ENV === 'test',
     ...(store ? { store } : {}),
   });

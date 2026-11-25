@@ -78,7 +78,7 @@ async function findForExport(db, id) {
 
 /** Profil avec hash, pour vérifier le mot de passe actuel. */
 async function findWithPassword(db, id) {
-  const result = await db.query('SELECT id, name, email, password FROM users WHERE id = $1', [id]);
+  const result = await db.query('SELECT id, name, email, password, failed_login_count, locked_until FROM users WHERE id = $1', [id]);
   return result.rows[0] || null;
 }
 

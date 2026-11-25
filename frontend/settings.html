@@ -219,6 +219,10 @@
                   <h3 class="set-block-title" id="delete-title"><i class="fas fa-trash-alt" aria-hidden="true"></i><span data-i18n="settings.danger_delete_title">Supprimer mon compte</span></h3>
                   <p class="set-block-desc" data-i18n-html="settings.danger_delete_desc">Cette action est <strong>définitive et irréversible</strong>. Toutes vos données, favoris et paramètres seront supprimés de manière permanente.</p>
                   <ul class="danger-list"><li data-i18n="settings.danger_delete_data">Suppression de toutes vos données</li><li data-i18n="settings.danger_delete_favs">Perte de tous vos favoris</li><li data-i18n="settings.danger_delete_no_recovery">Aucune récupération possible</li></ul>
+                  <!-- Mot de passe actuel exigé (SEC-005) : un jeton volé ne suffit pas à effacer le compte. -->
+                  <form class="delete-account-form" id="delete-account-form" novalidate>
+                    <div class="form-group"><label for="delete-current-password"><span data-i18n="settings.label_current_password">Mot de passe actuel</span></label><input type="password" id="delete-current-password" name="currentPassword" autocomplete="current-password" aria-required="true"></div>
+                  </form>
                   <button type="button" id="delete-account-btn" class="btn btn-danger"><i class="fas fa-trash-alt" aria-hidden="true"></i><span data-i18n="settings.btn_delete_account">Supprimer définitivement mon compte</span></button>
                 </section>
               </div>

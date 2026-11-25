@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const { isValidEmail, isValidName, isValidPassword } = require('../validators');
 const logger = require('../logger');
 const { withTransaction } = require('../db');
+const { LOCKOUT_MAX_ATTEMPTS, LOCKOUT_DURATION_MIN } = require('../utils/lockout');
 const asyncHandler = require('../middleware/asyncHandler');
 const verifyHcaptcha = require('../middleware/hcaptcha');
 const usersRepo = require('../repositories/users');
@@ -159,8 +160,6 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
   // Lockout par compte — défense contre credential-stuffing distribué
   // (rate-limit IP insuffisant si botnet). Constantes volontairement
   // conservatrices : un user qui oublie son mdp a 10 essais avant blocage.
-  const LOCKOUT_MAX_ATTEMPTS = 10;
-  const LOCKOUT_DURATION_MIN = 15;
 
   // Trois barrages : limiteur par IP (20 requêtes / 15 min, posé en premier
   // pour compter aussi les envois sans jeton), hCaptcha invisible (bourrage

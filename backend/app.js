@@ -234,7 +234,9 @@ app.use('/api', createAuthRouter(getPool, {
 }));
 
 const createUsersRouter = require('./routes/users');
-app.use('/api', createUsersRouter(getPool, { mailer, dataExportLimiter: limiters.dataExport }));
+app.use('/api', createUsersRouter(getPool, {
+  mailer, dataExportLimiter: limiters.dataExport, currentPasswordLimiter: limiters.currentPassword,
+}));
 
 // IMPORTANT : le routeur facets doit être monté AVANT airplanes, sinon
 // /api/airplanes/facets est capté par la route /api/airplanes/:id qui

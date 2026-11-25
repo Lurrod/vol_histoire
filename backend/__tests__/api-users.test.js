@@ -261,7 +261,10 @@ describe('PUT /api/users/:id', () => {
       .send({ password: 'NewPassword1', currentPassword: 'WrongPass1' });
     expect(res.status).toBe(403);
     expect(res.body.code).toBe('CURRENT_PASSWORD_INVALID');
-    expect(mockPool.query).toHaveBeenCalledTimes(1);
+    // Lecture du compte, puis l'échec compté comme un échec de connexion
+    // (SEC-005) ; aucune écriture du profil.
+    expect(mockPool.query).toHaveBeenCalledTimes(2);
+    expect(mockPool.query.mock.calls[1][0]).toMatch(/failed_login_count = failed_login_count \+ 1/);
   });
 
   test('200 — changement de mot de passe : sessions révoquées, token_version incrémenté, nouvelle session émise', async () => {
@@ -361,44 +364,70 @@ describe('PUT /api/users/:id', () => {
 // UTILISATEURS — DELETE /api/users/:id
 // =============================================================================
 describe('DELETE /api/users/:id', () => {
-  test('200 — suppression réussie (propriétaire)', async () => {
+  const bcryptjs = require('bcryptjs');
+  const owner = (extra = {}) => ({ rows: [{ id: 3, name: 'Member', email: 'member@test.com', password: bcryptjs.hashSync('OwnerPass1', 4), failed_login_count: 0, locked_until: null, ...extra }] });
+  const del = (id, token, body) => request(app).delete(`/api/users/${id}`).set('Authorization', `Bearer ${token}`).send(body);
+
+  test('200 — suppression de son propre compte, mot de passe actuel confirmé', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [] })        // revokeAllUserRefreshTokens
+      .mockResolvedValueOnce(owner())               // findWithPassword
+      .mockResolvedValueOnce({ rows: [] })          // revokeAllForUser
       .mockResolvedValueOnce({ rows: [{ id: 3 }] }); // DELETE FROM users
 
-    const res = await request(app)
-      .delete('/api/users/3')
-      .set('Authorization', `Bearer ${tokenMember}`);
+    const res = await del(3, tokenMember, { currentPassword: 'OwnerPass1' });
     expect(res.status).toBe(200);
     expect(res.body.message).toBe('Compte supprimé avec succès');
   });
 
-  test('200 — admin peut supprimer n\'importe quel compte', async () => {
+  // SEC-005 — un access token volé ne suffit plus à effacer un compte.
+  test('400 CURRENT_PASSWORD_REQUIRED — sans mot de passe, rien n’est supprimé', async () => {
+    mockPool.query.mockResolvedValueOnce(owner());
+    const res = await del(3, tokenMember);
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('CURRENT_PASSWORD_REQUIRED');
+    expect(mockPool.query.mock.calls.some(c => /DELETE FROM users/.test(c[0]))).toBe(false);
+  });
+
+  test('403 CURRENT_PASSWORD_INVALID — mot de passe faux : échec compté, rien n’est supprimé', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [] })        // revokeAllUserRefreshTokens
+      .mockResolvedValueOnce(owner())
+      .mockResolvedValueOnce({ rows: [] }); // recordFailedLogin
+    const res = await del(3, tokenMember, { currentPassword: 'Mauvais1' });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('CURRENT_PASSWORD_INVALID');
+    const failed = mockPool.query.mock.calls.find(c => /failed_login_count = failed_login_count \+ 1/.test(c[0]));
+    expect(failed).toBeDefined();
+    expect(mockPool.query.mock.calls.some(c => /DELETE FROM users/.test(c[0]))).toBe(false);
+  });
+
+  test('403 — compte verrouillé : refusé même avec le bon mot de passe', async () => {
+    mockPool.query.mockResolvedValueOnce(owner({ locked_until: new Date(Date.now() + 60_000) }));
+    const res = await del(3, tokenMember, { currentPassword: 'OwnerPass1' });
+    expect(res.status).toBe(403);
+    expect(res.body.code).toBe('CURRENT_PASSWORD_INVALID');
+    expect(mockPool.query.mock.calls.some(c => /DELETE FROM users/.test(c[0]))).toBe(false);
+  });
+
+  test('200 — admin peut supprimer le compte d’un autre sans son mot de passe', async () => {
+    mockPool.query
+      .mockResolvedValueOnce({ rows: [] })        // revokeAllForUser
       .mockResolvedValueOnce({ rows: [{ id: 5 }] }); // DELETE FROM users
 
-    const res = await request(app)
-      .delete('/api/users/5')
-      .set('Authorization', `Bearer ${tokenAdmin}`);
+    const res = await del(5, tokenAdmin);
     expect(res.status).toBe(200);
   });
 
   test('403 — membre ne peut pas supprimer un autre compte', async () => {
-    const res = await request(app)
-      .delete('/api/users/99')
-      .set('Authorization', `Bearer ${tokenMember}`);
+    const res = await del(99, tokenMember);
     expect(res.status).toBe(403);
   });
 
   test('404 — utilisateur inexistant', async () => {
     mockPool.query
-      .mockResolvedValueOnce({ rows: [] })  // revokeAllUserRefreshTokens
+      .mockResolvedValueOnce({ rows: [] })  // revokeAllForUser
       .mockResolvedValueOnce({ rows: [] }); // DELETE FROM users → aucune ligne
 
-    const res = await request(app)
-      .delete('/api/users/1')
-      .set('Authorization', `Bearer ${tokenAdmin}`);
+    const res = await del(77, tokenAdmin);
     expect(res.status).toBe(404);
   });
 });
