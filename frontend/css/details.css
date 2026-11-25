@@ -228,7 +228,18 @@ body.page-details { background: var(--night); }
 .page-details .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 .page-details .btn-label-short { display: none; }
 @media (max-width: 30em) {
-  .page-details .btn-label-long { display: none; }
+  /* Libellé long masqué à l'œil seulement : il reste le nom accessible du
+     bouton (« Exporter en PDF », qui contient le « PDF » affiché, critère
+     2.5.3). En display: none, le bouton n'avait plus de nom (A11Y-001). */
+  .page-details .btn-label-long {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
   .page-details .btn-label-short { display: inline; }
 }
 
