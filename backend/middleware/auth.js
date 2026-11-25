@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const { withTransaction } = require('../db');
 const refreshTokensRepo = require('../repositories/refresh-tokens');
 const usersRepo = require('../repositories/users');
+const emailTokensRepo = require('../repositories/email-tokens');
 
 // -----------------------------------------------------------------------------
 // Pool PostgreSQL (injecté depuis app.js via setPool)
@@ -138,9 +139,12 @@ async function bumpTokenVersion(client, userId) {
  * Supprime les tokens expirés de la base (nettoyage périodique).
  * Les tokens révoqués mais non expirés sont CONSERVÉS : c'est leur présence
  * qui permet de reconnaître un rejeu (getRefreshTokenState → 'reused').
+ * Les codes envoyés par email consommés ou expirés sont purgés aussi
+ * (LEGAL-007, emailTokensRepo.deleteSpent).
  */
 async function cleanupExpiredTokens() {
   await refreshTokensRepo.deleteExpired(pool);
+  await emailTokensRepo.deleteSpent(pool);
 }
 
 /**

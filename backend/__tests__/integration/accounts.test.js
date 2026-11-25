@@ -214,6 +214,27 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       expect(refresh.status).toBe(401);
     });
 
+    test('LEGAL-007 : codes email consommés ou expirés depuis un jour purgés, code ouvert conservé', async () => {
+      const auth = require('../../middleware/auth');
+      const { rows: [u] } = await ctx.pool.query("SELECT id FROM users WHERE email = 'member@it.local'");
+      const insert = (hash, type, expires, used, newEmail = null) => ctx.pool.query(
+        `INSERT INTO email_tokens (user_id, token_hash, type, expires_at, used_at, new_email)
+         VALUES ($1, $2, $3, NOW() + $4::interval, ${used ? 'NOW()' : 'NULL'}, $5)`,
+        [u.id, hash, type, expires, newEmail]
+      );
+      await insert('a'.repeat(64), 'reset', '10 minutes', true);                        // consommé
+      await insert('b'.repeat(64), 'email', '-2 days', false, 'abandon@it.local');      // changement abandonné
+      await insert('c'.repeat(64), 'verify', '-1 hour', false);                         // expiré depuis peu
+      await insert('d'.repeat(64), 'email', '20 minutes', false, 'en-cours@it.local');  // ouvert
+      await auth.cleanupExpiredTokens();
+      const { rows } = await ctx.pool.query(
+        'SELECT token_hash FROM email_tokens WHERE user_id = $1 AND token_hash = ANY($2) ORDER BY token_hash',
+        [u.id, ['a', 'b', 'c', 'd'].map((x) => x.repeat(64))]
+      );
+      expect(rows.map((r) => r.token_hash[0])).toEqual(['c', 'd']);
+      await ctx.pool.query('DELETE FROM email_tokens WHERE user_id = $1 AND token_hash = ANY($2)', [u.id, ['c', 'd'].map((x) => x.repeat(64))]);
+    });
+
     test('nettoyage des jetons expirés et des comptes non vérifiés', async () => {
       const auth = require('../../middleware/auth');
       await expect(auth.cleanupExpiredTokens()).resolves.toBeUndefined();

@@ -114,7 +114,23 @@ async function checkCode(db, { userId, type, code, consume = false }) {
   return { ok: true, new_email: row.new_email };
 }
 
+/**
+ * Purge des codes devenus inutiles (LEGAL-007) : consommés (ou fermés), ou
+ * expirés depuis plus d'un jour. Seul un code ouvert et valide sert encore
+ * (checkCode exige used_at IS NULL et expires_at > NOW()). Sans cette purge,
+ * une ligne ne disparaissait qu'à l'émission d'un nouveau code du même type
+ * ou à la suppression du compte : l'adresse demandée lors d'un changement
+ * abandonné (new_email) restait en clair sans limite de durée.
+ * @returns {Promise<number>} lignes supprimées
+ */
+async function deleteSpent(db) {
+  const result = await db.query(
+    "DELETE FROM email_tokens WHERE used_at IS NOT NULL OR expires_at < NOW() - INTERVAL '1 day'"
+  );
+  return result.rowCount || 0;
+}
+
 module.exports = {
   CODE_LENGTH, MAX_ATTEMPTS,
-  generateCode, isCodeFormat, hashCode, closeOpen, replaceOpen, checkCode,
+  generateCode, isCodeFormat, hashCode, closeOpen, replaceOpen, checkCode, deleteSpent,
 };

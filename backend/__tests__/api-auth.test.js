@@ -1560,11 +1560,18 @@ describe('verifyHcaptcha — .catch(next) branch (ligne 62)', () => {
 describe('cleanupExpiredTokens (ligne 123)', () => {
   test('émet la requête DELETE de nettoyage des tokens expirés', async () => {
     const { cleanupExpiredTokens } = require('../middleware/auth');
-    mockPool.query.mockResolvedValueOnce({ rowCount: 3 });
+    mockPool.query.mockResolvedValueOnce({ rowCount: 3 }).mockResolvedValueOnce({ rowCount: 0 });
     await cleanupExpiredTokens();
     const call = mockPool.query.mock.calls[0];
     expect(call[0]).toMatch(/DELETE FROM refresh_tokens/);
     expect(call[0]).toMatch(/expires_at < NOW\(\)/);
+  });
+
+  test('LEGAL-007 : purge aussi les codes email consommés ou expirés depuis un jour', async () => {
+    const { cleanupExpiredTokens } = require('../middleware/auth');
+    mockPool.query.mockResolvedValueOnce({ rowCount: 0 }).mockResolvedValueOnce({ rowCount: 2 });
+    await cleanupExpiredTokens();
+    expect(mockPool.query.mock.calls[1][0]).toBe("DELETE FROM email_tokens WHERE used_at IS NOT NULL OR expires_at < NOW() - INTERVAL '1 day'");
   });
 });
 
@@ -1910,7 +1917,7 @@ describe('Audit sécurité — réinitialisation et nettoyage', () => {
   });
 
   test('nettoyage : les refresh tokens révoqués non expirés sont conservés (détection de rejeu)', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [], rowCount: 0 });
+    mockPool.query.mockResolvedValueOnce({ rows: [], rowCount: 0 }).mockResolvedValueOnce({ rows: [], rowCount: 0 });
     await authMiddleware.cleanupExpiredTokens();
     expect(mockPool.query.mock.calls[0][0]).toBe('DELETE FROM refresh_tokens WHERE expires_at < NOW()');
   });
