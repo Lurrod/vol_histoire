@@ -19,11 +19,11 @@ async function findAircraftForSsr(pool, id) {
             a.little_description, a.little_description_en,
             a.description, a.description_en,
             a.image_url, a.max_speed, a.max_range, a.empty_weight,
-            a.date_operationel, a.date_first_fly,
+            a.date_operationel, a.date_first_fly, a.status, a.status_en,
             a.created_at, a.updated_at,
             c.name AS country_name, c.name_en AS country_name_en, c.code AS country_code,
             g.generation, t.name AS type_name, t.name_en AS type_name_en,
-            m.name AS manufacturer_name
+            m.name AS manufacturer_name, m.name_en AS manufacturer_name_en
      FROM airplanes a
      LEFT JOIN countries c ON a.country_id = c.id
      LEFT JOIN generation g ON a.id_generation = g.id

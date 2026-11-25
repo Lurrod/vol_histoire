@@ -219,6 +219,19 @@ describeIt('Intégration SQL — contenus', () => {
     });
   });
 
+  describe('GET /details/<slug> — faits du héros rendus par le serveur (PERF-004)', () => {
+    test('fil d’Ariane, pays, constructeur, chiffres clés et statut écrits dans le HTML', async () => {
+      const id = await airplaneId(ctx.pool, 'Rafale');
+      const res = await api().get(`/details/rafale-${id}`);
+      expect(res.status).toBe(200);
+      expect(res.text).toMatch(/<span id="breadcrumb-name">Rafale<\/span>/);
+      expect(res.text).not.toContain('<span id="hero-country">-</span>');
+      expect(res.text).not.toContain('<span id="hero-manufacturer">-</span>');
+      expect(res.text).toMatch(/<div class="stat-value" id="stat-speed">[\d\s\u202f\u00a0]+ km\/h<\/div>/);
+      expect(res.text).not.toContain('<div class="stat-value" id="stat-status">-</div>');
+    });
+  });
+
   describe('GET /sitemap.xml', () => {
     test('pages fixes, conflits et fiches', async () => {
       require('../../utils/cache')._resetForTests();
