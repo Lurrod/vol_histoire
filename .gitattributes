@@ -1,0 +1,4 @@
+# Scripts shell exécutés par bash (hooks Git, outils) : toujours LF, même
+# sur une copie Windows (sinon « $'': command not found »).
+.githooks/* text eol=lf
+*.sh text eol=lf

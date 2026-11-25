@@ -1,0 +1,23 @@
+#!/bin/bash
+# Hook de pré-commit versionné (ARCH-007) : ESLint sur les fichiers JS indexés,
+# mêmes règles que la CI (`npm run lint` : erreurs ET avertissements bloquants,
+# suppressions figées de eslint-suppressions.json respectées).
+# Activé par `npm install` à la racine (script « prepare » → core.hooksPath).
+
+STAGED_JS=$(git diff --cached --name-only --diff-filter=ACM -- '*.js' \
+  | grep -v '/dist/' | grep -v '/vendor/' | grep -v 'node_modules/')
+
+if [ -z "$STAGED_JS" ]; then
+  exit 0
+fi
+
+echo "ESLint : vérification des fichiers JS indexés..."
+# shellcheck disable=SC2086 # liste de fichiers volontairement découpée
+if ! npx --no-install eslint --no-warn-ignored --max-warnings=0 $STAGED_JS; then
+  echo ""
+  echo "ESLint a trouvé des problèmes : corrigez-les avant de commiter (npm run lint:fix)."
+  echo "Suppression devenue inutile après une correction : npx eslint backend/ frontend/js/ scripts/ e2e/ --prune-suppressions"
+  exit 1
+fi
+echo "ESLint : OK"
+exit 0
