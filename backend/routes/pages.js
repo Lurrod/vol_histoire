@@ -15,6 +15,10 @@ const HTML_PAGES = [
   'politique-confidentialite', 'cgu',
 ];
 
+// Pages personnelles, jamais indexées : noindex aussi en en-tête HTTP
+// (SEO-006), en plus de la balise meta de la page.
+const NOINDEX_PAGES = new Set(['favorites', 'login', 'settings']);
+
 // Anciennes pages des liens email (activation, mot de passe oublié, « vérifiez
 // votre boîte ») : tout passe désormais par un code saisi sur /login. Les liens
 // déjà envoyés et les favoris mènent à la connexion ; le jeton éventuel n'est
@@ -74,6 +78,7 @@ function createPagesRouter({ getPool, frontendRoot, assetVersion, pages }) {
 
   HTML_PAGES.forEach((page) => {
     router.get(`/${page}`, (req, res) => {
+      if (NOINDEX_PAGES.has(page)) res.setHeader('X-Robots-Tag', 'noindex, nofollow');
       sendCachedHtml(res, path.join(frontendRoot, `${page}.html`));
     });
   });

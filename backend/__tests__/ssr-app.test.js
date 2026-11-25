@@ -208,6 +208,24 @@ describe('SEO-004 — URL nue servie en anglais par Accept-Language', () => {
   });
 });
 
+describe('SEO-006 — pages personnelles : noindex lisible par les robots', () => {
+  test.each([['/login'], ['/settings'], ['/favorites']])('%s : X-Robots-Tag noindex', async (url) => {
+    const res = await request(app).get(url);
+    expect(res.status).toBe(200);
+    expect(res.headers['x-robots-tag']).toBe('noindex, nofollow');
+  });
+
+  test('pages publiques : pas de noindex', async () => {
+    const res = await request(app).get('/hangar');
+    expect(res.headers['x-robots-tag']).toBeUndefined();
+  });
+
+  test('robots.txt ne bloque plus ces pages (sinon leur noindex reste invisible)', () => {
+    const robots = require('fs').readFileSync(require('path').join(__dirname, '../../frontend/robots.txt'), 'utf8');
+    expect(robots).not.toMatch(/^Disallow: \/(login|settings|favorites)\s*$/m);
+  });
+});
+
 describe('SEO-009 — /details sans fiche : 404 réel, jamais 200 indexable', () => {
   test.each([
     ['/details'],
