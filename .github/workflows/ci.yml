@@ -375,6 +375,21 @@ jobs:
         if: steps.tip.outputs.current == 'true'
         run: echo "version=$(node -p "require('./backend/package.json').version")" >> "$GITHUB_OUTPUT"
 
+      # La connexion SSH n'est authentifiée côté serveur que par l'empreinte de
+      # sa clé d'hôte : sans elle, appleboy/ssh-action accepte n'importe quel
+      # serveur (homme du milieu possible avec la clé de déploiement). Secret
+      # vide → échec avant toute connexion (DEVOPS-002) ; le déploiement est
+      # alors ignoré, donc le retour arrière aussi.
+      - name: Require the SSH host key fingerprint
+        if: steps.tip.outputs.current == 'true'
+        env:
+          FP: ${{ secrets.SSH_HOST_FINGERPRINT }}
+        run: |
+          if [ -z "$FP" ]; then
+            echo "::error::Secret SSH_HOST_FINGERPRINT vide : clé d'hôte non vérifiable, déploiement refusé."
+            exit 1
+          fi
+
       - name: Deploy to server
         id: deploy
         if: steps.tip.outputs.current == 'true'
@@ -383,8 +398,8 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Empreinte SHA256 de la clé d'hôte (ssh-keyscan … | ssh-keygen -lf -) :
-          # tant que le secret est vide, la clé d'hôte n'est pas vérifiée.
+          # Empreinte SHA256 de la clé d'hôte (ssh-keyscan … | ssh-keygen -lf -),
+          # exigée par l'étape précédente.
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
           script: |
             set -eu
