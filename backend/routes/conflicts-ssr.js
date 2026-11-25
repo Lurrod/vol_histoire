@@ -170,15 +170,23 @@ function renderHtml(template, meta, h1) {
 
 function createConflictsSsrRouter(getPool) {
   const router = express.Router();
-  const template = renderTemplate(FRONTEND_DIR, 'conflits.html', readVersion());
+  // Un gabarit par langue : textes d'interface traduits côté serveur (SEO-002).
+  const version = readVersion();
+  const templates = {
+    fr: renderTemplate(FRONTEND_DIR, 'conflits.html', version, 'fr'),
+    en: renderTemplate(FRONTEND_DIR, 'conflits.html', version, 'en'),
+  };
+  const templateFor = (req) => templates[req.lang === 'en' ? 'en' : 'fr'];
 
   router.get('/conflits', (req, res, next) => {
+    const template = templateFor(req);
     if (!template) return next();
     sendSsrHtml(req, res, renderHtml(template, buildConflictsIndexMeta(req.lang)));
   });
 
   router.get('/conflits/:slug', async (req, res, next) => {
     try {
+      const template = templateFor(req);
       if (!template) return next();
       const slug = String(req.params.slug || '');
       if (!/^[a-z0-9-]{1,120}$/.test(slug)) return next();

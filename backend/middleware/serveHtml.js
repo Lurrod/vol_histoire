@@ -22,6 +22,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { localizeBody, lookup } = require('../utils/i18n-html');
 
 const PARTIALS_DIR = 'partials';
 
@@ -166,11 +167,6 @@ function loadDictionary(frontendDir, lang) {
   }
 }
 
-function lookup(dict, key) {
-  const value = String(key).split('.')
-    .reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), dict);
-  return typeof value === 'string' ? value : null;
-}
 
 function escapeAttr(str) {
   return String(str).replace(/[&<>"']/g, c => ({
@@ -271,14 +267,17 @@ function localizeHead(html, pageName, lang, dict, frDict = {}) {
 
 /**
  * Lit une page de frontend/ et lui applique inclusions + cache-busting.
- * Utilisé par les routes SSR (details, conflits) pour leur gabarit.
+ * Utilisé par les routes SSR (details, conflits) pour leur gabarit. En
+ * anglais, les textes d'interface du corps sont traduits (SEO-002) ; le
+ * contenu propre à la page est écrit ensuite par la route.
+ * @param {'fr'|'en'} [lang='fr']
  * @returns {string} '' si le fichier est absent (tests)
  */
-function renderTemplate(frontendDir, fileName, version) {
+function renderTemplate(frontendDir, fileName, version, lang = 'fr') {
   try {
     const raw = fs.readFileSync(path.join(frontendDir, fileName), 'utf8');
-    const html = resolveIncludes(raw, path.basename(fileName, '.html'), loadPartials(frontendDir));
-    return injectHeadExtras(rewrite(html, version));
+    const html = injectHeadExtras(rewrite(resolveIncludes(raw, path.basename(fileName, '.html'), loadPartials(frontendDir)), version));
+    return lang === 'en' ? localizeBody(html, loadDictionary(frontendDir, 'en')) : html;
   } catch {
     return '';
   }
@@ -321,7 +320,8 @@ function buildHtmlCache(frontendDir, version) {
         const html = injectHeadExtras(rewrite(resolveIncludes(raw, pageName, partials, warnings), version));
         cache.set(full, {
           fr: localizeHead(html, pageName, 'fr', {}),
-          en: localizeHead(html, pageName, 'en', dictionaries.en, dictionaries.fr),
+          // Tête et corps traduits : menus, titres, textes d'attente (SEO-002).
+          en: localizeBody(localizeHead(html, pageName, 'en', dictionaries.en, dictionaries.fr), dictionaries.en),
         });
         count++;
       } catch (err) {

@@ -324,7 +324,11 @@ function createDetailsSsrRouter(getPool) {
   const version = readVersion();
   // Lu une fois au démarrage, avec l'en-tête et le pied de page partagés et
   // le cache busting des assets (même version que serveHtml.js).
-  const template = renderTemplate(FRONTEND_DIR, 'details.html', version);
+  // Un gabarit par langue : textes d'interface traduits côté serveur (SEO-002).
+  const templates = {
+    fr: renderTemplate(FRONTEND_DIR, 'details.html', version, 'fr'),
+    en: renderTemplate(FRONTEND_DIR, 'details.html', version, 'en'),
+  };
 
   async function handle(req, res, next) {
     try {
@@ -351,7 +355,8 @@ function createDetailsSsrRouter(getPool) {
         return res.redirect(301, `/details/${canonicalSlug}${buildExtraQuery(req.query)}`);
       }
 
-      const html = renderHtml(template, aircraft, req.lang || 'fr', version);
+      const lang = req.lang === 'en' ? 'en' : 'fr';
+      const html = renderHtml(templates[lang], aircraft, lang, version);
       if (!html) return next();
       sendSsrHtml(req, res, html);
     } catch (err) {

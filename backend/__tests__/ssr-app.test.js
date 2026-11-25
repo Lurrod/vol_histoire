@@ -158,6 +158,33 @@ describe('SEO-001 — récit de la fiche écrit par le serveur', () => {
   });
 });
 
+describe('SEO-002 — textes d’interface traduits par le serveur en anglais', () => {
+  const en = require('../../frontend/locales/en.json');
+
+  test('/?lang=en : menu et accroche en anglais dans le HTML', async () => {
+    const res = await request(app).get('/?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain(`data-i18n="nav.home">${en.nav.home}<`);
+    expect(res.text).not.toContain('data-i18n="nav.home">Accueil<');
+  });
+
+  test('/details/:slug?lang=en : titres de section en anglais', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 31, name: 'SR-71 Blackbird', image_url: '/assets/airplanes/sr71.jpg' }] });
+    const res = await request(app).get('/details/sr-71-blackbird-31?lang=en');
+    expect(res.text).toContain(`data-i18n="details.description">${en.details.description}<`);
+    expect(res.text).not.toContain('Chargement de la description...');
+  });
+
+  test('/conflits/:slug?lang=en : titres de section en anglais ; français intact sans ?lang', async () => {
+    mockPool.query.mockResolvedValue({ rows: [{ id: 1, name: 'Annexion de Goa', name_en: 'Annexation of Goa', date_start: '1961-12-17' }] });
+    const resEn = await request(app).get('/conflits/annexion-de-goa?lang=en');
+    expect(resEn.text).toContain(`data-i18n="conflicts.section_context">${en.conflicts.section_context}<`);
+    const resFr = await request(app).get('/conflits/annexion-de-goa');
+    expect(resFr.text).toContain('data-i18n="conflicts.section_context">Contexte<');
+    mockPool.query.mockReset();
+  });
+});
+
 describe('SEO-009 — /details sans fiche : 404 réel, jamais 200 indexable', () => {
   test.each([
     ['/details'],
