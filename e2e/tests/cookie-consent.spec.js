@@ -115,7 +115,7 @@ test.describe('Cookie Consent', () => {
         window.localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({
           preferences: { essential: true, analytics: true, preference: false, marketing: false },
           timestamp: new Date().toISOString(),
-          version: '1.0',
+          version: '2', // CONSENT_VERSION de frontend/js/cookies.js (LEGAL-008)
         }));
         window.localStorage.setItem('vol-histoire-lang', 'fr');
       } catch {}

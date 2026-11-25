@@ -1002,7 +1002,7 @@ describe('VH.settings.dangerZone', () => {
 describe('VH.settings.cookies', () => {
   test('état initial lu depuis le consentement enregistré', () => {
     const recent = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
-    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: true }, timestamp: recent.toISOString() }));
+    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: true }, timestamp: recent.toISOString(), version: '2' }));
     const { cookies } = loadModules();
     cookies.init();
     expect(document.getElementById('pref-analytics').checked).toBe(true);
@@ -1063,7 +1063,7 @@ describe('VH.settings.cookies', () => {
     document.getElementById('open-cookie-modal').click();
     expect(toasts).toContainEqual(['error', 't:settings.toast_cookies_unavailable']);
     document.getElementById('pref-analytics').checked = true;
-    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: false }, timestamp: new Date().toISOString() }));
+    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: false }, timestamp: new Date().toISOString(), version: '2' }));
     document.dispatchEvent(new window.CustomEvent('cookieConsent', { detail: { event: 'analytics_disabled' } }));
     expect(document.getElementById('pref-analytics').checked).toBe(false);
     document.dispatchEvent(new window.CustomEvent('cookieConsent', { detail: { event: 'autre' } }));
@@ -1080,7 +1080,7 @@ describe('VH.settings.cookies', () => {
 describe('VH.settings.cookies — conservation du choix (LEGAL-004)', () => {
   test('choix de plus de 6 mois : ignoré (interrupteur et date non remplis)', () => {
     const old = new Date(Date.now() - 200 * 24 * 60 * 60 * 1000).toISOString();
-    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: true }, timestamp: old }));
+    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: true }, timestamp: old, version: '2' }));
     const { cookies } = loadModules();
     cookies.init();
     expect(document.getElementById('pref-analytics').checked).toBe(false);

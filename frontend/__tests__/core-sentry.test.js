@@ -22,7 +22,7 @@ const KEY = 'voldhistoire_cookie_consent';
 const sentryScripts = () => Array.from(document.head.querySelectorAll('script'))
   .filter((s) => (s.src || '').includes('sentry.min.js'));
 const setConsent = (analytics) => localStorage.setItem(KEY, JSON.stringify({
-  preferences: { essential: true, analytics, marketing: false }, timestamp: new Date().toISOString(),
+  preferences: { essential: true, analytics, marketing: false }, timestamp: new Date().toISOString(), version: '2',
 }));
 
 let added;

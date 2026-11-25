@@ -66,6 +66,13 @@ function bannerOverlap(target, banner, header) {
 const CONSENT_STORAGE_KEY = 'voldhistoire_cookie_consent';
 const CONSENT_MAX_AGE_DAYS = 180;
 const DAY_MS = 24 * 60 * 60 * 1000;
+/* Version du bandeau et des finalités (LEGAL-008). Le choix enregistré porte
+ * la version sous laquelle il a été fait ; une autre version vaut absence de
+ * choix et le bandeau revient. Toute modification des finalités ou du texte
+ * du bandeau (cookie-consent.html, locales cookies.*) DOIT l'incrémenter.
+ * Preuve du consentement (art. 7-1 RGPD) : le choix ne vit que dans le
+ * navigateur ; la preuve indirecte, admise par la CNIL, est l'historique git
+ * de ce fichier et du bandeau, qui date chaque version et son texte. */
 const CONSENT_VERSION = '2';
 
 /** Seules deux finalités existent : essentiel (toujours) et mesure d'audience.
@@ -106,7 +113,9 @@ function readConsentRecord(now = Date.now()) {
     return null;
   }
   if (!parsed || typeof parsed !== 'object' || !parsed.preferences || typeof parsed.preferences !== 'object') return null;
-  if (isConsentExpired(parsed.timestamp, now)) {
+  // Choix expiré, ou fait sous d'autres finalités (autre version) : effacé,
+  // le bandeau redemande.
+  if (isConsentExpired(parsed.timestamp, now) || String(parsed.version) !== CONSENT_VERSION) {
     try { window.localStorage.removeItem(CONSENT_STORAGE_KEY); } catch { /* stockage bloqué */ }
     removeConsentCookie();
     return null;
@@ -757,6 +766,7 @@ if (typeof module !== 'undefined' && module.exports) {
     bannerOverlap,
     isConsentExpired,
     readConsentRecord,
+    CONSENT_VERSION,
     writeConsentRecord,
     cookieDomainCandidates,
     removeAnalyticsCookies,

@@ -23,7 +23,7 @@ global.safeSetHTML = (el, html) => { el.innerHTML = html; };
 
 const {
   CookieConsent, isConsentExpired, readConsentRecord, cookieDomainCandidates,
-  analyticsMeasurementIds, CONSENT_MAX_AGE_DAYS,
+  analyticsMeasurementIds, CONSENT_MAX_AGE_DAYS, CONSENT_VERSION,
 } = require('../js/cookies');
 
 const KEY = 'voldhistoire_cookie_consent';
@@ -88,6 +88,22 @@ describe('LEGAL-004 — conservation du choix limitée à 6 mois', () => {
     expect(cc.getConsent()).toEqual({ essential: true, analytics: false, marketing: false });
     jest.advanceTimersByTime(250);
     expect(document.getElementById('cookie-banner').classList.contains('show')).toBe(false);
+  });
+
+  test('LEGAL-008 : choix fait sous une autre version des finalités → effacé, bandeau redemandé', () => {
+    jest.useFakeTimers();
+    localStorage.setItem(KEY, JSON.stringify({ preferences: { essential: true, analytics: true }, timestamp: daysAgo(1), version: '1' }));
+    expect(readConsentRecord()).toBeNull();
+    expect(localStorage.getItem(KEY)).toBeNull();
+    // Sans version (enregistrement antérieur au versionnement) : même chose.
+    localStorage.setItem(KEY, JSON.stringify({ preferences: { essential: true, analytics: true }, timestamp: daysAgo(1) }));
+    const cc = new CookieConsent();
+    expect(cc.getConsent()).toBeNull();
+    jest.advanceTimersByTime(250);
+    expect(document.getElementById('cookie-banner').classList.contains('show')).toBe(true);
+    // Version courante : conservé.
+    localStorage.setItem(KEY, JSON.stringify({ preferences: { essential: true, analytics: true }, timestamp: daysAgo(1), version: CONSENT_VERSION }));
+    expect(readConsentRecord().preferences.analytics).toBe(true);
   });
 
   test('ancien format (catégorie « préférence ») : relu sans la catégorie retirée', () => {
