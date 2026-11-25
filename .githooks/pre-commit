@@ -4,16 +4,16 @@
 # suppressions figées de eslint-suppressions.json respectées).
 # Activé par `npm install` à la racine (script « prepare » → core.hooksPath).
 
-STAGED_JS=$(git diff --cached --name-only --diff-filter=ACM -- '*.js' \
-  | grep -v '/dist/' | grep -v '/vendor/' | grep -v 'node_modules/')
+# Liste séparée par des octets NUL : un chemin avec espace reste un seul fichier.
+mapfile -d '' STAGED_JS < <(git diff --cached --name-only --diff-filter=ACM -z -- '*.js' \
+  | grep -zv -e '/dist/' -e '/vendor/' -e 'node_modules/')
 
-if [ -z "$STAGED_JS" ]; then
+if [ "${#STAGED_JS[@]}" -eq 0 ]; then
   exit 0
 fi
 
 echo "ESLint : vérification des fichiers JS indexés..."
-# shellcheck disable=SC2086 # liste de fichiers volontairement découpée
-if ! npx --no-install eslint --no-warn-ignored --max-warnings=0 $STAGED_JS; then
+if ! npx --no-install eslint --no-warn-ignored --max-warnings=0 -- "${STAGED_JS[@]}"; then
   echo ""
   echo "ESLint a trouvé des problèmes : corrigez-les avant de commiter (npm run lint:fix)."
   echo "Suppression devenue inutile après une correction : npx eslint backend/ frontend/js/ scripts/ e2e/ --prune-suppressions"
