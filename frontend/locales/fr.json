@@ -87,7 +87,7 @@
     "toast_saved": "Vos préférences ont été enregistrées"
   },
   "home": {
-    "title": "Vol d'Histoire | Explorez l'Aviation Militaire",
+    "title": "Vol d'Histoire | Explorez l'aviation militaire",
     "hero_split_title_l1": "L’aviation",
     "hero_split_title_l2": "militaire,",
     "hero_split_title_l3": "une fiche à la fois.",
@@ -404,7 +404,7 @@
     "spec_no": "Non"
   },
   "hangar": {
-    "title": "Hangar - Collection d'Aviation Militaire | Vol d'Histoire",
+    "title": "Hangar - Collection d'aviation militaire | Vol d'Histoire",
     "hero_title": "Le Hangar",
     "hero_desc": "Explorez notre catalogue d’appareils militaires historiques",
     "search_label": "Rechercher un appareil",
@@ -510,7 +510,7 @@
     "compare_share": "Copier le lien",
     "compare_link_copied": "Lien de comparaison copié",
     "map_toggle": "Carte",
-    "map_hint": "Cliquez un pays pour filtrer la collection. Les entités disparues sont figurées par leurs frontières actuelles.",
+    "map_hint": "Cliquez sur un pays pour filtrer la collection. Les entités disparues sont figurées par leurs frontières actuelles.",
     "filter_decade": "Années {decade}"
   },
   "favorites": {
@@ -557,7 +557,7 @@
     "remove_keep": "Garder ce favori"
   },
   "timeline": {
-    "title": "Chronologie de l'Aviation Militaire | Vol d'Histoire",
+    "title": "Chronologie de l'aviation militaire | Vol d'Histoire",
     "mission_tag": "Dossier Classifié — Aviation Militaire",
     "hero_title_1": "Histoire de l'",
     "hero_title_2": "Aviation Militaire",
@@ -1112,7 +1112,7 @@
     "breadcrumb_cgu": "CGU",
     "breadcrumb_pc": "Politique de confidentialité",
     "rgpd_compliant": "Rédigée au regard du RGPD (UE) 2016/679",
-    "mentions_title": "Mentions Légales | Vol d'Histoire",
+    "mentions_title": "Mentions légales | Vol d'Histoire",
     "ml_hero_subtitle": "Informations légales et éditoriales du site Vol d’Histoire",
     "ml_sec1_title": "1. Présentation du site",
     "ml_sec1_body": "<p>Le site <strong>Vol d’Histoire</strong> est accessible à l’adresse suivante : <a href=\"https://vol-histoire.titouan-borde.com\">https://vol-histoire.titouan-borde.com</a></p><p>Il s’agit d’un site de référence et d’exploration de l’histoire de l’aviation militaire depuis 1945, proposant une base de données d’appareils militaires (combat, transport, surveillance, entraînement, drones) et de leur évolution technique, une chronologie interactive, des pages consacrées aux conflits et un système de favoris réservé aux utilisateurs inscrits.</p>",
@@ -1132,7 +1132,7 @@
     "ml_sec8_body": "<p>Les présentes mentions légales sont régies par le droit français.</p><p>En cas de litige et à défaut d’accord amiable, le litige sera porté devant les tribunaux français compétents.</p>",
     "ml_sec9_title": "9. Contact",
     "ml_sec9_body": "<p>Pour toute question concernant les mentions légales :</p><div class=\"contact-info\"><p><strong>Email :</strong> <a href=\"mailto:vdh@titouan-borde.com\">vdh@titouan-borde.com</a></p></div>",
-    "privacy_title": "Politique de Confidentialité | Vol d'Histoire",
+    "privacy_title": "Politique de confidentialité | Vol d'Histoire",
     "pc_hero_subtitle": "Comment nous protégeons et utilisons vos données personnelles",
     "pc_intro_title": "Engagement RGPD",
     "pc_intro_body": "Vol d’Histoire s’engage à protéger votre vie privée et vos données personnelles conformément au Règlement Général sur la Protection des Données (RGPD, UE 2016/679) et à la loi Informatique et Libertés.",
@@ -1157,10 +1157,10 @@
     "pc_sec10_body": "<p>Cette politique peut évoluer avec le site ou la réglementation. La date de la dernière mise à jour figure en haut de page. En cas de modification substantielle, nous vous en informerons par un message sur le site et, si vous avez un compte, par email.</p><h3>Historique des versions</h3><ul class=\"version-history\"><li><strong>Version 2.1 — 19 novembre 2026 :</strong> les liens envoyés par email sont remplacés par des codes à 6 chiffres, saisis sur le site (mêmes durées, 5 essais par code).</li><li><strong>Version 2.0 — 10 novembre 2026 :</strong> durées alignées sur le fonctionnement réel (suppression immédiate du compte, liens de 30 et 15 minutes), choix des cookies conservé 6 mois, catégorie « préférence » supprimée, inventaire des traceurs refait, formulaire de contact décrit, transferts hors UE précisés, téléchargement des données depuis les paramètres.</li><li><strong>Version 1.1 — 8 septembre 2026 :</strong> la mesure d’audience repose sur le consentement ; durées des jetons de session corrigées.</li><li><strong>Version 1.0 — avril 2026 :</strong> première publication.</li></ul>",
     "pc_sec11_title": "11. Questions",
     "pc_sec11_body": "<p>Pour toute question concernant cette politique ou le traitement de vos données :</p><div class=\"contact-info\"><p><strong>Email :</strong> <a href=\"mailto:vdh@titouan-borde.com\">vdh@titouan-borde.com</a></p><p><strong>Responsable du traitement :</strong> Titouan Borde</p></div>",
-    "terms_title": "Conditions Générales d'Utilisation | Vol d'Histoire",
+    "terms_title": "Conditions générales d'utilisation | Vol d'Histoire",
     "cgu_hero_subtitle": "Règles et modalités d’utilisation du site Vol d’Histoire",
     "cgu_intro_title": "Acceptation des conditions",
-    "cgu_intro_body": "En accédant et en utilisant le site Vol d’Histoire, vous acceptez d’être lié par les présentes Conditions Générales d’Utilisation (CGU). Si vous n’acceptez pas ces conditions, veuillez ne pas utiliser ce site.",
+    "cgu_intro_body": "En accédant et en utilisant le site Vol d’Histoire, vous acceptez d’être lié par les présentes Conditions générales d’utilisation (CGU). Si vous n’acceptez pas ces conditions, veuillez ne pas utiliser ce site.",
     "cgu_sec1_title": "1. Objet",
     "cgu_sec1_body": "<p>Les présentes Conditions générales d’utilisation (CGU) ont pour objet de définir les modalités et conditions d’utilisation du site <strong>Vol d’Histoire</strong>, accessible à l’adresse <a href=\"https://vol-histoire.titouan-borde.com\">https://vol-histoire.titouan-borde.com</a>.</p><p>Vol d’Histoire est un projet personnel non commercial dédié à l’histoire de l’aviation militaire depuis 1945, proposant :</p><ul><li>Une base de données d’appareils militaires : combat, transport, surveillance, entraînement, drones</li><li>Des fiches techniques détaillées avec caractéristiques, armement, technologies et missions</li><li>Une chronologie interactive et des pages consacrées aux conflits</li><li>Un mode de comparaison d’appareils</li><li>Un système de favoris pour les utilisateurs inscrits</li><li>Une interface bilingue français / anglais</li></ul>",
     "cgu_sec2_title": "2. Accès au site",
@@ -1188,7 +1188,7 @@
     "cgu_sec13_title": "13. Contact",
     "cgu_sec13_body": "<p>Pour toute question concernant les présentes CGU :</p><div class=\"contact-info\"><p><strong>Email :</strong> <a href=\"mailto:vdh@titouan-borde.com\">vdh@titouan-borde.com</a></p></div>",
     "cgu_acceptance_title": "Acceptation des conditions",
-    "cgu_acceptance_body": "En utilisant le site Vol d’Histoire, vous reconnaissez avoir lu, compris et accepté l’intégralité des présentes Conditions Générales d’Utilisation, et avoir été informé du traitement de vos données, décrit dans notre Politique de confidentialité.",
+    "cgu_acceptance_body": "En utilisant le site Vol d’Histoire, vous reconnaissez avoir lu, compris et accepté l’intégralité des présentes Conditions générales d’utilisation, et avoir été informé du traitement de vos données, décrit dans notre Politique de confidentialité.",
     "new_tab": " (nouvel onglet)",
     "pc_sec6_body_v2": "<h3>6.1 Catégories de traceurs</h3><div class=\"cookie-types\"><div class=\"cookie-card essential\"><i class=\"fas fa-check-circle\"></i><h4>Essentiels et fonctionnels</h4><p>Nécessaires au service que vous demandez : session, sécurité, choix des cookies, langue, comparateur, affichage</p><span class=\"cookie-consent\">Pas de consentement requis</span></div><div class=\"cookie-card analytics\"><i class=\"fas fa-chart-pie\"></i><h4>Mesure d’audience</h4><p>Google Analytics : fréquentation du site, avec un identifiant pseudonyme</p><span class=\"cookie-consent\">Consentement requis</span></div></div><h3>6.2 Inventaire détaillé</h3><p>Liste des cookies et autres traceurs utilisés par le site, conformément à la délibération CNIL n° 2020-091 :</p><section class=\"cookies-inventory-wrap\" tabindex=\"0\" aria-label=\"Inventaire des cookies\"><table class=\"cookies-inventory\"><caption class=\"sr-only\">Inventaire détaillé des cookies et traceurs : nom, type, durée, finalité, stockage et exigence de consentement.</caption><thead><tr><th scope=\"col\">Nom</th><th scope=\"col\">Type</th><th scope=\"col\">Durée</th><th scope=\"col\">Finalité</th><th scope=\"col\">Stockage</th><th scope=\"col\">Consentement</th></tr></thead><tbody><tr><td><code>refreshToken</code></td><td>Essentiel</td><td>7 jours avec « Se souvenir de moi », sinon jusqu’à la fermeture du navigateur</td><td>Maintien de la session connectée (renouvellement du jeton d’accès)</td><td>Cookie HttpOnly · Secure · SameSite=Strict · Path=/api</td><td>Exempté</td></tr><tr><td><code>vh_session</code></td><td>Essentiel</td><td>7 jours avec « Se souvenir de moi », sinon jusqu’à la fermeture du navigateur</td><td>Signale au navigateur qu’une session existe ; ne contient aucune donnée personnelle</td><td>Cookie · SameSite=Strict</td><td>Exempté</td></tr><tr><td><code>voldhistoire_cookie_consent</code></td><td>Essentiel</td><td>6 mois</td><td>Mémorisation de votre choix sur les cookies et de sa date</td><td>Cookie + localStorage</td><td>Exempté</td></tr><tr><td><code>vol-histoire-lang</code></td><td>Fonctionnel</td><td>Jusqu’à effacement</td><td>Langue d’affichage (FR / EN)</td><td>localStorage</td><td>Exempté</td></tr><tr><td><code>vh_hangar_view</code></td><td>Fonctionnel</td><td>Jusqu’à effacement</td><td>Affichage du hangar en grille ou en liste</td><td>localStorage</td><td>Exempté</td></tr><tr><td><code>vh_compare_ids</code></td><td>Fonctionnel</td><td>Jusqu’à effacement</td><td>Appareils choisis pour le comparateur</td><td>localStorage</td><td>Exempté</td></tr><tr><td><code>vh_compare_thumbs</code></td><td>Fonctionnel</td><td>Jusqu’à effacement</td><td>Photo de chaque appareil choisi pour le comparateur, affichée dans sa barre</td><td>localStorage</td><td>Exempté</td></tr><tr><td><code>vh-morph</code></td><td>Fonctionnel</td><td>Fermeture de l’onglet</td><td>Appareil dont la carte vient d’être ouverte, pour l’animation de transition vers sa fiche</td><td>sessionStorage</td><td>Exempté</td></tr><tr><td><code>vh-toast</code></td><td>Fonctionnel</td><td>Jusqu’à l’affichage sur la page suivante</td><td>Message de confirmation à montrer après un changement de page (ex. sessions fermées)</td><td>sessionStorage</td><td>Exempté</td></tr><tr><td><code>vh-onboarding-done</code></td><td>Fonctionnel</td><td>Jusqu’à effacement</td><td>Visite guidée déjà vue (évite de la réafficher)</td><td>localStorage</td><td>Exempté</td></tr><tr><td><code>vh-reduce-motion</code></td><td>Fonctionnel</td><td>Jusqu’à effacement</td><td>Réglage « Réduire les animations »</td><td>localStorage</td><td>Exempté</td></tr><tr><td><code>vh-last-viewed</code></td><td>Fonctionnel</td><td>Jusqu’à effacement</td><td>Dernière fiche consultée, proposée dans vos paramètres (identifiant, nom et photo de l’appareil)</td><td>localStorage</td><td>Exempté</td></tr><tr><td><code>hangar_filters</code></td><td>Fonctionnel</td><td>Fermeture de l’onglet</td><td>Filtres du hangar, pour retrouver la même liste depuis une fiche</td><td>sessionStorage</td><td>Exempté</td></tr><tr><td>Cache du site</td><td>Fonctionnel</td><td>Jusqu’à la version suivante du site</td><td>Fichiers du site gardés par le service worker pour un affichage plus rapide</td><td>Cache du navigateur</td><td>Exempté</td></tr><tr><td><code>_ga</code></td><td>Mesure d’audience</td><td>13 mois</td><td>Identifiant pseudonyme du navigateur (Google Analytics 4)</td><td>Cookie déposé par Google Analytics</td><td>Requis</td></tr><tr><td><code>_ga_&lt;ID&gt;</code></td><td>Mesure d’audience</td><td>13 mois</td><td>État de la session de mesure (Google Analytics 4)</td><td>Cookie déposé par Google Analytics</td><td>Requis</td></tr><tr><td>hCaptcha</td><td>Sécurité</td><td>Fixée par hCaptcha</td><td>Distinguer un humain d’un robot sur les formulaires d’inscription, de connexion, de mot de passe oublié et de contact</td><td>Traceurs d’hCaptcha sur son propre domaine</td><td>Exempté (sécurité)</td></tr></tbody></table></section><p class=\"cookies-marketing-note\"><strong>Cookies publicitaires :</strong> aucun. Sentry, utilisé pour le suivi des erreurs, ne dépose pas de cookie.</p><h3>6.3 Gérer vos choix</h3><ul><li>Votre choix est conservé 6 mois, puis vous est redemandé.</li><li>Vous pouvez le modifier à tout moment via le lien « Cookies » en bas de chaque page ou, si vous avez un compte, dans Paramètres › Confidentialité.</li><li>Refuser ou retirer votre consentement efface les cookies de Google Analytics et interrompt la mesure d’audience.</li><li>Vous pouvez aussi effacer les données du site depuis les réglages de votre navigateur : langue, comparateur et affichage reviennent alors à leur état par défaut.</li></ul><div class=\"info-box\"><i class=\"fas fa-exclamation-triangle\"></i><p>Bloquer les traceurs essentiels dans votre navigateur empêche la connexion à votre compte.</p></div>",
     "docs_nav": "Documents légaux",
