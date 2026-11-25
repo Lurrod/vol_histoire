@@ -7,6 +7,7 @@
  * ou clé vdh:hero:v3:<jour> (déclenchée par les routes airplanes quand une
  * fiche change).
  */
+const logger = require('../logger');
 const express = require('express');
 const asyncHandler = require('../middleware/asyncHandler');
 const heroPayload = require('../utils/hero-payload');
@@ -21,7 +22,11 @@ module.exports = function createHeroRouter(getPool) {
   }));
 
   router.invalidateCache = async () => {
-    try { await heroPayload.invalidate(); } catch { /* noop */ }
+    try {
+      await heroPayload.invalidate();
+    } catch (err) {
+      logger.warn('hero : invalidation du cache impossible', { error: err.message });
+    }
   };
 
   return router;
