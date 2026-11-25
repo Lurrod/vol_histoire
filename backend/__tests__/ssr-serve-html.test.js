@@ -253,6 +253,13 @@ describe('SEO-001 — versions linguistiques des pages statiques', () => {
     expect(blocks[1].itemListElement[0].name).toBe('Home');
   });
 
+  test('localizeHead en : texte alternatif de l’image de partage traduit (HTML-004)', () => {
+    const page = '<html lang="fr"><meta property="og:image:alt" content="FR"><meta name="twitter:image:alt" content="FR">';
+    const html = localizeHead(page, 'x', 'en', { seo: { og_image_alt: "Vol d'Histoire — EN" } });
+    expect(html).toContain('<meta property="og:image:alt" content="Vol d&#39;Histoire — EN">');
+    expect(html).toContain('<meta name="twitter:image:alt" content="Vol d&#39;Histoire — EN">');
+  });
+
   test('localizeJsonLd : le WebSite garde son nom, un bloc illisible reste tel quel, « < » échappé', () => {
     const html = [
       '<script type="application/ld+json">{"@type":"WebSite","name":"Vol d\'Histoire","description":"FR"}</script>',

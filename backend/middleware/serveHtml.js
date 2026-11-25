@@ -259,6 +259,13 @@ function localizeHead(html, pageName, lang, dict, frDict = {}) {
     out = out.replace(/<meta property="og:description" content="[^"]*">/, () => `<meta property="og:description" content="${d}">`);
     out = out.replace(/<meta name="twitter:description" content="[^"]*">/, () => `<meta name="twitter:description" content="${d}">`);
   }
+  // Texte alternatif de l'image de partage (pages statiques : og-default.jpg).
+  const imageAlt = lookup(dict, 'seo.og_image_alt');
+  if (imageAlt) {
+    const a = escapeAttr(imageAlt);
+    out = out.replace(/<meta property="og:image:alt" content="[^"]*">/, () => `<meta property="og:image:alt" content="${a}">`);
+    out = out.replace(/<meta name="twitter:image:alt" content="[^"]*">/, () => `<meta name="twitter:image:alt" content="${a}">`);
+  }
   return localizeJsonLd(out, { title, description, labels: navLabels(frDict, dict) });
 }
 
