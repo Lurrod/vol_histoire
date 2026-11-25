@@ -87,7 +87,7 @@
 
   <div id="mini-bar" class="mini-bar" aria-hidden="true">
     <div class="mini-bar-inner">
-      <span id="mini-name"></span>
+      <span id="mini-name" class="mini-name"></span>
       <span class="mini-stats">
         <span id="mini-speed"></span>
         <span id="mini-range"></span>
@@ -263,7 +263,7 @@
   </main>
 
   <!-- Edit Modal -->
-  <div id="edit-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+  <div id="edit-modal" class="modal edit-modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
     <div class="modal-backdrop"></div>
     <div class="modal-container">
       <div class="modal-header"><h2 id="modal-title"><i class="fas fa-edit"></i><span data-i18n="details.modal_edit">Modifier l'avion</span></h2><button type="button" class="modal-close" aria-label="Fermer"><i class="fas fa-times"></i></button></div>
@@ -280,7 +280,7 @@
   </div>
 
   <!-- @include footer -->
-  <div id="toast-container" aria-live="polite"></div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
   <script defer src="js/dist/icons.min.js"></script>

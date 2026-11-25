@@ -137,8 +137,8 @@
         </div>
       </section>
       <div id="active-filters" class="active-filters hidden"></div>
-      <div class="results-bar"><span id="results-count" data-i18n="favorites.results">0 favoris</span></div>
-      <section id="favorites-container" class="aircraft-grid" aria-label="Résultats" data-i18n-aria="favorites.results_landmark"></section>
+      <div class="results-bar"><span id="results-count" class="results-count" data-i18n="favorites.results">0 favoris</span></div>
+      <section id="favorites-container" class="aircraft-grid favorites-container" aria-label="Résultats" data-i18n-aria="favorites.results_landmark"></section>
       <div id="empty-state" class="empty-state hidden">
         <i class="fas fa-heart-crack"></i>
         <h3 data-i18n="favorites.empty_title">Aucun favori pour l'instant</h3>
@@ -151,7 +151,7 @@
 
   <!-- Footer -->
   <!-- @include footer -->
-  <div id="toast-container" aria-live="polite"></div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
   <script defer src="js/dist/icons.min.js"></script>

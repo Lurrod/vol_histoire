@@ -69,6 +69,7 @@
     if (container) return container;
     container = doc.createElement('div');
     container.id = 'toast-container';
+    container.classList.add('toast-container');
     container.setAttribute('aria-live', 'polite');
     doc.body.appendChild(container);
     return container;

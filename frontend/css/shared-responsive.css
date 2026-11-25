@@ -294,11 +294,11 @@ header.is-auth .nav-auth { display: block; }
   @media (max-width: 48em) {
 
     /* Toast pleine largeur */
-    #toast-container {
+    .toast-container {
       inset-inline: var(--sp-4);
       bottom: var(--sp-4);
     }
-    #toast-container.toast-stack { width: auto; }
+    .toast-container.toast-stack { width: auto; }
 
     .toast { min-width: auto; }
 

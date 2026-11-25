@@ -104,7 +104,7 @@
 
   /* Print : masquer la chrome */
   @media print {
-    body > header, footer, .hamburger, .lang-switch, #toast-container, .modal {
+    body > header, footer, .hamburger, .lang-switch, .toast-container, .modal {
       display: none;
     }
   }
@@ -143,8 +143,8 @@
   /* Exception : l'interrupteur qui active cette préférence garde son
      mouvement (choix du propriétaire) — sinon il sauterait au moment même
      où on le touche. Plus spécifique que la règle ci-dessus, même couche. */
-  html.vh-reduce-motion #pref-reduce-motion + label,
-  html.vh-reduce-motion #pref-reduce-motion + label .toggle-slider {
+  html.vh-reduce-motion .pref-reduce-motion + label,
+  html.vh-reduce-motion .pref-reduce-motion + label .toggle-slider {
     transition-duration: var(--dur-base) !important;
   }
   html.vh-reduce-motion::view-transition-group(*),

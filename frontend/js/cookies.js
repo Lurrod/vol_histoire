@@ -679,6 +679,7 @@ class CookieConsent {
     // Positionnement porté par #toast-container (shared-base.css).
     const container = document.createElement('div');
     container.id = 'toast-container';
+    container.classList.add('toast-container');
     document.body.appendChild(container);
     return container;
   }

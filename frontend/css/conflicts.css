@@ -431,7 +431,7 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-.page-conflicts #conflict-aircraft.hidden { display: none; }
+.page-conflicts .conflict-aircraft.hidden { display: none; }
 
 /* Sources */
 .page-conflicts .conflict-sources {

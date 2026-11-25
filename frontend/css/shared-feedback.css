@@ -9,7 +9,7 @@
   /* ============================================================
      TOASTS
      ============================================================ */
-  #toast-container {
+  .toast-container {
     position: fixed;
     bottom: var(--sp-8);
     inset-inline-end: var(--sp-8);
@@ -23,14 +23,14 @@
      le plus récent devant, les précédents derrière, plus petits et décalés
      vers le haut ; déplié au survol ou au focus. Hauteur du conteneur et
      place de chaque toast posées en CSSOM. */
-  #toast-container.toast-stack {
+  .toast-container.toast-stack {
     display: block;
     width: min(24rem, calc(100vw - 2 * var(--sp-8)));
     height: var(--stack-h, 0px);
     transition: height var(--dur-slow) var(--ease-out);
   }
 
-  #toast-container.toast-stack.is-empty { pointer-events: none; }
+  .toast-container.toast-stack.is-empty { pointer-events: none; }
 
   .toast-stack > .toast {
     position: absolute;
@@ -271,7 +271,7 @@
      sortait du cadre. Le paquet s'élargit tant que ce toast y est. Sous
      48em, la règle pleine largeur de shared-responsive (couche shared,
      postérieure) reprend la main. */
-  #toast-container.toast-stack:has(> .toast.sw-update) {
+  .toast-container.toast-stack:has(> .toast.sw-update) {
     width: min(30rem, calc(100vw - 2 * var(--sp-8)));
   }
   /* Fond presque opaque (teinte or conservée par-dessus) : ce toast reste

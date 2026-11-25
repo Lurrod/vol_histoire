@@ -132,11 +132,11 @@
           </div>
           <div class="filter-group">
             <button type="button" class="filter-btn" id="war-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="war-dropdown" aria-label="Conflit" data-i18n-aria="hangar.filter_war"><i class="fas fa-burst"></i><span data-i18n="hangar.filter_war">Conflit</span><i class="fas fa-chevron-down"></i></button>
-            <div id="war-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h2 data-i18n="hangar.filter_by_war">Filtrer par conflit</h2><button type="button" class="close-dropdown" data-dropdown="war" aria-label="Fermer le filtre conflit" data-i18n-aria="hangar.close_filter_war"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="war-options"></div></div>
+            <div id="war-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h2 data-i18n="hangar.filter_by_war">Filtrer par conflit</h2><button type="button" class="close-dropdown" data-dropdown="war" aria-label="Fermer le filtre conflit" data-i18n-aria="hangar.close_filter_war"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options war-options" id="war-options"></div></div>
           </div>
           <div class="filter-group">
             <button type="button" class="filter-btn" id="mission-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="mission-dropdown" aria-label="Mission" data-i18n-aria="hangar.filter_mission"><i class="fas fa-crosshairs"></i><span data-i18n="hangar.filter_mission">Mission</span><i class="fas fa-chevron-down"></i></button>
-            <div id="mission-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h2 data-i18n="hangar.filter_by_mission">Filtrer par mission</h2><button type="button" class="close-dropdown" data-dropdown="mission" aria-label="Fermer le filtre mission" data-i18n-aria="hangar.close_filter_mission"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="mission-options"></div></div>
+            <div id="mission-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h2 data-i18n="hangar.filter_by_mission">Filtrer par mission</h2><button type="button" class="close-dropdown" data-dropdown="mission" aria-label="Fermer le filtre mission" data-i18n-aria="hangar.close_filter_mission"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options mission-options" id="mission-options"></div></div>
           </div>
           <button type="button" class="filter-btn" id="map-filter-btn" aria-expanded="false" aria-controls="nations-map-panel" aria-label="Carte des nations" data-i18n-aria="hangar.map_toggle"><i class="fas fa-map"></i><span data-i18n="hangar.map_toggle">Carte</span></button>
           <label for="sort-select" class="sr-only" data-i18n="hangar.sort_label">Trier les résultats</label>
@@ -177,8 +177,8 @@
       <!-- Titre de niveau 2 (masqué) : les titres des cartes (h3) ne suivent
            plus directement le h1 de la page. -->
       <h2 id="results-heading" class="sr-only" data-i18n="hangar.results_landmark">Résultats</h2>
-      <div class="results-info" role="status" aria-live="polite"><span id="results-count">0 avions trouvés</span></div>
-      <section id="airplanes-container" class="aircraft-grid" aria-labelledby="results-heading"></section>
+      <div class="results-info" role="status" aria-live="polite"><span id="results-count" class="results-count">0 avions trouvés</span></div>
+      <section id="airplanes-container" class="aircraft-grid airplanes-container" aria-labelledby="results-heading"></section>
       <div id="pagination-container" class="pagination"></div>
     </div>
   </div>
@@ -206,7 +206,7 @@
 
   <!-- Footer -->
   <!-- @include footer -->
-  <div id="toast-container" aria-live="polite"></div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
   <script defer src="js/dist/icons.min.js"></script>

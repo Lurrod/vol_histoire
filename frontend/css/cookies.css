@@ -510,7 +510,7 @@ body.cookie-modal-open {
    délais — sans ceci, les deux bords sauteraient l'un après l'autre.
    Sauf l'interrupteur « Réduire les animations » des Réglages, exempté du
    garde-fou du site (shared-utilities.css) : il garde son étirement. */
-html.vh-reduce-motion :is(.cookie-toggle, .toggle-switch):not(:has(#pref-reduce-motion)) .toggle-slider {
+html.vh-reduce-motion :is(.cookie-toggle, .toggle-switch):not(:has(.pref-reduce-motion)) .toggle-slider {
   transition-delay: 0s !important;
 }
 

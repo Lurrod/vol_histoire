@@ -104,7 +104,7 @@
   margin: 0 auto;
 }
 body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
-.page-details .mini-bar #mini-name {
+.page-details .mini-bar .mini-name {
   font-family: var(--font-display);
   font-size: 1.1rem;
   color: var(--text-primary);

@@ -202,8 +202,8 @@ body:is(.page-hangar, .page-favorites) {
 }
 /* Compteur de résultats : le nouveau texte se pose (hangar/render.js,
    favorites/render.js rejouent .is-swapping quand il change). */
-:is(.page-hangar, .page-favorites) #results-count { display: inline-block; }
-:is(.page-hangar, .page-favorites) #results-count.is-swapping {
+:is(.page-hangar, .page-favorites) .results-count { display: inline-block; }
+:is(.page-hangar, .page-favorites) .results-count.is-swapping {
   animation: vh-text-swap var(--dur-base) var(--ease-out);
 }
 

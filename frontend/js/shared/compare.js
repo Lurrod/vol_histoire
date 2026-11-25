@@ -270,7 +270,7 @@
         '<h2 id="compare-modal-title"><i class="fas fa-crosshairs"></i><span>' + escapeHtml(t('hangar.compare_title', 'Comparaison')) + '</span></h2>' +
         '<button type="button" class="compare-modal-close" aria-label="' + escapeHtml(t('common.close', 'Fermer')) + '"><i class="fas fa-times"></i></button>' +
       '</div>' +
-      '<div id="compare-modal-body"></div>';
+      '<div id="compare-modal-body" class="compare-modal-body"></div>';
     document.body.appendChild(dlg);
 
     armClear(document.getElementById('compare-clear'));

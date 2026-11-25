@@ -74,8 +74,8 @@
 }
 /* Options en <button> : atteignables au clavier, réinitialisées au style des cases. */
 /* Conflits et missions : libellés longs, une option par ligne, période à droite. */
-.page-hangar #war-options, .page-hangar #mission-options { grid-template-columns: 1fr; }
-.page-hangar #war-options .filter-option, .page-hangar #mission-options .filter-option { display: flex; align-items: baseline; gap: 0.5rem; text-align: left; }
+.page-hangar .war-options, .page-hangar .mission-options { grid-template-columns: 1fr; }
+.page-hangar .war-options .filter-option, .page-hangar .mission-options .filter-option { display: flex; align-items: baseline; gap: 0.5rem; text-align: left; }
 .page-hangar .filter-option-meta { margin-left: auto; font-size: var(--text-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* Results count */
@@ -232,7 +232,7 @@ body.page-hangar.modal-open { overflow: hidden; }
   .page-hangar .form-group textarea { min-height: 80px; }
   .page-hangar .modal-footer { padding: 1rem; flex-direction: column-reverse; gap: 0.75rem; }
   .page-hangar .modal-footer .btn { width: 100%; padding: 0.875rem 1.5rem; font-size: 0.9rem; min-height: 48px; }
-  /* #toast-container, .toast → shared.css */
+  /* .toast-container, .toast → shared.css */
   .page-hangar .empty-state { padding: 3rem 1rem; }
   .page-hangar .empty-state i, .page-hangar .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
   .page-hangar .empty-state h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
@@ -256,7 +256,7 @@ body.page-hangar.modal-open { overflow: hidden; }
 
 /* Print */
 @media print {
-  .page-hangar header, .page-hangar .pagination, .page-hangar .modal, .page-hangar #toast-container, .page-hangar footer { display: none !important; }
+  .page-hangar header, .page-hangar .pagination, .page-hangar .modal, .page-hangar .toast-container, .page-hangar footer { display: none !important; }
   .page-hangar .page-hero { padding: 2rem 0; }
   .page-hangar * { background: white !important; color: black !important; box-shadow: none !important; }
 }
@@ -503,12 +503,12 @@ body.page-hangar.modal-open { overflow: hidden; }
    `both` : une fois l'animation finie, elle ne retient pas `transform`, et le
    survol (translateY(-4px)) reste instantané. Décalage par :nth-child, la CSP
    interdisant les styles en ligne. */
-html:not(.vh-hangar-morph) .page-hangar #airplanes-container > .aircraft-card { animation: vh-enter var(--dur-slower) var(--ease-out) backwards; }
-.page-hangar #airplanes-container > .aircraft-card:nth-child(2) { animation-delay: calc(var(--stagger-step) * 1); }
-.page-hangar #airplanes-container > .aircraft-card:nth-child(3) { animation-delay: calc(var(--stagger-step) * 2); }
-.page-hangar #airplanes-container > .aircraft-card:nth-child(4) { animation-delay: calc(var(--stagger-step) * 3); }
-.page-hangar #airplanes-container > .aircraft-card:nth-child(5) { animation-delay: calc(var(--stagger-step) * 4); }
-.page-hangar #airplanes-container > .aircraft-card:nth-child(n+6) { animation-delay: calc(var(--stagger-step) * 5); }
+html:not(.vh-hangar-morph) .page-hangar .airplanes-container > .aircraft-card { animation: vh-enter var(--dur-slower) var(--ease-out) backwards; }
+.page-hangar .airplanes-container > .aircraft-card:nth-child(2) { animation-delay: calc(var(--stagger-step) * 1); }
+.page-hangar .airplanes-container > .aircraft-card:nth-child(3) { animation-delay: calc(var(--stagger-step) * 2); }
+.page-hangar .airplanes-container > .aircraft-card:nth-child(4) { animation-delay: calc(var(--stagger-step) * 3); }
+.page-hangar .airplanes-container > .aircraft-card:nth-child(5) { animation-delay: calc(var(--stagger-step) * 4); }
+.page-hangar .airplanes-container > .aircraft-card:nth-child(n+6) { animation-delay: calc(var(--stagger-step) * 5); }
 
 /* Vue grille : une carte cochée pour la comparaison se distingue (la vue
    liste a déjà son équivalent sur l'encoche de droite). */
@@ -531,7 +531,7 @@ html:not(.vh-hangar-morph) .page-hangar #airplanes-container > .aircraft-card { 
 
 /* Chargement suivant (filtre, page) : les cartes restent, estompées, jusqu'aux
    nouveaux résultats, posés ensuite par morphing (hangar/render.js). */
-.page-hangar #airplanes-container.is-loading > .aircraft-card {
+.page-hangar .airplanes-container.is-loading > .aircraft-card {
   opacity: 0.45;
   pointer-events: none;
   transition: opacity var(--dur-base) var(--ease-out);
@@ -541,7 +541,7 @@ html:not(.vh-hangar-morph) .page-hangar #airplanes-container > .aircraft-card { 
    haut raccourcit les durées, mais pas les délais du décalage des cartes ni
    le ::backdrop, d'où ces règles explicites. */
 @media (prefers-reduced-motion: reduce) {
-  html:not(.vh-hangar-morph) .page-hangar #airplanes-container > .aircraft-card,
+  html:not(.vh-hangar-morph) .page-hangar .airplanes-container > .aircraft-card,
   .page-hangar .fs-item,
   .page-hangar .filter-sheet[open],
   .page-hangar .filter-sheet[open]::backdrop,

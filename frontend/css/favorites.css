@@ -368,8 +368,8 @@
 
 /* Résultats : léger fondu à chaque rendu (filtre, tri, recherche). Opacité
    seule, et `backwards` : le survol garde la main sur transform. */
-.page-favorites #favorites-container > .aircraft-card,
-.page-favorites #favorites-container > .empty-state { animation: vh-fade-in var(--dur-base) var(--ease-out) backwards; }
+.page-favorites .favorites-container > .aircraft-card,
+.page-favorites .favorites-container > .empty-state { animation: vh-fade-in var(--dur-base) var(--ease-out) backwards; }
 
 /* Favorited date */
 .page-favorites .favorited-date { font-size: 0.8rem; color: var(--text-ghost); margin-top: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
@@ -445,11 +445,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-favorites #favorites-container > .aircraft-card,
-  .page-favorites #favorites-container > .empty-state { animation: none; }
+  .page-favorites .favorites-container > .aircraft-card,
+  .page-favorites .favorites-container > .empty-state { animation: none; }
   .page-favorites .aircraft-card.is-removing { transform: none; }
 }
-@media print { .page-favorites header, .page-favorites footer, .page-favorites #toast-container, .page-favorites .auth-gate-visual { display: none !important; } .page-favorites * { background: white !important; color: black !important; } }
+@media print { .page-favorites header, .page-favorites footer, .page-favorites .toast-container, .page-favorites .auth-gate-visual { display: none !important; } .page-favorites * { background: white !important; color: black !important; } }
 /* Skeleton loader (@keyframes shimmer + .skeleton-* → shared.css, dédupliqués) */
 
 /* lang-switch → shared.css */

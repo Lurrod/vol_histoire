@@ -265,7 +265,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 }
 
 /* Scrollable body — mirror .modal-form */
-#compare-modal-body {
+.compare-modal-body {
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
@@ -538,7 +538,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 }
 .cmp-remove:disabled { cursor: default; opacity: 0.5; }
 .cmp-remove:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
-#compare-modal-body.cmp-enter > * { animation: vh-fade-in var(--dur-fast) var(--ease-out) backwards; }
+.compare-modal-body.cmp-enter > * { animation: vh-fade-in var(--dur-fast) var(--ease-out) backwards; }
 
 /* ======================================================================
    MORPHINGS DU COMPARATEUR (js/shared/compare-morph.js, API View
@@ -650,7 +650,7 @@ html.vh-cmp-adding::view-transition-new(*.vh-cmp-thumb):only-child {
   .compare-bar .cmp-thumb,
   .compare-bar .cmp-share-label.is-swapping,
   .compare-modal,
-  #compare-modal-body.cmp-enter > * { animation: none; }
+  .compare-modal-body.cmp-enter > * { animation: none; }
   .cmp-col-head,
   .cmp-col-head.is-removing,
   .cmp-cell.is-removing,
@@ -664,7 +664,7 @@ html.vh-cmp-adding::view-transition-new(*.vh-cmp-thumb):only-child {
   .compare-modal { width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
   .compare-modal-header { padding: 1.25rem 1rem; }
   .compare-modal-header h2 { font-size: 1.2rem; }
-  #compare-modal-body { padding: 1.25rem 1rem; }
+  .compare-modal-body { padding: 1.25rem 1rem; }
   .cmp-cols, .cmp-row {
     grid-template-columns: 110px repeat(var(--cmp-cols), 1fr);
     gap: 0.5rem;

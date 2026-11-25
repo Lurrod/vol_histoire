@@ -179,7 +179,7 @@
                   </div>
                   <div class="pref-row">
                     <div class="pref-text"><h3 id="pref-motion-title" data-i18n="settings.pref_motion_title">Réduire les animations</h3><p id="pref-motion-desc" data-i18n="settings.pref_motion_desc">Transitions, glissements et compteurs s'affichent sans mouvement.</p><p class="pref-note" id="pref-motion-system" data-i18n="settings.pref_motion_system" hidden>Votre appareil demande déjà moins d'animations : le site les réduit dans tous les cas.</p></div>
-                    <div class="toggle-switch"><input type="checkbox" id="pref-reduce-motion" aria-labelledby="pref-motion-title" aria-describedby="pref-motion-desc"><label for="pref-reduce-motion"><span class="toggle-slider"></span></label></div>
+                    <div class="toggle-switch"><input type="checkbox" id="pref-reduce-motion" class="pref-reduce-motion" aria-labelledby="pref-motion-title" aria-describedby="pref-motion-desc"><label for="pref-reduce-motion"><span class="toggle-slider"></span></label></div>
                   </div>
                   <div class="pref-row">
                     <div class="pref-text"><h3 id="pref-tour-title" data-i18n="settings.pref_tour_title">Visite guidée</h3><p data-i18n="settings.pref_tour_desc">La présentation du site, depuis l'accueil.</p></div>
@@ -240,7 +240,7 @@
                   <p class="admin-total" aria-live="polite"><span class="admin-total-num" id="total-users">0</span> <span id="total-users-label">utilisateurs</span></p>
                 </div>
                 <div id="user-list" class="user-list"></div>
-                <div id="user-pagination" class="pagination-container" aria-live="polite"></div>
+                <div id="user-pagination" class="pagination-container user-pagination" aria-live="polite"></div>
               </div>
             </div>
           </div>
@@ -282,7 +282,7 @@
     </div>
   </div>
 
-  <div id="toast-container" aria-live="polite"></div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
   <script defer src="js/dist/icons.min.js"></script>
