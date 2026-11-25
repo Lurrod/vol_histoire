@@ -44,16 +44,21 @@ describe('jobs/cleanup', () => {
     const cleanupUnverifiedUsers = jest.fn().mockResolvedValue(0);
     const stop = startCleanupJobs({ cleanupExpiredTokens, cleanupUnverifiedUsers });
 
-    jest.advanceTimersByTime(60 * 60 * 1000);
+    // Première passe une minute après le démarrage (JS-007).
+    jest.advanceTimersByTime(60 * 1000);
     expect(cleanupExpiredTokens).toHaveBeenCalledTimes(1);
-    expect(cleanupUnverifiedUsers).not.toHaveBeenCalled();
+    expect(cleanupUnverifiedUsers).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(59 * 60 * 1000);
+    expect(cleanupExpiredTokens).toHaveBeenCalledTimes(2);
+    expect(cleanupUnverifiedUsers).toHaveBeenCalledTimes(1);
 
     jest.advanceTimersByTime(23 * 60 * 60 * 1000);
-    expect(cleanupUnverifiedUsers).toHaveBeenCalledTimes(1);
+    expect(cleanupUnverifiedUsers).toHaveBeenCalledTimes(2);
 
     stop();
     jest.advanceTimersByTime(48 * 60 * 60 * 1000);
-    expect(cleanupExpiredTokens).toHaveBeenCalledTimes(24);
+    expect(cleanupExpiredTokens).toHaveBeenCalledTimes(25);
     jest.useRealTimers();
   });
 });
