@@ -1,0 +1,104 @@
+{
+  "id": "/",
+  "name": "Vol d'Histoire",
+  "short_name": "Vol d'Histoire",
+  "description": "Military aviation encyclopedia: detailed aircraft records, cinematic timeline, interactive hangar.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "/?source=pwa&lang=en",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0D0D0D",
+  "theme_color": "#0D0D0D",
+  "categories": [
+    "education",
+    "reference",
+    "books"
+  ],
+  "icons": [
+    {
+      "src": "/assets/logo/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/logo/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/logo/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/logo/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/logo/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Hangar",
+      "short_name": "Hangar",
+      "description": "Full aircraft catalogue",
+      "url": "/hangar?lang=en",
+      "icons": [
+        {
+          "src": "/assets/logo/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
+    },
+    {
+      "name": "Timeline",
+      "short_name": "Timeline",
+      "description": "Logbook of military aviation",
+      "url": "/timeline?lang=en",
+      "icons": [
+        {
+          "src": "/assets/logo/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshots/home-mobile-en.jpg",
+      "sizes": "1082x2402",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Home: aircraft of the day and search"
+    },
+    {
+      "src": "/assets/screenshots/aircraft-mobile-en.jpg",
+      "sizes": "1082x2402",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Rafale record: photo, specifications and key figures"
+    },
+    {
+      "src": "/assets/screenshots/home-desktop-en.jpg",
+      "sizes": "1920x1200",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Home on a large screen"
+    }
+  ]
+}

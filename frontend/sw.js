@@ -77,6 +77,7 @@ function shellAssets(version) {
     '/fonts/BarlowCondensed-600.woff2',
     '/fonts/BarlowCondensed-700.woff2',
     '/manifest.webmanifest',
+    '/manifest.en.webmanifest',
     '/favicon.svg',
     '/assets/logo/favicon.svg',
     '/assets/logo/vh-lockup-horizontal-gold.svg',

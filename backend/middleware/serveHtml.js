@@ -221,6 +221,11 @@ function localizeJsonLd(html, { title, description, labels }) {
  * @param {'fr'|'en'} lang
  * @param {object} dict - traductions de la langue (locales/<lang>.json)
  */
+/** Manifeste PWA anglais (MOB-001) : nom des raccourcis, description, captures. */
+function localizeManifest(html) {
+  return html.replace('<link rel="manifest" href="/manifest.webmanifest">', () => '<link rel="manifest" href="/manifest.en.webmanifest">');
+}
+
 function localizeHead(html, pageName, lang, dict, frDict = {}) {
   let out = html;
   const canonical = /<link rel="canonical" href="([^"?#]+)">/.exec(out);
@@ -233,6 +238,7 @@ function localizeHead(html, pageName, lang, dict, frDict = {}) {
   if (lang !== 'en') return out;
 
   out = out.replace(/<html lang="fr">/, () => '<html lang="en">');
+  out = localizeManifest(out);
   out = out.replace(/<meta property="og:locale" content="[^"]*">/,
     () => '<meta property="og:locale" content="en_US">');
   if (base) {
@@ -277,7 +283,7 @@ function renderTemplate(frontendDir, fileName, version, lang = 'fr') {
   try {
     const raw = fs.readFileSync(path.join(frontendDir, fileName), 'utf8');
     const html = injectHeadExtras(rewrite(resolveIncludes(raw, path.basename(fileName, '.html'), loadPartials(frontendDir)), version));
-    return lang === 'en' ? localizeBody(html, loadDictionary(frontendDir, 'en')) : html;
+    return lang === 'en' ? localizeManifest(localizeBody(html, loadDictionary(frontendDir, 'en'))) : html;
   } catch {
     return '';
   }
