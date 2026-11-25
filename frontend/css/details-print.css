@@ -130,6 +130,10 @@
     text-align: left !important;
     break-inside: avoid;
   }
+  /* Écart effectif des lignes de la fiche technique : la règle d'écran
+     (details-specs.css) l'emportait quand l'impression était dans le même
+     bundle ; feuille désormais chargée après elle (CSS-007), on le fixe. */
+  .page-details .spec-row { gap: 1rem; }
   .page-details .stat-content { display: contents !important; }
   .page-details .stat-label, .page-details .spec-label {
     margin: 0 !important; padding: 0 !important;

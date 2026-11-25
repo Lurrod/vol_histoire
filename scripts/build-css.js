@@ -60,7 +60,10 @@ const BUNDLES = {
   // catalog.css : bandeau, recherche, filtres et cartes communs au hangar, aux
   // favoris et aux conflits (73 règles autrefois copiées dans deux feuilles).
   'hangar.min.css': ['catalog.css', 'hangar.css', 'compare.css', 'nations-map.css'],
-  'details.min.css': ['details.css', 'details-profile.css', 'details-print.css', 'details-specs.css', 'details-lineage.css', 'compare.css'],
+  'details.min.css': ['details.css', 'details-profile.css', 'details-specs.css', 'details-lineage.css', 'compare.css'],
+  // Impression / export PDF de la fiche : feuille à part, chargée par
+  // <link media="print"> (non bloquante pour l'affichage à l'écran, CSS-007).
+  'details-print.min.css': ['details-print.css'],
   'timeline.min.css': ['timeline.css', 'timeline-navigation.css', 'timeline-responsive.css'],
   'favorites.min.css': ['catalog.css', 'favorites.css'],
   // La page des conflits reprend le bandeau et les cartes de favorites.css.

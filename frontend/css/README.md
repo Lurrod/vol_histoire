@@ -33,23 +33,24 @@ node scripts/build-css.js      # ou `npm run build` à la racine (JS + CSS)
 
 ## Bundles (générés, servis)
 
-Chaque page charge `core.min.css` + le bundle de la page. Composition (recopie
+Chaque page charge `core.min.css` + le bundle de la page (la fiche y ajoute `details-print.min.css` en `media="print"`). Composition (recopie
 de `BUNDLES` dans `scripts/build-css.js`, vérifiée par
 `frontend/__tests__/css-readme.test.js`) :
 
 <!-- bundles:start -->
 ```
-core.min.css      ← tokens.css + icons.css + base.css + shared-base.css + shared-controls.css + shared-feedback.css + shared-layout.css + shared-widgets.css + shared-responsive.css + shared-underlay.css + shared-utilities.css + shared-morph.css + shared-toc.css + shared-onboarding.css + fonts.css + cookies.css
-home.min.css      ← style-hero.css + style-sections.css + style-extras.css + style-hero-split.css + nations-map.css + home-landing.css
-hangar.min.css    ← catalog.css + hangar.css + compare.css + nations-map.css
-details.min.css   ← details.css + details-profile.css + details-print.css + details-specs.css + details-lineage.css + compare.css
-timeline.min.css  ← timeline.css + timeline-navigation.css + timeline-responsive.css
-favorites.min.css ← catalog.css + favorites.css
-conflicts.min.css ← catalog.css + favorites.css + conflicts.css
-login.min.css     ← otp-input.css + login.css + login-steps.css
-settings.min.css  ← otp-input.css + settings.css + settings-sections.css
-legal.min.css     ← legal.css
-contact.min.css   ← contact.css
+core.min.css          ← tokens.css + icons.css + base.css + shared-base.css + shared-controls.css + shared-feedback.css + shared-layout.css + shared-widgets.css + shared-responsive.css + shared-underlay.css + shared-utilities.css + shared-morph.css + shared-toc.css + shared-onboarding.css + fonts.css + cookies.css
+home.min.css          ← style-hero.css + style-sections.css + style-extras.css + style-hero-split.css + nations-map.css + home-landing.css
+hangar.min.css        ← catalog.css + hangar.css + compare.css + nations-map.css
+details.min.css       ← details.css + details-profile.css + details-specs.css + details-lineage.css + compare.css
+details-print.min.css ← details-print.css
+timeline.min.css      ← timeline.css + timeline-navigation.css + timeline-responsive.css
+favorites.min.css     ← catalog.css + favorites.css
+conflicts.min.css     ← catalog.css + favorites.css + conflicts.css
+login.min.css         ← otp-input.css + login.css + login-steps.css
+settings.min.css      ← otp-input.css + settings.css + settings-sections.css
+legal.min.css         ← legal.css
+contact.min.css       ← contact.css
 ```
 <!-- bundles:end -->
 
