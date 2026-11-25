@@ -181,7 +181,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (langSwitch?.classList.contains('open') && langSwitch.contains(document.activeElement)) {
       document.getElementById('lang-toggle')?.focus();
     }
+    // Menu flottant (mobile) : un focus resté sur un lien du panneau qu'on
+    // masque serait perdu ; il revient au bouton Menu (A11Y-009). Le menu
+    // underlay (bureau) gère son propre retour (underlay-nav.js).
+    const focusInMenu = navLinks?.classList.contains('show') && navLinks.contains(document.activeElement);
     closeMenu();
+    if (focusInMenu) hamburger?.focus();
     closeLang();
   });
 

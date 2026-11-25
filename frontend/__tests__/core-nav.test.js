@@ -194,6 +194,17 @@ describe('clavier dans la liste des langues', () => {
 });
 
 describe('Échap', () => {
+  test('menu mobile ouvert, focus sur un lien : le focus revient au bouton Menu (A11Y-009)', () => {
+    loadNav();
+    const burger = document.querySelector('.hamburger');
+    burger.click();
+    const link = document.querySelector('.nav-links a');
+    link.focus();
+    keydown(document.body, 'Escape');
+    expect(document.querySelector('.nav-links').classList.contains('show')).toBe(false);
+    expect(document.activeElement).toBe(burger);
+  });
+
   test('autre touche : rien ne se ferme', () => {
     loadNav();
     document.querySelector('.hamburger').click();
