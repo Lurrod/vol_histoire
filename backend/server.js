@@ -64,8 +64,8 @@ app.initRedis().then(() => {
   // Garder la ref pour le shutdown
   setupShutdown(server);
 }).catch(err => {
-  logger.error('Erreur init serveur', { error: err.message });
-  process.exit(1);
+  logger.error('Erreur init serveur', { error: err });
+  require('./utils/fatal').exitAfterFlush(logger);
 });
 
 // -----------------------------------------------------------------------------
@@ -99,10 +99,12 @@ function setupShutdown(server) {
   process.on('SIGINT', () => shutdown('SIGINT'));
 }
 
-// Erreurs non capturées : forward vers logger → Sentry
+// Erreurs non capturées : forward vers logger → Sentry, file Sentry vidée
+// avant la sortie (JS-004).
+const { exitAfterFlush } = require('./utils/fatal');
 process.on('uncaughtException', (err) => {
   logger.error('uncaughtException', { error: err });
-  process.exit(1);
+  exitAfterFlush(logger);
 });
 process.on('unhandledRejection', (reason) => {
   logger.error('unhandledRejection', { error: reason instanceof Error ? reason : new Error(String(reason)) });
