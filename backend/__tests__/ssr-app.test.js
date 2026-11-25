@@ -129,6 +129,21 @@ describe('HTML-001 — langue des rendus serveur', () => {
   });
 });
 
+describe('SEC-003 — pages à nonce CSP jamais en cache partagé', () => {
+  test.each([
+    ['/conflits/annexion-de-goa', { rows: [{ id: 1, name: 'Annexion de Goa', date_start: '1961-12-17' }] }],
+    ['/details/sr-71-blackbird-31', { rows: [{ id: 31, name: 'SR-71 Blackbird', image_url: '/assets/airplanes/sr71.jpg' }] }],
+  ])('%s : cache privé, nonce de l’en-tête présent dans la page', async (url, rows) => {
+    mockPool.query.mockResolvedValueOnce(rows);
+    const res = await request(app).get(url);
+    expect(res.status).toBe(200);
+    expect(res.headers['cache-control']).toBe('private, max-age=3600');
+    expect(res.headers['cache-control']).not.toMatch(/public|s-maxage/);
+    const nonce = /'nonce-([^']+)'/.exec(res.headers['content-security-policy'])[1];
+    expect(res.text).toContain(`nonce="${nonce}"`);
+  });
+});
+
 describe('SEO-009 — /details sans fiche : 404 réel, jamais 200 indexable', () => {
   test.each([
     ['/details'],

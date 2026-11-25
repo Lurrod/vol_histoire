@@ -143,14 +143,17 @@ function replaceJsonLd(html, scripts) {
   return out.replace(/<\/head>/, () => `  ${block}\n</head>`);
 }
 
-/** Envoie un rendu SSR : nonce CSP, cache partagé variant selon la langue. */
+/** Envoie un rendu SSR : nonce CSP, cache du seul navigateur, variant selon la langue. */
 function sendSsrHtml(req, res, html) {
   res.set('Content-Type', 'text/html; charset=utf-8');
-  // 1h côté navigateur, 2h côté CDN ; stale-while-revalidate pour éviter
-  // qu'une régénération lente ne bloque un crawler.
-  res.set('Cache-Control', 'public, max-age=3600, s-maxage=7200, stale-while-revalidate=86400');
-  // La langue vient aussi d'Accept-Language : un cache partagé ne doit pas
-  // servir la version anglaise à un visiteur francophone.
+  // La page porte le nonce CSP de cette réponse (en-tête et corps). Un cache
+  // partagé (proxy, CDN) servirait le même nonce à tous les visiteurs
+  // pendant des heures : lisible sur la page publique, il redeviendrait
+  // utilisable par un script injecté (SEC-003). Seul le navigateur garde
+  // donc sa copie (1 h, son propre nonce).
+  res.set('Cache-Control', 'private, max-age=3600');
+  // La langue vient aussi d'Accept-Language : la copie du navigateur ne
+  // doit pas resservir la version anglaise après un changement de langue.
   res.vary('Accept-Language');
   const inject = req.app.injectCspNonce;
   res.send(typeof inject === 'function' ? inject(html, res.locals.cspNonce) : html);
