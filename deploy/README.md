@@ -39,3 +39,22 @@ aucun fichier.
 - Installer la rotation des journaux (`logrotate/vol-histoire`).
 - Ajouter `max_memory_restart` et `kill_timeout` au processus (valeurs de
   `ecosystem.config.js`) lors d'une prochaine maintenance.
+
+## Coupure au déploiement (DEVOPS-004)
+
+Chaque fusion sur `main` redémarre le processus unique (`pm2 restart
+vol-histoire`) : le serveur relit les pages HTML, se connecte à Redis et
+contrôle les migrations avant d'écouter, d'où **quelques secondes de 502**.
+Ce choix est assumé : les tests de fumée de la CI interrogent `/api/health`
+jusqu'à six fois à 5 s d'intervalle, et le service worker sert les pages déjà
+visitées pendant la coupure.
+
+Pour la supprimer, il faudrait passer en mode cluster (2 instances,
+`pm2 reload vol-histoire`), ce qui suppose :
+- Redis obligatoire en production (limiteurs et caches partagés entre
+  instances) ;
+- les tâches de purge (`backend/jobs/cleanup.js`) exécutées une seule fois,
+  par exemple sur `NODE_APP_INSTANCE === '0'` ;
+- des métriques Prometheus agrégées (chaque instance n'expose que les
+  siennes) ;
+- le double de mémoire sur un serveur partagé avec six autres applications.

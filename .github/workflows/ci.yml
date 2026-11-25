@@ -456,6 +456,10 @@ jobs:
 
             cd backend
             npm ci --omit=dev
+            # Coupure assumée (DEVOPS-004) : un seul processus en mode fork, donc
+            # quelques secondes d'indisponibilité au redémarrage (lecture du HTML,
+            # Redis, contrôle des migrations) ; les tests de fumée l'attendent.
+            # Voir deploy/README.md pour le passage au mode cluster.
             # Le redémarrage se vérifie ici, par le PID pm2 : /api/health ne
             # publie plus l'uptime (il donnait la date des déploiements).
             OLD_PID=$(pm2 pid vol-histoire 2>/dev/null || true)
