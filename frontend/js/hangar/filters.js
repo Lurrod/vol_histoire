@@ -213,7 +213,10 @@
     if (p.has('war'))     state.filters.war = p.get('war');
     if (p.has('mission')) state.filters.mission = p.get('mission');
     if (p.has('decade') && /^(19[4-9]0|20[0-2]0)$/.test(p.get('decade'))) state.filters.decade = Number(p.get('decade'));
+    // ?q= est le paramètre canonique ; ?search= reste accepté (SEO-003) :
+    // moteurs OpenSearch déjà installés dans les navigateurs, anciens liens.
     if (p.has('q'))       state.filters.search = p.get('q');
+    else if (p.has('search')) state.filters.search = p.get('search');
     if (p.has('sort'))    state.sort = p.get('sort');
     if (p.has('view'))    state.view = p.get('view') === 'list' ? 'list' : 'grid';
     if (p.has('page'))    state.currentPage = Math.max(1, Number(p.get('page')) || 1);
@@ -224,7 +227,7 @@
    * se combinait aux filtres et à la page restés en session. */
   function urlDescribesFilters(search = location.search) {
     const p = new URLSearchParams(search);
-    return ['country', 'gen', 'type', 'war', 'mission', 'decade', 'q'].some(k => p.has(k));
+    return ['country', 'gen', 'type', 'war', 'mission', 'decade', 'q', 'search'].some(k => p.has(k));
   }
 
   /* Remet à zéro ce que l'URL décrit (filtres, recherche, tri, page), avant

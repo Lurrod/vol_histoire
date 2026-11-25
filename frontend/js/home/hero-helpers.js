@@ -52,7 +52,7 @@
   function airplaneHref(id, name) {
     return id
       ? '/details?id=' + encodeURIComponent(id)
-      : '/hangar?search=' + encodeURIComponent(nameToSearchSlug(name));
+      : '/hangar?q=' + encodeURIComponent(nameToSearchSlug(name));
   }
 
   VH.home.heroHelpers = { daily, getHeroLang, shuffleArr, nameToSearchSlug, tHero, airplaneHref };

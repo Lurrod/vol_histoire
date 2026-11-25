@@ -127,7 +127,7 @@
       if (link) {
         link.setAttribute('href', fact.airplane_id
           ? '/details?id=' + encodeURIComponent(fact.airplane_id)
-          : (name ? '/hangar?search=' + encodeURIComponent(nameToSearchSlug(name)) : '#'));
+          : (name ? '/hangar?q=' + encodeURIComponent(nameToSearchSlug(name)) : '#'));
       }
     }
 

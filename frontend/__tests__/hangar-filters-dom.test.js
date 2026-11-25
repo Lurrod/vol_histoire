@@ -182,6 +182,19 @@ describe('options et pastilles actives', () => {
     expect(window.VH.hangar.data.loadAircraft).toHaveBeenCalledWith(state);
   });
 
+  test('SEO-003 : ?search= accepté comme ?q= (OpenSearch installé, anciens liens)', () => {
+    window.history.replaceState(null, '', '/hangar?search=mirage');
+    const state = makeState();
+    expect(filters.urlDescribesFilters()).toBe(true);
+    filters.readStateFromUrl(state);
+    expect(state.filters.search).toBe('mirage');
+    // ?q= l'emporte si les deux sont présents.
+    window.history.replaceState(null, '', '/hangar?search=a&q=b');
+    const s2 = makeState();
+    filters.readStateFromUrl(s2);
+    expect(s2.filters.search).toBe('b');
+  });
+
   test('« Effacer tout » sans champ de recherche dans la page', () => {
     document.getElementById('search-input').remove();
     const state = makeState();

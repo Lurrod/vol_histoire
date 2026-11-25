@@ -12,7 +12,7 @@
   <Language>en</Language>
   <Image width="16" height="16" type="image/x-icon">https://vol-histoire.titouan-borde.com/favicon.ico</Image>
   <Image width="48" height="48" type="image/png">https://vol-histoire.titouan-borde.com/assets/logo/icon-48.png</Image>
-  <Url type="text/html" method="get" template="https://vol-histoire.titouan-borde.com/hangar?search={searchTerms}"/>
+  <Url type="text/html" method="get" template="https://vol-histoire.titouan-borde.com/hangar?q={searchTerms}"/>
   <Url type="application/opensearchdescription+xml" rel="self" template="https://vol-histoire.titouan-borde.com/opensearch.xml"/>
   <moz:SearchForm>https://vol-histoire.titouan-borde.com/hangar</moz:SearchForm>
 </OpenSearchDescription>
