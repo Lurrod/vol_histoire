@@ -1,4 +1,42 @@
 import js from '@eslint/js';
+import noUnsanitized from 'eslint-plugin-no-unsanitized';
+
+// Règles communes au code applicatif (backend, frontend, scripts, e2e).
+// Tout est bloquant : `npm run lint` passe --max-warnings=0 (ARCH-006).
+const BASE_RULES = {
+  'no-unused-vars': ['error', { argsIgnorePattern: '^_|^err|^e$', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_|^err|^e$' }],
+  'no-console': 'off',
+  'no-undef': 'error',
+  'no-constant-condition': 'error',
+  'no-debugger': 'error',
+  'no-duplicate-case': 'error',
+  'no-empty': ['error', { allowEmptyCatch: true }],
+  'no-redeclare': 'error',
+  'eqeqeq': ['error', 'smart'],
+  'no-eval': 'error',
+  'no-implied-eval': 'error',
+  'no-new-func': 'error',
+};
+
+// Garde-fous de taille : un fichier source au-delà de 800 lignes ou une
+// fonction trop ramifiée se découpe. Les dépassements existants relus pendant
+// l'audit sont figés dans eslint-suppressions.json (à résorber, pas à étendre).
+const SIZE_RULES = {
+  'max-lines': ['error', { max: 800, skipBlankLines: true, skipComments: true }],
+  'complexity': ['error', 20],
+  'max-depth': ['error', 5],
+};
+
+// Insertions HTML : toute valeur interpolée doit passer par une fonction
+// d'échappement connue. Les insertions relues pendant l'audit (gabarits
+// statiques, générateurs qui échappent eux-mêmes) sont figées dans
+// eslint-suppressions.json ; une nouvelle insertion non échappée échoue.
+const UNSANITIZED_ESCAPE = {
+  methods: [
+    'escapeHtml', 'window.escapeHtml', 'esc', 'encodeURIComponent', 'Number',
+    'Math.round', 'Math.max', 'fmtNumber', 'VH.shared.buildDetailsPath', 'VH.details.data.slugify',
+  ],
+};
 
 export default [
   {
@@ -9,17 +47,19 @@ export default [
       'node_modules/**',
       'backend/node_modules/**',
       'e2e/node_modules/**',
-      'coverage/**',
-      'backend/test_sitemap.js',
+      '**/coverage/**',
+      'e2e/playwright-report/**',
+      'e2e/test-results/**',
     ],
   },
 
   // Backend — Node.js CommonJS
   {
     ...js.configs.recommended,
-    files: ['backend/**/*.js', 'scripts/**/*.js'],
+    files: ['backend/**/*.js', 'scripts/**/*.js', 'e2e/**/*.js'],
     languageOptions: {
-      ecmaVersion: 2022,
+      // Node 24 : syntaxe la plus récente.
+      ecmaVersion: 'latest',
       sourceType: 'commonjs',
       globals: {
         require: 'readonly', module: 'readonly', exports: 'readonly',
@@ -28,22 +68,10 @@ export default [
         setTimeout: 'readonly', clearTimeout: 'readonly',
         setInterval: 'readonly', clearInterval: 'readonly',
         URL: 'readonly', URLSearchParams: 'readonly', fetch: 'readonly',
+        AbortSignal: 'readonly',
       },
     },
-    rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_|^err|^e$', varsIgnorePattern: '^_' }],
-      'no-console': 'off',
-      'no-undef': 'error',
-      'no-constant-condition': 'warn',
-      'no-debugger': 'error',
-      'no-duplicate-case': 'error',
-      'no-empty': ['warn', { allowEmptyCatch: true }],
-      'no-redeclare': 'error',
-      'eqeqeq': ['warn', 'smart'],
-      'no-eval': 'error',
-      'no-implied-eval': 'error',
-      'no-new-func': 'error',
-    },
+    rules: { ...BASE_RULES, ...SIZE_RULES },
   },
 
   // Frontend — Browser globals
@@ -88,19 +116,12 @@ export default [
         SENTRY_DSN: 'readonly', module: 'readonly',
       },
     },
+    plugins: { 'no-unsanitized': noUnsanitized },
     rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_|^err|^e$', varsIgnorePattern: '^_' }],
-      'no-console': 'off',
-      'no-undef': 'error',
-      'no-constant-condition': 'warn',
-      'no-debugger': 'error',
-      'no-duplicate-case': 'error',
-      'no-empty': ['warn', { allowEmptyCatch: true }],
-      'no-redeclare': 'error',
-      'eqeqeq': ['warn', 'smart'],
-      'no-eval': 'error',
-      'no-implied-eval': 'error',
-      'no-new-func': 'error',
+      ...BASE_RULES,
+      ...SIZE_RULES,
+      'no-unsanitized/property': ['error', { escape: UNSANITIZED_ESCAPE }],
+      'no-unsanitized/method': ['error', { escape: UNSANITIZED_ESCAPE }],
     },
   },
 
@@ -114,6 +135,18 @@ export default [
     ],
     rules: {
       'no-redeclare': 'off',
+    },
+  },
+
+  // E2E — les fonctions passées à page.evaluate / addInitScript s'exécutent
+  // dans la page : globals du navigateur et du site.
+  {
+    files: ['e2e/**/*.js'],
+    languageOptions: {
+      globals: {
+        window: 'readonly', document: 'readonly', localStorage: 'readonly',
+        sessionStorage: 'readonly', navigator: 'readonly', auth: 'readonly',
+      },
     },
   },
 
@@ -140,10 +173,14 @@ export default [
       },
     },
     rules: {
-      'no-unused-vars': ['warn', { argsIgnorePattern: '^_|^err|^e$', varsIgnorePattern: '^_' }],
+      'no-unused-vars': BASE_RULES['no-unused-vars'],
       'no-console': 'off',
       'no-undef': 'error',
-      'no-empty': ['warn', { allowEmptyCatch: true }],
+      'no-empty': BASE_RULES['no-empty'],
+      // Une suite de tests peut être longue et ramifiée : pas de garde de taille.
+      'max-lines': 'off',
+      'complexity': 'off',
+      'max-depth': 'off',
     },
   },
 ];
