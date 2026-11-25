@@ -12,25 +12,34 @@
       .replace(/^-+|-+$/g, '');
   }
 
+  /* Élément encore vide : texte d'attente du gabarit (data-i18n), tiret ou
+   * rien. Ce que le serveur a déjà écrit (nom, faits du héros, chiffres clés —
+   * PERF-004 —, récit — SEO-001) reste en place, pour les robots qui rendent
+   * la page comme pour le visiteur : le remplacer par un squelette faisait
+   * clignoter et bouger la fiche. */
+  function awaitsContent(el) {
+    if (!el) return false;
+    const text = el.textContent.trim();
+    return el.hasAttribute('data-i18n') || text === '' || text === '-';
+  }
+
   function mountDetailsSkeletons() {
-    // Le h1 rendu par le serveur (sans data-i18n) porte déjà le nom : il reste
-    // en place, pour les robots qui rendent la page comme pour le visiteur.
     const name = document.getElementById('aircraft-name');
-    if (name && (name.hasAttribute('data-i18n') || !name.textContent.trim())) {
+    if (awaitsContent(name)) {
       name.innerHTML = '<span class="skeleton-line skeleton-inline-xl"></span>';
     }
     const sub = document.getElementById('aircraft-complete-name');
-    if (sub) sub.innerHTML = '<span class="skeleton-line skeleton-inline-md"></span>';
+    if (awaitsContent(sub)) sub.innerHTML = '<span class="skeleton-line skeleton-inline-md"></span>';
     ['hero-country', 'hero-manufacturer', 'hero-year'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = '<span class="skeleton-line skeleton-inline-meta"></span>';
+      if (awaitsContent(el)) el.innerHTML = '<span class="skeleton-line skeleton-inline-meta"></span>';
     });
     ['stat-speed', 'stat-range', 'stat-weight', 'stat-status'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = '<span class="skeleton-line skeleton-inline-badge"></span>';
+      if (awaitsContent(el)) el.innerHTML = '<span class="skeleton-line skeleton-inline-badge"></span>';
     });
     const desc = document.getElementById('aircraft-description');
-    if (desc) desc.innerHTML =
+    if (awaitsContent(desc)) desc.innerHTML =
       '<span class="skeleton-line skeleton-block"></span>' +
       '<span class="skeleton-line skeleton-block"></span>' +
       '<span class="skeleton-line medium skeleton-block-last"></span>';

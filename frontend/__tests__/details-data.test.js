@@ -312,6 +312,29 @@ describe('loadAircraftDetails / loadRelatedData', () => {
     expect(document.querySelectorAll('#aircraft-description .skeleton-line')).toHaveLength(3);
   });
 
+  test('contenu déjà écrit par le serveur : pas de squelette (PERF-004, SEO-001)', () => {
+    document.body.innerHTML = `
+      <h1 id="aircraft-name">Rafale</h1><p id="aircraft-complete-name">Dassault Rafale</p>
+      <span id="hero-country">France</span><span id="hero-year">-</span>
+      <span id="stat-speed">1 912 km/h</span>
+      <div id="aircraft-description" class="description-body markdown-body"><h3 class="md-section">Genèse</h3></div>`;
+    stubModules(() => new Promise(() => {}));
+    window.VH.details.data.loadAircraftDetails({ aircraftId: '30' });
+    expect(document.getElementById('hero-country').textContent).toBe('France');
+    expect(document.getElementById('stat-speed').textContent).toBe('1 912 km/h');
+    expect(document.getElementById('aircraft-complete-name').textContent).toBe('Dassault Rafale');
+    expect(document.querySelector('#aircraft-description h3').textContent).toBe('Genèse');
+    // Le tiret du gabarit, lui, attend encore sa valeur.
+    expect(document.querySelector('#hero-year .skeleton-inline-meta')).not.toBeNull();
+  });
+
+  test('squelette du récit tant qu’il porte le texte d’attente du gabarit', () => {
+    document.body.innerHTML = '<div id="aircraft-description" class="description-body" data-i18n="details.loading_desc">Chargement de la description...</div>';
+    stubModules(() => new Promise(() => {}));
+    window.VH.details.data.loadAircraftDetails({ aircraftId: '30' });
+    expect(document.querySelectorAll('#aircraft-description .skeleton-line')).toHaveLength(3);
+  });
+
   test('squelette du h1 quand il porte encore le texte du gabarit', () => {
     document.getElementById('aircraft-name').setAttribute('data-i18n', 'details.aircraft_default_title');
     stubModules(() => new Promise(() => {}));

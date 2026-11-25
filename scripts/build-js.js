@@ -280,12 +280,23 @@ function writeAirplaneFields() {
  * repères « >>> / <<< partagé avec le navigateur », est recopié dans
  * shared/meta-description.js (versionné, régénéré à chaque build) ;
  * frontend/__tests__/meta-description.test.js compare les deux. */
-function writeMetaDescription() {
-  const source = fs.readFileSync(path.join(__dirname, '..', 'backend', 'utils', 'meta-description.js'), 'utf8')
+/** Corps d'un module backend entre les repères « partagé avec le navigateur », indenté. */
+function sharedBody(file) {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'backend', 'utils', file), 'utf8')
     .replace(/\r\n/g, '\n');
   const match = source.match(/\/\/ >>> partagé avec le navigateur\n([\s\S]*?)\/\/ <<< partagé avec le navigateur/);
-  if (!match) throw new Error('meta-description.js : repères « partagé avec le navigateur » introuvables');
-  const body = match[1].replace(/\n+$/, '').split('\n').map(l => (l ? `  ${l}` : l)).join('\n');
+  if (!match) throw new Error(`${file} : repères « partagé avec le navigateur » introuvables`);
+  return match[1].replace(/\n+$/, '').split('\n').map(l => (l ? `  ${l}` : l)).join('\n');
+}
+
+/** Écrit un fichier texte généré seulement s'il change (fins de ligne ignorées). */
+function writeTextIfChanged(file, out) {
+  const current = fs.existsSync(file) ? fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n') : null;
+  if (current !== out) fs.writeFileSync(file, out, 'utf8');
+}
+
+function writeMetaDescription() {
+  const body = sharedBody('meta-description.js');
   const out = [
     '/* Généré par scripts/build-js.js depuis backend/utils/meta-description.js — ne pas éditer.',
     ' * Meta description d\'une fiche : même règle que le rendu serveur. */',
@@ -300,9 +311,36 @@ function writeMetaDescription() {
     '})();',
     '',
   ].join('\n');
-  const file = path.join(JS, 'shared', 'meta-description.js');
-  const current = fs.existsSync(file) ? fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n') : null;
-  if (current !== out) fs.writeFileSync(file, out, 'utf8');
+  writeTextIfChanged(path.join(JS, 'shared', 'meta-description.js'), out);
+}
+
+/* Parser Markdown des récits (SEO-001) : backend/utils/markdown.js est la
+ * source unique du rendu serveur de la fiche et du navigateur (fiche,
+ * conflits). Seule la langue par défaut diffère : celle de l'interface ici. */
+function writeMarkdown() {
+  const out = [
+    '/* Généré par scripts/build-js.js depuis backend/utils/markdown.js — ne pas éditer.',
+    ' * Parser Markdown minimaliste des récits : même rendu que le serveur (SEO-001).',
+    ' * Sortie repassée par DOMPurify (safeSetHTML). */',
+    '(function () {',
+    '  window.VH = window.VH || {};',
+    '  window.VH.details = window.VH.details || {};',
+    '',
+    '  // Langue du texte : celle demandée, sinon celle de l\'interface.',
+    '  function resolveLang(lang) {',
+    '    if (typeof lang === \'string\') return lang;',
+    '    if (window.i18n && typeof window.i18n.currentLang === \'string\') return window.i18n.currentLang;',
+    '    return (document.documentElement && document.documentElement.lang) || \'\';',
+    '  }',
+    '',
+    sharedBody('markdown.js'),
+    '',
+    '  window.VH.details.markdown = { parse, typographyFr, isMarkdown };',
+    '  if (typeof module !== \'undefined\' && module.exports) module.exports = window.VH.details.markdown;',
+    '})();',
+    '',
+  ].join('\n');
+  writeTextIfChanged(path.join(JS, 'details', 'markdown.js'), out);
 }
 
 // ── Bibliothèques tierces (frontend/js/vendor/) ────────────────────────
@@ -387,6 +425,8 @@ async function build() {
   console.log(`  airplane-fields.js     ${writeAirplaneFields()} champs`);
   writeMetaDescription();
   console.log('  meta-description.js    copie de backend/utils/meta-description.js');
+  writeMarkdown();
+  console.log('  details/markdown.js    copie de backend/utils/markdown.js');
   await buildVendor();
   console.log('');
 

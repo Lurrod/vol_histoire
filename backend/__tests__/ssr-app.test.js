@@ -144,6 +144,20 @@ describe('SEC-003 — pages à nonce CSP jamais en cache partagé', () => {
   });
 });
 
+describe('SEO-001 — récit de la fiche écrit par le serveur', () => {
+  test('/details/:slug : le récit est dans le HTML, sans texte d’attente', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{
+      id: 31, name: 'SR-71 Blackbird', image_url: '/assets/airplanes/sr71.jpg',
+      description: '## Genèse\nLe **SR-71** vole à Mach 3.',
+    }] });
+    const res = await request(app).get('/details/sr-71-blackbird-31');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<h3 class="md-section">Genèse</h3>');
+    expect(res.text).toContain('Le <strong>SR-71</strong> vole à Mach 3.');
+    expect(res.text).not.toContain('Chargement de la description...');
+  });
+});
+
 describe('SEO-009 — /details sans fiche : 404 réel, jamais 200 indexable', () => {
   test.each([
     ['/details'],

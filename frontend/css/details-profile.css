@@ -197,7 +197,8 @@
   .page-details .content-section { padding: 1.25rem 1rem; border-radius: 12px; }
   .page-details .section-header { margin-bottom: 1.5rem; }
   .page-details .section-header h2 { font-size: 1.15rem; }
-  .page-details .description-section p { font-size: 1rem; }
+  .page-details .description-section p,
+  .page-details .description-body { font-size: 1rem; }
   .page-details .war-card { padding: 1.25rem; }
   .page-details .war-card h3 { font-size: 1rem; }
   .page-details .modal { padding: 0; align-items: flex-end; }

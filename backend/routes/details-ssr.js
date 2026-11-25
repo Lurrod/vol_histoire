@@ -26,6 +26,7 @@ const {
 } = require('../utils/ssr-head');
 const { findAircraftForSsr } = require('../repositories/ssr-details');
 const { applyHeroFacts } = require('../utils/details-hero-ssr');
+const { applyDescription, applyRelated } = require('../utils/details-body-ssr');
 const { isValidDbId } = require('../middleware/input-guards');
 
 const FRONTEND_DIR = path.join(__dirname, '../../frontend');
@@ -279,8 +280,10 @@ function renderHtml(template, aircraft, lang, version) {
     jsonLdScript('jsonld-breadcrumb', buildDetailsBreadcrumbLd(meta)),
   ]);
   // Faits du héros et chiffres clés écrits par le serveur : plus de décalage
-  // de mise en page quand le client remplit la fiche (PERF-004).
-  return applyHeroFacts(applyHero(html, meta), aircraft, meta.lang);
+  // de mise en page quand le client remplit la fiche (PERF-004). Le récit
+  // aussi : sans lui, le HTML servi n'avait aucun contenu indexable (SEO-001).
+  html = applyHeroFacts(applyHero(html, meta), aircraft, meta.lang);
+  return applyRelated(applyDescription(html, aircraft, meta.lang), aircraft, meta.lang);
 }
 
 // Construit la querystring canonique à préserver lors d'une 301

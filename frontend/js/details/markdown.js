@@ -1,22 +1,16 @@
-/* Parser Markdown minimaliste (safe via DOMPurify) pour les descriptions
- * enrichies d'avions (strate 5).
- *
- * Gère :
- *   - ## Titres   → <h3 class="md-section">
- *   - ### Titres  → <h4 class="md-subsection">
- *   - **gras**    → <strong>
- *   - *italique*  → <em>
- *   - Paragraphes (double saut de ligne)
- *   - Listes - item → <ul><li>
- *   - Liens [texte](url) → <a href rel="noopener">
- *   - Typographie française au rendu (texte en français seulement) :
- *     insécables avant « : ; ? ! » et dans les « », apostrophe ’
- *
- * Sortie systématiquement re-passée par DOMPurify (safeSetHTML).
- */
+/* Généré par scripts/build-js.js depuis backend/utils/markdown.js — ne pas éditer.
+ * Parser Markdown minimaliste des récits : même rendu que le serveur (SEO-001).
+ * Sortie repassée par DOMPurify (safeSetHTML). */
 (function () {
   window.VH = window.VH || {};
   window.VH.details = window.VH.details || {};
+
+  // Langue du texte : celle demandée, sinon celle de l'interface.
+  function resolveLang(lang) {
+    if (typeof lang === 'string') return lang;
+    if (window.i18n && typeof window.i18n.currentLang === 'string') return window.i18n.currentLang;
+    return (document.documentElement && document.documentElement.lang) || '';
+  }
 
   function escapeHtmlLocal(str) {
     return String(str).replace(/[&<>"']/g, c => ({
@@ -26,7 +20,7 @@
 
   // ── Typographie française, appliquée au rendu ─────────────────────────────
   // Les récits sont saisis avec une espace ordinaire avant « : ; ? ! » et des
-  // apostrophes droites ; plutôt que de réécrire les 434 fiches, on corrige à
+  // apostrophes droites ; plutôt que de réécrire les fiches, on corrige à
   // l'affichage, en français seulement :
   //   - espace fine insécable (U+202F) avant ; ? !
   //   - espace insécable (U+00A0) avant : et à l'intérieur des « »
@@ -55,17 +49,16 @@
       .join('');
   }
 
-  function resolveLang(lang) {
-    if (typeof lang === 'string') return lang;
-    if (window.i18n && typeof window.i18n.currentLang === 'string') return window.i18n.currentLang;
-    return (document.documentElement && document.documentElement.lang) || '';
+  /** Le récit contient-il du Markdown (titre ou liste) ? Sinon : texte simple. */
+  function isMarkdown(text) {
+    return typeof text === 'string' && /(^|\n)(##|###|\s*-\s)/.test(text);
   }
 
   function parseInline(text, frenchTypography) {
     // Typographie sur le texte brut (avant échappement : l'apostrophe y est
     // encore un caractère, pas l'entité &#39;).
     const source = frenchTypography ? typographyFr(text) : text;
-    // Échappement d'abord, puis on ré-active les patterns reconnus via placeholders
+    // Échappement d'abord, puis on ré-active les patterns reconnus.
     let s = escapeHtmlLocal(source);
     // Liens [texte](url) — n'accepte que http/https, bloque javascript:.
     // `url` provient du texte DÉJÀ échappé (" → &quot;, & → &amp;) : le
@@ -82,9 +75,9 @@
 
   /**
    * @param {string} markdown
-   * @param {{lang?: string}} [options] langue du texte ; à défaut, celle de
-   *   l'interface (i18n.currentLang, puis <html lang>). Typographie française
-   *   seulement si elle commence par « fr ».
+   * @param {{lang?: string}} [options] langue du texte (navigateur : à défaut,
+   *   celle de l'interface). Typographie française seulement si elle commence
+   *   par « fr ».
    */
   function parse(markdown, options) {
     if (!markdown || typeof markdown !== 'string') return '';
@@ -143,5 +136,6 @@
     return out.join('\n');
   }
 
-  VH.details.markdown = { parse, typographyFr };
+  window.VH.details.markdown = { parse, typographyFr, isMarkdown };
+  if (typeof module !== 'undefined' && module.exports) module.exports = window.VH.details.markdown;
 })();

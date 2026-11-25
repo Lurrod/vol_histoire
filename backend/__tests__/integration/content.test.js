@@ -232,6 +232,25 @@ describeIt('Intégration SQL — contenus', () => {
     });
   });
 
+  describe('GET /details/<slug> — récit et appareils liés écrits par le serveur (SEO-001)', () => {
+    test('récit de la fiche dans le HTML ; rival lu par la jointure, en lien canonique', async () => {
+      const id = await airplaneId(ctx.pool, 'Rafale');
+      const rival = await airplaneId(ctx.pool, 'Mirage 2000');
+      const { rows: [before] } = await ctx.pool.query('SELECT rival_id FROM airplanes WHERE id = $1', [id]);
+      await ctx.pool.query('UPDATE airplanes SET rival_id = $2 WHERE id = $1', [id, rival]);
+      try {
+        const res = await api().get(`/details/rafale-${id}`);
+        expect(res.status).toBe(200);
+        expect(res.text).not.toContain('Chargement de la description...');
+        expect(res.text).toMatch(/<div id="aircraft-description" class="description-body[^"]*"><(h3|p)/);
+        expect(res.text).toContain(`href="/details/mirage-2000-${rival}"`);
+        expect(res.text).toContain('<section class="content-section related-section" id="related-aircraft-section">');
+      } finally {
+        await ctx.pool.query('UPDATE airplanes SET rival_id = $2 WHERE id = $1', [id, before.rival_id]);
+      }
+    });
+  });
+
   describe('GET /sitemap.xml', () => {
     test('pages fixes, conflits et fiches', async () => {
       require('../../utils/cache')._resetForTests();

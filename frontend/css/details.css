@@ -551,7 +551,8 @@ body.page-details { background: var(--night); }
 .page-details .section-content { line-height: 1.8; }
 
 /* Description */
-.page-details .description-section p { font-size: 1.05rem; color: var(--white-a55); }
+.page-details .description-section p,
+.page-details .description-body { font-size: 1.05rem; color: var(--white-a55); }
 
 /* Timeline */
 /* Dates clés : trois jalons côte à côte, sans trait. Chacun dit le temps
