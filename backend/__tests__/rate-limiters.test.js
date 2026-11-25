@@ -36,6 +36,16 @@ describe('limiteur currentPassword', () => {
     expect((await request(app).post('/check').set('x-user', '1')).status).toBe(429);
   });
 
+  test('une erreur de validation (400) ne compte pas comme un échec de mot de passe', async () => {
+    const { limiters } = createRateLimiters();
+    const app = express();
+    app.use((req, res, next) => { req.user = { id: 7 }; next(); });
+    app.post('/check', limiters.currentPassword, (req, res) => res.status(400).end());
+    for (let i = 0; i < 15; i++) {
+      expect((await request(app).post('/check')).status).toBe(400);
+    }
+  });
+
   test('clé par compte : un autre compte derrière la même IP n’est pas bloqué', async () => {
     const app = appFor();
     for (let i = 0; i < 10; i++) await request(app).post('/check').set('x-user', '1');

@@ -44,7 +44,10 @@ function buildLimiter({ max, msg, perUser = false, failuresOnly = false }, store
     keyGenerator: (req) => (perUser && req.user && req.user.id != null
       ? `user:${req.user.id}`
       : ipKeyGenerator(req.ip)),
-    skipSuccessfulRequests: failuresOnly,
+    // failuresOnly : seul un refus du mot de passe actuel (403) compte ; une
+    // erreur de validation (400), un conflit (409) ou un 404 ne doivent pas
+    // bloquer les modifications de profil.
+    ...(failuresOnly ? { skipSuccessfulRequests: true, requestWasSuccessful: (req, res) => res.statusCode !== 403 } : {}),
     skip: () => process.env.NODE_ENV === 'test',
     ...(store ? { store } : {}),
   });
