@@ -359,11 +359,14 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     if (!password || !isValidPassword(password)) {
       return res.status(400).json({ message: PASSWORD_RULE });
     }
+    // Haché avant de chercher le compte (SEC-001) : sinon une adresse
+    // inconnue répondait aussitôt et une adresse inscrite après le bcrypt
+    // (plusieurs centaines de ms), ce qui trahissait l'existence du compte.
+    const hashedPassword = await bcrypt.hash(password, 12);
     const email = normalizeEmail(req.body.email);
     const user = await findCodeOwner(email, 'verify');
     if (!user) return res.status(400).json(INVALID_CODE);
 
-    const hashedPassword = await bcrypt.hash(password, 12);
     const activated = await withTransaction(getPool(), async (client) => {
       const result = await emailTokensRepo.checkCode(client, { userId: user.id, type: 'verify', code, consume: true });
       if (!result.ok) return false;
@@ -463,10 +466,11 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     if (!password || !isValidPassword(password)) {
       return res.status(400).json({ message: PASSWORD_RULE });
     }
+    // Même travail que l'adresse corresponde ou non à un compte (SEC-001).
+    const hashedPassword = await bcrypt.hash(password, 12);
     const user = await findCodeOwner(normalizeEmail(req.body.email), 'reset');
     if (!user) return res.status(400).json(INVALID_CODE);
 
-    const hashedPassword = await bcrypt.hash(password, 12);
     const applied = await withTransaction(getPool(), async (client) => {
       const result = await emailTokensRepo.checkCode(client, { userId: user.id, type: 'reset', code, consume: true });
       if (!result.ok) return false;

@@ -1913,3 +1913,24 @@ describe('Audit sécurité — réinitialisation et nettoyage', () => {
     expect(mockPool.query.mock.calls[0][0]).toBe('DELETE FROM refresh_tokens WHERE expires_at < NOW()');
   });
 });
+
+// SEC-001 — anti-énumération par le temps de réponse : le hachage bcrypt
+// (le travail coûteux) a lieu que l'adresse corresponde à un compte ou non.
+describe('SEC-001 — même travail bcrypt pour une adresse inconnue', () => {
+  const bcryptjs = require('bcryptjs');
+  let hashSpy;
+  beforeEach(() => { hashSpy = jest.spyOn(bcryptjs, 'hash'); });
+  afterEach(() => hashSpy.mockRestore());
+
+  test.each([
+    ['/api/auth/reset-password'],
+    ['/api/auth/verify-email'],
+  ])('%s : compte inconnu → 400 CODE_INVALID après hachage', async (route) => {
+    mockPool.query.mockResolvedValueOnce({ rows: [] }); // aucun compte
+    const res = await request(app).post(route)
+      .send({ email: 'inconnu@test.com', code: '123456', password: 'NewPass123' });
+    expect(res.status).toBe(400);
+    expect(res.body.code).toBe('CODE_INVALID');
+    expect(hashSpy).toHaveBeenCalledWith('NewPass123', 12);
+  });
+});
