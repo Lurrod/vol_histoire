@@ -98,6 +98,52 @@ describe('POST /api/register', () => {
 describe('POST /api/login', () => {
   const bcrypt = require('bcryptjs');
 
+  // CONT-002 — « Se souvenir de moi » décoché : cookies de session (sans
+  // Max-Age ni Expires), choix inscrit dans le jeton et repris à la rotation.
+  describe('Se souvenir de moi (CONT-002)', () => {
+    const loginAs = async (body) => {
+      const hashedPwd = await bcrypt.hash('password123', 4);
+      mockPool.query
+        .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', password: hashedPwd, role_id: 1, email_verified: true }] })
+        .mockResolvedValueOnce({ rows: [] });
+      return request(app).post('/api/login').send({ email: 'admin@test.com', password: 'password123', ...body });
+    };
+    const cookie = (res, name) => res.headers['set-cookie'].find((c) => c.startsWith(`${name}=`));
+
+    test('remember: false → cookies de session, rem: false dans le jeton', async () => {
+      const res = await loginAs({ remember: false });
+      expect(res.status).toBe(200);
+      for (const name of ['refreshToken', 'vh_session']) {
+        expect(cookie(res, name)).not.toMatch(/Max-Age|Expires/i);
+      }
+      const token = cookie(res, 'refreshToken').split(';')[0].split('=')[1];
+      expect(jwt.decode(token).rem).toBe(false);
+    });
+
+    test('remember: true ou absent → cookies persistants de 7 jours', async () => {
+      for (const body of [{ remember: true }, {}]) {
+        const res = await loginAs(body);
+        expect(cookie(res, 'refreshToken')).toMatch(/Max-Age=604800/);
+        expect(cookie(res, 'vh_session')).toMatch(/Max-Age=604800/);
+      }
+    });
+
+    test('rotation : un jeton rem: false reste en cookies de session', async () => {
+      const { generateRefreshToken } = require('../middleware/auth');
+      const { token } = generateRefreshToken({ id: 1, role_id: 1 }, { persistent: false });
+      mockPool.query
+        .mockResolvedValueOnce({ rows: [{ user_id: 1, revoked: false, rotated_at: null, live: true }] })
+        .mockResolvedValueOnce({ rows: [{ id: 1, name: 'Admin', email: 'admin@test.com', role_id: 1, token_version: 0 }] })
+        .mockResolvedValueOnce({ rows: [], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [] });
+      const res = await request(app).post('/api/refresh').set('Cookie', `refreshToken=${token}`);
+      expect(res.status).toBe(200);
+      const fresh = cookie(res, 'refreshToken');
+      expect(fresh).not.toMatch(/Max-Age|Expires/i);
+      expect(jwt.decode(fresh.split(';')[0].split('=')[1]).rem).toBe(false);
+    });
+  });
+
   test('200 — connexion réussie avec access token et refresh cookie (email normalisé)', async () => {
     const hashedPwd = await bcrypt.hash('password123', 10);
     mockPool.query

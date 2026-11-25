@@ -9,7 +9,10 @@ const {
   generateRefreshToken,
   storeRefreshToken,
   setRefreshCookie,
+  isPersistentRefresh,
+  REFRESH_COOKIE_NAME,
 } = require('../middleware/auth');
+const jwt = require('jsonwebtoken');
 const logger = require('../logger');
 const { withTransaction } = require('../db');
 const asyncHandler = require('../middleware/asyncHandler');
@@ -192,9 +195,13 @@ module.exports = function createUsersRouter(getPool, {
     // l'utilisateur qui vient d'agir.
     if (isSelf && revokesSessions) {
       const fresh = { ...updated, role_id: updated.role_id ?? req.user.role };
-      const { token: refreshToken, jti } = generateRefreshToken(fresh);
+      // Même durée de session qu'avant (« Se souvenir de moi », CONT-002) : lue
+      // dans le jeton de cet onglet, qui vient d'être révoqué.
+      const current = req.cookies && req.cookies[REFRESH_COOKIE_NAME];
+      const persistent = isPersistentRefresh(current ? jwt.decode(current) : null);
+      const { token: refreshToken, jti } = generateRefreshToken(fresh, { persistent });
       await storeRefreshToken(jti, fresh.id);
-      setRefreshCookie(res, refreshToken);
+      setRefreshCookie(res, refreshToken, { persistent });
       body.token = generateAccessToken(fresh);
     }
 

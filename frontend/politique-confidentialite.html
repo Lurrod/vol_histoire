@@ -159,7 +159,7 @@
             <li><strong>Compte dont l'adresse n'a pas été vérifiée :</strong> supprimé automatiquement 7 jours après l'inscription.</li>
             <li><strong>Codes envoyés par email :</strong> activation du compte 30 minutes, changement d'adresse 30 minutes, réinitialisation du mot de passe 15 minutes ; chaque code ne sert qu'une fois et n'admet que 5 essais.</li>
             <li><strong>Jeton d'accès :</strong> 15 minutes.</li>
-            <li><strong>Session (refresh token) :</strong> 7 jours, révoquée à la déconnexion et au changement de mot de passe. Une session révoquée reste en base jusqu'à son expiration, pour détecter une réutilisation frauduleuse.</li>
+            <li><strong>Session (refresh token) :</strong> 7 jours au plus (jusqu'à la fermeture du navigateur si « Se souvenir de moi » n'est pas coché), révoquée à la déconnexion et au changement de mot de passe. Une session révoquée reste en base jusqu'à son expiration, pour détecter une réutilisation frauduleuse.</li>
             <li><strong>Verrouillage après 10 échecs de connexion :</strong> 15 minutes.</li>
             <li><strong>Demandes de contact :</strong> 12 mois dans la messagerie de l'éditeur, puis supprimées.</li>
             <li><strong>Journaux du serveur :</strong> 12 mois au plus.</li>
@@ -204,8 +204,8 @@
             <p>Liste des cookies et autres traceurs utilisés par le site, conformément à la délibération CNIL n° 2020-091 :</p>
             <section class="cookies-inventory-wrap" tabindex="0" aria-label="Inventaire des cookies"><table class="cookies-inventory"><caption class="sr-only">Inventaire détaillé des cookies et traceurs : nom, type, durée, finalité, stockage et exigence de consentement.</caption><thead><tr><th scope="col">Nom</th><th scope="col">Type</th><th scope="col">Durée</th><th scope="col">Finalité</th><th scope="col">Stockage</th><th scope="col">Consentement</th></tr>
             </thead><tbody>
-            <tr><td><code>refreshToken</code></td><td>Essentiel</td><td>7 jours</td><td>Maintien de la session connectée (renouvellement du jeton d'accès)</td><td>Cookie HttpOnly · Secure · SameSite=Strict · Path=/api</td><td>Exempté</td></tr>
-            <tr><td><code>vh_session</code></td><td>Essentiel</td><td>7 jours</td><td>Signale au navigateur qu'une session existe ; ne contient aucune donnée personnelle</td><td>Cookie · SameSite=Strict</td><td>Exempté</td></tr>
+            <tr><td><code>refreshToken</code></td><td>Essentiel</td><td>7 jours avec « Se souvenir de moi », sinon jusqu'à la fermeture du navigateur</td><td>Maintien de la session connectée (renouvellement du jeton d'accès)</td><td>Cookie HttpOnly · Secure · SameSite=Strict · Path=/api</td><td>Exempté</td></tr>
+            <tr><td><code>vh_session</code></td><td>Essentiel</td><td>7 jours avec « Se souvenir de moi », sinon jusqu'à la fermeture du navigateur</td><td>Signale au navigateur qu'une session existe ; ne contient aucune donnée personnelle</td><td>Cookie · SameSite=Strict</td><td>Exempté</td></tr>
             <tr><td><code>voldhistoire_cookie_consent</code></td><td>Essentiel</td><td>6 mois</td><td>Mémorisation de votre choix sur les cookies et de sa date</td><td>Cookie + localStorage</td><td>Exempté</td></tr>
             <tr><td><code>vol-histoire-lang</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Langue d'affichage (FR / EN)</td><td>localStorage</td><td>Exempté</td></tr>
             <tr><td><code>vh_hangar_view</code></td><td>Fonctionnel</td><td>Jusqu'à effacement</td><td>Affichage du hangar en grille ou en liste</td><td>localStorage</td><td>Exempté</td></tr>

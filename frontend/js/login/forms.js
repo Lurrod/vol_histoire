@@ -67,7 +67,9 @@
       // hCaptcha invisible : aucun défi pour la plupart des visiteurs, exigé
       // par le serveur dès que sa clé secrète est posée.
       const captchaToken = window.getHcaptchaToken ? await window.getHcaptchaToken('login') : null;
-      const payload = { email, password };
+      // « Se souvenir de moi » décoché : session limitée au navigateur ouvert (CONT-002).
+      const remember = document.getElementById('remember-me');
+      const payload = { email, password, remember: Boolean(remember && remember.checked) };
       if (captchaToken) payload['h-captcha-response'] = captchaToken;
 
       const response = await auth.fetchWithTimeout('/api/login', {

@@ -333,7 +333,21 @@ describe('VH.login.forms — connexion', () => {
     await login.forms.onLoginSubmit(ctx, { preventDefault() {} });
     expect(window.getHcaptchaToken).toHaveBeenCalledWith('login');
     const body = JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body);
-    expect(body).toEqual({ email: 'pilote@x.fr', password: 'secret', 'h-captcha-response': 'cap' });
+    expect(body).toEqual({ email: 'pilote@x.fr', password: 'secret', remember: false, 'h-captcha-response': 'cap' });
+  });
+
+  test('CONT-002 : case « Se souvenir de moi » cochée → remember: true', async () => {
+    const { login, ctx } = setup();
+    window.getHcaptchaToken = jest.fn(() => Promise.resolve(null));
+    auth.fetchWithTimeout.mockResolvedValue(jsonResponse(400, {}));
+    const box = document.createElement('input');
+    box.type = 'checkbox'; box.id = 'remember-me'; box.checked = true;
+    document.body.appendChild(box);
+    document.getElementById('login-email').value = 'pilote@x.fr';
+    ctx.els.loginPassword.value = 'secret';
+    await login.forms.onLoginSubmit(ctx, { preventDefault() {} });
+    expect(JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body).remember).toBe(true);
+    box.remove();
   });
 
   test('sans clé de site (jeton null) : identifiants seuls', async () => {
@@ -343,7 +357,7 @@ describe('VH.login.forms — connexion', () => {
     document.getElementById('login-email').value = 'pilote@x.fr';
     ctx.els.loginPassword.value = 'secret';
     await login.forms.onLoginSubmit(ctx, { preventDefault() {} });
-    expect(JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body)).toEqual({ email: 'pilote@x.fr', password: 'secret' });
+    expect(JSON.parse(auth.fetchWithTimeout.mock.calls[0][1].body)).toEqual({ email: 'pilote@x.fr', password: 'secret', remember: false });
   });
 
   test('succès : jeton et infos utilisateur enregistrés, redirection', async () => {

@@ -19,6 +19,7 @@ const {
   revokeRefreshToken,
   rotateRefreshToken,
   setRefreshCookie,
+  isPersistentRefresh,
   clearRefreshCookie,
   REFRESH_COOKIE_NAME,
   JWT_VERIFY_OPTIONS,
@@ -215,12 +216,14 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     }
 
     const accessToken = generateAccessToken(userData);
-    const { token: refreshToken, jti } = generateRefreshToken(userData);
+    // « Se souvenir de moi » (CONT-002) : absent = persistant (clients de l'API).
+    const persistent = req.body.remember !== false;
+    const { token: refreshToken, jti } = generateRefreshToken(userData, { persistent });
 
     // Stocker le refresh token en base pour pouvoir le révoquer
     await storeRefreshToken(jti, userData.id);
 
-    setRefreshCookie(res, refreshToken);
+    setRefreshCookie(res, refreshToken, { persistent });
 
     res.json({ message: 'Connexion réussie', token: accessToken });
   }));
@@ -268,7 +271,9 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       //   - Crash entre les 2 étapes (session orpheline ou double-active)
       //   - Race condition 2 requêtes concurrentes de /refresh avec le même JTI
       const newAccessToken = generateAccessToken(user);
-      const { token: newRefreshToken, jti: newJti } = generateRefreshToken(user);
+      // La rotation garde le choix fait à la connexion (cookies de session ou non).
+      const persistent = isPersistentRefresh(decoded);
+      const { token: newRefreshToken, jti: newJti } = generateRefreshToken(user, { persistent });
 
       try {
         await rotateRefreshToken(decoded.jti, newJti, user.id);
@@ -286,7 +291,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
         throw rotationError;
       }
 
-      setRefreshCookie(res, newRefreshToken);
+      setRefreshCookie(res, newRefreshToken, { persistent });
       res.json({ token: newAccessToken });
     } catch (error) {
       logger.warn('Refresh token invalide', { error: error.message, route: 'POST /refresh' });
