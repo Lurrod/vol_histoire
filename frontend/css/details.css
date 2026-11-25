@@ -526,7 +526,7 @@ body.page-details { background: var(--night); }
 .page-details .stat-value { font-family: 'DM Sans', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--white); }
 
 /* MAIN CONTENT */
-.page-details main { padding: 2rem 0 6rem; }
+.page-details .details-main { padding: 2rem 0 6rem; }
 .page-details .content-layout { display: grid; gap: 2.5rem; }
 .page-details .content-section { background: var(--white-a04); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 3rem; transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out), opacity var(--dur-slower) var(--ease-out), translate var(--dur-slower) var(--ease-out); }
 /* Apparition au défilement (details/ui.js) : posée par le JS, retirée à

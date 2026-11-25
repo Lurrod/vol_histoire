@@ -63,7 +63,7 @@
   }
 
   /* Une colonne, sans les marges ni largeurs de l'écran. */
-  .page-details .container, .page-details main, .page-details .content-layout,
+  .page-details .container, .page-details main, .page-details .details-main, .page-details .content-layout,
   .page-details .hero-content, .page-details .aircraft-hero, .page-details .quick-stats,
   .page-details .content-section, .page-details .section-content {
     display: block !important;
@@ -216,7 +216,7 @@
   .page-details .source-link::after { content: ' — ' attr(href); font-size: 8.5pt; color: #666 !important; }
 
   /* Fin de document. */
-  .page-details main::after {
+  .page-details .details-main::after {
     content: 'vol-histoire.titouan-borde.com';
     display: block; margin-top: 6mm; padding-top: 2mm;
     border-top: 0.4pt solid #ccc !important;
