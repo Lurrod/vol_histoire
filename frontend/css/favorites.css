@@ -95,7 +95,7 @@
   font-size: 0.85rem; font-weight: 700; color: var(--white);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.page-favorites .gate-card-meta { font-size: 0.72rem; color: var(--text-ghost); }
+.page-favorites .gate-card-meta { font-size: var(--text-xs); color: var(--text-ghost); }
 
 /* Cartes de derrière : photo seule, leur texte se lirait coupé et de biais. */
 .page-favorites .gate-card:not(:nth-child(3)) .gate-card-body > * { visibility: hidden; }

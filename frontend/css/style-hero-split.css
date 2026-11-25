@@ -146,7 +146,7 @@
 }
 .page-home .hero-today-credit {
   margin: 0.6rem 0 0;
-  font-size: 0.72rem;
+  font-size: var(--text-xs);
   color: var(--white-a50);
   text-align: right;
 }

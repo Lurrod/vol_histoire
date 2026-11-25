@@ -100,7 +100,7 @@ body.page-login::after { display: none; }
   line-height: 1.2;
 }
 .page-login .stat-label {
-  font-size: 0.72rem;
+  font-size: var(--text-xs);
   color: var(--white-a62);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -138,7 +138,7 @@ body.page-login::after { display: none; }
 .page-login .auth-photo-link:hover,
 .page-login .auth-photo-link:focus-visible { color: var(--hud-cyan); }
 .page-login .auth-photo-link:hover .icon { translate: 3px 0; }
-.page-login .auth-photo-credit { font-size: 0.72rem; color: var(--white-a50); }
+.page-login .auth-photo-credit { font-size: var(--text-xs); color: var(--white-a50); }
 .page-login .auth-photo-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
 /* ---- RIGHT: Form Panel ---- */
