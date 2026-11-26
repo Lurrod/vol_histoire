@@ -1,6 +1,7 @@
 /**
  * Tests DOM — frontend/js/conflicts/dates.js : dates clés d'un conflit en
- * bandeau d'onglets + panneau (motif APG « onglets », boutons, glissement).
+ * cartes-onglets (carrousel) + panneau (motif APG « onglets », boutons,
+ * glissement). La géométrie du carrousel : conflicts-carousel.test.js.
  */
 
 let dates;
@@ -9,7 +10,8 @@ function page() {
   document.body.innerHTML = `
     <section id="dates-cles" class="hidden">
       <h2>Dates</h2>
-      <div id="conflict-events" role="tablist"></div>
+      <div id="conflict-tl"><div id="conflict-tl-year"></div><div id="conflict-tl-ruler"></div>
+        <svg id="conflict-tl-cables"></svg><div id="conflict-events" role="tablist"></div></div>
       <div id="conflict-event-panel" role="tabpanel" tabindex="0">
         <div id="conflict-event-content"></div>
         <button type="button" data-dir="-1">‹</button>
@@ -19,7 +21,7 @@ function page() {
     </section>`;
 }
 
-function load({ lang = 'fr', picture = true, detail = true } = {}) {
+function load({ lang = 'fr', picture = true, detail = true, carousel = false } = {}) {
   jest.resetModules();
   global.escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -38,6 +40,7 @@ function load({ lang = 'fr', picture = true, detail = true } = {}) {
     require('../js/details/markdown.js');
     require('../js/conflicts/detail.js');
   }
+  if (carousel) require('../js/conflicts/date-carousel.js');
   dates = require('../js/conflicts/dates.js');
 }
 
@@ -95,7 +98,7 @@ describe('formatEventDate / dateParts', () => {
 });
 
 describe('render', () => {
-  test('bandeau : un onglet par date, le premier choisi, seul dans la tabulation', () => {
+  test('cartes : un onglet par date, le premier choisi, seul dans la tabulation', () => {
     load();
     expect(dates.render(WAR)).toBe(true);
     expect($('dates-cles').classList.contains('hidden')).toBe(false);
@@ -103,9 +106,16 @@ describe('render', () => {
     expect(t).toHaveLength(3);
     expect(t.map((x) => x.getAttribute('aria-selected'))).toEqual(['true', 'false', 'false']);
     expect(t.map((x) => x.tabIndex)).toEqual([0, -1, -1]);
-    expect(t[0].querySelector('.conflict-date-lead').textContent).toBe('2 août');
-    expect(t[0].querySelector('.conflict-date-year').textContent).toBe('1990');
-    expect(t[0].querySelector('.sr-only').textContent).toContain('Invasion du Koweït');
+    expect(t[0].querySelector('.conflict-tl-date').textContent).toBe('2 août 1990');
+    expect(t[0].querySelector('.conflict-tl-date').getAttribute('datetime')).toBe('1990-08-02');
+    expect(t[0].querySelector('.conflict-tl-title').textContent).toBe('Invasion du Koweït');
+    // sans appareil lié : l'année en grand à la place de la photo, pas de pied
+    expect(t[0].querySelector('.conflict-tl-placeholder').textContent).toBe('1990');
+    expect(t[0].querySelector('.conflict-tl-meta')).toBeNull();
+    // appareil lié avec fiche au conflit : sa photo et son nom sur la carte
+    expect(t[1].querySelector('.conflict-tl-media picture').dataset.url).toBe('/assets/airplanes/f117.jpg');
+    expect(t[1].querySelector('.conflict-tl-meta').textContent).toContain('F-117 Nighthawk');
+    expect(t[1].querySelector('.conflict-tl-title em').textContent).toBe('Desert Storm');
     expect($('conflict-event-panel').getAttribute('aria-labelledby')).toBe('conflict-date-tab-0');
     expect($('conflict-event-count').textContent).toBe('1 / 3');
     const [prev, next] = $('conflict-event-panel').querySelectorAll('[data-dir]');
@@ -113,7 +123,7 @@ describe('render', () => {
     expect($('conflict-event-content').querySelector('.conflict-date-photo')).toBeNull();
   });
 
-  test('panneau : date en toutes lettres, texte échappé, photo et lien de la fiche liée', () => {
+  test('panneau : date en toutes lettres, texte échappé, lien de la fiche liée, pas de photo', () => {
     load();
     dates.render(WAR);
     tabs()[1].click();
@@ -123,19 +133,20 @@ describe('render', () => {
     expect(content.querySelector('.conflict-date-title em').textContent).toBe('Desert Storm');
     expect(content.querySelector('.conflict-date-body').innerHTML).toContain('&lt;sur&gt;');
     expect(content.querySelector('.conflict-event-plane').getAttribute('href')).toBe('/details/f-117-nighthawk-12');
-    expect(content.querySelector('.conflict-date-photo picture').dataset.url).toBe('/assets/airplanes/f117.jpg');
+    expect(content.querySelector('picture, img')).toBeNull();
     expect(content.classList.contains('is-entering')).toBe(true);
     expect($('conflict-event-count').textContent).toBe('2 / 3');
   });
 
-  test('appareil lié sans fiche au conflit : lien sans photo ; pas de récit : pas de paragraphe', () => {
+  test('appareil lié sans fiche au conflit : carte sans photo ; pas de récit : pas de paragraphe', () => {
     load();
     dates.render(WAR);
     tabs()[2].click();
     const content = $('conflict-event-content');
     expect(content.querySelector('time').textContent).toBe('février 1991');
     expect(content.querySelector('.conflict-event-plane').textContent).toContain('AC-130');
-    expect(content.querySelector('.conflict-date-photo')).toBeNull();
+    expect(tabs()[2].querySelector('.conflict-tl-placeholder').textContent).toBe('1991');
+    expect(tabs()[2].querySelector('.conflict-tl-meta').textContent).toContain('AC-130');
     expect(content.querySelector('.conflict-date-body')).toBeNull();
   });
 
@@ -226,6 +237,60 @@ describe('render', () => {
     tabs()[1].click();
     const content = $('conflict-event-content');
     expect(content.querySelector('.conflict-date-title').textContent).toBe('Début de *Desert Storm*');
-    expect(content.querySelector('.conflict-date-photo img').getAttribute('src')).toBe('/assets/airplanes/f117.jpg');
+    expect(tabs()[1].querySelector('.conflict-tl-media img').getAttribute('src')).toBe('/assets/airplanes/f117.jpg');
+    expect(tabs()[1].querySelector('.conflict-tl-media img').getAttribute('draggable')).toBe('false');
+  });
+
+  test('année au centre : celle de la date choisie, par le compteur s\'il est là', () => {
+    load();
+    dates.render(WAR);
+    expect($('conflict-tl-year').textContent).toBe('1990'); // sans carrousel ni compteur
+    load({ carousel: true });
+    const setText = jest.fn();
+    window.VH.rollingNumber = { setText };
+    dates.render(WAR);
+    expect(setText).toHaveBeenLastCalledWith($('conflict-tl-year'), '1990');
+    tabs()[1].click();
+    window.VH.conflicts.carousel; // le carrousel annonce la carte centrée
+    expect(setText).toHaveBeenCalledWith($('conflict-tl-year'), '1991');
+    dates.render({ events: [{ date: 'x', precision: 'day', title: 't' }] });
+    expect(setText).toHaveBeenLastCalledWith($('conflict-tl-year'), '');
+  });
+
+  test('carrousel : branché au rendu, suit le choix, rebranché sans doublon au nouveau rendu', () => {
+    load({ carousel: true });
+    const C = window.VH.conflicts.carousel;
+    const goTo = jest.fn();
+    const destroy = jest.fn();
+    let options;
+    const create = jest.spyOn(C, 'create').mockImplementation((o) => { options = o; return { goTo, destroy }; });
+    dates.render(WAR);
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(options).toMatchObject({ count: 3, start: 0 });
+    expect(options.track).toBe($('conflict-events'));
+    expect(options.cables).toBe($('conflict-tl-cables'));
+    expect(options.anchor).toBe($('conflict-tl-year'));
+    expect(goTo).toHaveBeenLastCalledWith(0, { animate: false });
+    tabs()[2].click();
+    expect(goTo).toHaveBeenLastCalledWith(2, { animate: true });
+    // le carrousel choisit une date (glissement, molette) : panneau et onglets suivent
+    options.onSelect(1);
+    expect(tabs()[1].getAttribute('aria-selected')).toBe('true');
+    options.onCenter(2);
+    expect($('conflict-tl-year').textContent).toBe('1991');
+    expect($('conflict-event-count').textContent).toBe('2 / 3');
+    dates.render(WAR);
+    expect(destroy).toHaveBeenCalledTimes(1);
+    expect(options.start).toBe(1);
+    dates.render({ events: [] });
+    expect(destroy).toHaveBeenCalledTimes(2);
+    create.mockRestore();
+  });
+
+  test('carrousel réel : décor construit dans la scène', () => {
+    load({ carousel: true });
+    dates.render(WAR);
+    expect(document.querySelectorAll('#conflict-tl-ruler .conflict-tl-ticks')).toHaveLength(2);
+    expect(tabs()[0].classList.contains('is-centered')).toBe(true);
   });
 });

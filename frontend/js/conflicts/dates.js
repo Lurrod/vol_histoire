@@ -1,11 +1,13 @@
-/* Dates clés d'un conflit (2026-11-23) : un bandeau de dates qui servent
- * d'onglets et, dessous, un grand panneau qui raconte la date choisie
- * (date en toutes lettres, titre, récit, photo et lien de l'appareil lié).
+/* Dates clés d'un conflit : un carrousel de cartes (date, titre, photo de
+ * l'appareil lié) qui glissent sous une tête de lecture (2026-11-26,
+ * conflicts/date-carousel.js) et, dessous, un panneau qui raconte la date
+ * centrée (date en toutes lettres, titre, récit, lien de l'appareil lié).
  *
  * Accessibilité : motif « onglets » de l'APG (role tablist / tab / tabpanel,
- * tabindex itinérant, flèches gauche/droite, Début/Fin). Les boutons du
- * panneau (précédente / suivante) changent la date sans déplacer le focus.
- * Au doigt, un glissement horizontal sur le panneau fait de même.
+ * tabindex itinérant, flèches gauche/droite, Début/Fin) ; chaque carte est un
+ * onglet. Les boutons du panneau (précédente / suivante) changent la date
+ * sans déplacer le focus. Au doigt, un glissement horizontal sur le panneau
+ * fait de même ; sur le carrousel, la piste suit le doigt.
  *
  * Données : war.events[{ date (AAAA-MM-JJ), precision (day|month|year),
  * title, body, airplane { id, name } }] ; la photo vient de war.airplanes
@@ -53,7 +55,7 @@
     return intl(p.date, { day: 'numeric', month: long ? 'long' : 'short', year: 'numeric' }, language, `${p.d}/${p.m}/${p.y}`);
   }
 
-  /** Date d'un onglet : l'en-tête (« 17 janv. », « août », rien) et l'année. */
+  /** En-tête d'une date (« 17 janv. », « août », rien) et son année. */
   function dateParts(iso, precision, language) {
     const p = parseIso(iso);
     if (!p) return { lead: '', year: '' };
@@ -69,66 +71,72 @@
     return build ? build(id, name) : `/details/${encodeURIComponent(id)}`;
   }
 
-  /** Bandeau : un onglet par date ; seul l'onglet choisi est dans l'ordre de tabulation. */
-  function tabsHtml(events, selected) {
+  function planeOf(e, airplanes) {
+    const ref = e && e.airplane;
+    return ref ? (airplanes || []).find((a) => a.id === ref.id) || null : null;
+  }
+
+  /** Média d'une carte : photo de l'appareil lié, sinon l'année en grand. */
+  function mediaHtml(plane, year) {
+    if (!plane || !plane.image_url) return `<span class="conflict-tl-placeholder">${esc(year)}</span>`;
+    const pic = root.VH.shared && root.VH.shared.picture;
+    const attrs = { alt: '', width: 480, height: 300, loading: 'lazy', decoding: 'async', draggable: 'false', sizes: '20rem' };
+    return pic
+      ? pic.pictureHtml(plane.image_url, attrs)
+      : `<img src="${esc(plane.image_url)}" alt="" width="480" height="300" loading="lazy" decoding="async" draggable="false">`;
+  }
+
+  /** Cartes : un onglet par date ; seul l'onglet choisi est dans l'ordre de tabulation. */
+  function cardsHtml(events, selected, airplanes) {
     const language = lang();
     return (events || []).map((e, i) => {
-      const { lead, year } = dateParts(e.date, e.precision, language);
       const on = i === selected;
-      return `<button type="button" class="conflict-date-tab" role="tab" id="conflict-date-tab-${i}"`
+      const { year } = dateParts(e.date, e.precision, language);
+      const meta = e.airplane
+        ? `<span class="conflict-tl-meta"><i class="fas fa-plane" aria-hidden="true"></i> ${esc(e.airplane.name)}</span>`
+        : '';
+      return `<button type="button" class="conflict-tl-card" role="tab" id="conflict-date-tab-${i}"`
         + ` aria-controls="conflict-event-panel" aria-selected="${on}" tabindex="${on ? 0 : -1}" data-index="${i}">`
-        + (lead ? `<span class="conflict-date-lead">${esc(lead)}</span> ` : '')
-        + `<span class="conflict-date-year">${esc(year)}</span>`
-        + `<span class="sr-only"> : ${esc(e.title)}</span></button>`;
+        + `<time class="conflict-tl-date" datetime="${esc(e.date)}">${esc(formatEventDate(e.date, e.precision, language, false))}</time>`
+        + `<span class="conflict-tl-title">${inline(e.title)}</span>`
+        + `<span class="conflict-tl-media">${mediaHtml(planeOf(e, airplanes), year)}</span>`
+        + meta
+        + '</button>';
     }).join('');
   }
 
-  function photoHtml(plane, href) {
-    const pic = root.VH.shared && root.VH.shared.picture;
-    if (!plane || !plane.image_url) return '';
-    const img = pic
-      ? pic.pictureHtml(plane.image_url, { alt: '', width: 480, height: 320, loading: 'lazy', decoding: 'async' })
-      : `<img src="${esc(plane.image_url)}" alt="" width="480" height="320" loading="lazy" decoding="async">`;
-    return `<a class="conflict-date-photo" href="${href}" tabindex="-1" aria-hidden="true">${img}</a>`;
+  /**
+   * Année de la carte centrée, en grand au-dessus de la piste : une seule,
+   * dont les chiffres défilent (VH.rollingNumber, comme les autres compteurs).
+   */
+  function showYear(el, e) {
+    if (!el) return;
+    const p = parseIso(e && e.date);
+    const year = p ? p.y : '';
+    const roll = root.VH.rollingNumber;
+    if (roll && roll.setText) roll.setText(el, year);
+    else el.textContent = year;
   }
 
-  /** Contenu du panneau pour une date ; la photo vient de la fiche liée au conflit. */
-  function panelHtml(e, airplanes) {
+  /** Contenu du panneau pour une date (la photo est sur la carte). */
+  function panelHtml(e) {
     if (!e) return '';
     const language = lang();
     const ref = e.airplane;
-    const plane = ref ? (airplanes || []).find((a) => a.id === ref.id) : null;
-    const href = ref ? esc(detailsPath(ref.id, ref.name)) : '';
     const link = ref
-      ? `<a class="conflict-event-plane" href="${href}"><i class="fas fa-plane" aria-hidden="true"></i> ${esc(ref.name)}</a>`
+      ? `<a class="conflict-event-plane" href="${esc(detailsPath(ref.id, ref.name))}"><i class="fas fa-plane" aria-hidden="true"></i> ${esc(ref.name)}</a>`
       : '';
-    const photo = photoHtml(plane, href);
     return `<div class="conflict-date-text">
         <time class="conflict-date-full" datetime="${esc(e.date)}">${esc(formatEventDate(e.date, e.precision, language, true))}</time>
         <h3 class="conflict-date-title">${inline(e.title)}</h3>
         ${e.body ? `<p class="conflict-date-body">${inline(e.body)}</p>` : ''}
         ${link}
-      </div>${photo}`;
-  }
-
-  function prefersReducedMotion(win) {
-    return Boolean(win.matchMedia && win.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }
-
-  /** Amène l'onglet choisi au centre du bandeau, sans faire défiler la page. */
-  function revealTab(strip, tab, win) {
-    if (!tab) return;
-    const left = tab.offsetLeft - (strip.clientWidth - tab.offsetWidth) / 2;
-    if (typeof strip.scrollTo === 'function') {
-      strip.scrollTo({ left: Math.max(0, left), behavior: prefersReducedMotion(win) ? 'auto' : 'smooth' });
-    } else {
-      strip.scrollLeft = Math.max(0, left);
-    }
+      </div>`;
   }
 
   /**
-   * Rend le bandeau et le panneau, puis branche (une seule fois) clavier,
-   * clics et glissements. Un nouveau rendu (changement de langue) garde la
+   * Rend les cartes et le panneau, branche le carrousel, puis (une seule
+   * fois) clavier, clics et glissements sur le panneau. Un nouveau rendu (changement de langue) garde la
    * date choisie.
    */
   function render(war, doc) {
@@ -138,6 +146,10 @@
     const panel = d.getElementById('conflict-event-panel');
     const content = d.getElementById('conflict-event-content');
     if (!section || !strip || !panel || !content) return false;
+    if (strip._vhCarousel) {
+      strip._vhCarousel.destroy();
+      strip._vhCarousel = null;
+    }
     const events = (war && war.events) || [];
     section.classList.toggle('hidden', !events.length);
     if (!events.length) {
@@ -146,7 +158,6 @@
       return false;
     }
 
-    const win = d.defaultView || root;
     const count = d.getElementById('conflict-event-count');
     const pager = Array.from(panel.querySelectorAll('[data-dir]'));
     const state = { events, airplanes: war.airplanes || [] };
@@ -164,7 +175,7 @@
         tab.tabIndex = i === next ? 0 : -1;
       });
       panel.setAttribute('aria-labelledby', `conflict-date-tab-${next}`);
-      content.innerHTML = panelHtml(state.events[next], state.airplanes);
+      content.innerHTML = panelHtml(state.events[next]);
       if (count) count.textContent = `${next + 1} / ${state.events.length}`;
       pager.forEach((b) => {
         b.disabled = Number(b.dataset.dir) < 0 ? next === 0 : next === state.events.length - 1;
@@ -174,12 +185,30 @@
         void content.offsetWidth; // relance l'animation d'entrée
         content.classList.add('is-entering');
       }
-      revealTab(strip, tabs[next], win);
+      if (strip._vhCarousel) strip._vhCarousel.goTo(next, { animate });
       if (focus && tabs[next]) tabs[next].focus({ preventScroll: true });
     }
 
-    strip.innerHTML = tabsHtml(events, current);
+    strip.innerHTML = cardsHtml(events, current, state.airplanes);
     strip._vhDates = { select: (i, o) => select(i, o), get current() { return current; }, get length() { return state.events.length; } };
+    const carousel = root.VH.conflicts.carousel;
+    const stage = d.getElementById('conflict-tl');
+    const yearEl = d.getElementById('conflict-tl-year');
+    if (carousel && stage) {
+      strip._vhCarousel = carousel.create({
+        stage,
+        track: strip,
+        ruler: d.getElementById('conflict-tl-ruler'),
+        cables: d.getElementById('conflict-tl-cables'),
+        anchor: yearEl,
+        count: events.length,
+        start: current,
+        onSelect: (i) => strip._vhDates.select(i),
+        onCenter: (i) => showYear(yearEl, state.events[i]),
+      });
+    } else {
+      showYear(yearEl, events[current]);
+    }
     select(current, { animate: false });
 
     if (strip.dataset.bound !== '1') {
@@ -222,7 +251,7 @@
     return true;
   }
 
-  root.VH.conflicts.dates = { formatEventDate, dateParts, tabsHtml, panelHtml, render };
+  root.VH.conflicts.dates = { formatEventDate, dateParts, cardsHtml, panelHtml, render };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = root.VH.conflicts.dates;
