@@ -12,7 +12,7 @@ aucun fichier.
 | Code | `/var/www/vol-histoire` (clone git, `main`) ; secrets dans `backend/.env` |
 | Node | **24**, installé à part sous `/opt/node-24` (le Node système, 20, sert les autres applications) |
 | Processus | pm2 `vol-histoire`, mode fork, 1 instance, interpréteur `/opt/node-24/bin/node`, `backend/server.js`, port 3000 en local |
-| Journaux | `~/.pm2/logs/vol-histoire-{out,error}.log` (JSON sur stdout/stderr, `LOG_LEVEL`) — **aucune rotation** au relevé, `out.log` à 33 Mo |
+| Journaux | `~/.pm2/logs/vol-histoire-{out,error}.log` (JSON sur stdout/stderr, `LOG_LEVEL`) — rotation `logrotate/vol-histoire` installée le 2026-11-26 (`out.log` atteignait 38 Mo) |
 | Mandataire | Apache 2 : port 80 → HTTPS, port 443 → `127.0.0.1:3000` (`apache/`) |
 | TLS | Let's Encrypt via certbot (renouvellement automatique) |
 | Données | PostgreSQL (tables propriété de `postgres`), Redis facultatif (`REDIS_URL`) |
@@ -36,7 +36,6 @@ aucun fichier.
 
 ## À faire sur le serveur actuel (décision du propriétaire)
 
-- Installer la rotation des journaux (`logrotate/vol-histoire`).
 - Ajouter `max_memory_restart` et `kill_timeout` au processus (valeurs de
   `ecosystem.config.js`) lors d'une prochaine maintenance.
 
