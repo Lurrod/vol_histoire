@@ -75,8 +75,8 @@
 
   function setup(state) {
     const button = document.getElementById('delete-account-btn');
-    button?.addEventListener('click', () => onDeleteClick(state, button));
-    // Entrée dans le champ du mot de passe : même parcours que le bouton.
+    // Le bouton est le bouton d'envoi du formulaire : un clic comme Entrée dans
+    // le champ du mot de passe passent par l'envoi, une seule fois.
     document.getElementById('delete-account-form')?.addEventListener('submit', (e) => {
       e.preventDefault();
       onDeleteClick(state, button);

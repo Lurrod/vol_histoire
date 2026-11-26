@@ -35,7 +35,7 @@ test.describe('Hero — widgets du jour', () => {
 
     // Le lien mène à une fiche précise, jamais au « # » du HTML servi.
     const href = await page.locator('#hero-fact-link').getAttribute('href');
-    expect(href).toMatch(/^\/(details\?id=\d+|hangar\?search=)/);
+    expect(href).toMatch(/^\/(details\/[a-z0-9-]+|details\?id=\d+|hangar\?search=)/);
   });
 
   test("l'appareil du jour est le même d'un chargement à l'autre", async ({ page }) => {
@@ -67,7 +67,7 @@ test.describe('Hero — widgets du jour', () => {
     await expect(page.locator('.hero-quiz-option.is-correct')).toHaveCount(1);
     const lien = page.locator('#hero-quiz-link');
     await expect(lien).toBeVisible();
-    expect(await lien.getAttribute('href')).toMatch(/^\/(details\?id=\d+|hangar\?search=)/);
+    expect(await lien.getAttribute('href')).toMatch(/^\/(details\/[a-z0-9-]+|details\?id=\d+|hangar\?search=)/);
   });
 
   test('la baseline a disparu du hero', async ({ page }) => {

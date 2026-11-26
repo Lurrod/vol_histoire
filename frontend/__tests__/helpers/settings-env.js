@@ -66,7 +66,7 @@ const SETTINGS_DOM = `
         <strong id="consent-date" data-i18n="settings.never">Jamais</strong>
         <button id="open-cookie-modal">Ouvrir</button>
         <button type="button" id="export-data-btn"><span>Télécharger mes données</span></button>
-        <section id="delete-block" tabindex="-1"><form id="delete-account-form"><input type="password" id="delete-current-password"></form><button type="button" id="delete-account-btn"><span>Supprimer</span></button></section>
+        <section id="delete-block" tabindex="-1"><form id="delete-account-form"><input type="password" id="delete-current-password"><button type="submit" id="delete-account-btn"><span>Supprimer</span></button></form></section>
       </div>
       <div id="admin" class="content-section hidden" hidden>
         <input id="user-filter">

@@ -199,6 +199,7 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
   .page-settings .header-text h2 { font-size: 1.2rem; }
   .page-settings .form-grid { grid-template-columns: 1fr; }
   .page-settings .form-actions .btn { width: 100%; }
+  .page-settings .delete-account-form .btn { width: 100%; white-space: normal; }
   .page-settings .logout-modal-container { padding: 1.5rem; }
   .page-settings .logout-modal-actions { flex-direction: column-reverse; }
 }

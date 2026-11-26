@@ -141,7 +141,8 @@
 .page-settings .danger-block .set-block-title .icon { color: var(--accent); }
 .page-settings .danger-block strong { color: var(--accent-text); }
 /* Mot de passe actuel exigé pour supprimer le compte (SEC-005). */
-.page-settings .delete-account-form { margin: 0 0 1.25rem; }
+.page-settings .delete-account-form { display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; margin: 0; }
+.page-settings .delete-account-form .form-group { align-self: stretch; }
 .page-settings .danger-list { list-style: none; display: grid; gap: 0.375rem; margin: 0 0 1.25rem; }
 .page-settings .danger-list li { position: relative; padding-left: 1rem; color: var(--text-ghost); font-size: 0.875rem; }
 .page-settings .danger-list li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--alert-a60); }
