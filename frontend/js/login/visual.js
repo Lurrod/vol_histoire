@@ -54,7 +54,9 @@
       set('.auth-photo-name', a.name);
       set('.auth-photo-country', a.country_name);
       const link = caption.querySelector('.auth-photo-link');
-      if (link) link.setAttribute('href', `/details?id=${encodeURIComponent(a.id)}`);
+      // Adresse propre de la fiche, sans détour par la redirection 301 (SEO-007).
+      const build = root.VH.shared && root.VH.shared.buildDetailsPath;
+      if (link) link.setAttribute('href', build ? build(a.id, a.name) : `/details?id=${encodeURIComponent(a.id)}`);
       const credit = caption.querySelector('.auth-photo-credit');
       const pc = root.VH.shared && root.VH.shared.photoCredit;
       if (credit && pc) pc.fillCredit(credit, { author: a.image_credit, licence: a.image_licence }, (k) => i18n.t(k));

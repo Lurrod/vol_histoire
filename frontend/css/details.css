@@ -42,8 +42,8 @@
   font-size: 0.95rem;
 }
 .page-details .share-btn:hover, .page-details .share-btn:focus-visible {
-  border-color: var(--hud-cyan);
-  color: var(--hud-cyan);
+  border-color: var(--gold);
+  color: var(--gold);
   transform: translateY(-1px);
 }
 .page-details .share-btn .icon { width: 16px; height: 16px; }
@@ -60,9 +60,9 @@
   }
 }
 .page-details .share-btn.flash {
-  background: var(--hud-cyan);
+  background: var(--gold);
   color: var(--night);
-  border-color: var(--hud-cyan);
+  border-color: var(--gold);
 }
 @media (prefers-reduced-motion: reduce) {
   .page-details .share-btn { transition: none; }
@@ -75,7 +75,7 @@
   top: 0; left: 0;
   height: 2px;
   width: 0;
-  background: var(--hud-cyan);
+  background: var(--gold);
   z-index: calc(var(--z-header) + 1);
   transition: width var(--dur-instant) linear; /* suit le défilement */
   pointer-events: none;
@@ -89,7 +89,7 @@
   position: fixed;
   top: var(--header-h);
   left: 0; right: 0;
-  background: rgba(13,13,13,0.92);
+  background: var(--night-a92);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-subtle);
@@ -104,7 +104,7 @@
   margin: 0 auto;
 }
 body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
-.page-details .mini-bar #mini-name {
+.page-details .mini-bar .mini-name {
   font-family: var(--font-display);
   font-size: 1.1rem;
   color: var(--text-primary);
@@ -117,7 +117,7 @@ body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
   color: var(--text-secondary);
   font-size: 0.85rem;
 }
-.page-details .mini-bar .mini-stats span i, .page-details .mini-bar .mini-stats span .icon { color: var(--hud-cyan); margin-right: 0.35rem; }
+.page-details .mini-bar .mini-stats span i, .page-details .mini-bar .mini-stats span .icon { color: var(--gold); margin-right: 0.35rem; }
 @media (max-width: 64em) { .page-details .mini-bar { display: none; } }
 /* Sommaire collant (shared-toc.css) : sous l'en-tête ET la mini-barre */
 @media (min-width: 64.01em) { .page-details { --toc-top: calc(var(--header-h) + 4.5rem); } }
@@ -129,12 +129,12 @@ body.page-details.mini-bar-visible .mini-bar { transform: translateY(0); }
   gap: 2rem;
 }
 .page-details .capability-column {
-  border-left: 2px solid var(--capability-accent, var(--hud-cyan));
+  border-left: 2px solid var(--capability-accent, var(--gold));
   padding-left: 1.25rem;
   min-width: 0;
 }
 .page-details .capability-column[data-cap="armament"] { --capability-accent: var(--hud-amber); }
-.page-details .capability-column[data-cap="tech"]     { --capability-accent: var(--hud-cyan); }
+.page-details .capability-column[data-cap="tech"]     { --capability-accent: var(--gold); }
 .page-details .capability-column[data-cap="missions"] { --capability-accent: var(--hud-green); }
 .page-details .capability-head {
   display: flex;
@@ -209,9 +209,9 @@ body.page-details { background: var(--night); }
 
 .page-details .breadcrumb { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 3rem; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; }
 .page-details .breadcrumb a { color: var(--text-ghost); text-decoration: none; transition: color var(--dur-fast) var(--ease-out); display: flex; align-items: center; gap: 0.5rem; }
-.page-details .breadcrumb a:hover { color: rgba(255,255,255,0.7); }
-.page-details .breadcrumb > i, .page-details .breadcrumb > .icon { font-size: 0.6rem; color: rgba(255,255,255,0.15); }
-.page-details .breadcrumb span { color: rgba(255,255,255,0.7); }
+.page-details .breadcrumb a:hover { color: var(--white-a70); }
+.page-details .breadcrumb > i, .page-details .breadcrumb > .icon { font-size: 0.6rem; color: var(--white-a15); }
+.page-details .breadcrumb span { color: var(--white-a70); }
 
 .page-details .hero-main { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
 .page-details .hero-left { color: var(--white); }
@@ -223,22 +223,33 @@ body.page-details { background: var(--night); }
 .page-details .meta-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-ghost); padding-right: 1.75rem; margin-right: 1.75rem; border-right: 1px solid var(--white-a07); }
 .page-details .meta-item:last-child { border-right: none; margin-right: 0; padding-right: 0; }
 .page-details .meta-item[hidden] { display: none; }
-.page-details .meta-item i, .page-details .meta-item .icon { font-size: 0.9rem; color: rgba(255,255,255,0.25); }
+.page-details .meta-item i, .page-details .meta-item .icon { font-size: 0.9rem; color: var(--white-a25); }
 
 .page-details .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
 .page-details .btn-label-short { display: none; }
 @media (max-width: 30em) {
-  .page-details .btn-label-long { display: none; }
+  /* Libellé long masqué à l'œil seulement : il reste le nom accessible du
+     bouton (« Exporter en PDF », qui contient le « PDF » affiché, critère
+     2.5.3). En display: none, le bouton n'avait plus de nom (A11Y-001). */
+  .page-details .btn-label-long {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
   .page-details .btn-label-short { display: inline; }
 }
 
 /* BUTTONS */
 .page-details .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem; padding: 0.875rem 1.75rem; border: none; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out), scale var(--dur-instant) var(--ease-out); font-family: 'DM Sans', sans-serif; white-space: nowrap; }
-.page-details .btn-secondary { background: var(--white-a04); backdrop-filter: blur(10px); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.15); }
-.page-details .btn-secondary:hover { background: var(--white-a08); border-color: rgba(255,255,255,0.3); }
+.page-details .btn-secondary { background: var(--white-a04); backdrop-filter: blur(10px); color: var(--white-a80); border: 1px solid var(--white-a15); }
+.page-details .btn-secondary:hover { background: var(--white-a08); border-color: var(--white-a30); }
 /* « Comparer » enfoncé : l'appareil est dans le comparateur. */
-.page-details #compare-btn[aria-pressed="true"] { background: var(--gold-a12); border-color: rgba(200,169,110,0.45); color: var(--hud-cyan); }
-.page-details #compare-btn[aria-pressed="true"]:hover { background: rgba(200,169,110,0.18); }
+.page-details #compare-btn[aria-pressed="true"] { background: var(--gold-a12); border-color: var(--gold-a45); color: var(--gold); }
+.page-details #compare-btn[aria-pressed="true"]:hover { background: var(--gold-a18); }
 /* Requête en cours : le bouton ne réagit plus et le dit. */
 .page-details .btn[aria-busy="true"], .page-details .btn:disabled { opacity: 0.6; cursor: progress; pointer-events: none; }
 /* Ajout aux favoris : le cœur gonfle brièvement. */
@@ -278,14 +289,14 @@ body.page-details { background: var(--night); }
   padding: 3px;
   border: 1px solid var(--gold-a20);
   border-radius: 12px;
-  background: rgba(200,169,110,0.06);
+  background: var(--gold-a06);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
-.page-details .det-fav[data-state="idle"]:has(.favorited) { border-color: var(--hud-amber); background: rgba(255,171,0,0.12); }
-.page-details .det-fav[data-state="idle"]:has(> .btn-favorite:hover) { border-color: rgba(200,169,110,0.45); background: var(--gold-a12); }
+.page-details .det-fav[data-state="idle"]:has(.favorited) { border-color: var(--hud-amber); background: var(--amber-a12); }
+.page-details .det-fav[data-state="idle"]:has(> .btn-favorite:hover) { border-color: var(--gold-a45); background: var(--gold-a12); }
 .page-details .det-fav[data-state="confirm"],
-.page-details .det-fav[data-state="done"] { border-color: rgba(231,76,60,0.35); background: rgba(22,22,24,0.94); } /* = .fav-del (favorites.css) */
+.page-details .det-fav[data-state="done"] { border-color: var(--alert-a35); background: rgba(22,22,24,0.94); } /* = .fav-del (favorites.css) */
 
 /* Cœur et panneau : carrés de 40 px dans la pastille (48 px au total,
    la hauteur des autres boutons de la rangée). Sélecteur renforcé : la
@@ -298,15 +309,15 @@ body.page-details { background: var(--night); }
   border: 0; border-radius: 9px; /* 12 px de pastille − 3 px de marge intérieure */
   background: transparent;
 }
-.page-details .hero-actions .det-fav > .btn.btn-favorite { color: var(--hud-cyan); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.page-details .hero-actions .det-fav > .btn.btn-favorite { color: var(--gold); backdrop-filter: none; -webkit-backdrop-filter: none; }
 .page-details .hero-actions .det-fav > .btn.btn-favorite.favorited { color: var(--hud-amber); }
 /* Mêmes couleurs que la poubelle des cartes de favoris (favorites.css).
    Sélecteur plus fort que celui du cœur favori (ambre), sinon la poubelle
    restait dorée pendant la confirmation. */
-.page-details .hero-actions .det-fav:not([data-state="idle"]) > .btn.btn-favorite.btn-favorite { background: rgba(231,76,60,0.16); color: #ff8a7a; }
+.page-details .hero-actions .det-fav:not([data-state="idle"]) > .btn.btn-favorite.btn-favorite { background: var(--alert-a16); color: var(--alert-text-soft); }
 .page-details .det-fav .btn-favorite:focus-visible,
 .page-details .det-fav .cfm-yes:focus-visible,
-.page-details .det-fav .cfm-no:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 1px; }
+.page-details .det-fav .cfm-no:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 
 /* Le cœur et la poubelle partagent la même case : l'un se rétracte quand
    l'autre apparaît. */
@@ -342,9 +353,9 @@ body.page-details { background: var(--night); }
 /* « ✓ / ✗ » s'ouvrent à droite, dans la pastille. */
 .page-details .det-fav .cfm-panel { gap: 2px; }
 .page-details .det-fav[data-state="confirm"] .cfm-panel { max-width: 6rem; margin-inline-start: 2px; }
-.page-details .det-fav .cfm-yes { color: #ff8a7a; }
-.page-details .det-fav .cfm-yes:hover { background: rgba(231,76,60,0.22); color: var(--white); }
-.page-details .det-fav .cfm-no { color: rgba(255,255,255,0.82); }
+.page-details .det-fav .cfm-yes { color: var(--alert-text-soft); }
+.page-details .det-fav .cfm-yes:hover { background: var(--alert-a22); color: var(--white); }
+.page-details .det-fav .cfm-no { color: var(--white-a82); }
 .page-details .det-fav .cfm-no:hover { background: var(--white-a08); color: var(--white); }
 
 /* Viseur dessiné : « Comparer » verrouille la cible — les quatre graduations
@@ -386,12 +397,12 @@ body.page-details { background: var(--night); }
   border-radius: 12px;
   font-size: 0.9rem;
 }
-.page-details .det-del .cfm-yes { background: rgba(231,76,60,0.2); border-color: var(--accent); color: #ff8a7a; }
-.page-details .det-del .cfm-yes:hover { background: rgba(231,76,60,0.32); color: var(--white); }
-.page-details .det-del .cfm-no { background: var(--white-a04); border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.85); }
+.page-details .det-del .cfm-yes { background: var(--alert-a20); border-color: var(--accent); color: var(--alert-text-soft); }
+.page-details .det-del .cfm-yes:hover { background: var(--alert-a32); color: var(--white); }
+.page-details .det-del .cfm-no { background: var(--white-a04); border-color: var(--white-a15); color: var(--white-a85); }
 .page-details .det-del .cfm-no:hover { background: var(--white-a08); color: var(--white); }
 .page-details .det-del[data-state="confirm"] .btn-danger,
-.page-details .det-del[data-state="done"] .btn-danger { background: rgba(231,76,60,0.2); border-color: var(--accent); }
+.page-details .det-del[data-state="done"] .btn-danger { background: var(--alert-a20); border-color: var(--accent); }
 .page-details .det-del[data-state="done"] .btn-danger { pointer-events: none; }
 /* Rangée en ligne (≥ 48em) : la place de la paire est réservée — un vide en
    fin de rangée, invisible — et la paire se découvre vers la droite. Si elle
@@ -425,15 +436,15 @@ body.page-details { background: var(--night); }
   stroke-dashoffset: 0; opacity: 1;
   transition: stroke-dashoffset var(--dur-slow) var(--ease-out) var(--dur-instant), opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
 }
-.page-details .btn-danger { background: rgba(231,76,60,0.1); color: var(--accent-text); border: 1px solid rgba(231,76,60,0.25); }
-.page-details .btn-danger:hover { background: rgba(231,76,60,0.2); border-color: var(--accent); }
-.page-details .btn-primary { background: var(--hud-cyan); color: var(--night); border: 1px solid transparent; font-weight: 700; }
-.page-details .btn-primary:hover { background: #D4B87E; }
+.page-details .btn-danger { background: var(--alert-a10); color: var(--accent-text); border: 1px solid var(--alert-a25); }
+.page-details .btn-danger:hover { background: var(--alert-a20); border-color: var(--accent); }
+.page-details .btn-primary { background: var(--gold); color: var(--night); border: 1px solid transparent; font-weight: 700; }
+.page-details .btn-primary:hover { background: var(--gold-hover); }
 .page-details .btn-sm { padding: 0.5rem 1rem; font-size: 0.875rem; }
 
 /* HERO IMAGE */
 .page-details .hero-right { position: relative; }
-.page-details .aircraft-image-container { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--white-a08); box-shadow: 0 16px 48px rgba(0,0,0,0.4); background: var(--night-soft); }
+.page-details .aircraft-image-container { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--white-a08); box-shadow: 0 16px 48px var(--black-a40); background: var(--night-soft); }
 /* Morphing carte → fiche (shared-morph.css, js/shared/view-morph.js) :
    nommée en CSS, pas en JS — la page d'arrivée peut s'afficher avant ses
    scripts différés. C'est la page de départ qui décide si la transition a
@@ -447,7 +458,7 @@ body.page-details { background: var(--night); }
 .page-details .image-credit a { color: var(--text-secondary); text-decoration: underline; text-underline-offset: 2px; }
 .page-details .image-credit a:hover,
 .page-details .image-credit a:focus-visible { color: var(--white); }
-.page-details .image-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,13,13,0.4) 0%, transparent 40%); pointer-events: none; }
+.page-details .image-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--night-a40) 0%, transparent 40%); pointer-events: none; }
 
 /* Visionneuse de la photo (js/details/photo-zoom.js). Un bouton couvre la
    photo ; l'indice (quatre coins) apparaît au survol et s'écarte. */
@@ -457,12 +468,12 @@ body.page-details { background: var(--night); }
   background: transparent; cursor: zoom-in;
 }
 .page-details .det-zoom-btn[hidden] { display: none; }
-.page-details .det-zoom-btn:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: -3px; }
+.page-details .det-zoom-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: -3px; }
 .page-details .det-zoom-hint {
   position: absolute; right: 0.75rem; bottom: 0.75rem;
   display: grid; place-items: center; width: 38px; height: 38px;
   border: 1px solid var(--white-a08); border-radius: 10px;
-  background: rgba(13,13,13,0.6); color: var(--white);
+  background: var(--night-a60); color: var(--white);
   opacity: 0; translate: 0 4px;
   transition: opacity var(--dur-fast) var(--ease-out), translate var(--dur-base) var(--ease-out);
 }
@@ -502,7 +513,7 @@ body.page-details { background: var(--night); }
   max-width: min(100%, 1600px); max-height: calc(100dvh - 8rem);
   border-radius: 12px; object-fit: contain; cursor: zoom-out;
 }
-.page-details .det-zoom-credit { max-width: 60ch; font-size: var(--text-xs); color: rgba(255,255,255,0.6); text-align: center; }
+.page-details .det-zoom-credit { max-width: 60ch; font-size: var(--text-xs); color: var(--white-a60); text-align: center; }
 .page-details .det-zoom-credit[hidden] { display: none; }
 .page-details .det-zoom-close {
   position: absolute; top: 1rem; right: 1rem;
@@ -513,34 +524,35 @@ body.page-details { background: var(--night); }
 }
 .page-details .det-zoom-close:hover { background: var(--white-a08); }
 .page-details .det-zoom-close:active { scale: var(--press-scale); }
-.page-details .det-zoom-close:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
+.page-details .det-zoom-close:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 /* QUICK STATS */
-.page-details .quick-stats { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px) saturate(1.1); -webkit-backdrop-filter: blur(20px) saturate(1.1); padding: 4rem 0; margin-top: -2rem; margin-bottom: 4rem; position: relative; z-index: 2; border-top: 1px solid var(--white-a06); border-bottom: 1px solid var(--white-a06); }
+.page-details .quick-stats { background: var(--white-a03); backdrop-filter: blur(20px) saturate(1.1); -webkit-backdrop-filter: blur(20px) saturate(1.1); padding: 4rem 0; margin-top: -2rem; margin-bottom: 4rem; position: relative; z-index: 2; border-top: 1px solid var(--white-a06); border-bottom: 1px solid var(--white-a06); }
 .page-details .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
 .page-details .stat-card { display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem; background: var(--white-a02); border: 1px solid var(--white-a07); border-radius: 12px; transition: transform var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out), scale var(--dur-instant) var(--ease-out); }
-.page-details .stat-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.13); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-.page-details .stat-icon { width: 56px; height: 56px; background: var(--white-a04); border: 1px solid var(--white-a08); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--hud-cyan); flex-shrink: 0; }
+.page-details .stat-card:hover { transform: translateY(-3px); border-color: var(--white-a13); box-shadow: 0 8px 24px var(--black-a30); }
+.page-details .stat-icon { width: 56px; height: 56px; background: var(--white-a04); border: 1px solid var(--white-a08); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--gold); flex-shrink: 0; }
 .page-details .stat-content { flex: 1; }
 .page-details .stat-label { font-size: 0.8rem; color: var(--text-ghost); margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
 .page-details .stat-value { font-family: 'DM Sans', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--white); }
 
 /* MAIN CONTENT */
-.page-details main { padding: 2rem 0 6rem; }
+.page-details .details-main { padding: 2rem 0 6rem; }
 .page-details .content-layout { display: grid; gap: 2.5rem; }
-.page-details .content-section { background: var(--white-a04); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 3rem; transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out), opacity var(--dur-slower) var(--ease-out), translate var(--dur-slower) var(--ease-out); }
+.page-details .content-section { background: var(--white-a04); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border: 1px solid var(--white-a09); border-radius: 16px; padding: 3rem; transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out), opacity var(--dur-slower) var(--ease-out), translate var(--dur-slower) var(--ease-out); }
 /* Apparition au défilement (details/ui.js) : posée par le JS, retirée à
    l'entrée dans le viewport. Jamais à l'impression. */
 .page-details .content-section.is-pending { opacity: 0; translate: 0 var(--enter-distance); }
 @media print { .page-details .content-section { opacity: 1; translate: none; transition: none; } }
-.page-details .content-section:hover { border-color: rgba(200,169,110,0.22); box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+.page-details .content-section:hover { border-color: var(--gold-a22); box-shadow: 0 8px 32px var(--black-a25); }
 .page-details .section-header { margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--white-a07); }
 .page-details .section-header h2 { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; color: var(--white); display: flex; align-items: center; gap: 0.75rem; }
-.page-details .section-header h2 i, .page-details .section-header h2 .icon { color: var(--hud-cyan); }
+.page-details .section-header h2 i, .page-details .section-header h2 .icon { color: var(--gold); }
 .page-details .section-content { line-height: 1.8; }
 
 /* Description */
-.page-details .description-section p { font-size: 1.05rem; color: rgba(255,255,255,0.55); }
+.page-details .description-section p,
+.page-details .description-body { font-size: 1.05rem; color: var(--white-a55); }
 
 /* Timeline */
 /* Dates clés : trois jalons côte à côte, sans trait. Chacun dit le temps
@@ -561,7 +573,7 @@ body.page-details { background: var(--night); }
   width: 2.25rem; height: 2.25rem; margin-bottom: 0.6rem;
   border-radius: 50%;
   background: var(--gold-a08);
-  color: var(--hud-cyan);
+  color: var(--gold);
   font-size: 0.9rem;
 }
 .page-details .milestone h3 {
@@ -575,7 +587,7 @@ body.page-details { background: var(--night); }
   font-size: 1.2rem; font-weight: 700; line-height: 1.3;
   color: var(--white);
 }
-.page-details .milestone-span { margin: 0.2rem 0 0; font-size: 0.82rem; line-height: 1.4; color: var(--hud-cyan); }
+.page-details .milestone-span { margin: 0.2rem 0 0; font-size: 0.82rem; line-height: 1.4; color: var(--gold); }
 .page-details .milestone-span[hidden] { display: none; }
 
 /* Conflits : grille de cartes, sans trait ni pastille. Ordre chronologique
@@ -596,9 +608,9 @@ body.page-details { background: var(--night); }
 }
 .page-details .war-card-linked:hover {
   transform: translateY(-3px);
-  border-color: rgba(200,169,110,0.3);
-  background-color: var(--gold-a04, rgba(200,169,110,0.04));
-  box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+  border-color: var(--gold-a30);
+  background-color: var(--gold-a04, var(--gold-a04));
+  box-shadow: 0 12px 28px var(--black-a28);
 }
 .page-details .war-card h3 {
   font-family: 'DM Sans', sans-serif; font-weight: 700;
@@ -610,46 +622,46 @@ body.page-details { background: var(--night); }
   margin-bottom: 0.5rem;
   font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.14em;
   font-variant-numeric: tabular-nums;
-  color: var(--hud-cyan); font-weight: 600;
+  color: var(--gold); font-weight: 600;
 }
-.page-details .war-card p { flex: 1; color: rgba(255,255,255,0.55); line-height: 1.65; font-size: 0.92rem; margin: 0; }
+.page-details .war-card p { flex: 1; color: var(--white-a55); line-height: 1.65; font-size: 0.92rem; margin: 0; }
 /* Rôle de l'appareil dans le conflit (remplace la description générale) et
  * son camp, en ligne discrète sous le titre. */
 .page-details .war-role { flex: 1; }
 .page-details .war-card .war-side {
   flex: 0 0 auto; margin: 0 0 0.6rem;
-  font-size: var(--text-xs); line-height: 1.4; color: rgba(255,255,255,0.7);
+  font-size: var(--text-xs); line-height: 1.4; color: var(--white-a70);
 }
 .page-details .war-side-label {
   margin-right: 0.35rem;
   text-transform: uppercase; letter-spacing: 0.14em; font-weight: 600;
-  color: rgba(255,255,255,0.45);
+  color: var(--white-a45);
 }
 /* Carte de conflit cliquable : le lien du titre s'étire sur toute la carte. */
 .page-details .war-link { color: inherit; text-decoration: none; }
 .page-details .war-link::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
 .page-details .war-link:focus-visible { outline: none; }
-.page-details .war-card-linked:focus-within { border-color: var(--hud-cyan); box-shadow: var(--focus-ring); }
+.page-details .war-card-linked:focus-within { border-color: var(--gold); box-shadow: var(--focus-ring); }
 .page-details .war-more {
   display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 1rem;
-  font-size: 0.8rem; font-weight: 600; color: var(--hud-cyan);
+  font-size: 0.8rem; font-weight: 600; color: var(--gold);
 }
 .page-details .war-card-linked:hover .war-more .icon { transform: translateX(3px); }
 .page-details .war-more .icon { transition: transform var(--dur-base) var(--ease-out); font-size: 0.75rem; }
 /* Missions : le nom mène au hangar filtré. */
 .page-details .capability-link { text-decoration: none; }
 .page-details .capability-link:hover,
-.page-details .capability-link:focus-visible { color: var(--hud-cyan); text-decoration: underline; text-underline-offset: 3px; }
+.page-details .capability-link:focus-visible { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
 
 /* MODAL */
 .page-details .modal { position: fixed; inset: 0; z-index: var(--z-modal); display: none; align-items: center; justify-content: center; padding: 2rem; }
 .page-details .modal.show { display: flex; }
-.page-details .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); }
+.page-details .modal-backdrop { position: absolute; inset: 0; background: var(--black-a80); backdrop-filter: blur(6px); }
 /* Fermeture : la modale repart comme elle est venue au lieu de disparaître. */
 .page-details .modal.is-closing .modal-container { animation: modalSlideOutDetails var(--dur-fast) var(--ease-in) forwards; }
 .page-details .modal.is-closing .modal-backdrop { animation: vh-fade-out var(--dur-fast) var(--ease-in) forwards; }
 @keyframes modalSlideOutDetails { to { opacity: 0; transform: scale(var(--modal-scale-close)); } }
-.page-details .modal-container { position: relative; background: var(--night-mid); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); max-width: 64em; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn var(--modal-open-dur) var(--modal-ease); }
+.page-details .modal-container { position: relative; background: var(--night-mid); border: 1px solid var(--white-a09); border-radius: 16px; box-shadow: 0 24px 64px var(--black-a60); max-width: 64em; width: 100%; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; animation: modalSlideIn var(--modal-open-dur) var(--modal-ease); }
 /* @keyframes modalSlideIn → shared.css (dédupliqué) */
 .page-details .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.75rem 2rem; border-bottom: 1px solid var(--white-a07); }
 .page-details .modal-header h2 { font-family: 'DM Sans', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 0.75rem; }
@@ -658,689 +670,16 @@ body.page-details { background: var(--night); }
 .page-details .modal-form { flex: 1; overflow-y: auto; padding: 2rem; }
 .page-details .form-sections { display: flex; flex-direction: column; gap: 2rem; }
 .page-details .form-section { background: var(--white-a02); border: 1px solid var(--white-a06); border-radius: 12px; padding: 1.5rem; }
-.page-details .form-section h3 { font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.page-details .form-section h3 { font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 700; color: var(--white-a60); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
 .page-details .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
 .page-details .form-group { display: flex; flex-direction: column; }
 .page-details .form-group.span-2 { grid-column: span 2; }
-.page-details .form-group label { font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
-.page-details .form-group input, .page-details .form-group select, .page-details .form-group textarea { padding: 0.875rem 1rem; border: 1px solid var(--border-field); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out); background: rgba(255,255,255,0.03); color: var(--white); }
+.page-details .form-group label { font-weight: 600; color: var(--white-a60); margin-bottom: 0.5rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.page-details .form-group input, .page-details .form-group select, .page-details .form-group textarea { padding: 0.875rem 1rem; border: 1px solid var(--border-field); border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out); background: var(--white-a03); color: var(--white); }
 .page-details .form-group input::placeholder, .page-details .form-group textarea::placeholder { color: var(--text-placeholder); }
-.page-details .form-group input:focus, .page-details .form-group select:focus, .page-details .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.45); box-shadow: 0 0 0 3px var(--white-a12); background: rgba(255,255,255,0.05); }
+.page-details .form-group input:focus, .page-details .form-group select:focus, .page-details .form-group textarea:focus { outline: none; border-color: var(--white-a45); box-shadow: 0 0 0 3px var(--white-a12); background: var(--white-a05); }
 .page-details .form-group select option { background: var(--night-mid); color: var(--white); }
 .page-details .form-group textarea { resize: vertical; min-height: 100px; }
 .page-details .modal-footer { display: flex; justify-content: flex-end; gap: 1rem; padding: 1.75rem 2rem; border-top: 1px solid var(--white-a07); }
 
 /* footer/toast → shared.css */
-
-/* ======================================================================
-   PROFIL DE CAPACITÉS (radar.js) — section du contenu depuis qu'il a
-   quitté sa bande pleine largeur : même carte, même titre, même sommaire
-   que les autres. Profil seul : les valeurs brutes sont dans les chiffres
-   clés, la fiche technique et les capacités.
-   ====================================================================== */
-
-.page-details .radar-subtitle {
-  margin: -0.75rem 0 1.75rem;
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: var(--text-ghost);
-}
-
-.page-details .radar-body {
-  display: flex;
-  align-items: center;
-  gap: 3rem;
-}
-
-.page-details .radar-chart-area {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 260px;
-  /* Les libellés d'axes débordent du SVG (overflow visible) : la marge
-     les garde à l'intérieur de la carte. */
-  margin-inline: 2.25rem;
-}
-.page-details .radar-chart-area svg { overflow: visible; }
-
-.page-details .radar-legend-area {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.page-details .radar-stat-head {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.45rem;
-}
-
-.page-details .radar-stat-icon {
-  width: 1.75rem;
-  height: 1.75rem;
-  background: var(--gold-a08);
-  border: 1px solid rgba(200,169,110,0.18);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--hud-cyan, #C8A96E);
-  font-size: 0.75rem;
-  flex-shrink: 0;
-}
-
-.page-details .radar-stat-label {
-  flex: 1;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: rgba(255,255,255,0.75);
-  letter-spacing: 0.02em;
-}
-
-/* Police de la fiche (DM Sans) : ce pourcentage était seul en Barlow Condensed. */
-.page-details .radar-stat-pct {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--hud-cyan, #C8A96E);
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-  white-space: nowrap;
-}
-
-.page-details .radar-bar {
-  height: 3px;
-  background: var(--white-a07);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.page-details .radar-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, rgba(200,169,110,0.5), #C8A96E);
-  border-radius: 2px;
-  width: 0%;
-  transition: width var(--dur-slower) var(--ease-out);
-}
-
-/* Radar et barres côte à côte tant qu'il y a la place (768 px compris). */
-@media (max-width: 47.99em) {
-  .page-details .radar-body { flex-direction: column; gap: 1.75rem; }
-  .page-details .radar-chart-area { width: 230px; }
-  .page-details .radar-legend-area { width: 100%; }
-}
-@media (max-width: 30em) {
-  .page-details .radar-chart-area { width: 200px; }
-}
-
-/* RESPONSIVE */
-/* Deux colonnes jusqu'à 1024 px : en dessous de 1200, l'image passait
-   au-dessus du titre à pleine largeur (960 × 640 à 1024 px), repoussant
-   nom, actions et chiffres clés sous la ligne de flottaison. */
-@media (max-width: 75em) { .page-details .hero-main { gap: 3rem; } .page-details .stats-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 63.99em) {
-  .page-details .hero-main { grid-template-columns: 1fr; gap: 2rem; }
-  .page-details .hero-right { order: -1; }
-  /* Photo en bandeau : pleine largeur mais hauteur bornée. */
-  .page-details .aircraft-image-container { aspect-ratio: 16 / 9; max-height: 60vh; }
-  .page-details .aircraft-image-container picture,
-  .page-details .aircraft-image { width: 100%; height: 100%; object-fit: cover; }
-}
-@media (max-width: 64em) { .page-details .hero-left h1 { font-size: clamp(2rem, 4vw, 3rem); } }
-@media (max-width: 64em) {
-  /* hamburger/nav-links → shared.css */
-  .page-details .btn { min-height: 44px; }
-  .page-details .form-grid { grid-template-columns: 1fr; }
-  .page-details .form-group.span-2 { grid-column: span 1; }
-}
-@media (max-width: 48em) {
-  .page-details .container { padding: 0 1.5rem; }
-  .page-details .aircraft-hero { padding: 3rem 0 3rem; }
-  .page-details .breadcrumb { font-size: 0.85rem; margin-bottom: 2rem; }
-  .page-details .aircraft-subtitle { font-size: 1.05rem; }
-  /* Une seule ligne : le cœur garde sa taille, « Comparer » et « PDF » se
-     partagent le reste (ils s'empilaient sur trois lignes). Les boutons
-     d'administration passent dessous, en pleine largeur. */
-  .page-details .hero-actions { flex-wrap: wrap; gap: 0.625rem; }
-  .page-details .hero-actions .det-fav { flex: 0 0 auto; }
-  .page-details .hero-actions > #compare-btn,
-  .page-details .hero-actions > #pdf-btn { flex: 1 1 0; min-width: 0; }
-  .page-details .hero-actions > #edit-btn,
-  .page-details .hero-actions > .det-del { flex: 1 1 100%; }
-  /* En colonne, « Supprimer » occupe toute la largeur : il se resserre pour
-     laisser sortir la paire, réduite à ses icônes (noms accessibles gardés). */
-  .page-details .hero-actions .det-del { display: flex; }
-  .page-details .hero-actions .det-del > .btn { flex: 1 1 auto; min-width: 0; }
-  .page-details .hero-actions .det-del .cfm-panel { flex-shrink: 0; }
-  .page-details .det-del .cfm-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .page-details .det-del .cfm-yes,
-  .page-details .det-del .cfm-no { width: 44px; padding: 0; }
-  /* Pas les boutons du bandeau cookies : pleine largeur, ils s'empilaient
-     sur trois lignes et le bandeau masquait le bas de la fiche. */
-  .page-details .btn:not(.cookie-banner .btn) { min-height: 44px; }
-  .page-details .hero-actions .btn { padding-inline: 1rem; }
-  .page-details .hero-actions .btn > span { overflow: hidden; text-overflow: ellipsis; }
-  /* Les quatre chiffres clés restent en 2 × 2 : en une colonne ils
-     occupaient un écran entier. */
-  .page-details .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-  .page-details .stat-card { padding: 1.25rem; }
-  .page-details .content-section { padding: 1.5rem; }
-  .page-details .section-header h2 { font-size: 1.3rem; }
-  /* Jalons empilés : l'icône à gauche, le texte à côté. */
-  .page-details .milestones { grid-template-columns: 1fr; gap: 0.75rem; }
-  .page-details .milestone { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; row-gap: 0.15rem; padding: 1rem 1.1rem; }
-  .page-details .milestone-icon { grid-row: 1 / span 3; margin: 0; }
-  .page-details .modal-container { max-height: 95vh; }
-  .page-details .modal-header, .page-details .modal-form, .page-details .modal-footer { padding: 1.5rem; }
-  .page-details .modal-header h2 { font-size: 1.3rem; }
-  /* footer-content, #toast-container, .toast → shared.css */
-}
-@media (max-width: 48em) { .page-details .hero-meta { gap: 0.75rem; } .page-details .stat-card { padding: 1.25rem; gap: 1rem; } .page-details .stat-icon { width: 48px; height: 48px; font-size: 1.25rem; } }
-@media (max-width: 48em) {
-  .page-details .capabilities-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-  .page-details .capability-column { padding-left: 1rem; }
-}
-@media (max-width: 30em) {
-  /* .logo, header → shared.css */
-  .page-details .container { padding: 0 1rem; }
-  .page-details .aircraft-hero { padding: 2rem 0 2.5rem; }
-  .page-details .breadcrumb { font-size: 0.8rem; gap: 0.5rem; margin-bottom: 1.5rem; }
-  .page-details .hero-left h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); }
-  .page-details .aircraft-subtitle { font-size: 1rem; margin-bottom: 1.5rem; }
-  /* Quatre éléments courts : en ligne, repliés au besoin (empilés, ils
-     prenaient quatre lignes). */
-  .page-details .hero-meta { gap: 0.5rem 1.25rem; margin-bottom: 1.5rem; padding: 1rem 0; }
-  .page-details .meta-item { border-right: none; margin-right: 0; padding-right: 0; }
-  .page-details .meta-item { font-size: 0.9rem; }
-  .page-details .btn { padding: 0.75rem 1.5rem; font-size: 0.9rem; }
-  .page-details .quick-stats { padding: 2rem 0; }
-  .page-details .stats-grid { gap: 0.75rem; }
-  .page-details .stat-card { padding: 1rem; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
-  .page-details .stat-icon { width: 36px; height: 36px; font-size: 1rem; border-radius: 10px; }
-  .page-details .stat-label { font-size: var(--text-xs); }
-  .page-details .stat-value { font-size: 1.2rem; }
-  .page-details .content-section { padding: 1.25rem 1rem; border-radius: 12px; }
-  .page-details .section-header { margin-bottom: 1.5rem; }
-  .page-details .section-header h2 { font-size: 1.15rem; }
-  .page-details .description-section p { font-size: 1rem; }
-  .page-details .war-card { padding: 1.25rem; }
-  .page-details .war-card h3 { font-size: 1rem; }
-  .page-details .modal { padding: 0; align-items: flex-end; }
-  .page-details .modal-container { border-radius: 16px 16px 0 0; max-height: 90vh; }
-  .page-details .modal-header { padding: 1.25rem; }
-  .page-details .modal-header h2 { font-size: 1.15rem; }
-  .page-details .modal-form, .page-details .modal-footer { padding: 1.25rem; }
-  .page-details .form-section { padding: 1.25rem; }
-  .page-details .form-section h3 { font-size: 0.9rem; }
-  /* footer → shared.css */
-}
-@media (hover: none) and (pointer: coarse) {
-  .page-details .btn { min-height: 48px; }
-  /* .hamburger → shared.css */
-  .page-details .modal-close { min-width: 48px; min-height: 48px; }
-}
-/* ============================================================
-   EXPORT PDF (bouton « Exporter en PDF » → window.print())
-   Un document texte, pas une copie de l'écran : une seule colonne de
-   lecture, titres soulignés d'un filet, valeurs en listes « libellé —
-   valeur ». Ni cartes, ni tuiles, ni graphique : rien qui puisse déborder
-   d'une marge, quelle que soit la largeur du papier ou les marges choisies
-   dans la boîte d'impression. Seule la photo reste, en petit.
-   ============================================================ */
-/* Marge totale ≈ 18 mm : 12 mm de page + 6 mm dans le document. La part
-   intérieure reste si la boîte d'impression est réglée sur « Marges :
-   aucune » ou « minimum » (elle remplace alors celle de @page) : le texte
-   ne touche jamais le bord. */
-@page { size: A4; margin: 14mm 12mm; }
-@media print {
-  /* color-scheme: dark (tokens.css + meta) fait peindre les marges de page
-     en sombre ; hauteurs d'écran neutralisées (page blanche en fin). */
-  html:has(body.page-details) { color-scheme: light !important; background: #fff !important; height: auto !important; min-height: 0 !important; }
-  body.page-details {
-    background: #fff !important; color: #1a1a1a;
-    font-size: 10.5pt; line-height: 1.5;
-    height: auto !important; min-height: 0 !important;
-    margin: 0 !important; padding: 4mm 6mm !important;
-  }
-  body.page-details::before, body.page-details::after { content: none !important; display: none !important; }
-  .page-details *, .page-details *::before, .page-details *::after {
-    background: transparent !important;
-    box-shadow: none !important; text-shadow: none !important;
-    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
-    animation: none !important; transition: none !important;
-    opacity: 1 !important; translate: none !important; transform: none !important;
-  }
-  .page-details * {
-    color: #1a1a1a !important;
-    border: 0 !important; border-radius: 0 !important;
-    box-sizing: border-box;
-    max-width: 100% !important;
-    overflow-wrap: anywhere;
-  }
-
-  /* Tout ce qui n'est pas du contenu de fiche. */
-  .page-details > header, .page-details footer, .page-details .skip-link,
-  .page-details .breadcrumb, .page-details .hero-actions, .page-details .share-bar,
-  .page-details .hero-background, .page-details .image-overlay,
-  .page-details .det-zoom-btn, .page-details .det-zoom,
-  .page-details .mini-bar, .page-details .scroll-progress, .page-details .nav-scrim,
-  .page-details #compare-bar, .page-details .compare-bar, .page-details .compare-modal,
-  .page-details #toast-container, .page-details #edit-modal, .page-details .modal,
-  .page-details .cookie-banner, .page-details .cookie-modal,
-  .page-details .hamburger, .page-details .lang-switch,
-  .page-details .stat-icon, .page-details .milestone-icon,
-  .page-details .section-header .icon, .page-details .capability-head .icon,
-  .page-details .meta-item .icon,
-  .page-details .war-more, .page-details .related-img, .page-details .related-arrow,
-  .page-details .source-link .icon, .page-details .source-arrow,
-  .page-details .hidden {
-    display: none !important;
-  }
-
-  /* Une colonne, sans les marges ni largeurs de l'écran. */
-  .page-details .container, .page-details main, .page-details .content-layout,
-  .page-details .hero-content, .page-details .aircraft-hero, .page-details .quick-stats,
-  .page-details .content-section, .page-details .section-content {
-    display: block !important;
-    width: auto !important; min-height: 0 !important; height: auto !important;
-    margin: 0 !important; padding: 0 !important;
-  }
-  .page-details .content-section, .page-details .quick-stats { margin-bottom: 6mm !important; }
-
-  /* Titres de section : texte gras, filet fin dessous, jamais seuls en bas. */
-  .page-details .section-header { margin: 0 0 2.5mm !important; padding: 0 0 1mm !important; border-bottom: 0.6pt solid #999 !important; break-after: avoid; page-break-after: avoid; }
-  .page-details .section-header h2 { display: block !important; margin: 0 !important; font-family: 'DM Sans', sans-serif !important; font-size: 13pt !important; font-weight: 700 !important; letter-spacing: 0 !important; text-transform: none !important; }
-
-  /* En-tête : nom, désignation, origine, puis la photo. */
-  .page-details .aircraft-hero { margin-bottom: 6mm !important; break-inside: avoid; page-break-inside: avoid; }
-  .page-details .aircraft-hero::before {
-    content: 'Vol d\'Histoire — Fiche technique';
-    display: block; margin-bottom: 3mm;
-    font-size: 8pt; letter-spacing: 0.15em; text-transform: uppercase; color: #777 !important;
-  }
-  .page-details .hero-main, .page-details .hero-left, .page-details .hero-right { display: block !important; margin: 0 !important; padding: 0 !important; text-align: left !important; }
-  .page-details .hero-left h1 { margin: 0 !important; font-size: 24pt !important; line-height: 1.1 !important; letter-spacing: -0.01em !important; color: #000 !important; }
-  .page-details .aircraft-subtitle { margin: 0.5mm 0 1.5mm !important; font-size: 11.5pt !important; color: #444 !important; }
-  .page-details .hero-meta { display: block !important; margin: 0 0 4mm !important; padding: 0 !important; font-size: 10pt !important; color: #444 !important; }
-  .page-details .meta-item { display: inline !important; margin: 0 !important; padding: 0 !important; }
-  .page-details .meta-item + .meta-item::before { content: ' · '; }
-  .page-details .aircraft-image-container { display: block !important; margin: 0 !important; height: auto !important; aspect-ratio: auto !important; overflow: visible !important; }
-  .page-details .aircraft-image-container img { display: block !important; width: auto !important; height: auto !important; max-width: 100% !important; max-height: 60mm !important; object-fit: contain !important; }
-  .page-details .image-credit { margin: 1mm 0 0 !important; font-size: 7.5pt !important; color: #777 !important; text-align: left !important; }
-
-  /* Listes « libellé — valeur » sur deux colonnes : chiffres clés, fiche
-     technique, production. Une ligne par donnée, aucun cadre. */
-  .page-details .stats-grid, .page-details .specs-grid, .page-details .production-grid .spec-list {
-    display: grid !important; grid-template-columns: 1fr 1fr !important;
-    column-gap: 10mm !important; row-gap: 0 !important;
-  }
-  .page-details .spec-group-title { margin: 0 0 1mm !important; font-size: 8.5pt !important; color: #555 !important; }
-  /* Un groupe (dix lignes au plus) ne se coupe pas : son titre restait
-     seul en bas de page, ses lignes en haut de la suivante. */
-  .page-details .spec-group { margin: 0 0 3mm !important; break-inside: avoid; }
-  .page-details .spec-group-title { break-after: avoid; }
-
-  /* Profil de capacités sur papier blanc : la grille et les libellés du
-     radar sont dessinés en blanc pour l'écran ; les barres doivent
-     s'imprimer même sans « graphiques d'arrière-plan ». */
-  .page-details .radar-section { break-inside: avoid; }
-  .page-details .radar-subtitle { margin: 0 0 2mm !important; font-size: 9pt !important; color: #555 !important; }
-  .page-details .radar-body { gap: 10mm !important; }
-  .page-details .radar-chart-area { width: 55mm !important; margin-inline: 12mm !important; }
-  .page-details .radar-svg text { fill: #444 !important; }
-  .page-details .radar-svg line,
-  .page-details .radar-svg polygon:not(.radar-polygon) { stroke: #d6d6d6 !important; fill: none !important; }
-  .page-details .radar-svg circle { stroke: #fff !important; }
-  .page-details .radar-legend-area { gap: 2.5mm !important; }
-  .page-details .radar-stat-icon { display: none !important; }
-  .page-details .radar-stat-head { margin-bottom: 1mm !important; }
-  .page-details .radar-stat-label { font-size: 9.5pt !important; color: #333 !important; }
-  .page-details .radar-stat-pct { font-size: 9.5pt !important; color: #000 !important; }
-  .page-details .radar-bar { background: #e6e6e6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .page-details .radar-bar-fill { background: #b08d4f !important; transition: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .page-details .stat-card, .page-details .spec-row {
-    display: flex !important; justify-content: space-between; align-items: baseline; gap: 4mm;
-    margin: 0 !important; padding: 0.9mm 0 !important; min-height: 0 !important;
-    border-bottom: 0.4pt solid #e2e2e2 !important;
-    text-align: left !important;
-    break-inside: avoid;
-  }
-  .page-details .stat-content { display: contents !important; }
-  .page-details .stat-label, .page-details .spec-label {
-    margin: 0 !important; padding: 0 !important;
-    font-size: 9.5pt !important; font-weight: 400 !important; letter-spacing: 0 !important; text-transform: none !important;
-    color: #555 !important;
-  }
-  .page-details .stat-value, .page-details .spec-value {
-    margin: 0 !important; padding: 0 !important;
-    font-size: 10pt !important; font-weight: 600 !important; text-align: right !important;
-    color: #000 !important;
-  }
-  .page-details .variants-block { margin: 3mm 0 0 !important; padding: 0 !important; }
-  .page-details .variants-block h3 { margin: 0 0 1mm !important; font-size: 10.5pt !important; letter-spacing: 0 !important; text-transform: none !important; }
-
-  /* Texte courant. */
-  .page-details .description-section .section-content { max-width: none !important; }
-  .page-details p, .page-details li { orphans: 3; widows: 3; }
-  .page-details .description-section p, .page-details .markdown-body p, .page-details .markdown-body li,
-  .page-details .variants-content p, .page-details .variants-content li { font-size: 10.5pt !important; line-height: 1.55 !important; }
-  .page-details .markdown-body h3.md-section { margin: 3.5mm 0 1mm !important; font-size: 11pt !important; color: #000 !important; break-after: avoid; page-break-after: avoid; }
-  .page-details .markdown-body h4.md-subsection { font-size: 10.5pt !important; break-after: avoid; }
-  .page-details .markdown-body ul, .page-details .variants-content ul { margin: 1mm 0 !important; padding-left: 5mm !important; }
-  .page-details a { text-decoration: none !important; }
-
-  /* Dates clés : trois lignes. */
-  .page-details .milestones { display: block !important; margin: 0 !important; padding: 0 !important; list-style: none; }
-  .page-details .milestone { display: block !important; margin: 0 0 1mm !important; padding: 0 !important; }
-  .page-details .milestone h3, .page-details .milestone .timeline-date, .page-details .milestone-span { display: inline !important; margin: 0 !important; font-size: 10.5pt !important; letter-spacing: 0 !important; text-transform: none !important; }
-  .page-details .milestone h3 { font-weight: 400 !important; color: #555 !important; }
-  .page-details .milestone h3::after { content: ' : '; }
-  .page-details .milestone .timeline-date { font-weight: 600 !important; }
-  .page-details .milestone-span { color: #666 !important; font-size: 9.5pt !important; }
-  .page-details .milestone-span::before { content: ' (' }
-  .page-details .milestone-span::after { content: ')' }
-  .page-details .milestone-span[hidden] { display: none !important; }
-
-  /* Capacités : trois listes à la suite. */
-  .page-details .capabilities-grid { display: block !important; }
-  .page-details .capability-column { display: block !important; margin: 0 0 3mm !important; padding: 0 !important; }
-  .page-details .capability-head { display: block !important; margin: 0 0 1mm !important; padding: 0 !important; }
-  .page-details .capability-head h3 { display: inline !important; font-size: 11pt !important; }
-  .page-details .capability-count { display: inline !important; color: #777 !important; font-size: 9.5pt !important; }
-  .page-details .capability-count::before { content: ' ('; }
-  .page-details .capability-count::after { content: ')'; }
-  .page-details .capability-column ul, .page-details .capability-column ol { display: block !important; margin: 0 !important; padding-left: 5mm !important; list-style: disc !important; }
-  .page-details .capability-item { display: list-item !important; margin: 0 0 0.6mm !important; padding: 0 !important; break-inside: avoid; }
-  .page-details .capability-name { display: inline !important; font-size: 10pt !important; font-weight: 600 !important; }
-  .page-details .capability-desc { display: inline !important; font-size: 9.5pt !important; color: #444 !important; }
-  .page-details .capability-desc::before { content: ' — '; }
-
-  /* Conflits : une entrée par conflit. */
-  .page-details .wars-timeline { display: block !important; }
-  .page-details .war-card { display: block !important; margin: 0 0 2.5mm !important; padding: 0 !important; break-inside: avoid; page-break-inside: avoid; }
-  .page-details .war-period { display: inline !important; margin: 0 !important; font-size: 9.5pt !important; font-weight: 600 !important; letter-spacing: 0 !important; text-transform: none !important; color: #555 !important; }
-  .page-details .war-period::after { content: ' · '; }
-  .page-details .war-card h3 { display: inline !important; margin: 0 !important; font-size: 10.5pt !important; }
-  .page-details .war-card p { margin: 0.5mm 0 0 !important; font-size: 9.5pt !important; line-height: 1.45 !important; color: #444 !important; }
-
-  /* Filiation : « Ouragan (1952) → Mystère IV (1955) → … » */
-  .page-details .lineage-chain { display: block !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; list-style: none; }
-  .page-details .lineage-node { display: inline !important; margin: 0 !important; padding: 0 !important; }
-  /* !important : la règle d'écran (details-lineage.css, chargée après) vide
-     le contenu du séparateur. */
-  .page-details .lineage-node + .lineage-node::before { content: ' → ' !important; position: static !important; display: inline !important; width: auto !important; height: auto !important; }
-  /* Année après le nom, entre parenthèses (elle le précède dans le DOM). */
-  .page-details .lineage-link { display: inline-flex !important; flex-direction: row-reverse !important; align-items: baseline !important; gap: 1mm !important; margin: 0 !important; padding: 0 !important; min-width: 0 !important; }
-  .page-details .lineage-name { font-size: 10pt !important; font-weight: 600 !important; }
-  .page-details .lineage-year { display: inline !important; font-size: 9pt !important; color: #666 !important; }
-  .page-details .lineage-year::before { content: '('; }
-  .page-details .lineage-year::after { content: ')'; }
-  .page-details .lineage-note { margin: 1.5mm 0 0 !important; font-size: 8.5pt !important; color: #666 !important; }
-
-  /* Appareils liés : « Prédécesseur : Mirage 2000 ». */
-  .page-details .related-grid { display: block !important; }
-  .page-details .related-card { display: block !important; margin: 0 0 0.8mm !important; padding: 0 !important; }
-  .page-details .related-card::after { content: none !important; }
-  .page-details .related-relation { position: static !important; display: inline !important; margin: 0 !important; padding: 0 !important; font-size: 10pt !important; font-weight: 400 !important; letter-spacing: 0 !important; text-transform: none !important; color: #555 !important; }
-  .page-details .related-relation::after { content: ' : '; }
-  .page-details .related-card h3 { display: inline !important; margin: 0 !important; padding: 0 !important; font-size: 10.5pt !important; }
-
-  /* Sources : le papier n'a pas de lien, l'adresse est imprimée. */
-  .page-details .sources-list { display: block !important; }
-  .page-details .source-link { display: block !important; margin: 0 0 0.8mm !important; padding: 0 !important; font-size: 10pt !important; }
-  .page-details .source-link::after { content: ' — ' attr(href); font-size: 8.5pt; color: #666 !important; }
-
-  /* Fin de document. */
-  .page-details main::after {
-    content: 'vol-histoire.titouan-borde.com';
-    display: block; margin-top: 6mm; padding-top: 2mm;
-    border-top: 0.4pt solid #ccc !important;
-    font-size: 8pt; color: #777 !important;
-  }
-}
-
-/* ============================================================
-   ENRICHISSEMENT (strates 1–6) : fiche technique, production,
-   appareils liés, sources externes.
-   ============================================================ */
-
-/* Fiche technique : trois groupes (cellule, performances, motorisation),
-   chacun une liste « libellé — valeur ». Production : une seule liste.
-   Remplace 17 tuiles à icône qui s'empilaient une par ligne sur téléphone. */
-.page-details .specs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  gap: 1.5rem 2.5rem;
-  align-items: start;
-}
-.page-details .spec-group-title {
-  margin: 0 0 0.5rem;
-  font-size: var(--text-xs);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--hud-cyan);
-}
-.page-details .spec-list { margin: 0; }
-/* Production : deux colonnes de lignes sur grand écran. */
-.page-details .production-grid .spec-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-  column-gap: 2.5rem;
-}
-.page-details .spec-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  padding: 0.55rem 0;
-  line-height: 1.4;
-  border-bottom: 1px solid var(--white-a06);
-}
-.page-details .spec-label {
-  margin: 0;
-  font-size: 0.875rem;
-  white-space: nowrap; /* la valeur passe à la ligne, pas le libellé */
-  color: var(--text-ghost);
-}
-.page-details .spec-value {
-  margin: 0;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  line-height: 1.35;
-  color: var(--white);
-  text-align: right;
-  overflow-wrap: anywhere;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Variantes (markdown libre) */
-.page-details .variants-block {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background: var(--white-a02);
-  border: 1px solid var(--white-a06);
-  border-radius: 12px;
-}
-.page-details .variants-block h3 {
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.55);
-  margin-bottom: 0.75rem;
-}
-.page-details .variants-content p { color: rgba(255, 255, 255, 0.55); line-height: 1.7; }
-.page-details .variants-content ul { color: rgba(255, 255, 255, 0.55); padding-left: 1.5rem; }
-
-/* Appareils liés (predecessor / successor / rival) */
-.page-details .related-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 320px));
-  justify-content: start;
-  gap: 1.25rem;
-}
-.page-details .related-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  background: var(--white-a02);
-  border: 1px solid var(--white-a07);
-  border-radius: 14px;
-  text-decoration: none;
-  overflow: hidden;
-  isolation: isolate;
-  transition: transform var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out), scale var(--dur-instant) var(--ease-out);
-}
-.page-details .related-card::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, var(--gold-a08), transparent 60%);
-  opacity: 0; transition: opacity var(--dur-fast) var(--ease-out);
-  pointer-events: none;
-}
-.page-details .related-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(200, 169, 110, 0.35);
-  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.35), 0 0 0 1px var(--gold-a15);
-}
-.page-details .related-card:hover::after { opacity: 1; }
-.page-details .related-img {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(20,20,20,0.6));
-}
-.page-details .related-img::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(13,13,13,0.85) 0%, rgba(13,13,13,0.15) 50%, transparent 100%);
-}
-.page-details .related-img img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  transition: transform var(--dur-base) var(--ease-out), filter var(--dur-fast) var(--ease-out);
-  filter: saturate(0.9);
-}
-.page-details .related-card:hover .related-img img {
-  transform: scale(1.06);
-  filter: saturate(1);
-}
-.page-details .related-relation {
-  position: absolute;
-  top: 0.85rem; left: 0.85rem;
-  z-index: 2;
-  display: inline-flex; align-items: center;
-  padding: 0.32rem 0.65rem;
-  font-size: var(--text-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--night);
-  background: var(--hud-cyan);
-  border-radius: 999px;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-.page-details .related-card h3 {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 700;
-  color: var(--white);
-  margin: 0;
-  padding: 1rem 1.1rem 1.1rem;
-  font-size: 1.02rem;
-  letter-spacing: -0.01em;
-  position: relative;
-  z-index: 1;
-}
-.page-details .related-arrow {
-  position: absolute;
-  bottom: 1.05rem;
-  right: 1rem;
-  z-index: 2;
-  width: 28px; height: 28px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 50%;
-  background: rgba(200,169,110,0.1);
-  color: rgba(200,169,110,0.6);
-  font-size: 0.72rem;
-  transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-out);
-}
-.page-details .related-card:hover .related-arrow {
-  background: var(--hud-cyan);
-  color: var(--night);
-  transform: translateX(3px);
-}
-
-/* Liens externes ("Pour aller plus loin") */
-.page-details .sources-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-.page-details .source-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.7rem 1.1rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--white-a08);
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.75);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
-}
-.page-details .source-link:hover {
-  border-color: rgba(200, 169, 110, 0.3);
-  color: var(--hud-cyan);
-  background: rgba(200, 169, 110, 0.04);
-}
-.page-details .source-link .source-arrow { font-size: 0.75rem; opacity: 0.6; }
-
-/* Description markdown (strate 5) */
-.page-details .markdown-body h3.md-section {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--hud-cyan);
-  margin: 1.75rem 0 0.75rem;
-  letter-spacing: -0.01em;
-}
-.page-details .markdown-body h4.md-subsection {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--white);
-  margin: 1.25rem 0 0.5rem;
-}
-.page-details .markdown-body p { color: rgba(255, 255, 255, 0.55); line-height: 1.8; margin-bottom: 1rem; }
-.page-details .markdown-body ul { color: rgba(255, 255, 255, 0.55); padding-left: 1.5rem; margin-bottom: 1rem; }
-.page-details .markdown-body ul li { margin-bottom: 0.35rem; line-height: 1.7; }
-.page-details .markdown-body a { color: var(--hud-cyan); text-decoration: underline; text-underline-offset: 3px; }
-.page-details .markdown-body strong { color: var(--white); font-weight: 700; }
-
-/* État d'erreur transitoire de la fiche (SEO-005) : texte en <div> (pas de
-   lettrine), aligné sur .empty-state p, espacé du bouton « Réessayer ». */
-.page-details .details-load-error { text-align: center; margin-inline: auto; }
-.page-details .details-load-error-text { max-width: 420px; margin: 0 auto var(--sp-6); line-height: var(--leading-relaxed); color: var(--text-muted); }
-
-/* lang-switch → shared.css */
-
-/* « Signaler une erreur » sous la dernière section (lien vers /contact). */
-.det-report { margin: 3rem 0 0; text-align: center; font-size: 0.875rem; }
-.det-report a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-height: 44px;
-  padding: 0 1rem;
-  border-radius: 999px;
-  color: var(--text-ghost);
-  text-decoration: none;
-  transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
-}
-.det-report a:hover { color: var(--white); background: var(--white-a04); }
-.det-report a:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
-.det-report .icon { width: 0.8rem; height: 0.8rem; color: var(--hud-cyan); }
-@media print { .det-report { display: none !important; } }

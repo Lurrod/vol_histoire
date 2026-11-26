@@ -65,14 +65,19 @@ async function verifyConnection() {
 // réglages). Le code n'apparaît pas dans l'objet du message, qui s'affiche
 // dans les notifications du téléphone, verrouillé compris.
 
-async function sendVerificationEmail(to, name, code) {
+/**
+ * Code d'activation. Aucun nom dans le message (SEC-007) : celui du
+ * formulaire d'inscription est choisi par quiconque saisit l'adresse ; le
+ * recopier ferait du site un relais de texte arbitraire (URL, fausse
+ * alerte) envoyé depuis son domaine à une adresse quelconque.
+ */
+async function sendVerificationEmail(to, code) {
   await transporter.sendMail({
     from: FROM,
     to,
     subject: "Votre code d'activation — Vol d'Histoire",
     html: buildCodeTemplate({
       heading: "Votre code d'activation",
-      name,
       paragraph: "Merci de vous être inscrit sur Vol d'Histoire. Saisissez ce code sur la page de connexion pour activer votre compte et choisir votre mot de passe.",
       code,
       validity: '30 minutes',
@@ -126,7 +131,7 @@ function buildCodeTemplate({ heading, name, paragraph, code, validity, note }) {
             <td style="background:#1A1A1A;padding:40px 40px 32px;">
               <h2 style="margin:0 0 16px;font-size:20px;font-weight:700;color:#ffffff;">${esc(heading)}</h2>
               <p style="margin:0 0 28px;font-size:15px;color:rgba(255,255,255,0.55);line-height:1.75;">
-                Bonjour <strong style="color:#ffffff;">${esc(name)}</strong>,<br><br>
+                ${name ? `Bonjour <strong style="color:#ffffff;">${esc(name)}</strong>,` : 'Bonjour,'}<br><br>
                 ${esc(paragraph)}
               </p>
               <table cellpadding="0" cellspacing="0" width="100%">
@@ -430,7 +435,7 @@ function buildNoticeTemplate({ heading, name, paragraph, cta, note }) {
             <td style="background:#1A1A1A;padding:40px 40px 32px;">
               <h2 style="margin:0 0 16px;font-size:20px;font-weight:700;color:#ffffff;">${esc(heading)}</h2>
               <p style="margin:0 0 28px;font-size:15px;color:rgba(255,255,255,0.55);line-height:1.75;">
-                Bonjour <strong style="color:#ffffff;">${esc(name)}</strong>,<br><br>
+                ${name ? `Bonjour <strong style="color:#ffffff;">${esc(name)}</strong>,` : 'Bonjour,'}<br><br>
                 ${esc(paragraph)}
               </p>
               ${button}

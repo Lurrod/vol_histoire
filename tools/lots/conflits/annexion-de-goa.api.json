@@ -1,0 +1,49 @@
+{
+  "slug": "annexion-de-goa",
+  "name": "Annexion de Goa",
+  "name_fr": "Annexion de Goa",
+  "date_start": "1961-12-17T23:00:00.000Z",
+  "date_end": "1961-12-18T23:00:00.000Z",
+  "description": "Opération Vijay : l'Inde s'empare en deux jours des possessions portugaises de Goa, Daman et Diu. L'aviation indienne neutralise l'aérodrome de Dabolim et les transmissions.",
+  "count": 2,
+  "outcome": null,
+  "context": null,
+  "narrative": null,
+  "sources": [],
+  "sides": [],
+  "events": [],
+  "airplanes": [
+    {
+      "id": 138,
+      "name": "English Electric Canberra",
+      "little_description": "Bombardier à réaction britannique, 57 ans de service opérationnel",
+      "image_url": "/assets/airplanes/canberra.jpg",
+      "date_first_fly": "1949-05-12T23:00:00.000Z",
+      "date_operationel": "1951-04-30T23:00:00.000Z",
+      "country_code": "GBR",
+      "country_name": "Royaume-Uni",
+      "type_name": "Bombardier",
+      "generation": 1,
+      "side_key": null,
+      "role": null,
+      "type_name_fr": "Bombardier",
+      "role_sources": []
+    },
+    {
+      "id": 303,
+      "name": "Hawker Hunter",
+      "little_description": "Chasseur britannique le plus exporté, vingt et un pays utilisateurs",
+      "image_url": "/assets/airplanes/hawker-hunter.jpg",
+      "date_first_fly": "1951-07-19T23:00:00.000Z",
+      "date_operationel": "1954-06-30T23:00:00.000Z",
+      "country_code": "GBR",
+      "country_name": "Royaume-Uni",
+      "type_name": "Chasseur",
+      "generation": 1,
+      "side_key": null,
+      "role": null,
+      "type_name_fr": "Chasseur",
+      "role_sources": []
+    }
+  ]
+}

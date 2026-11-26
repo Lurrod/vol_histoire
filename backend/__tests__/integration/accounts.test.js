@@ -51,7 +51,7 @@ describeIt('Intégration SQL — comptes et sessions', () => {
     ctx.mailer.sendVerificationEmail,
     ctx.mailer.sendPasswordResetEmail,
     ctx.mailer.sendEmailChangeConfirmation,
-  ].flatMap((fn) => fn.mock.calls.map((args) => args[2]));
+  ].flatMap((fn) => fn.mock.calls.map((args) => args[args.length - 1])); // le code est le dernier argument
   const openCode = async (userId, type) => {
     const row = (await ctx.pool.query(
       'SELECT id, token_hash, new_email, attempts FROM email_tokens WHERE user_id = $1 AND type = $2 AND used_at IS NULL',
@@ -76,7 +76,7 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       expect(user.email_verified).toBe(false);
       expect(user.role_id).toBe(3);
       const open = await waitFor(() => openCode(user.id, 'verify'));
-      expect(ctx.mailer.sendVerificationEmail).toHaveBeenCalledWith(email, 'Nouveau IT', expect.stringMatching(/^[0-9]{6}$/));
+      expect(ctx.mailer.sendVerificationEmail).toHaveBeenCalledWith(email, expect.stringMatching(/^[0-9]{6}$/));
       // SEC-008 : seule l'empreinte est en base, jamais le code envoyé.
       expect(open.token_hash).toMatch(/^[a-f0-9]{64}$/);
       expect(open.token_hash).not.toBe(open.code);
@@ -214,6 +214,27 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       expect(refresh.status).toBe(401);
     });
 
+    test('LEGAL-007 : codes email consommés ou expirés depuis un jour purgés, code ouvert conservé', async () => {
+      const auth = require('../../middleware/auth');
+      const { rows: [u] } = await ctx.pool.query("SELECT id FROM users WHERE email = 'member@it.local'");
+      const insert = (hash, type, expires, used, newEmail = null) => ctx.pool.query(
+        `INSERT INTO email_tokens (user_id, token_hash, type, expires_at, used_at, new_email)
+         VALUES ($1, $2, $3, NOW() + $4::interval, ${used ? 'NOW()' : 'NULL'}, $5)`,
+        [u.id, hash, type, expires, newEmail]
+      );
+      await insert('a'.repeat(64), 'reset', '10 minutes', true);                        // consommé
+      await insert('b'.repeat(64), 'email', '-2 days', false, 'abandon@it.local');      // changement abandonné
+      await insert('c'.repeat(64), 'verify', '-1 hour', false);                         // expiré depuis peu
+      await insert('d'.repeat(64), 'email', '20 minutes', false, 'en-cours@it.local');  // ouvert
+      await auth.cleanupExpiredTokens();
+      const { rows } = await ctx.pool.query(
+        'SELECT token_hash FROM email_tokens WHERE user_id = $1 AND token_hash = ANY($2) ORDER BY token_hash',
+        [u.id, ['a', 'b', 'c', 'd'].map((x) => x.repeat(64))]
+      );
+      expect(rows.map((r) => r.token_hash[0])).toEqual(['c', 'd']);
+      await ctx.pool.query('DELETE FROM email_tokens WHERE user_id = $1 AND token_hash = ANY($2)', [u.id, ['c', 'd'].map((x) => x.repeat(64))]);
+    });
+
     test('nettoyage des jetons expirés et des comptes non vérifiés', async () => {
       const auth = require('../../middleware/auth');
       await expect(auth.cleanupExpiredTokens()).resolves.toBeUndefined();
@@ -240,6 +261,34 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       expect(new Date(user.locked_until).getTime()).toBeGreaterThan(Date.now());
       const blocked = await api().post('/api/login').send({ email, password: IT_PASSWORD });
       expect(blocked.status).toBe(400);
+    });
+
+    test('SEC-006 : verrou expiré → le décompte repart de zéro, un échec ne reverrouille pas', async () => {
+      const email = 'verrou-expire@it.local';
+      const hash = (await userByEmail('member@it.local')).password;
+      await ctx.pool.query(
+        "INSERT INTO users (name, email, password, email_verified, failed_login_count, locked_until) VALUES ('Expiré', $1, $2, TRUE, 10, NOW() - interval '1 minute')",
+        [email, hash]
+      );
+      const res = await api().post('/api/login').send({ email, password: 'Mauvais123' });
+      expect(res.status).toBe(400);
+      const user = await userByEmail(email);
+      expect(user.failed_login_count).toBe(1);
+      expect(user.locked_until).toBeNull();
+      const ok = await api().post('/api/login').send({ email, password: IT_PASSWORD });
+      expect(ok.status).toBe(200);
+    });
+
+    test('verrou en cours : le compteur ne bouge pas, la connexion reste refusée', async () => {
+      const email = 'verrou-actif@it.local';
+      const hash = (await userByEmail('member@it.local')).password;
+      await ctx.pool.query(
+        "INSERT INTO users (name, email, password, email_verified, failed_login_count, locked_until) VALUES ('Actif', $1, $2, TRUE, 10, NOW() + interval '10 minutes')",
+        [email, hash]
+      );
+      const res = await api().post('/api/login').send({ email, password: IT_PASSWORD });
+      expect(res.status).toBe(400);
+      expect((await userByEmail(email)).failed_login_count).toBe(10);
     });
 
     test('une connexion réussie remet le compteur à zéro', async () => {
@@ -464,7 +513,13 @@ describeIt('Intégration SQL — comptes et sessions', () => {
       const rafale = await airplaneId(ctx.pool, 'Rafale');
       await ctx.pool.query('INSERT INTO favorites (user_id, airplane_id) VALUES ($1, $2)', [id, rafale]);
       const token = await ctx.login('partant@it.local');
-      const res = await api().delete(`/api/users/${id}`).set('Authorization', `Bearer ${token}`);
+      // SEC-005 : sans le bon mot de passe actuel, rien n'est supprimé et l'échec est compté.
+      const refused = await api().delete(`/api/users/${id}`).set('Authorization', `Bearer ${token}`)
+        .send({ currentPassword: 'Mauvais123' });
+      expect(refused.status).toBe(403);
+      expect((await userByEmail('partant@it.local')).failed_login_count).toBe(1);
+      const res = await api().delete(`/api/users/${id}`).set('Authorization', `Bearer ${token}`)
+        .send({ currentPassword: IT_PASSWORD });
       expect(res.status).toBe(200);
       const fav = await ctx.pool.query('SELECT 1 FROM favorites WHERE user_id = $1', [id]);
       expect(fav.rows).toHaveLength(0);

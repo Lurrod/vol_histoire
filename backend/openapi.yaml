@@ -35,7 +35,7 @@ info:
     - **415** : jeu de caractères ou encodage du corps non pris en charge.
     Les caractères de contrôle d'un paramètre `search` sont remplacés par une
     espace.
-  version: 4.30.0
+  version: 4.31.0
   contact:
     name: Vol d'Histoire
     url: https://vol-histoire.titouan-borde.com
@@ -1066,15 +1066,37 @@ paths:
     delete:
       tags: [Users]
       summary: Supprimer un compte
+      description: |
+        Sur son propre compte, le mot de passe actuel est exigé (un access
+        token seul ne suffit pas) ; un échec compte comme un échec de
+        connexion (verrouillage) et le limiteur dédié n'accepte que 10 échecs
+        par compte et par 15 minutes. Un administrateur qui supprime le
+        compte d'un autre n'envoie pas de corps.
       security:
         - BearerAuth: []
       parameters:
         - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                  description: Mot de passe actuel (obligatoire sur son propre compte)
       responses:
         '200':
           description: Compte supprimé
+        '400':
+          description: Mot de passe actuel absent (code CURRENT_PASSWORD_REQUIRED)
         '403':
-          description: Accès non autorisé
+          description: Accès non autorisé, ou mot de passe actuel incorrect / compte verrouillé (code CURRENT_PASSWORD_INVALID)
+        '404':
+          description: Utilisateur introuvable
+        '429':
+          description: Trop d'échecs de mot de passe actuel
 
   /admin/users/{id}:
     put:

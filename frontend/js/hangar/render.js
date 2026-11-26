@@ -97,12 +97,16 @@
     // Le compteur de page reste DANS le DOM d'un rendu à l'autre : seuls les
     // boutons sont remplacés. Détaché puis réinséré, il perdrait son style de
     // départ et le chiffre sauterait au lieu de glisser (VH.rollingNumber).
-    const prevHtml = `<button class="prev-page-btn" ${state.currentPage <= 1 ? 'disabled' : ''}>
-        <i class="fas fa-chevron-left"></i> ${i18n.t('hangar.prev_page')}
-      </button>`;
-    const nextHtml = `<button class="next-page-btn" ${state.currentPage >= totalPages ? 'disabled' : ''}>
-        ${i18n.t('hangar.next_page')} <i class="fas fa-chevron-right"></i>
-      </button>`;
+    // Des liens /hangar?page=N plutôt que des boutons (SEO-005) : un robot
+    // suit la pagination ; le clic reste intercepté (changePage, sans
+    // rechargement). Bout de liste : ni href ni focus, aria-disabled.
+    const pageLink = (cls, page, enabled, inner) => (enabled
+      ? `<a class="${cls} page-link" href="${escapeHtml(VH.hangar.filters.urlForPage(state, page))}">${inner}</a>`
+      : `<a class="${cls} page-link" aria-disabled="true">${inner}</a>`);
+    const prevHtml = pageLink('prev-page-btn', state.currentPage - 1, state.currentPage > 1,
+      `<i class="fas fa-chevron-left"></i> ${i18n.t('hangar.prev_page')}`);
+    const nextHtml = pageLink('next-page-btn', state.currentPage + 1, state.currentPage < totalPages,
+      `${i18n.t('hangar.next_page')} <i class="fas fa-chevron-right"></i>`);
     let info = container.querySelector('.page-info');
     if (info) {
       const fresh = document.createElement('div');
@@ -115,8 +119,13 @@
       info = container.querySelector('.page-info');
     }
     VH.rollingNumber.setText(info, i18n.t('hangar.page_info', { current: state.currentPage, total: totalPages }));
-    container.querySelector('.prev-page-btn')?.addEventListener('click', () => changePage(state, state.currentPage - 1));
-    container.querySelector('.next-page-btn')?.addEventListener('click', () => changePage(state, state.currentPage + 1));
+    const follow = (delta) => (e) => {
+      e.preventDefault();
+      if (e.currentTarget.getAttribute('aria-disabled') === 'true') return;
+      changePage(state, state.currentPage + delta);
+    };
+    container.querySelector('.prev-page-btn')?.addEventListener('click', follow(-1));
+    container.querySelector('.next-page-btn')?.addEventListener('click', follow(1));
   }
 
   function changePage(state, page) {
@@ -175,7 +184,7 @@
     const container = document.getElementById('pagination-container');
     if (!container) return;
     container.setAttribute('aria-busy', 'true');
-    container.querySelectorAll('button').forEach((btn) => { btn.disabled = true; });
+    container.querySelectorAll('.page-link').forEach((a) => { a.setAttribute('aria-disabled', 'true'); });
   }
 
   VH.hangar.render = {

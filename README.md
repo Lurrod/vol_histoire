@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/version-4.30.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
+  <img src="https://img.shields.io/badge/version-4.31.0-C8A96E?style=for-the-badge&labelColor=0D0D0D" alt="Version">
   <img src="https://img.shields.io/badge/node-24-339933?style=for-the-badge&logo=node.js&labelColor=0D0D0D" alt="Node.js">
   <img src="https://img.shields.io/badge/PostgreSQL-%3E%3D14-4169E1?style=for-the-badge&logo=postgresql&labelColor=0D0D0D&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/tests-2120-27ae60?style=for-the-badge&labelColor=0D0D0D" alt="Tests">
@@ -80,7 +80,8 @@ vol_histoire/
 │   │   └── ssr-head.js            Meta, JSON-LD et en-tetes communs du SSR
 │   ├── __tests__/
 │   │   ├── integration/           Suite sur vraie base PostgreSQL (IT_DATABASE_URL, base *_it)
-│   │   ├── api.test.js            Tests des routes (Jest + Supertest, base simulee)
+│   │   ├── api-*.test.js          Tests des routes par domaine (Jest + Supertest, base simulee)
+│   │   ├── helpers/               Banc commun des suites d'API (api-harness.js, mailer-mock.js)
 │   │   ├── ssr-*.test.js          SSR, partials, redirections
 │   │   ├── validators.test.js     Tests unitaires validators
 │   │   ├── mailer / logger / cache Tests des gabarits d'email, du logger, du cache

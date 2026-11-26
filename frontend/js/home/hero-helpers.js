@@ -48,14 +48,21 @@
     return out;
   }
 
+  /** Adresse propre d'une fiche (/details/<slug>-<id>, shared/card.js) : l'ancien
+   * format /details?id=N coûtait une redirection 301 à chaque clic (SEO-007). */
+  function detailsHref(id, name) {
+    const build = window.VH && window.VH.shared && window.VH.shared.buildDetailsPath;
+    return build ? build(id, name) : '/details?id=' + encodeURIComponent(id);
+  }
+
   /** Lien d'un appareil : sa fiche si l'id est connu, sinon une recherche du hangar. */
   function airplaneHref(id, name) {
     return id
-      ? '/details?id=' + encodeURIComponent(id)
-      : '/hangar?search=' + encodeURIComponent(nameToSearchSlug(name));
+      ? detailsHref(id, name)
+      : '/hangar?q=' + encodeURIComponent(nameToSearchSlug(name));
   }
 
-  VH.home.heroHelpers = { daily, getHeroLang, shuffleArr, nameToSearchSlug, tHero, airplaneHref };
+  VH.home.heroHelpers = { daily, getHeroLang, shuffleArr, nameToSearchSlug, tHero, airplaneHref, detailsHref };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = VH.home.heroHelpers;

@@ -39,7 +39,7 @@ Réutilisation : les textes et la base de données sont la propriété de Vol d'
 ## Pages principales
 
 - [Accueil](${BASE_URL}/): recherche, appareil du jour, carte des nations de conception
-- [Hangar](${BASE_URL}/hangar): catalogue complet, filtrable par pays, génération, type, conflit, mission et décennie, avec recherche plein texte (\`/hangar?search=mirage\`)
+- [Hangar](${BASE_URL}/hangar): catalogue complet, filtrable par pays, génération, type, conflit, mission et décennie, avec recherche plein texte (\`/hangar?q=mirage\`)
 - [Chronologie](${BASE_URL}/timeline): frise de 1940 à aujourd'hui, par décennie, avec les conflits et les appareils marquants
 - [Conflits](${BASE_URL}/conflits): conflits armés et appareils qui y ont été engagés
 - [Crédits photo](${BASE_URL}/credits): auteur et licence de chaque photo

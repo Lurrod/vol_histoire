@@ -17,4 +17,20 @@ async function withTransaction(pool, fn) {
   }
 }
 
-module.exports = { withTransaction };
+/**
+ * Écoute les erreurs des connexions inactives du pool (JS-003). node-postgres
+ * émet « error » sur le pool quand un client au repos perd sa connexion
+ * (redémarrage de PostgreSQL, coupure réseau). Sans écouteur, l'événement
+ * devient une exception non capturée et arrête le processus ; avec lui, le
+ * client fautif est retiré du pool et la prochaine requête en ouvre un neuf.
+ * @param {import('pg').Pool} pool
+ * @param {{ error: Function }} logger
+ */
+function watchPoolErrors(pool, logger) {
+  pool.on('error', (err) => {
+    logger.error('PostgreSQL : connexion inactive perdue', { error: err });
+  });
+  return pool;
+}
+
+module.exports = { withTransaction, watchPoolErrors };

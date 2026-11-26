@@ -12,25 +12,34 @@
       .replace(/^-+|-+$/g, '');
   }
 
+  /* Élément encore vide : texte d'attente du gabarit (data-i18n), tiret ou
+   * rien. Ce que le serveur a déjà écrit (nom, faits du héros, chiffres clés —
+   * PERF-004 —, récit — SEO-001) reste en place, pour les robots qui rendent
+   * la page comme pour le visiteur : le remplacer par un squelette faisait
+   * clignoter et bouger la fiche. */
+  function awaitsContent(el) {
+    if (!el) return false;
+    const text = el.textContent.trim();
+    return el.hasAttribute('data-i18n') || text === '' || text === '-';
+  }
+
   function mountDetailsSkeletons() {
-    // Le h1 rendu par le serveur (sans data-i18n) porte déjà le nom : il reste
-    // en place, pour les robots qui rendent la page comme pour le visiteur.
     const name = document.getElementById('aircraft-name');
-    if (name && (name.hasAttribute('data-i18n') || !name.textContent.trim())) {
+    if (awaitsContent(name)) {
       name.innerHTML = '<span class="skeleton-line skeleton-inline-xl"></span>';
     }
     const sub = document.getElementById('aircraft-complete-name');
-    if (sub) sub.innerHTML = '<span class="skeleton-line skeleton-inline-md"></span>';
+    if (awaitsContent(sub)) sub.innerHTML = '<span class="skeleton-line skeleton-inline-md"></span>';
     ['hero-country', 'hero-manufacturer', 'hero-year'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = '<span class="skeleton-line skeleton-inline-meta"></span>';
+      if (awaitsContent(el)) el.innerHTML = '<span class="skeleton-line skeleton-inline-meta"></span>';
     });
     ['stat-speed', 'stat-range', 'stat-weight', 'stat-status'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = '<span class="skeleton-line skeleton-inline-badge"></span>';
+      if (awaitsContent(el)) el.innerHTML = '<span class="skeleton-line skeleton-inline-badge"></span>';
     });
     const desc = document.getElementById('aircraft-description');
-    if (desc) desc.innerHTML =
+    if (awaitsContent(desc)) desc.innerHTML =
       '<span class="skeleton-line skeleton-block"></span>' +
       '<span class="skeleton-line skeleton-block"></span>' +
       '<span class="skeleton-line medium skeleton-block-last"></span>';
@@ -151,34 +160,17 @@
     return u.replace(/^http:\/\//, 'https://');
   }
 
-  /* Texte brut du premier paragraphe d'un récit Markdown (titres, emphase,
-   * liens, code et puces retirés) — même règle que backend/utils/ssr-head.js. */
+  /* Texte brut du premier paragraphe d'un récit Markdown et meta description
+   * (accroche + début du récit, coupée sur un mot, typographie française) :
+   * même module que le rendu serveur, recopié par le build depuis
+   * backend/utils/meta-description.js (ARCH-003). */
   function markdownToText(md) {
-    const para = [];
-    for (const raw of String(md || '').replace(/\r\n?/g, '\n').split('\n')) {
-      const line = raw.trim();
-      if (!line) { if (para.length) break; continue; }
-      if (/^#{1,6}\s/.test(line)) { if (para.length) break; continue; }
-      para.push(line.replace(/^(?:[-*+>]|\d+[.)])\s+/, ''));
-    }
-    return para.join(' ')
-      .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
-      .replace(/(\*\*|__)(.+?)\1/g, '$2')
-      .replace(/(^|[^\w*])\*(?!\s)([^*]+?)\*(?!\w)/g, '$1$2')
-      .replace(/`([^`]*)`/g, '$1')
-      .replace(/\s+/g, ' ')
-      .trim();
+    return VH.shared.metaDescription.markdownToText(md);
   }
 
-  /* Meta description sans Markdown : accroche + début du récit, coupée sur
-   * un mot, 155 caractères au plus. */
-  function plainDescription(lead, narrative, max = 155) {
-    let head = String(lead || '').replace(/\s+/g, ' ').trim();
-    if (head && !/[.!?…]$/.test(head)) head += '.';
-    const text = [head, markdownToText(narrative)].filter(Boolean).join(' ');
-    if (text.length <= max) return text;
-    const cut = text.slice(0, max - 1).replace(/[\s,;:]+\S*$/, '');
-    return /[.!?…]$/.test(cut) ? cut : `${cut}…`;
+  function plainDescription(lead, narrative) {
+    const lang = window.i18n && i18n.currentLang === 'en' ? 'en' : 'fr';
+    return VH.shared.metaDescription.buildDescription(lead, narrative, '', 158, lang);
   }
 
   /* La page a-t-elle été rendue par le serveur pour cette fiche ? Le

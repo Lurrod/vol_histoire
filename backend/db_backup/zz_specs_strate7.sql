@@ -3,7 +3,7 @@
 -- Mach max, supercroisière, distance de convoyage, carburant interne (kg),
 -- points d'emport, soute interne et radar. Valeurs relevées dans la section
 -- « Specifications » de l'article Wikipédia anglais de chaque fiche, puis
--- revues (outillage : .lots/tools/specs7_*.py, hors dépôt). Carburant donné
+-- revues (outillage : tools/lots/specs7_*.py ; revue dans .lots/specs7, hors git). Carburant donné
 -- en volume : converti à 0,8 kg/L (kérosène) ou 0,72 kg/L (essence avion).
 --
 -- Une ligne par fiche, les sept colonnes à chaque fois (NULL = non établi) :
@@ -11,7 +11,7 @@
 -- Chargé APRÈS les fiches (préfixe zz), sur une installation neuve comme sur
 -- le chemin de migration. Rejouable : chaque UPDATE porte une garde IS
 -- DISTINCT FROM, un rejeu ne modifie aucune ligne (updated_at intact).
--- Généré par .lots/tools/specs7_build.py : corriger la revue, pas ce fichier.
+-- Généré par tools/lots/specs7_build.py : corriger la revue, pas ce fichier.
 
 BEGIN;
 

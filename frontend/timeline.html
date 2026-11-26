@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#0D0D0D">
-  <title data-i18n="timeline.title">Chronologie de l'Aviation Militaire | Vol d'Histoire</title>
+  <title data-i18n="timeline.title">Chronologie de l'aviation militaire | Vol d'Histoire</title>
   <meta name="description" content="Le Journal de Bord — huit décennies d'aviation militaire racontées comme un documentaire : événements marquants, doctrines, ruptures technologiques, appareils clés.">
   <link rel="canonical" href="https://vol-histoire.titouan-borde.com/timeline">
   <link rel="alternate" hreflang="fr" href="https://vol-histoire.titouan-borde.com/timeline?lang=fr">
@@ -34,12 +34,16 @@
   <meta name="twitter:title" content="Le Journal de Bord — 80 ans d'aviation militaire | Vol d'Histoire">
   <meta name="twitter:description" content="Huit décennies d'aviation militaire racontées comme un documentaire : événements, doctrines, ruptures, appareils clés.">
   <meta property="og:image" content="https://vol-histoire.titouan-borde.com/og-default.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vol d&#39;Histoire — l&#39;aviation militaire depuis 1945">
   <meta name="twitter:image" content="https://vol-histoire.titouan-borde.com/og-default.jpg">
+  <meta name="twitter:image:alt" content="Vol d&#39;Histoire — l&#39;aviation militaire depuis 1945">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Chronologie de l'Aviation Militaire",
+    "name": "Chronologie de l'aviation militaire",
     "description": "Frise chronologique documentaire de l'aviation militaire de 1945 à aujourd'hui.",
     "url": "https://vol-histoire.titouan-borde.com/timeline",
     "inLanguage": "fr",
@@ -67,7 +71,6 @@
   <noscript><style>.page-timeline .tl-loading { display: none; }</style></noscript>
   </head>
 <body class="page-timeline">
-<a href="#main-content" class="skip-link">Aller au contenu</a>
 <!-- Cookies -->
 
 <!-- Header -->
@@ -86,7 +89,7 @@
         <span class="tl-title-line-2" data-i18n="timeline.dossier_title_accent">au-dessus du silence</span>
       </h1>
       <p class="tl-lede" data-i18n="timeline.dossier_lede">
-        Depuis Hiroshima, l'aviation militaire n'a cessé de redessiner les règles de la puissance.
+        Depuis Hiroshima, l’aviation militaire n’a cessé de redessiner les règles de la puissance.
         Chaque décennie a son décollage, son crash, son virage doctrinal — et ses machines qui,
         parfois, parlent plus fort que les traités.
       </p>
@@ -130,7 +133,7 @@
         <select id="tl-lens-nation" class="tl-lens-select">
           <option value="" data-i18n="timeline.lens_all_nations">Toutes les nations</option>
         </select>
-        <label class="sr-only" for="tl-lens-type" data-i18n="timeline.lens_type_label">Type d'appareil</label>
+        <label class="sr-only" for="tl-lens-type" data-i18n="timeline.lens_type_label">Type d’appareil</label>
         <select id="tl-lens-type" class="tl-lens-select">
           <option value="" data-i18n="timeline.lens_all_types">Tous les types</option>
         </select>
@@ -151,7 +154,7 @@
   <section class="tl-outro" id="tl-outro" aria-labelledby="tl-outro-title">
     <div class="tl-outro-inner">
       <span class="tl-eyebrow" data-i18n="timeline.outro_eyebrow">— fin de chronique —</span>
-      <h2 id="tl-outro-title" data-i18n="timeline.outro_title">Et demain ?</h2>
+      <h2 id="tl-outro-title" data-i18n="timeline.outro_title">Et demain ?</h2>
       <p data-i18n="timeline.outro_desc">La sixième génération est en développement. NGAD, FCAS, Tempest…</p>
       <a href="/hangar" class="tl-cta">
         <span data-i18n="timeline.outro_cta">Explorer le hangar complet</span>
@@ -163,14 +166,14 @@
   <!-- État de chargement -->
   <div id="tl-loading" class="tl-loading" role="status" aria-live="polite">
     <div class="tl-loader" aria-hidden="true"></div>
-    <span class="visually-hidden" data-i18n="timeline.loading">Chargement des données...</span>
+    <span class="visually-hidden" data-i18n="timeline.loading">Chargement des données…</span>
   </div>
 </main>
 
 <!-- Footer -->
   <!-- @include footer -->
 
-<div id="toast-container" aria-live="polite"></div>
+<div id="toast-container" class="toast-container" aria-live="polite"></div>
 <script defer src="js/vendor/purify.min.js"></script>
 <script defer src="js/dist/app.min.js"></script>
   <script defer src="js/dist/icons.min.js"></script>

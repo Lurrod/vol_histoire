@@ -32,6 +32,7 @@ function boot(lang = 'fr', dict = {}) {
   global.safeSetHTML = utils.safeSetHTML;
   window.VH = {};
   require('../js/shared/picture');
+  require('../js/shared/meta-description');
   require('../js/details/data');
   require('../js/details/markdown');
   require('../js/details/key-dates');

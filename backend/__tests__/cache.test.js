@@ -72,3 +72,31 @@ describe('avec Redis', () => {
     expect(await cache.get('k')).toBeNull();
   });
 });
+
+describe('erreurs Redis journalisées (JS-005)', () => {
+  const logger = require('../logger');
+  let warn;
+  beforeEach(() => {
+    cache._resetForTests();
+    warn = jest.spyOn(logger, 'warn').mockImplementation(() => {});
+  });
+  afterEach(() => { warn.mockRestore(); jest.useRealTimers(); });
+
+  test('get en échec : repli mémoire et avertissement (une fois par minute)', async () => {
+    cache.setRedisClient({ get: jest.fn().mockRejectedValue(new Error('ECONNRESET')) });
+    await expect(cache.get('a')).resolves.toBeNull();
+    await cache.get('b');
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn).toHaveBeenCalledWith('cache_redis_error', { op: 'get', key: 'a', error: 'ECONNRESET' });
+  });
+
+  test('del en échec : avertissement et second essai', async () => {
+    jest.useFakeTimers();
+    const del = jest.fn().mockRejectedValueOnce(new Error('timeout')).mockResolvedValueOnce(1);
+    cache.setRedisClient({ del });
+    await cache.del('vdh:hero:v3:x');
+    expect(warn).toHaveBeenCalledWith('cache_redis_error', expect.objectContaining({ op: 'del' }));
+    jest.advanceTimersByTime(1000);
+    expect(del).toHaveBeenCalledTimes(2);
+  });
+});

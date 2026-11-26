@@ -15,7 +15,7 @@ const HEADER = `
   <header>
     <nav>
       <button class="hamburger"></button>
-      <ul class="nav-links"><li><a href="#accueil">Accueil</a></li><li><a href="#hangar">Hangar</a></li><li><a href="#" class="nav-logout">Déconnexion</a></li></ul>
+      <ul class="nav-links"><li><a href="#accueil">Accueil</a></li><li><a href="#hangar">Hangar</a></li><li><button type="button" class="nav-logout">Déconnexion</button></li></ul>
       <div class="nav-actions">
         <div class="lang-switch">
           <button type="button" id="lang-toggle"></button>
@@ -194,6 +194,17 @@ describe('clavier dans la liste des langues', () => {
 });
 
 describe('Échap', () => {
+  test('menu mobile ouvert, focus sur un lien : le focus revient au bouton Menu (A11Y-009)', () => {
+    loadNav();
+    const burger = document.querySelector('.hamburger');
+    burger.click();
+    const link = document.querySelector('.nav-links a');
+    link.focus();
+    keydown(document.body, 'Escape');
+    expect(document.querySelector('.nav-links').classList.contains('show')).toBe(false);
+    expect(document.activeElement).toBe(burger);
+  });
+
   test('autre touche : rien ne se ferme', () => {
     loadNav();
     document.querySelector('.hamburger').click();
@@ -203,17 +214,24 @@ describe('Échap', () => {
 });
 
 describe('attente de la session', () => {
-  test('met à jour l’en-tête dès que auth.init() a fourni un payload', () => {
+  test('met à jour l’en-tête quand auth émet « vh:auth-ready » (JS-008)', () => {
     loadNav();
     const header = document.querySelector('header');
     expect(header.classList.contains('is-auth')).toBe(false);
     auth.getPayload.mockReturnValue({ id: 2, name: 'Grace', role: 2 });
-    jest.advanceTimersByTime(100);
-    expect(header.classList.contains('is-auth')).toBe(true);
-    // Intervalle arrêté une fois la session vue.
-    auth.getPayload.mockClear();
+    // Plus de sondage : rien ne change tant que l'événement n'est pas émis.
     jest.advanceTimersByTime(500);
-    expect(auth.getPayload).not.toHaveBeenCalled();
+    expect(header.classList.contains('is-auth')).toBe(false);
+    document.dispatchEvent(new window.CustomEvent('vh:auth-ready'));
+    expect(header.classList.contains('is-auth')).toBe(true);
+  });
+
+  test('session déjà initialisée au chargement de nav.js : en-tête mis à jour tout de suite', () => {
+    auth.isReady = jest.fn(() => true);
+    auth.getPayload.mockReturnValue({ id: 2, name: 'Grace', role: 2 });
+    loadNav();
+    expect(document.querySelector('header').classList.contains('is-auth')).toBe(true);
+    delete auth.isReady;
   });
 
   test('abandon après 5 s sans session', () => {
@@ -222,5 +240,26 @@ describe('attente de la session', () => {
     auth.getPayload.mockClear();
     jest.advanceTimersByTime(1000);
     expect(auth.getPayload).not.toHaveBeenCalled();
+  });
+});
+
+describe('lien d’évitement (A11Y-004)', () => {
+  test('pose le focus sur le contenu principal sans suivre l’ancre', () => {
+    loadNav('<header><a href="#main-content" class="skip-link">Aller au contenu</a></header><main id="main-content"><p>x</p></main>');
+    const main = document.getElementById('main-content');
+    main.scrollIntoView = jest.fn();
+    const ev = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+    document.querySelector('.skip-link').dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(true);
+    expect(main.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(main);
+    expect(main.scrollIntoView).toHaveBeenCalled();
+  });
+
+  test('sans contenu principal, le lien garde son comportement natif', () => {
+    loadNav('<header><a href="#main-content" class="skip-link">Aller au contenu</a></header>');
+    const ev = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+    document.querySelector('.skip-link').dispatchEvent(ev);
+    expect(ev.defaultPrevented).toBe(false);
   });
 });

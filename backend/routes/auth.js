@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const { isValidEmail, isValidName, isValidPassword } = require('../validators');
 const logger = require('../logger');
 const { withTransaction } = require('../db');
+const { LOCKOUT_MAX_ATTEMPTS, LOCKOUT_DURATION_MIN } = require('../utils/lockout');
 const asyncHandler = require('../middleware/asyncHandler');
 const verifyHcaptcha = require('../middleware/hcaptcha');
 const usersRepo = require('../repositories/users');
@@ -17,8 +18,8 @@ const {
   getRefreshTokenState,
   revokeRefreshToken,
   rotateRefreshToken,
-  revokeAllUserRefreshTokens,
   setRefreshCookie,
+  isPersistentRefresh,
   clearRefreshCookie,
   REFRESH_COOKIE_NAME,
   JWT_VERIFY_OPTIONS,
@@ -75,13 +76,25 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
    * journalisé en erreur (donc remonté à Sentry) avec l'utilisateur concerné.
    * La réponse au client reste 401 REFRESH_REPLAY : son cookie est effacé dans
    * tous les cas, et un code distinct n'apprendrait rien d'utile à un attaquant.
+   *
+   * Comme « Se déconnecter de tous les appareils » (SEC-002) : révoquer les
+   * refresh tokens ne suffit pas, l'access token obtenu par le voleur lors de
+   * sa rotation resterait valide jusqu'à expiration. L'incrément de
+   * token_version, dans la même transaction, le fait refuser par authorize().
    */
+  function revokeAllSessions(userId) {
+    return withTransaction(getPool(), async (client) => {
+      await refreshTokensRepo.revokeAllForUser(client, userId);
+      await usersRepo.bumpTokenVersion(client, userId);
+    });
+  }
+
   async function revokeAllAfterReplay(userId, jti) {
     try {
-      await revokeAllUserRefreshTokens(userId);
+      await revokeAllSessions(userId);
     } catch {
       try {
-        await revokeAllUserRefreshTokens(userId);
+        await revokeAllSessions(userId);
       } catch (err) {
         logger.error('Échec de la révocation des sessions après rejeu de refresh token', {
           error: err, userId, jti, route: 'POST /refresh',
@@ -135,10 +148,10 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
 
       const verifyCode = await issueEmailCode(userId, 'verify', VERIFY_CODE_TTL_MS);
       try {
-        await mailer.sendVerificationEmail(email, name, verifyCode);
+        await mailer.sendVerificationEmail(email, verifyCode);
       } catch (mailErr) {
         logger.warn('Premier envoi email échoué, retry...', { error: mailErr.message });
-        await mailer.sendVerificationEmail(email, name, verifyCode);
+        await mailer.sendVerificationEmail(email, verifyCode);
       }
     } catch (err) {
       logger.error('Erreur inscription (après réponse)', { error: err.message, route: 'POST /register' });
@@ -148,8 +161,6 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
   // Lockout par compte — défense contre credential-stuffing distribué
   // (rate-limit IP insuffisant si botnet). Constantes volontairement
   // conservatrices : un user qui oublie son mdp a 10 essais avant blocage.
-  const LOCKOUT_MAX_ATTEMPTS = 10;
-  const LOCKOUT_DURATION_MIN = 15;
 
   // Trois barrages : limiteur par IP (20 requêtes / 15 min, posé en premier
   // pour compter aussi les envois sans jeton), hCaptcha invisible (bourrage
@@ -205,12 +216,14 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     }
 
     const accessToken = generateAccessToken(userData);
-    const { token: refreshToken, jti } = generateRefreshToken(userData);
+    // « Se souvenir de moi » (CONT-002) : absent = persistant (clients de l'API).
+    const persistent = req.body.remember !== false;
+    const { token: refreshToken, jti } = generateRefreshToken(userData, { persistent });
 
     // Stocker le refresh token en base pour pouvoir le révoquer
     await storeRefreshToken(jti, userData.id);
 
-    setRefreshCookie(res, refreshToken);
+    setRefreshCookie(res, refreshToken, { persistent });
 
     res.json({ message: 'Connexion réussie', token: accessToken });
   }));
@@ -258,7 +271,9 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       //   - Crash entre les 2 étapes (session orpheline ou double-active)
       //   - Race condition 2 requêtes concurrentes de /refresh avec le même JTI
       const newAccessToken = generateAccessToken(user);
-      const { token: newRefreshToken, jti: newJti } = generateRefreshToken(user);
+      // La rotation garde le choix fait à la connexion (cookies de session ou non).
+      const persistent = isPersistentRefresh(decoded);
+      const { token: newRefreshToken, jti: newJti } = generateRefreshToken(user, { persistent });
 
       try {
         await rotateRefreshToken(decoded.jti, newJti, user.id);
@@ -276,7 +291,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
         throw rotationError;
       }
 
-      setRefreshCookie(res, newRefreshToken);
+      setRefreshCookie(res, newRefreshToken, { persistent });
       res.json({ token: newAccessToken });
     } catch (error) {
       logger.warn('Refresh token invalide', { error: error.message, route: 'POST /refresh' });
@@ -348,11 +363,14 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     if (!password || !isValidPassword(password)) {
       return res.status(400).json({ message: PASSWORD_RULE });
     }
+    // Haché avant de chercher le compte (SEC-001) : sinon une adresse
+    // inconnue répondait aussitôt et une adresse inscrite après le bcrypt
+    // (plusieurs centaines de ms), ce qui trahissait l'existence du compte.
+    const hashedPassword = await bcrypt.hash(password, 12);
     const email = normalizeEmail(req.body.email);
     const user = await findCodeOwner(email, 'verify');
     if (!user) return res.status(400).json(INVALID_CODE);
 
-    const hashedPassword = await bcrypt.hash(password, 12);
     const activated = await withTransaction(getPool(), async (client) => {
       const result = await emailTokensRepo.checkCode(client, { userId: user.id, type: 'verify', code, consume: true });
       if (!result.ok) return false;
@@ -417,7 +435,7 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
       const user = await findCodeOwner(email, 'verify');
       if (!user) return;
       const verifyCode = await issueEmailCode(user.id, 'verify', VERIFY_CODE_TTL_MS);
-      await mailer.sendVerificationEmail(email, user.name, verifyCode);
+      await mailer.sendVerificationEmail(email, verifyCode);
     } catch (err) {
       logger.error('Erreur resend-verification', { error: err.message, route: 'POST /resend-verification' });
     }
@@ -452,10 +470,11 @@ module.exports = function createAuthRouter(getPool, { registerLimiter, loginLimi
     if (!password || !isValidPassword(password)) {
       return res.status(400).json({ message: PASSWORD_RULE });
     }
+    // Même travail que l'adresse corresponde ou non à un compte (SEC-001).
+    const hashedPassword = await bcrypt.hash(password, 12);
     const user = await findCodeOwner(normalizeEmail(req.body.email), 'reset');
     if (!user) return res.status(400).json(INVALID_CODE);
 
-    const hashedPassword = await bcrypt.hash(password, 12);
     const applied = await withTransaction(getPool(), async (client) => {
       const result = await emailTokensRepo.checkCode(client, { userId: user.id, type: 'reset', code, consume: true });
       if (!result.ok) return false;

@@ -51,11 +51,11 @@
   max-width: 34rem;
   font-size: 1.125rem;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--white-a72);
   text-wrap: pretty;
 }
 .page-home .hero-split-title .gradient-text {
-  background: linear-gradient(135deg, #E8C98A 0%, var(--hud-cyan) 50%, rgba(255,255,255,0.9) 100%);
+  background: linear-gradient(135deg, #E8C98A 0%, var(--gold) 50%, var(--white-a90) 100%);
   background-size: 220% 100%;
   background-position: 100% 0;
   -webkit-background-clip: text;
@@ -74,12 +74,12 @@
   flex-wrap: wrap;
   gap: 0.6rem;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--white-a60);
   margin-bottom: 2.5rem;
   letter-spacing: 0.4px;
 }
 .page-home .hero-split-meta strong {
-  color: var(--hud-cyan);
+  color: var(--gold);
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 1.2rem;
   font-weight: 700;
@@ -108,7 +108,7 @@
   border-radius: 16px;
   overflow: hidden;
   background: var(--night-mid);
-  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 24px 60px -24px var(--black-a80);
 }
 .page-home .hero-today-media {
   position: absolute;
@@ -120,7 +120,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(13, 13, 13, 0.92) 0%, rgba(13, 13, 13, 0.55) 30%, transparent 58%);
+  background: linear-gradient(to top, var(--night-a92) 0%, var(--night-a55) 30%, transparent 58%);
 }
 .page-home .hero-today-caption {
   position: absolute;
@@ -146,8 +146,8 @@
 }
 .page-home .hero-today-credit {
   margin: 0.6rem 0 0;
-  font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: var(--text-xs);
+  color: var(--white-a50);
   text-align: right;
 }
 .page-home .hero-today-credit[hidden] { display: none; }
@@ -163,7 +163,7 @@
   padding: 1.4rem 1.5rem;
   overflow: hidden;
   box-shadow:
-    0 8px 28px -16px rgba(0, 0, 0, 0.7),
+    0 8px 28px -16px var(--black-a70),
     inset 0 1px 0 var(--white-a06);
 }
 .page-home .hero-aside-header {
@@ -182,7 +182,7 @@
   text-transform: uppercase;
   /* Champagne plus clair (#E4D5B0) pour garantir 4.5:1 sur glass-card translucide
      dont l'arrière-plan effectif varie selon le hero background. */
-  color: #E4D5B0;
+  color: var(--gold-pale);
   /* Orbitron n'a jamais ete hebergee ni chargee : la pile retombait
      silencieusement sur DM Sans. On declare ce qui est reellement rendu. */
   font-family: 'DM Sans', sans-serif;
@@ -197,10 +197,10 @@
   font-weight: 700;
   letter-spacing: 1.2px;
   text-transform: uppercase;
-  color: var(--hud-cyan);
+  color: var(--gold);
   padding: 0.15rem 0.45rem;
-  background: rgba(200, 169, 110, 0.14);
-  border: 1px solid rgba(200, 169, 110, 0.28);
+  background: var(--gold-a14);
+  border: 1px solid var(--gold-a28);
   border-radius: 4px;
   line-height: 1.4;
 }
@@ -210,8 +210,8 @@
   height: 30px;
   border-radius: 50%;
   background: var(--white-a07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--white-a14);
+  color: var(--white-a55);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -225,12 +225,12 @@
 .page-home .hero-aside-reroll:hover,
 .page-home .hero-aside-reroll:focus-visible {
   background: var(--gold-a12);
-  border-color: rgba(200, 169, 110, 0.4);
-  color: var(--hud-cyan);
+  border-color: var(--gold-a40);
+  color: var(--gold);
 }
 .page-home .hero-aside-reroll:active { transform: rotate(180deg); }
 .page-home .hero-aside-reroll:focus-visible {
-  outline: 2px solid var(--hud-cyan);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 /* display: flex ci-dessus l'emporte sur la regle [hidden] du navigateur : sans
@@ -241,7 +241,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.85rem;
-  color: var(--hud-cyan);
+  color: var(--gold);
   text-decoration: none;
   font-size: 0.82rem;
   font-weight: 600;
@@ -251,7 +251,7 @@
 .page-home .hero-aside-link:hover,
 .page-home .hero-aside-link:focus-visible {
   gap: 0.85rem;
-  color: #fff;
+  color: var(--white);
 }
 .page-home .hero-aside-link i, .page-home .hero-aside-link .icon {
   font-size: 0.78rem;
@@ -263,7 +263,7 @@
 .page-home .hero-fact-body {
   font-size: 0.95rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--white-a95);
   margin: 0;
   font-family: 'DM Sans', sans-serif;
 }
@@ -273,19 +273,19 @@
 .page-home .hero-fact-body.is-fading-in {
   animation: vh-enter var(--dur-slower) var(--ease-out) both;
 }
-.page-home .hero-fact-body strong { color: var(--hud-cyan); font-weight: 700; }
+.page-home .hero-fact-body strong { color: var(--gold); font-weight: 700; }
 .page-home .hero-fact-year {
   display: inline-block;
   vertical-align: 2px;
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--hud-cyan);
+  color: var(--gold);
   letter-spacing: 1.5px;
   margin-right: 0.55rem;
   padding: 0.15rem 0.5rem;
-  background: rgba(200, 169, 110, 0.18);
-  border: 1px solid rgba(200, 169, 110, 0.3);
+  background: var(--gold-a18);
+  border: 1px solid var(--gold-a30);
   border-radius: 4px;
   line-height: 1;
 }
@@ -303,8 +303,8 @@
   aspect-ratio: 16 / 7;
   border-radius: 10px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(13, 13, 13, 0.9), rgba(28, 28, 32, 0.7));
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: linear-gradient(135deg, var(--night-a90), rgba(28, 28, 32, 0.7));
+  border: 1px solid var(--white-a05);
   margin-bottom: 0.85rem;
 }
 .page-home .hero-quiz-image {
@@ -328,7 +328,7 @@
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
-  color: var(--hud-cyan);
+  color: var(--gold);
   opacity: 0.45;
   letter-spacing: 1px;
   text-shadow: 0 0 14px rgba(232, 201, 138, 0.6);
@@ -343,8 +343,8 @@
 .page-home .hero-quiz-option {
   padding: 0.6rem 0.5rem;
   background: var(--white-a07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--white-a14);
+  color: var(--white-a78);
   border-radius: 12px;
   font-size: 0.78rem;
   font-weight: 600;
@@ -361,12 +361,12 @@
 .page-home .hero-quiz-option:hover:not(:disabled),
 .page-home .hero-quiz-option:focus-visible:not(:disabled) {
   background: var(--gold-a12);
-  border-color: rgba(200, 169, 110, 0.35);
-  color: #fff;
+  border-color: var(--gold-a35);
+  color: var(--white);
   transform: translateY(-1px);
 }
 .page-home .hero-quiz-option:focus-visible {
-  outline: 2px solid var(--hud-cyan);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 .page-home .hero-quiz-option.is-correct {

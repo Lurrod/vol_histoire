@@ -1,0 +1,681 @@
+{
+  "war": "Guerre de Corée",
+  "slug": "guerre-de-coree",
+  "outcome": {
+    "fr": "L'armistice signé à Panmunjeom le 27 juillet 1953 fige le front près du 38e parallèle et crée une zone démilitarisée, sans traité de paix : les deux Corées restent juridiquement en guerre.",
+    "en": "The armistice signed at Panmunjom on 27 July 1953 froze the front near the 38th parallel and created a demilitarized zone, but no peace treaty followed: the two Koreas remain technically at war."
+  },
+  "context": {
+    "fr": "Occupée par le Japon jusqu'en 1945, la Corée est partagée le long du 38e parallèle entre une zone soviétique au nord et une zone américaine au sud. Les élections de 1948, boycottées au Nord, donnent naissance à deux États rivaux qui prétendent chacun représenter toute la péninsule : la République de Corée de Syngman Rhee au sud, la République populaire démocratique de Kim Il-sung au nord. Le 25 juin 1950, l'armée nord-coréenne franchit le parallèle avec l'accord de Staline.\n\nLe Conseil de sécurité de l'ONU, que l'Union soviétique boycotte alors, condamne l'agression et appelle ses membres à secourir le Sud. Seize pays envoient des forces de combat ; les États-Unis fournissent l'essentiel des troupes internationales. Après le débarquement d'Inchon et la remontée vers le Yalu, la Chine entre officiellement en guerre le 25 octobre 1950 avec ses « volontaires du peuple ». L'URSS n'engage aucune troupe au sol, mais livre le matériel et envoie en secret ses pilotes de chasse.\n\nLe conflit devient le premier affrontement armé de la guerre froide entre les deux blocs. Après les grands mouvements de 1950 et 1951, le front se stabilise près du 38e parallèle et la guerre s'enlise pendant deux ans de négociations, tandis que la campagne aérienne frappe la Corée du Nord sans relâche.",
+    "en": "Occupied by Japan until 1945, Korea was divided along the 38th parallel into a Soviet zone in the north and an American zone in the south. The 1948 elections, boycotted in the North, produced two rival states, each claiming the whole peninsula: Syngman Rhee's Republic of Korea in the south and Kim Il-sung's Democratic People's Republic in the north. On 25 June 1950 the North Korean army crossed the parallel with Stalin's approval.\n\nThe UN Security Council, then boycotted by the Soviet Union, condemned the aggression and called on its members to help the South. Sixteen nations sent combat forces, with the United States providing the bulk of the international troops. After the Inchon landing and the advance towards the Yalu, China officially entered the war on 25 October 1950 with its “People's Volunteers”. The USSR sent no ground troops but supplied equipment and secretly committed its fighter pilots.\n\nThe conflict became the Cold War's first armed clash between the two blocs. After the sweeping offensives of 1950 and 1951, the front settled near the 38th parallel and the war bogged down through two years of negotiations, while the air campaign struck North Korea relentlessly."
+  },
+  "narrative": {
+    "fr": "La guerre aérienne commence à l'hélice. La petite aviation nord-coréenne, équipée de Yak-9, de Yak-11 et de La-7 soviétiques, mitraille l'aérodrome de Kimpo dès le 25 juin 1950 et y détruit un C-54. Deux jours plus tard, des F-82 Twin Mustang venus du Japon couvrent l'évacuation des civils et abattent trois des cinq appareils qui les attaquent : ce sont les premières victoires américaines de la guerre. Les F-80 Shooting Star, les B-26 Invader et, à partir du 3 juillet, les avions embarqués de l'USS *Valley Forge* et du HMS *Triumph* entrent en action dès les premiers jours ; le 3 juillet, deux Panther abattent deux Yak-9.\n\nTout change le 1er novembre 1950 : des MiG-15 à aile en flèche, pilotés en secret par les Soviétiques du 64e corps d'aviation de chasse, surgissent au-dessus du Yalu et surclassent tous les appareils de l'ONU. Washington envoie en décembre trois escadrons de F-86 Sabre ; le 17 décembre, le lieutenant-colonel Bruce Hinton abat un MiG-15 près du Yalu. Le nord-ouest de la Corée devient la « MiG Alley », théâtre des premiers grands combats entre avions à réaction. Des pilotes chinois, à partir de septembre 1951, puis nord-coréens, à partir de septembre 1952, s'y joignent aux Soviétiques. Le bilan reste disputé : l'US Air Force a revendiqué 792 MiG pour 78 Sabre perdus, une revue d'après-guerre a divisé ce rapport par deux, une étude de la RAND l'évalue à 1,8 contre 1 (environ 1,3 contre 1 face aux pilotes soviétiques), et les Soviétiques ont de leur côté revendiqué plus de 600 Sabre.\n\nLes B-29 Superfortress, basés à Okinawa et au Japon, mènent d'abord des raids de jour sur les villes et les ponts du Nord. L'apparition des MiG les rend intenables : trois bombardiers abattus le 12 avril 1951, puis la bataille de Namsi, le 23 octobre 1951, où six des neuf B-29 engagés ne rentrent pas à leur base. Les Superfortress ne volent plus que de nuit. La campagne n'en devient pas moins écrasante : les États-Unis larguent 635 000 tonnes de bombes sur la Corée, sans compter 32 557 tonnes de napalm, davantage que sur tout le théâtre du Pacifique pendant la Seconde Guerre mondiale, et la plupart des villes du Nord sont rasées. En juin 1952, l'aéronavale et l'US Air Force s'en prennent aux centrales hydroélectriques, dont le barrage de Sui-ho ; à la mi-mai 1953, aux barrages de Toksan, Chasan et Kuwonga.\n\nLa guerre se joue aussi au ras du sol. Corsair, Skyraider et Panther de l'US Navy et des Marines, Sea Fury et Firefly des porte-avions britanniques et australien, Meteor du No. 77 Squadron de la RAAF et F-84 Thunderjet assurent l'appui des troupes et l'interdiction des routes et voies ferrées ; le 1er mai 1951, des Skyraider torpillent le barrage de Hwacheon. La nuit appartient aux « Bedcheck Charlie », biplans Po-2 et Yak-18 qui viennent harceler les lignes et les bases, et aux chasseurs de nuit des Marines (F7F, F4U-5N, F3D) qui les traquent. Derrière les combattants, C-54, C-119 et C-124 ravitaillent le front, et les hydravions SA-16 repêchent les équipages abattus en mer.\n\nSelon l'article de référence sur la MiG Alley, les États-Unis ont perdu 1 986 avions pendant la guerre, dont environ 250 en combat aérien selon les estimations prudentes. La dernière victoire du conflit tombe le 27 juillet 1953, quelques heures avant le cessez-le-feu : un transport soviétique Il-12, abattu par le Sabre du capitaine Ralph Parr.",
+    "en": "The air war began with propellers. North Korea's small air arm, flying Soviet-supplied Yak-9s, Yak-11s and La-7s, strafed Kimpo airfield on 25 June 1950 and destroyed a C-54 there. Two days later, F-82 Twin Mustangs from Japan covering the evacuation of civilians shot down three of the five aircraft that attacked them, the first American victories of the war. F-80 Shooting Stars, B-26 Invaders and, from 3 July, carrier aircraft from USS *Valley Forge* and HMS *Triumph* went into action within days; on 3 July two Panthers shot down two Yak-9s.\n\nEverything changed on 1 November 1950, when swept-wing MiG-15s, secretly flown by Soviet pilots of the 64th Fighter Aviation Corps, appeared over the Yalu and outclassed every UN aircraft. Washington rushed three squadrons of F-86 Sabres to the theatre in December; on 17 December Lieutenant Colonel Bruce Hinton shot down a MiG-15 near the Yalu. North-western Korea became “MiG Alley”, the scene of the first large-scale jet battles. Chinese pilots joined the Soviets there from September 1951, and North Koreans from September 1952. The tally is still disputed: the USAF claimed 792 MiGs for 78 Sabres lost, a post-war review halved that ratio, a RAND study puts it at 1.8 to 1 (about 1.3 to 1 against Soviet pilots), and the Soviets for their part claimed more than 600 Sabres.\n\nThe B-29 Superfortresses, based on Okinawa and in Japan, first flew daylight raids against the North's cities and bridges. The MiGs made those raids untenable: three bombers were shot down on 12 April 1951, then at the battle of Namsi on 23 October 1951 six of the nine B-29s involved failed to return to base. From then on the Superfortresses flew only at night. The campaign was no less crushing for it: the United States dropped 635,000 tons of bombs on Korea, not counting 32,557 tons of napalm, more than in the whole Pacific theatre of the Second World War, and most of the North's cities were flattened. In June 1952 naval and air force aircraft struck the hydroelectric plants, including the Sui-ho dam; in mid-May 1953 they hit the Toksan, Chasan and Kuwonga dams.\n\nThe war was also fought at treetop height. US Navy and Marine Corsairs, Skyraiders and Panthers, Sea Furies and Fireflies from British and Australian carriers, Meteors of No. 77 Squadron RAAF and F-84 Thunderjets flew close support and interdiction against roads and railways; on 1 May 1951 Skyraiders torpedoed the Hwacheon dam. The night belonged to the “Bedcheck Charlies”, Po-2 biplanes and Yak-18s that harassed front lines and airfields, and to the Marine night fighters (F7F, F4U-5N, F3D) that hunted them. Behind the combat units, C-54s, C-119s and C-124s kept the front supplied, and SA-16 amphibians plucked downed crews from the sea.\n\nAccording to the reference article on MiG Alley, the United States lost 1,986 aircraft in the war, about 250 of them in air-to-air combat by conservative estimates. The last aerial victory of the conflict came on 27 July 1953, hours before the ceasefire: a Soviet Il-12 transport shot down by Captain Ralph Parr's Sabre."
+  },
+  "sides": [
+    {
+      "key": "onu",
+      "name": {
+        "fr": "Forces de l'ONU",
+        "en": "UN forces"
+      },
+      "members": {
+        "fr": "Corée du Sud, États-Unis, Royaume-Uni, Australie, Canada, Afrique du Sud, Nouvelle-Zélande, France, Turquie, Grèce, Belgique, Luxembourg, Pays-Bas, Colombie, Éthiopie, Philippines, Thaïlande",
+        "en": "South Korea, United States, United Kingdom, Australia, Canada, South Africa, New Zealand, France, Turkey, Greece, Belgium, Luxembourg, Netherlands, Colombia, Ethiopia, Philippines, Thailand"
+      }
+    },
+    {
+      "key": "nord",
+      "name": {
+        "fr": "Corée du Nord et alliés",
+        "en": "North Korea and allies"
+      },
+      "members": {
+        "fr": "Corée du Nord, Chine, URSS (engagement aérien non reconnu à l'époque)",
+        "en": "North Korea, China, USSR (air involvement not acknowledged at the time)"
+      }
+    }
+  ],
+  "events": [
+    {
+      "date": "1950-06-25",
+      "precision": "day",
+      "title": {
+        "fr": "Invasion du Sud, Kimpo mitraillé",
+        "en": "Invasion of the South, Kimpo strafed"
+      },
+      "body": {
+        "fr": "La Corée du Nord franchit le 38e parallèle. Ses chasseurs attaquent Kimpo et Séoul et détruisent au sol un C-54, premier avion de l'US Air Force perdu dans la guerre.",
+        "en": "North Korea crosses the 38th parallel. Its fighters attack Kimpo and Seoul and destroy a C-54 on the ground, the first USAF aircraft lost in the war."
+      },
+      "aircraft": "Douglas C-54 Skymaster",
+      "source": "https://en.wikipedia.org/wiki/USAF_units_and_aircraft_of_the_Korean_War"
+    },
+    {
+      "date": "1950-06-27",
+      "precision": "day",
+      "title": {
+        "fr": "Premières victoires américaines au-dessus de Kimpo",
+        "en": "First American victories over Kimpo"
+      },
+      "body": {
+        "fr": "Des F-82G couvrent les C-54 qui évacuent les derniers civils de Kimpo et abattent trois des cinq chasseurs nord-coréens venus les attaquer.",
+        "en": "F-82Gs covering the C-54s evacuating the last civilians from Kimpo shoot down three of the five North Korean fighters that attack them."
+      },
+      "aircraft": "F-82 Twin Mustang",
+      "source": "https://en.wikipedia.org/wiki/North_American_F-82_Twin_Mustang"
+    },
+    {
+      "date": "1950-06-29",
+      "precision": "day",
+      "title": {
+        "fr": "Premier bombardement de la Corée du Nord",
+        "en": "First bombing raid on North Korea"
+      },
+      "body": {
+        "fr": "Des B-26 du 3rd Bombardment Group mènent la première mission de bombardement de l'US Air Force sur le Nord, contre un aérodrome proche de Pyongyang.",
+        "en": "B-26s of the 3rd Bombardment Group fly the USAF's first bombing mission against the North, hitting an airfield near Pyongyang."
+      },
+      "aircraft": "A-26 Invader",
+      "source": "https://en.wikipedia.org/wiki/Douglas_A-26_Invader"
+    },
+    {
+      "date": "1950-07-03",
+      "precision": "day",
+      "title": {
+        "fr": "Entrée en guerre des porte-avions",
+        "en": "Carriers go into action"
+      },
+      "body": {
+        "fr": "L'USS *Valley Forge* et le HMS *Triumph* lancent leurs premiers raids sur le Nord. Deux F9F-3 Panther abattent deux Yak-9 : premières victoires de jets de l'US Navy.",
+        "en": "USS *Valley Forge* and HMS *Triumph* launch their first strikes on the North. Two F9F-3 Panthers shoot down two Yak-9s, the US Navy's first jet victories."
+      },
+      "aircraft": "F9F Panther",
+      "source": "https://www.history.navy.mil/browse-by-topic/communities/naval-aviation/1950-1953.html"
+    },
+    {
+      "date": "1950-11-01",
+      "precision": "day",
+      "title": {
+        "fr": "Apparition du MiG-15",
+        "en": "The MiG-15 appears"
+      },
+      "body": {
+        "fr": "Des MiG-15 soviétiques interceptent des avions américains près du Yalu. Le même jour a lieu le premier combat entre avions à réaction, contre des F-80.",
+        "en": "Soviet MiG-15s intercept American aircraft near the Yalu. The same day sees the first jet-versus-jet combat, against F-80s."
+      },
+      "aircraft": "MiG-15",
+      "source": "https://en.wikipedia.org/wiki/MiG_Alley"
+    },
+    {
+      "date": "1950-11-09",
+      "precision": "day",
+      "title": {
+        "fr": "Premier MiG-15 détruit",
+        "en": "First MiG-15 destroyed"
+      },
+      "body": {
+        "fr": "Le capitaine de corvette William Amen, sur F9F-2B Panther, abat un MiG-15 lors d'une attaque des ponts de Sinuiju. Une revendication d'un pilote de F-80, la veille, n'est pas confirmée par les archives soviétiques.",
+        "en": "Lieutenant Commander William Amen, flying an F9F-2B Panther, downs a MiG-15 during a strike on the Sinuiju bridges. An F-80 pilot's claim from the previous day is not borne out by Soviet records."
+      },
+      "aircraft": "F9F Panther",
+      "source": "https://en.wikipedia.org/wiki/Grumman_F9F_Panther"
+    },
+    {
+      "date": "1950-12-01",
+      "precision": "month",
+      "title": {
+        "fr": "Un pont parachuté à Koto-ri",
+        "en": "A bridge dropped at Koto-ri"
+      },
+      "body": {
+        "fr": "Pendant la retraite du réservoir de Chosin, huit C-119 parachutent des travées de pont métalliques qui permettent aux troupes encerclées de rejoindre Hungnam.",
+        "en": "During the retreat from the Chosin Reservoir, eight C-119s parachute steel bridge sections that let the encircled troops reach Hungnam."
+      },
+      "aircraft": "C-119 Flying Boxcar",
+      "source": "https://en.wikipedia.org/wiki/Fairchild_C-119_Flying_Boxcar"
+    },
+    {
+      "date": "1950-12-17",
+      "precision": "day",
+      "title": {
+        "fr": "Un Sabre abat un MiG près du Yalu",
+        "en": "A Sabre downs a MiG near the Yalu"
+      },
+      "body": {
+        "fr": "Trois escadrons de F-86 viennent d'arriver. Le lieutenant-colonel Bruce Hinton mène une patrouille de quatre Sabre le long du Yalu et abat le MiG-15 du major Iakov Efromeïenko, qui s'éjecte.",
+        "en": "Three F-86 squadrons have just arrived. Lieutenant Colonel Bruce Hinton leads four Sabres along the Yalu and shoots down Major Yakov Efromeenko's MiG-15; the Soviet pilot ejects."
+      },
+      "aircraft": "F-86 Sabre",
+      "source": "https://en.wikipedia.org/wiki/MiG_Alley"
+    },
+    {
+      "date": "1951-04-12",
+      "precision": "day",
+      "title": {
+        "fr": "Le « jeudi noir » des B-29",
+        "en": "The B-29s' “Black Thursday”"
+      },
+      "body": {
+        "fr": "Une trentaine de MiG-15 fondent sur 48 B-29 escortés : trois bombardiers abattus, sept endommagés. Les sorties de jour des bombardiers sont suspendues près de trois mois.",
+        "en": "About thirty MiG-15s fall on 48 escorted B-29s: three bombers are shot down and seven damaged. Daylight bomber sorties are halted for about three months."
+      },
+      "aircraft": "B-29 Superfortress",
+      "source": "https://en.wikipedia.org/wiki/MiG_Alley"
+    },
+    {
+      "date": "1951-10-23",
+      "precision": "day",
+      "title": {
+        "fr": "Namsi, la fin des raids de jour",
+        "en": "Namsi ends the daylight raids"
+      },
+      "body": {
+        "fr": "Sur neuf B-29 envoyés contre l'aérodrome de Namsi, six ne rentrent pas à leur base. Les Superfortress ne bombarderont plus que de nuit.",
+        "en": "Of nine B-29s sent against Namsi airfield, six fail to return to base. From now on the Superfortresses bomb only at night."
+      },
+      "aircraft": "B-29 Superfortress",
+      "source": "https://migflug.com/afterburner/black-tuesday-namsi-1951-b-29-mig-15/"
+    },
+    {
+      "date": "1951-12-01",
+      "precision": "day",
+      "title": {
+        "fr": "Bataille de Sunchon",
+        "en": "Battle of Sunchon"
+      },
+      "body": {
+        "fr": "Quatorze Meteor australiens affrontent au moins vingt MiG-15 pilotés par des Soviétiques ; trois Meteor sont perdus. La RAAF repasse ensuite le Meteor à l'attaque au sol.",
+        "en": "Fourteen Australian Meteors fight at least twenty Soviet-flown MiG-15s and lose three aircraft. The RAAF then switches the Meteor back to ground attack."
+      },
+      "aircraft": "Gloster Meteor",
+      "source": "https://en.wikipedia.org/wiki/Gloster_Meteor"
+    },
+    {
+      "date": "1952-06-23",
+      "precision": "day",
+      "title": {
+        "fr": "Les centrales du Nord frappées",
+        "en": "The North's power plants struck"
+      },
+      "body": {
+        "fr": "Avions embarqués et chasseurs-bombardiers de l'US Air Force attaquent le barrage de Sui-ho et huit autres centrales : environ 90 % de la production électrique du Nord est détruite.",
+        "en": "Carrier aircraft and USAF fighter-bombers attack the Sui-ho dam and eight other plants, destroying about 90% of the North's power production."
+      },
+      "aircraft": "A-1 Skyraider",
+      "source": "https://en.wikipedia.org/wiki/Attack_on_the_Sui-ho_Dam"
+    },
+    {
+      "date": "1952-11-02",
+      "precision": "day",
+      "title": {
+        "fr": "Première victoire de nuit au radar entre jets",
+        "en": "First radar night kill between jets"
+      },
+      "body": {
+        "fr": "Un F3D-2 Skyknight du VMF(N)-513 abat de nuit un avion à réaction ennemi, repéré et poursuivi au radar.",
+        "en": "A VMF(N)-513 F3D-2 Skyknight shoots down an enemy jet at night after a radar interception."
+      },
+      "aircraft": "F3D Skyknight",
+      "source": "https://en.wikipedia.org/wiki/Douglas_F3D_Skyknight"
+    },
+    {
+      "date": "1953-07-27",
+      "precision": "day",
+      "title": {
+        "fr": "Dernière victoire et armistice",
+        "en": "Last victory and armistice"
+      },
+      "body": {
+        "fr": "Le capitaine Ralph Parr, sur F-86, abat un transport soviétique Il-12, dernière victoire aérienne de la guerre. L'armistice est signé le même jour à Panmunjeom.",
+        "en": "Captain Ralph Parr, flying an F-86, shoots down a Soviet Il-12 transport, the war's last aerial victory. The armistice is signed the same day at Panmunjom."
+      },
+      "aircraft": "F-86 Sabre",
+      "source": "https://en.wikipedia.org/wiki/Ralph_Parr"
+    }
+  ],
+  "aircraft": [
+    {
+      "name": "Martin PBM Mariner",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Les hydravions de patrouille de l'US Navy, basés notamment à Iwakuni, surveillent la mer Jaune et chassent les mines. Le 31 juillet 1952, un PBM est attaqué par deux MiG-15 : deux membres d'équipage sont tués.",
+        "en": "US Navy patrol flying boats, based notably at Iwakuni, watched the Yellow Sea and hunted mines. On 31 July 1952 a PBM was attacked by two MiG-15s, which killed two of its crew."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Martin_PBM_Mariner",
+        "https://webharvest.gov/peth04/20041015005156/http://www.history.navy.mil/download/history/app25.pdf",
+        "https://www.history.navy.mil/research/library/online-reading-room/title-list-alphabetically/k/korean-war-chronology/may-august-1952.html"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F4U Corsair",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Pilier de l'appui aérien rapproché de l'US Navy et des Marines. Le 4 décembre 1950, Thomas Hudner pose son Corsair près de Jesse Brown, abattu à Chosin ; le 10 septembre 1952, Jesse Folmar abat un MiG-15 ; Guy Bordelon devient l'as de nuit de la Navy.",
+        "en": "Mainstay of Navy and Marine close air support. On 4 December 1950 Thomas Hudner crash-landed beside the downed Jesse Brown at Chosin; on 10 September 1952 Jesse Folmar shot down a MiG-15; Guy Bordelon became the Navy's night ace."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Vought_F4U_Corsair",
+        "https://www.history.navy.mil/browse-by-topic/communities/naval-aviation/1950-1953.html"
+      ],
+      "note": "Les victimes de Bordelon divergent : trois La-9 ou La-11 et deux Yak-18 selon Wikipédia, un Po-2 pour la cinquième selon la chronologie du NHHC."
+    },
+    {
+      "name": "Fairey Firefly",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Le 3 juillet 1950, les Firefly du 827 Squadron, sur le HMS Triumph, frappent l'aérodrome de Haeju. Depuis les porte-avions britanniques et le HMAS Sydney, ils mènent ensuite patrouilles anti-sous-marines, reconnaissances armées et frappes sur ponts et voies ferrées.",
+        "en": "On 3 July 1950 No. 827 Squadron Fireflies from HMS Triumph struck Haeju airfield. From British carriers and HMAS Sydney they went on to fly anti-submarine patrols, armed reconnaissance and strikes on bridges and railways."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Fairey_Firefly",
+        "https://royalnavyresearcharchive.org.uk/Article_Forgotten_Cruise.htm",
+        "https://www.history.navy.mil/browse-by-topic/communities/naval-aviation/1950-1953.html"
+      ],
+      "note": "Composition du raid du 3 juillet 1950 : douze Seafire et neuf Firefly selon le Royal Navy Research Archive, l'inverse selon l'article Wikipédia du HMS Triumph. Haeju est appelée Kaishu dans les sources britanniques."
+    },
+    {
+      "name": "Douglas C-54 Skymaster",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Principal avion du pont aérien de la guerre. Un C-54 détruit au sol à Kimpo le 25 juin 1950 est le premier appareil de l'US Air Force perdu ; le 27 juin, d'autres évacuent sous la protection des F-82 les derniers civils de Kimpo.",
+        "en": "The war's main airlifter. A C-54 destroyed on the ground at Kimpo on 25 June 1950 was the first USAF aircraft lost; on 27 June others, covered by F-82s, evacuated the last civilians from Kimpo."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_C-54_Skymaster",
+        "https://en.wikipedia.org/wiki/USAF_units_and_aircraft_of_the_Korean_War",
+        "https://en.wikipedia.org/wiki/North_American_F-82_Twin_Mustang"
+      ],
+      "note": ""
+    },
+    {
+      "name": "A-26 Invader",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Sous le nom de B-26, il mène le 29 juin 1950 le premier bombardement américain du Nord, puis se spécialise dans l'interdiction de nuit des convois. Un B-26 largue les dernières bombes de la guerre, 24 minutes avant la signature de l'armistice.",
+        "en": "Designated B-26, it flew the first American bombing raid on the North on 29 June 1950, then specialised in night interdiction of convoys. A B-26 dropped the war's last bombs, 24 minutes before the armistice was signed."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_A-26_Invader",
+        "https://en.wikipedia.org/wiki/USAF_units_and_aircraft_of_the_Korean_War"
+      ],
+      "note": ""
+    },
+    {
+      "name": "B-29 Superfortress",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Bombardier stratégique de la guerre. Ses raids de jour sur les villes et les ponts du Nord deviennent intenables face aux MiG-15 (12 avril et 23 octobre 1951) ; il bombarde ensuite de nuit, avec notamment les bombes guidées Razon et Tarzon.",
+        "en": "The war's strategic bomber. Its daylight raids on the North's cities and bridges became untenable against MiG-15s (12 April and 23 October 1951); it then bombed at night, notably with Razon and Tarzon guided bombs."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Boeing_B-29_Superfortress",
+        "https://en.wikipedia.org/wiki/MiG_Alley",
+        "https://migflug.com/afterburner/black-tuesday-namsi-1951-b-29-mig-15/"
+      ],
+      "note": "Bilans divergents : environ 20 000 sorties et 57 appareils perdus au combat selon l'article du B-29, plus de 21 000 sorties et 34 pertes au combat selon l'article sur les unités de l'USAF. Les pertes de Namsi vont de trois abattus à six non rentrés selon le décompte."
+    },
+    {
+      "name": "Gloster Meteor",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Le No. 77 Squadron de la RAAF le mène au combat à partir du 29 juillet 1951. Surclassé par le MiG-15, notamment à Sunchon le 1er décembre 1951, il passe à l'attaque au sol : 4 836 missions et une trentaine d'appareils perdus, surtout à la flak.",
+        "en": "No. 77 Squadron RAAF took it into combat from 29 July 1951. Outclassed by the MiG-15, notably at Sunchon on 1 December 1951, it switched to ground attack: 4,836 missions and about thirty aircraft lost, mostly to flak."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Gloster_Meteor",
+        "https://en.wikipedia.org/wiki/MiG_Alley"
+      ],
+      "note": "À Sunchon, les Australiens revendiquent un MiG détruit ; les archives russes n'indiquent aucune perte du 176e régiment de la Garde."
+    },
+    {
+      "name": "F7F Tigercat",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Seul engagement au combat du type : les F7F-3N des escadrilles de chasse de nuit des Marines (VMF(N)-513 et 542) mènent interdiction et chasse nocturnes, et abattent deux biplans Po-2.",
+        "en": "The type's only combat use: F7F-3Ns of the Marine night fighter squadrons VMF(N)-513 and 542 flew night interdiction and fighter missions and shot down two Po-2 biplanes."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Grumman_F7F_Tigercat",
+        "https://webharvest.gov/peth04/20041015005156/http://www.history.navy.mil/download/history/app25.pdf"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-80 Shooting Star",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Près de la moitié de la chasse de l'US Air Force au début de la guerre. Pris dans le premier combat entre jets le 1er novembre 1950, dépassé par le MiG-15, il finit chasseur-bombardier ; 277 appareils sont perdus au combat, surtout à la flak.",
+        "en": "About half of USAF fighter strength when the war began. Caught up in the first jet-versus-jet combat on 1 November 1950 and outclassed by the MiG-15, it ended up as a fighter-bomber; 277 were lost in combat, mostly to ground fire."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_P-80_Shooting_Star",
+        "https://en.wikipedia.org/wiki/MiG_Alley"
+      ],
+      "note": "La victoire sur MiG-15 revendiquée par Russell Brown le 8 novembre 1950 n'est pas confirmée par les archives soviétiques ; la perte du 1er novembre est attribuée à la flak par les Américains, à un pilote de MiG par les Soviétiques."
+    },
+    {
+      "name": "Hawker Sea Fury",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Chasseur-bombardier des porte-avions HMS Theseus, Glory et Ocean et HMAS Sydney contre ponts, voies ferrées et aérodromes. Le 9 août 1952, une patrouille du 802 Squadron attaquée par huit MiG-15 en abat un.",
+        "en": "Fighter-bomber aboard HMS Theseus, Glory and Ocean and HMAS Sydney, striking bridges, railways and airfields. On 9 August 1952 a No. 802 Squadron flight attacked by eight MiG-15s shot one down."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hawker_Sea_Fury",
+        "https://www.history.navy.mil/research/library/online-reading-room/title-list-alphabetically/k/korean-war-chronology/may-august-1952.html"
+      ],
+      "note": "La victoire, attribuée par la Royal Navy au lieutenant Peter Carmichael, est revendiquée par Brian Ellis ; Wikipédia la date du 8 ou du 9 août selon le passage."
+    },
+    {
+      "name": "A-1 Skyraider",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Engagé dès le 3 juillet 1950 depuis l'USS Valley Forge, il emporte bien plus que les jets de l'époque. Le 1er mai 1951, huit Skyraider torpillent le barrage de Hwacheon ; en juin 1952, ils bombardent la centrale de Sui-ho. 128 appareils perdus.",
+        "en": "In action from 3 July 1950 aboard USS Valley Forge, it carried far more than the jets of the day. On 1 May 1951 eight Skyraiders torpedoed the Hwacheon dam; in June 1952 they bombed the Sui-ho power plant. 128 were lost."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_A-1_Skyraider",
+        "https://en.wikipedia.org/wiki/Hwacheon_Dam",
+        "https://en.wikipedia.org/wiki/Attack_on_the_Sui-ho_Dam"
+      ],
+      "note": "Date de l'attaque du barrage de Hwacheon : 1er mai 1951 selon l'article du barrage, 2 mai selon celui du Skyraider."
+    },
+    {
+      "name": "P-2 Neptune",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Le VP-6, première escadrille de patrouille sur le théâtre, mène le Neptune à son premier combat : train détruit près de Chongjin le 29 juillet 1950, poseurs de mines coulés le 13 août. Après une perte le 16 août, les patrouilleurs n'attaquent plus.",
+        "en": "VP-6, the first patrol squadron in theatre, took the Neptune into its first combat: a train destroyed near Chongjin on 29 July 1950, minelaying boats sunk on 13 August. After a loss on 16 August, patrol aircraft flew no more attacks."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/VP-6",
+        "https://en.wikipedia.org/wiki/Lockheed_P-2_Neptune",
+        "https://webharvest.gov/peth04/20041015005156/http://www.history.navy.mil/download/history/app25.pdf"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-82 Twin Mustang",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Le 27 juin 1950, en couvrant l'évacuation de Kimpo, des F-82G abattent trois chasseurs nord-coréens : premières victoires américaines de la guerre. Ils mènent ensuite escorte, attaque de nuit et reconnaissance météo jusqu'à leur relève par le F-94.",
+        "en": "On 27 June 1950, covering the Kimpo evacuation, F-82Gs shot down three North Korean fighters, the first American victories of the war. They went on to fly escort, night intruder and weather reconnaissance until the F-94 replaced them."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_F-82_Twin_Mustang",
+        "https://en.wikipedia.org/wiki/USAF_units_and_aircraft_of_the_Korean_War"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Yak-11",
+      "side": "nord",
+      "attested": true,
+      "role": {
+        "fr": "L'aviation nord-coréenne l'engage au combat dès le début de la guerre. Le 27 juin 1950, un Yak-11 abattu par un F-82 au-dessus de Kimpo est le premier avion nord-coréen détruit par les forces américaines.",
+        "en": "The North Korean air force used it in combat from the start of the war. On 27 June 1950 a Yak-11 shot down by an F-82 over Kimpo became the first North Korean aircraft destroyed by US forces."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Yakovlev_Yak-11",
+        "https://en.wikipedia.org/wiki/North_American_F-82_Twin_Mustang"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Yak-18",
+      "side": "nord",
+      "attested": true,
+      "role": {
+        "fr": "Équipés de lance-bombes, les Yak-18 nord-coréens harcèlent de nuit les lignes de l'ONU : ce sont des « Bedcheck Charlie ». En juin 1953, quatre ou cinq d'entre eux incendient un dépôt de carburant près d'Inchon, le coup le plus réussi de l'aviation nord-coréenne.",
+        "en": "Fitted with bomb racks, North Korean Yak-18s harassed UN lines at night as “Bedcheck Charlies”. In June 1953 four or five of them destroyed a fuel dump near Inchon, the North Korean air force's most successful attack of the war."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Yakovlev_Yak-18",
+        "https://en.wikipedia.org/wiki/Vought_F4U_Corsair"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-84 Thunderjet",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Arrivé en décembre 1950 pour escorter les B-29, il devient le grand chasseur-bombardier de la guerre : 86 408 missions, attaques de la centrale de Sui-ho en juin 1952 et des barrages. L'US Air Force lui attribue 60 % des objectifs au sol détruits.",
+        "en": "Arriving in December 1950 to escort B-29s, it became the war's main fighter-bomber: 86,408 missions, strikes on the Sui-ho power plant in June 1952 and on dams. The USAF credited it with 60% of all ground targets destroyed."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Republic_F-84_Thunderjet",
+        "https://en.wikipedia.org/wiki/USAF_units_and_aircraft_of_the_Korean_War",
+        "https://en.wikipedia.org/wiki/Attack_on_the_Sui-ho_Dam"
+      ],
+      "note": "Pertes : 335 F-84 selon un passage de Wikipédia, 305 (dont 249 au combat) selon le recueil statistique de l'USAF pour 1953."
+    },
+    {
+      "name": "F2H Banshee",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Premier combat le 23 août 1951 depuis l'USS Essex. Il escorte les bombardiers de l'US Air Force et photographie le champ de bataille, en version F2H-2P surtout pour les Marines ; aucun succès aérien, trois F2H-2 perdus à la flak.",
+        "en": "First combat mission on 23 August 1951 from USS Essex. It escorted USAF bombers and photographed the battlefield, the F2H-2P chiefly for the Marines; it scored no aerial victories and lost three F2H-2s to flak."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/McDonnell_F2H_Banshee",
+        "https://webharvest.gov/peth04/20041015005156/http://www.history.navy.mil/download/history/app25.pdf"
+      ],
+      "note": ""
+    },
+    {
+      "name": "B-45 Tornado",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Les RB-45C du 91st Strategic Reconnaissance Squadron, basés à Yokota, photographient le Nord et remplacent les RB-29 trop vulnérables. Le 4 décembre 1950, un RB-45C est abattu par un MiG-15 ; les missions passent de nuit début 1952.",
+        "en": "RB-45Cs of the 91st Strategic Reconnaissance Squadron, based at Yokota, photographed the North and replaced the vulnerable RB-29s. On 4 December 1950 an RB-45C was shot down by a MiG-15; missions moved to night in early 1952."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_B-45_Tornado",
+        "https://en.wikipedia.org/wiki/USAF_units_and_aircraft_of_the_Korean_War"
+      ],
+      "note": "Seule la version de reconnaissance RB-45C est engagée, pas le bombardier."
+    },
+    {
+      "name": "La-11",
+      "side": "nord",
+      "attested": true,
+      "role": {
+        "fr": "Chasseur à hélice des aviations nord-coréenne et chinoise, surtout lancé contre les B-26 de nuit. Le 30 novembre 1951, seize La-11 escortent des Tu-2 contre l'île de Taehwa-do ; les F-86 en abattent trois.",
+        "en": "Piston fighter of the North Korean and Chinese air forces, used mostly against B-26 night bombers. On 30 November 1951 sixteen La-11s escorted Tu-2s against Taehwa-do island; F-86s shot down three of them."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lavochkin_La-11"
+      ],
+      "note": "Ses tentatives contre les B-29 restent vaines. Guy Bordelon aurait abattu des La-9 ou La-11 (identification incertaine selon Wikipédia)."
+    },
+    {
+      "name": "DHC-2 Beaver",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Sous le nom de L-20, l'US Army en commande 970 pendant la guerre. Le premier arrive en Corée le 22 décembre 1951 au détachement aérien de la 8e armée ; il sert à la liaison et au transport léger.",
+        "en": "As the L-20, the US Army ordered 970 during the war. The first reached Korea on 22 December 1951 with the Eighth Army flight detachment, flying liaison and light transport."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/de_Havilland_Canada_DHC-2_Beaver",
+        "https://dhc-2.com/id601_m.htm"
+      ],
+      "note": ""
+    },
+    {
+      "name": "F-86 Sabre",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Envoyé en décembre 1950 contre le MiG-15, il dispute la MiG Alley jusqu'à l'armistice ; dès le 17 décembre 1950, Bruce Hinton y abat un MiG. Tous les as américains de la guerre sauf un volent sur Sabre ; il sert aussi de chasseur-bombardier en 1953.",
+        "en": "Rushed out in December 1950 to counter the MiG-15, it fought over MiG Alley until the armistice; Bruce Hinton downed a MiG there as early as 17 December 1950. All but one of the war's American aces flew the Sabre, which also served as a fighter-bomber in 1953."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/North_American_F-86_Sabre",
+        "https://en.wikipedia.org/wiki/MiG_Alley",
+        "https://fr.wikipedia.org/wiki/North_American_F-86_Sabre"
+      ],
+      "note": "Bilan très discuté : 792 MiG pour 78 Sabre revendiqués par l'USAF ; rapport divisé par deux par la revue Sabre Measure Charlie ; 1,8 contre 1 selon la RAND ; environ 2 contre 1 selon Dorr, Lake et Thompson. Le No. 2 Squadron sud-africain l'a aussi employé."
+    },
+    {
+      "name": "HU-16 Albatross",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "L'US Air Force emploie largement le SA-16 pour le sauvetage au combat. Le 28 décembre 1952, un équipage du 3rd Air Rescue Squadron repêche un pilote tombé en mer Jaune au nord de Cho-do.",
+        "en": "The USAF used the SA-16 extensively for combat rescue. On 28 December 1952 a 3rd Air Rescue Squadron crew picked up a downed pilot from the Yellow Sea north of Cho-do."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Grumman_HU-16_Albatross",
+        "https://afhistory.org/december-28-1952/"
+      ],
+      "note": ""
+    },
+    {
+      "name": "C-119 Flying Boxcar",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Engagé avec le 314th Troop Carrier Group, il ravitaille les Marines à Chosin et parachute en décembre 1950 les travées de pont de Koto-ri. Il largue aussi des parachutistes et, à l'automne 1951, des fûts de napalm (opération *Snowball*).",
+        "en": "Flying with the 314th Troop Carrier Group, it supplied the Marines at Chosin and in December 1950 parachuted the Koto-ri bridge sections. It also dropped paratroopers and, in autumn 1951, napalm drums (Operation *Snowball*)."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Fairchild_C-119_Flying_Boxcar",
+        "https://en.wikipedia.org/wiki/USAF_units_and_aircraft_of_the_Korean_War"
+      ],
+      "note": "Pour le pont de Koto-ri, certaines sources attribuent le largage à des R4Q des Marines, version navale du C-119."
+    },
+    {
+      "name": "F9F Panther",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Jet le plus employé de l'US Navy et des Marines : environ 78 000 sorties. Le 3 juillet 1950, deux F9F-3 abattent deux Yak-9 ; le 9 novembre, William Amen détruit le premier MiG-15 de la guerre ; le 2 avril 1951, la Navy l'emploie pour la première fois en bombardier.",
+        "en": "The Navy and Marines' most widely used jet, with about 78,000 sorties. On 3 July 1950 two F9F-3s shot down two Yak-9s; on 9 November William Amen destroyed the war's first MiG-15; on 2 April 1951 the Navy first used it as a bomber."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Grumman_F9F_Panther",
+        "https://www.history.navy.mil/browse-by-topic/communities/naval-aviation/1950-1953.html",
+        "https://en.wikipedia.org/wiki/MiG_Alley"
+      ],
+      "note": ""
+    },
+    {
+      "name": "MiG-15",
+      "side": "nord",
+      "attested": true,
+      "role": {
+        "fr": "Apparu le 1er novembre 1950, il surclasse d'abord tous les avions de l'ONU. Piloté en secret par les Soviétiques du 64e corps, puis par des Chinois et des Nord-Coréens, il défend la MiG Alley et chasse les B-29 de jour du ciel nord-coréen.",
+        "en": "Appearing on 1 November 1950, it at first outclassed every UN aircraft. Secretly flown by Soviet pilots of the 64th Corps, then by Chinese and North Korean pilots, it defended MiG Alley and drove the B-29s out of the daylight sky."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan-Gurevich_MiG-15",
+        "https://en.wikipedia.org/wiki/MiG_Alley",
+        "https://fr.wikipedia.org/wiki/Mikoyan-Gourevitch_MiG-15"
+      ],
+      "note": "Chiffres contradictoires : le 64e corps revendique 1 106 avions abattus, les Soviétiques 647 F-86 ; pertes de 335 MiG soviétiques et 224 chinois, environ 659 au total avec les Nord-Coréens, selon Wikipédia. Le 23 octobre 1951 est appelé « Black Tuesday » dans l'article du MiG-15."
+    },
+    {
+      "name": "F3D Skyknight",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Chasseur de nuit du VMF(N)-513 à partir d'août 1952. Dans la nuit du 2 novembre 1952, il signe la première interception radar d'un jet par un autre jet ; il escorte aussi les B-29 de nuit et finit la guerre avec six victoires, dont quatre MiG-15.",
+        "en": "VMF(N)-513's night fighter from August 1952. On the night of 2 November 1952 it made the first radar interception of a jet by another jet; it also escorted B-29s at night and ended the war with six victories, four of them MiG-15s."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_F3D_Skyknight"
+      ],
+      "note": "La victime du 2 novembre 1952 fut identifiée par l'équipage comme un Yak-15, type dont aucun exemplaire n'était signalé en Corée."
+    },
+    {
+      "name": "F-94 Starfire",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Le 319th Fighter-Interceptor Squadron l'engage depuis Suwon de mars 1952 à juin 1953 pour couvrir de nuit les B-29. Longtemps interdit de vol profond (radar secret), il est crédité de la première victoire de nuit d'un jet sur un MiG-15.",
+        "en": "The 319th Fighter-Interceptor Squadron flew it from Suwon between March 1952 and June 1953 as night cover for B-29s. Long barred from deep missions to protect its secret radar, it was credited with the first jet night victory over a MiG-15."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_F-94_Starfire",
+        "https://en.wikipedia.org/wiki/USAF_units_and_aircraft_of_the_Korean_War"
+      ],
+      "note": "Un F-94 est perdu en ralentissant à 180 km/h derrière un Po-2. La date de la victoire sur MiG-15 n'est pas donnée par la source."
+    },
+    {
+      "name": "Douglas C-124 Globemaster II",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Ses essais en service sur le théâtre (opération *Pelican*) commencent le 27 septembre 1951 ; il assure ensuite le transport lourd vers et depuis la Corée avec le 374th Troop Carrier Wing, ainsi que des évacuations sanitaires.",
+        "en": "Its in-theatre service tests (Operation *Pelican*) began on 27 September 1951; it then flew heavy cargo to and from Korea with the 374th Troop Carrier Wing, along with medical evacuation."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_C-124_Globemaster_II",
+        "https://en.wikipedia.org/wiki/USAF_units_and_aircraft_of_the_Korean_War"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Cessna O-1 Bird Dog",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Livré à l'US Army sous le nom de L-19 à partir de décembre 1950, il fait sa première guerre en Corée ; les Marines l'y engagent aussi en OE-1, notamment au VMO-6 pendant l'hiver 1951-1952, pour l'observation et la liaison.",
+        "en": "Delivered to the US Army as the L-19 from December 1950, it fought its first war in Korea; the Marines also flew it there as the OE-1, notably with VMO-6 in the winter of 1951-52, for observation and liaison."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Cessna_O-1_Bird_Dog",
+        "https://webharvest.gov/peth04/20041015005156/http://www.history.navy.mil/download/history/app25.pdf"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Canadair Sabre",
+      "side": "onu",
+      "attested": true,
+      "role": {
+        "fr": "Soixante Sabre Mk 2 construits par Canadair passent à l'US Air Force pour la Corée au premier semestre 1952 (F-86E-6). Le 11 juillet 1953, John Bolt devient sur l'un d'eux le seul as des Marines de la guerre ; des pilotes de l'ARC en volent aussi.",
+        "en": "Sixty Canadair-built Sabre Mk 2s went to the USAF for Korea in the first half of 1952 (F-86E-6). On 11 July 1953 John Bolt became the Marines' only ace of the war in one of them; RCAF exchange pilots flew them too."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Canadair_Sabre",
+        "https://www.canada.ca/en/air-force/services/history-heritage/korea-war.html",
+        "https://www.history.navy.mil/browse-by-topic/communities/naval-aviation/1950-1953.html"
+      ],
+      "note": "Le NHHC identifie le Sabre de Bolt comme le F-86E-6 52-2852 ; F-86E-6 est la désignation des Sabre Canadair. Selon l'ARC, environ 20 % des missions de ses pilotes, dont certaines victoires, ont été volées sur Sabre canadien."
+    }
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Korean_War",
+    "https://fr.wikipedia.org/wiki/Guerre_de_Corée",
+    "https://en.wikipedia.org/wiki/MiG_Alley",
+    "https://en.wikipedia.org/wiki/USAF_units_and_aircraft_of_the_Korean_War",
+    "https://en.wikipedia.org/wiki/Attack_on_the_Sui-ho_Dam",
+    "https://www.history.navy.mil/browse-by-topic/communities/naval-aviation/1950-1953.html",
+    "https://www.history.navy.mil/research/library/online-reading-room/title-list-alphabetically/k/korean-war-chronology/may-august-1952.html",
+    "https://webharvest.gov/peth04/20041015005156/http://www.history.navy.mil/download/history/app25.pdf",
+    "https://migflug.com/afterburner/black-tuesday-namsi-1951-b-29-mig-15/",
+    "https://www.canada.ca/en/air-force/services/history-heritage/korea-war.html"
+  ]
+}

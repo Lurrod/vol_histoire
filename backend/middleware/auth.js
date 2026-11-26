@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const { withTransaction } = require('../db');
 const refreshTokensRepo = require('../repositories/refresh-tokens');
 const usersRepo = require('../repositories/users');
+const emailTokensRepo = require('../repositories/email-tokens');
 
 // -----------------------------------------------------------------------------
 // Pool PostgreSQL (injecté depuis app.js via setPool)
@@ -36,11 +37,14 @@ function generateAccessToken(user) {
 /**
  * Génère un refresh token avec un identifiant unique (jti) pour la révocation.
  * Retourne un objet { token, jti } — le jti doit être stocké en base.
+ * persistent: false (« Se souvenir de moi » décoché, CONT-002) est inscrit
+ * dans le jeton (rem: false) pour que chaque rotation garde des cookies de
+ * session ; un jeton sans ce champ reste persistant (sessions existantes).
  */
-function generateRefreshToken(user) {
+function generateRefreshToken(user, { persistent = true } = {}) {
   const jti = crypto.randomUUID();
   const token = jwt.sign(
-    { id: user.id, role: user.role_id ?? user.role, jti },
+    { id: user.id, role: user.role_id ?? user.role, jti, ...(persistent ? {} : { rem: false }) },
     process.env.REFRESH_SECRET,
     { algorithm: JWT_ALGORITHM, expiresIn: REFRESH_TOKEN_EXPIRY }
   );
@@ -138,9 +142,12 @@ async function bumpTokenVersion(client, userId) {
  * Supprime les tokens expirés de la base (nettoyage périodique).
  * Les tokens révoqués mais non expirés sont CONSERVÉS : c'est leur présence
  * qui permet de reconnaître un rejeu (getRefreshTokenState → 'reused').
+ * Les codes envoyés par email consommés ou expirés sont purgés aussi
+ * (LEGAL-007, emailTokensRepo.deleteSpent).
  */
 async function cleanupExpiredTokens() {
   await refreshTokensRepo.deleteExpired(pool);
+  await emailTokensRepo.deleteSpent(pool);
 }
 
 /**
@@ -160,19 +167,30 @@ async function cleanupUnverifiedUsers() {
 // ne demander le rafraîchissement que lorsqu'il a une chance d'aboutir.
 const SESSION_HINT_COOKIE = 'vh_session';
 
-function setRefreshCookie(res, token) {
+/** Le jeton (vérifié ou non) demande-t-il des cookies persistants ? */
+function isPersistentRefresh(decoded) {
+  return !(decoded && decoded.rem === false);
+}
+
+/**
+ * Pose le cookie de session et son témoin. Non persistant (« Se souvenir de
+ * moi » décoché, CONT-002) : cookies de session du navigateur, effacés à sa
+ * fermeture ; la durée maximale côté base (7 jours) ne change pas.
+ */
+function setRefreshCookie(res, token, { persistent = true } = {}) {
+  const lifetime = persistent ? { maxAge: REFRESH_COOKIE_MAX_AGE } : {};
   res.cookie(REFRESH_COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: REFRESH_COOKIE_MAX_AGE,
+    ...lifetime,
     path: '/api',
   });
   res.cookie(SESSION_HINT_COOKIE, '1', {
     httpOnly: false, // lu par frontend/js/auth.js — volontaire
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    maxAge: REFRESH_COOKIE_MAX_AGE,
+    ...lifetime,
     path: '/',
   });
 }
@@ -262,6 +280,7 @@ module.exports = {
   JWT_VERIFY_OPTIONS,
   generateAccessToken,
   generateRefreshToken,
+  isPersistentRefresh,
   storeRefreshToken,
   getRefreshTokenState,
   isRefreshTokenValid,

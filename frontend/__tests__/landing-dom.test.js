@@ -159,7 +159,7 @@ describe('search-suggest — combobox', () => {
     const { input, list, panel } = mountSearch();
     await type(input, 'raf');
     expect([...list.children].every((li) => li.getAttribute('role') === 'option')).toBe(true);
-    expect(panel.querySelector('.hero-suggest-all').textContent).toBe('Rechercher « raf » dans le hangar');
+    expect(panel.querySelector('.hero-suggest-all').textContent).toBe('Rechercher «\u00A0raf\u00A0» dans le hangar');
     await type(input, 'raf<img>');
     expect(panel.innerHTML).not.toContain('<img>');
   });
@@ -196,7 +196,7 @@ describe('landing — familles de missions', () => {
 
     auth.fetchWithTimeout = jest.fn(() => jsonResponse({}, false));
     await landing.loadFacets();
-    expect(document.getElementById('missions-status').textContent).toBe('Les catégories n\'ont pas pu être chargées.');
+    expect(document.getElementById('missions-status').textContent).toBe('Les catégories n’ont pas pu être chargées.');
   });
 });
 
@@ -213,7 +213,7 @@ describe('landing — fin de page selon la session', () => {
     expect(document.getElementById('home-end-title').textContent).toBe('Bon retour, Ada');
     // L'attribut i18n est retiré, sinon applyToDOM() remettrait l'invitation.
     expect(document.getElementById('home-end-title').hasAttribute('data-i18n-html')).toBe(false);
-    expect(document.getElementById('home-end-text').textContent).toBe('3 appareils en favoris. Les derniers ajoutés :');
+    expect(document.getElementById('home-end-text').textContent).toBe('3 appareils en favoris. Les derniers ajoutés\u00A0:');
     const favs = document.getElementById('home-end-favs');
     expect(favs.hidden).toBe(false);
     expect(favs.querySelectorAll('.home-end-fav')).toHaveLength(3);

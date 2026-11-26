@@ -27,6 +27,7 @@ function stubModules() {
     closeAllDropdowns: jest.fn(),
   };
   window.VH = {
+    shared: { adminLoader: { isEditor: (p) => [1, 2].includes(Number(p && p.role)), load: jest.fn(() => Promise.resolve()) } },
     hangar: {
       data,
       filters,

@@ -21,7 +21,8 @@
   const PREFIX = 'home.landing.';
 
   const FALLBACK_FR = {
-    search_all: 'Rechercher « {q} » dans le hangar',
+    // Insécables comme dans fr.json (CONT-003).
+    search_all: 'Rechercher «\u00A0{q}\u00A0» dans le hangar',
     search_empty: 'Aucun appareil ne correspond.',
     search_status_one: '{n} suggestion. Flèches pour parcourir.',
     search_status_other: '{n} suggestions. Flèches pour parcourir.',
@@ -30,7 +31,7 @@
     count_other: '{n} fiches',
     gen_short_1: '1re gén.',
     gen_short_other: '{n}e gén.',
-    types_error: 'Les catégories n\'ont pas pu être chargées.',
+    types_error: 'Les catégories n’ont pas pu être chargées.',
     family_combat: 'Combat',
     family_support: 'Soutien',
     family_training: 'Formation et essais',
@@ -39,8 +40,8 @@
     end_welcome: 'Bon retour, {name}',
     end_welcome_anon: 'Bon retour',
     end_empty: 'Votre collection est encore vide. Ajoutez un appareil depuis sa fiche avec le cœur, il vous attendra ici.',
-    end_count_one: '{n} appareil en favoris. Le dernier ajouté :',
-    end_count_other: '{n} appareils en favoris. Les derniers ajoutés :',
+    end_count_one: '{n} appareil en favoris. Le dernier ajouté\u00A0:',
+    end_count_other: '{n} appareils en favoris. Les derniers ajoutés\u00A0:',
     end_favs_one: 'Voir mon favori',
     end_favs_other: 'Voir mes {n} favoris',
   };

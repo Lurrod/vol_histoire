@@ -26,7 +26,9 @@ const test = base.test.extend({
               marketing: false,
             },
             timestamp: new Date().toISOString(),
-            version: '1.0',
+            // Même valeur que CONSENT_VERSION (frontend/js/cookies.js) : une
+            // autre version vaut absence de choix et le bandeau revient (LEGAL-008).
+            version: '2',
           })
         );
         // Lang : seulement si non définie. i18n.js fait window.location.reload()

@@ -134,7 +134,8 @@ async function loadPayloadJson(pool, { force = false } = {}) {
 }
 
 async function invalidate() {
-  try { await cache.del(CACHE_KEY); } catch { /* noop */ }
+  // cache.del journalise et retente lui-même un échec Redis (JS-005).
+  await cache.del(CACHE_KEY);
 }
 
 module.exports = { CACHE_KEY, DECADES, yearOf, buildPayload, loadPayloadJson, invalidate };

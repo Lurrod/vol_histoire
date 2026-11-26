@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [main]
 
+# Un run par branche ou PR : sur une PR, une nouvelle poussée annule le run
+# devenu inutile ; sur main, rien n'est annulé en cours (le job deploy a en
+# plus son propre groupe, jamais interrompu). Chaque job a un délai maximal
+# (timeout-minutes) : un serveur e2e ou un test de charge bloqué ne retient
+# plus un runner six heures (DEVOPS-001).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 # Moindre privilège : aucun job n'écrit dans le dépôt.
 permissions:
   contents: read
@@ -26,6 +35,7 @@ jobs:
   # ═══════════════════════════════════════════════════════════
   quality:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -51,6 +61,19 @@ jobs:
       - name: html-validate
         run: npx --yes html-validate@11.21.0 "frontend/*.html"
 
+      # zz_conflits.sql est généré par tools/lots/conflits_build.py depuis
+      # tools/lots/conflits/*.json : il doit correspondre exactement à ses
+      # sources (une retouche à la main serait écrasée au prochain build).
+      - name: Pages de conflit conformes à leurs sources
+        run: |
+          python3 -X utf8 tools/lots/conflits_build.py > /dev/null
+          if ! git diff --quiet -- backend/db_backup/zz_conflits.sql; then
+            echo "::error::zz_conflits.sql ne correspond pas à tools/lots/conflits/*.json : lancer « python tools/lots/conflits_build.py » et committer le résultat."
+            git --no-pager diff --stat -- backend/db_backup/zz_conflits.sql
+            exit 1
+          fi
+          echo "✓ zz_conflits.sql conforme à ses sources"
+
       # La version de package.json doit se retrouver partout où elle est
       # recopiée (backend, e2e, verrou, service worker, OpenAPI, badge) et
       # avoir son entrée datée dans CHANGELOG.md.
@@ -67,7 +90,7 @@ jobs:
 
       - name: Generated files match the sources
         run: |
-          GENERATED=(frontend/js/dist frontend/js/vendor frontend/css frontend/js/app-version.js frontend/js/shared/airplane-fields.js)
+          GENERATED=(frontend/js/dist frontend/js/vendor frontend/css frontend/js/app-version.js frontend/js/shared/airplane-fields.js frontend/js/shared/meta-description.js)
           CHANGES=$(git status --porcelain -- "${GENERATED[@]}")
           if [ -n "$CHANGES" ]; then
             echo "::error::Fichiers générés périmés : lancer « npm run build » et committer le résultat."
@@ -82,6 +105,7 @@ jobs:
   # ═══════════════════════════════════════════════════════════
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
 
     # Base d'intégration : les suites de backend/__tests__/integration/ y
     # exécutent réellement le SQL des routes. Chaque suite recrée son propre
@@ -183,6 +207,7 @@ jobs:
   # ═══════════════════════════════════════════════════════════
   e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: test
 
     services:
@@ -291,6 +316,7 @@ jobs:
   # ═══════════════════════════════════════════════════════════
   load:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: test
 
     env:
@@ -323,6 +349,7 @@ jobs:
   deploy:
     needs: [quality, test, e2e, load]
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     # Un seul déploiement à la fois ; celui en cours n'est jamais annulé
@@ -362,6 +389,21 @@ jobs:
         if: steps.tip.outputs.current == 'true'
         run: echo "version=$(node -p "require('./backend/package.json').version")" >> "$GITHUB_OUTPUT"
 
+      # La connexion SSH n'est authentifiée côté serveur que par l'empreinte de
+      # sa clé d'hôte : sans elle, appleboy/ssh-action accepte n'importe quel
+      # serveur (homme du milieu possible avec la clé de déploiement). Secret
+      # vide → échec avant toute connexion (DEVOPS-002) ; le déploiement est
+      # alors ignoré, donc le retour arrière aussi.
+      - name: Require the SSH host key fingerprint
+        if: steps.tip.outputs.current == 'true'
+        env:
+          FP: ${{ secrets.SSH_HOST_FINGERPRINT }}
+        run: |
+          if [ -z "$FP" ]; then
+            echo "::error::Secret SSH_HOST_FINGERPRINT vide : clé d'hôte non vérifiable, déploiement refusé."
+            exit 1
+          fi
+
       - name: Deploy to server
         id: deploy
         if: steps.tip.outputs.current == 'true'
@@ -370,8 +412,8 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Empreinte SHA256 de la clé d'hôte (ssh-keyscan … | ssh-keygen -lf -) :
-          # tant que le secret est vide, la clé d'hôte n'est pas vérifiée.
+          # Empreinte SHA256 de la clé d'hôte (ssh-keyscan … | ssh-keygen -lf -),
+          # exigée par l'étape précédente.
           fingerprint: ${{ secrets.SSH_HOST_FINGERPRINT }}
           script: |
             set -eu
@@ -414,6 +456,10 @@ jobs:
 
             cd backend
             npm ci --omit=dev
+            # Coupure assumée (DEVOPS-004) : un seul processus en mode fork, donc
+            # quelques secondes d'indisponibilité au redémarrage (lecture du HTML,
+            # Redis, contrôle des migrations) ; les tests de fumée l'attendent.
+            # Voir deploy/README.md pour le passage au mode cluster.
             # Le redémarrage se vérifie ici, par le PID pm2 : /api/health ne
             # publie plus l'uptime (il donnait la date des déploiements).
             OLD_PID=$(pm2 pid vol-histoire 2>/dev/null || true)

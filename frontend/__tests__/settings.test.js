@@ -920,11 +920,42 @@ describe('VH.settings.security', () => {
 });
 
 describe('VH.settings.dangerZone', () => {
-  function setup() {
+  function setup(password = 'Actuel123') {
     const S = loadModules();
     S.dangerZone.setup({ currentUser: { id: 5 } });
+    document.getElementById('delete-current-password').value = password;
     return S;
   }
+
+  test('SEC-005 : sans mot de passe actuel, erreur sur le champ, ni confirmation ni requête', async () => {
+    const S = setup('');
+    window.prompt = jest.fn(() => 'SUPPRIMER');
+    await S.dangerZone.onDeleteClick({ currentUser: { id: 5 } }, document.getElementById('delete-account-btn'));
+    const input = document.getElementById('delete-current-password');
+    expect(document.getElementById('delete-current-password-error').textContent).toBe('t:settings.toast_current_password_required');
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(document.activeElement).toBe(input);
+    expect(window.prompt).not.toHaveBeenCalled();
+    expect(auth.authFetch).not.toHaveBeenCalled();
+  });
+
+  test('SEC-005 : mot de passe refusé par le serveur → erreur sur le champ, pas de toast', async () => {
+    const S = setup('Faux1234');
+    window.prompt = jest.fn(() => 'SUPPRIMER');
+    i18n.t.mockImplementation((k) => (k === 'settings.delete_confirm_word' ? 'SUPPRIMER' : `t:${k}`));
+    auth.authFetch.mockResolvedValueOnce(jsonResponse(403, { code: 'CURRENT_PASSWORD_INVALID' }));
+    await S.dangerZone.onDeleteClick({ currentUser: { id: 5 } }, document.getElementById('delete-account-btn'));
+    expect(document.getElementById('delete-current-password-error').textContent).toBe('t:settings.toast_current_password_invalid');
+    expect(toasts).toEqual([]);
+    expect(auth.logout).not.toHaveBeenCalled();
+  });
+
+  test('Entrée dans le champ : même parcours que le bouton', async () => {
+    setup();
+    window.prompt = jest.fn(() => null);
+    document.getElementById('delete-account-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+    expect(window.prompt).toHaveBeenCalled();
+  });
 
   test('annulation : rien ; mauvais mot : toast d\'erreur', async () => {
     const S = setup();
@@ -944,7 +975,11 @@ describe('VH.settings.dangerZone', () => {
     window.prompt = jest.fn(() => ' DELETE ');
     document.getElementById('delete-account-btn').click();
     await flush(6);
-    expect(auth.authFetch).toHaveBeenCalledWith('/api/users/5', { method: 'DELETE' });
+    expect(auth.authFetch).toHaveBeenCalledWith('/api/users/5', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ currentPassword: 'Actuel123' }),
+    });
     expect(auth.logout).toHaveBeenCalled();
     expect(toasts).toContainEqual(['success', 't:settings.toast_account_deleted']);
   });
@@ -967,7 +1002,7 @@ describe('VH.settings.dangerZone', () => {
 describe('VH.settings.cookies', () => {
   test('état initial lu depuis le consentement enregistré', () => {
     const recent = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
-    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: true }, timestamp: recent.toISOString() }));
+    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: true }, timestamp: recent.toISOString(), version: '2' }));
     const { cookies } = loadModules();
     cookies.init();
     expect(document.getElementById('pref-analytics').checked).toBe(true);
@@ -1028,7 +1063,7 @@ describe('VH.settings.cookies', () => {
     document.getElementById('open-cookie-modal').click();
     expect(toasts).toContainEqual(['error', 't:settings.toast_cookies_unavailable']);
     document.getElementById('pref-analytics').checked = true;
-    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: false }, timestamp: new Date().toISOString() }));
+    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: false }, timestamp: new Date().toISOString(), version: '2' }));
     document.dispatchEvent(new window.CustomEvent('cookieConsent', { detail: { event: 'analytics_disabled' } }));
     expect(document.getElementById('pref-analytics').checked).toBe(false);
     document.dispatchEvent(new window.CustomEvent('cookieConsent', { detail: { event: 'autre' } }));
@@ -1045,7 +1080,7 @@ describe('VH.settings.cookies', () => {
 describe('VH.settings.cookies — conservation du choix (LEGAL-004)', () => {
   test('choix de plus de 6 mois : ignoré (interrupteur et date non remplis)', () => {
     const old = new Date(Date.now() - 200 * 24 * 60 * 60 * 1000).toISOString();
-    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: true }, timestamp: old }));
+    localStorage.setItem('voldhistoire_cookie_consent', JSON.stringify({ preferences: { analytics: true }, timestamp: old, version: '2' }));
     const { cookies } = loadModules();
     cookies.init();
     expect(document.getElementById('pref-analytics').checked).toBe(false);

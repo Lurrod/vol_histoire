@@ -207,6 +207,21 @@ const auth = (() => {
     }
   }
 
+  /* Fin de l'initialisation : une seule fois, quelle que soit l'issue, un
+   * événement « vh:auth-ready » prévient l'en-tête (nav.js), qui sondait
+   * auth.getPayload() toutes les 100 ms (JS-008). */
+  function markInitialized() {
+    if (_initialized) return;
+    _initialized = true;
+    try {
+      document.dispatchEvent(new CustomEvent('vh:auth-ready', { detail: getPayload() }));
+    } catch { /* hors navigateur (tests) */ }
+  }
+
+  function isReady() {
+    return _initialized;
+  }
+
   function init() {
     if (_initialized) {
       return Promise.resolve(getPayload());
@@ -217,17 +232,17 @@ const auth = (() => {
     }
 
     if (!aUneSessionProbable()) {
-      _initialized = true;
+      markInitialized();
       return Promise.resolve(null);
     }
 
     _initPromise = queuedRefresh()
       .then(() => {
-        _initialized = true;
+        markInitialized();
         return getPayload();
       })
       .catch(() => {
-        _initialized = true;
+        markInitialized();
         return null;
       })
       .finally(() => {
@@ -356,6 +371,7 @@ const auth = (() => {
     fetchWithTimeout,
     logout,
     init,
+    isReady,
   };
 
   // Export conditionnel pour les tests unitaires (Node.js)

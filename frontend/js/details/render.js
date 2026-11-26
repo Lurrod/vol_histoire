@@ -75,22 +75,27 @@
     document.getElementById('stat-range').textContent = a.max_range ? `${num(a.max_range)} km` : 'N/A';
     document.getElementById('stat-weight').textContent = a.empty_weight ? `${num(a.empty_weight)} kg` : 'N/A';
     document.getElementById('stat-status').textContent = a.status || i18n.t('details.not_specified');
-    document.getElementById('aircraft-description').textContent = a.description || i18n.t('details.no_description');
 
     // Dates clés : précision réelle de chaque date et écart entre jalons.
     VH.details.keyDates.render(a);
 
-    // Description : support markdown si présence de ## / ** / - ou render plain sinon
+    // Description : Markdown (titres, listes) ou texte simple dans un <p>.
+    // Même balisage que le rendu serveur (utils/details-body-ssr.js, SEO-001) :
+    // la fiche ne bouge pas quand le client la réécrit.
     const descEl = document.getElementById('aircraft-description');
     if (descEl) {
-      if (a.description && /(^|\n)(##|###|\s*-\s)/.test(a.description)) {
+      // Contenu final : i18n ne doit plus y remettre le texte d'attente.
+      descEl.removeAttribute('data-i18n');
+      if (VH.details.markdown.isMarkdown(a.description)) {
         const html = VH.details.markdown.parse(a.description);
         descEl.classList.add('markdown-body');
         if (typeof safeSetHTML === 'function') safeSetHTML(descEl, html);
         else descEl.innerHTML = html;
       } else {
         descEl.classList.remove('markdown-body');
-        descEl.textContent = a.description || i18n.t('details.no_description');
+        const p = document.createElement('p');
+        p.textContent = a.description || i18n.t('details.no_description');
+        descEl.replaceChildren(p);
       }
     }
 

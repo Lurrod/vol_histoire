@@ -26,19 +26,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   nav.updateAuthUI();
 
-  // Afficher le bouton d'ajout pour admin/editeur
-  const payload = auth.getPayload();
-  if (payload) {
-    const userRole = Number(payload.role);
-    if (userRole === 1 || userRole === 2) {
-      document.getElementById('add-airplane-btn')?.classList.remove('hidden');
-    }
-  }
-
   // Initialiser les sous-modules
   VH.hangar.filters.setupDropdowns(state);
   VH.hangar.filters.setupSearchAndSort(state);
-  VH.hangar.admin.setupAdminModal(state);
+
+  // Administration (admin/éditeur) : bouton d'ajout et modale, code chargé à
+  // la demande (JS-002) avant les référentiels, qui remplissent ses listes.
+  if (VH.shared.adminLoader.isEditor(auth.getPayload())) {
+    try {
+      await VH.shared.adminLoader.load('hangar');
+      VH.hangar.admin.setupAdminModal(state);
+      document.getElementById('add-airplane-btn')?.classList.remove('hidden');
+    } catch {
+      showToast(i18n.t('common.loading_error'), 'error');
+    }
+  }
 
   // Restauration session → URL (URL prioritaire) — appliquées AVANT le premier
   // loadAircraft pour éviter un double appel /api/airplanes au boot.
@@ -78,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Raccourcis clavier
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      VH.hangar.admin.closeModal();
+      VH.hangar.admin?.closeModal();
       VH.hangar.filters.closeAllDropdowns();
     }
     if (e.key === '/' && !e.ctrlKey && !e.metaKey) {

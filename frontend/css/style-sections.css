@@ -5,8 +5,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.55);
+  background: var(--white-a05);
+  color: var(--white-a55);
   padding: 0.4rem 1rem;
   border-radius: 6px;
   font-size: var(--text-xs);
@@ -14,7 +14,7 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid var(--white-a09);
 }
 
 .page-home .section-header {
@@ -34,9 +34,9 @@
 
 .page-home .section-header p {
   font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--white-a55);
   line-height: 1.8;
 }
 
 .page-home .section-header.light h2 { color: var(--white); }
-.page-home .section-header.light p { color: rgba(255, 255, 255, 0.55); }
+.page-home .section-header.light p { color: var(--white-a55); }

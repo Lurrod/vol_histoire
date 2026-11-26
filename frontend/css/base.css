@@ -24,6 +24,10 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* En-tête fixe (--header-h) : un élément qui reçoit le focus (Maj+Tab
+       notamment) ou la cible d'une ancre ne doit pas finir dessous (WCAG
+       2.2 — 2.4.11, A11Y-002). */
+    scroll-padding-top: calc(var(--header-h) + var(--sp-4));
   }
 
   /* Défilement instantané si l'utilisateur demande moins d'animations. */
@@ -34,12 +38,6 @@
   img, video {
     max-width: 100%;
     display: block;
-  }
-
-  *:focus-visible {
-    box-shadow: var(--focus-ring);
-    outline: none;
-    border-radius: var(--r-sm);
   }
 
   button {
@@ -102,8 +100,11 @@
   /* ============================================================
      FOCUS ACCESSIBLE
      ============================================================ */
+  /* Indicateur unique : un contour (outline), qui survit au mode couleurs
+     forcées, contrairement à une ombre. Une règle « *:focus-visible » plus
+     haut ajoutait une ombre --focus-ring : les deux se cumulaient (CSS-004). */
   :focus-visible {
-    outline: 2px solid var(--hud-cyan);
+    outline: 2px solid var(--gold);
     outline-offset: 3px;
     border-radius: var(--r-sm);
   }

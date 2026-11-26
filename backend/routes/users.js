@@ -9,7 +9,10 @@ const {
   generateRefreshToken,
   storeRefreshToken,
   setRefreshCookie,
+  isPersistentRefresh,
+  REFRESH_COOKIE_NAME,
 } = require('../middleware/auth');
+const jwt = require('jsonwebtoken');
 const logger = require('../logger');
 const { withTransaction } = require('../db');
 const asyncHandler = require('../middleware/asyncHandler');
@@ -18,14 +21,36 @@ const emailTokensRepo = require('../repositories/email-tokens');
 const refreshTokensRepo = require('../repositories/refresh-tokens');
 const favoritesRepo = require('../repositories/favorites');
 const { idParam, cleanSearch } = require('../middleware/input-guards');
+const { LOCKOUT_MAX_ATTEMPTS, LOCKOUT_DURATION_MIN } = require('../utils/lockout');
 
 // Durée de validité du code de confirmation d'un changement d'adresse
 const EMAIL_CHANGE_TTL_MS = 30 * 60 * 1000;
 
 const passThrough = (req, res, next) => next();
 
-module.exports = function createUsersRouter(getPool, { mailer, dataExportLimiter = passThrough } = {}) {
+module.exports = function createUsersRouter(getPool, {
+  mailer, dataExportLimiter = passThrough, currentPasswordLimiter = passThrough,
+} = {}) {
   const router = express.Router();
+
+  /**
+   * Confirmation d'une action sensible par le mot de passe actuel (SEC-005).
+   * Un échec compte comme un échec de connexion (même verrouillage) ; un
+   * compte verrouillé est refusé sans comparaison. Renvoie la réponse
+   * d'erreur à envoyer, ou null si le mot de passe est confirmé.
+   */
+  async function checkCurrentPassword(user, currentPassword) {
+    if (typeof currentPassword !== 'string' || !currentPassword) {
+      return { status: 400, body: { message: 'Mot de passe actuel requis', code: 'CURRENT_PASSWORD_REQUIRED' } };
+    }
+    const invalid = { status: 403, body: { message: 'Mot de passe actuel incorrect', code: 'CURRENT_PASSWORD_INVALID' } };
+    if (user.locked_until && new Date(user.locked_until) > new Date()) return invalid;
+    if (await bcrypt.compare(currentPassword, user.password)) return null;
+    await usersRepo.recordFailedLogin(getPool(), user.id, {
+      maxAttempts: LOCKOUT_MAX_ATTEMPTS, lockMinutes: LOCKOUT_DURATION_MIN,
+    });
+    return invalid;
+  }
 
   // Validation des IDs : entier int4 positif, sinon 400 (SEC-003).
   router.param('id', idParam());
@@ -94,7 +119,7 @@ module.exports = function createUsersRouter(getPool, { mailer, dataExportLimiter
   // Le nouvel email n'est appliqué qu'après clic sur un lien envoyé à cette
   // adresse (POST /auth/confirm-email-change) ; la réponse est identique que
   // l'adresse soit libre ou déjà prise, pour ne pas révéler les comptes existants.
-  router.put('/users/:id', authorize([1, 2, 3]), isOwnerOrAdmin('id'), asyncHandler(async (req, res) => {
+  router.put('/users/:id', authorize([1, 2, 3]), isOwnerOrAdmin('id'), currentPasswordLimiter, asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { name, email, password, currentPassword } = req.body;
 
@@ -121,12 +146,8 @@ module.exports = function createUsersRouter(getPool, { mailer, dataExportLimiter
     }
 
     if (isSelf && (emailChanges || password)) {
-      if (typeof currentPassword !== 'string' || !currentPassword) {
-        return res.status(400).json({ message: 'Mot de passe actuel requis', code: 'CURRENT_PASSWORD_REQUIRED' });
-      }
-      if (!(await bcrypt.compare(currentPassword, user.password))) {
-        return res.status(403).json({ message: 'Mot de passe actuel incorrect', code: 'CURRENT_PASSWORD_INVALID' });
-      }
+      const refusal = await checkCurrentPassword(user, currentPassword);
+      if (refusal) return res.status(refusal.status).json(refusal.body);
     }
 
     const hashedPassword = password ? await bcrypt.hash(password, 12) : null;
@@ -174,9 +195,13 @@ module.exports = function createUsersRouter(getPool, { mailer, dataExportLimiter
     // l'utilisateur qui vient d'agir.
     if (isSelf && revokesSessions) {
       const fresh = { ...updated, role_id: updated.role_id ?? req.user.role };
-      const { token: refreshToken, jti } = generateRefreshToken(fresh);
+      // Même durée de session qu'avant (« Se souvenir de moi », CONT-002) : lue
+      // dans le jeton de cet onglet, qui vient d'être révoqué.
+      const current = req.cookies && req.cookies[REFRESH_COOKIE_NAME];
+      const persistent = isPersistentRefresh(current ? jwt.decode(current) : null);
+      const { token: refreshToken, jti } = generateRefreshToken(fresh, { persistent });
       await storeRefreshToken(jti, fresh.id);
-      setRefreshCookie(res, refreshToken);
+      setRefreshCookie(res, refreshToken, { persistent });
       body.token = generateAccessToken(fresh);
     }
 
@@ -263,8 +288,18 @@ module.exports = function createUsersRouter(getPool, { mailer, dataExportLimiter
     }
   });
 
-  router.delete('/users/:id', authorize([1, 2, 3]), isOwnerOrAdmin('id'), asyncHandler(async (req, res) => {
+  // Suppression définitive. Sur son propre compte, le mot de passe actuel est
+  // exigé comme pour l'adresse et le mot de passe (SEC-005) : un access token
+  // volé ne doit pas suffire à effacer un compte. Un administrateur qui
+  // supprime le compte d'un autre n'a pas à le connaître.
+  router.delete('/users/:id', authorize([1, 2, 3]), isOwnerOrAdmin('id'), currentPasswordLimiter, asyncHandler(async (req, res) => {
     const { id } = req.params;
+    if (Number(req.user.id) === Number(id)) {
+      const user = await usersRepo.findWithPassword(getPool(), id);
+      if (!user) return res.status(404).json({ message: 'Utilisateur non trouvé' });
+      const refusal = await checkCurrentPassword(user, req.body.currentPassword);
+      if (refusal) return res.status(refusal.status).json(refusal.body);
+    }
 
     // Transaction : révoquer les sessions + supprimer le compte
     const deleted = await withTransaction(getPool(), async (client) => {

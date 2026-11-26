@@ -50,8 +50,8 @@ body.page-home::before {
 }
 body.page-home::after {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(var(--white-a015) 1px, transparent 1px),
+    linear-gradient(90deg, var(--white-a015) 1px, transparent 1px),
     radial-gradient(ellipse at 20% 20%, rgba(255, 140, 0, 0.45) 0%, transparent 55%);
   background-size: 60px 60px, 60px 60px, 100% 100%;
 }
@@ -75,7 +75,7 @@ body.page-home::after {
 /* @keyframes fadeInUp → shared.css (dédupliqué) */
 
 .page-home .gradient-text {
-  background: linear-gradient(135deg, #E8C98A 0%, var(--hud-cyan) 50%, rgba(255,255,255,0.9) 100%);
+  background: linear-gradient(135deg, #E8C98A 0%, var(--gold) 50%, var(--white-a90) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -108,28 +108,28 @@ body.page-home::after {
 }
 
 .page-home .btn-primary {
-  background: var(--hud-cyan);
+  background: var(--gold);
   color: var(--night);
   border: none;
   font-weight: 700;
 }
 
 .page-home .btn-primary:hover {
-  background: #D4B87E;
-  box-shadow: 0 8px 24px rgba(200, 169, 110, 0.25);
+  background: var(--gold-hover);
+  box-shadow: 0 8px 24px var(--gold-a25);
 }
 
 .page-home .btn-ghost {
   background: var(--white-a04);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  color: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: var(--white-a85);
+  border: 1px solid var(--white-a09);
 }
 
 .page-home .btn-ghost:hover {
   background: var(--white-a07);
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: var(--white-a18);
   color: var(--white);
 }
 

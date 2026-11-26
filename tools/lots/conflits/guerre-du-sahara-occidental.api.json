@@ -1,0 +1,49 @@
+{
+  "slug": "guerre-du-sahara-occidental",
+  "name": "Guerre du Sahara occidental",
+  "name_fr": "Guerre du Sahara occidental",
+  "date_start": "1975-10-29T23:00:00.000Z",
+  "date_end": "1991-09-05T22:00:00.000Z",
+  "description": "Guerre opposant le Front Polisario au Maroc (et à la Mauritanie jusqu'en 1979) pour le contrôle de l'ancien Sahara espagnol. Les missiles sol-air du Polisario infligent des pertes à l'aviation marocaine.",
+  "count": 2,
+  "outcome": null,
+  "context": null,
+  "narrative": null,
+  "sources": [],
+  "sides": [],
+  "events": [],
+  "airplanes": [
+    {
+      "id": 241,
+      "name": "F-5 Freedom Fighter",
+      "little_description": "Chasseur léger américain de 3e génération",
+      "image_url": "/assets/airplanes/f5-freedom-fighter.jpg",
+      "date_first_fly": "1959-07-29T23:00:00.000Z",
+      "date_operationel": "1964-02-29T23:00:00.000Z",
+      "country_code": "USA",
+      "country_name": "États-Unis",
+      "type_name": "Chasseur",
+      "generation": 3,
+      "side_key": null,
+      "role": null,
+      "type_name_fr": "Chasseur",
+      "role_sources": []
+    },
+    {
+      "id": 431,
+      "name": "Mirage F1",
+      "little_description": "Chasseur multirôle français de 3e génération",
+      "image_url": "/assets/airplanes/miragef1.jpg",
+      "date_first_fly": "1966-12-22T23:00:00.000Z",
+      "date_operationel": "1973-06-13T23:00:00.000Z",
+      "country_code": "FRA",
+      "country_name": "France",
+      "type_name": "Multirôle",
+      "generation": 3,
+      "side_key": null,
+      "role": null,
+      "type_name_fr": "Multirôle",
+      "role_sources": []
+    }
+  ]
+}

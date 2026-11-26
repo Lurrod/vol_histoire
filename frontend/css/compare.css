@@ -28,7 +28,7 @@
 .compare-bar.is-leaving { animation: vh-exit var(--dur-fast) var(--ease-in) forwards; pointer-events: none; }
 /* Compteur : seul le nombre défile (odomètre, shared-base.css) ; il est suivi
    de son libellé. DM Sans gras 0.85rem : l'odomètre prend la hauteur d'une ligne. */
-.compare-bar #compare-count { color: var(--hud-cyan); font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: baseline; --roll-h: 1.2em; white-space: pre; }
+.compare-bar #compare-count { color: var(--gold); font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: baseline; --roll-h: 1.2em; white-space: pre; }
 
 /* Vignettes : une par appareil retenu, cible du morphing carte → barre
    (js/shared/compare-morph.js). Format 4:3, celui des photos des cartes. */
@@ -55,7 +55,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 
 /* « Copier le lien » : maillon de chaîne qui se replie, coche qui se trace. */
 .compare-bar #compare-share { display: inline-flex; align-items: center; gap: 0.45rem; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out); }
-.compare-bar #compare-share.is-copied { background: rgba(200,169,110,0.14); border-color: var(--hud-cyan); color: var(--hud-cyan); }
+.compare-bar #compare-share.is-copied { background: var(--gold-a14); border-color: var(--gold); color: var(--gold); }
 .compare-bar .cmp-share-ico {
   width: 16px; height: 16px; flex-shrink: 0; overflow: visible;
   fill: none; stroke: currentColor; stroke-width: 2;
@@ -93,7 +93,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 .compare-bar .cmp-clear .cfm-yes,
 .compare-bar .cmp-clear .cfm-no { min-height: 0; }
 .compare-bar .cmp-clear:not([data-state="idle"]) #compare-clear {
-  background: rgba(231,76,60,0.15); border-color: var(--accent); color: #ff8a7a;
+  background: var(--alert-a15); border-color: var(--accent); color: var(--alert-text-soft);
 }
 .compare-bar .cmp-clear[data-state="done"] #compare-clear { pointer-events: none; }
 /* Jamais plus large que l'écran, quelle que soit la largeur. */
@@ -189,9 +189,9 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   /* Aligné sur .modal-container du modal add/edit avion */
   background: var(--night-mid);
   color: var(--text-primary);
-  border: 1px solid rgba(255,255,255,0.09);
+  border: 1px solid var(--white-a09);
   border-radius: 16px;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  box-shadow: 0 24px 64px var(--black-a60);
   padding: 0;
   max-width: 1100px;
   width: 92vw;
@@ -206,7 +206,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 }
 .compare-modal[open] { display: flex; }
 .compare-modal::backdrop {
-  background: rgba(0,0,0,0.8);
+  background: var(--black-a80);
   backdrop-filter: blur(6px);
   /* Repli en dur : ::backdrop n'hérite des propriétés de :root que dans
      les navigateurs récents (Chrome 122, Firefox 120, Safari 17.4). */
@@ -240,7 +240,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   gap: 0.75rem;
   margin: 0;
 }
-.compare-modal-header h2 i, .compare-modal-header h2 .icon { color: var(--hud-cyan); font-size: 1.15rem; }
+.compare-modal-header h2 i, .compare-modal-header h2 .icon { color: var(--gold); font-size: 1.15rem; }
 
 .compare-modal-header .compare-modal-close {
   background: transparent;
@@ -265,7 +265,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 }
 
 /* Scrollable body — mirror .modal-form */
-#compare-modal-body {
+.compare-modal-body {
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
@@ -285,14 +285,14 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 .cmp-summary-count {
   font-family: 'DM Sans', sans-serif;
   font-weight: 700;
-  color: var(--hud-cyan);
+  color: var(--gold);
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.14em;
 }
 .cmp-eyebrow {
   display: block;
-  color: var(--hud-cyan);
+  color: var(--gold);
   text-transform: uppercase;
   letter-spacing: 0.15em;
   font-size: var(--text-xs);
@@ -331,7 +331,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   right: 6px;
   width: 24px;
   height: 24px;
-  background: rgba(13,13,13,0.85);
+  background: var(--night-a85);
   border: 1px solid var(--border-subtle);
   color: var(--text-muted);
   border-radius: 50%;
@@ -403,9 +403,9 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 }
 .cmp-chip i, .cmp-chip .icon { color: var(--text-muted); font-size: 0.65rem; }
 .cmp-chip-accent {
-  color: var(--hud-cyan);
+  color: var(--gold);
   border-color: var(--border-cyan-md);
-  background: rgba(200,169,110,0.06);
+  background: var(--gold-a06);
 }
 
 /* Spec groups */
@@ -422,15 +422,15 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   gap: 0.5rem;
   padding: 1rem 1.25rem 0.75rem;
   background: transparent;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  color: rgba(255,255,255,0.6);
+  border-bottom: 1px solid var(--white-a05);
+  color: var(--white-a60);
   font-family: 'DM Sans', sans-serif;
   font-weight: 700;
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.cmp-group-header i, .cmp-group-header .icon { color: var(--hud-cyan); }
+.cmp-group-header i, .cmp-group-header .icon { color: var(--gold); }
 .cmp-group-header i, .cmp-group-header .icon { font-size: 0.75rem; }
 .cmp-row {
   display: grid;
@@ -442,7 +442,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   transition: background-color var(--dur-fast) var(--ease-out);
 }
 .cmp-row:last-child { border-bottom: none; }
-.cmp-row:hover { background: rgba(200,169,110,0.02); }
+.cmp-row:hover { background: var(--gold-a02); }
 .cmp-row-label {
   color: var(--text-muted);
   font-size: 0.78rem;
@@ -459,7 +459,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   border-radius: var(--r-sm);
 }
 .cmp-cell.cmp-best {
-  color: var(--hud-cyan);
+  color: var(--gold);
   background: var(--gold-a08);
   box-shadow: inset 0 0 0 1px var(--gold-a20);
   position: relative;
@@ -470,7 +470,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   top: 2px;
   right: 4px;
   font-size: 0.55rem;
-  color: var(--hud-cyan);
+  color: var(--gold);
 }
 .cmp-unit {
   color: var(--text-muted);
@@ -485,7 +485,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 .cmp-bar-track {
   width: 100%;
   height: 4px;
-  background: rgba(255,255,255,0.05);
+  background: var(--white-a05);
   border-radius: 2px;
   overflow: hidden;
 }
@@ -495,7 +495,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   transition: width var(--dur-slower) var(--ease-out);
 }
 .cmp-cell-perf.cmp-best .cmp-bar-fill {
-  box-shadow: 0 0 6px rgba(200,169,110,0.3);
+  box-shadow: 0 0 6px var(--gold-a30);
 }
 
 /* Tags (armement / tech) */
@@ -504,7 +504,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   display: inline-block;
   padding: 0.2rem 0.5rem;
   font-size: var(--text-xs);
-  background: rgba(200,169,110,0.06);
+  background: var(--gold-a06);
   border: 1px solid var(--gold-a15);
   color: var(--text-secondary);
   border-radius: var(--r-sm);
@@ -537,8 +537,8 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   pointer-events: none;
 }
 .cmp-remove:disabled { cursor: default; opacity: 0.5; }
-.cmp-remove:focus-visible { outline: 2px solid var(--hud-cyan); outline-offset: 2px; }
-#compare-modal-body.cmp-enter > * { animation: vh-fade-in var(--dur-fast) var(--ease-out) backwards; }
+.cmp-remove:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.compare-modal-body.cmp-enter > * { animation: vh-fade-in var(--dur-fast) var(--ease-out) backwards; }
 
 /* ======================================================================
    MORPHINGS DU COMPARATEUR (js/shared/compare-morph.js, API View
@@ -650,7 +650,7 @@ html.vh-cmp-adding::view-transition-new(*.vh-cmp-thumb):only-child {
   .compare-bar .cmp-thumb,
   .compare-bar .cmp-share-label.is-swapping,
   .compare-modal,
-  #compare-modal-body.cmp-enter > * { animation: none; }
+  .compare-modal-body.cmp-enter > * { animation: none; }
   .cmp-col-head,
   .cmp-col-head.is-removing,
   .cmp-cell.is-removing,
@@ -664,7 +664,7 @@ html.vh-cmp-adding::view-transition-new(*.vh-cmp-thumb):only-child {
   .compare-modal { width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
   .compare-modal-header { padding: 1.25rem 1rem; }
   .compare-modal-header h2 { font-size: 1.2rem; }
-  #compare-modal-body { padding: 1.25rem 1rem; }
+  .compare-modal-body { padding: 1.25rem 1rem; }
   .cmp-cols, .cmp-row {
     grid-template-columns: 110px repeat(var(--cmp-cols), 1fr);
     gap: 0.5rem;

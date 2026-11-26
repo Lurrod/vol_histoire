@@ -219,6 +219,57 @@ describeIt('Intégration SQL — contenus', () => {
     });
   });
 
+  describe('GET /details/<slug> — faits du héros rendus par le serveur (PERF-004)', () => {
+    test('fil d’Ariane, pays, constructeur, chiffres clés et statut écrits dans le HTML', async () => {
+      const id = await airplaneId(ctx.pool, 'Rafale');
+      const res = await api().get(`/details/rafale-${id}`);
+      expect(res.status).toBe(200);
+      expect(res.text).toMatch(/<span id="breadcrumb-name">Rafale<\/span>/);
+      expect(res.text).not.toContain('<span id="hero-country">-</span>');
+      expect(res.text).not.toContain('<span id="hero-manufacturer">-</span>');
+      expect(res.text).toMatch(/<div class="stat-value" id="stat-speed">[\d\s\u202f\u00a0]+ km\/h<\/div>/);
+      expect(res.text).not.toContain('<div class="stat-value" id="stat-status">-</div>');
+    });
+  });
+
+  describe('GET /details/<slug> — récit et appareils liés écrits par le serveur (SEO-001)', () => {
+    test('récit de la fiche dans le HTML ; rival lu par la jointure, en lien canonique', async () => {
+      const id = await airplaneId(ctx.pool, 'Rafale');
+      const rival = await airplaneId(ctx.pool, 'Mirage 2000');
+      const { rows: [before] } = await ctx.pool.query('SELECT rival_id FROM airplanes WHERE id = $1', [id]);
+      await ctx.pool.query('UPDATE airplanes SET rival_id = $2 WHERE id = $1', [id, rival]);
+      try {
+        const res = await api().get(`/details/rafale-${id}`);
+        expect(res.status).toBe(200);
+        expect(res.text).not.toContain('Chargement de la description…');
+        expect(res.text).toMatch(/<div id="aircraft-description" class="description-body[^"]*"><(h3|p)/);
+        expect(res.text).toContain(`href="/details/mirage-2000-${rival}"`);
+        expect(res.text).toContain('<section class="content-section related-section" id="related-aircraft-section">');
+      } finally {
+        await ctx.pool.query('UPDATE airplanes SET rival_id = $2 WHERE id = $1', [id, before.rival_id]);
+      }
+    });
+  });
+
+  describe('GET /conflits — liens explorables écrits par le serveur (SEO-005)', () => {
+    test('liste : un lien par conflit engagé ; page de conflit : liens vers les appareils engagés', async () => {
+      const list = await api().get('/conflits');
+      expect(list.status).toBe(200);
+      const warLinks = new Set(list.text.match(/href="\/conflits\/[a-z0-9-]+"/g) || []);
+      const { rows: [{ n }] } = await ctx.pool.query('SELECT count(DISTINCT id_wars)::int AS n FROM airplane_wars');
+      expect(warLinks.size).toBe(n);
+
+      const { rows: [war] } = await ctx.pool.query(`
+        SELECT w.name, count(*)::int AS roles FROM wars w JOIN airplane_wars aw ON aw.id_wars = w.id
+        WHERE aw.role IS NOT NULL GROUP BY w.id ORDER BY roles DESC LIMIT 1`);
+      const { slugify } = require('../../utils/url');
+      const page = await api().get(`/conflits/${slugify(war.name)}`);
+      expect(page.status).toBe(200);
+      const planeLinks = new Set((page.text.match(/<h4 class="role-name"><a href="\/details\/[^"]+">/g) || []));
+      expect(planeLinks.size).toBe(war.roles);
+    });
+  });
+
   describe('GET /sitemap.xml', () => {
     test('pages fixes, conflits et fiches', async () => {
       require('../../utils/cache')._resetForTests();

@@ -33,8 +33,12 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Crédits photo | Vol d'Histoire">
   <meta name="twitter:description" content="Auteurs et licences des photographies d'appareils publiées sur Vol d'Histoire.">
-  <meta property="og:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/a10-thunderbolt-2.jpg">
-  <meta name="twitter:image" content="https://vol-histoire.titouan-borde.com/assets/airplanes/a10-thunderbolt-2.jpg">
+  <meta property="og:image" content="https://vol-histoire.titouan-borde.com/og-default.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vol d&#39;Histoire — l&#39;aviation militaire depuis 1945">
+  <meta name="twitter:image" content="https://vol-histoire.titouan-borde.com/og-default.jpg">
+  <meta name="twitter:image:alt" content="Vol d&#39;Histoire — l&#39;aviation militaire depuis 1945">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -56,7 +60,6 @@
   <link rel="stylesheet" href="css/legal.min.css">
   </head>
 <body class="page-legal">
-<a href="#main-content" class="skip-link">Aller au contenu</a>
 
   <!-- Header -->
   <!-- @include header -->
@@ -84,9 +87,9 @@
         <div class="legal-section">
           <h2 data-i18n="credits.intro_title">Origine des photographies</h2>
           <div class="legal-text" data-i18n-html="credits.intro_body">
-            <p>La plupart des photographies d'appareils proviennent de Wikimedia Commons. Chacune reste soumise à sa licence d'origine : domaine public, CC0 ou licences Creative Commons qui imposent de citer l'auteur (BY) et, pour certaines, de partager les adaptations sous la même licence (BY-SA).</p>
-            <p>Toutes les images ont été modifiées pour le site : redimensionnées, converties aux formats WebP et AVIF et déclinées en vignettes. L'auteur et la licence de chaque photo figurent aussi sous l'image, sur la fiche de l'appareil. Pour une partie du catalogue d'origine, l'auteur n'est pas encore documenté.</p>
-            <p>Une erreur d'attribution, ou une image qui vous appartient et que vous souhaitez voir retirée ? Écrivez à <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a>.</p>
+            <p>La plupart des photographies d’appareils proviennent de Wikimedia Commons. Chacune reste soumise à sa licence d’origine : domaine public, CC0 ou licences Creative Commons qui imposent de citer l’auteur (BY) et, pour certaines, de partager les adaptations sous la même licence (BY-SA).</p>
+            <p>Toutes les images ont été modifiées pour le site : redimensionnées, converties aux formats WebP et AVIF et déclinées en vignettes. L’auteur et la licence de chaque photo figurent aussi sous l’image, sur la fiche de l’appareil. Pour une partie du catalogue d’origine, l’auteur n’est pas encore documenté.</p>
+            <p>Une erreur d’attribution, ou une image qui vous appartient et que vous souhaitez voir retirée ? Écrivez à <a href="mailto:vdh@titouan-borde.com">vdh@titouan-borde.com</a>.</p>
           </div>
         </div>
 
@@ -109,7 +112,7 @@
           </div>
           <p class="credits-status" id="credits-status" role="status" hidden></p>
           <p class="credits-result" id="credits-result" role="status" hidden></p>
-          <noscript><p class="credits-status" data-i18n="credits.noscript">La liste des crédits nécessite JavaScript. Chaque crédit figure aussi sous la photo, sur la fiche de l'appareil.</p></noscript>
+          <noscript><p class="credits-status" data-i18n="credits.noscript">La liste des crédits nécessite JavaScript. Chaque crédit figure aussi sous la photo, sur la fiche de l’appareil.</p></noscript>
           <div class="credits-list" id="credits-list" hidden></div>
           <div class="credits-none" id="credits-none" hidden>
             <p data-i18n="credits.no_match">Aucune photo ne correspond à cette recherche.</p>
@@ -122,7 +125,7 @@
   </main>
 
   <!-- @include footer -->
-  <div id="toast-container" aria-live="polite"></div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
   <script defer src="js/dist/icons.min.js"></script>

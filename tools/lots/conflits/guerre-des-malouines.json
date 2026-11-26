@@ -1,0 +1,539 @@
+{
+  "war": "Guerre des Malouines",
+  "slug": "guerre-des-malouines",
+  "outcome": {
+    "fr": "Victoire britannique : la garnison argentine de Port Stanley capitule le 14 juin 1982 et les îles repassent sous administration britannique.",
+    "en": "British victory: the Argentine garrison at Port Stanley surrendered on 14 June 1982 and the islands returned to British administration."
+  },
+  "context": {
+    "fr": "Les Malouines, archipel de l’Atlantique Sud que l’Argentine revendique sous le nom d’Islas Malvinas, sont une colonie britannique depuis 1841. En 1982, la junte militaire du général Leopoldo Galtieri, impopulaire, minée par une inflation de l’ordre de 140 % par an et par la répression, cherche dans une reconquête rapide un moyen de rallier le pays. Le 2 avril, l’opération *Rosario* débarque près de Port Stanley : la petite garnison de Royal Marines se rend après une brève résistance. Dès le 3 avril, la résolution 502 du Conseil de sécurité de l’ONU exige le retrait argentin.\n\nLondres répond par l’opération *Corporate* : une force navale de 127 navires, dont 43 bâtiments de la Royal Navy et 62 navires marchands, appareille vers l’Atlantique Sud autour de deux porte-avions, le HMS *Hermes* et le HMS *Invincible*. L’île de l’Ascension, à mi-chemin, devient la base avancée des avions de la RAF.\n\nDans les airs, le rapport de forces est inhabituel. L’Argentine engage plusieurs dizaines de Skyhawk, de Dagger et de Mirage, mais la piste de Port Stanley est trop courte pour ses chasseurs à réaction : Skyhawk, Mirage et Dagger décollent du continent, à la limite de leur rayon d’action, avec seulement deux avions ravitailleurs KC-130. Face à eux, les Britanniques n’engagent que 28 Sea Harrier et 14 Harrier GR.3, soutenus depuis l’Ascension par les ravitailleurs Victor.",
+    "en": "The Falkland Islands, a South Atlantic archipelago that Argentina claims as the Islas Malvinas, have been a British colony since 1841. In 1982 the military junta of General Leopoldo Galtieri, unpopular and weighed down by inflation of around 140% a year and by its record of repression, saw a swift seizure of the islands as a way to rally the country. On 2 April Operation *Rosario* landed near Port Stanley, and the small Royal Marines garrison surrendered after a brief defence. On 3 April UN Security Council Resolution 502 demanded an Argentine withdrawal.\n\nLondon answered with Operation *Corporate*: a task force of 127 ships, including 43 Royal Navy vessels and 62 merchant ships, sailed for the South Atlantic around two aircraft carriers, HMS *Hermes* and HMS *Invincible*. Ascension Island, halfway down, became the forward base for the RAF.\n\nThe air balance was unusual. Argentina committed several dozen Skyhawks, Daggers and Mirages, but the Port Stanley runway was too short for its jets: Skyhawks, Mirages and Daggers had to fly from the mainland at the edge of their range, with only two KC-130 tankers. Against them the British deployed just 28 Sea Harriers and 14 Harrier GR.3s, backed from Ascension by Victor tankers."
+  },
+  "narrative": {
+    "fr": "La guerre aérienne commence par une démonstration d’allonge. Après trois reconnaissances radar des Victor, qui préparent la reprise de la Géorgie du Sud le 25 avril, un Vulcan parti de l’Ascension bombarde la piste de Port Stanley dans la nuit du 30 avril au 1er mai : c’est le premier des raids *Black Buck*, des allers-retours d’environ seize heures qui exigent onze ravitailleurs pour deux bombardiers. Une seule bombe touche la piste, réparée en un jour pour les Hercules. Le même 1er mai, les Sea Harrier attaquent Stanley et Goose Green, où leurs bombes à sous-munitions détruisent trois Pucará au sol, puis livrent leurs premiers combats aériens : un Canberra est abattu au Sidewinder AIM-9L. Le lendemain, le sous-marin HMS *Conqueror* coule le croiseur *General Belgrano* (323 morts) ; le porte-avions argentin regagne alors le port.\n\nL’aéronavale argentine riposte le 4 mai. Guidés par un Neptune et ravitaillés par un KC-130, deux Super Étendard tirent leurs Exocet AM39 : le destroyer HMS *Sheffield* est touché, vingt marins meurent, et le navire sombre quelques jours plus tard, premier bâtiment de la Royal Navy perdu au combat depuis 1945. Dans la nuit du 14 au 15 mai, les SAS détruisent au sol une dizaine d’appareils à Pebble Island, dont six Pucará.\n\nLe 21 mai, les Britanniques débarquent à San Carlos. Pendant cinq jours, Skyhawk et Dagger se jettent à basse altitude sur les navires qui couvrent la tête de pont : les frégates *Ardent* et *Antelope* et le destroyer *Coventry* sont coulés, l’*Argonaut* et d’autres sont endommagés, et l’*Antelope* sombre quand explose une bombe que l’on tentait de désamorcer. Les Sea Harrier et les missiles des navires font payer le prix : l’Argentine perd 22 avions dans la bataille. Le 25 mai, deux Super Étendard coulent le porte-conteneurs *Atlantic Conveyor* et les hélicoptères qu’il transportait, dont trois Chinook.\n\nÀ terre, les Harrier GR.3 appuient l’avance des troupes vers Goose Green puis Port Stanley. Les Argentins perdent un Hercules abattu par un Sea Harrier le 1er juin et un Learjet de reconnaissance détruit par un Sea Dart le 7 juin. Le 8 juin, des Skyhawk surprennent à Fitzroy, près de Bluff Cove, les navires de débarquement *Sir Galahad* et *Sir Tristram* : 56 militaires britanniques sont tués dans la journée. Le 13 juin, un Canberra est abattu par un Sea Dart ; c’est la dernière perte argentine au combat avant la reddition du lendemain.\n\nLe bilan aérien est lourd pour l’Argentine : 75 avions et 25 hélicoptères perdus, en vol, au sol ou capturés. Les Britanniques perdent 10 avions (6 Sea Harrier, 4 Harrier GR.3), aucun en combat aérien, et 24 ou 25 hélicoptères selon les décomptes. Les Sea Harrier revendiquent une vingtaine de victoires. Les aviateurs argentins ont pourtant infligé de lourdes pertes à la flotte britannique : deux destroyers, deux frégates et l’*Atlantic Conveyor* coulés par leurs bombes et leurs missiles.",
+    "en": "The air war opened with a show of reach. After three Victor radar reconnaissance sorties that prepared the recapture of South Georgia on 25 April, a Vulcan flying from Ascension bombed the Port Stanley runway on the night of 30 April to 1 May: the first of the *Black Buck* raids, round trips of about sixteen hours that needed eleven tankers for two bombers. A single bomb hit the runway, which was repaired for Hercules use within a day. That same 1 May, Sea Harriers struck Stanley and Goose Green where their cluster bombs destroyed three Pucarás on the ground, then fought their first air battles: a Canberra was shot down with an AIM-9L Sidewinder. The next day the submarine HMS *Conqueror* sank the cruiser *General Belgrano* (323 dead), and the Argentine carrier returned to port.\n\nArgentine naval aviation struck back on 4 May. Guided by a Neptune and refuelled by a KC-130, two Super Étendards fired their AM39 Exocets: the destroyer HMS *Sheffield* was hit, twenty sailors died, and the ship sank a few days later, the first Royal Navy vessel lost in action since 1945. On the night of 14 to 15 May the SAS destroyed some ten aircraft on the ground at Pebble Island, six of them Pucarás.\n\nOn 21 May the British landed at San Carlos. For five days Skyhawks and Daggers hurled themselves at low level against the ships covering the beachhead: the frigates *Ardent* and *Antelope* and the destroyer *Coventry* were sunk and *Argonaut* and others damaged; *Antelope* went down when an unexploded bomb blew up during disposal. Sea Harriers and shipborne missiles exacted a heavy price: Argentina lost 22 aircraft in the battle. On 25 May two Super Étendards sank the container ship *Atlantic Conveyor* together with the helicopters she carried, three Chinooks among them.\n\nAshore, the Harrier GR.3s supported the troops advancing on Goose Green and then Port Stanley. Argentina lost a Hercules to a Sea Harrier on 1 June and a reconnaissance Learjet to a Sea Dart on 7 June. On 8 June Skyhawks caught the landing ships *Sir Galahad* and *Sir Tristram* at Fitzroy, near Bluff Cove: 56 British servicemen were killed that day. On 13 June a Canberra was shot down by a Sea Dart, the last Argentine aircraft lost in combat before the surrender the next day.\n\nThe air toll was heavy for Argentina: 75 aircraft and 25 helicopters lost in the air, on the ground or captured. The British lost 10 aircraft (6 Sea Harriers and 4 Harrier GR.3s), none in air combat, and 24 or 25 helicopters depending on the count. The Sea Harriers claimed some twenty kills. Yet Argentine airmen inflicted heavy losses on the British fleet: two destroyers, two frigates and *Atlantic Conveyor* sunk by their bombs and missiles."
+  },
+  "sides": [
+    {
+      "key": "royaume-uni",
+      "name": {
+        "fr": "Royaume-Uni",
+        "en": "United Kingdom"
+      },
+      "members": {
+        "fr": "Royaume-Uni",
+        "en": "United Kingdom"
+      }
+    },
+    {
+      "key": "argentine",
+      "name": {
+        "fr": "Argentine",
+        "en": "Argentina"
+      },
+      "members": {
+        "fr": "Argentine",
+        "en": "Argentina"
+      }
+    }
+  ],
+  "events": [
+    {
+      "date": "1982-04-02",
+      "precision": "day",
+      "title": {
+        "fr": "Invasion argentine des Malouines",
+        "en": "Argentine invasion of the Falklands"
+      },
+      "body": {
+        "fr": "L’opération *Rosario* débarque près de Port Stanley ; la garnison de Royal Marines se rend après une brève résistance.",
+        "en": "Operation *Rosario* lands near Port Stanley; the Royal Marines garrison surrenders after a brief defence."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Falklands_War"
+    },
+    {
+      "date": "1982-05-01",
+      "precision": "day",
+      "title": {
+        "fr": "Premier raid *Black Buck*",
+        "en": "First *Black Buck* raid"
+      },
+      "body": {
+        "fr": "Parti de l’Ascension et ravitaillé par des Victor, le Vulcan XM607 bombarde la piste de Port Stanley : une bombe la touche et la rend inutilisable pour les chasseurs.",
+        "en": "Flying from Ascension and refuelled by Victors, Vulcan XM607 bombs the Port Stanley runway: one bomb hits it and makes it unusable for fighters."
+      },
+      "aircraft": "Avro Vulcan",
+      "source": "https://en.wikipedia.org/wiki/Operation_Black_Buck"
+    },
+    {
+      "date": "1982-05-01",
+      "precision": "day",
+      "title": {
+        "fr": "Premiers combats aériens",
+        "en": "First air battles"
+      },
+      "body": {
+        "fr": "Les Sea Harrier attaquent Stanley et Goose Green, puis abattent un Canberra au missile Sidewinder AIM-9L.",
+        "en": "Sea Harriers strike Stanley and Goose Green, then shoot down a Canberra with an AIM-9L Sidewinder."
+      },
+      "aircraft": "BAE Sea Harrier",
+      "source": "https://en.wikipedia.org/wiki/English_Electric_Canberra"
+    },
+    {
+      "date": "1982-05-02",
+      "precision": "day",
+      "title": {
+        "fr": "Naufrage du *General Belgrano*",
+        "en": "Sinking of the *General Belgrano*"
+      },
+      "body": {
+        "fr": "Torpillé par le sous-marin HMS *Conqueror*, le croiseur argentin coule avec 323 hommes ; le porte-avions argentin regagne ensuite le port.",
+        "en": "Torpedoed by the submarine HMS *Conqueror*, the Argentine cruiser goes down with 323 men; the Argentine carrier then returns to port."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Falklands_War"
+    },
+    {
+      "date": "1982-05-04",
+      "precision": "day",
+      "title": {
+        "fr": "Le HMS *Sheffield* touché par un Exocet",
+        "en": "HMS *Sheffield* hit by an Exocet"
+      },
+      "body": {
+        "fr": "Deux Super Étendard partis de Río Grande tirent chacun un Exocet AM39 ; l’un frappe le destroyer, qui brûle et coule sous remorque. Vingt marins meurent.",
+        "en": "Two Super Étendards from Río Grande each fire an AM39 Exocet; one strikes the destroyer, which burns and sinks under tow. Twenty sailors die."
+      },
+      "aircraft": "Super Étendard",
+      "source": "https://en.wikipedia.org/wiki/HMS_Sheffield_(D80)"
+    },
+    {
+      "date": "1982-05-15",
+      "precision": "day",
+      "title": {
+        "fr": "Raid sur Pebble Island",
+        "en": "Raid on Pebble Island"
+      },
+      "body": {
+        "fr": "Dans la nuit du 14 au 15 mai, les SAS détruisent au sol des avions argentins sur la piste de l’île, dont six Pucará.",
+        "en": "On the night of 14 to 15 May the SAS destroy Argentine aircraft on the island’s airstrip, six Pucarás among them."
+      },
+      "aircraft": "FMA IA 58 Pucará",
+      "source": "https://en.wikipedia.org/wiki/Raid_on_Pebble_Island"
+    },
+    {
+      "date": "1982-05-21",
+      "precision": "day",
+      "title": {
+        "fr": "Débarquement et bataille de San Carlos",
+        "en": "San Carlos landings and battle"
+      },
+      "body": {
+        "fr": "Les Britanniques débarquent ; jusqu’au 25 mai, Skyhawk et Dagger attaquent les navires à basse altitude et coulent l’*Ardent*, l’*Antelope* et le *Coventry*.",
+        "en": "The British land; until 25 May Skyhawks and Daggers attack the ships at low level, sinking *Ardent*, *Antelope* and *Coventry*."
+      },
+      "aircraft": "IAI Nesher",
+      "source": "https://en.wikipedia.org/wiki/Battle_of_San_Carlos_(1982)"
+    },
+    {
+      "date": "1982-05-25",
+      "precision": "day",
+      "title": {
+        "fr": "Le HMS *Coventry* coulé",
+        "en": "HMS *Coventry* sunk"
+      },
+      "body": {
+        "fr": "Des A-4B Skyhawk de la Fuerza Aérea placent trois bombes de 500 livres sur le destroyer au nord des Malouines.",
+        "en": "Argentine Air Force A-4B Skyhawks hit the destroyer with three 500 lb bombs north of the Falklands."
+      },
+      "aircraft": "A-4 Skyhawk",
+      "source": "https://en.wikipedia.org/wiki/Battle_of_San_Carlos_(1982)"
+    },
+    {
+      "date": "1982-05-25",
+      "precision": "day",
+      "title": {
+        "fr": "L’*Atlantic Conveyor* frappé par deux Exocet",
+        "en": "*Atlantic Conveyor* struck by two Exocets"
+      },
+      "body": {
+        "fr": "Deux Super Étendard touchent le porte-conteneurs : douze marins meurent, et trois Chinook, six Wessex et un Lynx brûlent à bord.",
+        "en": "Two Super Étendards hit the container ship: twelve sailors die, and three Chinooks, six Wessex and a Lynx burn aboard."
+      },
+      "aircraft": "Super Étendard",
+      "source": "https://en.wikipedia.org/wiki/SS_Atlantic_Conveyor"
+    },
+    {
+      "date": "1982-06-01",
+      "precision": "day",
+      "title": {
+        "fr": "Un Hercules argentin abattu",
+        "en": "An Argentine Hercules shot down"
+      },
+      "body": {
+        "fr": "En reconnaissance au nord des îles, le C-130H TC-63 est abattu par le Sea Harrier du capitaine de corvette Nigel Ward, au Sidewinder puis au canon.",
+        "en": "On a reconnaissance flight north of the islands, C-130H TC-63 is shot down by Lt Cdr Nigel Ward’s Sea Harrier with a Sidewinder and then cannon fire."
+      },
+      "aircraft": "C-130 Hercules",
+      "source": "https://asn.flightsafety.org/asndb/327859"
+    },
+    {
+      "date": "1982-06-07",
+      "precision": "day",
+      "title": {
+        "fr": "Un Learjet abattu par un Sea Dart",
+        "en": "A Learjet downed by a Sea Dart"
+      },
+      "body": {
+        "fr": "En mission de reconnaissance photographique, le Learjet 35A T-24 est détruit par un missile du HMS *Exeter* ; ses cinq hommes d’équipage sont tués.",
+        "en": "On a photo-reconnaissance mission, Learjet 35A T-24 is destroyed by a missile from HMS *Exeter*; all five crew are killed."
+      },
+      "aircraft": "Learjet C-21",
+      "source": "https://es.wikipedia.org/wiki/Escuadr%C3%B3n_F%C3%A9nix"
+    },
+    {
+      "date": "1982-06-08",
+      "precision": "day",
+      "title": {
+        "fr": "Attaques de Bluff Cove",
+        "en": "Bluff Cove air attacks"
+      },
+      "body": {
+        "fr": "Cinq A-4B Skyhawk frappent le *Sir Galahad* et le *Sir Tristram* à Fitzroy : 56 militaires britanniques sont tués dans la journée. Trois Skyhawk sont abattus par des Sea Harrier lors d’une seconde vague.",
+        "en": "Five A-4B Skyhawks hit *Sir Galahad* and *Sir Tristram* at Fitzroy: 56 British servicemen are killed that day. Three Skyhawks are shot down by Sea Harriers in a second wave."
+      },
+      "aircraft": "A-4 Skyhawk",
+      "source": "https://en.wikipedia.org/wiki/Bluff_Cove_air_attacks"
+    },
+    {
+      "date": "1982-06-13",
+      "precision": "day",
+      "title": {
+        "fr": "Dernière perte argentine au combat",
+        "en": "Last Argentine combat loss"
+      },
+      "body": {
+        "fr": "Un Canberra B.62 est abattu à 39 000 pieds par un Sea Dart du HMS *Exeter* ; le navigateur est tué.",
+        "en": "A Canberra B.62 is shot down at 39,000 ft by a Sea Dart from HMS *Exeter*; the navigator is killed."
+      },
+      "aircraft": "English Electric Canberra",
+      "source": "https://en.wikipedia.org/wiki/English_Electric_Canberra"
+    },
+    {
+      "date": "1982-06-14",
+      "precision": "day",
+      "title": {
+        "fr": "Reddition argentine",
+        "en": "Argentine surrender"
+      },
+      "body": {
+        "fr": "La garnison de Port Stanley capitule, mettant fin aux combats.",
+        "en": "The Port Stanley garrison surrenders, ending the fighting."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Falklands_War"
+    }
+  ],
+  "aircraft": [
+    {
+      "name": "English Electric Canberra",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Les huit Canberra B.62 de la 2e brigade aérienne argentine, basés à Trelew, bombardent surtout de nuit les positions britanniques. L’un est abattu par un Sea Harrier le 1er mai ; un autre, touché par un Sea Dart le 13 juin, est la dernière perte argentine au combat.",
+        "en": "The eight Canberra B.62s of Argentina’s 2nd Air Brigade, based at Trelew, bombed British positions, mostly at night. One was shot down by a Sea Harrier on 1 May; another, hit by a Sea Dart on 13 June, was the last Argentine combat loss."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/English_Electric_Canberra",
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War"
+      ],
+      "note": "Sorties divergentes : 46 bombardements (article sur les forces aériennes argentines) contre 54 sorties dont 36 bombardements (article Canberra). Côté britannique, l’envoi de deux Canberra PR.9 à opérer depuis le Chili est dit abandonné (avions arrêtés au Belize) par l’article Canberra, alors que l’article sur les forces aériennes britanniques cite des « opérations clandestines depuis le Chili » : camp argentin seul retenu."
+    },
+    {
+      "name": "Avro Vulcan",
+      "side": "royaume-uni",
+      "attested": true,
+      "role": {
+        "fr": "Quatre Vulcan B.2 détachés à l’Ascension mènent les raids *Black Buck* : le 1er mai, une bombe crève la piste de Port Stanley, désormais interdite aux chasseurs ; deux missions suivantes visent les radars argentins avec des missiles Shrike.",
+        "en": "Four Vulcan B.2s detached to Ascension flew the *Black Buck* raids: on 1 May one bomb cratered the Port Stanley runway, closing it to fighters; two later missions attacked Argentine radars with Shrike missiles."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Avro_Vulcan",
+        "https://en.wikipedia.org/wiki/Operation_Black_Buck",
+        "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Black_Buck",
+        "https://naval-history.net/F25-Falklands-Royal_Air_Force.htm"
+      ],
+      "note": "Quatre Vulcan à l’Ascension selon naval-history.net, cinq du 44e escadron selon Wikipédia FR. Cinq raids menés sur sept prévus (trois bombardements, deux anti-radars). Black Buck 6 (3 juin) se déroute sur Rio de Janeiro : équipage retenu jusqu’à la fin des hostilités selon l’article Vulcan, libéré après un accord selon l’article Black Buck (avion rentré le 13 juin)."
+    },
+    {
+      "name": "S-2 Tracker",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Embarqués sur le porte-avions *Veinticinco de Mayo*, les S-2E Tracker de l’aéronavale argentine repèrent la flotte britannique le 1er mai. Après le retour du porte-avions au port, ils patrouillent depuis le continent et attaquent des contacts sous-marins à la torpille.",
+        "en": "Flying from the carrier *Veinticinco de Mayo*, Argentine naval aviation’s S-2E Trackers located the British fleet on 1 May. Once the carrier returned to port, they patrolled from the mainland and attacked submarine contacts with torpedoes."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Grumman_S-2_Tracker",
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Handley Page Victor",
+      "side": "royaume-uni",
+      "attested": true,
+      "role": {
+        "fr": "Une vingtaine de Victor K.2 basés à l’Ascension ravitaillent les Vulcan de *Black Buck* (onze pour deux bombardiers au premier raid), les Nimrod et les Hercules. Ils ouvrent la campagne par trois reconnaissances radar avant la reprise de la Géorgie du Sud.",
+        "en": "Some twenty Victor K.2s based at Ascension refuelled the *Black Buck* Vulcans (eleven tankers for two bombers on the first raid), Nimrods and Hercules. They opened the campaign with three radar reconnaissance sorties before South Georgia was retaken."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Handley_Page_Victor",
+        "https://en.wikipedia.org/wiki/Operation_Black_Buck",
+        "https://naval-history.net/F25-Falklands-Royal_Air_Force.htm"
+      ],
+      "note": "Nombre de sorties divergent : 375 (article sur les forces aériennes britanniques) contre près de 600 (naval-history.net)."
+    },
+    {
+      "name": "A-4 Skyhawk",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Pilier de l’attaque argentine : les A-4B et A-4C de la Fuerza Aérea et les A-4Q de l’aéronavale frappent la flotte à basse altitude. Ils coulent le *Coventry* le 25 mai, contribuent à couler l’*Ardent* et frappent le *Sir Galahad* le 8 juin ; 22 sont perdus.",
+        "en": "The backbone of the Argentine strike force: Air Force A-4Bs and A-4Cs and Navy A-4Qs attacked the fleet at low level. They sank *Coventry* on 25 May, helped sink *Ardent* and hit *Sir Galahad* on 8 June; 22 were lost."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Douglas_A-4_Skyhawk",
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War",
+        "https://en.wikipedia.org/wiki/Battle_of_San_Carlos_(1982)",
+        "https://en.wikipedia.org/wiki/Bluff_Cove_air_attacks"
+      ],
+      "note": "Effectifs engagés divergents : 48 (26 A-4B, 12 A-4C, 10 A-4Q) selon l’article A-4, 54 (30, 16 et 8) selon l’article sur les forces aériennes argentines. Les pertes concordent (22)."
+    },
+    {
+      "name": "C-130 Hercules",
+      "side": null,
+      "attested": true,
+      "role": {
+        "fr": "Côté argentin, les C-130 forcent de nuit le blocus de Port Stanley et deux KC-130 ravitaillent Skyhawk et Super Étendard ; un C-130 est abattu par un Sea Harrier le 1er juin. Côté britannique, les Hercules relient l’Ascension et larguent hommes et matériel à la flotte.",
+        "en": "For Argentina, C-130s ran the blockade into Port Stanley at night and two KC-130s refuelled Skyhawks and Super Étendards; one C-130 was shot down by a Sea Harrier on 1 June. For Britain, RAF Hercules flew to Ascension and air-dropped men and supplies to the fleet."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Lockheed_C-130_Hercules",
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War",
+        "https://naval-history.net/F25-Falklands-Royal_Air_Force.htm",
+        "https://asn.flightsafety.org/asndb/327859"
+      ],
+      "note": "Équipage du C-130 abattu le 1er juin : six morts selon l’article sur les forces aériennes argentines, sept selon l’article C-130 et l’Aviation Safety Network."
+    },
+    {
+      "name": "Mirage III",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Privés de ravitaillement en vol, les Mirage IIIEA de la 8e brigade aérienne n’ont que quelques minutes sur zone : ils servent surtout de leurres à haute altitude pour éloigner les Sea Harrier des Skyhawk. Deux sont perdus, l’un par un Sidewinder, l’autre par la DCA argentine à Stanley.",
+        "en": "With no air refuelling, the Mirage IIIEAs of the 8th Air Brigade had only minutes over the islands: they mostly flew high-altitude diversions to draw Sea Harriers away from the Skyhawks. Two were lost, one to a Sidewinder and one to Argentine flak at Stanley."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Dassault_Mirage_III",
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War"
+      ],
+      "note": "Une partie des Mirage reste en alerte sur le continent contre d’éventuels raids de Vulcan."
+    },
+    {
+      "name": "Vickers VC10",
+      "side": "royaume-uni",
+      "attested": true,
+      "role": {
+        "fr": "Les VC10 C.1 du 10e escadron de la RAF assurent le pont aérien entre Brize Norton et l’Ascension ; deux appareils marqués de la croix rouge évacuent des blessés depuis l’Uruguay neutre.",
+        "en": "The VC10 C.1s of No. 10 Squadron RAF flew the air bridge between Brize Norton and Ascension; two aircraft in Red Cross markings evacuated casualties from neutral Uruguay."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Vickers_VC10",
+        "https://naval-history.net/F25-Falklands-Royal_Air_Force.htm"
+      ],
+      "note": "En 1982, la RAF n’engage que le VC10 de transport C.1 : la conversion en ravitailleur (C.1K) vient plus tard. La fiche du catalogue affirme que les VC10 ont ravitaillé les Vulcan de Black Buck : aucune source consultée ne le confirme, ce rôle revient aux Victor. À corriger dans la fiche."
+    },
+    {
+      "name": "Short SC.7 Skyvan",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Deux Skyvan des garde-côtes argentins (Préfecture navale), le PA-50 et le PA-54, servent : le PA-54 appuie la navigation des garde-côtes vers l’archipel, et les appareils assurent transports et surveillance sur le continent. Le PA-50 est détruit ; le PA-54, endommagé, est capturé.",
+        "en": "Two Skyvans of the Argentine Naval Prefecture (coast guard), PA-50 and PA-54, were committed: PA-54 supported coast guard vessels sailing to the islands, and the fleet flew transport and border patrols on the mainland. PA-50 was destroyed; PA-54, damaged, was captured by the British."
+      },
+      "sources": [
+        "https://www.argentina.gob.ar/prefecturanaval/malvinas/agrupacion-aerea",
+        "https://en.wikipedia.org/wiki/Short_SC.7_Skyvan",
+        "https://en.wikipedia.org/wiki/Raid_on_Pebble_Island"
+      ],
+      "note": "Lieu de la perte divergent : l’article sur le raid de Pebble Island compte un Skyvan détruit, l’article sur les forces aériennes argentines deux ; la Préfecture navale parle d’un appareil détruit et d’un capturé."
+    },
+    {
+      "name": "Short Belfast",
+      "side": "royaume-uni",
+      "attested": true,
+      "role": {
+        "fr": "Retirés de la RAF en 1976 et revendus à la compagnie HeavyLift, cinq Belfast sont affrétés pour le pont aérien vers l’Ascension, en renfort des Hercules et des VC10 pour le fret volumineux.",
+        "en": "Retired by the RAF in 1976 and sold to HeavyLift, five Belfasts were chartered for the air bridge to Ascension, reinforcing the Hercules and VC10s for bulky freight."
+      },
+      "sources": [
+        "https://naval-history.net/F25-Falklands-Royal_Air_Force.htm",
+        "https://en.wikipedia.org/wiki/Short_Belfast"
+      ],
+      "note": "Appareils civils affrétés, sous immatriculation civile : engagés dans la logistique de la campagne, pas comme avions militaires."
+    },
+    {
+      "name": "Hawker Siddeley Nimrod",
+      "side": "royaume-uni",
+      "attested": true,
+      "role": {
+        "fr": "Depuis l’Ascension dès le 5 avril, les Nimrod MR.1 puis MR.2 escortent la flotte, relaient les communications et coordonnent les ravitaillements. Dotés en cours de campagne de perches et de Sidewinder, ils effectuent 111 missions, dont un vol de 8 453 milles les 20 et 21 mai.",
+        "en": "From Ascension from 5 April, Nimrod MR.1s and then MR.2s escorted the fleet, relayed communications and coordinated refuelling. Fitted during the campaign with probes and Sidewinders, they flew 111 missions, including an 8,453-mile flight on 20–21 May."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hawker_Siddeley_Nimrod",
+        "https://naval-history.net/F25-Falklands-Royal_Air_Force.htm",
+        "https://en.wikipedia.org/wiki/British_air_services_in_the_Falklands_War"
+      ],
+      "note": "Un Nimrod R.1 aurait mené du renseignement électronique depuis le Chili (affirmation de l’auteur Chris Chant, reprise par Wikipédia) : non retenu dans le rôle faute de confirmation."
+    },
+    {
+      "name": "Hawker Siddeley Harrier",
+      "side": "royaume-uni",
+      "attested": true,
+      "role": {
+        "fr": "Les Harrier GR.3 du 1er escadron de la RAF, en partie acheminés par l’*Atlantic Conveyor*, puis embarqués sur le *Hermes*, appuient les troupes au sol, surtout contre l’artillerie, et attaquent l’aérodrome de Stanley. Quatre sont perdus, dont trois par des tirs du sol.",
+        "en": "The Harrier GR.3s of No. 1 Squadron RAF, partly carried south by *Atlantic Conveyor*, then flown aboard *Hermes*, gave close air support to ground forces, mainly against artillery, and attacked Stanley airfield. Four were lost, three to ground fire."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Hawker_Siddeley_Harrier",
+        "https://en.wikipedia.org/wiki/British_air_services_in_the_Falklands_War",
+        "https://en.wikipedia.org/wiki/SS_Atlantic_Conveyor",
+        "https://naval-history.net/F25-Falklands-Royal_Air_Force.htm"
+      ],
+      "note": ""
+    },
+    {
+      "name": "FMA IA 58 Pucará",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Basés sur les îles dès le 2 avril (Stanley, Goose Green, Pebble Island), les Pucará appuient les troupes argentines. Six sont détruits au sol par les SAS à Pebble Island ; le 28 mai, deux d’entre eux abattent un hélicoptère Scout, seule victoire aérienne argentine confirmée.",
+        "en": "Based on the islands from 2 April (Stanley, Goose Green, Pebble Island), Pucarás supported Argentine troops. Six were destroyed on the ground by the SAS at Pebble Island; on 28 May two of them shot down a Scout helicopter, the only confirmed Argentine air-to-air kill."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/FMA_IA_58_Puc%C3%A1ra",
+        "https://en.wikipedia.org/wiki/Raid_on_Pebble_Island",
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War"
+      ],
+      "note": "Onze Pucará sont capturés à la fin de la guerre, dont six emmenés au Royaume-Uni."
+    },
+    {
+      "name": "IAI Nesher",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Sous le nom de Dagger, les Nesher revendus par Israël à la 6e brigade aérienne argentine mènent 153 sorties contre la flotte et les troupes, sans ravitaillement en vol ; ils touchent notamment l’*Ardent* et le *Plymouth*. Onze sont perdus, dont neuf par les Sidewinder des Sea Harrier.",
+        "en": "Under the name Dagger, the Neshers sold by Israel to Argentina’s 6th Air Brigade flew 153 sorties against the fleet and ground targets without air refuelling, hitting *Ardent* and *Plymouth* among others. Eleven were lost, nine to Sea Harrier Sidewinders."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/IAI_Nesher",
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War",
+        "https://en.wikipedia.org/wiki/Battle_of_San_Carlos_(1982)"
+      ],
+      "note": "Engagés sous le nom de Dagger. Livraisons : 39 (26 en 1978, 13 en 1980) selon Wikipédia, 35 selon la fiche du catalogue."
+    },
+    {
+      "name": "Learjet C-21",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Les Learjet 35A du groupe aérophotographique de la Fuerza Aérea, associés à l’Escuadrón Fénix, guident les formations d’attaque, servent de leurres et photographient les îles. Le 7 juin, l’un d’eux est abattu par un Sea Dart du HMS *Exeter* : cinq morts.",
+        "en": "The Learjet 35As of the Argentine Air Force photographic group, working with the Escuadrón Fénix, guided strike formations, flew diversions and photographed the islands. On 7 June one was shot down by a Sea Dart from HMS *Exeter*, killing its five crew."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Learjet_35",
+        "https://es.wikipedia.org/wiki/Escuadr%C3%B3n_F%C3%A9nix",
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War"
+      ],
+      "note": "Le catalogue décrit le C-21A, désignation de l’US Air Force pour un Learjet 35A de série. L’Argentine n’a pas utilisé de C-21 mais des Learjet 35A militaires, le même avion : rôle retenu à ce titre. L’Escuadrón Fénix employait aussi des avions civils réquisitionnés. Équipage tué : cinq (Wikipédia EN et ES, qui les nomme), quatre selon l’article sur les forces aériennes argentines."
+    },
+    {
+      "name": "Super Étendard",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Les Super Étendard de la 2e escadrille de l’aéronavale argentine, basés à Río Grande avec cinq Exocet AM39, coulent le HMS *Sheffield* le 4 mai, puis l’*Atlantic Conveyor* le 25 mai. Le dernier Exocet, tiré le 30 mai contre l’*Invincible*, ne fait aucun dégât selon Londres.",
+        "en": "The Super Étendards of Argentine naval aviation’s 2nd Squadron, based at Río Grande with five AM39 Exocets, sank HMS *Sheffield* on 4 May and *Atlantic Conveyor* on 25 May. The last Exocet, fired at *Invincible* on 30 May, caused no damage according to the British."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Dassault-Breguet_Super_%C3%89tendard",
+        "https://fr.wikipedia.org/wiki/Dassault_Super-%C3%89tendard",
+        "https://argentina.gob.ar/armada/aviacion-naval/unidades/super-etendard",
+        "https://en.wikipedia.org/wiki/HMS_Sheffield_(D80)",
+        "https://en.wikipedia.org/wiki/SS_Atlantic_Conveyor",
+        "https://en.wikipedia.org/wiki/Attack_on_HMS_Invincible"
+      ],
+      "note": "L’Argentine affirme encore avoir touché l’Invincible le 30 mai ; aucune preuve n’en a été produite. Naufrage du Sheffield : le 10 mai selon Wikipédia, « le lendemain » de l’attaque selon l’Armada argentine. Explosion de la charge : non selon l’Armada et l’article Sheffield, oui selon une réévaluation du ministère britannique de la Défense (2015). Quatre avions opérationnels sur cinq livrés."
+    },
+    {
+      "name": "Aermacchi MB-339",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Six MB-339A de l’aéronavale, basés à Port Stanley, sont les seuls jets d’attaque opérant depuis les îles. Le 21 mai, le lieutenant Owen Crippa attaque la flotte à San Carlos et touche la frégate *Argonaut* ; un autre est abattu par un missile Blowpipe le 27 mai à Goose Green.",
+        "en": "Six Navy MB-339As based at Port Stanley were the only attack jets flying from the islands. On 21 May Lt Owen Crippa attacked the fleet at San Carlos and hit the frigate *Argonaut*; another was shot down by a Blowpipe missile at Goose Green on 27 May."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Aermacchi_MB-339",
+        "https://en.wikipedia.org/wiki/Battle_of_San_Carlos_(1982)",
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War"
+      ],
+      "note": "Trois MB-339 sont capturés par les Britanniques."
+    },
+    {
+      "name": "BAE Sea Harrier",
+      "side": "royaume-uni",
+      "attested": true,
+      "role": {
+        "fr": "Embarqués sur le *Hermes* et l’*Invincible*, les 28 Sea Harrier FRS.1 assurent la couverture aérienne de la flotte : armés du Sidewinder AIM-9L, ils abattent une vingtaine d’avions argentins sans perte en combat aérien. Six sont perdus, deux par la DCA et quatre par accident.",
+        "en": "Flying from *Hermes* and *Invincible*, the 28 Sea Harrier FRS.1s provided the fleet’s air cover: armed with AIM-9L Sidewinders, they shot down some twenty Argentine aircraft with no air-to-air losses. Six were lost, two to ground fire and four in accidents."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/British_Aerospace_Sea_Harrier",
+        "https://en.wikipedia.org/wiki/British_air_services_in_the_Falklands_War",
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War"
+      ],
+      "note": "Victoires divergentes : 20 (article Sea Harrier), « 20 (+3) » (article sur les forces aériennes britanniques), 21 pertes argentines attribuées aux Sea Harrier (article sur les forces aériennes argentines). 1 435 sorties selon l’article britannique."
+    },
+    {
+      "name": "Embraer EMB 111 Bandeirulha",
+      "side": "argentine",
+      "attested": true,
+      "role": {
+        "fr": "Deux EMB 111A loués à la Force aérienne brésilienne (2-P-201 et 2-P-202) comblent pour l’aéronavale argentine le retrait des derniers Neptune : ils effectuent 39 sorties de patrouille maritime depuis Río Gallegos et rentrent au Brésil le 24 juin.",
+        "en": "Two EMB 111As leased from the Brazilian Air Force (2-P-201 and 2-P-202) filled the gap left by the last Neptunes for Argentine naval aviation, flying 39 maritime patrol sorties from Río Gallegos before returning to Brazil on 24 June."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War",
+        "https://en.wikipedia.org/wiki/Embraer_EMB_110_Bandeirante"
+      ],
+      "note": "Patrouille seulement, sans engagement connu contre les forces britanniques."
+    }
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Falklands_War",
+    "https://fr.wikipedia.org/wiki/Guerre_des_Malouines",
+    "https://en.wikipedia.org/wiki/Argentine_air_forces_in_the_Falklands_War",
+    "https://en.wikipedia.org/wiki/British_air_services_in_the_Falklands_War",
+    "https://en.wikipedia.org/wiki/Operation_Black_Buck",
+    "https://en.wikipedia.org/wiki/Battle_of_San_Carlos_(1982)",
+    "https://en.wikipedia.org/wiki/Bluff_Cove_air_attacks",
+    "https://en.wikipedia.org/wiki/HMS_Sheffield_(D80)",
+    "https://en.wikipedia.org/wiki/SS_Atlantic_Conveyor",
+    "https://en.wikipedia.org/wiki/Attack_on_HMS_Invincible",
+    "https://naval-history.net/F25-Falklands-Royal_Air_Force.htm"
+  ]
+}

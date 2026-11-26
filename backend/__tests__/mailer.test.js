@@ -118,7 +118,7 @@ describe('envoi via SMTP (transport simulé)', () => {
 
   test('activation : code de 30 minutes, ni lien ni jeton, code absent de l\'objet', async () => {
     const { mailer, sendMail } = loadMailer(SMTP);
-    await mailer.sendVerificationEmail('a@b.fr', 'Ana <b>', CODE);
+    await mailer.sendVerificationEmail('a@b.fr', CODE);
     const mail = sendMail.mock.calls[0][0];
     expect(mail.to).toBe('a@b.fr');
     expect(mail.from).toBe(`"Vol d'Histoire" <${SMTP.MAIL_USER}>`);
@@ -126,7 +126,8 @@ describe('envoi via SMTP (transport simulé)', () => {
     expect(mail.subject).not.toContain(CODE);
     expect(mail.html).toContain(CODE);
     expect(mail.html).toContain('30 minutes');
-    expect(mail.html).toContain('Ana &lt;b&gt;');
+    // SEC-007 : salutation neutre, aucun texte venu du formulaire d'inscription.
+    expect(mail.html).toContain('Bonjour,<br>');
     expect(mail.html).not.toMatch(/href=|token=|verify-email/);
   });
 

@@ -41,7 +41,6 @@
   <link rel="stylesheet" href="css/favorites.min.css">
   </head>
 <body class="page-favorites">
-<a href="#main-content" class="skip-link">Aller au contenu</a>
 
   <!-- Header -->
   <!-- @include header -->
@@ -58,7 +57,7 @@
       </nav>
       <div class="page-hero-inner">
         <div class="hero-text">
-          <h1 id="page-hero-heading" data-i18n="favorites.hero_title">Mes<span class="hero-muted">Favoris</span></h1>
+          <h1 id="page-hero-heading" data-i18n="favorites.hero_title">Mes <span class="hero-muted">Favoris</span></h1>
           <p data-i18n="favorites.hero_desc">Retrouvez tous les avions que vous avez ajoutés à vos favoris</p>
         </div>
         <div class="hero-data">
@@ -92,8 +91,8 @@
         </div>
         <div class="auth-gate-info">
           <p class="gate-badge"><i class="fas fa-heart"></i> <span data-i18n="favorites.restricted">Vos favoris</span></p>
-          <h2 data-i18n="favorites.auth_required">Gardez vos appareils sous la main</h2>
-          <p data-i18n="favorites.auth_desc">Connectez-vous pour retrouver ici les appareils marqués d'un cœur sur leur fiche.</p>
+          <h1 data-i18n="favorites.auth_required">Gardez vos appareils sous la main</h1>
+          <p data-i18n="favorites.auth_desc">Connectez-vous pour retrouver ici les appareils marqués d’un cœur sur leur fiche.</p>
           <ul class="gate-features">
             <li class="gate-feature"><i class="fas fa-heart"></i><span data-i18n="favorites.auth_feat_1">Un cœur sur chaque fiche pour la garder</span></li>
             <li class="gate-feature"><i class="fas fa-sliders-h"></i><span data-i18n="favorites.auth_feat_2">Recherche, filtres et tri dans votre sélection</span></li>
@@ -116,15 +115,15 @@
         <div class="search-box"><label for="search-input" class="sr-only" data-i18n="favorites.search_label">Rechercher dans mes favoris</label><i class="fas fa-search" aria-hidden="true"></i><input type="search" id="search-input" placeholder="Rechercher dans mes favoris..." data-i18n-placeholder="favorites.search_placeholder" autocomplete="off"></div>
         <div class="toolbar-right">
           <div class="filter-group">
-            <button type="button" class="filter-btn" id="country-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="country-dropdown" aria-label="Pays" data-i18n-aria="hangar.filter_country"><i class="fas fa-globe"></i><span data-i18n="hangar.filter_country">Pays</span><i class="fas fa-chevron-down"></i></button>
+            <button type="button" class="filter-btn" id="country-filter-btn" aria-expanded="false" aria-controls="country-dropdown" aria-label="Pays" data-i18n-aria="hangar.filter_country"><i class="fas fa-globe"></i><span data-i18n="hangar.filter_country">Pays</span><i class="fas fa-chevron-down"></i></button>
             <div id="country-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_country">Filtrer par pays</h3><button type="button" class="close-dropdown" aria-label="Fermer le filtre pays" data-i18n-aria="hangar.close_filter_country"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="country-options"></div></div>
           </div>
           <div class="filter-group">
-            <button type="button" class="filter-btn" id="generation-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="generation-dropdown" aria-label="Génération" data-i18n-aria="hangar.gen_label"><i class="fas fa-layer-group"></i><span data-i18n="hangar.gen_label">Génération</span><i class="fas fa-chevron-down"></i></button>
+            <button type="button" class="filter-btn" id="generation-filter-btn" aria-expanded="false" aria-controls="generation-dropdown" aria-label="Génération" data-i18n-aria="hangar.gen_label"><i class="fas fa-layer-group"></i><span data-i18n="hangar.gen_label">Génération</span><i class="fas fa-chevron-down"></i></button>
             <div id="generation-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_gen">Filtrer par génération</h3><button type="button" class="close-dropdown" aria-label="Fermer le filtre génération" data-i18n-aria="hangar.close_filter_gen"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="generation-options"></div></div>
           </div>
           <div class="filter-group">
-            <button type="button" class="filter-btn" id="type-filter-btn" aria-expanded="false" aria-haspopup="true" aria-controls="type-dropdown" aria-label="Type" data-i18n-aria="hangar.filter_type"><i class="fas fa-tags"></i><span data-i18n="hangar.filter_type">Type</span><i class="fas fa-chevron-down"></i></button>
+            <button type="button" class="filter-btn" id="type-filter-btn" aria-expanded="false" aria-controls="type-dropdown" aria-label="Type" data-i18n-aria="hangar.filter_type"><i class="fas fa-tags"></i><span data-i18n="hangar.filter_type">Type</span><i class="fas fa-chevron-down"></i></button>
             <div id="type-dropdown" class="filter-dropdown hidden"><div class="filter-dropdown-header"><h3 data-i18n="hangar.filter_by_type">Filtrer par type</h3><button type="button" class="close-dropdown" aria-label="Fermer le filtre type" data-i18n-aria="hangar.close_filter_type"><i class="fas fa-times" aria-hidden="true"></i></button></div><div class="filter-options" id="type-options"></div></div>
           </div>
           <label for="sort-select" class="sr-only" data-i18n="favorites.sort_label">Trier mes favoris</label>
@@ -137,12 +136,12 @@
         </div>
       </section>
       <div id="active-filters" class="active-filters hidden"></div>
-      <div class="results-bar"><span id="results-count" data-i18n="favorites.results">0 favoris</span></div>
-      <section id="favorites-container" class="aircraft-grid" aria-label="Résultats" data-i18n-aria="favorites.results_landmark"></section>
+      <div class="results-bar"><span id="results-count" class="results-count" data-i18n="favorites.results">0 favoris</span></div>
+      <section id="favorites-container" class="aircraft-grid favorites-container" aria-label="Résultats" data-i18n-aria="favorites.results_landmark"></section>
       <div id="empty-state" class="empty-state hidden">
         <i class="fas fa-heart-crack"></i>
-        <h3 data-i18n="favorites.empty_title">Aucun favori pour l'instant</h3>
-        <p data-i18n="favorites.empty_desc">Explorez le hangar et ajoutez des avions à vos favoris en cliquant sur l'icône</p>
+        <h3 data-i18n="favorites.empty_title">Aucun favori pour l’instant</h3>
+        <p data-i18n="favorites.empty_desc">Explorez le hangar et ajoutez des avions à vos favoris en cliquant sur l’icône</p>
       </div>
     </div>
   </section>
@@ -151,7 +150,7 @@
 
   <!-- Footer -->
   <!-- @include footer -->
-  <div id="toast-container" aria-live="polite"></div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
   <script defer src="js/dist/icons.min.js"></script>

@@ -139,6 +139,10 @@ const i18n = (() => {
         // pas encore convertie, <svg class="icon …"> ensuite (sans ce second
         // cas, les icônes des titres des pages légales étaient effacées).
         const icon = el.querySelector(':scope > i.fas, :scope > i.fab, :scope > i.far, :scope > svg.icon');
+        // Texte déjà dans la langue voulue (rendu serveur) : aucune écriture.
+        // Réécrire un nœud identique le faisait repeindre à l'exécution du
+        // script, ce qui repoussait le LCP (titre de l'accueil, PERF-003).
+        if (el.textContent.trim() === translated.trim()) return;
         if (icon) {
           el.textContent = '';
           el.appendChild(icon);

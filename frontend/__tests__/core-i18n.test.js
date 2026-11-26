@@ -128,7 +128,7 @@ describe('chargement des locales', () => {
     expect(i18n.t('nav.home')).toBe(LOCALES.fr.nav.home);
     // Clé dont la valeur n'est pas une chaîne : renvoyée telle quelle.
     expect(typeof i18n.t('nav')).toBe('object');
-    expect(i18n.t('footer.copyright_short')).toBe(`© ${new Date().getFullYear()} Vol d'Histoire`);
+    expect(i18n.t('footer.copyright_short')).toBe(`© ${new Date().getFullYear()} Vol d’Histoire`);
     expect(i18n.t('hangar.results', { count: 5 })).toBe('5 avions trouvés');
     // {year} passé explicitement : la valeur fournie l'emporte.
     expect(i18n.t('conflicts.since', { year: 1947 })).toBe('depuis 1947');

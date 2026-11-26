@@ -78,7 +78,7 @@ async function findForExport(db, id) {
 
 /** Profil avec hash, pour vérifier le mot de passe actuel. */
 async function findWithPassword(db, id) {
-  const result = await db.query('SELECT id, name, email, password FROM users WHERE id = $1', [id]);
+  const result = await db.query('SELECT id, name, email, password, failed_login_count, locked_until FROM users WHERE id = $1', [id]);
   return result.rows[0] || null;
 }
 
@@ -162,12 +162,22 @@ async function renameUnverified(db, id, name) {
  * avant bcrypt est périmée dès que des tentatives arrivent en parallèle, un
  * `SET failed_login_count = $1` calculé en JS perdrait des échecs. Au seuil,
  * le compte est verrouillé `lockMinutes` minutes.
+ *
+ * Un verrou expiré remet le décompte à zéro (SEC-006) : ce premier échec
+ * compte pour 1. Sans cela, le compteur restait au seuil et un seul échec
+ * reverrouillait le compte 15 minutes ; un tiers connaissant l'adresse
+ * pouvait le maintenir bloqué avec une tentative par quart d'heure.
  */
 async function recordFailedLogin(db, id, { maxAttempts, lockMinutes }) {
   await db.query(
     `UPDATE users
-           SET failed_login_count = failed_login_count + 1,
+           SET failed_login_count = CASE
+                 WHEN locked_until <= NOW() THEN 1
+                 ELSE failed_login_count + 1
+               END,
                locked_until = CASE
+                 WHEN locked_until <= NOW() THEN
+                   CASE WHEN 1 >= $1 THEN NOW() + ($2 || ' minutes')::interval END
                  WHEN failed_login_count + 1 >= $1 THEN NOW() + ($2 || ' minutes')::interval
                  ELSE locked_until
                END

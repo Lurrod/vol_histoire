@@ -901,3 +901,27 @@ describe('isValidRoleId', () => {
     expect(isValidRoleId(v)).toBe(false);
   });
 });
+
+describe('validateAirplaneData — table de règles (ARCH-005)', () => {
+  test('un message par règle en échec, dans l\'ordre de la table', () => {
+    const errors = validateAirplaneData({
+      name: '',
+      mach_max: 12,
+      hardpoints: 31,
+      stealth_level: 'invisible',
+      wikipedia_en: `https://en.wikipedia.org/${'x'.repeat(600)}`,
+    });
+    expect(errors).toEqual([
+      'Le nom est requis (max 255 caractères).',
+      'Le Mach max doit être compris entre 0,1 et 10.',
+      "Le nombre de points d'emport doit être un entier entre 0 et 30.",
+      "stealth_level doit être l'une des valeurs : aucune, reduite, moderee, elevee, tres_elevee",
+      // URL bien formée (isOptionalUrl accepte jusqu'à 2 048) mais au-delà de 500 :
+      'wikipedia_en > 500 caractères.',
+    ]);
+  });
+
+  test('fiche minimale valide : aucune erreur', () => {
+    expect(validateAirplaneData({ name: 'Rafale', mach_max: 1.8, hardpoints: 14, supercruise: true })).toEqual([]);
+  });
+});

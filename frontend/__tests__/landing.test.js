@@ -114,7 +114,7 @@ describe('text — tr / trn', () => {
   afterEach(() => { delete window.i18n; });
 
   test('repli français quand i18n est absent', () => {
-    expect(text.tr('search_all', { q: 'mig' })).toBe('Rechercher « mig » dans le hangar');
+    expect(text.tr('search_all', { q: 'mig' })).toBe('Rechercher «\u00A0mig\u00A0» dans le hangar');
   });
 
   test('repli français quand la clé manque (i18n.t renvoie la clé)', () => {

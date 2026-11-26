@@ -1,0 +1,18 @@
+# logrotate — journaux pm2 de vol-histoire (DEVOPS-005).
+# Relevé du 2026-11-25 : aucune rotation (ni pm2-logrotate, ni règle
+# /etc/logrotate.d) ; vol-histoire-out.log atteignait 33 Mo.
+# Installée en production le 2026-11-26 (première rotation forcée). Installation :
+#   sudo cp deploy/logrotate/vol-histoire /etc/logrotate.d/vol-histoire
+#   sudo logrotate -d /etc/logrotate.d/vol-histoire   # simulation
+# copytruncate : pm2 garde son descripteur ouvert, aucun redémarrage requis.
+/home/ubuntu/.pm2/logs/vol-histoire-out.log /home/ubuntu/.pm2/logs/vol-histoire-error.log {
+    su ubuntu ubuntu
+    weekly
+    maxsize 50M
+    rotate 8
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}

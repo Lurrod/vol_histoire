@@ -49,10 +49,14 @@ const pool = new Pool({
      :                                      { rejectUnauthorized: true },
 });
 
+// Une connexion inactive coupée ne doit pas arrêter le processus (JS-003).
+require('./db').watchPoolErrors(pool, logger);
 app.setPool(pool);
 
-// Init Redis rate-limiter (si REDIS_URL défini et Redis joignable)
-app.initRedis().then(() => {
+// Init Redis rate-limiter (si REDIS_URL défini et Redis joignable), puis
+// contrôle des migrations : en production, une migration non jouée empêche
+// le démarrage, donc déclenche le retour arrière du déploiement (DEVOPS-003).
+app.initRedis().then(() => require('./utils/schema-migrations').checkSchema(pool, { logger })).then(() => {
   const port = process.env.PORT || 3000;
   const host = resolveListenHost();
   const server = app.listen(port, host, () => {
@@ -62,8 +66,8 @@ app.initRedis().then(() => {
   // Garder la ref pour le shutdown
   setupShutdown(server);
 }).catch(err => {
-  logger.error('Erreur init serveur', { error: err.message });
-  process.exit(1);
+  logger.error('Erreur init serveur', { error: err });
+  require('./utils/fatal').exitAfterFlush(logger);
 });
 
 // -----------------------------------------------------------------------------
@@ -97,10 +101,12 @@ function setupShutdown(server) {
   process.on('SIGINT', () => shutdown('SIGINT'));
 }
 
-// Erreurs non capturées : forward vers logger → Sentry
+// Erreurs non capturées : forward vers logger → Sentry, file Sentry vidée
+// avant la sortie (JS-004).
+const { exitAfterFlush } = require('./utils/fatal');
 process.on('uncaughtException', (err) => {
   logger.error('uncaughtException', { error: err });
-  process.exit(1);
+  exitAfterFlush(logger);
 });
 process.on('unhandledRejection', (reason) => {
   logger.error('unhandledRejection', { error: reason instanceof Error ? reason : new Error(String(reason)) });

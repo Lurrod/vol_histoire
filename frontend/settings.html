@@ -37,7 +37,6 @@
   <link rel="stylesheet" href="css/settings.min.css">
   </head>
 <body class="page-settings">
-<a href="#main-content" class="skip-link">Aller au contenu</a>
 
   <!-- @include header -->
 
@@ -83,7 +82,7 @@
             <div id="collection" class="content-section active" role="tabpanel" aria-labelledby="tab-collection" tabindex="0">
               <div class="section-card">
                 <div class="section-header">
-                  <div class="header-text"><h2 data-i18n="settings.collection_title">Ma collection</h2><p data-i18n="settings.collection_desc">Les appareils que vous avez gardés, d'un coup d'œil.</p></div>
+                  <div class="header-text"><h2 data-i18n="settings.collection_title">Ma collection</h2><p data-i18n="settings.collection_desc">Les appareils que vous avez gardés, d’un coup d’œil.</p></div>
                   <a class="section-link" href="/favorites"><span data-i18n="settings.collection_all">Voir mes favoris</span><i class="fas fa-arrow-right" aria-hidden="true"></i></a>
                 </div>
                 <p class="col-status" id="col-status" role="status" aria-live="polite"></p>
@@ -106,8 +105,8 @@
                 </div>
                 <div class="col-empty" id="col-empty" hidden>
                   <i class="fas fa-heart col-empty-icon" aria-hidden="true"></i>
-                  <h3 data-i18n="settings.collection_empty_title">Aucun favori pour l'instant</h3>
-                  <p data-i18n="settings.collection_empty_desc">Ajoutez des appareils à vos favoris depuis le hangar : ils apparaîtront ici, rangés par décennie et par pays.</p>
+                  <h3 data-i18n="settings.collection_empty_title">Aucun favori pour l’instant</h3>
+                  <p data-i18n="settings.collection_empty_desc">Ajoutez des appareils à vos favoris depuis le hangar : ils apparaîtront ici, rangés par décennie et par pays.</p>
                   <a href="/hangar" class="btn btn-primary"><i class="fas fa-plane" aria-hidden="true"></i><span data-i18n="settings.collection_empty_cta">Explorer le hangar</span></a>
                 </div>
                 <section class="col-last" id="col-last" aria-labelledby="col-last-title" hidden>
@@ -126,7 +125,7 @@
                   <h3 class="set-block-title" id="profile-title"><i class="fas fa-user" aria-hidden="true"></i><span data-i18n="settings.profile_title">Informations du profil</span></h3>
                   <form id="profile-form" class="modern-form">
                     <div class="form-grid">
-                      <div class="form-group"><label for="name"><span data-i18n="settings.label_name">Nom complet</span></label><input type="text" id="name" name="name" placeholder="Votre nom" data-i18n-placeholder="settings.placeholder_name" autocomplete="name" required><span class="field-hint" data-i18n="settings.hint_name">Votre nom tel qu'il apparaîtra sur le site</span></div>
+                      <div class="form-group"><label for="name"><span data-i18n="settings.label_name">Nom complet</span></label><input type="text" id="name" name="name" placeholder="Votre nom" data-i18n-placeholder="settings.placeholder_name" autocomplete="name" required><span class="field-hint" data-i18n="settings.hint_name">Votre nom tel qu’il apparaîtra sur le site</span></div>
                       <div class="form-group"><label for="email"><span data-i18n="settings.label_email">Adresse email</span></label><input type="email" id="email" name="email" placeholder="votre@email.com" data-i18n-placeholder="settings.placeholder_email" autocomplete="email" required><span class="field-hint" data-i18n="settings.hint_email">Nous ne partagerons jamais votre email</span></div>
                     </div>
                     <div class="form-group" id="profile-current-password-group" hidden><label for="profile-current-password"><span data-i18n="settings.label_current_password">Mot de passe actuel</span></label><input type="password" id="profile-current-password" name="currentPassword" autocomplete="current-password"><span class="field-hint" data-i18n="settings.hint_current_password_email">Requis pour changer d’adresse email. Un code de confirmation sera envoyé à la nouvelle adresse.</span></div>
@@ -151,7 +150,7 @@
                       <label for="password"><span data-i18n="settings.label_new_password">Nouveau mot de passe</span></label>
                       <div class="password-wrapper"><input type="password" id="password" name="password" autocomplete="new-password" aria-describedby="password-requirements"><button type="button" class="toggle-password" id="toggle-password" aria-label="Afficher le mot de passe" data-i18n-aria="login.show_password"><i class="fas fa-eye-slash" aria-hidden="true"></i></button></div>
                       <div class="password-strength"><div class="strength-bars"><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div></div><span class="strength-text" id="strength-text" data-i18n="settings.password_strength">Force du mot de passe</span></div>
-                      <div class="password-requirements" id="password-requirements"><p class="requirements-title" data-i18n="settings.password_requirements">Exigences du mot de passe :</p><ul><li id="req-length"><i class="fas fa-circle" aria-hidden="true"></i><span data-i18n="settings.req_length">Entre 8 et 128 caractères</span></li><li id="req-upper"><i class="fas fa-circle" aria-hidden="true"></i><span data-i18n="settings.req_upper">Une lettre majuscule</span></li><li id="req-lower"><i class="fas fa-circle" aria-hidden="true"></i><span data-i18n="settings.req_lower">Une lettre minuscule</span></li><li id="req-number"><i class="fas fa-circle" aria-hidden="true"></i><span data-i18n="settings.req_number">Un chiffre</span></li></ul></div>
+                      <div class="password-requirements" id="password-requirements"><p class="requirements-title" data-i18n="settings.password_requirements">Exigences du mot de passe :</p><ul><li id="req-length"><i class="fas fa-circle" aria-hidden="true"></i><span data-i18n="settings.req_length">Entre 8 et 128 caractères</span></li><li id="req-upper"><i class="fas fa-circle" aria-hidden="true"></i><span data-i18n="settings.req_upper">Une lettre majuscule</span></li><li id="req-lower"><i class="fas fa-circle" aria-hidden="true"></i><span data-i18n="settings.req_lower">Une lettre minuscule</span></li><li id="req-number"><i class="fas fa-circle" aria-hidden="true"></i><span data-i18n="settings.req_number">Un chiffre</span></li></ul></div>
                     </div>
                     <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fas fa-key" aria-hidden="true"></i><span data-i18n="settings.btn_update_password">Mettre à jour le mot de passe</span></button></div>
                   </form>
@@ -159,7 +158,7 @@
 
                 <section class="set-block" id="sessions-block" aria-labelledby="sessions-title">
                   <h3 class="set-block-title" id="sessions-title"><i class="fas fa-sign-out-alt" aria-hidden="true"></i><span data-i18n="settings.sessions_title">Sessions</span></h3>
-                  <p class="set-block-desc" data-i18n="settings.sessions_desc">Un appareil oublié ou perdu ? Fermez toutes les sessions ouvertes avec votre compte, celle-ci comprise : il faudra vous reconnecter.</p>
+                  <p class="set-block-desc" data-i18n="settings.sessions_desc">Un appareil oublié ou perdu ? Fermez toutes les sessions ouvertes avec votre compte, celle-ci comprise : il faudra vous reconnecter.</p>
                   <div class="sessions-actions"><button type="button" class="btn btn-secondary" id="logout-all-btn"><i class="fas fa-sign-out-alt" aria-hidden="true"></i><span data-i18n="settings.sessions_btn">Se déconnecter de tous les appareils</span></button></div>
                 </section>
               </div>
@@ -178,11 +177,11 @@
                     </div>
                   </div>
                   <div class="pref-row">
-                    <div class="pref-text"><h3 id="pref-motion-title" data-i18n="settings.pref_motion_title">Réduire les animations</h3><p id="pref-motion-desc" data-i18n="settings.pref_motion_desc">Transitions, glissements et compteurs s'affichent sans mouvement.</p><p class="pref-note" id="pref-motion-system" data-i18n="settings.pref_motion_system" hidden>Votre appareil demande déjà moins d'animations : le site les réduit dans tous les cas.</p></div>
-                    <div class="toggle-switch"><input type="checkbox" id="pref-reduce-motion" aria-labelledby="pref-motion-title" aria-describedby="pref-motion-desc"><label for="pref-reduce-motion"><span class="toggle-slider"></span></label></div>
+                    <div class="pref-text"><h3 id="pref-motion-title" data-i18n="settings.pref_motion_title">Réduire les animations</h3><p id="pref-motion-desc" data-i18n="settings.pref_motion_desc">Transitions, glissements et compteurs s’affichent sans mouvement.</p><p class="pref-note" id="pref-motion-system" data-i18n="settings.pref_motion_system" hidden>Votre appareil demande déjà moins d’animations : le site les réduit dans tous les cas.</p></div>
+                    <div class="toggle-switch"><input type="checkbox" id="pref-reduce-motion" class="pref-reduce-motion" aria-labelledby="pref-motion-title" aria-describedby="pref-motion-desc"><label for="pref-reduce-motion"><span class="toggle-slider"></span></label></div>
                   </div>
                   <div class="pref-row">
-                    <div class="pref-text"><h3 id="pref-tour-title" data-i18n="settings.pref_tour_title">Visite guidée</h3><p data-i18n="settings.pref_tour_desc">La présentation du site, depuis l'accueil.</p></div>
+                    <div class="pref-text"><h3 id="pref-tour-title" data-i18n="settings.pref_tour_title">Visite guidée</h3><p data-i18n="settings.pref_tour_desc">La présentation du site, depuis l’accueil.</p></div>
                     <button type="button" class="btn btn-secondary" id="pref-tour-btn"><i class="fas fa-route" aria-hidden="true"></i><span data-i18n="settings.pref_tour_btn">Revoir la visite guidée</span></button>
                   </div>
                 </div>
@@ -197,10 +196,10 @@
                 <section class="set-block" aria-labelledby="cookies-title">
                   <h3 class="set-block-title" id="cookies-title"><i class="fas fa-cookie-bite" aria-hidden="true"></i><span data-i18n="settings.cookies_title">Cookies</span></h3>
                   <p class="set-block-desc" data-i18n="settings.privacy_overview_desc">Vous contrôlez les données que nous collectons et la manière dont nous les utilisons.</p>
-                  <p class="consent-date"><i class="fas fa-calendar-check" aria-hidden="true"></i><span data-i18n="settings.last_modified">Dernière modification :</span> <strong id="consent-date" data-i18n="settings.never">Jamais</strong></p>
+                  <p class="consent-date"><i class="fas fa-calendar-check" aria-hidden="true"></i><span data-i18n="settings.last_modified">Dernière modification :</span> <strong id="consent-date" data-i18n="settings.never">Jamais</strong></p>
                   <div class="cookie-preferences">
-                    <div class="cookie-preference-item"><div class="preference-header"><div class="preference-info"><h4 id="pref-essential-title" data-i18n="settings.essential_title">Cookies essentiels</h4><p data-i18n="settings.essential_desc">Nécessaires au fonctionnement du site. Ne peuvent pas être désactivés.</p></div><span class="cookie-always"><i class="fas fa-lock" aria-hidden="true"></i><span data-i18n="cookie.always_on">Toujours actifs</span></span></div><div class="preference-details"><ul class="details-grid"><li class="detail-item" data-i18n="settings.essential_auth">Authentification et session</li><li class="detail-item" data-i18n="settings.essential_security">Sécurité du compte</li><li class="detail-item" data-i18n="settings.essential_prefs">Langue, affichage, comparateur</li><li class="detail-item" data-i18n="settings.essential_consent">Consentement cookies</li></ul><p class="duration-info" data-i18n="settings.essential_duration">Durée de conservation : de la session à 6 mois</p></div></div>
-                    <div class="cookie-preference-item"><div class="preference-header"><div class="preference-info"><h4 id="pref-analytics-title" data-i18n="settings.analytics_title">Cookies analytiques</h4><p data-i18n="settings.analytics_desc">Nous aident à comprendre comment vous utilisez le site pour l'améliorer.</p></div><div class="preference-toggle"><div class="toggle-switch"><input type="checkbox" id="pref-analytics" aria-labelledby="pref-analytics-title"><label for="pref-analytics"><span class="toggle-slider"></span></label></div><span class="toggle-label" id="analytics-status" data-i18n="settings.disabled">Désactivé</span></div></div><div class="preference-details"><ul class="details-grid"><li class="detail-item" data-i18n="settings.analytics_pages">Pages visitées</li><li class="detail-item" data-i18n="settings.analytics_time">Temps passé sur le site</li><li class="detail-item" data-i18n="settings.analytics_interactions">Interactions avec le contenu</li><li class="detail-item" data-i18n="settings.analytics_stats">Statistiques d'utilisation</li></ul><p class="duration-info" data-i18n="settings.analytics_duration">Durée de conservation : 13 mois maximum</p><p class="info-note" data-i18n="settings.analytics_note">Google Analytics utilise un identifiant pseudonyme (cookies _ga). Les données ne sont jamais vendues. Refuser efface ces cookies.</p></div></div>
+                    <div class="cookie-preference-item"><div class="preference-header"><div class="preference-info"><h4 id="pref-essential-title" data-i18n="settings.essential_title">Cookies essentiels</h4><p data-i18n="settings.essential_desc">Nécessaires au fonctionnement du site. Ne peuvent pas être désactivés.</p></div><span class="cookie-always"><i class="fas fa-lock" aria-hidden="true"></i><span data-i18n="cookie.always_on">Toujours actifs</span></span></div><div class="preference-details"><ul class="details-grid"><li class="detail-item" data-i18n="settings.essential_auth">Authentification et session</li><li class="detail-item" data-i18n="settings.essential_security">Sécurité du compte</li><li class="detail-item" data-i18n="settings.essential_prefs">Langue, affichage, comparateur</li><li class="detail-item" data-i18n="settings.essential_consent">Consentement cookies</li></ul><p class="duration-info" data-i18n="settings.essential_duration">Durée de conservation : de la session à 6 mois</p></div></div>
+                    <div class="cookie-preference-item"><div class="preference-header"><div class="preference-info"><h4 id="pref-analytics-title" data-i18n="settings.analytics_title">Cookies analytiques</h4><p data-i18n="settings.analytics_desc">Nous aident à comprendre comment vous utilisez le site pour l’améliorer.</p></div><div class="preference-toggle"><div class="toggle-switch"><input type="checkbox" id="pref-analytics" aria-labelledby="pref-analytics-title"><label for="pref-analytics"><span class="toggle-slider"></span></label></div><span class="toggle-label" id="analytics-status" data-i18n="settings.disabled">Désactivé</span></div></div><div class="preference-details"><ul class="details-grid"><li class="detail-item" data-i18n="settings.analytics_pages">Pages visitées</li><li class="detail-item" data-i18n="settings.analytics_time">Temps passé sur le site</li><li class="detail-item" data-i18n="settings.analytics_interactions">Interactions avec le contenu</li><li class="detail-item" data-i18n="settings.analytics_stats">Statistiques d’utilisation</li></ul><p class="duration-info" data-i18n="settings.analytics_duration">Durée de conservation : 13 mois maximum</p><p class="info-note" data-i18n="settings.analytics_note">Google Analytics utilise un identifiant pseudonyme (cookies _ga). Les données ne sont jamais vendues. Refuser efface ces cookies.</p></div></div>
                     <p class="cookie-no-ads" data-i18n="cookie.no_ads">Aucun cookie publicitaire ni marketing sur ce site.</p>
                   </div>
                   <div class="privacy-actions"><button type="button" class="btn btn-secondary" id="open-cookie-modal"><i class="fas fa-cog" aria-hidden="true"></i><span data-i18n="settings.btn_advanced">Paramètres avancés</span></button></div>
@@ -208,11 +207,11 @@
 
                 <section class="set-block" aria-labelledby="data-export-title">
                   <h3 class="set-block-title" id="data-export-title"><i class="fas fa-database" aria-hidden="true"></i><span data-i18n="settings.export_title">Vos données</span></h3>
-                  <p class="set-block-desc" data-i18n="settings.export_desc">Téléchargez une copie de votre profil et de vos favoris au format JSON (droit d'accès et droit à la portabilité).</p>
+                  <p class="set-block-desc" data-i18n="settings.export_desc">Téléchargez une copie de votre profil et de vos favoris au format JSON (droit d’accès et droit à la portabilité).</p>
                   <button type="button" class="btn btn-secondary" id="export-data-btn"><i class="fas fa-download" aria-hidden="true"></i><span data-i18n="settings.export_btn">Télécharger mes données</span></button>
                   <ul class="info-links">
                     <li><a href="/politique-confidentialite" class="info-link"><i class="fas fa-lock" aria-hidden="true"></i><span data-i18n="settings.link_privacy_policy">Politique de confidentialité</span><i class="fas fa-arrow-right" aria-hidden="true"></i></a></li>
-                    <li><a href="/cgu" class="info-link"><i class="fas fa-file-contract" aria-hidden="true"></i><span data-i18n="settings.link_terms">Conditions d'utilisation</span><i class="fas fa-arrow-right" aria-hidden="true"></i></a></li>
+                    <li><a href="/cgu" class="info-link"><i class="fas fa-file-contract" aria-hidden="true"></i><span data-i18n="settings.link_terms">Conditions d’utilisation</span><i class="fas fa-arrow-right" aria-hidden="true"></i></a></li>
                   </ul>
                 </section>
 
@@ -220,7 +219,11 @@
                   <h3 class="set-block-title" id="delete-title"><i class="fas fa-trash-alt" aria-hidden="true"></i><span data-i18n="settings.danger_delete_title">Supprimer mon compte</span></h3>
                   <p class="set-block-desc" data-i18n-html="settings.danger_delete_desc">Cette action est <strong>définitive et irréversible</strong>. Toutes vos données, favoris et paramètres seront supprimés de manière permanente.</p>
                   <ul class="danger-list"><li data-i18n="settings.danger_delete_data">Suppression de toutes vos données</li><li data-i18n="settings.danger_delete_favs">Perte de tous vos favoris</li><li data-i18n="settings.danger_delete_no_recovery">Aucune récupération possible</li></ul>
-                  <button type="button" id="delete-account-btn" class="btn btn-danger"><i class="fas fa-trash-alt" aria-hidden="true"></i><span data-i18n="settings.btn_delete_account">Supprimer définitivement mon compte</span></button>
+                  <!-- Mot de passe actuel exigé (SEC-005) : un jeton volé ne suffit pas à effacer le compte. -->
+                  <form class="delete-account-form" id="delete-account-form" novalidate>
+                    <div class="form-group"><label for="delete-current-password"><span data-i18n="settings.label_current_password">Mot de passe actuel</span></label><input type="password" id="delete-current-password" name="currentPassword" autocomplete="current-password" aria-required="true"></div>
+                    <button type="submit" id="delete-account-btn" class="btn btn-danger"><i class="fas fa-trash-alt" aria-hidden="true"></i><span data-i18n="settings.btn_delete_account">Supprimer définitivement mon compte</span></button>
+                  </form>
                 </section>
               </div>
             </div>
@@ -240,7 +243,7 @@
                   <p class="admin-total" aria-live="polite"><span class="admin-total-num" id="total-users">0</span> <span id="total-users-label">utilisateurs</span></p>
                 </div>
                 <div id="user-list" class="user-list"></div>
-                <div id="user-pagination" class="pagination-container" aria-live="polite"></div>
+                <div id="user-pagination" class="pagination-container user-pagination" aria-live="polite"></div>
               </div>
             </div>
           </div>
@@ -264,7 +267,7 @@
     <div class="logout-modal-backdrop"></div>
     <div class="logout-modal-container edit-modal-container">
       <div class="logout-modal-icon edit-modal-icon-champagne"><i class="fas fa-user-edit" aria-hidden="true"></i></div>
-      <h3 class="logout-modal-title" id="edit-user-modal-title" data-i18n="settings.edit_user_title_default">Modifier l'utilisateur</h3>
+      <h3 class="logout-modal-title" id="edit-user-modal-title" data-i18n="settings.edit_user_title_default">Modifier l’utilisateur</h3>
       <div class="edit-modal-body">
         <div class="form-group edit-modal-form-group">
           <label for="edit-user-name"><span data-i18n="settings.edit_label_name">Nom</span></label>
@@ -282,7 +285,7 @@
     </div>
   </div>
 
-  <div id="toast-container" aria-live="polite"></div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
   <script defer src="js/dist/icons.min.js"></script>

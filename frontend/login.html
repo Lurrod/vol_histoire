@@ -40,7 +40,6 @@
   <link rel="stylesheet" href="css/login.min.css">
   </head>
 <body class="page-login">
-<a href="#main-content" class="skip-link">Aller au contenu</a>
 
   <!-- Header -->
   <!-- @include header -->
@@ -55,8 +54,8 @@
       <div class="auth-photo-media" aria-hidden="true"></div>
 
       <div class="visual-content">
-        <p class="visual-eyebrow">Vol d'Histoire</p>
-        <p class="visual-title" data-i18n="login.visual_title">L'aviation militaire, de 1945 à aujourd'hui</p>
+        <p class="visual-eyebrow">Vol d’Histoire</p>
+        <p class="visual-title" data-i18n="login.visual_title">L’aviation militaire, de 1945 à aujourd’hui</p>
 
         <div class="visual-stats">
           <div class="stat-item">
@@ -137,7 +136,7 @@
                   <span class="custom-check"><i class="fas fa-check"></i></span>
                   <span class="checkbox-label" data-i18n="login.remember_me">Se souvenir de moi</span>
                 </label>
-                <a href="#mot-de-passe-oublie" class="forgot-password" id="open-forgot" data-i18n="login.forgot_password">Mot de passe oublié ?</a>
+                <a href="#mot-de-passe-oublie" class="forgot-password" id="open-forgot" data-i18n="login.forgot_password">Mot de passe oublié ?</a>
               </div>
               <button type="submit" class="btn-submit">
                 <span data-i18n="login.login_btn">Se connecter</span>
@@ -146,7 +145,7 @@
             </form>
 
             <div class="form-footer">
-              <p data-i18n="login.no_account">Pas encore de compte ?</p>
+              <p data-i18n="login.no_account">Pas encore de compte ?</p>
               <button type="button" class="switch-form" id="switch-to-register">
                 <span data-i18n="login.create_account">Créer un compte</span>
                 <i class="fas fa-chevron-right"></i>
@@ -182,7 +181,7 @@
                 <label class="checkbox-wrapper">
                   <input type="checkbox" id="accept-terms" required>
                   <span class="custom-check"><i class="fas fa-check"></i></span>
-                  <span class="checkbox-label"><span data-i18n="login.accept_terms">J'accepte les</span> <a href="/cgu" data-i18n="login.terms_link_text">conditions d'utilisation</a></span>
+                  <span class="checkbox-label"><span data-i18n="login.accept_terms">J’accepte les</span> <a href="/cgu" data-i18n="login.terms_link_text">conditions d’utilisation</a></span>
                 </label>
               </div>
               <button type="submit" class="btn-submit">
@@ -193,7 +192,7 @@
             </form>
 
             <div class="form-footer">
-              <p data-i18n="login.has_account">Vous avez déjà un compte ?</p>
+              <p data-i18n="login.has_account">Vous avez déjà un compte ?</p>
               <button type="button" class="switch-form" id="switch-to-login">
                 <span data-i18n="login.login_link">Se connecter</span>
                 <i class="fas fa-chevron-right"></i>
@@ -205,7 +204,7 @@
             <div class="form-header">
               <div class="form-icon"><i class="fas fa-key"></i></div>
               <h2 id="forgot-title" data-i18n="login.forgot_title">Mot de passe oublié</h2>
-              <p data-i18n="login.forgot_desc">Indiquez votre adresse : nous vous envoyons un code pour choisir un nouveau mot de passe.</p>
+              <p data-i18n="login.forgot_desc">Indiquez votre adresse : nous vous envoyons un code pour choisir un nouveau mot de passe.</p>
             </div>
 
             <form id="forgot-form" class="auth-form" novalidate>
@@ -251,7 +250,7 @@
               </button>
               <button type="button" class="switch-form" id="code-change-email">
                 <i class="fas fa-pen"></i>
-                <span data-i18n="login.code_change_email">Changer d'adresse</span>
+                <span data-i18n="login.code_change_email">Changer d’adresse</span>
               </button>
             </div>
 
@@ -268,7 +267,7 @@
             <div class="form-header">
               <div class="form-icon"><i class="fas fa-lock"></i></div>
               <h2 id="password-title" data-i18n="login.password_title_verify">Choisissez votre mot de passe</h2>
-              <p id="password-desc" data-i18n="login.password_desc_verify">Dernière étape : il protégera votre compte.</p>
+              <p id="password-desc" data-i18n="login.password_desc_verify">Dernière étape : il protégera votre compte.</p>
             </div>
 
             <form id="password-form" class="auth-form" novalidate>
@@ -320,7 +319,7 @@
 
   <!-- Footer -->
   <!-- @include footer -->
-  <div id="toast-container" aria-live="polite"></div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
   <script defer src="js/vendor/purify.min.js"></script>
   <script defer src="js/dist/app.min.js"></script>
   <script defer src="js/dist/icons.min.js"></script>

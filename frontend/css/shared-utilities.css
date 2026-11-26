@@ -36,9 +36,30 @@
     background: var(--gold-a08);
     border-color: var(--gold-a20);
   }
-  .edit-modal-icon-champagne i, .edit-modal-icon-champagne .icon { color: var(--hud-cyan); }
+  .edit-modal-icon-champagne i, .edit-modal-icon-champagne .icon { color: var(--gold); }
   .edit-modal-body { width: 100%; margin: 1.25rem 0 1.5rem; text-align: left; }
   .edit-modal-form-group { margin-bottom: 1rem; }
+
+  /* ============================================================
+     FOCUS EN COULEURS FORCÉES (A11Y-011)
+     ------------------------------------------------------------
+     Le mode Contraste élevé de Windows supprime les ombres : les anneaux
+     de focus dessinés en box-shadow (cartes de conflit, recherches, tris)
+     y disparaissaient, et plusieurs règles de page posent outline: none.
+     Dans ce mode seulement, tout élément focalisé au clavier retrouve un
+     contour aux couleurs système. En « utilities », la règle passe devant
+     @layer page.
+     ============================================================ */
+  @media (forced-colors: active) {
+    :focus-visible {
+      outline: 2px solid CanvasText;
+      outline-offset: 2px;
+    }
+    /* Carte de conflit : le lien est invisible, la carte porte l'anneau. */
+    .war-card-linked:focus-within {
+      outline: 2px solid CanvasText;
+    }
+  }
 
   /* ============================================================
      FOCUS CLAVIER — champs de saisie
@@ -54,7 +75,7 @@
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus-visible,
   select:focus-visible,
   textarea:focus-visible {
-    outline: 2px solid var(--hud-cyan);
+    outline: 2px solid var(--gold);
     outline-offset: 2px;
   }
   /* Connexion / inscription : les champs portent leur propre indicateur,
@@ -94,7 +115,8 @@
   /* Touch targets */
   @media (hover: none) and (pointer: coarse) {
     .btn          { min-height: 44px; }
-    .nav-links li a { min-height: 48px; }
+    .nav-links li a,
+    .nav-links li button.nav-logout { min-height: 48px; }
     .hamburger      { min-width: 48px; min-height: 48px; }
     /* Sélecteur de langue au même gabarit que le bouton « Menu » (la pastille
        d'ouverture de la liste suit la même variable). */
@@ -104,7 +126,7 @@
 
   /* Print : masquer la chrome */
   @media print {
-    body > header, footer, .hamburger, .lang-switch, #toast-container, .modal {
+    body > header, footer, .hamburger, .lang-switch, .toast-container, .modal {
       display: none;
     }
   }
@@ -143,8 +165,8 @@
   /* Exception : l'interrupteur qui active cette préférence garde son
      mouvement (choix du propriétaire) — sinon il sauterait au moment même
      où on le touche. Plus spécifique que la règle ci-dessus, même couche. */
-  html.vh-reduce-motion #pref-reduce-motion + label,
-  html.vh-reduce-motion #pref-reduce-motion + label .toggle-slider {
+  html.vh-reduce-motion .pref-reduce-motion + label,
+  html.vh-reduce-motion .pref-reduce-motion + label .toggle-slider {
     transition-duration: var(--dur-base) !important;
   }
   html.vh-reduce-motion::view-transition-group(*),

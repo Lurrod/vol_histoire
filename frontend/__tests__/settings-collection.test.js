@@ -308,6 +308,7 @@ describe('details/data.js — dernière fiche consultée', () => {
       authFetch: jest.fn(() => Promise.resolve(jsonResponse(200, []))),
     };
     global.fetch = jest.fn(() => Promise.resolve(jsonResponse(200, [])));
+    require('../js/shared/meta-description');
     require('../js/details/data');
     await window.VH.details.data.loadAircraftDetails({ aircraftId: '30' });
     await flush();

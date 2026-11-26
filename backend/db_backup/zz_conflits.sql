@@ -1,5 +1,5 @@
 -- zz_conflits.sql — pages de conflit étoffées. FICHIER GÉNÉRÉ par
--- .lots/tools/conflits_build.py depuis .lots/conflits/*.json : ne pas éditer
+-- tools/lots/conflits_build.py depuis tools/lots/conflits/*.json : ne pas éditer
 -- à la main.
 --
 -- Pour chaque conflit rédigé : issue, contexte et récit aérien (Markdown,

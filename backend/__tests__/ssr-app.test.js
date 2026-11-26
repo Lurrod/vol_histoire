@@ -94,7 +94,7 @@ describe('HTML-001 — langue des rendus serveur', () => {
   };
 
   test('/conflits/:slug avec Accept-Language anglais : titre, h1, lang et Vary', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [war] });
+    mockPool.query.mockResolvedValueOnce({ rows: [war] }).mockResolvedValueOnce({ rows: [] }).mockResolvedValueOnce({ rows: [] });
     const res = await request(app).get('/conflits/annexion-de-goa').set('Accept-Language', 'en-US,en;q=0.9');
     expect(res.status).toBe(200);
     expect(res.text).toContain('<html lang="en">');
@@ -106,7 +106,7 @@ describe('HTML-001 — langue des rendus serveur', () => {
   });
 
   test('/conflits/:slug?lang=fr l\'emporte sur Accept-Language', async () => {
-    mockPool.query.mockResolvedValueOnce({ rows: [war] });
+    mockPool.query.mockResolvedValueOnce({ rows: [war] }).mockResolvedValueOnce({ rows: [] }).mockResolvedValueOnce({ rows: [] });
     const res = await request(app).get('/conflits/annexion-de-goa?lang=fr').set('Accept-Language', 'en');
     expect(res.text).toContain('<h1 id="page-hero-heading">Annexion de Goa</h1>');
   });
@@ -126,6 +126,103 @@ describe('HTML-001 — langue des rendus serveur', () => {
     expect(res.text).toContain('<meta property="og:locale" content="en_US">');
     expect(res.text.match(/application\/ld\+json/g)).toHaveLength(2);
     expect(res.text).toContain('"publisher":{"@type":"Organization","name":"Vol d\'Histoire","url":"https://vol-histoire.titouan-borde.com","logo":{"@type":"ImageObject","url":"https://vol-histoire.titouan-borde.com/assets/logo/icon-512.png"');
+  });
+});
+
+describe('SEC-003 — pages à nonce CSP jamais en cache partagé', () => {
+  test.each([
+    ['/conflits/annexion-de-goa', { rows: [{ id: 1, name: 'Annexion de Goa', date_start: '1961-12-17' }] }],
+    ['/details/sr-71-blackbird-31', { rows: [{ id: 31, name: 'SR-71 Blackbird', image_url: '/assets/airplanes/sr71.jpg' }] }],
+  ])('%s : cache privé, nonce de l’en-tête présent dans la page', async (url, rows) => {
+    // Page de conflit : appareils et camps lus ensuite (SEO-005).
+    mockPool.query.mockResolvedValueOnce(rows).mockResolvedValueOnce({ rows: [] }).mockResolvedValueOnce({ rows: [] });
+    const res = await request(app).get(url);
+    expect(res.status).toBe(200);
+    expect(res.headers['cache-control']).toBe('private, max-age=3600');
+    expect(res.headers['cache-control']).not.toMatch(/public|s-maxage/);
+    const nonce = /'nonce-([^']+)'/.exec(res.headers['content-security-policy'])[1];
+    expect(res.text).toContain(`nonce="${nonce}"`);
+  });
+});
+
+describe('SEO-001 — récit de la fiche écrit par le serveur', () => {
+  test('/details/:slug : le récit est dans le HTML, sans texte d’attente', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{
+      id: 31, name: 'SR-71 Blackbird', image_url: '/assets/airplanes/sr71.jpg',
+      description: '## Genèse\nLe **SR-71** vole à Mach 3.',
+    }] });
+    const res = await request(app).get('/details/sr-71-blackbird-31');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('<h3 class="md-section">Genèse</h3>');
+    expect(res.text).toContain('Le <strong>SR-71</strong> vole à Mach 3.');
+    expect(res.text).not.toContain('Chargement de la description…');
+  });
+});
+
+describe('SEO-002 — textes d’interface traduits par le serveur en anglais', () => {
+  const en = require('../../frontend/locales/en.json');
+
+  test('/?lang=en : menu et accroche en anglais dans le HTML', async () => {
+    const res = await request(app).get('/?lang=en');
+    expect(res.status).toBe(200);
+    expect(res.text).toContain(`data-i18n="nav.home">${en.nav.home}<`);
+    expect(res.text).not.toContain('data-i18n="nav.home">Accueil<');
+  });
+
+  test('/details/:slug?lang=en : titres de section en anglais', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 31, name: 'SR-71 Blackbird', image_url: '/assets/airplanes/sr71.jpg' }] });
+    const res = await request(app).get('/details/sr-71-blackbird-31?lang=en');
+    expect(res.text).toContain(`data-i18n="details.description">${en.details.description}<`);
+    expect(res.text).not.toContain('Chargement de la description…');
+  });
+
+  test('/conflits/:slug?lang=en : titres de section en anglais ; français intact sans ?lang', async () => {
+    mockPool.query.mockResolvedValue({ rows: [{ id: 1, name: 'Annexion de Goa', name_en: 'Annexation of Goa', date_start: '1961-12-17' }] });
+    const resEn = await request(app).get('/conflits/annexion-de-goa?lang=en');
+    expect(resEn.text).toContain(`data-i18n="conflicts.section_context">${en.conflicts.section_context}<`);
+    const resFr = await request(app).get('/conflits/annexion-de-goa');
+    expect(resFr.text).toContain('data-i18n="conflicts.section_context">Contexte<');
+    mockPool.query.mockReset();
+  });
+});
+
+describe('SEO-004 — URL nue servie en anglais par Accept-Language', () => {
+  const SITE = 'https://vol-histoire.titouan-borde.com';
+
+  test('/hangar + Accept-Language anglais : canonical et og:url restent sur l’URL nue', async () => {
+    const res = await request(app).get('/hangar').set('Accept-Language', 'en-US,en;q=0.9');
+    expect(res.text).toContain('<html lang="en">');
+    expect(res.text).toContain(`<link rel="canonical" href="${SITE}/hangar">`);
+    expect(res.text).toContain(`<meta property="og:url" content="${SITE}/hangar">`);
+  });
+
+  test('/hangar?lang=en : la version anglaise se canonicalise sur elle-même', async () => {
+    const res = await request(app).get('/hangar?lang=en');
+    expect(res.text).toContain(`<link rel="canonical" href="${SITE}/hangar?lang=en">`);
+  });
+
+  test('/details/:slug + Accept-Language anglais : canonical sur l’URL nue', async () => {
+    mockPool.query.mockResolvedValueOnce({ rows: [{ id: 31, name: 'SR-71 Blackbird', image_url: '/assets/airplanes/sr71.jpg' }] });
+    const res = await request(app).get('/details/sr-71-blackbird-31').set('Accept-Language', 'en');
+    expect(res.text).toContain(`<link rel="canonical" href="${SITE}/details/sr-71-blackbird-31">`);
+  });
+});
+
+describe('SEO-006 — pages personnelles : noindex lisible par les robots', () => {
+  test.each([['/login'], ['/settings'], ['/favorites']])('%s : X-Robots-Tag noindex', async (url) => {
+    const res = await request(app).get(url);
+    expect(res.status).toBe(200);
+    expect(res.headers['x-robots-tag']).toBe('noindex, nofollow');
+  });
+
+  test('pages publiques : pas de noindex', async () => {
+    const res = await request(app).get('/hangar');
+    expect(res.headers['x-robots-tag']).toBeUndefined();
+  });
+
+  test('robots.txt ne bloque plus ces pages (sinon leur noindex reste invisible)', () => {
+    const robots = require('fs').readFileSync(require('path').join(__dirname, '../../frontend/robots.txt'), 'utf8');
+    expect(robots).not.toMatch(/^Disallow: \/(login|settings|favorites)\s*$/m);
   });
 });
 

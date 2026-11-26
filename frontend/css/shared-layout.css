@@ -1,0 +1,394 @@
+/* ======================================================================
+   COMPOSANTS — PIED DE PAGE, HERO COMMUN, ANIMATIONS, RETOUR D'APPUI
+   (découpé de shared-base.css — ARCH-004 ; l'ordre des fichiers dans
+   scripts/build-css.js reproduit l'ordre d'origine)
+   ====================================================================== */
+
+@layer components {
+
+  /* ============================================================
+     PIED DE PAGE « RIDEAU » + GRAND MOT-SYMBOLE (2026-11-21)
+     ------------------------------------------------------------
+     Le contenu du pied reste immobile par rapport au bas de l'écran
+     pendant que la fin de la page remonte et le découvre (« reveal
+     footer »). Pas de position: fixed derrière la page : celle-ci n'est
+     pas opaque (fonds photo flous de body::before). C'est l'intérieur
+     du pied (.footer-reveal) qui est décalé vers le haut, d'une animation
+     pilotée par le défilement (view-timeline du pied), et le pied le
+     rogne. Sans cette API (Firefox) ou en mouvement réduit : pied
+     ordinaire, tout simplement posé en bas.
+     ============================================================ */
+  footer {
+    position: relative;
+    overflow: hidden;
+    container-type: inline-size;
+    view-timeline: --vh-footer block;
+    background: var(--night-soft);
+    color: var(--white);
+    border-top: 1px solid var(--white-a06);
+    /* la page « passe par-dessus » : ombre de son bord */
+    box-shadow: inset 0 28px 36px -28px var(--black-a85);
+  }
+
+  .footer-reveal {
+    padding-top: var(--sp-20);
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--sp-12);
+    margin-bottom: var(--sp-12);
+  }
+
+  .footer-tagline {
+    color: var(--text-ghost);
+    line-height: var(--leading-relaxed);
+    max-width: 24rem;
+    margin: 0;
+  }
+
+  /* Chiffres du catalogue (/api/stats, js/shared/footer-stats.js) */
+  .footer-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-6);
+    margin: var(--sp-4) 0 0;
+  }
+
+  .footer-stats[hidden] { display: none; }
+
+  .footer-stat {
+    color: var(--text-ghost);
+    font-size: 0.875rem;
+  }
+
+  .footer-stat-num {
+    margin-right: 0.15em;
+    color: var(--white);
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    --roll-h: 1.1em;
+  }
+
+  /* La règle globale des <nav> les met en flex centré */
+  .footer-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(8rem, 1fr));
+    gap: var(--sp-8);
+    align-items: start;
+  }
+
+  .footer-col h2 {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin: 0 0 var(--sp-4);
+    color: var(--white-a66);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .footer-col ul {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .footer-col a,
+  .footer-legal a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    color: var(--text-ghost);
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+
+  .footer-col a:hover,
+  .footer-legal a:hover {
+    color: var(--white);
+  }
+
+  .footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-2) var(--sp-6);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--white-a08);
+    color: rgba(240, 237, 232, 0.5);
+    font-size: 0.8125rem;
+  }
+
+  .footer-legal p { margin: 0; }
+
+  .footer-legal ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--sp-5);
+  }
+
+  .footer-legal a {
+    min-height: 28px;
+    font-size: 0.8125rem;
+  }
+
+  /* Nom du site sur toute la largeur, rogné par le bas du pied */
+  .footer-word {
+    display: block;
+    margin-top: var(--sp-10);
+    padding-inline: clamp(0.5rem, 2cqi, 1.5rem);
+    font-family: var(--font-display);
+    font-size: 18.4cqi;
+    font-weight: 700;
+    line-height: 0.8;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    color: transparent;
+    background: linear-gradient(180deg, var(--gold-a70), var(--gold-a05) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    translate: 0 12%;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* Pied étroit : une colonne, barre légale empilée, cibles tactiles */
+  @container (max-width: 40rem) {
+    .footer-reveal { padding-top: var(--sp-12); }
+    .footer-top { grid-template-columns: 1fr; gap: var(--sp-8); margin-bottom: var(--sp-8); }
+    .footer-legal { flex-direction: column; align-items: flex-start; }
+    .footer-col a { min-height: 44px; }
+    .footer-legal a { min-height: 44px; }
+  }
+
+  /* Rideau : l'intérieur part décalé d'une hauteur de pied et rejoint sa
+     place quand le pied a fini d'entrer — il reste donc collé au bas de
+     l'écran. Courbe linéaire obligatoire (suivi du défilement). */
+  @keyframes vh-footer-reveal {
+    from { translate: 0 -100%; }
+    to   { translate: 0 0; }
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) and (min-height: 36em) {
+      html:not(.vh-reduce-motion) .footer-reveal {
+        animation: vh-footer-reveal linear both;
+        animation-timeline: --vh-footer;
+        animation-range: entry 0% entry 100%;
+      }
+    }
+  }
+
+  /* Logos des pages d'authentification (page de connexion) */
+  .auth-lockup {
+    height: 2.75rem;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* ============================================================
+     HERO COMMUN (pages secondaires)
+     ============================================================ */
+  .page-hero {
+    position: relative;
+    background: var(--night);
+    padding: var(--sp-28) 0 var(--sp-24);
+    margin-top: var(--header-h);
+    overflow: hidden;
+  }
+
+  .hero-background {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 80% 20%, var(--gold-a04) 0%, transparent 55%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .page-hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: var(--sp-16);
+  }
+
+  .hero-text {
+    flex: 1;
+    max-width: 48em;
+  }
+
+  .hero-text h1 {
+    font-family: var(--font-sans);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 700;
+    letter-spacing: -2px;
+    line-height: var(--leading-tight);
+    color: var(--white);
+    margin-bottom: var(--sp-8);
+  }
+
+  .hero-muted {
+    display: block;
+    color: var(--text-ghost);
+    font-weight: 300;
+    letter-spacing: -1px;
+  }
+
+  .hero-text > p {
+    font-size: var(--text-md);
+    color: var(--white-a62);
+    max-width: 420px;
+    line-height: var(--leading-loose);
+  }
+
+  /* Sans chiffres à droite (pages légales, crédits, contact) : l'en-tête se
+     centre, fil d'Ariane compris — aligné à gauche, il laissait un grand vide. */
+  .page-hero:not(:has(.hero-data)) .page-hero-inner { justify-content: center; text-align: center; }
+  /* (fil d'Ariane centré : à côté de .breadcrumb, couche « shared », plus bas) */
+  .page-hero:not(:has(.hero-data)) .hero-text > p { margin-inline: auto; }
+
+  .hero-data {
+    display: flex;
+    flex-direction: column;
+    padding-inline-start: var(--sp-12);
+    border-inline-start: 1px solid var(--white-a08);
+    flex-shrink: 0;
+    min-width: 220px;
+  }
+
+  .data-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-8);
+    padding-block: var(--sp-4);
+    border-bottom: 1px solid var(--white-a04);
+  }
+
+  .data-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .data-number {
+    font-family: var(--font-sans);
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -1px;
+  }
+
+  .data-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--text-faint);
+  }
+
+  /* ============================================================
+     ANIMATIONS COMMUNES
+     ============================================================ */
+  /* Entrées et sorties partagées (v4.16.0). Les variantes locales
+     (fadeUp 30 px, fadeIn 20 px, favFadeIn, cmpFadeIn, hangarFadeIn…)
+     se ramènent à ces quatre-là : une seule amplitude, --enter-distance.
+     `translate` plutôt que `transform` : l'entrée ne bloque pas un
+     transform posé ensuite par :hover (cf. note v4.13.1 de la frise). */
+  @keyframes vh-enter {
+    from { opacity: 0; translate: 0 var(--enter-distance); }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  @keyframes vh-exit {
+    from { opacity: 1; translate: 0 0; }
+    to   { opacity: 0; translate: 0 calc(var(--enter-distance) / 2); }
+  }
+
+  @keyframes vh-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes vh-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+  }
+
+  /* Pop monotone : l'élément se pose à sa taille, sans la dépasser
+     (coche du comparateur, pastille, icône qui vient d'apparaître). */
+  @keyframes vh-pop {
+    from { opacity: 0.4; scale: 0.8; }
+    to   { opacity: 1;   scale: 1; }
+  }
+
+  /* Confirmation : un anneau part du bord et s'efface. L'élément lui-même
+     ne bouge pas. Couleur réglable par --confirm-ring. */
+  @keyframes vh-confirm {
+    from { box-shadow: 0 0 0 0 var(--confirm-ring, var(--gold-a45)); }
+    to   { box-shadow: 0 0 0 10px transparent; }
+  }
+
+  /* Remplacement d'un texte sur place (compteur de résultats…). */
+  @keyframes vh-text-swap {
+    from { opacity: 0; translate: 0 4px; filter: blur(2px); }
+    to   { opacity: 1; translate: 0 0;   filter: blur(0); }
+  }
+
+  /* Historique (hero de l'accueil) : même mouvement que vh-enter. */
+  @keyframes fadeInUp {
+    from { opacity: 0; translate: 0 var(--enter-distance); }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Alias sémantique : même animation que `spin` mais utilisée par les
+     effets de balayage radar (login.html, favorites.html). Centralisé pour
+     éviter la duplication cross-page. */
+  @keyframes radarSpin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Spinner partagé */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--gold-a20);
+    border-top-color: var(--gold);
+    border-radius: var(--r-full);
+    animation: spin 0.6s linear infinite; /* rotation continue : vitesse, pas durée d'échelle */
+  }
+
+  /* ============================================================
+     RETOUR D'APPUI (v4.16.0) — un seul comportement pour tout le site,
+     souris comme tactile (avant : translateY(1px) ici, scale(0.98) en
+     mobile seulement ailleurs, rien du tout sur la plupart des boutons).
+     Propriété `scale` et non `transform` : elle se compose avec le
+     soulèvement du survol au lieu de l'annuler. Les éléments listés
+     portent `scale var(--dur-instant)` dans leur transition ; :where()
+     laisse toute règle de page reprendre la main.
+     ============================================================ */
+  :where(.btn, .filter-btn, .fs-tab, .ob-btn, .share-btn, .view-btn,
+         .prev-page-btn, .next-page-btn, .pagination button, .clear-all-filters,
+         .hero-quiz-option, .cmp-remove, .tl-tick, .form-tab,
+         .favorite-remove, .ev-resend-btn, .btn-submit, .logout-modal-btn,
+         .hero-search-btn, .tl-cta, .sidebar-link, .toast-undo-btn,
+         .hero-suggest-all, .remove-filter-btn, .tl-lens-toggle, .tl-lens-reset,
+         .tl-chip, .tl-hangar-link):active:not(:disabled, [aria-disabled="true"]) {
+    scale: var(--press-scale);
+  }
+  /* Les cartes sont grandes : un enfoncement plus léger suffit. */
+  :where(.aircraft-card, .conflict-card, .related-card, .war-card,
+         .stat-card, .gen-tile, .tl-plane-card, .tl-conflict-link):active {
+    scale: 0.99;
+  }
+
+} /* fin @layer components */

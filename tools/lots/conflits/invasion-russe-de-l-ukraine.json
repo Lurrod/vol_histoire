@@ -1,0 +1,656 @@
+{
+  "war": "Invasion russe de l'Ukraine",
+  "slug": "invasion-russe-de-l-ukraine",
+  "outcome": {
+    "fr": "Guerre en cours : à la mi-novembre 2026, la Russie occupe environ 20 % du territoire ukrainien, le front est presque figé (117 km² de gain russe net depuis janvier selon des évaluations indépendantes) et les pourparlers d’Abou Dhabi des 10 et 11 novembre n’ont abouti qu’à un échange de prisonniers.",
+    "en": "Ongoing war: in mid-November 2026 Russia occupies about 20% of Ukraine, the front is largely deadlocked (a net Russian gain of 117 km² since January, according to independent assessments) and the Abu Dhabi talks of 10–11 November produced only a prisoner exchange."
+  },
+  "context": {
+    "fr": "L’invasion du 24 février 2022 prolonge un conflit ouvert en 2014 par l’annexion de la Crimée et la guerre du Donbass. À la fin de 2021, la Russie masse entre 169 000 et 190 000 soldats aux frontières de l’Ukraine et exige des Occidentaux l’assurance que Kyiv n’entrera jamais dans l’OTAN. Le 24 février, Vladimir Poutine annonce une « opération militaire spéciale » au nom des républiques séparatistes de Donetsk et de Louhansk : les colonnes russes entrent par le nord depuis la Biélorussie, par l’est et par le sud depuis la Crimée, avec l’objectif initial de faire tomber Kyiv en quelques jours.\n\nSur le papier, le rapport de forces aérien est écrasant. Les forces aérospatiales russes alignent des centaines d’avions de combat modernes (Su-30SM, Su-34, Su-35S), des intercepteurs MiG-31 et une aviation à long rayon d’action (Tu-95, Tu-160, Tu-22M) capable de tirer des missiles de croisière depuis l’espace aérien russe. L’armée de l’air ukrainienne n’oppose qu’une flotte soviétique vieillissante : environ cinquante-cinq MiG-29, des Su-27, des Su-24 et des Su-25, renforcés d’une vingtaine de drones turcs Bayraktar TB2, et surtout un réseau de missiles sol-air S-300 et Buk hérité de l’URSS.\n\nLe conflit prend vite une dimension internationale. La Biélorussie prête son territoire et ses aérodromes à l’offensive, l’Iran fournit à partir de l’automne 2022 les drones Shahed que la Russie produit ensuite elle-même, et la Corée du Nord envoie des troupes à partir de 2024. Face à elle, l’Ukraine reçoit des Occidentaux des missiles antiaériens (Stinger, puis Patriot et SAMP/T), des drones, des missiles de croisière Storm Shadow et SCALP, des MiG-29 polonais et slovaques, puis des F-16 et des Mirage 2000.",
+    "en": "The invasion of 24 February 2022 extended a conflict that began in 2014 with the annexation of Crimea and the war in Donbas. In late 2021 Russia massed 169,000 to 190,000 troops on Ukraine’s borders and demanded Western guarantees that Kyiv would never join NATO. On 24 February Vladimir Putin announced a \"special military operation\" on behalf of the separatist Donetsk and Luhansk republics: Russian columns crossed from Belarus in the north, from the east and from Crimea in the south, with the initial aim of toppling Kyiv within days.\n\nOn paper the air balance was overwhelming. The Russian Aerospace Forces fielded hundreds of modern combat aircraft (Su-30SM, Su-34, Su-35S), MiG-31 interceptors and a long-range aviation arm (Tu-95, Tu-160, Tu-22M) able to fire cruise missiles from Russian airspace. The Ukrainian Air Force had only an ageing Soviet fleet: about fifty-five MiG-29s, Su-27s, Su-24s and Su-25s, backed by about twenty Turkish Bayraktar TB2 drones and, above all, a network of S-300 and Buk surface-to-air missiles inherited from the USSR.\n\nThe war quickly took on an international dimension. Belarus lent its territory and airfields to the offensive, Iran supplied from autumn 2022 the Shahed drones that Russia then built itself, and North Korea sent troops from 2024. Ukraine, for its part, received from the West anti-aircraft missiles (Stinger, then Patriot and SAMP/T), drones, Storm Shadow and SCALP cruise missiles, Polish and Slovak MiG-29s, then F-16s and Mirage 2000s."
+  },
+  "narrative": {
+    "fr": "La guerre aérienne s’ouvre le 24 février 2022 par une centaine de missiles balistiques et une vague de frappes contre les radars d’alerte, les batteries S-300 et les bases aériennes ukrainiennes. Le même jour, une vingtaine à une trentaine d’hélicoptères partis de Biélorussie déposent des parachutistes sur l’aéroport Antonov d’Hostomel, aux portes de Kyiv ; des Su-24 ukrainiens attaquent la tête de pont et les dix-huit Il-76 chargés de renforts ne peuvent pas se poser. L’An-225 *Mriya*, plus gros avion du monde, est détruit dans son hangar pendant les combats. Mais l’aviation ukrainienne, dispersée à temps, survit. Dans l’émotion des premiers jours naît la légende du « fantôme de Kyiv », un pilote de MiG-29 crédité de six victoires en trente heures, puis de dix : le 30 avril, le commandement de l’armée de l’air ukrainienne reconnaît qu’il s’agit d’une « super-héros-légende » collective, et non d’un pilote réel.\n\nDès mars, les missiles sol-air ukrainiens, mobiles et bien dispersés, interdisent aux avions russes l’espace aérien tenu par Kyiv ; forcés de voler en rase-mottes, ceux-ci tombent sous les missiles portables, et les sorties à basse altitude au-delà du front cessent vers avril, selon le RUSI. Justin Bronk compte au moins quinze avions et trente-cinq hélicoptères russes perdus au 24 mars. La guerre aérienne devient une guerre à distance : Su-35S armés du R-77-1 et MiG-31BM tirant le R-37M (environ six par jour en octobre 2022) chassent les avions ukrainiens depuis le front, tandis que les Tu-95 et Tu-160 tirent des missiles Kh-101 depuis la Caspienne, les Tu-22M quelque trois cents Kh-22 jusqu’à la fin de 2023 et les MiG-31K des missiles hypersoniques Kinjal. À partir du 13 septembre 2022, les drones Shahed iraniens, rebaptisés Geran-2 puis produits en Russie, frappent le réseau électrique ; en novembre 2026, la Russie lance encore 3 519 drones en dix jours, dont près de la moitié à réaction.\n\nEn 2023, les kits de guidage UMPK transforment les vieilles bombes soviétiques en bombes planantes que les Su-34 larguent à des dizaines de kilomètres du front, hors de portée des défenses ukrainiennes. L’Ukraine répond en avançant ses Patriot pour tendre des embuscades : le 14 janvier 2024, un avion radar A-50 est abattu au-dessus de la mer d’Azov, un second le 23 février. Ses propres avions s’adaptent aux armes occidentales : MiG-29 et Su-27 tirent des missiles antiradars HARM et des bombes JDAM-ER, et les Su-24 des missiles Storm Shadow, qui frappent le 22 septembre 2023 l’état-major de la flotte de la mer Noire à Sébastopol. De petits Yak-52 abattent même des drones de reconnaissance au fusil.\n\nL’Ukraine porte aussi la guerre sur les aérodromes russes. Le 9 août 2022, des explosions détruisent plusieurs Su-24 et Su-30 sur la base de Saky, en Crimée ; le 5 décembre, de vieux drones Tu-141 reconvertis frappent Engels et Diaguilevo, à des centaines de kilomètres du front. Suivent Pskov (août 2023), Morozovsk (avril 2024, six avions détruits selon Kyiv, aucune preuve visuelle selon l’ISW) et Akhtoubinsk, où un Su-57 est touché en juin 2024. Le 1er juin 2025, l’opération *Toile d’araignée* du SBU lance 117 drones depuis des camions garés près de cinq bases : Kyiv revendique 41 avions touchés, des responsables américains une vingtaine, dont une dizaine détruits, surtout des Tu-95 et des Tu-22M. Le 2 mai 2025, un drone naval ukrainien abat même un Su-30 avec un missile AIM-9X.\n\nLes premiers F-16 entrent en service le 4 août 2024 ; l’un d’eux s’écrase dès le 26 août en interceptant des missiles de croisière, tuant le pilote Oleksii Mes. Les premiers Mirage 2000 français arrivent le 6 février 2025 et abattent un Kh-101 dès le 7 mars. Aucun des deux camps ne conquiert la maîtrise du ciel. Au 23 novembre 2026, Oryx, qui ne retient que les pertes prouvées par l’image et donne donc un minimum, recense 209 avions russes perdus (178 détruits, 31 endommagés) et 122 avions ukrainiens (117 détruits), dont cinq F-16 et un Mirage 2000.",
+    "en": "The air war opened on 24 February 2022 with about a hundred ballistic missiles and a wave of strikes on early-warning radars, S-300 batteries and Ukrainian air bases. The same day, some twenty to thirty helicopters from Belarus landed paratroopers at Antonov Airport in Hostomel, on the edge of Kyiv; Ukrainian Su-24s attacked the bridgehead and the eighteen Il-76s carrying reinforcements could not land. The An-225 *Mriya*, the world’s largest aircraft, was destroyed in its hangar during the fighting. Yet the Ukrainian Air Force, dispersed in time, survived. The emotion of those first days gave birth to the \"Ghost of Kyiv\", a MiG-29 pilot credited with six kills in thirty hours, then ten: on 30 April Ukrainian Air Force Command admitted it was a collective \"superhero-legend\", not a real pilot.\n\nFrom March, mobile and well-dispersed Ukrainian surface-to-air missiles denied Russian aircraft the airspace held by Kyiv; forced down to treetop height, they fell to shoulder-launched missiles, and low-level sorties beyond the front stopped around April, according to RUSI. Justin Bronk counted at least fifteen Russian aircraft and thirty-five helicopters lost by 24 March. The air war became a stand-off war: Su-35Ss with the R-77-1 and MiG-31BMs firing the R-37M (about six a day in October 2022) hunted Ukrainian aircraft from behind the front, while Tu-95s and Tu-160s fired Kh-101 missiles from the Caspian, Tu-22Ms some three hundred Kh-22s by the end of 2023 and MiG-31Ks Kinzhal hypersonic missiles. From 13 September 2022 Iranian Shahed drones, renamed Geran-2 and later built in Russia, struck the power grid; in November 2026 Russia still launched 3,519 drones in ten days, nearly half of them jet-powered.\n\nIn 2023 UMPK guidance kits turned old Soviet bombs into glide bombs that Su-34s released tens of kilometres from the front, beyond the reach of Ukrainian defences. Ukraine answered by pushing its Patriots forward to set ambushes: on 14 January 2024 an A-50 radar aircraft was shot down over the Sea of Azov, and a second on 23 February. Its own aircraft adapted to Western weapons: MiG-29s and Su-27s fired HARM anti-radiation missiles and JDAM-ER bombs, and Su-24s Storm Shadow missiles, which hit the Black Sea Fleet headquarters in Sevastopol on 22 September 2023. Small Yak-52s even shot down reconnaissance drones with rifles.\n\nUkraine also took the war to Russian airfields. On 9 August 2022 explosions destroyed several Su-24s and Su-30s at Saky in Crimea; on 5 December old Tu-141 drones, repurposed as strike weapons, hit Engels and Dyagilevo, hundreds of kilometres from the front. Pskov (August 2023), Morozovsk (April 2024, six aircraft destroyed according to Kyiv, no visual evidence according to ISW) and Akhtubinsk, where a Su-57 was hit in June 2024, followed. On 1 June 2025 the SBU’s Operation *Spiderweb* launched 117 drones from trucks parked near five bases: Kyiv claimed 41 aircraft hit, US officials about twenty, ten of them destroyed, mostly Tu-95s and Tu-22Ms. On 2 May 2025 a Ukrainian naval drone even shot down a Su-30 with an AIM-9X missile.\n\nThe first F-16s entered service on 4 August 2024; one crashed as early as 26 August while intercepting cruise missiles, killing its pilot, Oleksii Mes. The first French Mirage 2000s arrived on 6 February 2025 and downed a Kh-101 on 7 March. Neither side won control of the sky. As of 23 November 2026 Oryx, which counts only losses proven by imagery and therefore gives a minimum, lists 209 Russian aircraft lost (178 destroyed, 31 damaged) and 122 Ukrainian aircraft (117 destroyed), including five F-16s and one Mirage 2000."
+  },
+  "sides": [
+    {
+      "key": "russie",
+      "name": {
+        "fr": "Russie",
+        "en": "Russia"
+      },
+      "members": {
+        "fr": "Russie ; Biélorussie (territoire et aérodromes ouverts à l’invasion) ; Iran (drones Shahed) ; Corée du Nord (troupes à partir de 2024)",
+        "en": "Russia; Belarus (territory and airfields opened to the invasion); Iran (Shahed drones); North Korea (troops from 2024)"
+      }
+    },
+    {
+      "key": "ukraine",
+      "name": {
+        "fr": "Ukraine",
+        "en": "Ukraine"
+      },
+      "members": {
+        "fr": "Ukraine, armée par ses soutiens occidentaux : États-Unis, Royaume-Uni, France, Pays-Bas, Danemark, Norvège, Belgique, Pologne, Slovaquie, Australie, Turquie (drones TB2)",
+        "en": "Ukraine, armed by its Western backers: United States, United Kingdom, France, Netherlands, Denmark, Norway, Belgium, Poland, Slovakia, Australia, Turkey (TB2 drones)"
+      }
+    }
+  ],
+  "events": [
+    {
+      "date": "2022-02-24",
+      "precision": "day",
+      "title": {
+        "fr": "Assaut sur Hostomel",
+        "en": "Assault on Hostomel"
+      },
+      "body": {
+        "fr": "Après une vague de missiles contre les radars et les bases ukrainiennes, des hélicoptères russes venus de Biélorussie déposent des parachutistes sur l’aéroport Antonov ; les Il-76 de renfort ne peuvent pas s’y poser.",
+        "en": "After a wave of missiles against Ukrainian radars and bases, Russian helicopters from Belarus land paratroopers at Antonov Airport; the reinforcing Il-76s cannot land there."
+      },
+      "aircraft": "Iliouchine Il-76",
+      "source": "https://en.wikipedia.org/wiki/Battle_of_Antonov_Airport"
+    },
+    {
+      "date": "2022-02-27",
+      "precision": "day",
+      "title": {
+        "fr": "L’An-225 détruit",
+        "en": "The An-225 destroyed"
+      },
+      "body": {
+        "fr": "Ukroboronprom annonce la destruction de l’An-225 *Mriya*, le plus gros avion du monde, dans son hangar d’Hostomel pendant les combats pour l’aéroport.",
+        "en": "Ukroboronprom announces that the An-225 *Mriya*, the world’s largest aircraft, has been destroyed in its Hostomel hangar during the battle for the airport."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Antonov_An-225_Mriya"
+    },
+    {
+      "date": "2022-04-30",
+      "precision": "day",
+      "title": {
+        "fr": "Le « fantôme de Kyiv » démenti",
+        "en": "The \"Ghost of Kyiv\" debunked"
+      },
+      "body": {
+        "fr": "Le commandement de l’armée de l’air ukrainienne reconnaît que ce pilote de MiG-29 crédité de six à dix victoires est une légende, et appelle à vérifier les informations avant de les partager.",
+        "en": "Ukrainian Air Force Command admits that this MiG-29 pilot credited with six to ten kills is a legend, and urges people to check information before sharing it."
+      },
+      "aircraft": "MiG-29",
+      "source": "https://en.wikipedia.org/wiki/Ghost_of_Kyiv"
+    },
+    {
+      "date": "2022-05-07",
+      "precision": "day",
+      "title": {
+        "fr": "Raid sur l’île aux Serpents",
+        "en": "Raid on Snake Island"
+      },
+      "body": {
+        "fr": "Des TB2 ukrainiens détruisent un hélicoptère Mi-8 et des lance-missiles Tor sur l’île occupée, ouvrant la voie à un bombardement à très basse altitude par deux Su-27.",
+        "en": "Ukrainian TB2s destroy a Mi-8 helicopter and Tor missile launchers on the occupied island, clearing the way for a very low-level bombing run by two Su-27s."
+      },
+      "aircraft": "Bayraktar TB2",
+      "source": "https://en.wikipedia.org/wiki/Baykar_Bayraktar_TB2"
+    },
+    {
+      "date": "2022-09-13",
+      "precision": "day",
+      "title": {
+        "fr": "Premiers drones Shahed",
+        "en": "First Shahed drones"
+      },
+      "body": {
+        "fr": "L’Ukraine abat un premier drone d’attaque iranien Shahed 136, rebaptisé Geran-2 par la Russie. Dès octobre, ces drones frappent en masse le réseau électrique ukrainien.",
+        "en": "Ukraine shoots down a first Iranian Shahed 136 attack drone, renamed Geran-2 by Russia. From October these drones strike the Ukrainian power grid en masse."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/HESA_Shahed_136"
+    },
+    {
+      "date": "2022-12-05",
+      "precision": "day",
+      "title": {
+        "fr": "Engels et Diaguilevo frappés",
+        "en": "Engels and Dyagilevo hit"
+      },
+      "body": {
+        "fr": "Des drones à réaction soviétiques Tu-141 reconvertis frappent deux bases de bombardiers au cœur de la Russie : au moins un Tu-95 et un Tu-22M sont endommagés.",
+        "en": "Repurposed Soviet Tu-141 jet drones strike two bomber bases deep inside Russia: at least one Tu-95 and a Tu-22M are damaged."
+      },
+      "aircraft": "Tu-141 Strizh",
+      "source": "https://en.wikipedia.org/wiki/Tupolev_Tu-141"
+    },
+    {
+      "date": "2023-03-01",
+      "precision": "month",
+      "title": {
+        "fr": "L’ère des bombes planantes",
+        "en": "The glide-bomb era"
+      },
+      "body": {
+        "fr": "L’armée de l’air ukrainienne signale que les avions russes larguent de plus en plus de bombes de 500 kg munies d’ailes et d’un guidage UMPK, à des dizaines de kilomètres de leurs cibles.",
+        "en": "The Ukrainian Air Force reports that Russian aircraft are increasingly dropping 500 kg bombs fitted with UMPK wings and guidance, tens of kilometres from their targets."
+      },
+      "aircraft": "Su-34",
+      "source": "https://en.wikipedia.org/wiki/UMPK_(bomb_kit)"
+    },
+    {
+      "date": "2023-05-16",
+      "precision": "day",
+      "title": {
+        "fr": "Salve de Kinjal sur Kyiv",
+        "en": "Kinzhal salvo on Kyiv"
+      },
+      "body": {
+        "fr": "Des MiG-31K tirent six missiles hypersoniques Kinjal sur Kyiv ; l’Ukraine affirme les avoir tous interceptés avec ses Patriot, dont un lanceur aurait pu être endommagé selon des responsables américains.",
+        "en": "MiG-31Ks fire six Kinzhal hypersonic missiles at Kyiv; Ukraine says its Patriots intercepted them all, though US officials say one launcher may have been damaged."
+      },
+      "aircraft": "MiG-31",
+      "source": "https://en.wikipedia.org/wiki/Mikoyan_MiG-31"
+    },
+    {
+      "date": "2024-01-14",
+      "precision": "day",
+      "title": {
+        "fr": "Un A-50 abattu",
+        "en": "An A-50 shot down"
+      },
+      "body": {
+        "fr": "Un avion radar A-50 est abattu au-dessus de la mer d’Azov et un Il-22 touché parvient à se poser à Anapa. Un second A-50 est abattu le 23 février.",
+        "en": "An A-50 radar aircraft is shot down over the Sea of Azov and a damaged Il-22 manages to land at Anapa. A second A-50 is shot down on 23 February."
+      },
+      "aircraft": "Beriev A-50",
+      "source": "https://en.wikipedia.org/wiki/2024_Sea_of_Azov_Beriev_A-50_shootdown"
+    },
+    {
+      "date": "2024-08-04",
+      "precision": "day",
+      "title": {
+        "fr": "Les F-16 en Ukraine",
+        "en": "F-16s in Ukraine"
+      },
+      "body": {
+        "fr": "Volodymyr Zelensky présente les premiers F-16 livrés par les pays européens. Le 26 août, l’un d’eux s’écrase en interceptant des missiles de croisière ; son pilote est tué.",
+        "en": "Volodymyr Zelensky presents the first F-16s delivered by European countries. On 26 August one crashes while intercepting cruise missiles, killing its pilot."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/General_Dynamics_F-16_Fighting_Falcon"
+    },
+    {
+      "date": "2025-02-06",
+      "precision": "day",
+      "title": {
+        "fr": "Arrivée des Mirage 2000",
+        "en": "Arrival of the Mirage 2000s"
+      },
+      "body": {
+        "fr": "Le ministre français des Armées annonce l’arrivée du premier Mirage 2000 en Ukraine ; le 7 mars, l’appareil abat son premier missile de croisière Kh-101.",
+        "en": "The French defence minister announces the arrival of the first Mirage 2000 in Ukraine; on 7 March the type downs its first Kh-101 cruise missile."
+      },
+      "aircraft": null,
+      "source": "https://en.wikipedia.org/wiki/Dassault_Mirage_2000"
+    },
+    {
+      "date": "2025-05-02",
+      "precision": "day",
+      "title": {
+        "fr": "Un Su-30 abattu par un drone naval",
+        "en": "A Su-30 downed by a naval drone"
+      },
+      "body": {
+        "fr": "Un drone de surface ukrainien Magura V7 abat un Su-30 russe avec un missile AIM-9X à l’ouest de Novorossiisk, une première revendiquée par le renseignement militaire ukrainien.",
+        "en": "A Ukrainian Magura V7 surface drone shoots down a Russian Su-30 with an AIM-9X missile west of Novorossiysk, a first claimed by Ukrainian military intelligence."
+      },
+      "aircraft": "Su-30",
+      "source": "https://en.wikipedia.org/wiki/Sukhoi_Su-30"
+    },
+    {
+      "date": "2025-06-01",
+      "precision": "day",
+      "title": {
+        "fr": "Opération *Toile d’araignée*",
+        "en": "Operation *Spiderweb*"
+      },
+      "body": {
+        "fr": "Des drones lancés depuis des camions frappent cinq bases russes, jusqu’en Sibérie. Le SBU revendique 41 avions touchés ; des responsables américains en comptent une vingtaine, dont une dizaine détruits.",
+        "en": "Drones launched from trucks strike five Russian bases, as far as Siberia. The SBU claims 41 aircraft hit; US officials count about twenty, ten of them destroyed."
+      },
+      "aircraft": "Tu-95",
+      "source": "https://en.wikipedia.org/wiki/Operation_Spiderweb"
+    }
+  ],
+  "aircraft": [
+    {
+      "name": "Tu-95",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Avec les Tu-160, les Tu-95MS tirent des missiles de croisière Kh-101 depuis la Caspienne ou la mer Noire sur les villes ukrainiennes. Visés à Engels dès décembre 2022, ils perdent sept à huit appareils lors de *Toile d’araignée*, à Olenia et Belaïa.",
+        "en": "Alongside the Tu-160s, Tu-95MSs fired Kh-101 cruise missiles from the Caspian or the Black Sea at Ukrainian cities. Targeted at Engels from December 2022, they lost seven or eight aircraft at Olenya and Belaya during *Spiderweb*."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-95",
+        "https://en.wikipedia.org/wiki/Operation_Spiderweb",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Oryx recense 12 Tu-95MS (9 détruits, 3 endommagés au sol). Le SBU affirme en avoir détruit deux autres à Engels les 17 juillet et 28 août 2026 (article Tu-95)."
+    },
+    {
+      "name": "Beriev Be-12 Chaïka",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Les derniers Be-12 de l’aéronavale russe patrouillent le long des côtes de Crimée, notamment à la recherche des drones de surface ukrainiens. Le 21 septembre 2025, le renseignement militaire ukrainien affirme en avoir frappé deux en Crimée.",
+        "en": "Russian Naval Aviation’s last Be-12s patrolled the Crimean coast, notably hunting Ukrainian surface drones. On 21 September 2025 Ukrainian military intelligence claimed to have struck two of them in Crimea."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Beriev_Be-12"
+      ],
+      "note": "Engagement marginal. L’état des deux appareils visés en 2025 est incertain (l’un semblait privé de ses hélices). Oryx ne recense aucune perte de Be-12."
+    },
+    {
+      "name": "Antonov An-26",
+      "side": null,
+      "attested": true,
+      "role": {
+        "fr": "Transport tactique des deux camps. Le 24 février 2022, un An-26 ukrainien est perdu près de Joukivtsi (cinq morts sur quatorze) et un An-26 russe s’écrase près de Voronej. En septembre 2025, deux An-26 russes basés en Crimée sont touchés par des drones ukrainiens.",
+        "en": "Tactical transport on both sides. On 24 February 2022 a Ukrainian An-26 was lost near Zhukivtsi (five of fourteen killed) and a Russian An-26 crashed near Voronezh. In September 2025 two Russian An-26s based in Crimea were hit by Ukrainian drones."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Antonov_An-26",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-ukrainian.html"
+      ],
+      "note": "Oryx recense 8 An-26 russes (6 détruits, 2 endommagés) et 2 ukrainiens détruits. La cause de la perte ukrainienne du 24 février 2022 est un tir russe selon Wikipédia."
+    },
+    {
+      "name": "Tu-22M",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Les Tu-22M3 bombardent Marioupol à partir d’avril 2022, puis tirent environ trois cents missiles Kh-22 sur l’Ukraine jusqu’à la fin de 2023. L’un est détruit au sol à Soltsy en août 2023, et au moins quatre à Belaïa lors de *Toile d’araignée*.",
+        "en": "Tu-22M3s bombed Mariupol from April 2022, then fired some three hundred Kh-22 missiles at Ukraine by the end of 2023. One was destroyed on the ground at Soltsy in August 2023, and at least four at Belaya during *Spiderweb*."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-22M",
+        "https://en.wikipedia.org/wiki/Operation_Spiderweb",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Le 19 avril 2024, un Tu-22M3 s’écrase près de Stavropol : panne selon Moscou, missile S-200 selon Kyiv. Oryx recense 12 Tu-22M3 (9 détruits, 3 endommagés)."
+    },
+    {
+      "name": "Su-24",
+      "side": null,
+      "attested": true,
+      "role": {
+        "fr": "Côté ukrainien, des Su-24M frappent Hostomel dès les premières heures, puis, armés de Storm Shadow à partir de mai 2023, l’état-major de la flotte de la mer Noire. Côté russe, plusieurs Su-24 de l’aéronavale sont détruits au sol à Saky le 9 août 2022.",
+        "en": "On the Ukrainian side, Su-24Ms struck Hostomel in the first hours, then, armed with Storm Shadows from May 2023, the Black Sea Fleet headquarters. On the Russian side, several naval Su-24s were destroyed on the ground at Saky on 9 August 2022."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-24",
+        "https://en.wikipedia.org/wiki/Aerial_warfare_in_the_Russian_invasion_of_Ukraine",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-ukrainian.html",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Utilisé par les deux camps. Saky : au moins cinq Su-24 selon l’article Su-24, sept selon l’article sur la guerre aérienne. Oryx : 22 Su-24 ukrainiens et 15 russes perdus."
+    },
+    {
+      "name": "Iliouchine Il-76",
+      "side": null,
+      "attested": true,
+      "role": {
+        "fr": "Dix-huit Il-76 russes chargés de renforts ne peuvent se poser à Hostomel le 24 février 2022 ; quatre sont touchés par des drones à Pskov en août 2023. Côté ukrainien, deux Il-76 de la 25e brigade de transport sont détruits au sol à Melitopol.",
+        "en": "Eighteen Russian Il-76s carrying reinforcements could not land at Hostomel on 24 February 2022; four were hit by drones at Pskov in August 2023. On the Ukrainian side, two Il-76s of the 25th Transport Brigade were destroyed on the ground at Melitopol."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Ilyushin_Il-76",
+        "https://en.wikipedia.org/wiki/Battle_of_Antonov_Airport",
+        "https://en.wikipedia.org/wiki/Princess_Olga_Pskov_International_Airport",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-ukrainian.html"
+      ],
+      "note": "Utilisé par les deux camps. Les Il-76 russes dits abattus près de Bila Tserkva le 25 février 2022 n’ont jamais été retrouvés. Le 24 janvier 2024, un Il-76 s’écrase près de Belgorod : Moscou affirme qu’il transportait 65 prisonniers ukrainiens, ce que Kyiv conteste."
+    },
+    {
+      "name": "Tu-141 Strizh",
+      "side": "ukraine",
+      "attested": true,
+      "role": {
+        "fr": "L’Ukraine reconvertit ses vieux drones de reconnaissance en engins d’attaque à longue portée. Le 5 décembre 2022, ils frappent les bases de bombardiers d’Engels et de Diaguilevo ; le 10 mars 2022, l’un d’eux s’était écrasé à Zagreb, après avoir survolé la Roumanie et la Hongrie.",
+        "en": "Ukraine converted its old reconnaissance drones into long-range strike weapons. On 5 December 2022 they hit the Engels and Dyagilevo bomber bases; on 10 March 2022 one had crashed in Zagreb after overflying Romania and Hungary."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-141",
+        "https://en.wikipedia.org/wiki/Engels-2_air_base"
+      ],
+      "note": "L’Ukraine n’a pas confirmé officiellement les frappes de décembre 2022 ; Moscou les attribue à des « drones à réaction de fabrication soviétique ». L’appartenance ukrainienne du drone de Zagreb repose sur l’enquête croate rapportée par Nacional."
+    },
+    {
+      "name": "Su-25",
+      "side": null,
+      "attested": true,
+      "role": {
+        "fr": "Avion d’appui des deux camps, il paie le plus lourd tribut au-dessus du front : trois Su-25 ukrainiens de la 299e brigade sont perdus dès le 26 février 2022. Selon Forbes, les Su-25 ukrainiens emportent en 2024 des bombes guidées AASM Hammer.",
+        "en": "The ground-attack aircraft of both sides paid the heaviest toll over the front: three Ukrainian Su-25s of the 299th Brigade were lost as early as 26 February 2022. According to Forbes, Ukrainian Su-25s carried AASM Hammer guided bombs in 2024."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-25",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-ukrainian.html"
+      ],
+      "note": "Utilisé par les deux camps. Oryx recense 41 Su-25 russes et 22 ukrainiens perdus. La Macédoine du Nord a cédé quatre Su-25 non navigables à l’Ukraine en 2023."
+    },
+    {
+      "name": "MiG-31",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Les MiG-31BM abattent des avions ukrainiens de loin avec le missile R-37M, devenu en 2022 la principale menace pour l’aviation ukrainienne ; les MiG-31K tirent des missiles hypersoniques Kinjal, dont six sur Kyiv le 16 mai 2023.",
+        "en": "MiG-31BMs shot down Ukrainian aircraft from long range with the R-37M missile, which became the main threat to Ukrainian aviation in 2022; MiG-31Ks fired Kinzhal hypersonic missiles, six of them at Kyiv on 16 May 2023."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan_MiG-31",
+        "https://www.rusi.org/explore-our-research/publications/special-resources/russian-air-war-and-ukrainian-requirements-air-defence",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Le RUSI estime à environ six par jour les R-37M tirés en octobre 2022. Oryx recense 5 MiG-31BM perdus, dont un hors combat."
+    },
+    {
+      "name": "Yak-52",
+      "side": "ukraine",
+      "attested": true,
+      "role": {
+        "fr": "À partir du printemps 2024, des Yak-52 de la patrouille aérienne civile ukrainienne chassent les drones de reconnaissance russes près d’Odessa : un tireur les abat au fusil depuis la place arrière. L’été suivant, un appareil porte huit marques de victoire.",
+        "en": "From spring 2024, Yak-52s of Ukraine’s Civil Air Patrol hunted Russian reconnaissance drones near Odesa, a gunner shooting them down with a rifle from the rear seat. By that summer one aircraft carried eight kill marks."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Yakovlev_Yak-52",
+        "https://www.twz.com/air/russia-testing-shotgun-armed-yak-52-trainer-aircraft-to-down-ukrainian-drones"
+      ],
+      "note": "La Russie teste en 2025 un Yak-52B2 armé d’un fusil, pas encore opérationnel selon The War Zone (19 mai 2025) ; camp ukrainien seul retenu."
+    },
+    {
+      "name": "Su-27",
+      "side": null,
+      "attested": true,
+      "role": {
+        "fr": "Chasseur des deux camps. Les Su-27 ukrainiens défendent Kyiv dès le 25 février 2022, bombardent l’île aux Serpents en mai, puis tirent des missiles HARM et des bombes JDAM-ER. Le 14 mars 2023, un Su-27 russe percute un drone américain MQ-9 au-dessus de la mer Noire.",
+        "en": "A fighter on both sides. Ukrainian Su-27s defended Kyiv from 25 February 2022, bombed Snake Island in May, then fired HARM missiles and JDAM-ER bombs. On 14 March 2023 a Russian Su-27 struck a US MQ-9 drone over the Black Sea."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-27",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-ukrainian.html",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Utilisé par les deux camps. Pertes ukrainiennes : 17 au 24 octobre 2025 selon Wikipédia, 20 selon Oryx (novembre 2026) ; 3 Su-27 russes dans les deux sources."
+    },
+    {
+      "name": "MiG-29",
+      "side": null,
+      "attested": true,
+      "role": {
+        "fr": "Pilier de la chasse ukrainienne, renforcé de MiG-29 polonais et slovaques en 2023, il tire missiles HARM et bombes JDAM-ER et chasse drones et missiles. Côté russe, son emploi est à peine documenté : un MiG-29K est revendiqué détruit à Katcha en décembre 2025.",
+        "en": "The mainstay of Ukraine’s fighter force, reinforced by Polish and Slovak MiG-29s in 2023, it fired HARM missiles and JDAM-ER bombs and hunted drones and missiles. Russian use is barely documented: a MiG-29K was claimed destroyed at Kacha in December 2025."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Mikoyan_MiG-29",
+        "https://en.wikipedia.org/wiki/Ghost_of_Kyiv",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-ukrainian.html",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Le « fantôme de Kyiv », pilote de MiG-29 légendaire, est démenti le 30 avril 2022. Pertes ukrainiennes : 35 détruits et 3 endommagés au 11 août 2026 selon Wikipédia, 40 selon Oryx (novembre 2026). Oryx compte un MiG-29 russe détruit."
+    },
+    {
+      "name": "Beriev A-50",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Les avions radar A-50 surveillent le front sud depuis la mer d’Azov. Le 14 janvier 2024, l’un d’eux est abattu, par un Patriot selon un officier américain ; un second tombe le 23 février. Deux autres sont touchés au sol à Ivanovo le 1er juin 2025.",
+        "en": "A-50 radar aircraft watched the southern front from over the Sea of Azov. On 14 January 2024 one was shot down, by a Patriot according to a US officer; a second fell on 23 February. Two more were hit on the ground at Ivanovo on 1 June 2025."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Beriev_A-50",
+        "https://en.wikipedia.org/wiki/2024_Sea_of_Azov_Beriev_A-50_shootdown",
+        "https://en.wikipedia.org/wiki/Operation_Spiderweb",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Arme du 23 février 2024 : S-200 selon les sources ukrainiennes. L’attaque de drone revendiquée par des partisans biélorusses à Machoulichtchy le 26 février 2023 n’a pas laissé de dégâts visibles sur les images satellites. L’état de vol des A-50 touchés en 2025 est incertain."
+    },
+    {
+      "name": "Tu-160",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Le Tu-160 tire avec les Tu-95 les missiles de croisière Kh-101 des grandes frappes contre l’Ukraine, dès le 6 mars 2022 sur l’aéroport de Vinnytsia, puis sur Kyiv depuis la Caspienne. L’Ukraine affirme en avoir touché quatre le 1er juin 2025.",
+        "en": "Together with the Tu-95s, the Tu-160 fired the Kh-101 cruise missiles of the major strikes on Ukraine, from 6 March 2022 against Vinnytsia airport, then at Kyiv from the Caspian. Ukraine claimed to have hit four on 1 June 2025."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Tupolev_Tu-160",
+        "https://en.wikipedia.org/wiki/Operation_Spiderweb"
+      ],
+      "note": "Les Tu-160 touchés lors de *Toile d’araignée* ne sont pas confirmés de façon indépendante ; des analystes jugent la flotte largement intacte. Oryx ne recense aucune perte de Tu-160."
+    },
+    {
+      "name": "Antonov An-124 Ruslan",
+      "side": "ukraine",
+      "attested": true,
+      "role": {
+        "fr": "Les An-124 d’Antonov Airlines, compagnie d’État ukrainienne, acheminent l’aide occidentale : en mai 2022, ils emportent d’Australie des obusiers M777 et des blindés Bushmaster. Un An-124 en révision est criblé de balles à Hostomel.",
+        "en": "The An-124s of Antonov Airlines, a Ukrainian state company, carried Western aid: in May 2022 they flew M777 howitzers and Bushmaster armoured vehicles from Australia. An An-124 under overhaul was riddled with bullets at Hostomel."
+      },
+      "sources": [
+        "https://mezha.ua/en/2022/04/03/hostomel-aircraft-losses-mriya-antey-ruslan/",
+        "https://australianaviation.com.au/2022/05/antonov-124-carries-bushmasters-to-ukraine/"
+      ],
+      "note": "Engagement logistique et civil, marginal mais réel. L’appareil d’Hostomel est jugé réparable par Mezha (3 avril 2022). Aucune source trouvée sur l’emploi des An-124 militaires russes dans ce conflit."
+    },
+    {
+      "name": "Iliouchine Il-78 Midas",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Ravitailleur de l’aviation à long rayon d’action russe, basé notamment à Diaguilevo, qui « abrite des ravitailleurs soutenant les frappes de missiles » selon l’état-major ukrainien. Le 5 novembre 2026, un média ukrainien affirme qu’un Il-78 y a été endommagé par des drones.",
+        "en": "Tanker of Russia’s long-range aviation, based notably at Dyagilevo, which \"hosts aerial refuelling aircraft supporting missile strikes\" according to the Ukrainian General Staff. On 5 November 2026 Ukrainian media claimed an Il-78 was damaged there by drones."
+      },
+      "sources": [
+        "https://www.ukrinform.net/rubric-ato/4001358-ukrainian-forces-strike-russian-airfields-engels-and-dyagilevo-general-staff.html",
+        "https://charter97.org/en/news/2026/11/5/704446/"
+      ],
+      "note": "Sources indirectes : l’état-major ukrainien (6 juin 2025) ne nomme pas le type ; l’Il-78 endommagé de novembre 2026 n’est rapporté que par Charter 97, citant le média ukrainien Dialog. Aucune perte d’Il-78 chez Oryx."
+    },
+    {
+      "name": "Su-30",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Les Su-30SM de l’armée de l’air et de l’aéronavale russes assurent la supériorité aérienne et frappent les radars ukrainiens. Plusieurs sont détruits au sol à Millerovo et à Saky en 2022 ; le 2 mai 2025, un drone naval ukrainien en abat un près de Novorossiisk.",
+        "en": "Su-30SMs of the Russian Air Force and Naval Aviation flew air-superiority missions and struck Ukrainian radars. Several were destroyed on the ground at Millerovo and Saky in 2022; on 2 May 2025 a Ukrainian naval drone shot one down near Novorossiysk."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-30",
+        "https://www.rusi.org/explore-our-research/publications/special-resources/russian-air-war-and-ukrainian-requirements-air-defence",
+        "https://en.wikipedia.org/wiki/Aerial_warfare_in_the_Russian_invasion_of_Ukraine",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Saky (9 août 2022) : au moins trois Su-30 détruits et un endommagé selon l’article Su-30, quatre Su-30M selon l’article sur la guerre aérienne. Oryx recense 23 Su-30SM perdus."
+    },
+    {
+      "name": "Su-34",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Bombardier principal de l’offensive russe, il vole d’abord bas et subit de lourdes pertes, puis largue à partir de 2023 des bombes planantes UMPK à des dizaines de kilomètres du front. Ses bases, comme Morozovsk, deviennent des cibles des drones ukrainiens.",
+        "en": "The main bomber of the Russian offensive, it first flew low and suffered heavy losses, then from 2023 released UMPK glide bombs tens of kilometres from the front. Its bases, such as Morozovsk, became targets for Ukrainian drones."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-34",
+        "https://en.wikipedia.org/wiki/UMPK_(bomb_kit)",
+        "https://en.wikipedia.org/wiki/Morozovsk_Air_Base",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Oryx recense 49 Su-34 et un Su-34M perdus (novembre 2026). Morozovsk, 5 avril 2024 : six avions détruits selon le renseignement ukrainien, aucune preuve visuelle selon l’ISW. En février 2024, Kyiv revendique de nombreux Su-34 abattus, non vérifiés."
+    },
+    {
+      "name": "IAI Searcher",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Construit sous licence en Russie sous le nom de Forpost, il sert à la reconnaissance et, en version armée Forpost-R, à la frappe : le ministère russe de la Défense diffuse ses images dès le 13 mars 2022. Un Forpost-R est abattu par un drone intercepteur en juillet 2026.",
+        "en": "Licence-built in Russia as the Forpost, it served for reconnaissance and, in the armed Forpost-R version, for strikes: the Russian Ministry of Defence released its footage as early as 13 March 2022. A Forpost-R was downed by an interceptor drone in July 2026."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/IAI_Searcher",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Employé sous la forme du Forpost russe, non par Israël. La perte du 27 juillet 2026 (oblast de Koursk) est la sixième confirmée visuellement selon l’article Searcher ; Oryx ne compte qu’un Forpost-RU parmi les drones de combat."
+    },
+    {
+      "name": "AeroVironment RQ-20 Puma",
+      "side": "ukraine",
+      "attested": true,
+      "role": {
+        "fr": "Les États-Unis incluent des Puma dans leur aide du 1er avril 2022. La 148e brigade d’artillerie des troupes d’assaut aérien les emploie pour repérer et régler les tirs sur des cibles situées à 45 km et plus, dont des S-300, sur le front de Zaporijjia.",
+        "en": "The United States included Pumas in its 1 April 2022 aid package. The 148th Air Assault Artillery Brigade used them to locate and adjust fire on targets 45 km away or more, including S-300s, on the Zaporizhzhia front."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/AeroVironment_RQ-20_Puma",
+        "https://armyinform.com.ua/2024/05/13/148-artbrygada-pokazala-yak-palyt-voroga-v-tylu-reportazh-pro-robotu-na-amerykanskyh-bpla/"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Su-35",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Armé du missile R-77-1, le Su-35S est l’un des chasseurs russes les plus efficaces près du front ; il abat notamment un hélicoptère Mi-14 de l’aéronavale ukrainienne. Plusieurs sont abattus, dont deux par des Patriot au-dessus de la région de Briansk en mai 2023.",
+        "en": "Armed with the R-77-1 missile, the Su-35S was one of the most effective Russian fighters near the front, downing among others a Ukrainian Naval Aviation Mi-14 helicopter. Several were shot down, including two by Patriots over the Bryansk region in May 2023."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-35",
+        "https://www.rusi.org/explore-our-research/publications/special-resources/russian-air-war-and-ukrainian-requirements-air-defence",
+        "https://en.wikipedia.org/wiki/Aerial_warfare_in_the_Russian_invasion_of_Ukraine",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Oryx recense 12 Su-35S perdus. Le premier succès air-air d’un F-16 ukrainien contre un chasseur russe, évoqué en juillet 2026 par le général Dan Caine, pourrait concerner le Su-35 abattu le 8 juillet 2026, sans certitude."
+    },
+    {
+      "name": "Su-57",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Engagé avec parcimonie, le Su-57 tire depuis l’espace aérien russe, notamment, selon des sources ukrainiennes, des missiles de croisière Kh-69 en 2024. Un exemplaire est endommagé par un drone à Akhtoubinsk en juin 2024 ; le 5 octobre, un Su-57 abat le drone S-70 qu’il escortait.",
+        "en": "Used sparingly, the Su-57 fired from Russian airspace, notably, according to Ukrainian sources, Kh-69 cruise missiles in 2024. One was damaged by a drone at Akhtubinsk in June 2024; on 5 October a Su-57 shot down the S-70 drone it was escorting."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_Su-57",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Les victoires air-air revendiquées par des sources russes en 2022 ne sont étayées par aucune preuve. Oryx recense 3 Su-57 (2 détruits, 1 endommagé)."
+    },
+    {
+      "name": "Tupolev Tu-214R",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Selon une source anonyme citée par RIA Novosti en septembre 2022, l’un des deux Tu-214R de renseignement électronique et optique a servi, après révision, à repérer des centres de commandement, des radars et des colonnes ukrainiennes.",
+        "en": "According to an anonymous source quoted by RIA Novosti in September 2022, one of the two Tu-214R electronic and optical intelligence aircraft was used, after an overhaul, to locate Ukrainian command posts, radars and columns."
+      },
+      "sources": [
+        "https://www.mk.ru/politics/2022/09/24/samolyotrazvedchik-tu214r-pomog-vskryt-ukrainskie-voennye-obekty.html"
+      ],
+      "note": "Engagement fondé sur une seule source russe anonyme, sans confirmation indépendante."
+    },
+    {
+      "name": "Bayraktar TB2",
+      "side": "ukraine",
+      "attested": true,
+      "role": {
+        "fr": "Les TB2 ukrainiens frappent colonnes, défenses antiaériennes et navires au début de la guerre, notamment autour de l’île aux Serpents en mai 2022, et auraient servi de leurre lors du naufrage du *Moskva*. Plus de 50 sont livrés jusqu’à fin juin 2022.",
+        "en": "Ukrainian TB2s struck columns, air defences and vessels early in the war, notably around Snake Island in May 2022, and reportedly acted as decoys when the *Moskva* was sunk. More than 50 were delivered by late June 2022."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Baykar_Bayraktar_TB2",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-ukrainian.html"
+      ],
+      "note": "Oryx recense 26 TB2 détruits. Le 24 février 2022, quatre TB2 abandonnés à Tchouhouïv sont détruits au sol par les Ukrainiens eux-mêmes. Le rôle de leurre contre le *Moskva* reste une allégation."
+    },
+    {
+      "name": "Kronshtadt Orion",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Drone de combat russe de moyenne altitude, l’Orion réalise ses premières frappes vidéo en Ukraine dès avril 2022, notamment à Marioupol, puis retrouve un rôle à l’automne 2024 contre les forces ukrainiennes entrées dans la région de Koursk.",
+        "en": "A Russian medium-altitude combat drone, the Orion carried out its first filmed strikes in Ukraine in April 2022, notably at Mariupol, then found a role again in autumn 2024 against Ukrainian forces in the Kursk region."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Kronshtadt_Orion",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Pertes divergentes : neuf au 2 décembre 2025 selon l’article Orion (citant Oryx), seize recensées par Oryx en novembre 2026. Au moins 26 frappes dans les régions de Koursk et de Soumy au 23 octobre 2024 selon le projet russe LostArmour."
+    },
+    {
+      "name": "Sukhoi S-70 Okhotnik",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Le 5 octobre 2024, lors d’un vol d’essai opérationnel depuis Akhtoubinsk, un S-70 échappe à ses opérateurs et file vers les lignes ukrainiennes ; le Su-57 qui l’accompagne l’abat près de Kostiantynivka, et l’Ukraine récupère l’épave.",
+        "en": "On 5 October 2024, during an operational test flight from Akhtubinsk, an S-70 escaped its operators and headed for Ukrainian lines; the escorting Su-57 shot it down near Kostiantynivka, and Ukraine recovered the wreck."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/Sukhoi_S-70_Okhotnik-B",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "Engagement unique et accidentel : l’appareil emportait une bombe planante UMPB D-30SN."
+    },
+    {
+      "name": "AeroVironment Switchblade",
+      "side": "ukraine",
+      "attested": true,
+      "role": {
+        "fr": "Les États-Unis envoient 700 Switchblade 300 en 2022, employés pour la première fois début mai dans la région de Kharkiv, puis des Switchblade 600 antichars, engagés au printemps 2023. Le brouillage russe réduit ensuite l’emploi du modèle 300.",
+        "en": "The United States sent 700 Switchblade 300s in 2022, first used in early May in Kharkiv Oblast, then anti-armour Switchblade 600s, in combat from spring 2023. Russian jamming then reduced the use of the 300."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/AeroVironment_Switchblade"
+      ],
+      "note": ""
+    },
+    {
+      "name": "Iliouchine Il-22",
+      "side": "russie",
+      "attested": true,
+      "role": {
+        "fr": "Poste de commandement volant de l’aviation russe. Le 14 janvier 2024, un Il-22M est touché au-dessus de la mer d’Azov en même temps qu’un A-50 : il se pose à Anapa avec son commandant tué. Le 24 juin 2023, un autre avait été abattu par Wagner lors de sa rébellion.",
+        "en": "An airborne command post of Russian aviation. On 14 January 2024 an Il-22M was hit over the Sea of Azov at the same time as an A-50, landing at Anapa with its commander killed. On 24 June 2023 another had been shot down by Wagner during its mutiny."
+      },
+      "sources": [
+        "https://en.wikipedia.org/wiki/2024_Sea_of_Azov_Beriev_A-50_shootdown",
+        "https://en.wikipedia.org/wiki/Wagner_Group_rebellion",
+        "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html"
+      ],
+      "note": "La perte de juin 2023 est due à la rébellion de Wagner, non aux forces ukrainiennes. Oryx recense 3 Il-22 (1 détruit, 1 endommagé sans réparation possible, 1 endommagé)."
+    }
+  ],
+  "sources": [
+    "https://en.wikipedia.org/wiki/Aerial_warfare_in_the_Russian_invasion_of_Ukraine",
+    "https://en.wikipedia.org/wiki/Russian_invasion_of_Ukraine",
+    "https://fr.wikipedia.org/wiki/Invasion_de_l%27Ukraine_par_la_Russie",
+    "https://www.rusi.org/explore-our-research/publications/special-resources/russian-air-war-and-ukrainian-requirements-air-defence",
+    "https://en.wikipedia.org/wiki/Battle_of_Antonov_Airport",
+    "https://en.wikipedia.org/wiki/Ghost_of_Kyiv",
+    "https://en.wikipedia.org/wiki/HESA_Shahed_136",
+    "https://en.wikipedia.org/wiki/UMPK_(bomb_kit)",
+    "https://en.wikipedia.org/wiki/2024_Sea_of_Azov_Beriev_A-50_shootdown",
+    "https://en.wikipedia.org/wiki/Operation_Spiderweb",
+    "https://fr.wikipedia.org/wiki/Op%C3%A9ration_Toile_d%27araign%C3%A9e",
+    "https://en.wikipedia.org/wiki/Morozovsk_Air_Base",
+    "https://en.wikipedia.org/wiki/Engels-2_air_base",
+    "https://en.wikipedia.org/wiki/General_Dynamics_F-16_Fighting_Falcon",
+    "https://en.wikipedia.org/wiki/Dassault_Mirage_2000",
+    "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-equipment.html",
+    "https://www.oryxspioenkop.com/2022/02/attack-on-europe-documenting-ukrainian.html",
+    "https://www.aljazeera.com/news/2026/11/13/russias-demands-come-from-different-reality-as-war-efforts-stagnates"
+  ]
+}

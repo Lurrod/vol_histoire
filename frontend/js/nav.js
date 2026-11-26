@@ -172,6 +172,22 @@ document.addEventListener('DOMContentLoaded', () => {
   setupDropdownKeyboard(document.getElementById('lang-dropdown'), '.lang-option');
 
   // -------------------------------------------------------------------
+  // Lien d'évitement (A11Y-004) : il vit dans l'en-tête partagé. Suivre
+  // l'ancre ne suffit pas : sous <base href="/"> (fiche, conflits),
+  // « #main-content » mènerait à l'accueil, et un simple défilement
+  // laisserait le focus dans l'en-tête. On défile et on pose le focus sur
+  // le contenu principal.
+  // -------------------------------------------------------------------
+  document.querySelector('.skip-link')?.addEventListener('click', (e) => {
+    const target = document.getElementById('main-content');
+    if (!target) return;
+    e.preventDefault();
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ block: 'start' });
+  });
+
+  // -------------------------------------------------------------------
   // ESC pour tout fermer
   // -------------------------------------------------------------------
   document.addEventListener('keydown', (e) => {
@@ -181,7 +197,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (langSwitch?.classList.contains('open') && langSwitch.contains(document.activeElement)) {
       document.getElementById('lang-toggle')?.focus();
     }
+    // Menu flottant (mobile) : un focus resté sur un lien du panneau qu'on
+    // masque serait perdu ; il revient au bouton Menu (A11Y-009). Le menu
+    // underlay (bureau) gère son propre retour (underlay-nav.js).
+    const focusInMenu = navLinks?.classList.contains('show') && navLinks.contains(document.activeElement);
     closeMenu();
+    if (focusInMenu) hamburger?.focus();
     closeLang();
   });
 
@@ -190,15 +211,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // -------------------------------------------------------------------
   updateAuthUI();
 
-  // Re-appeler updateAuthUI quand auth.init() termine (après refresh token)
-  // Les scripts de page appellent auth.init() dans leur propre DOMContentLoaded,
-  // qui s'exécute après celui de nav.js. On re-vérifie périodiquement au cas où.
-  const authReady = setInterval(() => {
-    if (typeof auth !== 'undefined' && auth.getPayload()) {
-      updateAuthUI();
-      clearInterval(authReady);
-    }
-  }, 100);
-  // Arrêter après 5s max
-  setTimeout(() => clearInterval(authReady), 5000);
+  // Re-appeler updateAuthUI quand auth.init() termine (après refresh token) :
+  // les scripts de page l'appellent dans leur propre DOMContentLoaded, après
+  // celui-ci. auth émet « vh:auth-ready » une fois l'initialisation finie
+  // (JS-008, à la place d'un sondage toutes les 100 ms pendant 5 s).
+  if (typeof auth !== 'undefined' && typeof auth.isReady === 'function' && auth.isReady()) {
+    updateAuthUI();
+  } else {
+    document.addEventListener('vh:auth-ready', () => updateAuthUI(), { once: true });
+  }
 });

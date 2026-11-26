@@ -132,7 +132,7 @@ describe('/.well-known et OpenSearch', () => {
     const res = await request(app).get('/opensearch.xml');
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toMatch(/application\/opensearchdescription\+xml/);
-    expect(res.text).toContain(`template="${SITE}/hangar?search={searchTerms}"`);
+    expect(res.text).toContain(`template="${SITE}/hangar?q={searchTerms}"`);
     expect(res.text).toMatch(/<ShortName>.{1,16}<\/ShortName>/);
   });
 });

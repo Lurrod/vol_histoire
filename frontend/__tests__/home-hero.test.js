@@ -88,7 +88,17 @@ describe('VH.home.heroHelpers', () => {
     expect(h.nameToSearchSlug('  F-15  Eagle ')).toBe('f-15+eagle');
     expect(h.nameToSearchSlug(null)).toBe('');
     expect(h.airplaneHref(12, 'X')).toBe('/details?id=12');
-    expect(h.airplaneHref(null, 'F-15 Eagle')).toBe('/hangar?search=f-15%2Beagle');
+    expect(h.airplaneHref(null, 'F-15 Eagle')).toBe('/hangar?q=f-15%2Beagle');
+  });
+
+  test('SEO-007 : adresse propre de la fiche quand shared/card.js est chargé', () => {
+    const { heroHelpers: h } = loadModules();
+    window.VH.shared = { ...(window.VH.shared || {}), buildDetailsPath: (id, name) => `/details/${name.toLowerCase()}-${id}` };
+    try {
+      expect(h.airplaneHref(12, 'Rafale')).toBe('/details/rafale-12');
+    } finally {
+      delete window.VH.shared.buildDetailsPath;
+    }
   });
 
   test('getHeroLang : i18n puis attribut lang du document', () => {
@@ -171,7 +181,7 @@ describe('VH.home.heroToday', () => {
 
     document.getElementById('hero-fact-reroll').click();
     expect(body.textContent).toContain('Mise en service');
-    expect(document.getElementById('hero-fact-link').getAttribute('href')).toBe('/hangar?search=f-15%2Beagle');
+    expect(document.getElementById('hero-fact-link').getAttribute('href')).toBe('/hangar?q=f-15%2Beagle');
   });
 
   test('semaine : libellé « Cette semaine-là » ; un seul anniversaire : bouton masqué', () => {
@@ -195,7 +205,7 @@ describe('VH.home.heroToday', () => {
     document.getElementById('hero-fact-reroll').click();
     expect(body.textContent).toContain('1961');
     expect(body.querySelector('strong').textContent).toBe('Mirage III');
-    expect(document.getElementById('hero-fact-link').getAttribute('href')).toBe('/hangar?search=mirage%2Biii');
+    expect(document.getElementById('hero-fact-link').getAttribute('href')).toBe('/hangar?q=mirage%2Biii');
   });
 
   test('fait sans nom ni année, avec id ; langue anglaise au changement de langue', () => {
@@ -330,7 +340,7 @@ describe('VH.home.heroQuiz', () => {
     const right = [...document.querySelectorAll('.hero-quiz-option')].find((b) => b.dataset.value === 'Mirage III');
     expect(right.querySelectorAll('svg.hero-quiz-mark path')).toHaveLength(1); // la bonne réponse est cochée
     expect(document.getElementById('hero-quiz-link-label').textContent).toBe('C’était le Mirage III — voir la fiche');
-    expect(document.getElementById('hero-quiz-link').getAttribute('href')).toBe('/hangar?search=mirage%2Biii');
+    expect(document.getElementById('hero-quiz-link').getAttribute('href')).toBe('/hangar?q=mirage%2Biii');
     document.getElementById('hero-quiz-reroll').click();
     expect([...document.querySelectorAll('.hero-quiz-option')].some((b) => b.disabled)).toBe(false);
     expect(document.querySelector('.hero-quiz-mark')).toBeNull(); // marques retirées au tirage suivant

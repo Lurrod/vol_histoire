@@ -85,10 +85,7 @@ const BUNDLES = {
     'hangar/data.js',
     'hangar/filters.js',
     'hangar/render.js',
-    'shared/airplane-options.js',
-    'shared/airplane-fields.js',
-    'shared/airplane-form.js',
-    'hangar/admin.js',
+    'shared/admin-loader.js',
     'hangar/compare.js',
     'hangar/view-toggle.js',
     'hangar/mobile-sheet.js',
@@ -101,21 +98,35 @@ const BUNDLES = {
     'shared/compare-morph.js',
     'shared/compare.js',
     'details/markdown.js',
+    'shared/meta-description.js',
     'details/data.js',
     'shared/photo-credit.js',
     'details/key-dates.js',
     'details/render.js',
     'details/radar.js',
     'details/favorites.js',
-    'shared/airplane-options.js',
-    'shared/airplane-fields.js',
-    'shared/airplane-form.js',
-    'details/admin.js',
+    'shared/admin-loader.js',
     'details/lineage.js',
     'details/compare.js',
     'details/ui.js',
     'details/photo-zoom.js',
     'details.js',
+  ],
+
+  // Administration (JS-002) : chargés par VH.shared.adminLoader pour les
+  // seuls rôles admin et éditeur, jamais par les pages elles-mêmes.
+  'admin-hangar.min.js': [
+    'shared/airplane-options.js',
+    'shared/airplane-fields.js',
+    'shared/airplane-form.js',
+    'hangar/admin.js',
+  ],
+
+  'admin-details.min.js': [
+    'shared/airplane-options.js',
+    'shared/airplane-fields.js',
+    'shared/airplane-form.js',
+    'details/admin.js',
   ],
 
   'login.min.js': [
@@ -264,6 +275,74 @@ function writeAirplaneFields() {
   return AIRPLANE_FIELDS.length;
 }
 
+/* Meta description d'une fiche (ARCH-003) : backend/utils/meta-description.js
+ * est la source unique du rendu serveur et du navigateur. Son corps, entre les
+ * repères « >>> / <<< partagé avec le navigateur », est recopié dans
+ * shared/meta-description.js (versionné, régénéré à chaque build) ;
+ * frontend/__tests__/meta-description.test.js compare les deux. */
+/** Corps d'un module backend entre les repères « partagé avec le navigateur », indenté. */
+function sharedBody(file) {
+  const source = fs.readFileSync(path.join(__dirname, '..', 'backend', 'utils', file), 'utf8')
+    .replace(/\r\n/g, '\n');
+  const match = source.match(/\/\/ >>> partagé avec le navigateur\n([\s\S]*?)\/\/ <<< partagé avec le navigateur/);
+  if (!match) throw new Error(`${file} : repères « partagé avec le navigateur » introuvables`);
+  return match[1].replace(/\n+$/, '').split('\n').map(l => (l ? `  ${l}` : l)).join('\n');
+}
+
+/** Écrit un fichier texte généré seulement s'il change (fins de ligne ignorées). */
+function writeTextIfChanged(file, out) {
+  const current = fs.existsSync(file) ? fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n') : null;
+  if (current !== out) fs.writeFileSync(file, out, 'utf8');
+}
+
+function writeMetaDescription() {
+  const body = sharedBody('meta-description.js');
+  const out = [
+    '/* Généré par scripts/build-js.js depuis backend/utils/meta-description.js — ne pas éditer.',
+    ' * Meta description d\'une fiche : même règle que le rendu serveur. */',
+    '(function () {',
+    body,
+    '',
+    '  const api = { truncate, markdownToText, buildDescription, typographyFr };',
+    '  window.VH = window.VH || {};',
+    '  window.VH.shared = window.VH.shared || {};',
+    '  window.VH.shared.metaDescription = api;',
+    '  if (typeof module !== \'undefined\' && module.exports) module.exports = api;',
+    '})();',
+    '',
+  ].join('\n');
+  writeTextIfChanged(path.join(JS, 'shared', 'meta-description.js'), out);
+}
+
+/* Parser Markdown des récits (SEO-001) : backend/utils/markdown.js est la
+ * source unique du rendu serveur de la fiche et du navigateur (fiche,
+ * conflits). Seule la langue par défaut diffère : celle de l'interface ici. */
+function writeMarkdown() {
+  const out = [
+    '/* Généré par scripts/build-js.js depuis backend/utils/markdown.js — ne pas éditer.',
+    ' * Parser Markdown minimaliste des récits : même rendu que le serveur (SEO-001).',
+    ' * Sortie repassée par DOMPurify (safeSetHTML). */',
+    '(function () {',
+    '  window.VH = window.VH || {};',
+    '  window.VH.details = window.VH.details || {};',
+    '',
+    '  // Langue du texte : celle demandée, sinon celle de l\'interface.',
+    '  function resolveLang(lang) {',
+    '    if (typeof lang === \'string\') return lang;',
+    '    if (window.i18n && typeof window.i18n.currentLang === \'string\') return window.i18n.currentLang;',
+    '    return (document.documentElement && document.documentElement.lang) || \'\';',
+    '  }',
+    '',
+    sharedBody('markdown.js'),
+    '',
+    '  window.VH.details.markdown = { parse, typographyFr, isMarkdown };',
+    '  if (typeof module !== \'undefined\' && module.exports) module.exports = window.VH.details.markdown;',
+    '})();',
+    '',
+  ].join('\n');
+  writeTextIfChanged(path.join(JS, 'details', 'markdown.js'), out);
+}
+
 // ── Bibliothèques tierces (frontend/js/vendor/) ────────────────────────
 
 /* DOMPurify et @sentry/browser étaient recopiés à la main dans vendor/ :
@@ -276,6 +355,8 @@ function writeAirplaneFields() {
  * sentry-init.js charge js/vendor/sentry.min.js à la demande : chemins
  * inchangés. Prérequis : `cd frontend && npm install`. */
 const FRONTEND = path.join(__dirname, '..', 'frontend');
+// Cartes de source des bundles : hors du dossier servi (JS-009).
+const SOURCEMAPS = path.join(__dirname, '..', 'build', 'sourcemaps');
 const VENDOR = path.join(JS, 'vendor');
 
 function frontendPackage(name) {
@@ -342,6 +423,10 @@ async function build() {
   const version = writeAppVersion();
   console.log(`  app-version.js         ${version}`);
   console.log(`  airplane-fields.js     ${writeAirplaneFields()} champs`);
+  writeMetaDescription();
+  console.log('  meta-description.js    copie de backend/utils/meta-description.js');
+  writeMarkdown();
+  console.log('  details/markdown.js    copie de backend/utils/markdown.js');
   await buildVendor();
   console.log('');
 
@@ -359,19 +444,29 @@ async function build() {
       return fs.readFileSync(full, 'utf8');
     });
 
-    const concat = parts.join('\n;\n');
+    // Repère du fichier d'origine avant chaque module : visible dans la carte
+    // de source (sourcesContent), retiré du bundle par la minification.
+    const concat = parts.map((code, i) => `// ── ${files[i]} ──\n${code}`).join('\n;\n');
     totalSrc += Buffer.byteLength(concat, 'utf8');
 
     // Minifier via esbuild (pas de bundling, juste transform)
     // Pas de format: 'iife' — les scripts utilisent des globals (auth, i18n, etc.)
     // qui doivent rester accessibles entre bundles.
-    const { code } = await esbuild.transform(concat, {
+    // Carte de source externe (JS-009) : écrite hors de frontend/ (jamais
+    // servie, ignorée par git), sans commentaire sourceMappingURL dans le
+    // bundle. À téléverser dans Sentry (sentry-cli sourcemaps upload) le jour
+    // où Sentry navigateur reçoit un DSN : les piles se liront alors en clair.
+    const { code, map } = await esbuild.transform(concat, {
       minify: true,
       target: 'es2020',
+      sourcemap: 'external',
+      sourcefile: `js/dist/${outName.replace(/\.min\.js$/, '.src.js')}`,
     });
 
     const outPath = path.join(DIST, outName);
     fs.writeFileSync(outPath, code, 'utf8');
+    fs.mkdirSync(SOURCEMAPS, { recursive: true });
+    fs.writeFileSync(path.join(SOURCEMAPS, `${outName}.map`), map, 'utf8');
 
     const srcKB = (Buffer.byteLength(concat, 'utf8') / 1024).toFixed(1);
     const minKB = (Buffer.byteLength(code, 'utf8') / 1024).toFixed(1);

@@ -8,6 +8,7 @@ const pkg = require('../package.json');
 // -----------------------------------------------------------------------------
 // Endpoints de monitoring
 //   GET /api/live    → Liveness probe (toujours 200 si le process tourne)
+//   GET /api/health  → Santé publique (200 si la base répond, 503 sinon)
 //   GET /api/ready   → Readiness probe (200 si DB OK, 503 sinon)
 //   GET /api/metrics → Métriques Prometheus (texte)
 //   GET /api/status  → Statut applicatif (version, uptime, sentry, env)
@@ -34,6 +35,17 @@ module.exports = function createMonitoringRouter(getPool) {
   // (donc des déploiements). Il reste dans /status, protégé par jeton.
   router.get('/live', (req, res) => {
     res.json({ status: 'ok' });
+  });
+
+  // Health check. Pas d'uptime : public, il donnait la date du dernier
+  // redémarrage. Le déploiement vérifie le redémarrage par le PID pm2.
+  router.get('/health', async (req, res) => {
+    try {
+      await getPool().query('SELECT 1');
+      res.json({ status: 'ok', timestamp: new Date().toISOString() });
+    } catch {
+      res.status(503).json({ status: 'error', message: 'Database unreachable' });
+    }
   });
 
   // Readiness — vérifie la dépendance critique (PostgreSQL)

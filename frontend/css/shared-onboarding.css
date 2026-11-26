@@ -30,8 +30,8 @@
   height: var(--ob-h, 0px);
   border-radius: var(--ob-radius, var(--r-lg));
   box-shadow:
-    0 0 0 1px rgba(200, 169, 110, 0.55),
-    0 0 0 6px rgba(200, 169, 110, 0.10),
+    0 0 0 1px var(--gold-a55),
+    0 0 0 6px var(--gold-a10),
     0 0 0 200vmax rgba(6, 6, 7, 0.74);
   pointer-events: none;
   transition:
@@ -60,7 +60,7 @@
   background: var(--night-mid);
   border: 1px solid var(--border-cyan-md);
   border-radius: var(--r-2xl);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 18px 40px var(--black-a50);
   color: var(--white);
   transition:
     top var(--dur-slower) var(--menu-ease),
@@ -156,8 +156,8 @@
     width var(--dur-base) var(--menu-ease),
     background-color var(--dur-base) var(--ease-out);
 }
-.ob-dot.is-done   { background: rgba(200, 169, 110, 0.45); }
-.ob-dot.is-active { width: 20px; background: var(--hud-cyan); }
+.ob-dot.is-done   { background: var(--gold-a45); }
+.ob-dot.is-active { width: 20px; background: var(--gold); }
 
 .ob-actions {
   display: flex;
@@ -186,7 +186,7 @@
 .ob-btn[hidden] { display: none; }
 
 .ob-primary {
-  background: var(--hud-cyan);
+  background: var(--gold);
   color: var(--night);
   font-weight: 600;
 }

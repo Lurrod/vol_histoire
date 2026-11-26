@@ -22,7 +22,7 @@
  *   Chaque cache runtime est borné (éviction FIFO : ordre d'insertion).
  */
 
-const CACHE_VERSION = 'v4.30.0';
+const CACHE_VERSION = 'v4.31.0';
 const CACHE_PREFIX = 'vh-';
 
 const LIMITS = {
@@ -77,6 +77,7 @@ function shellAssets(version) {
     '/fonts/BarlowCondensed-600.woff2',
     '/fonts/BarlowCondensed-700.woff2',
     '/manifest.webmanifest',
+    '/manifest.en.webmanifest',
     '/favicon.svg',
     '/assets/logo/favicon.svg',
     '/assets/logo/vh-lockup-horizontal-gold.svg',
@@ -148,24 +149,54 @@ async function store(cacheStorage, name, request, response, max) {
  * tout le corps : l'attendre retarderait le premier octet d'une photo) ; elle
  * est confiée à `keep`, qui la rattache à event.waitUntil.
  */
-function createStrategies({ fetchFn, cacheStorage, names }) {
+/* Délai au-delà duquel une navigation sert la page en cache (MOB-003) : sur
+ * un réseau mobile qui accepte la connexion sans rien transmettre, la page
+ * en cache ou hors ligne n'arrivait qu'après l'échec réseau, parfois des
+ * dizaines de secondes. Le réseau continue et met le cache à jour. */
+const NAV_TIMEOUT_MS = 3500;
+const TIMED_OUT = Symbol('délai dépassé');
+
+function createStrategies({ fetchFn, cacheStorage, names, navTimeoutMs = NAV_TIMEOUT_MS }) {
   function save(keep, name, request, response, max) {
     const p = store(cacheStorage, name, request, response, max);
     if (keep) keep(p);
     return p;
   }
 
-  async function networkFirstPage(request, keep) {
-    try {
-      const response = await fetchFn(request);
+  // À défaut de l'URL exacte, la même page avec une autre requête (filtres,
+  // ?source=pwa du manifest) vaut mieux que la page hors ligne.
+  async function cachedPage(request) {
+    return await cacheStorage.match(request)
+      || await cacheStorage.match(request, { ignoreSearch: true });
+  }
+
+  /**
+   * Navigation : réseau d'abord, avec la réponse préchargée par le navigateur
+   * (Navigation Preload) quand elle existe. Au-delà de navTimeoutMs, la page
+   * en cache est servie si elle existe ; sinon on attend le réseau.
+   * @param {Promise<Response|undefined>} [preloadResponse] event.preloadResponse
+   */
+  async function networkFirstPage(request, keep, preloadResponse) {
+    const network = (async () => {
+      const preloaded = preloadResponse ? await preloadResponse.catch(() => undefined) : undefined;
+      const response = preloaded || await fetchFn(request);
       if (isCacheable(response)) save(keep, names.pages, request, response.clone(), LIMITS.pages);
       return response;
+    })();
+    let timer;
+    const timeout = new Promise((resolve) => { timer = setTimeout(resolve, navTimeoutMs, TIMED_OUT); });
+    try {
+      const first = await Promise.race([network, timeout]);
+      if (first !== TIMED_OUT) return first;
+      const cached = await cachedPage(request);
+      if (cached) {
+        // Le réseau finit en arrière-plan et rafraîchit le cache.
+        if (keep) keep(network.catch(() => undefined));
+        return cached;
+      }
+      return await network;
     } catch {
-      // Le HTML d'une page ne dépend que de son chemin (les filtres, la
-      // langue, ?source=pwa du manifest sont lus par le JS) : à défaut de
-      // l'URL exacte, la même page avec une autre requête convient.
-      const cached = await cacheStorage.match(request)
-        || await cacheStorage.match(request, { ignoreSearch: true });
+      const cached = await cachedPage(request);
       if (cached) return cached;
       const offline = await cacheStorage.match('/offline');
       if (offline) return offline;
@@ -173,6 +204,8 @@ function createStrategies({ fetchFn, cacheStorage, names }) {
         status: 503,
         headers: { 'Content-Type': 'text/plain; charset=utf-8' },
       });
+    } finally {
+      clearTimeout(timer);
     }
   }
 
@@ -200,8 +233,8 @@ function createStrategies({ fetchFn, cacheStorage, names }) {
   }
 
   /** Réponse pour une route donnée (voir routeFor). */
-  function handle(route, request, keep) {
-    if (route === 'page') return networkFirstPage(request, keep);
+  function handle(route, request, keep, preloadResponse) {
+    if (route === 'page') return networkFirstPage(request, keep, preloadResponse);
     if (route === 'immutable') return cacheFirst(request, names.static, LIMITS.static, keep);
     if (route === 'locale') return staleWhileRevalidate(request, names.shell, 0, keep);
     if (route === 'image') return staleWhileRevalidate(request, names.images, LIMITS.images, keep);
@@ -272,6 +305,9 @@ if (typeof ServiceWorkerGlobalScope !== 'undefined' && self instanceof ServiceWo
     event.waitUntil(
       purgeOldCaches(caches, Object.values(NAMES))
         .then(() => purgeSecretEntries(caches))
+        // Navigation Preload : la requête de la page part pendant que le
+        // service worker démarre, au lieu d'attendre son réveil (MOB-003).
+        .then(() => (self.registration.navigationPreload ? self.registration.navigationPreload.enable() : undefined))
         .then(() => self.clients.claim())
     );
   });
@@ -285,13 +321,13 @@ if (typeof ServiceWorkerGlobalScope !== 'undefined' && self instanceof ServiceWo
   self.addEventListener('fetch', (event) => {
     const route = routeFor(event.request, self.location.origin);
     if (route === 'none') return;
-    event.respondWith(strategies.handle(route, event.request, (p) => event.waitUntil(p)));
+    event.respondWith(strategies.handle(route, event.request, (p) => event.waitUntil(p), event.preloadResponse));
   });
 }
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    CACHE_VERSION, LIMITS, resolveVersion, cacheNames, shellAssets, routeFor,
+    CACHE_VERSION, LIMITS, NAV_TIMEOUT_MS, resolveVersion, cacheNames, shellAssets, routeFor,
     isCacheable, trimCache, store, createStrategies, precache, purgeOldCaches, purgeSecretEntries,
   };
 }

@@ -1,0 +1,207 @@
+{
+  "backend/routes/airplanes.js": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "backend/routes/conflicts-ssr.js": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "backend/routes/contact.js": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "backend/routes/details-ssr.js": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "backend/routes/users.js": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "frontend/js/conflicts.js": {
+    "no-unsanitized/property": {
+      "count": 2
+    }
+  },
+  "frontend/js/conflicts/dates.js": {
+    "no-unsanitized/property": {
+      "count": 2
+    }
+  },
+  "frontend/js/conflicts/detail.js": {
+    "no-unsanitized/property": {
+      "count": 4
+    }
+  },
+  "frontend/js/details/compare.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/details/favorites.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/details/lineage.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/details/radar.js": {
+    "no-unsanitized/property": {
+      "count": 2
+    }
+  },
+  "frontend/js/details/render.js": {
+    "no-unsanitized/property": {
+      "count": 9
+    }
+  },
+  "frontend/js/details/ui.js": {
+    "no-unsanitized/property": {
+      "count": 4
+    }
+  },
+  "frontend/js/favorites/gate.js": {
+    "no-unsanitized/method": {
+      "count": 1
+    }
+  },
+  "frontend/js/favorites/render.js": {
+    "no-unsanitized/property": {
+      "count": 2
+    }
+  },
+  "frontend/js/favorites/toolbar.js": {
+    "no-unsanitized/property": {
+      "count": 2
+    }
+  },
+  "frontend/js/hangar/compare.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/hangar/filters.js": {
+    "no-unsanitized/property": {
+      "count": 6
+    }
+  },
+  "frontend/js/hangar/mobile-sheet.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/hangar/render.js": {
+    "no-unsanitized/property": {
+      "count": 4
+    }
+  },
+  "frontend/js/home/hero-quiz.js": {
+    "no-unsanitized/method": {
+      "count": 1
+    }
+  },
+  "frontend/js/home/hero-today.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/home/landing.js": {
+    "no-unsanitized/property": {
+      "count": 4
+    }
+  },
+  "frontend/js/home/search-suggest.js": {
+    "no-unsanitized/property": {
+      "count": 2
+    }
+  },
+  "frontend/js/i18n.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/icons.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/login/ui.js": {
+    "no-unsanitized/property": {
+      "count": 3
+    }
+  },
+  "frontend/js/login/visual.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/nations-map.js": {
+    "no-unsanitized/property": {
+      "count": 2
+    }
+  },
+  "frontend/js/onboarding.js": {
+    "no-unsanitized/property": {
+      "count": 2
+    }
+  },
+  "frontend/js/settings/admin.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/settings/collection.js": {
+    "no-unsanitized/property": {
+      "count": 4
+    }
+  },
+  "frontend/js/shared/airplane-form.js": {
+    "no-unsanitized/property": {
+      "count": 2
+    }
+  },
+  "frontend/js/shared/compare.js": {
+    "no-unsanitized/property": {
+      "count": 3
+    }
+  },
+  "frontend/js/shared/confirm-action.js": {
+    "no-unsanitized/property": {
+      "count": 2
+    }
+  },
+  "frontend/js/shared/custom-select.js": {
+    "complexity": {
+      "count": 1
+    }
+  },
+  "frontend/js/shared/toc.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/timeline/render.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/timeline/ruler.js": {
+    "no-unsanitized/property": {
+      "count": 1
+    }
+  },
+  "frontend/js/utils.js": {
+    "no-unsanitized/property": {
+      "count": 3
+    }
+  }
+}

@@ -144,7 +144,8 @@ html.ul-on body::after {
   /* ── Cascade : chaque lien monte de son masque (rang --menu-i), comme
      sur mobile ; à la fermeture, le délai est le miroir autour de
      --underlay-total. */
-  .nav-panel .nav-links li a {
+  .nav-panel .nav-links li a,
+  .nav-panel .nav-links li button.nav-logout {
     --ul-start: calc(var(--underlay-items-delay) + var(--menu-i) * var(--underlay-stagger));
     translate: 0 100%;
     opacity: 0;
@@ -168,7 +169,8 @@ html.ul-on body::after {
     transition: opacity var(--underlay-item-dur) var(--underlay-ease) var(--ul-start);
   }
 
-  html.ul-open .nav-panel .nav-links li a {
+  html.ul-open .nav-panel .nav-links li a,
+  html.ul-open .nav-panel .nav-links li button.nav-logout {
     translate: 0 0;
     opacity: 1;
     transition:
@@ -203,7 +205,7 @@ html.ul-on body::after {
   }
 
   .nav-panel .nav-close:hover,
-  .nav-panel .nav-close:focus-visible { color: var(--hud-cyan); background: var(--white-a06); }
+  .nav-panel .nav-close:focus-visible { color: var(--gold); background: var(--white-a06); }
 
   /* Les traits rejoignent l'axe et pivotent en croix. */
   .nav-close .hamburger-bar {
@@ -248,6 +250,7 @@ html.ul-on body::after {
   html.ul-on body,
   .nav-panel .nav-links,
   .nav-panel .nav-links li a,
+  .nav-panel .nav-links li button.nav-logout,
   .nav-panel .nav-group--muted,
   .nav-close .hamburger-bar,
   .nav-close-labels > span { transition: none !important; }

@@ -229,9 +229,11 @@
   /* i18n.t renvoie la clé elle-même quand la traduction manque ; on rattrape ce
    * cas pour afficher un libellé lisible plutôt que « hangar.compare_view ». */
   function t(key, fallback, vars) {
-    if (!window.i18n || typeof i18n.t !== 'function') return fallback || key;
+    // Le texte de repli reçoit les mêmes variables {nom} que la traduction.
+    const fill = (str) => String(str).replace(/\{(\w+)\}/g, (m, k) => (vars && k in vars ? vars[k] : m));
+    if (!window.i18n || typeof i18n.t !== 'function') return fallback ? fill(fallback) : key;
     const out = i18n.t(key, vars || {});
-    return (out === key && fallback) ? fallback : out;
+    return (out === key && fallback) ? fill(fallback) : out;
   }
 
   /* Maillon de chaîne + coche : deux groupes que compare.css fait permuter à la
@@ -270,7 +272,7 @@
         '<h2 id="compare-modal-title"><i class="fas fa-crosshairs"></i><span>' + escapeHtml(t('hangar.compare_title', 'Comparaison')) + '</span></h2>' +
         '<button type="button" class="compare-modal-close" aria-label="' + escapeHtml(t('common.close', 'Fermer')) + '"><i class="fas fa-times"></i></button>' +
       '</div>' +
-      '<div id="compare-modal-body"></div>';
+      '<div id="compare-modal-body" class="compare-modal-body"></div>';
     document.body.appendChild(dlg);
 
     armClear(document.getElementById('compare-clear'));
@@ -547,13 +549,13 @@
   function barHtml(value, max, color) {
     if (value == null || isNaN(value) || max == null || max === 0) return '';
     const pct = Math.min(Math.round((value / max) * 100), 100);
-    return '<div class="cmp-bar-track"><div class="cmp-bar-fill" data-pct="' + pct + '" data-bg="' + escapeHtml(color || 'var(--hud-cyan)') + '"></div></div>';
+    return '<div class="cmp-bar-track"><div class="cmp-bar-fill" data-pct="' + pct + '" data-bg="' + escapeHtml(color || 'var(--gold)') + '"></div></div>';
   }
 
   function applyCssVars(root) {
     root.querySelectorAll('.cmp-bar-fill[data-pct]').forEach((el) => {
       el.style.width = el.dataset.pct + '%';
-      el.style.background = el.dataset.bg || 'var(--hud-cyan)';
+      el.style.background = el.dataset.bg || 'var(--gold)';
     });
     root.querySelectorAll('[data-cmp-cols]').forEach((el) => {
       el.style.setProperty('--cmp-cols', el.dataset.cmpCols);
@@ -628,7 +630,7 @@
 
     const headers = items.map((a) =>
       '<div class="cmp-col-head" data-cmp-id="' + a.id + '">' +
-        '<button type="button" class="cmp-remove" data-remove="' + a.id + '" aria-label="' + escapeHtml(t('common.remove', 'Retirer')) + '"><i class="fas fa-times"></i></button>' +
+        '<button type="button" class="cmp-remove" data-remove="' + a.id + '" aria-label="' + escapeHtml(t('hangar.compare_remove_named', 'Retirer {name} du comparateur', { name: a.name || '' })) + '"><i class="fas fa-times"></i></button>' +
         '<div class="cmp-img-wrap">' +
           (a.image_url
             ? VH.shared.picture.pictureHtml(a.image_url, { alt: a.name || '', loading: 'lazy', width: '300', height: '200' })
@@ -646,28 +648,35 @@
       '</div>'
     ).join('');
 
+    /* Lecteurs d'écran (A11Y-003) : les colonnes sont des div sans sémantique
+     * de tableau ; chaque valeur est donc précédée du nom de son appareil, et
+     * la meilleure valeur, signalée à l'œil par la couleur et l'étoile, est
+     * aussi annoncée en texte. Invisible à l'écran (.sr-only). */
+    const who = (a) => '<span class="sr-only">' + escapeHtml(a.name || '') + ' : </span>';
+    const bestText = '<span class="sr-only"> (' + escapeHtml(t('hangar.compare_best', 'meilleure valeur')) + ')</span>';
+
     function perfRow(label, key, unit, max, higherIsBetter) {
       const cells = items.map((a) => {
         const v = numeric(a[key]);
         const cls = bestClass(items, a, key, higherIsBetter);
         const valStr = isNaN(v) ? '<span class="cmp-dash">—</span>' : fmt(a[key], unit);
-        const barStr = isNaN(v) ? '' : barHtml(v, max, cls ? 'var(--hud-cyan)' : 'rgba(255,255,255,0.12)');
-        return '<div class="cmp-cell cmp-cell-perf' + cls + '" data-cmp-id="' + a.id + '">' + valStr + barStr + '</div>';
+        const barStr = isNaN(v) ? '' : barHtml(v, max, cls ? 'var(--gold)' : 'rgba(255,255,255,0.12)');
+        return '<div class="cmp-cell cmp-cell-perf' + cls + '" data-cmp-id="' + a.id + '">' + who(a) + valStr + (cls ? bestText : '') + barStr + '</div>';
       }).join('');
       return '<div class="cmp-row" data-cmp-cols="' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
     }
 
     function textRow(label, fn) {
-      const cells = items.map((a) => '<div class="cmp-cell" data-cmp-id="' + a.id + '">' + fn(a) + '</div>').join('');
+      const cells = items.map((a) => '<div class="cmp-cell" data-cmp-id="' + a.id + '">' + who(a) + fn(a) + '</div>').join('');
       return '<div class="cmp-row" data-cmp-cols="' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
     }
 
     function tagRow(label, key) {
       const cells = items.map((a) => {
         const list = a[key] || [];
-        if (list.length === 0) return '<div class="cmp-cell" data-cmp-id="' + a.id + '"><span class="cmp-dash">—</span></div>';
+        if (list.length === 0) return '<div class="cmp-cell" data-cmp-id="' + a.id + '">' + who(a) + '<span class="cmp-dash">—</span></div>';
         const tags = list.map((x) => '<span class="cmp-tag">' + escapeHtml(x.name || '') + '</span>').join('');
-        return '<div class="cmp-cell cmp-cell-tags" data-cmp-id="' + a.id + '">' + tags + '</div>';
+        return '<div class="cmp-cell cmp-cell-tags" data-cmp-id="' + a.id + '">' + who(a) + tags + '</div>';
       }).join('');
       return '<div class="cmp-row cmp-row-tags" data-cmp-cols="' + n + '"><div class="cmp-row-label">' + label + '</div>' + cells + '</div>';
     }

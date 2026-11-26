@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /* Convertit frontend/assets/airplanes/*.{jpg,jpeg,png} en .webp + .avif,
  * plus une vignette 320 px de chaque (thumbs/<nom>.webp + .avif) pour les
- * listes à petite image : ~4 Ko au lieu de ~60 Ko pour la photo pleine.
+ * listes à petite image : ~4 Ko au lieu de ~60 Ko pour la photo pleine, et une
+ * version 800 px en AVIF (m800/<nom>.avif) pour les grilles (PERF-001).
  * Skip si le fichier cible est plus récent que la source.
  * Usage : node scripts/convert-images.js [--force] [--only <glob>]
  */
@@ -25,6 +26,14 @@ const THUMB_WIDTH = 320;
 const THUMB_WEBP_OPTS = { quality: 72, effort: 5 };
 const THUMB_AVIF_OPTS = { quality: 50, effort: 4, chromaSubsampling: '4:2:0' };
 
+// Taille intermédiaire 800 px, AVIF seulement (PERF-001) : cartes et tuiles
+// des grilles (200 à 400 px affichés) jusqu'en écran 2x, via srcset en
+// descripteurs w (shared/picture.js). Comme les vignettes, elle doit exister
+// pour CHAQUE photo. Les navigateurs sans AVIF gardent la photo pleine (WebP).
+const MEDIUM_DIR = path.join(SOURCE_DIR, 'm800');
+const MEDIUM_WIDTH = 800;
+const MEDIUM_AVIF_OPTS = { quality: 52, effort: 4, chromaSubsampling: '4:2:0' };
+
 const args = process.argv.slice(2);
 const force = args.includes('--force');
 const onlyIdx = args.indexOf('--only');
@@ -34,6 +43,21 @@ function isStale(source, target) {
   if (force) return true;
   if (!fs.existsSync(target)) return true;
   return fs.statSync(source).mtimeMs > fs.statSync(target).mtimeMs;
+}
+
+/* WebP au plus aussi lourd que la source (PERF-002) : sur certaines photos
+ * déjà très compressées, la qualité 82 donnait un WebP plus gros que le JPEG
+ * (20 cas). On redescend alors la qualité par paliers. */
+const WEBP_FALLBACK_QUALITIES = [76, 70, 64, 58];
+
+async function encodeWebpNotLarger(srcPath, webpPath, srcSize) {
+  let buf = await sharp(srcPath).webp(WEBP_OPTS).toBuffer();
+  for (const quality of WEBP_FALLBACK_QUALITIES) {
+    if (buf.length < srcSize) break;
+    buf = await sharp(srcPath).webp({ ...WEBP_OPTS, quality }).toBuffer();
+  }
+  fs.writeFileSync(webpPath, buf);
+  return buf.length;
 }
 
 async function convertOne(filename) {
@@ -47,11 +71,9 @@ async function convertOne(filename) {
   const results = { file: filename, srcSize, skipped: [] };
 
   if (isStale(srcPath, webpPath)) {
-    tasks.push(
-      sharp(srcPath).webp(WEBP_OPTS).toFile(webpPath).then(info => {
-        results.webp = info.size;
-      })
-    );
+    tasks.push(encodeWebpNotLarger(srcPath, webpPath, srcSize).then(size => {
+      results.webp = size;
+    }));
   } else {
     results.skipped.push('webp');
     results.webp = fs.statSync(webpPath).size;
@@ -85,6 +107,17 @@ async function convertOne(filename) {
     }
   }
 
+  const mediumPath = path.join(MEDIUM_DIR, base + '.avif');
+  if (isStale(srcPath, mediumPath)) {
+    const img = sharp(srcPath).resize({ width: MEDIUM_WIDTH, withoutEnlargement: true });
+    tasks.push(img.avif(MEDIUM_AVIF_OPTS).toFile(mediumPath).then(info => {
+      results.thumb += info.size;
+    }));
+  } else {
+    results.skipped.push('medium');
+    results.thumb += fs.statSync(mediumPath).size;
+  }
+
   await Promise.all(tasks);
   return results;
 }
@@ -114,12 +147,13 @@ async function main() {
   }
 
   fs.mkdirSync(THUMB_DIR, { recursive: true });
+  fs.mkdirSync(MEDIUM_DIR, { recursive: true });
 
   console.log(`Conversion de ${files.length} image(s)${force ? ' (force)' : ''}...`);
   const start = Date.now();
 
-  // webp + avif + 2 vignettes : un fichier est « à jour » quand les 4 sont sautés.
-  const OUTPUTS_PER_FILE = 4;
+  // webp + avif + 2 vignettes + 800 px : un fichier est « à jour » quand les 5 sont sautés.
+  const OUTPUTS_PER_FILE = 5;
   let totalSrc = 0;
   let totalWebp = 0;
   let totalAvif = 0;

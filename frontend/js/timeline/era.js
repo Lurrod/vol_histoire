@@ -10,7 +10,7 @@
   window.VH.timeline = window.VH.timeline || {};
 
   // Repli quand aucune règle data-decade ne couvre la décennie.
-  const FALLBACK_COLOR = 'var(--hud-cyan)';
+  const FALLBACK_COLOR = 'var(--gold)';
 
   function getEra(decade) {
     const t = VH.timeline.util.t;

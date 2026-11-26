@@ -4,10 +4,10 @@
 User-agent: *
 Allow: /
 
-# Pages privées
-Disallow: /login
-Disallow: /settings
-Disallow: /favorites
+# Connexion, paramètres et favoris ne sont PAS bloqués ici : ils portent
+# noindex (balise et en-tête X-Robots-Tag), qu'un robot doit pouvoir lire.
+# Un Disallow l'empêcherait de le voir et l'URL pourrait être indexée sur la
+# seule foi des liens.
 Disallow: /cookie-consent
 
 

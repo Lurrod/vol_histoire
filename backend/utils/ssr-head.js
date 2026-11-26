@@ -16,6 +16,10 @@ const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.jpg`;
 const PUBLISHER_LOGO = `${SITE_URL}/assets/logo/icon-512.png`;
 const OG_LOCALES = { fr: 'fr_FR', en: 'en_US' };
 
+// Meta description (troncature, Markdown → texte, typographie) : module
+// partagé avec le navigateur (ARCH-003).
+const { truncate, markdownToText, buildDescription, typographyFr } = require('./meta-description');
+
 function escapeHtml(str) {
   return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -32,14 +36,6 @@ function escapeJson(str) {
     .replace(/</g, '\\u003c');
 }
 
-function truncate(text, max) {
-  const t = String(text || '').replace(/\s+/g, ' ').trim();
-  if (t.length <= max) return t;
-  const cut = t.slice(0, max - 1).replace(/[\s,;:]+\S*$/, '');
-  // Coupé juste après une fin de phrase : pas de « ….» redondant.
-  return /[.!?…]$/.test(cut) ? cut : `${cut}…`;
-}
-
 /**
  * URL d'une page dans une langue. Le français est servi à l'URL nue (qui est
  * aussi la version x-default), l'anglais à `?lang=en` : chaque version a sa
@@ -50,68 +46,6 @@ function truncate(text, max) {
 function langUrl(url, lang) {
   if (lang !== 'en') return url;
   return `${url}${url.includes('?') ? '&' : '?'}lang=en`;
-}
-
-/**
- * Premier paragraphe d'un récit Markdown, en texte brut : titres sautés,
- * emphase, liens, code et puces retirés. Sert aux meta descriptions, qui ne
- * doivent jamais publier « ## Genèse » ou des astérisques.
- */
-function markdownToText(md) {
-  const lines = String(md || '').replace(/\r\n?/g, '\n').split('\n');
-  const para = [];
-  for (const raw of lines) {
-    const line = raw.trim();
-    if (!line) { if (para.length) break; continue; }
-    if (/^#{1,6}\s/.test(line) || /^(-{3,}|\*{3,}|_{3,})$/.test(line)) {
-      if (para.length) break;
-      continue;
-    }
-    para.push(line.replace(/^(?:[-*+>]|\d+[.)])\s+/, ''));
-  }
-  return para.join(' ')
-    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/(\*\*|__)(.+?)\1/g, '$2')
-    .replace(/(^|[^\w*])\*(?!\s)([^*]+?)\*(?!\w)/g, '$1$2')
-    .replace(/`([^`]*)`/g, '$1')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-/**
- * Meta description d'environ 140-160 caractères : la phrase d'accroche,
- * complétée du début du récit (ou, à défaut, d'une phrase de repli), coupée
- * sur un mot.
- * @param {string} lead - accroche courte (little_description)
- * @param {string} narrative - récit Markdown
- * @param {string} filler - phrase ajoutée quand il n'y a pas de récit
- * @param {number} [max=158]
- */
-function buildDescription(lead, narrative, filler, max = 158, lang = 'fr') {
-  let head = String(lead || '').replace(/\s+/g, ' ').trim();
-  if (head && !/[.!?…]$/.test(head)) head += '.';
-  const body = markdownToText(narrative) || filler || '';
-  // Typographie appliquée après la coupe : truncate() normalise les blancs
-  // (\s couvre les espaces insécables) et les effacerait.
-  const text = truncate([head, body].filter(Boolean).join(' '), max);
-  return lang === 'fr' ? typographyFr(text) : text;
-}
-
-// Typographie française, même règle que frontend/js/details/markdown.js :
-// espace fine insécable avant ; ? !, insécable avant : et dans les « »,
-// apostrophe ’ entre deux lettres. Seule une espace existante est remplacée
-// (« 12:30 », « :// » ne bougent pas) ; les URL sont mises de côté.
-const NBSP = '\u00A0';
-const NNBSP = '\u202F';
-const URL_RE = /(\bhttps?:\/\/[^\s)\]]+|\bwww\.[^\s)\]]+)/g;
-
-function typographyFr(text) {
-  return String(text || '').split(URL_RE).map((part, i) => (i % 2 ? part : part
-    .replace(/[ \t]+(?=[;!?])/g, NNBSP)
-    .replace(/[ \t]+(?=:)/g, NBSP)
-    .replace(/«[ \t\u00A0\u202F]*/g, `«${NBSP}`)
-    .replace(/[ \t\u00A0\u202F]*»/g, `${NBSP}»`)
-    .replace(/(\p{L})'(?=[\p{L}\p{N}«])/gu, '$1’'))).join('');
 }
 
 /**
@@ -209,20 +143,39 @@ function replaceJsonLd(html, scripts) {
   return out.replace(/<\/head>/, () => `  ${block}\n</head>`);
 }
 
-/** Envoie un rendu SSR : nonce CSP, cache partagé variant selon la langue. */
+/**
+ * URL nue servie en anglais par Accept-Language (SEO-004) : la page garde
+ * son canonical et son og:url sur l'URL nue. Sinon une URL que le sitemap et
+ * les hreflang déclarent française désignait ?lang=en comme canonique — la
+ * contradiction que les aperçus de partage reprenaient. La version anglaise
+ * propre reste ?lang=en, qui se canonicalise sur elle-même.
+ */
+function keepBareCanonical(html, req) {
+  if (!req || req.lang !== 'en' || (req.query && req.query.lang)) return html;
+  return html
+    .replace(/(<link rel="canonical" href="[^"?]*)\?lang=en(")/, '$1$2')
+    .replace(/(<meta property="og:url" content="[^"?]*)\?lang=en(")/, '$1$2');
+}
+
+/** Envoie un rendu SSR : nonce CSP, cache du seul navigateur, variant selon la langue. */
 function sendSsrHtml(req, res, html) {
   res.set('Content-Type', 'text/html; charset=utf-8');
-  // 1h côté navigateur, 2h côté CDN ; stale-while-revalidate pour éviter
-  // qu'une régénération lente ne bloque un crawler.
-  res.set('Cache-Control', 'public, max-age=3600, s-maxage=7200, stale-while-revalidate=86400');
-  // La langue vient aussi d'Accept-Language : un cache partagé ne doit pas
-  // servir la version anglaise à un visiteur francophone.
+  // La page porte le nonce CSP de cette réponse (en-tête et corps). Un cache
+  // partagé (proxy, CDN) servirait le même nonce à tous les visiteurs
+  // pendant des heures : lisible sur la page publique, il redeviendrait
+  // utilisable par un script injecté (SEC-003). Seul le navigateur garde
+  // donc sa copie (1 h, son propre nonce).
+  res.set('Cache-Control', 'private, max-age=3600');
+  // La langue vient aussi d'Accept-Language : la copie du navigateur ne
+  // doit pas resservir la version anglaise après un changement de langue.
   res.vary('Accept-Language');
   const inject = req.app.injectCspNonce;
-  res.send(typeof inject === 'function' ? inject(html, res.locals.cspNonce) : html);
+  const page = keepBareCanonical(html, req);
+  res.send(typeof inject === 'function' ? inject(page, res.locals.cspNonce) : page);
 }
 
 module.exports = {
+  keepBareCanonical,
   SITE_URL,
   DEFAULT_OG_IMAGE,
   PUBLISHER_LOGO,

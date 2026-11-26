@@ -53,3 +53,28 @@ test('recalculé quand la langue finit de se charger (i18nReady)', () => {
   window.dispatchEvent(new Event('i18nReady'));
   expect(document.querySelector('[data-reading-time]').textContent).toBe('3 min');
 });
+
+describe('session de l\'en-tête (JS-001)', () => {
+  afterEach(() => { delete global.auth; });
+
+  test('init() lance auth.init() pour l\'état connecté de l\'en-tête', () => {
+    global.auth = { init: jest.fn() };
+    document.body.innerHTML = '<header class="doc-head"><span data-reading-time></span></header><div class="legal-container">un deux trois</div>';
+    expect(legalDoc.init(document)).toBe(true);
+    expect(global.auth.init).toHaveBeenCalledTimes(1);
+  });
+
+  test('sans auth chargé : pas d\'erreur', () => {
+    document.body.innerHTML = '<header class="doc-head"></header>';
+    expect(() => legalDoc.init(document)).not.toThrow();
+  });
+});
+
+test('les pages légales ne chargent plus le bundle de l\'accueil (JS-001)', () => {
+  const fs = require('fs');
+  const path = require('path');
+  for (const page of ['cgu.html', 'mentions-legales.html', 'politique-confidentialite.html']) {
+    const html = fs.readFileSync(path.join(__dirname, '..', page), 'utf8');
+    expect(html).not.toContain('home.min.js');
+  }
+});

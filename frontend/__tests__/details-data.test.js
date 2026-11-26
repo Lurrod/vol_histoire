@@ -7,6 +7,7 @@
  */
 global.i18n = { t: (k) => ({ 'nav.home': 'Accueil', 'nav.hangar': 'Hangar' }[k] || k), currentLang: 'fr' };
 window.i18n = global.i18n;
+require('../js/shared/meta-description');
 require('../js/details/data');
 
 const { updateSeoMeta } = window.VH.details.data;
@@ -167,7 +168,8 @@ describe('updateSeoMeta — balises absentes et description', () => {
   test('markdownToText / plainDescription exposés', () => {
     const { markdownToText, plainDescription } = window.VH.details.data;
     expect(markdownToText('- *un* `deux`')).toBe('un deux');
-    expect(plainDescription('Fini !', '')).toBe('Fini !');
+    // Typographie française du rendu serveur : espace fine insécable avant « ! ».
+    expect(plainDescription('Fini !', '')).toBe('Fini\u202f!');
     expect(plainDescription('', '')).toBe('');
   });
 
@@ -307,6 +309,29 @@ describe('loadAircraftDetails / loadRelatedData', () => {
     expect(document.querySelector('#aircraft-complete-name .skeleton-inline-md')).not.toBeNull();
     expect(document.querySelector('#hero-year .skeleton-inline-meta')).not.toBeNull();
     expect(document.querySelector('#stat-status .skeleton-inline-badge')).not.toBeNull();
+    expect(document.querySelectorAll('#aircraft-description .skeleton-line')).toHaveLength(3);
+  });
+
+  test('contenu déjà écrit par le serveur : pas de squelette (PERF-004, SEO-001)', () => {
+    document.body.innerHTML = `
+      <h1 id="aircraft-name">Rafale</h1><p id="aircraft-complete-name">Dassault Rafale</p>
+      <span id="hero-country">France</span><span id="hero-year">-</span>
+      <span id="stat-speed">1 912 km/h</span>
+      <div id="aircraft-description" class="description-body markdown-body"><h3 class="md-section">Genèse</h3></div>`;
+    stubModules(() => new Promise(() => {}));
+    window.VH.details.data.loadAircraftDetails({ aircraftId: '30' });
+    expect(document.getElementById('hero-country').textContent).toBe('France');
+    expect(document.getElementById('stat-speed').textContent).toBe('1 912 km/h');
+    expect(document.getElementById('aircraft-complete-name').textContent).toBe('Dassault Rafale');
+    expect(document.querySelector('#aircraft-description h3').textContent).toBe('Genèse');
+    // Le tiret du gabarit, lui, attend encore sa valeur.
+    expect(document.querySelector('#hero-year .skeleton-inline-meta')).not.toBeNull();
+  });
+
+  test('squelette du récit tant qu’il porte le texte d’attente du gabarit', () => {
+    document.body.innerHTML = '<div id="aircraft-description" class="description-body" data-i18n="details.loading_desc">Chargement de la description...</div>';
+    stubModules(() => new Promise(() => {}));
+    window.VH.details.data.loadAircraftDetails({ aircraftId: '30' });
     expect(document.querySelectorAll('#aircraft-description .skeleton-line')).toHaveLength(3);
   });
 

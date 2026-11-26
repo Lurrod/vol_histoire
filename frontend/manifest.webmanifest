@@ -55,7 +55,12 @@
       "description": "Catalogue complet des appareils",
       "url": "/hangar",
       "icons": [
-        { "src": "/assets/logo/icon-192.png", "sizes": "192x192" }
+        {
+          "src": "/assets/logo/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        }
       ]
     },
     {
@@ -64,8 +69,36 @@
       "description": "Journal de Bord de l'aviation militaire",
       "url": "/timeline",
       "icons": [
-        { "src": "/assets/logo/icon-192.png", "sizes": "192x192" }
+        {
+          "src": "/assets/logo/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        }
       ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshots/accueil-mobile.jpg",
+      "sizes": "1082x2402",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Accueil : l'appareil du jour et la recherche"
+    },
+    {
+      "src": "/assets/screenshots/fiche-mobile.jpg",
+      "sizes": "1082x2402",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Fiche du Rafale : photo, caractéristiques et chiffres clés"
+    },
+    {
+      "src": "/assets/screenshots/accueil-bureau.jpg",
+      "sizes": "1920x1200",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Accueil sur grand écran"
     }
   ]
 }

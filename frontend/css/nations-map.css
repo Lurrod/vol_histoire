@@ -33,7 +33,7 @@
 
 /* Fond : le reste du monde, présent pour situer le regard. */
 .wm-land {
-  fill: rgba(255, 255, 255, 0.045);
+  fill: var(--white-a045);
   stroke: var(--white-a07);
   stroke-width: 0.4;
   stroke-linejoin: round;
@@ -41,28 +41,28 @@
 
 /* Pays du référentiel sans aucune fiche : traités comme du fond. */
 .wm-nation-empty {
-  fill: rgba(255, 255, 255, 0.045);
+  fill: var(--white-a045);
   stroke: var(--white-a07);
   stroke-width: 0.4;
   pointer-events: none;
 }
 
 .wm-nation-active {
-  stroke: rgba(200, 169, 110, 0.55);
+  stroke: var(--gold-a55);
   stroke-width: 0.5;
   stroke-linejoin: round;
   cursor: pointer;
   transition: fill var(--dur-fast) var(--ease-out), stroke var(--dur-fast) var(--ease-out);
 }
 
-.wm-tier-1 { fill: rgba(200, 169, 110, 0.16); }
-.wm-tier-2 { fill: rgba(200, 169, 110, 0.32); }
-.wm-tier-3 { fill: rgba(200, 169, 110, 0.52); }
-.wm-tier-4 { fill: rgba(200, 169, 110, 0.78); }
+.wm-tier-1 { fill: var(--gold-a16); }
+.wm-tier-2 { fill: var(--gold-a32); }
+.wm-tier-3 { fill: var(--gold-a52); }
+.wm-tier-4 { fill: var(--gold-a78); }
 
 .wm-nation-active:hover,
 .wm-nation-active:focus {
-  fill: var(--hud-cyan);
+  fill: var(--gold);
   stroke: var(--white);
   stroke-width: 1;
   outline: none;
@@ -91,7 +91,7 @@
 
 .nations-map-tooltip.is-visible { opacity: 1; }
 .nations-map-tooltip strong { color: var(--text-primary); font-size: 0.85rem; }
-.nations-map-tooltip span { color: var(--hud-cyan); font-size: var(--text-xs); }
+.nations-map-tooltip span { color: var(--gold); font-size: var(--text-xs); }
 
 /* Pied : synthèse à gauche, échelle à droite. */
 .nations-map-footer {
@@ -135,8 +135,8 @@
   transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
 
-.nm-chip:hover { border-color: var(--border-cyan-md); background: rgba(200, 169, 110, 0.06); }
-.nm-chip-count { color: var(--hud-cyan); font-variant-numeric: tabular-nums; font-weight: 600; }
+.nm-chip:hover { border-color: var(--border-cyan-md); background: var(--gold-a06); }
+.nm-chip-count { color: var(--gold); font-variant-numeric: tabular-nums; font-weight: 600; }
 
 .nations-map-legend {
   display: flex;
@@ -154,13 +154,13 @@
   width: 22px;
   height: 8px;
   border-radius: 2px;
-  border: 1px solid rgba(200, 169, 110, 0.35);
+  border: 1px solid var(--gold-a35);
 }
 
-.nm-swatch.nm-tier-1 { background: rgba(200, 169, 110, 0.16); }
-.nm-swatch.nm-tier-2 { background: rgba(200, 169, 110, 0.32); }
-.nm-swatch.nm-tier-3 { background: rgba(200, 169, 110, 0.52); }
-.nm-swatch.nm-tier-4 { background: rgba(200, 169, 110, 0.78); }
+.nm-swatch.nm-tier-1 { background: var(--gold-a16); }
+.nm-swatch.nm-tier-2 { background: var(--gold-a32); }
+.nm-swatch.nm-tier-3 { background: var(--gold-a52); }
+.nm-swatch.nm-tier-4 { background: var(--gold-a78); }
 
 /* ── Panneau du hangar ───────────────────────────────────────────────
    Même carte, montée en mode filtre sous la barre d'outils. */
@@ -209,7 +209,7 @@
 
 /* Pays actuellement filtré : il reste plein, même après repli du panneau. */
 .wm-nation-active.is-selected {
-  fill: var(--hud-cyan);
+  fill: var(--gold);
   stroke: var(--white);
   stroke-width: 1;
 }

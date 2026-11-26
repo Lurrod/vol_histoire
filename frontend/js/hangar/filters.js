@@ -184,7 +184,8 @@
     VH.hangar.data.fetchFacets(state);
   }
 
-  function writeStateToUrl(state) {
+  /** Paramètres d'URL décrivant l'état (filtres, recherche, tri, vue, page). */
+  function stateParams(state, page = state.currentPage) {
     const p = new URLSearchParams();
     if (state.filters.country)    p.set('country', state.filters.country);
     if (state.filters.generation) p.set('gen', String(state.filters.generation));
@@ -195,12 +196,22 @@
     if (state.filters.search)     p.set('q', state.filters.search);
     if (state.sort && state.sort !== 'default') p.set('sort', state.sort);
     if (state.view === 'list')    p.set('view', 'list');
-    if (state.currentPage > 1)    p.set('page', String(state.currentPage));
+    if (page > 1)                 p.set('page', String(page));
     // La sélection du comparateur est écrite par VH.shared.compare : on la
     // reporte telle quelle, sinon un changement de filtre l'effacerait de l'URL.
     const compare = new URLSearchParams(location.search).get('compare');
     if (compare) p.set('compare', compare);
-    const qs = p.toString();
+    return p;
+  }
+
+  /** Adresse d'une page du hangar avec l'état courant (liens de pagination). */
+  function urlForPage(state, page) {
+    const qs = stateParams(state, page).toString();
+    return qs ? `${location.pathname}?${qs}` : location.pathname;
+  }
+
+  function writeStateToUrl(state) {
+    const qs = stateParams(state).toString();
     const url = qs ? `${location.pathname}?${qs}` : location.pathname;
     try { history.replaceState(null, '', url); } catch { /* ignore */ }
   }
@@ -213,7 +224,10 @@
     if (p.has('war'))     state.filters.war = p.get('war');
     if (p.has('mission')) state.filters.mission = p.get('mission');
     if (p.has('decade') && /^(19[4-9]0|20[0-2]0)$/.test(p.get('decade'))) state.filters.decade = Number(p.get('decade'));
+    // ?q= est le paramètre canonique ; ?search= reste accepté (SEO-003) :
+    // moteurs OpenSearch déjà installés dans les navigateurs, anciens liens.
     if (p.has('q'))       state.filters.search = p.get('q');
+    else if (p.has('search')) state.filters.search = p.get('search');
     if (p.has('sort'))    state.sort = p.get('sort');
     if (p.has('view'))    state.view = p.get('view') === 'list' ? 'list' : 'grid';
     if (p.has('page'))    state.currentPage = Math.max(1, Number(p.get('page')) || 1);
@@ -224,7 +238,7 @@
    * se combinait aux filtres et à la page restés en session. */
   function urlDescribesFilters(search = location.search) {
     const p = new URLSearchParams(search);
-    return ['country', 'gen', 'type', 'war', 'mission', 'decade', 'q'].some(k => p.has(k));
+    return ['country', 'gen', 'type', 'war', 'mission', 'decade', 'q', 'search'].some(k => p.has(k));
   }
 
   /* Remet à zéro ce que l'URL décrit (filtres, recherche, tri, page), avant
@@ -347,7 +361,7 @@
   VH.hangar.filters = {
     populateFilterOptions, applyFiltersAndRender, updateActiveFilters,
     saveFiltersToSession, readStateFromUrl, restoreFiltersFromSession,
-    writeStateToUrl, urlDescribesFilters, resetUrlState,
+    writeStateToUrl, urlForPage, urlDescribesFilters, resetUrlState,
     setupDropdowns, setupSearchAndSort, closeAllDropdowns,
     removeFilter, clearAllFilters, syncFilterUi,
   };
