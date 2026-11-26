@@ -41,6 +41,7 @@
     "section_dates": "Key dates",
     "dates_prev": "Previous date",
     "dates_next": "Next date",
+    "dates_hint": "Left and right arrow keys: previous or next date.",
     "section_sources": "Sources",
     "several_sides": "On several sides",
     "other_aircraft": "Other aircraft involved",

@@ -41,6 +41,7 @@
     "section_dates": "Dates clés",
     "dates_prev": "Date précédente",
     "dates_next": "Date suivante",
+    "dates_hint": "Flèches gauche et droite : date précédente ou suivante.",
     "section_sources": "Sources",
     "several_sides": "Dans plusieurs camps",
     "other_aircraft": "Autres appareils engagés",

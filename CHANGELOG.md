@@ -7,6 +7,13 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Sur la page d'un conflit, les dates clés défilent désormais en cartes, avec la photo de l'appareil
+  concerné : faites-les glisser au doigt, à la souris ou au pavé tactile, ou passez de l'une à
+  l'autre au clavier. L'année de la date au centre s'affiche en grand au-dessus et ses chiffres
+  défilent quand elle change.
+
 ## [4.31.0] - 2026-11-26
 
 ### Added

@@ -134,7 +134,15 @@
 
             <section class="conflict-block hidden" id="dates-cles" aria-labelledby="conflict-dates-heading">
               <h2 id="conflict-dates-heading" data-i18n="conflicts.section_dates">Dates clés</h2>
-              <div class="conflict-dates-strip" id="conflict-events" role="tablist" aria-labelledby="conflict-dates-heading"></div>
+              <!-- Carrousel (conflicts/date-carousel.js) : tête de lecture fixe ; année de la carte centrée, câbles et règle en décor. -->
+              <div class="conflict-tl" id="conflict-tl">
+                <div class="conflict-tl-year" id="conflict-tl-year" aria-hidden="true"></div>
+                <div class="conflict-tl-playhead" aria-hidden="true"></div>
+                <svg class="conflict-tl-cables" id="conflict-tl-cables" aria-hidden="true" focusable="false"></svg>
+                <div class="conflict-tl-ruler" id="conflict-tl-ruler" aria-hidden="true"></div>
+                <div class="conflict-tl-track" id="conflict-events" role="tablist" aria-labelledby="conflict-dates-heading" aria-describedby="conflict-tl-hint"></div>
+              </div>
+              <p class="sr-only" id="conflict-tl-hint" data-i18n="conflicts.dates_hint">Flèches gauche et droite : date précédente ou suivante.</p>
               <div class="conflict-date-panel" id="conflict-event-panel" role="tabpanel" tabindex="0">
                 <div class="conflict-date-content" id="conflict-event-content"></div>
                 <div class="conflict-date-pager">
