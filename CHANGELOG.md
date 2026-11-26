@@ -7,6 +7,51 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 ## [Unreleased]
 
+## [4.31.0] - 2026-11-26
+
+### Added
+
+- Installé sur un téléphone, le site propose désormais des raccourcis vers le hangar, la frise et
+  les favoris, s'affiche en anglais si votre appareil l'est, et montre des aperçus avant
+  l'installation.
+
+### Changed
+
+- 64 fiches de l'ancien catalogue, dont les récits étaient les plus courts, ont été entièrement
+  réécrites en français et en anglais à partir de sources vérifiées : genèse, conception, carrière
+  et place dans l'histoire.
+- La typographie française est soignée partout : apostrophes et guillemets « » typographiques,
+  espaces insécables avant les signes doubles, titres à la française.
+- Les pages se chargent plus vite : photos allégées dans les grilles, pages légales et page de
+  contact plus légères, outils d'administration chargés seulement pour les comptes concernés.
+- Les fiches et les pages en anglais arrivent complètes dès le premier affichage (récit, appareils
+  liés, textes de l'interface), ce qui les rend aussi mieux lisibles par les moteurs de recherche.
+- Les pages légales ont été revues : identité complète de l'hébergeur, âge minimum précisé dans les
+  conditions d'utilisation, liste complète de ce que le site enregistre dans votre navigateur. Si
+  l'usage des cookies change, le bandeau vous redemande votre choix.
+
+### Fixed
+
+- La fiche du Su-35 ne mentionne plus de « F-15 ukrainiens » imaginaires ; ses pertes et ses
+  exportations sont désormais sourcées.
+- La case « Se souvenir de moi » garde enfin votre session ouverte d'une visite à l'autre.
+- Une recherche transmise dans l'adresse du hangar filtre bien les appareils.
+- Navigation au clavier : le focus reste toujours visible, n'est plus caché sous l'en-tête, un lien
+  permet de sauter directement au contenu, et Échap referme le menu en rendant la main au bouton.
+- Lecteurs d'écran : le bouton d'export PDF est nommé sur mobile, le comparateur annonce chaque
+  valeur et la meilleure, et les filtres sont présentés comme des panneaux.
+- Sur mobile, cinq petits contrôles offrent désormais une zone d'appui suffisante, sans changer
+  d'apparence.
+- Les indices animés s'arrêtent après trois cycles.
+
+### Security
+
+- Supprimer son compte demande désormais de confirmer son mot de passe actuel.
+- Si un jeton de session volé est réutilisé, toutes les sessions du compte sont fermées, y compris
+  celles déjà ouvertes.
+- Les demandes de code par email répondent dans le même délai que l'adresse ait un compte ou non.
+- L'email d'activation ne reprend plus le nom saisi à l'inscription.
+
 ## [4.30.0] - 2026-11-23
 
 ### Added
@@ -739,7 +784,8 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 - Première version de Vol d'Histoire : un catalogue d'avions militaires.
 
-[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.30.0...HEAD
+[unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.31.0...HEAD
+[4.31.0]: https://github.com/Lurrod/vol_histoire/compare/v4.30.0...v4.31.0
 [4.30.0]: https://github.com/Lurrod/vol_histoire/compare/v4.29.0...v4.30.0
 [4.29.0]: https://github.com/Lurrod/vol_histoire/compare/v4.28.0...v4.29.0
 [4.28.0]: https://github.com/Lurrod/vol_histoire/compare/v4.27.0...v4.28.0
