@@ -226,7 +226,6 @@
     btn.replaceChildren(window.VH.confirmAction.binIcon());
     const control = window.VH.confirmAction.arm(btn, {
       side: 'left',
-      showText: true,
       className: 'adm-del',
       measure: '.cfm-bin-check',
       labels: {

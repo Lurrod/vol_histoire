@@ -22,13 +22,8 @@ const CACHE_KEY = 'vdh:timeline:v3';
 const CACHE_TTL_S = 30 * 60;
 const DECADES = Object.freeze([1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020]);
 
-/** Année d'une date PostgreSQL (objet Date) ou ISO (« 1950-06-25 »). */
-function yearOf(value) {
-  if (value === null || value === undefined || value === '') return null;
-  if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value.getFullYear();
-  const y = parseInt(String(value).slice(0, 4), 10);
-  return Number.isFinite(y) ? y : null;
-}
+// Année d'une date PostgreSQL (« AAAA-MM-JJ » ou objet Date).
+const { yearOf } = require('./calendar-date');
 
 function toEvent(row) {
   return {

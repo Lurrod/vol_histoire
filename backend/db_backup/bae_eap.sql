@@ -42,7 +42,7 @@ INSERT INTO airplanes (
     NULL,
     NULL,
     NULL,
-    (SELECT id FROM manufacturer WHERE code = 'BAE'),
+    (SELECT id FROM manufacturer WHERE code = 'BAER'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Recherche'),
     'Retiré',

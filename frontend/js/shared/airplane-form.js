@@ -335,7 +335,9 @@
           const labelFrom = (PRESENTATION[field.column] || {}).labelFrom;
           selectValue(el, raw, labelFrom ? record[labelFrom] : undefined);
         } else if (field.kind === 'date') {
-          el.value = raw ? String(raw).split('T')[0] : '';
+          // Jour de calendrier : split('T') sur l'ancien format UTC donnait la
+          // veille, réenregistrée à chaque sauvegarde.
+          el.value = window.VH.calendarDate.iso(raw) || '';
         } else if (field.kind === 'bool') {
           el.value = typeof raw === 'boolean' ? String(raw) : '';
         } else {

@@ -36,7 +36,7 @@ INSERT INTO airplanes (
     '1988-09-30',
     2655.0,
     3900.0,
-    (SELECT id FROM manufacturer WHERE code = 'BOE'),
+    (SELECT id FROM manufacturer WHERE code = 'MDD'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'En service',

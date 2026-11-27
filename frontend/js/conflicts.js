@@ -18,7 +18,7 @@
     });
   }
 
-  const year = (d) => (d ? new Date(d).getFullYear() : null);
+  const year = (d) => window.VH.calendarDate.year(d);
 
   // « 1955 – 1975 », « depuis 2022 » (en cours), « 1982 » (même année).
   function period(w) {

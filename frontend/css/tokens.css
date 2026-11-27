@@ -72,6 +72,8 @@
   --night:      #0D0D0D;   /* noir chaud — fond principal */
   --night-mid:  #141414;   /* surface intermédiaire */
   --night-soft: #1A1A1A;   /* surface douce */
+  --pill-surface: rgba(22, 22, 24, 0.94); /* pastilles sur photo, tuile de confirmation */
+  --pill-surface-light: rgba(40, 40, 43, 0.96); /* pastille qui accueille le plateau sombre de confirmation */
   --white:      #ffffff;
 
   /* ============================================================

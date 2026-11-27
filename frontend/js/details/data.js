@@ -271,7 +271,7 @@
       image: imageUrl,
       url: pageUrl,
       vehicleConfiguration: a.type_name || undefined,
-      vehicleModelDate: a.date_operationel ? new Date(a.date_operationel).getFullYear().toString() : undefined,
+      vehicleModelDate: a.date_operationel ? String(window.VH.calendarDate.year(a.date_operationel)) : undefined,
     };
     if (a.complete_name) ld.alternateName = a.complete_name;
     if (a.manufacturer_name) {
@@ -281,7 +281,7 @@
       ld.countryOfOrigin = { '@type': 'Country', name: a.country_name };
     }
     if (a.date_first_fly) {
-      ld.productionDate = a.date_first_fly.split('T')[0];
+      ld.productionDate = window.VH.calendarDate.iso(a.date_first_fly);
     }
     if (a.max_speed) {
       ld.speed = { '@type': 'QuantitativeValue', value: Number(a.max_speed), unitCode: 'KMH' };

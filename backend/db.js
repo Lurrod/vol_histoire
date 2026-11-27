@@ -33,4 +33,22 @@ function watchPoolErrors(pool, logger) {
   return pool;
 }
 
-module.exports = { withTransaction, watchPoolErrors };
+/**
+ * Colonnes DATE (premier vol, mise en service, dates d'un conflit) rendues
+ * telles quelles, en texte « AAAA-MM-JJ », comme le décrit openapi.yaml.
+ * Par défaut, node-postgres en fait un objet Date à minuit dans le fuseau du
+ * serveur (Paris) ; en JSON, il devenait « la veille à 22 h ou 23 h UTC ».
+ * Un visiteur des Amériques voyait alors chaque date un jour plus tôt (et
+ * « 31 décembre 1977 » pour une date connue à l'année 1978), et le
+ * formulaire d'administration réenregistrait la veille. Une date de
+ * calendrier n'a pas de fuseau : on la garde en texte.
+ * Réglage global du module pg : à appeler avant de créer un pool.
+ * @param {typeof import('pg')} pg
+ */
+const PG_DATE_OID = 1082;
+function useCalendarDates(pg) {
+  pg.types.setTypeParser(PG_DATE_OID, (value) => value);
+  return pg;
+}
+
+module.exports = { withTransaction, watchPoolErrors, useCalendarDates };

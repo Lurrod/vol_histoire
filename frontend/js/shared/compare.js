@@ -384,7 +384,6 @@
     if (!btn) return;
     btn.prepend(VH.confirmAction.binIcon());
     const control = VH.confirmAction.arm(btn, {
-      showText: true,
       side: 'right',
       className: 'cmp-clear',
       measure: '.cfm-bin-check',
@@ -514,9 +513,7 @@
   }
 
   function yearFrom(dateStr) {
-    if (!dateStr) return null;
-    const y = new Date(dateStr).getFullYear();
-    return isNaN(y) ? null : y;
+    return window.VH.calendarDate.year(dateStr);
   }
 
   // Valeur numérique d'une colonne, ou NaN si elle est absente : Number(null)

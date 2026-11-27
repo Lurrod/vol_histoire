@@ -42,6 +42,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // Suppr sur une carte : confirmation de retrait (favorites/remove.js).
+  F.remove.bindDeleteKey(document.getElementById('favorites-container'));
+
   // Lire l'état depuis l'URL avant le premier load (permet le deep-linking)
   F.url.readStateFromUrl(state);
   if (searchInput && state.search) searchInput.value = state.search;

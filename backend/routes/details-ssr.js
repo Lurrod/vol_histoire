@@ -25,6 +25,7 @@ const {
   applyHeadMeta, replaceJsonLd, sendSsrHtml,
 } = require('../utils/ssr-head');
 const { findAircraftForSsr } = require('../repositories/ssr-details');
+const { yearOf, isoDay } = require('../utils/calendar-date');
 const { applyHeroFacts } = require('../utils/details-hero-ssr');
 const { applyDescription, applyRelated } = require('../utils/details-body-ssr');
 const { isValidDbId } = require('../middleware/input-guards');
@@ -56,12 +57,6 @@ function buildHeroSources(rawImage, version) {
 const TITLE_SUFFIX = " | Vol d'Histoire";
 // Longueur visée pour <title> (suffixe compris) : au-delà, Google tronque.
 const TITLE_MAX = 65;
-
-function yearOf(date) {
-  if (!date) return null;
-  const y = new Date(date).getFullYear();
-  return Number.isFinite(y) ? y : null;
-}
 
 /**
  * Titre de la fiche : « <nom> — <type>, <pays> (<année>) », le type venant
@@ -163,10 +158,11 @@ function buildVehicleLd(aircraft, meta) {
   const type = (isEn && aircraft.type_name_en) || aircraft.type_name;
   if (type) ld.vehicleConfiguration = type;
   if (aircraft.date_operationel) {
-    ld.vehicleModelDate = String(new Date(aircraft.date_operationel).getFullYear());
+    ld.vehicleModelDate = String(yearOf(aircraft.date_operationel));
   }
   if (aircraft.date_first_fly) {
-    ld.productionDate = new Date(aircraft.date_first_fly).toISOString().slice(0, 10);
+    // toISOString() donnait le jour UTC, donc la veille (minuit heure de Paris).
+    ld.productionDate = isoDay(aircraft.date_first_fly);
   }
   if (aircraft.manufacturer_name) {
     ld.manufacturer = { '@type': 'Organization', name: aircraft.manufacturer_name };

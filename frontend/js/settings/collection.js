@@ -27,7 +27,7 @@
   /** Année de mise en service, ou null. */
   function yearOf(fav) {
     if (!fav || !fav.date_operationel) return null;
-    const year = new Date(fav.date_operationel).getFullYear();
+    const year = window.VH.calendarDate.year(fav.date_operationel);
     return Number.isInteger(year) && year >= YEAR_MIN && year <= YEAR_MAX ? year : null;
   }
 

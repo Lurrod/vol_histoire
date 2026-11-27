@@ -47,7 +47,6 @@
     const { tr } = VH.settings.ui;
     const control = window.VH.confirmAction.arm(button, {
       side: 'right',
-      showText: true,
       className: 'ses-out',
       labels: {
         group: () => tr('settings.sessions_confirm_group', 'Fermer toutes les sessions ?'),

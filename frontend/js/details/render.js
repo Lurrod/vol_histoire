@@ -13,7 +13,7 @@
     const pending = year.querySelector('.skeleton-inline-meta') || ['', '-'].includes(year.textContent.trim());
     if (!pending) return;
     if (a.date_first_fly) {
-      const y = new Date(a.date_first_fly).getFullYear();
+      const y = window.VH.calendarDate.year(a.date_first_fly);
       const label = i18n.t('details.hero_first_flight', { year: y });
       year.textContent = label === 'details.hero_first_flight' ? `1er vol en ${y}` : label;
     } else {
@@ -61,7 +61,7 @@
     document.getElementById('hero-country').textContent = a.country_name || i18n.t('details.not_specified');
     document.getElementById('hero-manufacturer').textContent = a.manufacturer_name || i18n.t('details.not_specified');
     if (a.date_operationel) {
-      document.getElementById('hero-year').textContent = new Date(a.date_operationel).getFullYear();
+      document.getElementById('hero-year').textContent = window.VH.calendarDate.year(a.date_operationel);
     } else {
       renderHeroFirstFlight(a);
     }
@@ -516,10 +516,10 @@
       return;
     }
     const html = wars.map(war => {
-      const startYear = war.date_start ? new Date(war.date_start).getFullYear() : '?';
+      const startYear = window.VH.calendarDate.year(war.date_start) || '?';
       // Sans date de fin mais avec un début : conflit en cours.
       const endYear = war.date_end
-        ? new Date(war.date_end).getFullYear()
+        ? window.VH.calendarDate.year(war.date_end)
         : (war.date_start ? i18n.t('details.war_ongoing') : '?');
       // Conflit d'une seule année : « 1999 », pas « 1999 – 1999 ».
       const period = startYear === endYear && startYear !== '?' ? String(startYear) : `${startYear} – ${endYear}`;

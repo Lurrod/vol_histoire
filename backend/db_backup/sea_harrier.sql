@@ -36,7 +36,7 @@ INSERT INTO airplanes (
     '1980-04-18',
     1185.0,
     3600.0,
-    (SELECT id FROM manufacturer WHERE code = 'BAE'),
+    (SELECT id FROM manufacturer WHERE code = 'BAER'),
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Chasseur'),
     'Retiré',

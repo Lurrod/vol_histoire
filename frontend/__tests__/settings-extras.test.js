@@ -183,7 +183,7 @@ describe('VH.settings.sessions', () => {
     btn.click();
     expect(wrap().dataset.state).toBe('confirm');
     expect(wrap().querySelector('.cfm-panel').getAttribute('aria-label')).toBe('t:settings.sessions_confirm_group');
-    expect(wrap().querySelector('.cfm-yes .cfm-text').textContent).toBe('t:settings.sessions_confirm');
+    expect(wrap().querySelector('.cfm-yes').getAttribute('aria-label')).toBe('t:settings.sessions_confirm');
     auth.authFetch.mockResolvedValueOnce(jsonResponse(200, {}));
     wrap().querySelector('.cfm-yes').click();
     await flush(6);

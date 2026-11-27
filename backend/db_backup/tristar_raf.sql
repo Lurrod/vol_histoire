@@ -42,7 +42,7 @@ INSERT INTO airplanes (
     '1986-03-24',
     956,
     7800,
-    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM manufacturer WHERE code = 'LOC'),
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Ravitailleur'),
     'Retiré',

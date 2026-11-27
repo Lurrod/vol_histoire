@@ -75,14 +75,15 @@
     return (currentLang() === 'en' && obj[`${field}_en`]) ? obj[`${field}_en`] : (obj[field] || '');
   }
 
+  /* Date de calendrier (« AAAA-MM-JJ ») formatée en UTC : lue dans le fuseau
+   * du visiteur, elle reculait d'un jour aux Amériques. */
   function fmtDate(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return '';
+    const d = window.VH.calendarDate.toUTCDate(dateStr);
+    if (!d) return '';
     const lang = currentLang();
     try {
       return d.toLocaleDateString(lang === 'en' ? 'en-US' : 'fr-FR',
-        { day: 'numeric', month: 'long', year: 'numeric' });
+        { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
     } catch {
       return d.toISOString().slice(0, 10);
     }

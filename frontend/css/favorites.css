@@ -253,24 +253,39 @@
    .fav-del enveloppe la poubelle (.favorite-remove) et son panneau
    « confirmer / garder ». data-state : idle → confirm → done.
    La pastille s'allonge vers la gauche (ancrée en haut à droite de la
-   carte), le couvercle se soulève ; à la confirmation, couvercle et cuve
-   s'effacent et une coche se trace avant que la carte ne parte.
+   carte) et découvre le plateau « ✓ / ✗ » ; poubelle, plateau et coche :
+   shared-widgets.css.
    ============================================================ */
 .page-favorites .fav-del {
+  --cfm-radius: 11px; /* plateau collé au bord : 12 px de pastille − 1 px de bordure */
+  --cfm-btn: 1.625rem; /* disques de 26 px dans une pastille de 34 px */
   position: absolute; top: 1rem; right: 1rem; z-index: 10;
-  display: flex; flex-direction: row-reverse; align-items: center;
+  display: flex; flex-direction: row-reverse; align-items: stretch;
   padding: 3px;
   border-radius: 12px;
   /* Fond presque opaque, le même que la pastille du cœur de la fiche
      (details.css, .det-fav) : semi-transparent, il prenait la teinte de la
      photo et la poubelle n'avait pas les mêmes rouge et gris d'une page à
-     l'autre. */
-  background: rgba(22, 22, 24, 0.94);
+     l'autre. Assez clair pour que le plateau sombre s'en détache. */
+  background: var(--pill-surface-light);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--white-a12);
   box-shadow: 0 6px 18px var(--black-a35);
   opacity: 0;
   transition: opacity var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+/* La pastille est déjà la tuile : ni fond ni bordure partagés en plus.
+   Le plateau mange la marge intérieure (3 px) pour toucher le bord, comme
+   l'encart de Rare UI ; à gauche, au fil de l'élargissement. */
+.page-favorites .fav-del::before,
+.page-favorites .fav-del::after { content: none; }
+.page-favorites .fav-del .cfm-panel {
+  margin-block: -3px;
+  transition: grid-template-columns var(--dur-slow) var(--ease-out), margin var(--dur-slow) var(--ease-out);
+}
+.page-favorites .fav-del[data-state="confirm"] .cfm-panel {
+  margin-inline-start: -3px;
+  transition: grid-template-columns var(--dur-slower) var(--ease-out), margin var(--dur-slower) var(--ease-out);
 }
 /* Visible au survol, au clavier, et tant que le panneau est engagé. */
 .page-favorites .aircraft-card:hover .fav-del,
@@ -278,9 +293,7 @@
 .page-favorites .fav-del:not([data-state="idle"]) { opacity: 1; }
 .page-favorites .fav-del[data-state="confirm"] { border-color: var(--alert-a35); }
 
-.page-favorites .favorite-remove,
-.page-favorites .fav-del .cfm-yes,
-.page-favorites .fav-del .cfm-no {
+.page-favorites .favorite-remove {
   display: grid; place-items: center;
   width: 34px; height: 34px; flex-shrink: 0;
   padding: 0; border: 0; border-radius: 9px;
@@ -290,72 +303,14 @@
   transition: background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
               scale var(--dur-instant) var(--ease-out);
 }
-.page-favorites .favorite-remove:hover,
-.page-favorites .fav-del[data-state="confirm"] .favorite-remove { background: var(--alert-a16); color: var(--alert-text-soft); }
-.page-favorites .favorite-remove:focus-visible,
-.page-favorites .fav-del .cfm-yes:focus-visible,
-.page-favorites .fav-del .cfm-no:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.page-favorites .favorite-remove:hover { background: var(--alert-a16); color: var(--alert-text-soft); }
+/* Ouvert : poubelle rouge sur le fond de la pastille, d'un seul tenant
+   avec le plateau. */
+.page-favorites .fav-del[data-state="confirm"] .favorite-remove { background: transparent; color: var(--alert-text-soft); }
+.page-favorites .favorite-remove:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 .page-favorites .favorite-remove:disabled { cursor: default; }
-
-/* La poubelle : trois tracés animés séparément. */
-.page-favorites .fav-bin {
-  width: 18px; height: 18px; overflow: visible;
-  fill: none; stroke: currentColor; stroke-width: 1.8;
-  stroke-linecap: round; stroke-linejoin: round;
-}
-/* Charnière à DROITE : le panneau s'ouvre à gauche, le couvercle se soulève
-   du même côté (sur la fiche, panneau à droite, charnière à gauche). */
-.page-favorites .fav-bin-lid {
-  transform-box: view-box;
-  transform-origin: 19.5px 7px;
-  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
-}
-.page-favorites .fav-bin-can { transition: opacity var(--dur-fast) var(--ease-out); }
-/* Anticipation au survol, couvercle ouvert pendant la confirmation. */
-.page-favorites .favorite-remove:hover .fav-bin-lid { transform: translateY(-0.8px) rotate(7deg); }
-.page-favorites .fav-del[data-state="confirm"] .fav-bin-lid { transform: translate(0.4px, -2.4px) rotate(24deg); }
-.page-favorites .fav-bin-check {
-  stroke-dasharray: 17;
-  stroke-dashoffset: 17;
-  opacity: 0;
-}
 .page-favorites .fav-del[data-state="done"] .favorite-remove { color: var(--alert-text-soft); }
-.page-favorites .fav-del[data-state="done"] .fav-bin-lid,
-.page-favorites .fav-del[data-state="done"] .fav-bin-can { opacity: 0; }
-.page-favorites .fav-del[data-state="done"] .fav-bin-check {
-  stroke-dashoffset: 0;
-  opacity: 1;
-  transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant),
-              opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
-}
-
-/* Le panneau s'ouvre vers la gauche ; ses boutons arrivent en léger décalé. */
-.page-favorites .fav-del .cfm-panel {
-  display: flex; gap: 2px;
-  max-width: 0; overflow: hidden;
-  opacity: 0;
-  transition: max-width var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in),
-              margin var(--dur-fast) var(--ease-in);
-}
-.page-favorites .fav-del[data-state="confirm"] .cfm-panel {
-  max-width: 5rem; margin-right: 2px; opacity: 1;
-  transition: max-width var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out),
-              margin var(--dur-base) var(--ease-out);
-}
-.page-favorites .fav-del .cfm-panel button { translate: 6px 0; opacity: 0; transition: translate var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in), background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); }
-.page-favorites .fav-del[data-state="confirm"] .cfm-panel button {
-  translate: 0 0; opacity: 1;
-  transition: translate var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out),
-              background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
-              scale var(--dur-instant) var(--ease-out);
-}
-/* La confirmation (à gauche, row-reverse) arrive juste après la croix. */
-.page-favorites .fav-del[data-state="confirm"] .cfm-yes { transition-delay: var(--stagger-step), var(--stagger-step), 0s, 0s, 0s; }
-.page-favorites .fav-del .cfm-yes { color: var(--alert-text-soft); }
-.page-favorites .fav-del .cfm-yes:hover { background: var(--alert-a22); color: var(--white); }
-.page-favorites .fav-del .cfm-no:hover { background: var(--white-a08); color: var(--white); }
-.page-favorites .fav-del .cfm-panel .icon,
-.page-favorites .fav-del .cfm-panel i { font-size: 0.85rem; }
+.page-favorites .fav-bin { width: 18px; height: 18px; }
 
 /* Retrait d'un favori : la carte s'efface (et ne capte plus aucun clic),
    puis sort du flux — la grille se resserre. Elle revient par un nouveau

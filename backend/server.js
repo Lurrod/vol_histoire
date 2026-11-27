@@ -27,7 +27,10 @@ if (captchaMissing.length > 0) {
 
 const app = require('./app');
 const { resolveListenHost } = require('./utils/network');
-const { Pool } = require('pg');
+const pg = require('pg');
+const { Pool } = pg;
+// Dates de calendrier en « AAAA-MM-JJ », sans fuseau (db.js).
+require('./db').useCalendarDates(pg);
 
 // frontend/js/app-version.js (window.APP_VERSION, release Sentry) n'est plus
 // écrit au démarrage : il est généré par scripts/build-js.js depuis le

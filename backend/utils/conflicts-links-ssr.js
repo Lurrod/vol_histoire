@@ -35,7 +35,7 @@ function tr(lang, key, fallback, params = {}) {
   return Object.keys(params).reduce((s, k) => s.split(`{${k}}`).join(String(params[k])), raw);
 }
 
-const year = (d) => (d ? new Date(d).getFullYear() : null);
+const { yearOf: year } = require('./calendar-date');
 
 /** « 1955 – 1975 », « depuis 2022 », « 1982 » : comme period() de conflicts.js. */
 function period(w, lang) {

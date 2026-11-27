@@ -280,11 +280,12 @@ body.page-details { background: var(--night); }
    L'enveloppe .det-fav (VH.confirmAction) est la pastille. Pas encore
    favori : un clic ajoute, le cœur se remplit. Favori : le retrait se
    confirme sur place, comme la poubelle des cartes de la page Favoris
-   (favorites.css) — le cœur se rétracte et laisse place à la poubelle,
-   couvercle soulevé, « ✓ / ✗ » s'ouvrent à droite ; à la confirmation la
-   coche se trace, puis le cœur revient, vide.
+   (favorites.css) — le cœur se rétracte et laisse place à la poubelle
+   (shared-widgets.css), le plateau « ✓ / ✗ » s'ouvre à droite dans la
+   pastille ; à la confirmation la coche se trace, puis le cœur revient, vide.
    ============================================================ */
 .page-details .det-fav {
+  --cfm-radius: 11px; /* plateau collé au bord : 12 px de pastille − 1 px de bordure */
   display: inline-flex; align-items: stretch;
   padding: 3px;
   border: 1px solid var(--gold-a20);
@@ -293,70 +294,56 @@ body.page-details { background: var(--night); }
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
+/* La pastille est déjà la tuile : ni fond ni bordure partagés en plus.
+   Le plateau mange la marge intérieure (3 px) pour toucher le bord, comme
+   l'encart de Rare UI ; à droite, au fil de l'élargissement. */
+.page-details .det-fav::before,
+.page-details .det-fav::after { content: none; }
+.page-details .det-fav .cfm-panel {
+  margin-block: -3px;
+  transition: grid-template-columns var(--dur-slow) var(--ease-out), margin var(--dur-slow) var(--ease-out);
+}
+.page-details .det-fav[data-state="confirm"] .cfm-panel {
+  margin-inline-end: -3px;
+  transition: grid-template-columns var(--dur-slower) var(--ease-out), margin var(--dur-slower) var(--ease-out);
+}
 .page-details .det-fav[data-state="idle"]:has(.favorited) { border-color: var(--hud-amber); background: var(--amber-a12); }
 .page-details .det-fav[data-state="idle"]:has(> .btn-favorite:hover) { border-color: var(--gold-a45); background: var(--gold-a12); }
 .page-details .det-fav[data-state="confirm"],
-.page-details .det-fav[data-state="done"] { border-color: var(--alert-a35); background: rgba(22,22,24,0.94); } /* = .fav-del (favorites.css) */
+.page-details .det-fav[data-state="done"] { border-color: var(--alert-a35); background: var(--pill-surface-light); } /* = .fav-del (favorites.css) : le plateau sombre s'en détache */
 
-/* Cœur et panneau : carrés de 40 px dans la pastille (48 px au total,
-   la hauteur des autres boutons de la rangée). Sélecteur renforcé : la
-   règle mobile « .btn pleine largeur » ne doit pas l'étirer. */
-.page-details .hero-actions .det-fav > .btn.btn-favorite,
-.page-details .det-fav .cfm-yes,
-.page-details .det-fav .cfm-no {
+/* Cœur : carré de 40 px dans la pastille (48 px au total, la hauteur des
+   autres boutons de la rangée). Sélecteur renforcé : la règle mobile
+   « .btn pleine largeur » ne doit pas l'étirer. */
+.page-details .hero-actions .det-fav > .btn.btn-favorite {
   width: 2.5rem; min-width: 2.5rem; min-height: 2.5rem;
   padding: 0; gap: 0;
-  border: 0; border-radius: 9px; /* 12 px de pastille − 3 px de marge intérieure */
+  border: 0; border-radius: 9px;
   background: transparent;
+  color: var(--gold); backdrop-filter: none; -webkit-backdrop-filter: none;
 }
-.page-details .hero-actions .det-fav > .btn.btn-favorite { color: var(--gold); backdrop-filter: none; -webkit-backdrop-filter: none; }
 .page-details .hero-actions .det-fav > .btn.btn-favorite.favorited { color: var(--hud-amber); }
-/* Mêmes couleurs que la poubelle des cartes de favoris (favorites.css).
-   Sélecteur plus fort que celui du cœur favori (ambre), sinon la poubelle
-   restait dorée pendant la confirmation. */
-.page-details .hero-actions .det-fav:not([data-state="idle"]) > .btn.btn-favorite.btn-favorite { background: var(--alert-a16); color: var(--alert-text-soft); }
-.page-details .det-fav .btn-favorite:focus-visible,
-.page-details .det-fav .cfm-yes:focus-visible,
-.page-details .det-fav .cfm-no:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+/* Mêmes couleurs que la poubelle des cartes de favoris (favorites.css) :
+   poubelle rouge sur le fond de la pastille, d'un seul tenant avec le
+   plateau. Sélecteur plus fort que celui du cœur favori (ambre), sinon la
+   poubelle restait dorée pendant la confirmation. */
+.page-details .hero-actions .det-fav:not([data-state="idle"]) > .btn.btn-favorite.btn-favorite { background: transparent; color: var(--alert-text-soft); }
+.page-details .det-fav .btn-favorite:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 
 /* Le cœur et la poubelle partagent la même case : l'un se rétracte quand
    l'autre apparaît. */
 .page-details .fav-icons { display: grid; place-items: center; }
 .page-details .fav-icons > svg { grid-area: 1 / 1; }
-.page-details .det-fav .fav-heart {
-  transition: opacity var(--dur-fast) var(--ease-out), scale var(--dur-base) var(--ease-out);
-}
+.page-details .det-fav .fav-heart,
 .page-details .det-fav .fav-bin {
-  width: 1.2em; height: 1.2em; overflow: visible;
-  fill: none; stroke: currentColor; stroke-width: 1.8;
-  stroke-linecap: round; stroke-linejoin: round;
-  opacity: 0; scale: 0.6;
   transition: opacity var(--dur-fast) var(--ease-out), scale var(--dur-base) var(--ease-out);
 }
+.page-details .det-fav .fav-bin { opacity: 0; scale: 0.6; }
+/* Pas de tassement ici : à l'annulation, la poubelle s'efface au profit du
+   cœur (le tassement l'aurait fait ressauter en disparaissant). */
+.page-details .det-fav[data-settle] .fav-bin { animation: none; }
 .page-details .det-fav:not([data-state="idle"]) .fav-heart { opacity: 0; scale: 0.6; }
 .page-details .det-fav:not([data-state="idle"]) .fav-bin { opacity: 1; scale: 1; }
-.page-details .det-fav .fav-bin-lid {
-  transform-box: view-box; transform-origin: 4.5px 7px;
-  transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
-}
-.page-details .det-fav .fav-bin-can { transition: opacity var(--dur-fast) var(--ease-out); }
-.page-details .det-fav[data-state="confirm"] .fav-bin-lid { transform: translate(-0.4px, -2.4px) rotate(-24deg); }
-.page-details .det-fav .fav-bin-check { stroke-dasharray: 17; stroke-dashoffset: 17; opacity: 0; }
-.page-details .det-fav[data-state="done"] .fav-bin-lid,
-.page-details .det-fav[data-state="done"] .fav-bin-can { opacity: 0; }
-.page-details .det-fav[data-state="done"] .fav-bin-check {
-  stroke-dashoffset: 0; opacity: 1;
-  transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant),
-              opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
-}
-
-/* « ✓ / ✗ » s'ouvrent à droite, dans la pastille. */
-.page-details .det-fav .cfm-panel { gap: 2px; }
-.page-details .det-fav[data-state="confirm"] .cfm-panel { max-width: 6rem; margin-inline-start: 2px; }
-.page-details .det-fav .cfm-yes { color: var(--alert-text-soft); }
-.page-details .det-fav .cfm-yes:hover { background: var(--alert-a22); color: var(--white); }
-.page-details .det-fav .cfm-no { color: var(--white-a82); }
-.page-details .det-fav .cfm-no:hover { background: var(--white-a08); color: var(--white); }
 
 /* Viseur dessiné : « Comparer » verrouille la cible — les quatre graduations
    se resserrent vers le centre, puis la coche se trace ; l'inverse au retrait. */
@@ -383,43 +370,29 @@ body.page-details { background: var(--night); }
 /* Suppression de la fiche : le bouton est enveloppé par VH.confirmAction
    (.cfm.det-del). Enveloppe cachée tant que le bouton l'est (rôle). */
 .page-details .hero-actions .cfm:has(> .btn.hidden) { display: none; }
-/* Même confirmation que la suppression d'un utilisateur (Paramètres) : le
-   couvercle de la poubelle se soulève (charnière à gauche, panneau à droite)
-   et « ✓ Supprimer · ✗ Garder » sort à droite du bouton, à sa hauteur ; à
-   la confirmation, la coche se trace (poubelle : shared-base). */
-.page-details .det-del { align-items: stretch; }
-.page-details .det-del .cfm-panel { align-items: stretch; }
-.page-details .det-del .cfm-yes,
-.page-details .det-del .cfm-no {
-  min-height: 0;
-  gap: 0.45rem;
-  padding: 0 0.85rem;
-  border-radius: 12px;
-  font-size: 0.9rem;
-}
-.page-details .det-del .cfm-yes { background: var(--alert-a20); border-color: var(--accent); color: var(--alert-text-soft); }
-.page-details .det-del .cfm-yes:hover { background: var(--alert-a32); color: var(--white); }
-.page-details .det-del .cfm-no { background: var(--white-a04); border-color: var(--white-a15); color: var(--white-a85); }
-.page-details .det-del .cfm-no:hover { background: var(--white-a08); color: var(--white); }
-.page-details .det-del[data-state="confirm"] .btn-danger,
-.page-details .det-del[data-state="done"] .btn-danger { background: var(--alert-a20); border-color: var(--accent); }
+/* Même confirmation que la suppression d'un utilisateur (Paramètres) : la
+   poubelle s'ouvre et la tuile s'élargit vers la droite, à la hauteur du
+   bouton, pour découvrir « ✓ / ✗ » ; à la confirmation, la coche se trace
+   (poubelle et tuile : shared-widgets). La tuile reprend la teinte et la
+   bordure du bouton, qui s'efface derrière elle. */
+.page-details .det-del { --cfm-surface: var(--alert-a20); --cfm-ring: var(--accent); }
+.page-details .det-del:is(:not([data-state="idle"]), [data-settle]) .btn-danger { background: transparent; border-color: transparent; }
 .page-details .det-del[data-state="done"] .btn-danger { pointer-events: none; }
-/* Rangée en ligne (≥ 48em) : la place de la paire est réservée — un vide en
-   fin de rangée, invisible — et la paire se découvre vers la droite. Si elle
+/* Rangée en ligne (≥ 48em) : la place du plateau est réservée — un vide en
+   fin de rangée, invisible — et la tuile se découvre vers la droite. Si elle
    prenait sa place à l'ouverture, « Supprimer » pourrait passer à la ligne
    sous le doigt. */
 @media (min-width: 48em) {
-  .page-details .det-del .cfm-panel {
-    max-width: none;
-    margin-inline-start: 6px;
-    clip-path: inset(0 100% 0 0);
-    transition: clip-path var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in);
+  .page-details .det-del .cfm-panel { grid-template-columns: 1fr; }
+  .page-details .det-del::before,
+  .page-details .det-del::after {
+    clip-path: inset(0 var(--cfm-tray-w) 0 0 round var(--cfm-radius));
+    transition: opacity var(--dur-fast) var(--ease-in), clip-path var(--dur-slow) var(--ease-out);
   }
-  .page-details .det-del[data-state="confirm"] .cfm-panel {
-    max-width: none;
-    margin-inline-start: 6px;
-    clip-path: inset(0 0 0 0);
-    transition: clip-path var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
+  .page-details .det-del[data-state="confirm"]::before,
+  .page-details .det-del[data-state="confirm"]::after {
+    clip-path: inset(0 round var(--cfm-radius));
+    transition: opacity var(--dur-fast) var(--ease-out), clip-path var(--dur-slower) var(--ease-out);
   }
 }
 

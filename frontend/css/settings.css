@@ -200,6 +200,9 @@ body.page-settings { min-height: 100vh; display: flex; flex-direction: column; b
   .page-settings .form-grid { grid-template-columns: 1fr; }
   .page-settings .form-actions .btn { width: 100%; }
   .page-settings .delete-account-form .btn { width: 100%; white-space: normal; }
+  /* Pleine largeur : le bouton se resserre pour laisser sortir le plateau. */
+  .page-settings .delete-account-form .del-acc { display: flex; align-self: stretch; }
+  .page-settings .delete-account-form .del-acc > .btn { flex: 1 1 auto; min-width: 0; width: auto; }
   .page-settings .logout-modal-container { padding: 1.5rem; }
   .page-settings .logout-modal-actions { flex-direction: column-reverse; }
 }

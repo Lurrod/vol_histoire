@@ -42,7 +42,7 @@ INSERT INTO airplanes (
     '1976-11-01',
     1037.0,
     2520.0,
-    (SELECT id FROM manufacturer WHERE code = 'BAE'),
+    (SELECT id FROM manufacturer WHERE code = 'HS'),
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Entraîneur'),
     'En service',

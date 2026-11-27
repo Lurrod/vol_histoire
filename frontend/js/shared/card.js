@@ -45,23 +45,19 @@
     const esc = window.escapeHtml;
     const alpha = VH.shared.ALPHA3_TO_ALPHA2;
     const noDesc = tr('details.no_desc_available', '');
-    // Poubelle dessinée ici (et non une icône Font Awesome) : couvercle, cuve
-    // et coche sont trois tracés que favorites.css anime séparément.
+    // Poubelle partagée (shared/confirm-action.js) plutôt qu'une icône Font
+    // Awesome : couvercle, cuve et coche sont trois tracés animés séparément.
     const removeLabel = esc(tr('details.remove_favorite', 'Retirer'));
     const removeBtn = options.removeBtn
-      ? `<button type="button" class="favorite-remove" data-airplane-id="${aircraft.id}" title="${removeLabel}" aria-label="${removeLabel}">` +
-        '<svg class="fav-bin" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-        '<g class="fav-bin-lid"><path d="M4.5 7h15"/><path d="M9.5 7V5.2c0-.7.5-1.2 1.2-1.2h2.6c.7 0 1.2.5 1.2 1.2V7"/></g>' +
-        '<g class="fav-bin-can"><path d="M6.5 7.5l.9 11.2c.1 1 .9 1.8 1.9 1.8h5.4c1 0 1.8-.8 1.9-1.8l.9-11.2"/><path d="M10.2 11v5.5M13.8 11v5.5"/></g>' +
-        '<path class="fav-bin-check" d="M6.5 12.5l3.6 3.6 7.4-7.6"/>' +
-        '</svg></button>'
+      ? `<button type="button" class="favorite-remove" data-airplane-id="${aircraft.id}" title="${removeLabel}" aria-label="${removeLabel}" aria-keyshortcuts="Delete Backspace">` +
+        window.VH.confirmAction.binMarkup('fav-bin') + '</button>'
       : '';
     const footer = options.footerHtml || '';
     const description = options.showDescription === false
       ? ''
       : `<p class="aircraft-description">${esc(aircraft.little_description) || noDesc}</p>`;
     const yearLine = aircraft.date_operationel
-      ? `<div class="spec-item"><i class="fas fa-calendar"></i><span>${new Date(aircraft.date_operationel).getFullYear()}</span></div>`
+      ? `<div class="spec-item"><i class="fas fa-calendar"></i><span>${window.VH.calendarDate.year(aircraft.date_operationel)}</span></div>`
       : '';
     const speedLine = aircraft.max_speed
       ? `<div class="spec-item"><i class="fas fa-gauge-high"></i><span>${esc(aircraft.max_speed)} km/h</span></div>`

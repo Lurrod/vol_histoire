@@ -108,3 +108,17 @@ describe('render', () => {
     expect(document.querySelector('#date-first-fly .milestone-span').hidden).toBe(true);
   });
 });
+
+describe('dates de calendrier (« AAAA-MM-JJ », format de l’API)', () => {
+  test('lues chiffre par chiffre et formatées en UTC : le jour ne recule pas', () => {
+    expect(kd.format('1974-12-23', 'fr')).toBe('23 décembre 1974');
+    expect(kd.format('1986-10-01', 'fr')).toBe('octobre 1986');
+    expect(kd.format('1978-01-01', 'fr')).toBe('1978');
+  });
+
+  test('ancien format (minuit heure de Paris en UTC) : même résultat', () => {
+    expect(kd.format('1986-09-30T23:00:00.000Z', 'fr')).toBe('octobre 1986');
+    expect(kd.format('1986-07-03T22:00:00.000Z', 'fr')).toBe('4 juillet 1986');
+    expect(kd.format('1977-12-31T23:00:00.000Z', 'fr')).toBe('1978');
+  });
+});

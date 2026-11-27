@@ -84,20 +84,20 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
 .compare-bar .cmp-share-label.is-swapping { animation: vh-text-swap var(--dur-base) var(--ease-out); }
 
 /* « Effacer » : même confirmation que la suppression d'un utilisateur
-   (poubelle et panneau : shared-base). Le panneau sort à droite du bouton,
-   la barre centrée s'élargit des deux côtés. */
-.compare-bar .cmp-clear,
-.compare-bar .cmp-clear .cfm-panel { align-items: stretch; }
+   (poubelle, tuile et plateau : shared-widgets). La tuile s'élargit à
+   droite du bouton, la barre centrée s'élargit des deux côtés. */
+.compare-bar .cmp-clear { --cfm-surface: var(--alert-a15); --cfm-ring: var(--accent); }
 .compare-bar #compare-clear { display: inline-flex; align-items: center; gap: 0.45rem; }
 .compare-bar .cmp-clear .cfm-bin { width: 16px; height: 16px; }
-.compare-bar .cmp-clear .cfm-yes,
-.compare-bar .cmp-clear .cfm-no { min-height: 0; }
-.compare-bar .cmp-clear:not([data-state="idle"]) #compare-clear {
-  background: var(--alert-a15); border-color: var(--accent); color: var(--alert-text-soft);
+/* Ouvert : la tuile porte la teinte du bouton, qui s'efface derrière elle. */
+.compare-bar .cmp-clear:is(:not([data-state="idle"]), [data-settle]) #compare-clear {
+  background: transparent; border-color: transparent; color: var(--alert-text-soft);
 }
 .compare-bar .cmp-clear[data-state="done"] #compare-clear { pointer-events: none; }
-/* Jamais plus large que l'écran, quelle que soit la largeur. */
-.compare-bar { max-width: calc(100vw - 2rem); }
+/* Largeur de son contenu, jamais plus large que l'écran. Sans `max-content`,
+   une barre fixe à left: 50 % plafonne à la moitié de l'écran : à
+   l'ouverture de « Effacer ? », les libellés se faisaient rogner. */
+.compare-bar { width: max-content; max-width: calc(100vw - 2rem); }
 
 /* Libellés qui se replient (« Copier le lien », « Effacer ») : utilisé quand
    la paire de confirmation doit trouver sa place (tablette). */
@@ -122,6 +122,7 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
   .compare-bar {
     left: 1rem;
     right: 1rem;
+    width: auto;
     transform: none;
     flex-wrap: wrap;
     gap: 0 0.5rem;
@@ -156,27 +157,12 @@ html:active-view-transition .compare-bar .cmp-thumb { animation: none; }
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* « Effacer ? » ouvert : la question occupe la ligne du bas. Le lien et
-     « Voir la comparaison » s'effacent le temps de répondre ; « ✓ Effacer »
-     et « ✗ Garder » reprennent leur libellé et se partagent la place. */
-  .compare-bar:has(.cmp-clear:not([data-state="idle"])) #compare-share,
-  .compare-bar:has(.cmp-clear:not([data-state="idle"])) #compare-view { display: none; }
-  .compare-bar .cmp-clear:not([data-state="idle"]) { flex: 1 1 0; min-width: 0; }
-  .compare-bar .cmp-clear .cfm-panel { flex: 1 1 auto; min-width: 0; }
-  .compare-bar .cmp-clear[data-state="confirm"] .cfm-panel { max-width: 100%; }
-  .compare-bar .cmp-clear .cfm-yes,
-  .compare-bar .cmp-clear .cfm-no { flex: 1 1 0; min-height: 44px; }
 }
 
-/* Tablette : une seule ligne. La paire de confirmation se réduit à ses
-   icônes (noms accessibles gardés) et, quand elle s'ouvre, « Copier le lien »
-   et « Effacer » replient leur libellé : avec trois vignettes, la barre
-   ouverte faisait 808 px et sortait d'un écran de 768. */
+/* Tablette : une seule ligne. Quand la confirmation s'ouvre, « Copier le
+   lien » et « Effacer » replient leur libellé : avec trois vignettes, la
+   barre ouverte sortait d'un écran de 768. */
 @media (min-width: 48em) and (max-width: 64em) {
-  .compare-bar .cmp-clear .cfm-text {
-    position: absolute; width: 1px; height: 1px; overflow: hidden;
-    clip-path: inset(50%); white-space: nowrap;
-  }
   .compare-bar:has(.cmp-clear:not([data-state="idle"])) #compare-share,
   .compare-bar .cmp-clear:not([data-state="idle"]) #compare-clear { gap: 0; }
   .compare-bar:has(.cmp-clear:not([data-state="idle"])) .cmp-share-label,

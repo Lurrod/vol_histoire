@@ -79,9 +79,9 @@ describe('confirmation', () => {
   test('confirmer : le retrait attend la fin du tracé de la coche', () => {
     jest.useFakeTimers();
     const style = document.createElement('style');
-    style.textContent = '.cfm[data-state="done"] .fav-bin-check { transition-duration: 300ms; }';
+    style.textContent = '.cfm[data-state="done"] .cfm-bin-check { transition-duration: 300ms; }';
     document.head.appendChild(style);
-    bin.innerHTML = '<svg><path class="fav-bin-check"></path></svg>';
+    bin.innerHTML = '<svg><path class="cfm-bin-check"></path></svg>';
     bin.click();
     confirmBtn().click();
     expect(onConfirm).not.toHaveBeenCalled();
@@ -182,7 +182,6 @@ test('libellés des boutons fournis par des fonctions : évalués à l’ouvertu
   const dict = {};
   window.VH.confirmAction.arm(document.getElementById('del'), {
     onConfirm: jest.fn(),
-    showText: true,
     labels: { group: 'g', confirm: () => dict.yes || 'clé.yes', cancel: () => dict.no || 'clé.no' },
   });
   dict.yes = 'Supprimer';
@@ -190,8 +189,52 @@ test('libellés des boutons fournis par des fonctions : évalués à l’ouvertu
   document.getElementById('del').click();
   const yesBtn = document.querySelector('.cfm-yes');
   expect(yesBtn.getAttribute('aria-label')).toBe('Supprimer');
-  expect(yesBtn.querySelector('.cfm-text').textContent).toBe('Supprimer');
+  expect(yesBtn.title).toBe('Supprimer');
   expect(document.querySelector('.cfm-no').getAttribute('aria-label')).toBe('Garder');
+});
+
+test('plateau : deux boutons ronds à icône seule, rognés pendant l’ouverture', () => {
+  document.body.innerHTML = '<button id="del">x</button>';
+  const ctl = window.VH.confirmAction.arm(document.getElementById('del'), {
+    onConfirm: jest.fn(), labels: { confirm: 'Supprimer', cancel: 'Garder' },
+  });
+  const tray = ctl.wrap.querySelector('.cfm-panel > .cfm-clip > .cfm-tray');
+  expect(tray).not.toBeNull();
+  expect([...tray.children].map((b) => b.className)).toEqual(['cfm-yes', 'cfm-no']);
+  expect(tray.querySelector('.cfm-text')).toBeNull();
+  expect(tray.querySelector('.cfm-yes').textContent.trim()).toBe('');
+});
+
+test('tassement : posé à l’annulation, retiré à la réouverture et à la confirmation', () => {
+  document.body.innerHTML = '<button id="del">x</button>';
+  const t = document.getElementById('del');
+  const ctl = window.VH.confirmAction.arm(t, { onConfirm: jest.fn(), labels: {} });
+  expect('settle' in ctl.wrap.dataset).toBe(false);
+  t.click();
+  ctl.cancel(true);
+  expect('settle' in ctl.wrap.dataset).toBe(true);
+  t.click();
+  expect('settle' in ctl.wrap.dataset).toBe(false);
+  ctl.confirm();
+  expect('settle' in ctl.wrap.dataset).toBe(false);
+  ctl.reset();
+  expect('settle' in ctl.wrap.dataset).toBe(false);
+});
+
+test('tassement : retiré une fois le repli fini (durée lue sur le CSS)', () => {
+  jest.useFakeTimers();
+  try {
+    document.body.innerHTML = '<button id="del">x</button>';
+    const t = document.getElementById('del');
+    const ctl = window.VH.confirmAction.arm(t, { onConfirm: jest.fn(), labels: {} });
+    t.click();
+    ctl.cancel(false);
+    expect('settle' in ctl.wrap.dataset).toBe(true);
+    jest.advanceTimersByTime(2000);
+    expect('settle' in ctl.wrap.dataset).toBe(false);
+  } finally {
+    jest.useRealTimers();
+  }
 });
 
 test('bouton absent : rien ne lève', () => {
@@ -229,6 +272,15 @@ describe('binIcon : poubelle partagée', () => {
     });
   });
 
+  test('binMarkup : même dessin que binIcon, classe fixe ajoutée au <svg>', () => {
+    const holder = document.createElement('div');
+    holder.innerHTML = window.VH.confirmAction.binMarkup('fav-bin');
+    const svg = holder.firstChild;
+    expect(svg.getAttribute('class')).toBe('cfm-bin fav-bin');
+    expect(svg.innerHTML).toBe(window.VH.confirmAction.binIcon().innerHTML);
+    expect(window.VH.confirmAction.binMarkup()).toContain('class="cfm-bin"');
+  });
+
   test('un nœud neuf à chaque appel', () => {
     expect(window.VH.confirmAction.binIcon()).not.toBe(window.VH.confirmAction.binIcon());
   });
@@ -246,7 +298,7 @@ test('libellés rafraîchis à i18nReady et langChanged ; contrôle sorti du DOM
   document.body.innerHTML = '<button id="a">x</button><button id="b">y</button>';
   let text = 'details.delete_confirm';
   const live = window.VH.confirmAction.arm(document.getElementById('a'), {
-    onConfirm: jest.fn(), showText: true, labels: { confirm: () => text, cancel: 'Garder' },
+    onConfirm: jest.fn(), labels: { confirm: () => text, cancel: 'Garder' },
   });
   const goneLabel = jest.fn(() => 'Effacer');
   const gone = window.VH.confirmAction.arm(document.getElementById('b'), {
@@ -255,13 +307,66 @@ test('libellés rafraîchis à i18nReady et langChanged ; contrôle sorti du DOM
   gone.wrap.remove();
   goneLabel.mockClear();
   const yes = live.wrap.querySelector('.cfm-yes');
-  expect(yes.querySelector('.cfm-text').textContent).toBe('details.delete_confirm');
+  expect(yes.title).toBe('details.delete_confirm');
   text = 'Supprimer';
   window.dispatchEvent(new window.CustomEvent('i18nReady'));
-  expect(yes.querySelector('.cfm-text').textContent).toBe('Supprimer');
+  expect(yes.title).toBe('Supprimer');
   expect(yes.getAttribute('aria-label')).toBe('Supprimer');
   text = 'Delete';
   window.dispatchEvent(new window.CustomEvent('langChanged'));
   expect(yes.getAttribute('aria-label')).toBe('Delete');
   expect(goneLabel).not.toHaveBeenCalled();
+});
+
+describe('touche Suppr sur une carte (bindDeleteKey)', () => {
+  let title;
+  beforeEach(() => {
+    title = document.createElement('a');
+    title.href = '/details/x-7';
+    card.prepend(title);
+    remove.bindDeleteKey(document.body);
+  });
+
+  test('Suppr ou Retour arrière sur le titre : confirmation ouverte, focus sur « garder », rien de retiré', () => {
+    title.focus();
+    expect(key(title, 'Delete')).toBe(false); // défaut empêché
+    expect(wrap().dataset.state).toBe('confirm');
+    expect(document.activeElement).toBe(cancelBtn());
+    expect(onConfirm).not.toHaveBeenCalled();
+    key(cancelBtn(), 'Escape');
+    key(title, 'Backspace');
+    expect(wrap().dataset.state).toBe('confirm');
+  });
+
+  test('sur la poubelle elle-même : même effet', () => {
+    key(bin, 'Delete');
+    expect(wrap().dataset.state).toBe('confirm');
+  });
+
+  test('confirmation déjà engagée : Retour arrière ne referme pas et ne confirme pas', () => {
+    bin.click();
+    key(cancelBtn(), 'Backspace');
+    expect(wrap().dataset.state).toBe('confirm');
+    expect(onConfirm).not.toHaveBeenCalled();
+  });
+
+  test('avec un modificateur, une autre touche, dans un champ ou hors d’une carte : rien', () => {
+    title.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Delete', ctrlKey: true, bubbles: true }));
+    key(title, 'Enter');
+    const input = document.createElement('input');
+    card.appendChild(input);
+    key(input, 'Backspace');
+    key(document.getElementById('ailleurs'), 'Delete');
+    expect(wrap().dataset.state).toBe('idle');
+  });
+
+  test('poubelle désactivée (retrait en cours) : rien', () => {
+    bin.disabled = true;
+    key(title, 'Delete');
+    expect(wrap().dataset.state).toBe('idle');
+  });
+
+  test('conteneur absent : rien ne lève', () => {
+    expect(() => remove.bindDeleteKey(null)).not.toThrow();
+  });
 });

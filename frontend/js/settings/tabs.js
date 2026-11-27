@@ -300,7 +300,33 @@
     if (typeof mq.addEventListener === 'function') mq.addEventListener('change', apply);
   }
 
+  /* WebKit : un appui de souris sur un contenu non focalisable d'un panneau
+   * (tabindex="0", motif des onglets) donne le focus au panneau lui-même —
+   * WebKit ne le donne pas aux boutons — et le fait défiler en vue. Le
+   * relâchement tombe alors à côté du bouton visé et le clic se perd (vu sur
+   * la poubelle d'un utilisateur). La position d'avant l'appui est rendue
+   * aussitôt, avant le prochain rendu ; rien ne change au clavier, ni sous
+   * Chromium et Firefox, où le défilement n'a pas lieu. */
+  function keepScrollOnPointerFocus(panel) {
+    panel.addEventListener('mousedown', () => {
+      const x = window.scrollX;
+      const y = window.scrollY;
+      const restore = () => {
+        if (document.activeElement !== panel) return;
+        if (window.scrollX === x && window.scrollY === y) return;
+        window.scrollTo({ left: x, top: y, behavior: 'instant' });
+      };
+      // Le défilement peut survenir avant ou après l'événement focus.
+      panel.addEventListener('focus', restore, { once: true });
+      setTimeout(() => {
+        panel.removeEventListener('focus', restore);
+        restore();
+      }, 0);
+    });
+  }
+
   function setup() {
+    document.querySelectorAll('.content-section').forEach(keepScrollOnPointerFocus);
     const sidebarLinks = Array.from(document.querySelectorAll('.sidebar-link'));
     const nav = document.querySelector('.sidebar-nav');
     watchOrientation(nav);
@@ -327,7 +353,7 @@
 
   VH.settings.tabs = {
     ALIASES, resolveHash, activateTab, targetForKey, setup, openFromHash,
-    placeIndicator, morphNames, direction, revealInRow, focusBlock,
+    placeIndicator, morphNames, direction, revealInRow, focusBlock, keepScrollOnPointerFocus,
   };
 
   if (typeof module !== 'undefined' && module.exports) {

@@ -42,7 +42,7 @@ INSERT INTO airplanes (
     NULL,
     1064,
     3680,
-    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM manufacturer WHERE code = 'LOC'),
     (SELECT id FROM generation WHERE generation = 1),
     (SELECT id FROM type WHERE name = 'Chasseur'),
     'Annulé',

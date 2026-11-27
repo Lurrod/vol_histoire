@@ -66,8 +66,15 @@
    COMPTE — sessions (confirmation sur place, VH.confirmAction)
    ====================================================================== */
 .page-settings .sessions-actions { display: flex; flex-wrap: wrap; align-items: center; }
-.page-settings .ses-out { flex-wrap: wrap; row-gap: 0.5rem; }
-.page-settings .ses-out .cfm-yes, .page-settings .ses-out .cfm-no { min-height: 44px; padding: 0 0.875rem; border-radius: 50px; font-size: 0.85rem; }
+/* Bouton en gélule : la tuile reprend son fond et sa bordure, il s'efface
+   derrière elle le temps de la confirmation. */
+.page-settings .ses-out { --cfm-radius: 9999px; --cfm-surface: var(--white-a05); --cfm-ring: var(--white-a15); }
+.page-settings .ses-out:is(:not([data-state="idle"]), [data-settle]) #logout-all-btn { background: transparent; border-color: transparent; backdrop-filter: none; }
+/* Écran étroit : le bouton se resserre (libellé coupé par « … ») pour
+   laisser sortir le plateau, au lieu de déborder de la carte. */
+.page-settings .ses-out { min-width: 0; max-width: 100%; }
+.page-settings .ses-out > #logout-all-btn { min-width: 0; }
+.page-settings .ses-out > #logout-all-btn > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ======================================================================
    PRÉFÉRENCES (settings/preferences.js)
@@ -143,6 +150,12 @@
 /* Mot de passe actuel exigé pour supprimer le compte (SEC-005). */
 .page-settings .delete-account-form { display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; margin: 0; }
 .page-settings .delete-account-form .form-group { align-self: stretch; }
+/* Suppression du compte : même confirmation sur place que le reste du site
+   (danger-zone.js), une fois le mot de passe et le mot saisis. La tuile
+   reprend la teinte du bouton, qui s'efface derrière elle. */
+.page-settings .del-acc { --cfm-radius: 9999px; --cfm-surface: var(--alert-a20); --cfm-ring: var(--accent); max-width: 100%; }
+.page-settings .del-acc:is(:not([data-state="idle"]), [data-settle]) #delete-account-btn { background: transparent; border-color: transparent; }
+.page-settings .del-acc[data-state="done"] #delete-account-btn { pointer-events: none; }
 .page-settings .danger-list { list-style: none; display: grid; gap: 0.375rem; margin: 0 0 1.25rem; }
 .page-settings .danger-list li { position: relative; padding-left: 1rem; color: var(--text-ghost); font-size: 0.875rem; }
 .page-settings .danger-list li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 5px; height: 5px; border-radius: 50%; background: var(--alert-a60); }
@@ -178,31 +191,23 @@
 .page-settings .user-role select, .page-settings .user-role .cselect { width: 100%; }
 .page-settings .user-role select { min-height: 40px; padding: 0.5rem 0.75rem; border: 1px solid var(--border-field); border-radius: 10px; background: var(--white-a03); color: var(--white); font-family: 'DM Sans', sans-serif; }
 .page-settings .user-actions { display: flex; align-items: center; gap: 0.5rem; }
-.page-settings .user-actions button { min-width: 40px; min-height: 40px; padding: 0.5rem 0.75rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); font-family: 'DM Sans', sans-serif; }
+.page-settings .user-actions button:not(.cfm-yes, .cfm-no) { min-width: 40px; min-height: 40px; padding: 0.5rem 0.75rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out); font-family: 'DM Sans', sans-serif; }
 .page-settings .btn-edit { background: var(--gold-a08); color: var(--gold); border: 1px solid var(--gold-a15); }
 .page-settings .btn-edit:hover { background: var(--gold-a15); }
 .page-settings .btn-delete { background: var(--alert-a08); color: var(--accent-text); border: 1px solid var(--alert-a15); }
 .page-settings .btn-delete:hover { background: var(--alert-a15); }
-.page-settings .user-actions button:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.page-settings .user-actions button:not(.cfm-yes, .cfm-no):focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
 
 /* Suppression d'un utilisateur en deux temps, sur place (admin.js +
    shared/confirm-action.js). .adm-del enveloppe la poubelle (.btn-delete) et
    son panneau « supprimer / garder » ; data-state : idle → confirm → done.
-   Le panneau s'ouvre vers la gauche, le couvercle se soulève (charnière à
-   droite) ; à la confirmation, couvercle et cuve s'effacent et une coche
-   se trace. */
-.page-settings .adm-del { flex-shrink: 0; }
+   La tuile s'élargit vers la gauche, la poubelle s'ouvre ; à la
+   confirmation, une coche se trace (shared-widgets.css). */
+.page-settings .adm-del { --cfm-radius: 10px; --cfm-surface: var(--alert-a15); --cfm-ring: var(--alert-a15); flex-shrink: 0; }
 .page-settings .adm-del .btn-delete { display: grid; place-items: center; }
-.page-settings .adm-del[data-state="confirm"] .btn-delete,
-.page-settings .adm-del[data-state="done"] .btn-delete { background: var(--alert-a15); color: var(--alert-text-soft); }
+/* Ouvert : la tuile porte la teinte du bouton, qui s'efface derrière elle. */
+.page-settings .adm-del:is(:not([data-state="idle"]), [data-settle]) .btn-delete { background: transparent; border-color: transparent; color: var(--alert-text-soft); }
 .page-settings .adm-del[data-state="done"] .btn-delete { pointer-events: none; }
-/* Les boutons du panneau reprennent le style de .cfm-yes / .cfm-no, que la
-   règle générique « .user-actions button » écraserait. */
-.page-settings .user-actions .adm-del .cfm-yes,
-.page-settings .user-actions .adm-del .cfm-no { padding: 0 0.65rem; border: 1px solid var(--white-a08); border-radius: 10px; background: var(--white-a04); font-size: 0.8rem; }
-.page-settings .user-actions .adm-del .cfm-yes { color: var(--alert-text-soft); border-color: var(--alert-a32); background: var(--alert-a08); }
-.page-settings .user-actions .adm-del .cfm-yes:hover { background: var(--alert-a22); color: var(--white); }
-.page-settings .user-actions .adm-del .cfm-no:hover { background: var(--white-a08); color: var(--white); }
 .page-settings .adm-del .cfm-bin { width: 18px; height: 18px; }
 .page-settings .admin-empty-msg { text-align: center; padding: 2rem; color: var(--text-secondary); }
 
@@ -250,12 +255,11 @@ body.page-settings.has-save-bar .settings-section { padding-bottom: 8rem; }
   .page-settings .user-info { grid-area: info; }
   .page-settings .user-role { grid-area: role; }
   .page-settings .user-actions { grid-area: actions; }
-  .page-settings .adm-del .cfm-text, .page-settings .ses-out .cfm-text { display: none; }
   .page-settings .save-bar { border-radius: 16px; padding: 0.625rem; flex-wrap: wrap; }
   .page-settings .save-bar-text { flex-basis: 100%; padding: 0 0.375rem; }
   .page-settings .save-bar .btn { flex: 1; }
 }
 
 @media (hover: none) and (pointer: coarse) {
-  .page-settings .role-chip, .page-settings .segmented-option span, .page-settings .user-actions button { min-height: 44px; }
+  .page-settings .role-chip, .page-settings .segmented-option span, .page-settings .user-actions button:not(.cfm-yes, .cfm-no) { min-height: 44px; }
 }

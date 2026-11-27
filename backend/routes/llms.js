@@ -5,6 +5,7 @@ const cache = require('../utils/cache');
 const logger = require('../logger');
 const sitemapRepo = require('../repositories/sitemap');
 const warsRepo = require('../repositories/wars');
+const { yearOf } = require('../utils/calendar-date');
 
 /* /llms.txt — présentation du site aux modèles de langage (format
  * https://llmstxt.org : titre, résumé en citation, sections de liens).
@@ -85,8 +86,9 @@ async function buildLlmsTxt(getPool) {
   ]);
   const linked = wars.filter((w) => w.count > 0);
   const warLines = linked.map((w) => {
-    const start = w.date_start ? new Date(w.date_start).getUTCFullYear() : null;
-    const end = w.date_end ? new Date(w.date_end).getUTCFullYear() : null;
+    // Année UTC d'un minuit heure de Paris : l'année précédente pour un 1er janvier.
+    const start = yearOf(w.date_start);
+    const end = yearOf(w.date_end);
     // Sans date de fin, le conflit dure encore : « depuis 1948 », pas « 1948 ».
     let period = null;
     if (start && !end) period = `depuis ${start}`;

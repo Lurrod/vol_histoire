@@ -36,7 +36,7 @@ INSERT INTO airplanes (
     '1974-09-22',
     2485.0,
     2965.0,
-    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM manufacturer WHERE code = 'GRU'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Intercepteur'),
     'Retiré',

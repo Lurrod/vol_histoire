@@ -2,17 +2,19 @@
  *
  * Remplace les window.confirm() et les actions destructrices « en un clic » :
  * le déclencheur ouvre à côté de lui un panneau « confirmer / annuler »
- * (shared-base.css, bloc CONFIRMATION SUR PLACE). Seule la confirmation
+ * (shared-widgets.css, bloc CONFIRMATION SUR PLACE) : déclencheur et
+ * panneau forment une tuile qui s'élargit, le plateau porte deux boutons
+ * ronds à icône (libellés en nom accessible et en info-bulle). Seule la confirmation
  * appelle onConfirm — après l'animation propre au déclencheur (coche tracée
  * à la place de la poubelle…), dont la durée est lue sur le CSS.
  * La croix, un second clic sur le déclencheur, Échap, un clic ailleurs ou le
- * focus qui quitte le contrôle referment sans rien faire. Un seul panneau
- * ouvert à la fois sur la page.
+ * focus qui quitte le contrôle referment sans rien faire (data-settle, posé
+ * le temps du repli : la tuile reste, la poubelle se tasse). Un seul panneau
+ * ouvert à la fois.
  *
  *   VH.confirmAction.arm(trigger, {
  *     onConfirm,                // appelé après l'animation de l'état « done »
  *     labels: { group, confirm, cancel }, // textes ou fonctions (évaluées à l'ouverture)
- *     showText: false,          // libellés visibles dans les boutons
  *     side: 'right' | 'left',   // côté où le panneau s'ouvre
  *     className: '',            // classe ajoutée à l'enveloppe (style de page)
  *     measure: '.selector',     // élément animé à l'état « done » (dans l'enveloppe)
@@ -40,22 +42,14 @@
   window.addEventListener('i18nReady', relabelAll);
   window.addEventListener('langChanged', relabelAll);
 
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
-
-  function button(cls, icon, label, showText) {
-    return '<button type="button" class="' + cls + '" aria-label="' + esc(label) + '">' +
-      '<i class="fas fa-' + icon + '" aria-hidden="true"></i>' +
-      (showText ? '<span class="cfm-text">' + esc(label) + '</span>' : '') +
-      '</button>';
+  function button(cls, icon) {
+    return '<button type="button" class="' + cls + '">' +
+      '<i class="fas fa-' + icon + '" aria-hidden="true"></i></button>';
   }
 
   /* Poubelle dessinée (couvercle, cuve, coche : trois tracés animés
-   * séparément, CSS « POUBELLE » de shared-base). Le couvercle pivote sur la
-   * charnière opposée au côté où s'ouvre le panneau ; à la confirmation,
+   * séparément, CSS « POUBELLE » de shared-widgets). Le couvercle bascule
+   * vers le côté où s'ouvre le panneau ; à la confirmation,
    * couvercle et cuve s'effacent et la coche se trace (measure: '.cfm-bin-check').
    * Balisage statique, sans donnée saisie. */
   var BIN_SVG =
@@ -65,17 +59,27 @@
     '<path class="cfm-bin-check" pathLength="20" d="M6.5 12.5l3.6 3.6 7.4-7.6"/>' +
     '</svg>';
 
+  /**
+   * Balisage de la poubelle, pour un gabarit HTML (carte de favori, cœur de
+   * la fiche). Seule source du dessin.
+   * @param {string} [extraClass] classe fixe ajoutée au <svg>, jamais une donnée
+   * @returns {string}
+   */
+  function binMarkup(extraClass) {
+    return extraClass ? BIN_SVG.replace('class="cfm-bin"', 'class="cfm-bin ' + extraClass + '"') : BIN_SVG;
+  }
+
   /** Nœud SVG de la poubelle, à poser dans un déclencheur. */
   function binIcon() {
     var holder = document.createElement('span');
-    holder.innerHTML = BIN_SVG;
+    holder.innerHTML = binMarkup();
     return holder.firstChild;
   }
 
   /**
    * @param {HTMLElement|null} trigger
    * @param {{ onConfirm: () => void, labels: { group: string, confirm: string, cancel: string },
-   *           showText?: boolean, side?: 'left'|'right', className?: string, measure?: string,
+   *           side?: 'left'|'right', className?: string, measure?: string,
    *           when?: () => boolean }} opts
    */
   function arm(trigger, opts) {
@@ -109,13 +113,13 @@
       [[yes, 'confirm'], [no, 'cancel']].forEach(function (pair) {
         var text = label(pair[1]);
         pair[0].setAttribute('aria-label', text);
-        var span = pair[0].querySelector('.cfm-text');
-        if (span) span.textContent = text;
+        pair[0].title = text;
       });
     }
     panel.setAttribute('inert', '');
-    panel.innerHTML = button('cfm-yes', 'check', '', o.showText) +
-      button('cfm-no', 'times', '', o.showText);
+    // .cfm-clip rogne le plateau pendant que le panneau s'élargit.
+    panel.innerHTML = '<span class="cfm-clip"><span class="cfm-tray">' +
+      button('cfm-yes', 'check') + button('cfm-no', 'times') + '</span></span>';
     wrap.appendChild(panel);
     trigger.setAttribute('aria-expanded', 'false');
     trigger.setAttribute('aria-controls', panel.id);
@@ -125,9 +129,12 @@
     applyLabels();
     relabelers.push({ wrap: wrap, apply: applyLabels });
     var state = function () { return wrap.dataset.state; };
+    var settleTimer = null;
 
     function setState(next) {
       wrap.dataset.state = next;
+      clearTimeout(settleTimer);
+      delete wrap.dataset.settle;
       trigger.setAttribute('aria-expanded', next === 'confirm' ? 'true' : 'false');
       if (next === 'confirm') panel.removeAttribute('inert');
       else panel.setAttribute('inert', '');
@@ -162,6 +169,12 @@
         // revient au déclencheur — sans passer par l'annulation de focusout
         // (état idle).
         setState('idle');
+        // Repli : la tuile garde la teinte du déclencheur jusqu'à ce que le
+        // panneau soit refermé (durée lue sur le CSS), puis s'efface.
+        wrap.dataset.settle = '';
+        var motion = window.VH.motion;
+        var ms = motion && !motion.prefersReducedMotion() ? motion.exitDuration(panel) : 0;
+        settleTimer = setTimeout(function () { delete wrap.dataset.settle; }, ms + 40);
         release();
         if (refocus) trigger.focus();
       },
@@ -205,7 +218,7 @@
     return control;
   }
 
-  window.VH.confirmAction = { arm: arm, binIcon: binIcon };
+  window.VH.confirmAction = { arm: arm, binIcon: binIcon, binMarkup: binMarkup };
 
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = window.VH.confirmAction;

@@ -314,6 +314,12 @@ describeIt('Intégration SQL — catalogue', () => {
       expect(created.body.engine_type_en).toBe('Turbofan');
       const id = created.body.id;
 
+      // Dates de calendrier : relues telles qu'écrites, en « AAAA-MM-JJ » (format: date
+      // d'openapi.yaml). L'ancien pilote rendait « 1990-05-16T22:00:00.000Z », la veille.
+      const read = await api().get(`/api/airplanes/${id}`);
+      expect(read.body.date_first_fly).toBe('1990-05-17');
+      expect(read.body.date_operationel).toBe('1995-06-20');
+
       // search_vector est GENERATED : la fiche est trouvable dès l'INSERT.
       const found = await api().get('/api/airplanes').query({ search: 'intégration' });
       expect(found.body.data.map((a) => a.id)).toContain(id);
