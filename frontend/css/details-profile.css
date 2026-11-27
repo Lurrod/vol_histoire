@@ -143,18 +143,24 @@
   .page-details .hero-actions > #edit-btn,
   .page-details .hero-actions > .det-del { flex: 1 1 100%; }
   /* En colonne, « Supprimer » occupe toute la largeur : il se resserre pour
-     laisser sortir la paire, réduite à ses icônes (noms accessibles gardés). */
+     laisser sortir le plateau « ✓ / ✗ » (qui, lui, ne rétrécit jamais). */
   .page-details .hero-actions .det-del { display: flex; }
   .page-details .hero-actions .det-del > .btn { flex: 1 1 auto; min-width: 0; }
-  .page-details .hero-actions .det-del .cfm-panel { flex-shrink: 0; }
-  .page-details .det-del .cfm-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .page-details .det-del .cfm-yes,
-  .page-details .det-del .cfm-no { width: 44px; padding: 0; }
   /* Pas les boutons du bandeau cookies : pleine largeur, ils s'empilaient
      sur trois lignes et le bandeau masquait le bas de la fiche. */
   .page-details .btn:not(.cookie-banner .btn) { min-height: 44px; }
   .page-details .hero-actions .btn { padding-inline: 1rem; }
   .page-details .hero-actions .btn > span { overflow: hidden; text-overflow: ellipsis; }
+  /* Cœur ouvert (retrait du favori à confirmer) : la pastille s'élargit et
+     « Comparer » et « PDF » replient leur libellé sur leur icône le temps de
+     répondre (sinon « C » et « P » à 320 px). Le texte reste le nom
+     accessible : il est seulement réduit à zéro et rendu transparent. */
+  .page-details .hero-actions > :is(#compare-btn, #pdf-btn) > span {
+    max-width: 12em;
+    transition: max-width var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+  }
+  .page-details .hero-actions:has(> .det-fav:not([data-state="idle"])) > :is(#compare-btn, #pdf-btn) { gap: 0; }
+  .page-details .hero-actions:has(> .det-fav:not([data-state="idle"])) > :is(#compare-btn, #pdf-btn) > span { max-width: 0; opacity: 0; }
   /* Les quatre chiffres clés restent en 2 × 2 : en une colonne ils
      occupaient un écran entier. */
   .page-details .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }

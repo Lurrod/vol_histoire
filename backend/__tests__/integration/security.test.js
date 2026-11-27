@@ -11,7 +11,9 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const { Pool } = require('pg');
+const pg = require('pg');
+const { Pool } = pg;
+require('../../db').useCalendarDates(pg); // comme server.js
 const request = require('supertest');
 const { describeIt, airplaneId } = require('./helpers/it-db');
 const { startItApp } = require('./helpers/it-app');

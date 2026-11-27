@@ -18,7 +18,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const { Pool } = require('pg');
+const pg = require('pg');
+const { Pool } = pg;
+// Comme server.js : dates de calendrier en « AAAA-MM-JJ ».
+require('../../../db').useCalendarDates(pg);
 const bcrypt = require('bcryptjs');
 
 const IT_URL = process.env.IT_DATABASE_URL || '';

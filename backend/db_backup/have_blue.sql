@@ -42,7 +42,7 @@ INSERT INTO airplanes (
     NULL,
     965,
     NULL,
-    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM manufacturer WHERE code = 'LOC'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Recherche'),
     'Retiré',

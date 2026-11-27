@@ -105,7 +105,7 @@
       onConfirm,
       side: 'left',
       className: 'fav-del',
-      measure: '.fav-bin-check',
+      measure: '.cfm-bin-check',
       labels: {
         group: i18n.t('favorites.remove_confirm_group'),
         confirm: i18n.t('favorites.remove_confirm'),
@@ -114,7 +114,27 @@
     });
   }
 
-  const api = { UNDO_DELAY_MS, showUndoToast, removeWithUndo, armRemoveButton };
+  /* Touche Suppr (ou Retour arrière) sur une carte qui a le focus — son
+   * titre ou sa poubelle : ouvre la confirmation de retrait, comme un clic
+   * sur la poubelle (focus ensuite sur « Garder »). Jamais dans un champ,
+   * ni avec un modificateur, ni quand la confirmation est déjà engagée.
+   * Un seul écouteur sur le conteneur, qui survit aux nouveaux rendus. */
+  function bindDeleteKey(container) {
+    if (!container) return;
+    container.addEventListener('keydown', (e) => {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+      if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+      if (!(e.target instanceof window.Element) || e.target.closest('input, textarea, select, [contenteditable]')) return;
+      const card = e.target.closest('.aircraft-card');
+      const bin = card ? card.querySelector('.favorite-remove') : null;
+      const wrap = bin ? bin.closest('.cfm') : null;
+      if (!wrap || wrap.dataset.state !== 'idle' || bin.disabled) return;
+      e.preventDefault();
+      bin.click();
+    });
+  }
+
+  const api = { UNDO_DELAY_MS, showUndoToast, removeWithUndo, armRemoveButton, bindDeleteKey };
   window.VH.favorites.remove = api;
 
   // Export conditionnel pour les tests unitaires (Node.js / jsdom)

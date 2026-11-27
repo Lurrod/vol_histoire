@@ -493,6 +493,15 @@ WHERE NOT EXISTS (SELECT 1 FROM missions WHERE name = 'Reconnaissance tactique')
 INSERT INTO manufacturer (name, name_en, country_id, code)
 SELECT 'Lockheed Martin', 'Lockheed Martin', (SELECT id FROM countries WHERE code = 'USA'), 'LM'
 WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'LM');
+-- Constructeurs d'avant les fusions (audit de contenu du 2026-11-27) : un
+-- appareil porte le constructeur de son premier vol (Lockheed avant 1995,
+-- British Aerospace de 1977 à 1999).
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'Lockheed', 'Lockheed', (SELECT id FROM countries WHERE code = 'USA'), 'LOC'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'LOC');
+INSERT INTO manufacturer (name, name_en, country_id, code)
+SELECT 'British Aerospace', 'British Aerospace', (SELECT id FROM countries WHERE code = 'GBR'), 'BAER'
+WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'BAER');
 INSERT INTO manufacturer (name, name_en, country_id, code)
 SELECT 'Boeing', 'Boeing', (SELECT id FROM countries WHERE code = 'USA'), 'BOE'
 WHERE NOT EXISTS (SELECT 1 FROM manufacturer WHERE code = 'BOE');
@@ -3551,10 +3560,10 @@ UPDATE airplanes SET stealth_level = 'aucune' WHERE name = 'Su-30' AND stealth_l
 -- fiche d'après sa source. Sans écart, ces instructions ne touchent rien.
 
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'A-10 Thunderbolt II'
+ WHERE m.code = 'FRC' AND a.name = 'A-10 Thunderbolt II'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'Lockheed A-12'
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed A-12'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'DOU' AND a.name = 'A-1 Skyraider'
@@ -3590,7 +3599,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'LTV' AND a.name = 'A-7 Corsair II'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'AC-130 Spectre'
+ WHERE m.code = 'LOC' AND a.name = 'AC-130 Spectre'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'LEO' AND a.name = 'Aermacchi MB-339'
@@ -3659,7 +3668,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'BOE' AND a.name = 'B-29 Superfortress'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'B-2 Spirit'
+ WHERE m.code = 'NOR' AND a.name = 'B-2 Spirit'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'CVR' AND a.name = 'B-36 Peacemaker'
@@ -3677,7 +3686,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'BAC' AND a.name = 'BAC TSR-2'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'BAE' AND a.name = 'BAE Hawk'
+ WHERE m.code = 'HS' AND a.name = 'BAE Hawk'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'EMB' AND a.name = 'Embraer EMB-110 Bandeirante'
@@ -3695,7 +3704,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'BEL' AND a.name = 'Bell X-1'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'BAE' AND a.name = 'Blackburn Buccaneer'
+ WHERE m.code = 'BLK' AND a.name = 'Blackburn Buccaneer'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'BN' AND a.name = 'Britten-Norman Defender'
@@ -3710,10 +3719,10 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'FRC' AND a.name = 'C-119 Flying Boxcar'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'C-130 Hercules'
+ WHERE m.code = 'LOC' AND a.name = 'C-130 Hercules'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'C-141 Starlifter'
+ WHERE m.code = 'LOC' AND a.name = 'C-141 Starlifter'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'BOE' AND a.name = 'C-17 Globemaster III'
@@ -3728,7 +3737,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'GRU' AND a.name = 'C-2 Greyhound'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'C-5 Galaxy'
+ WHERE m.code = 'LOC' AND a.name = 'C-5 Galaxy'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'CWA' AND a.name = 'CAC CA-27 Sabre'
@@ -3752,7 +3761,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'CDR' AND a.name = 'Canadair CT-114 Tutor'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'Lockheed D-21'
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed D-21'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'DOU' AND a.name = 'D-558-2 Skyrocket'
@@ -3788,7 +3797,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'GRU' AND a.name = 'EA-6B Prowler'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'EC-121 Warning Star'
+ WHERE m.code = 'LOC' AND a.name = 'EC-121 Warning Star'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'EMB' AND a.name = 'Embraer EMB-312 Tucano'
@@ -3827,13 +3836,13 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'CVR' AND a.name = 'F-102 Delta Dagger'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'F-104 Starfighter Allemand'
+ WHERE m.code = 'LOC' AND a.name = 'F-104 Starfighter Allemand'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'LEO' AND a.name = 'F-104S Starfighter Italien'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'F-104 Starfighter'
+ WHERE m.code = 'LOC' AND a.name = 'F-104 Starfighter'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'MHI' AND a.name = 'Mitsubishi F-104J'
@@ -3845,22 +3854,22 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'CVR' AND a.name = 'F-106 Delta Dart'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'F-111 Aardvark'
+ WHERE m.code = 'GD' AND a.name = 'F-111 Aardvark'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'F-117 Nighthawk'
+ WHERE m.code = 'LOC' AND a.name = 'F-117 Nighthawk'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'GRU' AND a.name = 'F11F Tiger'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'F-14 Tomcat'
+ WHERE m.code = 'GRU' AND a.name = 'F-14 Tomcat'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'MDD' AND a.name = 'F-15 Eagle'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'BOE' AND a.name = 'F-15E Strike Eagle'
+ WHERE m.code = 'MDD' AND a.name = 'F-15E Strike Eagle'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'BOE' AND a.name = 'F-15EX Eagle II'
@@ -3872,7 +3881,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'MHI' AND a.name = 'Mitsubishi F-15J'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'F-16 Fighting Falcon'
+ WHERE m.code = 'GD' AND a.name = 'F-16 Fighting Falcon'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'LM' AND a.name = 'F-16I Sufa'
@@ -3908,22 +3917,22 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'DOU' AND a.name = 'F3D Skyknight'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'BOE' AND a.name = 'F-4 Phantom II'
+ WHERE m.code = 'MDD' AND a.name = 'F-4 Phantom II'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'BOE' AND a.name = 'F-4 Phantom II Allemand'
+ WHERE m.code = 'MDD' AND a.name = 'F-4 Phantom II Allemand'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'DOU' AND a.name = 'F4D Skyray'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'BOE' AND a.name = 'F-4E Kurnass'
+ WHERE m.code = 'MDD' AND a.name = 'F-4E Kurnass'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'MHI' AND a.name = 'F-4EJ Kai'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'F-5 Freedom Fighter'
+ WHERE m.code = 'NOR' AND a.name = 'F-5 Freedom Fighter'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'EMB' AND a.name = 'F-5EM Tiger II'
@@ -3932,7 +3941,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'VOU' AND a.name = 'F7U Cutlass'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'F-80 Shooting Star'
+ WHERE m.code = 'LOC' AND a.name = 'F-80 Shooting Star'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'NAA' AND a.name = 'F-82 Twin Mustang'
@@ -3953,7 +3962,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'VOU' AND a.name = 'F-8E (FN) Crusader'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'F-94 Starfire'
+ WHERE m.code = 'LOC' AND a.name = 'F-94 Starfire'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'GRU' AND a.name = 'F9F Cougar'
@@ -4358,10 +4367,10 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'HS' AND a.name = 'Hawker P.1127 Kestrel'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'P-2 Neptune'
+ WHERE m.code = 'LOC' AND a.name = 'P-2 Neptune'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'P-3 Orion'
+ WHERE m.code = 'LOC' AND a.name = 'P-3 Orion'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'BOE' AND a.name = 'P-8 Poseidon'
@@ -4388,7 +4397,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'NOR' AND a.name = 'RQ-4 Global Hawk'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'S-3 Viking'
+ WHERE m.code = 'LOC' AND a.name = 'S-3 Viking'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'SAL' AND a.name = 'Scottish Aviation Bulldog'
@@ -4424,7 +4433,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'SUP' AND a.name = 'Supermarine Scimitar'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'BAE' AND a.name = 'BAE Sea Harrier'
+ WHERE m.code = 'BAER' AND a.name = 'BAE Sea Harrier'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'HS' AND a.name = 'Hawker Sea Hawk'
@@ -4442,7 +4451,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'SRO' AND a.name = 'Saunders-Roe SR.53'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'SR-71 Blackbird'
+ WHERE m.code = 'LOC' AND a.name = 'SR-71 Blackbird'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'SUK' AND a.name = 'Su-11'
@@ -4511,7 +4520,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'NAA' AND a.name = 'T-28 Trojan'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'T-33 Shooting Star'
+ WHERE m.code = 'LOC' AND a.name = 'T-33 Shooting Star'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'BEE' AND a.name = 'T-34 Mentor'
@@ -4583,7 +4592,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'TUP' AND a.name = 'Tu-95'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'U-2 Dragon Lady'
+ WHERE m.code = 'LOC' AND a.name = 'U-2 Dragon Lady'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'SHM' AND a.name = 'ShinMaywa US-1A'
@@ -4655,7 +4664,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'ROC' AND a.name = 'Rockwell XFV-12'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'Lockheed XFV'
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed XFV'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'CVR' AND a.name = 'XFY Pogo'
@@ -4694,7 +4703,7 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'NOR' AND a.name = 'YF-17 Cobra'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
- WHERE m.code = 'LM' AND a.name = 'YF-22'
+ WHERE m.code = 'LOC' AND a.name = 'YF-22'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'NOR' AND a.name = 'YF-23 Black Widow II'
@@ -4851,6 +4860,41 @@ UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
  WHERE m.code = 'LM' AND a.name = 'Lockheed Martin X-59 QueSST'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+-- Constructeur du premier vol (audit de contenu du 2026-11-27) : fiches que
+-- le bloc ci-dessus ne réattribuait pas encore.
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed R6V Constitution'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed C-121 Constellation'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed XF-90'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed T2V SeaStar'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed C-140 JetStar'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed YF-12'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed YO-3 Quiet Star'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed TriStar (RAF)'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'LOC' AND a.name = 'Lockheed Have Blue'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'LOC' AND a.name = 'EC-130H Compass Call'
+   AND a.id_manufacturer IS DISTINCT FROM m.id;
+UPDATE airplanes a SET id_manufacturer = m.id FROM manufacturer m
+ WHERE m.code = 'BAER' AND a.name = 'British Aerospace EAP'
    AND a.id_manufacturer IS DISTINCT FROM m.id;
 
 -- Le canon M39 du F-5 avait été rangé par erreur parmi les technologies ;
@@ -7384,5 +7428,35 @@ UPDATE airplanes SET description = E'## Genèse\nAprès la création du Strategi
 UPDATE airplanes SET little_description = replace(little_description, '"Witwenmacher"', '« Witwenmacher »')
  WHERE name = 'F-104 Starfighter Allemand'
    AND little_description IS DISTINCT FROM replace(little_description, '"Witwenmacher"', '« Witwenmacher »');
+
+-- Audit de contenu du 2026-11-27 : statuts et phrases périmés.
+-- MiG-21 indiens retirés le 26 septembre 2025 ; AMX italiens retirés en avril
+-- 2024 ; Mirage 5 encore en service au Pakistan ; Gripen commandé par la
+-- Colombie (novembre 2025). Rejouables : garde IS DISTINCT FROM, et aucun
+-- nouveau texte ne contient l'ancien.
+UPDATE airplanes SET status = 'Retiré', status_en = 'Retired'
+ WHERE name = 'MiG-21 Bison' AND (status, status_en) IS DISTINCT FROM ('Retiré', 'Retired');
+UPDATE airplanes SET status = 'En service', status_en = 'In service'
+ WHERE name = 'Mirage 5' AND (status, status_en) IS DISTINCT FROM ('En service', 'In service');
+UPDATE airplanes
+   SET description = replace(description, 'Retrait final prévu en 2025, remplacé par Tejas Mk1A.', 'Retiré du service le 26 septembre 2025, lors d''une cérémonie à Chandigarh ; le Tejas Mk1A, retardé, doit prendre sa relève.'),
+       description_en = replace(description_en, 'Final retirement planned for 2025, replaced by Tejas Mk1A.', 'Retired from service on 26 September 2025 at a ceremony in Chandigarh; the delayed Tejas Mk1A is to take over its role.')
+ WHERE name = 'MiG-21 Bison'
+   AND (description, description_en) IS DISTINCT FROM (replace(description, 'Retrait final prévu en 2025, remplacé par Tejas Mk1A.', 'Retiré du service le 26 septembre 2025, lors d''une cérémonie à Chandigarh ; le Tejas Mk1A, retardé, doit prendre sa relève.'), replace(description_en, 'Final retirement planned for 2025, replaced by Tejas Mk1A.', 'Retired from service on 26 September 2025 at a ceremony in Chandigarh; the delayed Tejas Mk1A is to take over its role.'));
+UPDATE airplanes
+   SET description = replace(description, 'Toujours en service dans une douzaine de pays (Inde, Corée du Nord, Cuba, Égypte…).', 'Il reste en service dans quelques pays, dont la Corée du Nord et Cuba ; l''Inde a retiré ses derniers MiG-21 le 26 septembre 2025.'),
+       description_en = replace(description_en, 'Still in service in a dozen countries (India, North Korea, Cuba, Egypt…).', 'It remains in service in a few countries, including North Korea and Cuba; India retired its last MiG-21s on 26 September 2025.')
+ WHERE name = 'MiG-21'
+   AND (description, description_en) IS DISTINCT FROM (replace(description, 'Toujours en service dans une douzaine de pays (Inde, Corée du Nord, Cuba, Égypte…).', 'Il reste en service dans quelques pays, dont la Corée du Nord et Cuba ; l''Inde a retiré ses derniers MiG-21 le 26 septembre 2025.'), replace(description_en, 'Still in service in a dozen countries (India, North Korea, Cuba, Egypt…).', 'It remains in service in a few countries, including North Korea and Cuba; India retired its last MiG-21s on 26 September 2025.'));
+UPDATE airplanes
+   SET description = replace(replace(description, 'Retiré progressivement depuis **2019** de l''Aeronautica Militare.', 'Retiré progressivement à partir de **2019**, il quitte l''Aeronautica Militare en avril 2024.'), 'Retrait total italien attendu fin 2025. ', ''),
+       description_en = replace(replace(description_en, 'Progressively retired since **2019** from the Aeronautica Militare.', 'Progressively withdrawn from **2019**, it left the Aeronautica Militare in April 2024.'), 'Full Italian retirement expected by end of 2025. ', '')
+ WHERE name = 'AMX International AMX'
+   AND (description, description_en) IS DISTINCT FROM (replace(replace(description, 'Retiré progressivement depuis **2019** de l''Aeronautica Militare.', 'Retiré progressivement à partir de **2019**, il quitte l''Aeronautica Militare en avril 2024.'), 'Retrait total italien attendu fin 2025. ', ''), replace(replace(description_en, 'Progressively retired since **2019** from the Aeronautica Militare.', 'Progressively withdrawn from **2019**, it left the Aeronautica Militare in April 2024.'), 'Full Italian retirement expected by end of 2025. ', ''));
+UPDATE airplanes
+   SET description = replace(description, 'Exporté à 5 nations (Afrique du Sud, République tchèque, Hongrie, Thaïlande, Brésil).', 'Exporté en Afrique du Sud, en République tchèque, en Hongrie, en Thaïlande et au Brésil ; la Colombie en commande 17 en novembre 2025.'),
+       description_en = replace(description_en, 'Exported to 5 nations (South Africa, Czech Republic, Hungary, Thailand, Brazil).', 'Exported to South Africa, the Czech Republic, Hungary, Thailand and Brazil; Colombia ordered 17 in November 2025.')
+ WHERE name = 'Saab JAS 39 Gripen'
+   AND (description, description_en) IS DISTINCT FROM (replace(description, 'Exporté à 5 nations (Afrique du Sud, République tchèque, Hongrie, Thaïlande, Brésil).', 'Exporté en Afrique du Sud, en République tchèque, en Hongrie, en Thaïlande et au Brésil ; la Colombie en commande 17 en novembre 2025.'), replace(description_en, 'Exported to 5 nations (South Africa, Czech Republic, Hungary, Thailand, Brazil).', 'Exported to South Africa, the Czech Republic, Hungary, Thailand and Brazil; Colombia ordered 17 in November 2025.'));
 
 COMMIT;

@@ -36,7 +36,7 @@ INSERT INTO airplanes (
     '1979-08-17',
     2410.0,
     4220.0,
-    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM manufacturer WHERE code = 'GD'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Multirôle'),
     'En service',

@@ -919,61 +919,127 @@ describe('VH.settings.security', () => {
   });
 });
 
-describe('VH.settings.dangerZone', () => {
-  function setup(password = 'Actuel123') {
-    const S = loadModules();
-    S.dangerZone.setup({ currentUser: { id: 5 } });
-    document.getElementById('delete-current-password').value = password;
-    return S;
+describe('VH.settings.tabs — appui de souris sur un panneau (WebKit)', () => {
+  function pressAndFocus(panel, scrolledTo) {
+    panel.querySelector('*').dispatchEvent(new window.MouseEvent('mousedown', { bubbles: true }));
+    // WebKit : le focus va au panneau, qui défile.
+    Object.defineProperty(window, 'scrollY', { value: scrolledTo, configurable: true });
+    panel.focus();
   }
 
-  test('SEC-005 : sans mot de passe actuel, erreur sur le champ, ni confirmation ni requête', async () => {
-    const S = setup('');
-    window.prompt = jest.fn(() => 'SUPPRIMER');
-    await S.dangerZone.onDeleteClick({ currentUser: { id: 5 } }, document.getElementById('delete-account-btn'));
-    const input = document.getElementById('delete-current-password');
-    expect(document.getElementById('delete-current-password-error').textContent).toBe('t:settings.toast_current_password_required');
-    expect(input.getAttribute('aria-invalid')).toBe('true');
-    expect(document.activeElement).toBe(input);
-    expect(window.prompt).not.toHaveBeenCalled();
-    expect(auth.authFetch).not.toHaveBeenCalled();
+  afterEach(() => {
+    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
   });
 
-  test('SEC-005 : mot de passe refusé par le serveur → erreur sur le champ, pas de toast', async () => {
-    const S = setup('Faux1234');
-    window.prompt = jest.fn(() => 'SUPPRIMER');
-    i18n.t.mockImplementation((k) => (k === 'settings.delete_confirm_word' ? 'SUPPRIMER' : `t:${k}`));
-    auth.authFetch.mockResolvedValueOnce(jsonResponse(403, { code: 'CURRENT_PASSWORD_INVALID' }));
-    await S.dangerZone.onDeleteClick({ currentUser: { id: 5 } }, document.getElementById('delete-account-btn'));
-    expect(document.getElementById('delete-current-password-error').textContent).toBe('t:settings.toast_current_password_invalid');
-    expect(toasts).toEqual([]);
-    expect(auth.logout).not.toHaveBeenCalled();
-  });
-
-  test('Entrée dans le champ : même parcours que le bouton', async () => {
-    setup();
-    window.prompt = jest.fn(() => null);
-    document.getElementById('delete-account-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
-    expect(window.prompt).toHaveBeenCalled();
-  });
-
-  test('annulation : rien ; mauvais mot : toast d\'erreur', async () => {
-    const S = setup();
-    window.prompt = jest.fn(() => null);
-    await S.dangerZone.onDeleteClick({ currentUser: { id: 5 } }, document.getElementById('delete-account-btn'));
-    expect(toasts).toEqual([]);
-    window.prompt = jest.fn(() => 'oui');
-    await S.dangerZone.onDeleteClick({ currentUser: { id: 5 } }, document.getElementById('delete-account-btn'));
-    expect(toasts).toContainEqual(['error', 't:settings.toast_delete_confirm_mismatch']);
-    expect(auth.authFetch).not.toHaveBeenCalled();
-  });
-
-  test('mot correct : DELETE, déconnexion, redirection différée', async () => {
+  test('focus pris par le panneau et page défilée : position d’avant l’appui rendue', () => {
     jest.useFakeTimers();
+    const S = loadModules();
+    S.tabs.setup();
+    const panel = document.getElementById('collection');
+    panel.setAttribute('tabindex', '0');
+    pressAndFocus(panel, 480);
+    expect(window.scrollTo).toHaveBeenCalledWith({ left: 0, top: 0, behavior: 'instant' });
+    window.scrollTo.mockClear();
+    jest.runOnlyPendingTimers();
+    expect(window.scrollTo).toHaveBeenCalledTimes(1); // 2e passage : toujours défilée (scrollTo simulé)
+  });
+
+  test('focus pris par un bouton (Chromium) ou page immobile : rien', () => {
+    jest.useFakeTimers();
+    const S = loadModules();
+    S.tabs.setup();
+    const panel = document.getElementById('collection');
+    panel.setAttribute('tabindex', '0');
+    panel.querySelector('*').dispatchEvent(new window.MouseEvent('mousedown', { bubbles: true }));
+    panel.focus(); // page immobile
+    jest.runOnlyPendingTimers();
+    const button = document.createElement('button');
+    panel.appendChild(button);
+    button.dispatchEvent(new window.MouseEvent('mousedown', { bubbles: true }));
+    Object.defineProperty(window, 'scrollY', { value: 300, configurable: true });
+    button.focus();
+    jest.runOnlyPendingTimers();
+    expect(window.scrollTo).not.toHaveBeenCalled();
+  });
+});
+
+describe('VH.settings.dangerZone', () => {
+  const pw = () => document.getElementById('delete-current-password');
+  const word = () => document.getElementById('delete-confirm-word');
+  const btn = () => document.getElementById('delete-account-btn');
+  const wrap = () => document.querySelector('.cfm.del-acc');
+
+  function setup({ password = 'Actuel123', typed = 'SUPPRIMER', expected = 'SUPPRIMER' } = {}) {
+    const S = loadModules();
+    i18n.t.mockImplementation((k) => (k === 'settings.delete_confirm_word' ? expected : `t:${k}`));
+    const control = S.dangerZone.setup({ currentUser: { id: 5 } });
+    pw().value = password;
+    word().value = typed;
+    return { S, control };
+  }
+
+  test('plus aucune boîte de dialogue : poubelle partagée, confirmation sur place', () => {
+    window.prompt = jest.fn();
     setup();
-    i18n.t.mockImplementation((k) => (k === 'settings.delete_confirm_word' ? 'DELETE' : `t:${k}`));
-    window.prompt = jest.fn(() => ' DELETE ');
-    document.getElementById('delete-account-btn').click();
+    expect(btn().querySelector('svg.cfm-bin')).not.toBeNull();
+    expect(btn().querySelector('i.fa-trash-alt')).toBeNull();
+    expect(wrap()).not.toBeNull();
+    btn().click();
+    expect(window.prompt).not.toHaveBeenCalled();
+  });
+
+  test('SEC-005 : sans mot de passe, le bouton ne s’ouvre pas ; erreur et focus sur le champ', () => {
+    setup({ password: '' });
+    btn().click();
+    expect(wrap().dataset.state).toBe('idle');
+    expect(document.getElementById('delete-current-password-error').textContent).toBe('t:settings.toast_current_password_required');
+    expect(pw().getAttribute('aria-invalid')).toBe('true');
+    expect(document.activeElement).toBe(pw());
+    expect(auth.authFetch).not.toHaveBeenCalled();
+  });
+
+  test('mot incorrect : erreur et focus sur le champ du mot, pas de confirmation', () => {
+    setup({ typed: 'oui' });
+    btn().click();
+    expect(wrap().dataset.state).toBe('idle');
+    expect(document.getElementById('delete-confirm-word-error').textContent).toBe('t:settings.toast_delete_confirm_mismatch');
+    expect(document.activeElement).toBe(word());
+    expect(auth.authFetch).not.toHaveBeenCalled();
+  });
+
+  test('Entrée dans un champ incomplet : même signalement que le bouton', () => {
+    setup({ typed: '' });
+    document.getElementById('delete-account-form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+    expect(word().getAttribute('aria-invalid')).toBe('true');
+  });
+
+  test('saisie corrigée : l’erreur du champ s’efface', () => {
+    setup({ typed: 'oui' });
+    btn().click();
+    word().value = 'SUPPRIMER';
+    word().dispatchEvent(new window.Event('input'));
+    expect(word().hasAttribute('aria-invalid')).toBe(false);
+  });
+
+  test('formulaire complet (espaces autour du mot ignorés) : la tuile s’ouvre, focus sur Garder, aucune requête', () => {
+    setup({ typed: ' SUPPRIMER ' });
+    btn().click();
+    expect(wrap().dataset.state).toBe('confirm');
+    expect(document.activeElement.classList.contains('cfm-no')).toBe(true);
+    expect(wrap().querySelector('.cfm-yes').getAttribute('aria-label')).toBe('t:settings.delete_account_confirm');
+    expect(auth.authFetch).not.toHaveBeenCalled();
+    wrap().querySelector('.cfm-no').click();
+    expect(wrap().dataset.state).toBe('idle');
+    expect(auth.authFetch).not.toHaveBeenCalled();
+  });
+
+  test('confirmation (mot traduit) : DELETE après la coche, déconnexion, redirection différée', async () => {
+    jest.useFakeTimers();
+    setup({ typed: 'DELETE', expected: 'DELETE' });
+    btn().click();
+    wrap().querySelector('.cfm-yes').click();
+    expect(auth.authFetch).not.toHaveBeenCalled(); // la coche se trace d’abord
+    jest.advanceTimersByTime(400);
     await flush(6);
     expect(auth.authFetch).toHaveBeenCalledWith('/api/users/5', {
       method: 'DELETE',
@@ -984,18 +1050,33 @@ describe('VH.settings.dangerZone', () => {
     expect(toasts).toContainEqual(['success', 't:settings.toast_account_deleted']);
   });
 
-  test('refus du serveur puis réseau : bouton rendu', async () => {
-    const S = setup();
-    window.prompt = jest.fn(() => 'SUPPRIMER');
-    i18n.t.mockImplementation((k) => k); // repli français
-    const btn = document.getElementById('delete-account-btn');
+  test('SEC-005 : mot de passe refusé par le serveur → erreur sur le champ, confirmation au repos', async () => {
+    const { S, control } = setup({ password: 'Faux1234' });
+    auth.authFetch.mockResolvedValueOnce(jsonResponse(403, { code: 'CURRENT_PASSWORD_INVALID' }));
+    btn().click();
+    await S.dangerZone.deleteAccount({ currentUser: { id: 5 } }, btn(), control);
+    expect(document.getElementById('delete-current-password-error').textContent).toBe('t:settings.toast_current_password_invalid');
+    expect(toasts).toEqual([]);
+    expect(auth.logout).not.toHaveBeenCalled();
+    expect(wrap().dataset.state).toBe('idle');
+  });
+
+  test('refus du serveur puis réseau : toasts, bouton rendu', async () => {
+    const { S, control } = setup();
+    i18n.t.mockImplementation((k) => (k === 'settings.delete_confirm_word' ? 'SUPPRIMER' : k)); // repli français
     auth.authFetch.mockResolvedValueOnce(jsonResponse(400, {}));
-    await S.dangerZone.onDeleteClick({ currentUser: { id: 5 } }, btn);
+    await S.dangerZone.deleteAccount({ currentUser: { id: 5 } }, btn(), control);
     expect(toasts).toContainEqual(['error', 'Erreur lors de la suppression']);
     auth.authFetch.mockRejectedValueOnce(new Error('réseau'));
-    await S.dangerZone.onDeleteClick({ currentUser: { id: 5 } }, btn);
+    await S.dangerZone.deleteAccount({ currentUser: { id: 5 } }, btn(), control);
     expect(toasts).toContainEqual(['error', 'settings.toast_network_error']);
-    expect(btn.disabled).toBe(false);
+    expect(btn().disabled).toBe(false);
+  });
+
+  test('page sans formulaire : rien n’est armé', () => {
+    const S = loadModules();
+    document.getElementById('delete-account-form').remove();
+    expect(S.dangerZone.setup({ currentUser: { id: 5 } })).toBeNull();
   });
 });
 

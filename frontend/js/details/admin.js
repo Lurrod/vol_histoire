@@ -190,8 +190,7 @@
       const control = window.VH.confirmAction.arm(deleteBtn, {
         onConfirm: () => deleteAircraft(control),
         // Comme la suppression d'un utilisateur (Paramètres) : le couvercle
-        // se soulève et « ✓ Supprimer · ✗ Garder » sort à droite du bouton.
-        showText: true,
+        // bascule et « ✓ / ✗ » sort à droite du bouton.
         side: 'right',
         className: 'det-del',
         measure: '.cfm-bin-check',

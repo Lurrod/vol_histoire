@@ -42,7 +42,7 @@ INSERT INTO airplanes (
     '1956-12-09',
     592.0,
     3800.0,
-    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM manufacturer WHERE code = 'LOC'),
     (SELECT id FROM generation WHERE generation = 1),
     (SELECT id FROM type WHERE name = 'Transport'),
     'En service',

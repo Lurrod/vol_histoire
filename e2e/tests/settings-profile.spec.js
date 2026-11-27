@@ -120,6 +120,42 @@ test.describe('Settings — Compte, sécurité, confidentialité', () => {
     await expect(page.locator('[data-section="danger"]')).toHaveCount(0);
   });
 
+  test('suppression du compte : champs vérifiés, puis confirmation sur place, jamais de boîte de dialogue', async ({ page }) => {
+    // Une boîte de dialogue native ferait échouer le test (aucune n'est attendue).
+    page.on('dialog', (dialog) => { throw new Error(`boîte de dialogue inattendue : ${dialog.type()}`); });
+    await page.goto('/settings#danger');
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('#privacy')).toBeVisible({ timeout: 15000 });
+    const button = page.locator('#delete-account-btn');
+    const tile = page.locator('.cfm.del-acc');
+
+    // Rien de saisi : le mot de passe est signalé, la tuile reste fermée.
+    await button.click();
+    await expect(page.locator('#delete-current-password')).toHaveAttribute('aria-invalid', 'true');
+    await expect(tile).toHaveAttribute('data-state', 'idle');
+
+    // Mauvais mot : c'est lui qui est signalé.
+    await page.fill('#delete-current-password', 'Testuser1');
+    await page.fill('#delete-confirm-word', 'oui');
+    await button.click();
+    await expect(page.locator('#delete-confirm-word')).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.locator('#delete-confirm-word')).toBeFocused();
+    await expect(tile).toHaveAttribute('data-state', 'idle');
+
+    // Mot exact (celui affiché dans le libellé) : la tuile s'ouvre, focus sur « Garder ».
+    const word = (await page.locator('label[for="delete-confirm-word"] strong').innerText()).trim();
+    await page.fill('#delete-confirm-word', word);
+    await expect(page.locator('#delete-confirm-word')).not.toHaveAttribute('aria-invalid', 'true');
+    await button.click();
+    await expect(tile).toHaveAttribute('data-state', 'confirm');
+    await expect(tile.locator('.cfm-no')).toBeFocused();
+
+    // Garder : retour au repos, le compte est intact.
+    await tile.locator('.cfm-no').click();
+    await expect(tile).toHaveAttribute('data-state', 'idle');
+    await expect(button).toBeFocused();
+  });
+
   test('préférences : langue, animations réduites, visite guidée', async ({ page }) => {
     await page.goto('/settings');
     await page.waitForLoadState('networkidle');

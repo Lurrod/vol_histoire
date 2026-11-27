@@ -42,7 +42,7 @@ INSERT INTO airplanes (
     '1950-05-01',
     1030.0,
     1300.0,
-    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM manufacturer WHERE code = 'LOC'),
     (SELECT id FROM generation WHERE generation = 1),
     (SELECT id FROM type WHERE name = 'Intercepteur'),
     'Retiré',

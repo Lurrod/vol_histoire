@@ -15,24 +15,27 @@
     ['date-operational', 'date_operationel'],
   ];
 
-  /** @returns {{ date: Date, precision: 'day'|'month'|'year' }|null} */
+  /* Date de calendrier lue chiffre par chiffre (VH.calendarDate) et formatée
+   * en UTC : lue dans le fuseau du visiteur, elle reculait d'un jour aux
+   * Amériques (« 31 décembre 1977 » pour une date connue à l'année 1978).
+   * @returns {{ date: Date, year: number, month: number, day: number,
+   *             precision: 'day'|'month'|'year' }|null} mois de 1 à 12 */
   function parse(value) {
-    if (!value) return null;
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return null;
+    const p = window.VH.calendarDate.parts(value);
+    if (!p) return null;
     let precision = 'day';
-    if (date.getDate() === 1) precision = date.getMonth() === 0 ? 'year' : 'month';
-    return { date, precision };
+    if (p.day === 1) precision = p.month === 1 ? 'year' : 'month';
+    return { ...p, date: window.VH.calendarDate.toUTCDate(value), precision };
   }
 
   function format(value, lang) {
     const p = parse(value);
     if (!p) return i18n.t('details.not_specified');
     const locale = lang === 'en' ? 'en-GB' : 'fr-FR';
-    if (p.precision === 'year') return String(p.date.getFullYear());
+    if (p.precision === 'year') return String(p.year);
     const opts = p.precision === 'month'
-      ? { year: 'numeric', month: 'long' }
-      : { year: 'numeric', month: 'long', day: 'numeric' };
+      ? { year: 'numeric', month: 'long', timeZone: 'UTC' }
+      : { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
     return p.date.toLocaleDateString(locale, opts);
   }
 
@@ -43,12 +46,12 @@
     const b = parse(toValue);
     if (!a || !b) return null;
     if (a.precision === 'year' || b.precision === 'year') {
-      const years = b.date.getFullYear() - a.date.getFullYear();
+      const years = b.year - a.year;
       return years > 0 ? { years, months: 0, approx: true } : null;
     }
-    let months = (b.date.getFullYear() - a.date.getFullYear()) * 12 + (b.date.getMonth() - a.date.getMonth());
+    let months = (b.year - a.year) * 12 + (b.month - a.month);
     // Au jour près seulement si les deux dates le sont.
-    if (a.precision === 'day' && b.precision === 'day' && b.date.getDate() < a.date.getDate()) months -= 1;
+    if (a.precision === 'day' && b.precision === 'day' && b.day < a.day) months -= 1;
     if (months <= 0) return null;
     return { years: Math.floor(months / 12), months: months % 12, approx: false };
   }

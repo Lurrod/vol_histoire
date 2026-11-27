@@ -36,7 +36,7 @@ INSERT INTO airplanes (
     '1977-03-10',
     706.0,
     4150.0,
-    (SELECT id FROM manufacturer WHERE code = 'LM'),
+    (SELECT id FROM manufacturer WHERE code = 'FRC'),
     (SELECT id FROM generation WHERE generation = 4),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
     'En service',

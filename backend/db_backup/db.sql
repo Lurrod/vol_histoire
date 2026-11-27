@@ -513,6 +513,8 @@ INSERT INTO missions (name, name_en, description, description_en) VALUES
 
 INSERT INTO manufacturer (name, name_en, country_id, code) VALUES
 ('Lockheed Martin', 'Lockheed Martin', (SELECT id FROM countries WHERE code = 'USA'), 'LM'),
+('Lockheed', 'Lockheed', (SELECT id FROM countries WHERE code = 'USA'), 'LOC'),
+('British Aerospace', 'British Aerospace', (SELECT id FROM countries WHERE code = 'GBR'), 'BAER'),
 ('Boeing', 'Boeing', (SELECT id FROM countries WHERE code = 'USA'), 'BOE'),
 ('Sukhoi', 'Sukhoi', (SELECT id FROM countries WHERE code = 'RUS'), 'SUK'),
 ('Mikoyan (MiG)', 'Mikoyan (MiG)', (SELECT id FROM countries WHERE code = 'RUS'), 'MIG'),

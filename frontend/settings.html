@@ -222,6 +222,7 @@
                   <!-- Mot de passe actuel exigé (SEC-005) : un jeton volé ne suffit pas à effacer le compte. -->
                   <form class="delete-account-form" id="delete-account-form" novalidate>
                     <div class="form-group"><label for="delete-current-password"><span data-i18n="settings.label_current_password">Mot de passe actuel</span></label><input type="password" id="delete-current-password" name="currentPassword" autocomplete="current-password" aria-required="true"></div>
+                    <div class="form-group"><label for="delete-confirm-word"><span data-i18n="settings.label_delete_confirm_word">Pour confirmer, tapez</span> <strong data-i18n="settings.delete_confirm_word">SUPPRIMER</strong></label><input type="text" id="delete-confirm-word" name="confirmWord" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-required="true"></div>
                     <button type="submit" id="delete-account-btn" class="btn btn-danger"><i class="fas fa-trash-alt" aria-hidden="true"></i><span data-i18n="settings.btn_delete_account">Supprimer définitivement mon compte</span></button>
                   </form>
                 </section>

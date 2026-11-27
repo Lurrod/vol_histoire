@@ -326,6 +326,13 @@
     to   { opacity: 1;   scale: 1; }
   }
 
+  /* Tassement : l'élément s'enfonce puis revient à sa taille, sans la
+     dépasser (poubelle qui se referme après une annulation). */
+  @keyframes vh-settle {
+    0%, 100% { scale: 1; }
+    40%      { scale: 0.86; }
+  }
+
   /* Confirmation : un anneau part du bord et s'efface. L'élément lui-même
      ne bouge pas. Couleur réglable par --confirm-ring. */
   @keyframes vh-confirm {

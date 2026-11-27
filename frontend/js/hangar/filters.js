@@ -89,7 +89,7 @@
 
   // « 1955–1975 », « 2022– » pour un conflit en cours.
   function warPeriod(w) {
-    const y = (d) => (d ? new Date(d).getFullYear() : '');
+    const y = (d) => window.VH.calendarDate.year(d) || '';
     return `${y(w.date_start)}–${y(w.date_end)}`;
   }
 

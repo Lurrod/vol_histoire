@@ -45,8 +45,8 @@ INSERT INTO airplanes (
     (SELECT id FROM manufacturer WHERE code = 'DAS'),
     (SELECT id FROM generation WHERE generation = 3),
     (SELECT id FROM type WHERE name = 'Appui aérien'),
-    'Retiré',
-    'Retired'
+    'En service',
+    'In service'
 );
 
 -- Technologies

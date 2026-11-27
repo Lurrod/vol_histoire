@@ -32,14 +32,10 @@
       + '</svg>';
   }
 
-  // Même poubelle que les cartes de favoris (shared/card.js) : couvercle,
-  // cuve et coche, animés séparément.
+  // Poubelle partagée (shared/confirm-action.js), comme sur les cartes de
+  // favoris : couvercle, cuve et coche, animés séparément.
   function binSvg() {
-    return '<svg class="fav-bin" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
-      + '<g class="fav-bin-lid"><path d="M4.5 7h15"/><path d="M9.5 7V5.2c0-.7.5-1.2 1.2-1.2h2.6c.7 0 1.2.5 1.2 1.2V7"/></g>'
-      + '<g class="fav-bin-can"><path d="M6.5 7.5l.9 11.2c.1 1 .9 1.8 1.9 1.8h5.4c1 0 1.8-.8 1.9-1.8l.9-11.2"/><path d="M10.2 11v5.5M13.8 11v5.5"/></g>'
-      + '<path class="fav-bin-check" d="M6.5 12.5l3.6 3.6 7.4-7.6"/>'
-      + '</svg>';
+    return window.VH.confirmAction.binMarkup('fav-bin');
   }
 
   function updateFavoriteButton(state) {
@@ -128,7 +124,7 @@
       when: () => Boolean(state.isFavorite) && !busy(),
       className: 'det-fav',
       side: 'right',
-      measure: '.fav-bin-check',
+      measure: '.cfm-bin-check',
       labels: {
         group: () => i18n.t('favorites.remove_confirm_group'),
         confirm: () => i18n.t('favorites.remove_confirm'),

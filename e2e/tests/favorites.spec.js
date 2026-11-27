@@ -50,6 +50,13 @@ test.describe('Favoris', () => {
     await expect(card).not.toHaveClass(/is-removing/);
     await expect(page.locator('.toast-undo-btn')).toHaveCount(0);
 
+    // Touche Suppr sur la carte (ici depuis la poubelle) : même confirmation
+    await page.keyboard.press('Delete');
+    await expect(control).toHaveAttribute('data-state', 'confirm');
+    await expect(card.locator('.cfm-no')).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(control).toHaveAttribute('data-state', 'idle');
+
     // Confirmer : la coche se trace, la carte part, « Annuler » est proposé
     await bin.click();
     await card.locator('.cfm-yes').click();

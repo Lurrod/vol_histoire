@@ -24,6 +24,7 @@ const { listEngagedWars } = require('../repositories/ssr-conflicts');
 const warsRepo = require('../repositories/wars');
 const logger = require('../logger');
 const { applyList, applySides } = require('../utils/conflicts-links-ssr');
+const { yearOf } = require('../utils/calendar-date');
 
 const FRONTEND_DIR = path.join(__dirname, '../../frontend');
 const MAX_DESC = 160;
@@ -75,8 +76,8 @@ function buildConflictMeta(war, slug, lang) {
   // Conflit rédigé : son issue dit davantage que la description d'une ligne.
   const desc = (isEn && war.outcome_en) || war.outcome
     || (isEn && war.description_en) || war.description || '';
-  const y1 = war.date_start ? new Date(war.date_start).getFullYear() : null;
-  const y2 = war.date_end ? new Date(war.date_end).getFullYear() : null;
+  const y1 = yearOf(war.date_start);
+  const y2 = yearOf(war.date_end);
   let years = '';
   if (y1) {
     if (y2 && y2 !== y1) years = ` (${y1}-${y2})`;

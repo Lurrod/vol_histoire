@@ -30,6 +30,7 @@ function boot({ withI18n = true } = {}) {
   } else {
     delete window.i18n;
   }
+  require('../js/shared/confirm-action'); // poubelle partagée (binMarkup)
   return require('../js/shared/card');
 }
 
@@ -104,7 +105,7 @@ describe('shared/card — carte « block link »', () => {
     expect(btn.getAttribute('aria-label')).toBe('Retirer des favoris');
     expect(btn.getAttribute('type')).toBe('button');
     // Poubelle en trois tracés animés séparément (favorites.css)
-    ['.fav-bin-lid', '.fav-bin-can', '.fav-bin-check'].forEach((sel) => {
+    ['.cfm-bin-lid', '.cfm-bin-can', '.cfm-bin-check'].forEach((sel) => {
       expect(btn.querySelector(`svg.fav-bin ${sel}`)).not.toBeNull();
     });
     expect(btn.querySelector('svg').getAttribute('aria-hidden')).toBe('true');

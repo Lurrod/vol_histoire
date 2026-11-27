@@ -29,6 +29,7 @@ const BUNDLES = {
     'i18n.js',
     'auth.js',
     'utils.js',
+    'shared/calendar-date.js',
     'shared/toast-stack.js',
     'shared/motion.js',
     'shared/rolling-number.js',

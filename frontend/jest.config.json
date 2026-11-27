@@ -1,6 +1,11 @@
 {
   "testEnvironment": "jsdom",
-  "testMatch": ["**/__tests__/**/*.test.js"],
+  "testMatch": [
+    "**/__tests__/**/*.test.js"
+  ],
+  "setupFiles": [
+    "<rootDir>/__tests__/helpers/app-shared.js"
+  ],
   "verbose": true,
   "rootDir": ".",
   "collectCoverageFrom": [
@@ -9,7 +14,10 @@
     "!js/vendor/**",
     "!js/icons.js"
   ],
-  "coverageReporters": ["text", "lcov"],
+  "coverageReporters": [
+    "text",
+    "lcov"
+  ],
   "coverageThreshold": {
     "global": {
       "statements": 95,

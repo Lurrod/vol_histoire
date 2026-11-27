@@ -13,6 +13,7 @@ const fs = require('fs');
 const path = require('path');
 const { pickLang } = require('../i18n');
 const { escapeHtml } = require('./ssr-head');
+const { yearOf } = require('./calendar-date');
 
 // Mêmes champs traduits que GET /api/airplanes/:id (routes/airplanes.js).
 const TRANSLATED = ['name', 'complete_name', 'status', 'manufacturer_name', 'country_name'];
@@ -29,12 +30,6 @@ function strings(lang) {
     }
   }
   return dictionaries[lang];
-}
-
-function yearOf(date) {
-  if (!date) return null;
-  const d = new Date(date);
-  return Number.isNaN(d.getTime()) ? null : d.getFullYear();
 }
 
 /** Valeurs affichées par le client (render.js), dans la langue demandée. */

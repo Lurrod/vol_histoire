@@ -7,6 +7,34 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 
 ## [Unreleased]
 
+## [4.33.0] - 2026-11-27
+
+### Changed
+
+- Supprimer un favori, une fiche, la sélection du comparateur, un utilisateur ou ses sessions se
+  confirme désormais sur place : la poubelle s'ouvre, le bouton s'élargit et propose ✓ pour
+  confirmer et ✗ pour garder. « Garder » est choisi par défaut, pour qu'un double appui ne supprime
+  rien par erreur.
+- La suppression de votre compte ne passe plus par une fenêtre du navigateur : tapez « SUPPRIMER »
+  sous votre mot de passe, puis confirmez sur le bouton.
+- Sur la page Favoris, la touche Suppr d'une carte sélectionnée au clavier propose de la retirer.
+- Chaque appareil affiche le constructeur de son premier vol : le F-14 est de Grumman, le F-16 de
+  General Dynamics, le SR-71 de Lockheed, le Phantom II de McDonnell Douglas.
+- Fiches mises à jour : MiG-21 indiens retirés en septembre 2025, AMX italiens retirés en avril
+  2024, Mirage 5 toujours en service au Pakistan, Gripen commandé par la Colombie.
+
+### Fixed
+
+- Les dates des fiches (premier vol, mise en service) s'affichaient un jour trop tôt pour les
+  visiteurs d'Amérique, et une date connue seulement à l'année pouvait y devenir le 31 décembre de
+  l'année précédente.
+- Sur Safari, un clic sur la poubelle d'un utilisateur, dans les paramètres, pouvait rester sans
+  effet.
+- Sur téléphone, « Comparer » et « PDF » ne sont plus coupés quand le cœur d'un favori demande
+  confirmation, et « Se déconnecter de tous les appareils » ne déborde plus de sa carte.
+- La barre du comparateur ne coupe plus « Copier le lien » et « Effacer » quand on demande
+  d'effacer la sélection.
+
 ## [4.32.0] - 2026-11-26
 
 ### Changed
@@ -794,6 +822,7 @@ Le format s'appuie sur [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/),
 - Première version de Vol d'Histoire : un catalogue d'avions militaires.
 
 [unreleased]: https://github.com/Lurrod/vol_histoire/compare/v4.32.0...HEAD
+[4.33.0]: https://github.com/Lurrod/vol_histoire/compare/v4.32.0...v4.33.0
 [4.32.0]: https://github.com/Lurrod/vol_histoire/compare/v4.31.0...v4.32.0
 [4.31.0]: https://github.com/Lurrod/vol_histoire/compare/v4.30.0...v4.31.0
 [4.30.0]: https://github.com/Lurrod/vol_histoire/compare/v4.29.0...v4.30.0

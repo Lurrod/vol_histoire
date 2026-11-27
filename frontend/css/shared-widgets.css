@@ -83,86 +83,174 @@
   .t-roll-sep { display: inline-block; line-height: var(--roll-slot); white-space: pre; }
 
   /* ============================================================
-     CONFIRMATION SUR PLACE (js/shared/confirm-action.js, v4.17.0)
-     .cfm enveloppe le déclencheur ; .cfm-panel (confirmer / annuler)
-     s'ouvre à côté de lui. data-state : idle → confirm → done ;
-     data-side : right (défaut) ou left. Les pages ajoutent leur classe
-     (ex. .fav-del) pour l'animation propre du déclencheur.
+     CONFIRMATION SUR PLACE (js/shared/confirm-action.js)
+     .cfm enveloppe le déclencheur et son panneau. data-state : idle →
+     confirm → done ; data-side : right (défaut) ou left ; data-settle
+     posé à l'annulation, le temps du repli (tassement de la poubelle).
+     Comportement repris de Rare UI (« Delete button »), sans son code :
+     déclencheur et panneau forment une seule tuile qui s'élargit ; le
+     plateau sombre, collé au déclencheur et pointé vers lui, apparaît un
+     temps après avec ses deux boutons ronds ; rien ne dépasse sa position
+     d'arrivée. Tant que la tuile est là (ouverte, confirmée ou en repli),
+     chaque page rend son déclencheur transparent : c'est la tuile qui porte
+     sa teinte et sa bordure, d'un seul tenant avec le plateau.
+     Réglages par page : --cfm-radius (rayon du déclencheur), --cfm-surface
+     (fond), --cfm-ring (bordure), ou ::before et ::after retirés quand
+     l'enveloppe est déjà une pastille.
      ============================================================ */
   .cfm {
+    --cfm-radius: 12px;
+    --cfm-btn: 2rem;
+    --cfm-gap: 6px;
+    /* Marge du plateau : au moins la demi-gouttière, où déborde la cible
+       tactile des boutons extérieurs (voir .cfm-yes::after). */
+    --cfm-pad: max(6px, calc(var(--cfm-gap) / 2));
+    --cfm-notch: 5px;
+    --cfm-tray-bg: var(--night);
+    --cfm-tray-w: calc(var(--cfm-btn) * 2 + var(--cfm-gap) + var(--cfm-pad) * 2);
     position: relative;
     display: inline-flex;
-    align-items: center;
+    align-items: stretch;
     vertical-align: middle;
+    isolation: isolate;
   }
   .cfm[data-side="left"] { flex-direction: row-reverse; }
-  .cfm-panel {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    max-width: 0;
-    overflow: hidden;
-    opacity: 0;
-    white-space: nowrap;
-    transition: max-width var(--dur-fast) var(--ease-in),
-                opacity var(--dur-fast) var(--ease-in),
-                margin var(--dur-fast) var(--ease-in);
-  }
-  /* Plafond proche du contenu réel (deux boutons libellés ≈ 15 rem) : trop
-     large, la largeur visible cesserait de croître à mi-transition. */
-  .cfm[data-state="confirm"] .cfm-panel {
-    max-width: 16rem;
-    opacity: 1;
-    margin-inline-start: 6px;
-    transition: max-width var(--dur-base) var(--ease-out),
-                opacity var(--dur-base) var(--ease-out),
-                margin var(--dur-base) var(--ease-out);
-  }
-  .cfm[data-side="left"][data-state="confirm"] .cfm-panel { margin-inline-start: 0; margin-inline-end: 6px; }
 
-  .cfm-yes,
-  .cfm-no {
-    display: inline-flex;
+  /* La tuile : fond (::before) et bordure (::after, au-dessus du plateau)
+     communs au déclencheur et au plateau ; elle s'élargit avec le panneau
+     et ne s'efface qu'une fois le repli fini (data-settle retiré). */
+  .cfm::before,
+  .cfm::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--cfm-radius);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease-in);
+  }
+  .cfm::before { z-index: -1; background: var(--cfm-surface, var(--pill-surface)); }
+  .cfm::after { z-index: 1; box-shadow: inset 0 0 0 1px var(--cfm-ring, var(--alert-a35)); }
+  .cfm:is(:not([data-state="idle"]), [data-settle])::before,
+  .cfm:is(:not([data-state="idle"]), [data-settle])::after {
+    opacity: 1;
+    transition: opacity var(--dur-fast) var(--ease-out);
+  }
+
+  /* Le panneau s'ouvre en largeur (0fr → 1fr : la largeur réelle, sans
+     plafond à régler) ; .cfm-clip rogne le plateau pendant l'ouverture. */
+  /* Jamais rogné par un manque de place : c'est le déclencheur qui cède. */
+  .cfm-panel {
+    position: relative;
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: 0fr;
+    transition: grid-template-columns var(--dur-slow) var(--ease-out);
+  }
+  .cfm[data-state="confirm"] .cfm-panel {
+    grid-template-columns: 1fr;
+    transition: grid-template-columns var(--dur-slower) var(--ease-out);
+  }
+  /* Rognage horizontal seulement : la cible tactile des boutons déborde
+     du plateau en hauteur. */
+  .cfm-clip { display: flex; min-width: 0; overflow-x: clip; }
+
+  /* Le plateau : plus sombre que la tuile, collé au déclencheur, du rayon
+     de la tuile. Il arrive un temps après l'élargissement (fondu, glissé de
+     6 px) et part aussitôt au repli. */
+  .cfm-tray {
+    position: relative;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.4rem;
-    min-width: 34px;
-    min-height: 34px;
-    padding: 0 0.65rem;
-    border: 1px solid var(--white-a08);
-    border-radius: 9px;
-    background: var(--white-a04);
-    color: var(--white-a82);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    translate: -6px 0;
-    opacity: 0;
-    transition: translate var(--dur-fast) var(--ease-in), opacity var(--dur-fast) var(--ease-in),
-                background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
-                border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+    gap: var(--cfm-gap);
+    flex-shrink: 0;
+    width: var(--cfm-tray-w);
+    padding-inline: var(--cfm-pad);
+    border-radius: var(--cfm-radius);
+    background: var(--cfm-tray-bg);
   }
-  .cfm[data-side="left"] .cfm-yes,
-  .cfm[data-side="left"] .cfm-no { translate: 6px 0; }
+  /* La pointe est portée par le panneau, hors du rognage : elle mord sur
+     le déclencheur, à la jonction. Elle suit le plateau. */
+  .cfm-panel::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    inset-inline-end: 100%;
+    width: var(--cfm-notch);
+    height: calc(var(--cfm-notch) * 2);
+    margin-top: calc(var(--cfm-notch) * -1);
+    background: var(--cfm-tray-bg);
+    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  }
+  .cfm[data-side="left"] .cfm-panel::after {
+    inset-inline: 100% auto;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+  .cfm-tray,
+  .cfm-panel::after {
+    opacity: 0;
+    translate: -6px 0;
+    transition: opacity var(--dur-fast) var(--ease-in), translate var(--dur-fast) var(--ease-in);
+  }
+  .cfm[data-side="left"] .cfm-tray,
+  .cfm[data-side="left"] .cfm-panel::after { translate: 6px 0; }
+  .cfm[data-state="confirm"] .cfm-tray,
+  .cfm[data-state="confirm"] .cfm-panel::after {
+    opacity: 1;
+    translate: 0 0;
+    transition: opacity var(--dur-base) var(--ease-out) var(--dur-fast),
+                translate var(--dur-slow) var(--ease-out) var(--dur-fast);
+  }
+
+  /* Boutons ronds, icône seule (le libellé est le nom accessible et
+     l'info-bulle). Le disque fait 32 px ; ::after porte la cible à 44 px
+     de haut et la prolonge jusqu'au milieu de la gouttière, sans empiéter
+     sur le bouton voisin. Au doigt, la gouttière s'élargit : 44 px de large. */
+  .cfm-yes,
+  .cfm-no {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: var(--cfm-btn);
+    height: var(--cfm-btn);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--white-a06);
+    box-shadow: 0 1px 3px var(--black-a35), inset 0 0.5px 0 var(--white-a07);
+    color: var(--white-a82);
+    cursor: pointer;
+    transform: scale(0.9);
+    transition: transform var(--dur-fast) var(--ease-in),
+                background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+                scale var(--dur-instant) var(--ease-out);
+  }
+  .cfm-yes::after,
+  .cfm-no::after {
+    content: '';
+    position: absolute;
+    inset: calc((var(--cfm-btn) - 44px) / 2) calc(var(--cfm-gap) / -2);
+  }
+  @media (pointer: coarse) {
+    .cfm { --cfm-gap: calc(44px - var(--cfm-btn)); }
+  }
   .cfm[data-state="confirm"] .cfm-yes,
   .cfm[data-state="confirm"] .cfm-no {
-    translate: 0 0;
-    opacity: 1;
-    transition: translate var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out),
+    transform: none;
+    transition: transform var(--dur-slow) var(--ease-out) var(--dur-fast),
                 background-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
-                border-color var(--dur-fast) var(--ease-out), scale var(--dur-instant) var(--ease-out);
+                scale var(--dur-instant) var(--ease-out);
   }
-  /* Le second bouton arrive un pas après le premier. */
-  .cfm[data-state="confirm"] .cfm-no { transition-delay: var(--stagger-step), var(--stagger-step), 0s, 0s, 0s, 0s; }
-  .cfm-yes { color: var(--alert-text-soft); border-color: var(--alert-a32); background: var(--alert-a08); }
+  .cfm-yes { color: var(--alert-text-soft); }
   .cfm-yes:hover { background: var(--alert-a22); color: var(--white); }
-  .cfm-no:hover { background: var(--white-a08); color: var(--white); }
+  .cfm-no:hover { background: var(--white-a12); color: var(--white); }
   .cfm-yes:focus-visible,
-  .cfm-no:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .cfm-no:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   .cfm-yes:active, .cfm-no:active { scale: var(--press-scale); }
-  .cfm-panel .icon,
-  .cfm-panel i { font-size: 0.8rem; }
+  .cfm-tray .icon,
+  .cfm-tray i { font-size: 0.8rem; }
 
   /* BOUTON D'ENVOI (VH.busyButton, js/shared/busy-button.js) : largeur
      figée par le JS ; le libellé monte et s'efface, l'anneau apparaît à sa
@@ -220,35 +308,60 @@
   }
   .bb[data-bb="busy"] { cursor: progress; }
 
-  /* POUBELLE (VH.confirmAction.binIcon) : couvercle, cuve et coche animés
-     séparément. Le couvercle pivote sur la charnière OPPOSÉE au côté où
-     s'ouvre le panneau : il se soulève vers la confirmation. Il s'entrouvre
-     au survol, s'ouvre pendant la confirmation ; à la confirmation,
-     couvercle et cuve s'effacent et une coche se trace. */
+  /* POUBELLE (VH.confirmAction.binIcon, et la poubelle des cartes de
+     favoris et du cœur de la fiche, qui portent les mêmes classes).
+     Couvercle, cuve et coche sont animés séparément. Au survol, le
+     couvercle s'entrouvre. Pendant la confirmation, il bascule de 35° vers
+     le panneau et la cuve se raccourcit (poubelle grande ouverte). À
+     l'annulation, elle se referme et se tasse (data-settle). À la
+     confirmation, couvercle et cuve s'effacent et la coche se trace en
+     grossissant jusqu'à sa taille, sans la dépasser. */
   .cfm-bin {
     width: 1.2em; height: 1.2em; flex-shrink: 0; overflow: visible;
     fill: none; stroke: currentColor; stroke-width: 1.8;
     stroke-linecap: round; stroke-linejoin: round;
   }
+  .cfm[data-settle] .cfm-bin { animation: vh-settle var(--dur-slow) var(--ease-in-out); }
   .cfm-bin-lid {
     transform-box: view-box;
     transform-origin: 4.5px 7px;
-    transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+    transition: transform var(--dur-slower) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
   }
   .cfm-bin-can { transition: opacity var(--dur-fast) var(--ease-out); }
+  .cfm[data-side="left"] .cfm-bin-lid { transform-origin: 19.5px 7px; }
+  /* Sans la propriété `d` (Safari), la cuve garde sa hauteur : le couvercle
+     se soulève sur sa charnière, du côté opposé au panneau. */
   .cfm[data-state="idle"] > :hover .cfm-bin-lid { transform: translateY(-0.8px) rotate(-7deg); }
   .cfm[data-state="confirm"] .cfm-bin-lid { transform: translate(-0.4px, -2.4px) rotate(-24deg); }
-  /* Panneau à gauche : charnière à droite. */
-  .cfm[data-side="left"] .cfm-bin-lid { transform-origin: 19.5px 7px; }
   .cfm[data-side="left"][data-state="idle"] > :hover .cfm-bin-lid { transform: translateY(-0.8px) rotate(7deg); }
   .cfm[data-side="left"][data-state="confirm"] .cfm-bin-lid { transform: translate(0.4px, -2.4px) rotate(24deg); }
-  .cfm-bin-check { stroke-dasharray: 20; stroke-dashoffset: 20; opacity: 0; }
+  @supports (d: path('M0 0')) {
+    .cfm-bin-lid,
+    .cfm[data-side="left"] .cfm-bin-lid { transform-origin: 12px 12px; }
+    .cfm-bin-can > path { transition: d var(--dur-slower) var(--ease-out); }
+    .cfm[data-state="idle"] > :hover .cfm-bin-lid { transform: translateY(-1px) rotate(-7deg); }
+    .cfm[data-state="confirm"] .cfm-bin-lid { transform: rotate(-35deg); }
+    .cfm[data-side="left"][data-state="idle"] > :hover .cfm-bin-lid { transform: translateY(-1px) rotate(7deg); }
+    .cfm[data-side="left"][data-state="confirm"] .cfm-bin-lid { transform: rotate(35deg); }
+    /* Mêmes commandes que les tracés d'origine : seule la hauteur change. */
+    .cfm[data-state="confirm"] .cfm-bin-can > path:first-child {
+      d: path('M7 14l.4 4.7c.1 1 .9 1.8 1.9 1.8h5.4c1 0 1.8-.8 1.9-1.8l.4-4.7');
+    }
+    .cfm[data-state="confirm"] .cfm-bin-can > path:last-child { d: path('M10.2 15.8v1.7M13.8 15.8v1.7'); }
+  }
+  .cfm-bin-check {
+    stroke-dasharray: 20; stroke-dashoffset: 20; opacity: 0;
+    transform-box: view-box; transform-origin: 12px 12px;
+    transform: scale(0.6);
+  }
   .cfm[data-state="done"] .cfm-bin-lid,
   .cfm[data-state="done"] .cfm-bin-can { opacity: 0; }
   .cfm[data-state="done"] .cfm-bin-check {
     stroke-dashoffset: 0;
     opacity: 1;
+    transform: none;
     transition: stroke-dashoffset var(--dur-slower) var(--ease-out) var(--dur-instant),
+                transform var(--dur-slow) var(--ease-out) var(--dur-instant),
                 opacity var(--dur-instant) var(--ease-out) var(--dur-instant);
   }
 
